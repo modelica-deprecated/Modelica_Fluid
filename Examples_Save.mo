@@ -782,7 +782,6 @@ The whole tank is assumed to have uniform temperature and mass fractions.
     end Tank;
   end Components;
   
-  
   package Elementary 
     "Elementary examples to demonstrate various features of the fluid library" 
     
@@ -967,11 +966,11 @@ used for the initial mass fractions.
       connect(shortPipe3.port_b, Tank3.port) 
         annotation (points=[51, -20; 80, -20; 80, 19], style(color=69));
       connect(Tank2.port, shortPipe2.port_a) 
-        annotation (points=[0, 19; 0, 11; -6.73533e-016, 11], style(color=69));
+        annotation (points=[0,19; 0,11; -6.73533e-016,11],    style(color=69));
       connect(shortPipe1.port_b, shortPipe3.port_a) 
         annotation (points=[-29, -20; 29, -20], style(color=69));
       connect(shortPipe2.port_b, shortPipe3.port_a) annotation (points=[
-            6.73533e-016, -11; 0, -11; 0, -20; 29, -20], style(color=69));
+            6.73533e-016,-11; 0,-11; 0,-20; 29,-20],     style(color=69));
     end ThreeTanksOneLiquid;
     
     model ThreeTanksWithPortVolume 
@@ -1114,11 +1113,11 @@ used for the initial mass fractions.
       connect(shortPipe3.port_b, Tank3.port) 
         annotation (points=[51, -20; 80, -20; 80, 19], style(color=69));
       connect(Tank2.port, shortPipe2.port_a) 
-        annotation (points=[0, 19; 0, 11; -6.73533e-016, 11], style(color=69));
+        annotation (points=[0,19; 0,11; -6.73533e-016,11],    style(color=69));
       connect(shortPipe1.port_b, shortPipe3.port_a) 
         annotation (points=[-29, -20; 29, -20], style(color=69));
       connect(shortPipe2.port_b, shortPipe3.port_a) annotation (points=[
-            6.73533e-016, -11; 0, -11; 0, -20; 29, -20], style(color=69));
+            6.73533e-016,-11; 0,-11; 0,-20; 29,-20],     style(color=69));
     end ThreeTanksIF97;
   end Tanks;
   
@@ -2177,53 +2176,18 @@ is instantaneous. The temperature is the same as in the upper part.
   end PipeWithShockWaves;
   
   package Examples_Francesco 
-    
-    model SourceP "Pressure source for water/steam flows" 
-      extends Icons.SourceP;
-      replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
-        "Medium model" annotation(choicesAllMatching = true);
-      parameter Modelica.SIunits.Pressure p0=1.01325e5 "Nominal pressure";
-      parameter Real R=0 "Hydraulic resistance";
-      parameter Modelica.SIunits.SpecificEnthalpy h=1e5 
-        "Nominal specific enthalpy";
-      Modelica.SIunits.Pressure p "Actual pressure";
-      Modelica_Fluid.Interfaces.FluidPort_b flange(redeclare package Medium = 
-            Medium)  annotation (extent=[80, -20; 120, 20]);
-      Modelica.Blocks.Interfaces.RealInput in_p0(
-                                              n=1) 
-        annotation (extent=[-60, 72; -20, 112], rotation=-90);
-      Modelica.Blocks.Interfaces.RealInput in_h(
-                                             n=1) 
-        annotation (extent=[20, 70; 60, 110], rotation=-90);
-    equation 
-      if R == 0 then
-        flange.p = p;
-      else
-        flange.p = p + flange.m_flow*R;
-      end if;
-      if cardinality(in_p0)==0 then
-        p = p0;
-        in_p0.signal[1] = 0;
-      else
-        p = in_p0.signal[1];
-      end if;
-      if cardinality(in_h)==0 then
-        flange.H_flow = semiLinear(flange.m_flow,flange.h,h);
-        in_h.signal[1] = 0;
-      else
-        flange.H_flow = semiLinear(flange.m_flow,flange.h,in_h.signal[1]);
-      end if;
-      annotation (
-        Diagram,
-        Icon(Text(extent=[-106, 90; -52, 50], string="p0"), Text(extent=[66, 90;
-                 98, 52], string="h")),
-        Documentation(info="<HTML>
-<p><b>Modelling options</b></p>
-<p>If <tt>R</tt> is set to zero, the pressure source is ideal; otherwise, the outlet pressure decreases proportionally to the outgoing flowrate.</p>
-<p>If the <tt>in_p0</tt> connector is wired, then the source pressure is given by the corresponding signal, otherwise it is fixed to <tt>p0</tt>.</p>
-<p>If the <tt>in_h</tt> connector is wired, then the source pressure is given by the corresponding signal, otherwise it is fixed to <tt>h</tt>.</p>
-</HTML>", revisions="<html>
+    model SinkP "Pressure sink for water/steam flows" 
+      annotation (Icon(
+          Ellipse(extent=[-80, 80; 80, -80], style(
+              color=0,
+              rgbcolor={0,0,0},
+              gradient=3)),
+          Text(extent=[-100, -78; 100, -106], string="%name")), Documentation(
+            revisions="<html>
 <ul>
+<li><i>27 Sep 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted to Modelica_Fluid.</li>
 <li><i>18 Jun 2004</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Removed <tt>p0_fix</tt> and <tt>hfix</tt>; the connection of external signals is now detected automatically.</li>
@@ -2232,24 +2196,17 @@ is instantaneous. The temperature is the same as in the upper part.
        First release.</li>
 </ul>
 </html>"));
-    end SourceP;
-    
-    model SinkP "Pressure sink for water/steam flows" 
-      extends Icons.SourceP;
       replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
         "Medium model" annotation(choicesAllMatching = true);
-      parameter Modelica.SIunits.Pressure p0=1.01325e5 "Nominal pressure";
-      parameter Real R=0 "Hydraulic resistance";
-      parameter Modelica.SIunits.SpecificEnthalpy h=1e5 
-        "Nominal specific enthalpy";
-      Modelica.SIunits.Pressure p;
+      parameter Medium.AbsolutePressure p0=1.01325e5 "Nominal pressure";
+      parameter Real R(unit="Pa/(kg.s)")=0 "Hydraulic resistance";
+      parameter Medium.SpecificEnthalpy h=1e5 "Nominal specific enthalpy";
+      Medium.AbsolutePressure p;
       Modelica_Fluid.Interfaces.FluidPort_a flange(redeclare package Medium = 
             Medium)  annotation (extent=[-120, -20; -80, 20]);
-      Modelica.Blocks.Interfaces.RealInput in_p0(
-                                              n=1) 
+      Modelica.Blocks.Interfaces.RealInput in_p0 
         annotation (extent=[-60, 68; -20, 108], rotation=-90);
-      Modelica.Blocks.Interfaces.RealInput in_h(
-                                             n=1) 
+      Modelica.Blocks.Interfaces.RealInput in_h 
         annotation (extent=[20, 68; 60, 108], rotation=-90);
     equation 
       if R == 0 then
@@ -2259,15 +2216,15 @@ is instantaneous. The temperature is the same as in the upper part.
       end if;
       if cardinality(in_p0)==0 then
         p = p0;
-        in_p0.signal[1] = 0;
+        in_p0 = 0;
       else
-        p = in_p0.signal[1];
+        p = in_p0;
       end if;
       if cardinality(in_h)==0 then
         flange.H_flow = semiLinear(flange.m_flow,flange.h,h);
-        in_h.signal[1] = 0;
+        in_h = 0;
       else
-        flange.H_flow = semiLinear(flange.m_flow,flange.h,in_h.signal[1]);
+        flange.H_flow = semiLinear(flange.m_flow,flange.h,in_h);
       end if;
       annotation (
         Icon(Text(extent=[-106, 92; -56, 50], string="p0"), Text(extent=[54, 94;
@@ -2289,9 +2246,39 @@ is instantaneous. The temperature is the same as in the upper part.
 </ul>
 </html>"));
     end SinkP;
-    
+
     partial model ValveBase "Base model for valves" 
-      extends Icons.Valve;
+     annotation (Icon(
+          Line(points=[0, 40; 0, 0], style(
+              color=0,
+              thickness=2,
+              fillPattern=1)),
+          Polygon(points=[-80, 40; -80, -40; 0, 0; -80, 40], style(
+              color=0,
+              thickness=2,
+              fillPattern=1)),
+          Polygon(points=[80, 40; 0, 0; 80, -40; 80, 40], style(
+              color=0,
+              thickness=2,
+              fillPattern=1)),
+          Rectangle(extent=[-20, 60; 20, 40], style(
+              color=0,
+              fillColor=0,
+              fillPattern=1))), Diagram, 
+        Documentation(revisions="<html>
+<ul>
+<li><i>27 Sep 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted to Modelica_Fluid.</li>
+<li><i>1 Jul 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Valve models restructured using inheritance. <br>
+       Adapted to Modelica_Media.</li>
+<li><i>1 Oct 2003</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       First release.</li>
+</ul>
+</html>"));
       replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
         "Medium model" 
                      annotation(choicesAllMatching= true);
@@ -2300,22 +2287,21 @@ is instantaneous. The temperature is the same as in the upper part.
       parameter Modelica.SIunits.Area Avnom=0 "Av (metric) flow coefficient";
       parameter Real Kvnom(unit="m^3/h")=0 "Kv (metric) flow coefficient";
       parameter Real Cvnom(unit="USG/min")=0 "Cv (US) flow coefficient";
-      parameter Modelica.SIunits.Pressure dpnom "Nominal pressure drop";
-      parameter Modelica.SIunits.MassFlowRate wnom=0 "Nominal mass flowrate";
-      parameter ThermoPowerMedia.LiquidDensity rhonom=0 "Nominal inlet density";
+      parameter Medium.AbsolutePressure dpnom "Nominal pressure drop";
+      parameter Medium.MassFlowRate wnom=0 "Nominal mass flowrate";
+      parameter Medium.Density rhonom=0 "Nominal inlet density";
       parameter Boolean CheckValve=false "Reverse flow stopped";
       parameter Real b=0.01 "Regularisation factor";
       replaceable function FlowChar = linear "Flow characteristic";
-      Modelica.SIunits.MassFlowRate w "Mass flowrate";
-      Real Av;
+      Medium.MassFlowRate w "Mass flowrate";
+      Real Av "Flow coefficient";
       Medium.Density rho "Inlet density";
-      Medium.Temperature Tin;
+      Medium.Temperature Tin "Inlet temperature";
       Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = 
             Medium) annotation (extent=[-120, -20; -80, 20]);
       Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = 
             Medium)  annotation (extent=[80, -20; 120, 20]);
-      Modelica.Blocks.Interfaces.RealInput theta(
-                                              n=1) 
+      Modelica.Blocks.Interfaces.RealInput theta 
         annotation (extent=[-20, 60; 20, 100], rotation=-90);
       annotation (
         Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
@@ -2357,6 +2343,7 @@ is instantaneous. The temperature is the same as in the upper part.
     function one 
       input Real x;
       output Real y;
+        
       annotation (derivative=der_one);
     algorithm 
         y := 1;
@@ -2396,10 +2383,9 @@ is instantaneous. The temperature is the same as in the upper part.
       fluid.p=inlet.p;
       Tin=fluid.T;
       rho=fluid.d;
-      
     end ValveBase;
-    
-    model ValveLiq "Valve for liquid water flow" 
+
+    model ValveLiquid "Valve for incompressible liquid flow" 
       extends ValveBase;
       Real z "Normalized pressure drop";
       Real sqrtz;
@@ -2411,6 +2397,9 @@ is instantaneous. The temperature is the same as in the upper part.
 Extends the <tt>ValveBase</tt> model (see the corresponding documentation for common valve features).
 </html>", revisions="<html>
 <ul>
+<li><i>27 Sep 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted to Modelica_Fluid.</li>
 <li><i>1 Jul 2004</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Valve model restructured using inheritance. <br>
@@ -2427,42 +2416,177 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
       else
         sqrtz = noEvent(z/sqrt(abs(z) + b));
       end if;
-      w = FlowChar(theta.signal[1])*Av*sqrt(rho*dpnom)*sqrtz;
-    end ValveLiq;
+      w = FlowChar(theta)*Av*sqrt(rho*dpnom)*sqrtz;
+    end ValveLiquid;
+
+    model ValveLiquidChoked 
+      "Valve for liquid flow, allows choked flow conditions" 
+      
+      extends ValveBase(redeclare replaceable package Medium = 
+                   Modelica_Media.Interfaces.PartialTwoPhaseMedium);
+      parameter Real Flnom=0.9 "Liquid pressure recovery factor";
+      replaceable function FlowChar = linear "Flow characteristic";
+      replaceable function Flfun = one "Pressure recovery characteristic";
+      SI.MassFlowRate w "Mass flowrate";
+      Real Av;
+      Real Ff;
+      Real Fl;
+      Real z "Normalized pressure drop";
+      Real sqrtz;
+      Medium.AbsolutePressure pv "Saturation pressure";
+      Boolean chokedFlow "Choked flow conditions";
+      
+      annotation (
+        Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
+        Diagram,
+        Documentation(info="<HTML>
+<p>Liquid water valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid, with possible choked flow conditions. <p>
+Extends the <tt>ValveBase</tt> model (see the corresponding documentation for common valve features).<p>
+The model operating range includes choked flow operation, which takes place for low outlet pressures due to flashing in the vena contracta; otherwise, non-choking conditions are assumed.
+<p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Flnom</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by customising the <tt>Flfun</tt> function.
+</HTML>", revisions="<html>
+<ul>
+<li><i>27 Sep 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted to Modelica_Fluid.</li>
+<li><i>1 Jul 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Valve model restructured using inheritance. <br>
+       Adapted to Modelica_Media.</li>
+<li><i>1 Oct 2003</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       First release.</li>
+</ul>
+</HTML>"));
+    equation 
+      if CheckValve then
+        sqrtz = (if z >= 0 then z/sqrt(z + b) else 0);
+      else
+        sqrtz = noEvent(z/sqrt(abs(z) + b));
+      end if;
+      pv = Medium.saturationPressure(Tin);
+      Ff = 0.96 - 0.28*sqrt(pv/22064.0e3);
+      Fl = Flnom*Flfun(theta);
+      chokedFlow= outlet.p < (1 - Fl^2)*inlet.p + Ff*Fl^2*pv;
+      if chokedFlow then
+        z = Fl^2*(inlet.p - Ff*pv)/dpnom;
+      else
+        z = (inlet.p - outlet.p)/dpnom;
+      end if;
+      w = FlowChar(theta)*Av*sqrt(rho*dpnom)*sqrtz;
+      
+    end ValveLiquidChoked;
+
+    model ValveGas "Valve for steam flow" 
+      extends ValveBase;
+      parameter SI.Pressure pnom=0 "Nominal inlet pressure";
+      parameter Real Fxtnom=0.5 "Nominal Fk*xt critical ratio";
+      replaceable function xtfun = one "Critical ratio characteristic";
+      Real Fxt;
+      Real x;
+      Real xs;
+      Real Y;
+      Real z "Normalized x";
+      Real sqrtz;
+      annotation (
+        Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
+        Diagram,
+        Documentation(info="<HTML>
+<p>Liquid water valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid. <p>
+Extends the <tt>ValveBase</tt> model (see the corresponding documentation for common valve features).
+<p>The product Fk*xt is given by the parameter <tt>Fxtnom</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by customising the <tt>xtfun</tt> function.
+</HTML>", revisions="<html>
+<ul>
+<li><i>27 Sep 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted to Modelica_Fluid.</li>
+<li><i>1 Jul 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Valve model restructured using inheritance. <br>
+       Adapted to Modelica_Media.</li>
+<li><i>1 Oct 2003</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       First release.</li>
+</ul>
+</HTML>"));
+    equation 
+      Fxt = Fxtnom*xtfun(theta);
+      x = (inlet.p - outlet.p)/inlet.p;
+      xs = if x < -Fxt then -Fxt else if x > Fxt then Fxt else x;
+      Y = 1 - abs(xs)/(3*Fxt);
+      z = xs/(dpnom/pnom);
+      if CheckValve then
+        sqrtz = (if z >= 0 then z/sqrt(z + b) else 0);
+      else
+        sqrtz = noEvent(z/sqrt(abs(z) + b));
+      end if;
+      w = FlowChar(theta)*Av*Y*sqrt(dpnom/pnom*inlet.p*rho)*sqrtz;
+    end ValveGas;
+    
+    
     
     partial model PumpBase "Base model for centrifugal pumps" 
-      extends Icons.Pump;
+      annotation (Icon(
+          Polygon(points=[-40, -24; -60, -60; 60, -60; 40, -24; -40, -24],
+              style(pattern=0, fillColor=74)),
+          Ellipse(extent=[-60, 80; 60, -40], style(gradient=3)),
+          Polygon(points=[-30, 52; -30, -8; 48, 20; -30, 52], style(
+              pattern=0,
+              gradient=2,
+              fillColor=7)),
+          Text(extent=[-100, -64; 100, -90], string="%name")), Documentation(
+            info="<HTML>
+<p>This is the base model for the <tt>Pump</tt> and <tt>
+PumpMech</tt> pump models.
+<p>The model describes a centrifugal pump, or a group of <tt>Np</tt> identical pumps in parallel. The hydraulic characteristic (head vs. flowrate) is represented, as well as the pump power consumption.
+<p>In order to avoid singularities in the computation of the outlet enthalpy at zero flowrate, the thermal capacity of the fluid inside the pump body can be taken into account.
+<p>The model can either support reverse flow conditions or include a built-in check valve to avoid flow reversal.
+<p><b>Modelling options</b></p>
+<p>The following options are available to specify the pump characteristics:
+<ul><li><tt>CharData = 0</tt>: the coefficients of the characteristics (<tt>A,B,C,D,E,F</tt>) are provided directly
+<li><tt>CharData = 1</tt>: the characteristics are specified by providing a vector of three operating points (in terms of heads <tt>head[3]</tt>, volume flow rate <tt>q[3]</tt>, power consumption <tt>P_cons[3]</tt>, nominal fluid density <tt>rho0</tt>, and nominal rotational speed <tt>n0</tt>) for a single pump.
+</ul>
+<p>If the <tt>in_Np</tt> input connector is wired, it provides the number of pumps in parallel; otherwise,  <tt>Np0</tt> parallel pumps are assumed.</p>
+<p>If the internal volume <tt>V</tt> greater then zero, the heat capacity of the fluid inside the pump is taken into account: this is necessary to avoid singularities in the computation of the outlet enthalpy in case of zero flowrate. If zero flowrate conditions are always avoided, this effect can be neglected by leaving <tt>V = 0</tt>, thus avoiding a fast state variable in the model.
+<p>The <tt>CheckValve</tt> parameter determines whether the pump has a built-in check valve or not.
+</HTML>", revisions="<html>
+<ul>
+<li><i>27 Sep 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted to Modelica_Fluid.</li>
+<li><i>5 Jul 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Model restructured by using inheritance. Adapted to Modelica_Media.</li>
+<li><i>15 Jan 2004</i>
+    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>:<br>
+       ThermalCapacity and <tt>CheckValve</tt> added.</li>
+<li><i>15 Dec 2003</i>
+    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>:<br>
+       First release.</li>
+</ul>
+</html>"));
       import Modelica.SIunits.Conversions.NonSIunits.*;
       replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
         "Medium model" 
                      annotation(choicesAllMatching= true);
-      Medium.BaseProperties fluid "Fluid propertie";
+      Medium.BaseProperties fluid(p(start=pin_start), h(start=hstart)) 
+        "Fluid propertie";
       replaceable package SatMedium = 
           Modelica_Media.Interfaces.PartialTwoPhaseMedium 
         "Saturated medium model (required only for NPSH computation)" 
                      annotation(choicesAllMatching= true);
       parameter Integer Np0(min=1) = 1 "Nominal number of pumps in parallel";
-      parameter Modelica.SIunits.Pressure pin_start 
-        "Inlet Pressure Start Value";
-      parameter Modelica.SIunits.Pressure pout_start 
+      parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value";
+      parameter Medium.AbsolutePressure pout_start 
         "Outlet Pressure Start Value";
-      parameter Modelica.SIunits.SpecificEnthalpy hstart=1e5 
+      parameter Medium.SpecificEnthalpy hstart=1e5 
         "Fluid Specific Enthalpy Start Value";
       parameter Medium.Density rho0=1000 "Nominal Liquid Density";
       parameter AngularVelocity_rpm n0=1500 "Nominal rotational speed";
-      parameter Modelica.SIunits.Volume V "Pump Internal Volume";
+      parameter Modelica.SIunits.Volume V=0 "Pump Internal Volume";
       parameter Real etaMech(
         min=0,
         max=1) = 0.98 "Mechanical Efficiency";
-      parameter Integer CharData(
-        min=0,
-        max=1) = 1 "0: (A,B,C,D,E,F) - 1: OpPoints";
-      parameter Real A0=0;
-      parameter Real B0=0;
-      parameter Real C0=0;
-      parameter Real D0=0;
-      parameter Real E0=0;
-      parameter Real F0=0;
       parameter Modelica.SIunits.Height head_nom[3] 
         "Pump head for three operating points";
       parameter Modelica.SIunits.VolumeFlowRate q_nom[3] 
@@ -2470,8 +2594,6 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
       parameter Modelica.SIunits.Power P_cons[3] 
         "Power consumption for three operating points (single pump)";
       parameter Boolean CheckValve=false "Reverse flow stopped";
-      parameter Boolean ThermalCapacity=false 
-        "Fluid heat capacity accounted for";
       parameter Boolean ComputeNPSHa=false 
         "Compute NPSH Available at the inlet";
       constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
@@ -2493,45 +2615,28 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
       Modelica.SIunits.Pressure pv "Saturated liquid pressure";
       Boolean FlowOn(start=true);
       Real s "Auxiliary Variable";
-      Real A;
-      Real B;
-      Real C;
-      Real D;
-      Real E;
-      Real F;
       Modelica_Fluid.Interfaces.FluidPort_a infl(redeclare package Medium = 
-            Medium, p(start=pin_start)) 
+            Medium, p(start=pin_start), h(start=hstart)) 
         annotation (extent=[-100, 2; -60, 42]);
       Modelica_Fluid.Interfaces.FluidPort_b outfl(redeclare package Medium = 
-            Medium, p(start=pout_start)) 
+            Medium, p(start=pout_start), h(start=hstart)) 
         annotation (extent=[40,52; 80,92]);
-      Modelica.Blocks.Interfaces.RealInput in_Np(
-                                              n=1) "Number of  parallel pumps" 
+      Modelica.Blocks.Interfaces.RealInput in_Np "Number of  parallel pumps" 
         annotation (extent=[18, 70; 38, 90], rotation=-90);
+    protected 
+      parameter Real A(fixed=false);
+      parameter Real B(fixed=false);
+      parameter Real C(fixed=false);
+      parameter Real D(fixed=false);
+      parameter Real E(fixed=false);
+      parameter Real F(fixed=false);
+      
     equation 
       if cardinality(in_Np)==0 then
         Np = Np0;
-        in_Np.signal[1] = 0;
+        in_Np = 0;
       else
-        Np = in_Np.signal[1];
-      end if;
-      
-      if CharData == 0 then
-        A = A0;
-        B = B0;
-        C = C0;
-        D = D0;
-        E = E0;
-        F = F0;
-      else
-        if CharData == 1 then
-          head_nom[1]*g = -A*q_nom[1]^2 + B*q_nom[1] + C;
-          head_nom[2]*g = -A*q_nom[2]^2 + B*q_nom[2] + C;
-          head_nom[3]*g = -A*q_nom[3]^2 + B*q_nom[3] + C;
-          P_cons[1] = D*(n0^2)*q_nom[1] - E*n0*(q_nom[1]^2) + F*(n0^2);
-          P_cons[2] = D*(n0^2)*q_nom[2] - E*n0*(q_nom[2]^2) + F*(n0^2);
-          P_cons[3] = D*(n0^2)*q_nom[3] - E*n0*(q_nom[3]^2) + F*(n0^2);
-        end if;
+        Np = in_Np;
       end if;
       
       infl.m_flow + outfl.m_flow = 0;
@@ -2558,7 +2663,7 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
       
       h = fluid.h;
       
-      if ThermalCapacity then
+      if V>0 then
         (rho*V*der(h)) = (outfl.m_flow/Np)*outfl.h + (infl.m_flow/Np)*infl.h + Phyd;
       else
         0 = (outfl.m_flow/Np)*outfl.h + (infl.m_flow/Np)*infl.h + Phyd;
@@ -2573,6 +2678,14 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
         pv=0;
         NPSHa=0;
       end if;
+      
+    initial equation 
+      head_nom[1]*g = -A*q_nom[1]^2 + B*q_nom[1] + C;
+      head_nom[2]*g = -A*q_nom[2]^2 + B*q_nom[2] + C;
+      head_nom[3]*g = -A*q_nom[3]^2 + B*q_nom[3] + C;
+      P_cons[1] = D*(n0^2)*q_nom[1] - E*n0*(q_nom[1]^2) + F*(n0^2);
+      P_cons[2] = D*(n0^2)*q_nom[2] - E*n0*(q_nom[2]^2) + F*(n0^2);
+      P_cons[3] = D*(n0^2)*q_nom[3] - E*n0*(q_nom[3]^2) + F*(n0^2);
       
       annotation (
         Icon,
@@ -2613,15 +2726,14 @@ PumpMech</tt> pump models.
       extends PumpBase;
       import Modelica.SIunits.Conversions.NonSIunits.*;
       parameter AngularVelocity_rpm n_const=n0 "Constant rotational speed";
-      Modelica.Blocks.Interfaces.RealInput in_n(
-                                             n=1) "RPM" 
+      Modelica.Blocks.Interfaces.RealInput in_n "RPM" 
         annotation (extent=[-36, 70; -16, 90], rotation=-90);
     equation 
       if cardinality(in_n)==0 then
         n = n_const;
-        in_n.signal[1] = 0;
+        in_n = 0;
       else
-        n = in_n.signal[1];
+        n = in_n;
       end if;
       
       annotation (
@@ -2635,6 +2747,9 @@ PumpMech</tt> pump models.
 <p>If the <tt>in_n</tt> input connector is wired, it provides rotational speed of the pumps (rpm); otherwise, a constant rotational speed equal to <tt>n_const</tt> (which can be different from <tt>n0</tt>) is assumed.</p>
 </HTML>", revisions="<html>
 <ul>
+<li><i>27 Sep 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted to Modelica_Fluid.</li>
 <li><i>5 Jul 2004</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Model restructured by using inheritance. Adapted to Modelica_Media.</li>
@@ -2661,13 +2776,20 @@ PumpMech</tt> pump models.
       P = omega*MechPort.tau;
       annotation (
         Icon(
-          Text(extent=[-10,104; 18,84], string="Np")),
+          Text(extent=[-10,104; 18,84], string="Np"),
+          Rectangle(extent=[60,26; 86,10],   style(
+              color=76,
+              gradient=2,
+              fillColor=9))),
         Diagram,
         Documentation(info="<HTML>
 <p>This model describes a centrifugal pump (or a group of <tt>Np</tt> pumps in parallel) with a mechanical rotational connector for the shaft, to be used when the pump drive has to be modelled explicitly. In the case of <tt>Np</tt> pumps in parallel, the mechanical connector is relative to a single pump.
 <p>The model extends <tt>PumpBase</tt>
  </HTML>", revisions="<html>
 <ul>
+<li><i>27 Sep 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted to Modelica_Fluid.</li>
 <li><i>5 Jul 2004</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Model restructured by using inheritance. Adapted to Modelica_Media.</li>
@@ -2681,21 +2803,45 @@ PumpMech</tt> pump models.
 </html>"));
     end PumpMech;
     
-    model ValveLin "Valve for water/steam flows with linear pressure drop" 
-      extends Icons.Valve;
+    model ValveLin "Valve with linear pressure drop" 
+     annotation (Icon(
+          Line(points=[0, 40; 0, 0], style(
+              color=0,
+              thickness=2,
+              fillPattern=1)),
+          Polygon(points=[-80, 40; -80, -40; 0, 0; -80, 40], style(
+              color=0,
+              thickness=2,
+              fillPattern=1)),
+          Polygon(points=[80, 40; 0, 0; 80, -40; 80, 40], style(
+              color=0,
+              thickness=2,
+              fillPattern=1)),
+          Rectangle(extent=[-20, 60; 20, 40], style(
+              color=0,
+              fillColor=0,
+              fillPattern=1))), Diagram, 
+        Documentation(revisions="<html>
+<ul>
+<li><i>27 Sep 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted to Modelica_Fluid.</li>
+<li><i>1 Oct 2003</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       First release.</li>
+</ul>
+</html>"));
       replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
         "Medium model" 
                    annotation(choicesAllMatching= true);
-      parameter ThermoPowerMedia.HydraulicConductance Kv 
-        "Nominal hydraulic conductance";
+      parameter Real Kv(unit="kg/(s.Pa)") "Nominal hydraulic conductance";
       Modelica.SIunits.MassFlowRate w "Mass flowrate";
       Modelica.SIunits.SpecificEnthalpy h "Fluid specific enthalpy";
       Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium=Medium) 
                     annotation (extent=[-120, -20; -80, 20]);
       Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium=Medium) 
                      annotation (extent=[80, -20; 120, 20]);
-      Modelica.Blocks.Interfaces.RealInput cmd(
-                                            n=1) 
+      Modelica.Blocks.Interfaces.RealInput cmd 
         annotation (extent=[-20, 60; 20, 100], rotation=-90);
     equation 
       inlet.m_flow + outlet.m_flow = 0;
@@ -2703,7 +2849,7 @@ PumpMech</tt> pump models.
       inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,h);
       outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,h);
       inlet.H_flow+outlet.H_flow=0;
-      w = Kv*cmd.signal[1]*(inlet.p - outlet.p);
+      w = Kv*cmd*(inlet.p - outlet.p);
       annotation (
         Icon(Text(extent=[-100, -40; 100, -74], string="%name")),
         Diagram,
@@ -2719,17 +2865,34 @@ PumpMech</tt> pump models.
     end ValveLin;
     annotation (uses(Modelica(version="2.1 Beta1")));
     
-    model TestWaterPump "Test case for WaterPump" 
+    
+    
+    model SimpleMotor 
+      "A simple model of an electrical dc motor (based on DriveLib model)." 
+      
       annotation (
-        Diagram,
-        experiment(StopTime=10, Tolerance=1e-006),
+        Coordsys(
+          extent=[-100, -100; 100, 100],
+          grid=[2, 2],
+          component=[20, 20]),
+        Window(
+          x=0.15,
+          y=0.18,
+          width=0.45,
+          height=0.58),
+        Icon(
+          Rectangle(extent=[60, 6; 96, -6], style(color=9, fillColor=9)),
+          Rectangle(extent=[-60, 40; 60, -40], style(gradient=2, fillColor=74)),
+          Rectangle(extent=[-80, -80; 80, -100], style(pattern=0, fillColor=0)),
+          Line(points=[-90, 0; -60, 0]),
+          Text(extent=[-80, 100; 80, 60], string="%name"),
+          Polygon(points=[-60, -80; -40, -20; 40, -20; 60, -80; 60, -80; -60, -80],
+               style(
+              pattern=0,
+              gradient=1,
+              fillColor=0))),
         Documentation(info="<HTML>
-<p>This model tests the <tt>Pump</tt> model with the check valve option active.
-<p>The sink pressure is varied sinusoidally with a period of 10 s, so as to operate the pump in all the possible working conditions, including stopped flow.
-<p>
-Simulation Interval = [0...10] sec <br> 
-Integration Algorithm = DASSL <br>
-Algorithm Tolerance = 1e-6 
+<p>This is a basic model of an electrical DC motor used to drive a pump in <tt>WaterPumpMech</tt>.
 <p><b>Revision history:</b></p>
 <ul>
 <li><i>5 Feb 2004</i>
@@ -2737,92 +2900,101 @@ Algorithm Tolerance = 1e-6
 Schiavo</a>:<br>
        First release.</li>
 </ul>
-</HTML>"));
-      SourceP Source(p0=1e5, redeclare package Medium = 
-            Modelica_Media.Water.WaterIF97) 
-        annotation (extent=[-86, 24; -66, 44]);
-      ValveLin ValveLin1(Kv=1e-5, redeclare package Medium = 
-            Modelica_Media.Water.WaterIF97) 
-        annotation (extent=[8, 22; 28, 42]);
-      SinkP SinkP1(p0=3e5, redeclare package Medium = 
-            Modelica_Media.Water.WaterIF97) 
-        annotation (extent=[42, 22; 62, 42]);
-      Pump Pump1(
-        rho0=1000,
-        CharData=1,
-        pin_start=1e5,
-        pout_start=4e5,
-        hstart=1e5,
-        ThermalCapacity=true,
-        V=0.01,
-        P_cons={800,1800,2000},
-        CheckValve=true,
-        head_nom={60,30,0},
-        q_nom={0,0.001,0.0015},
-      redeclare package Medium = Modelica_Media.Water.WaterIF97,
-      redeclare package SatMedium = Modelica_Media.Water.WaterIF97,
-        ComputeNPSHa=true)  annotation (extent=[-52, 26; -32, 46]);
-      Modelica.Blocks.Sources.Constant Constant1 
-        annotation (extent=[-72, 64; -52, 84]);
-      Modelica.Blocks.Sources.Sine Sine1(
-        amplitude=5e5,
-        freqHz=0.1,
-        offset=3e5,
-        phase=0,
-        startTime=0)   annotation (extent=[78, 66; 58, 86]);
+</HTML>"),
+        DymolaStoredErrors,
+        Diagram);
+      
+      parameter Modelica.SIunits.Resistance Rm=10 "Motor Resistance";
+      parameter Modelica.SIunits.Inductance Lm=1 "Motor Inductance";
+      parameter Real kT=1 "Torque Constant";
+      parameter Modelica.SIunits.Inertia Jm=10 "Motor Inertia";
+      parameter Real dm(
+        final unit="N.m.s/rad",
+        final min=0) = 0 "Damping constant";
+      Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm n;
+      Modelica.Electrical.Analog.Sources.SignalVoltage Vs 
+        annotation (extent=[-80, 10; -60, -10], rotation=90);
+      Modelica.Electrical.Analog.Basic.Ground G 
+        annotation (extent=[-80, -60; -60, -40]);
+      Modelica.Electrical.Analog.Basic.Resistor R(R=Rm) 
+        annotation (extent=[-60, 30; -40, 50]);
+      Modelica.Electrical.Analog.Basic.Inductor L(L=Lm) 
+        annotation (extent=[-20, 30; 0, 50]);
+      Modelica.Electrical.Analog.Basic.EMF emf(k=kT) 
+        annotation (extent=[0, -10; 20, 10]);
+      Modelica.Blocks.Interfaces.RealInput inPort 
+        annotation (extent=[-108, -10; -90, 10]);
+      Modelica.Mechanics.Rotational.Inertia J(J=Jm) 
+        annotation (extent=[48, -10; 68, 10]);
+      Modelica.Mechanics.Rotational.Interfaces.Flange_b flange_b 
+        annotation (extent=[96, -12; 120, 12]);
+      Modelica.Mechanics.Rotational.Fixed Fixed 
+        annotation (extent=[26, -52; 46, -32]);
+      Modelica.Mechanics.Rotational.Damper Damper(d=dm) 
+        annotation (extent=[26, -32; 46, -12], rotation=90);
     equation 
-      connect(ValveLin1.outlet, SinkP1.flange) 
-        annotation (points=[28, 32; 42, 32]);
-      connect(Source.flange, Pump1.infl) 
-        annotation (points=[-66, 34; -58, 34; -58, 38.2; -50, 38.2]);
-      connect(Constant1.y,       ValveLin1.cmd) annotation (points=[-51, 74; -16,
-             74; -16, 72; 18, 72; 18, 40], style(color=3));
-      connect(Sine1.y,       SinkP1.in_p0) annotation (points=[57, 76; 52, 76;
-            52, 40.8; 48, 40.8], style(color=3));
-      connect(Pump1.outfl, ValveLin1.inlet) 
-        annotation (points=[-36,43.2; -14,43.2; -14,32; 8,32]);
-    end TestWaterPump;
+      connect(R.n, L.p) annotation (points=[-40, 40; -20, 40]);
+      connect(L.n, emf.p) annotation (points=[0, 40; 10, 40; 10, 10]);
+      connect(emf.flange_b, J.flange_a) annotation (points=[20, 0; 48, 0]);
+      connect(R.p, Vs.p) annotation (points=[-60, 40; -70, 40; -70, 10]);
+      connect(Vs.n, emf.n) 
+        annotation (points=[-70, -10; -70, -20; 10, -20; 10, -10]);
+      connect(G.p, Vs.n) annotation (points=[-70, -40; -70, -10]);
+      connect(J.flange_b, flange_b) annotation (points=[68, 0; 108, 0]);
+      n = Modelica.SIunits.Conversions.to_rpm(J.w);
+      connect(Fixed.flange_b, Damper.flange_a) 
+        annotation (points=[36, -42; 36, -32], style(color=0));
+      connect(Damper.flange_b, J.flange_a) 
+        annotation (points=[36, -12; 36, 0; 48, 0], style(color=0));
+      connect(inPort, Vs.v) annotation (points=[-99,0; -88,0; -88,-4.28612e-016;
+            -77,-4.28612e-016], style(color=3, rgbcolor={0,0,255}));
+    end SimpleMotor;
     
     model TestValve "Test case for valves" 
-      package Medium = Modelica_Media.Water.WaterIF97;
-      SourceP SourceP1(p0=10e5,
-      redeclare package Medium = Medium) 
-        annotation (extent=[-100,30; -80,50]);
-      SourceP SourceP2(p0=8e5,
-      redeclare package Medium = Medium) 
-        annotation (extent=[-100, -50; -80, -30]);
-      SinkP SinkP1(p0=1e5,
-      redeclare package Medium = Medium) 
-        annotation (extent=[64, -4; 84, 16]);
-      ValveLiq V1(
+      package Medium = Modelica_Media.Water.StandardWater;
+      Sources.FixedAmbient_phX SourceP1(
+      redeclare package Medium = Medium,
+        p_ambient=10e5,
+        h_ambient=1e5) 
+        annotation (extent=[-100,30; -82,52]);
+      Sources.FixedAmbient_phX SourceP2(
+      redeclare package Medium = Medium,
+        p_ambient=8e5,
+        h_ambient=1e5) 
+        annotation (extent=[-100,-50; -84,-30]);
+      Sources.FixedAmbient_phX SinkP1(
+      redeclare package Medium = Medium,
+        p_ambient=1e5) 
+        annotation (extent=[76,-4; 60,16]);
+      ValveLiquid V1(
         rhonom=1000,
         CvData=3,
         dpnom=9e5,
         wnom=1.5,
       redeclare package Medium = Medium) 
                   annotation (extent=[-50, 58; -30, 78]);
-      ValveLiq V2(
+      ValveLiquid V2(
         dpnom=5e5,
         rhonom=1000,
         CvData=3,
         wnom=1.2,
       redeclare package Medium = Medium) 
                   annotation (extent=[-38, 26; -18, 46]);
-      ValveLiq V3(
+      ValveLiquid V3(
         dpnom=3e5,
         rhonom=1000,
         CvData=3,
         wnom=1.1,
       redeclare package Medium = Medium) 
                   annotation (extent=[-38, -38; -18, -18]);
-      ValveLiq V4(
+      ValveLiquid V4(
         dpnom=8e5,
         rhonom=1000,
         CvData=3,
         wnom=1.3,
       redeclare package Medium = Medium) 
                   annotation (extent=[-38, -78; -18, -58]);
-      ValveLiq V5(
+      ValveLiquid V5(
         dpnom=4e5,
         wnom=2,
         rhonom=1000,
@@ -2843,11 +3015,14 @@ Casella</a>:<br>
        First release.</li>
 </ul>
 </HTML>"));
-      SinkP SinkP2(p0=1e5,
-      redeclare package Medium = Medium) 
-        annotation (extent=[-16, 58; 4, 78]);
-      SinkP SinkP3(p0=1e5, redeclare package Medium = Medium) 
-        annotation (extent=[-2, -78; 18, -58]);
+      Sources.FixedAmbient_phX SinkP2(
+      redeclare package Medium = Medium,
+        p_ambient=1e5) 
+        annotation (extent=[2,58; -16,78]);
+      Sources.FixedAmbient_phX SinkP3(
+      redeclare package Medium = Medium,
+        p_ambient=1e5) 
+        annotation (extent=[14,-78; -2,-58]);
       Modelica.Blocks.Sources.Ramp CloseLoad(
         duration=1,
         height=-0.99,
@@ -2866,9 +3041,6 @@ Casella</a>:<br>
         startTime=1) 
                     annotation (extent=[-96, -12; -76, 8]);
     equation 
-      connect(V1.outlet, SinkP2.flange) annotation (points=[-30, 68; -16, 68]);
-      connect(V5.outlet, SinkP1.flange) annotation (points=[48, 6; 64, 6]);
-      connect(V4.outlet, SinkP3.flange) annotation (points=[-18, -68; -2, -68]);
       connect(CloseLoad.y,       V5.theta) 
         annotation (points=[29, 38; 38, 38; 38, 14], style(color=3));
       connect(OpenRelief.y,       V1.theta) 
@@ -2879,62 +3051,244 @@ Casella</a>:<br>
         annotation (points=[-75, -2; -28, -2; -28, -20], style(color=3));
       connect(CloseValves.y,       V2.theta) annotation (points=[-75, -2; -42,
             -2; -42, 54; -28, 54; -28, 44], style(color=3));
-      connect(SourceP1.flange, V1.inlet) annotation (points=[-80,40; -66,40; -66,68;
-            -50,68], style(color=69, rgbcolor={0,127,255}));
-      connect(SourceP1.flange, V2.inlet) annotation (points=[-80,40; -60,40; -60,36;
-            -38,36], style(color=69, rgbcolor={0,127,255}));
       connect(V2.outlet, V5.inlet) annotation (points=[-18,36; 5,36; 5,6; 28,6],
           style(color=69, rgbcolor={0,127,255}));
       connect(V3.outlet, V5.inlet) annotation (points=[-18,-28; 6,-28; 6,6; 28,6],
           style(color=69, rgbcolor={0,127,255}));
-      connect(SourceP2.flange, V4.inlet) annotation (points=[-80,-40; -60,-40; -60,
-            -68; -38,-68], style(color=69, rgbcolor={0,127,255}));
-      connect(SourceP2.flange, V3.inlet) annotation (points=[-80,-40; -58,-40; -58,
-            -28; -38,-28], style(color=69, rgbcolor={0,127,255}));
+      connect(V5.outlet, SinkP1.port) 
+        annotation (points=[48,6; 59.2,6], style(color=69, rgbcolor={0,127,255}));
+      connect(V4.outlet, SinkP3.port) annotation (points=[-18,-68; -2.8,-68], style(
+            color=69, rgbcolor={0,127,255}));
+      connect(V1.outlet, SinkP2.port) annotation (points=[-30,68; -16.9,68],
+          style(color=69, rgbcolor={0,127,255}));
+      connect(V1.inlet, SourceP1.port) annotation (points=[-50,68; -66,68; -66,
+            41; -81.1,41], style(color=69, rgbcolor={0,127,255}));
+      connect(SourceP1.port, V2.inlet) annotation (points=[-81.1,41; -59.55,41;
+            -59.55,36; -38,36], style(color=69, rgbcolor={0,127,255}));
+      connect(SourceP2.port, V4.inlet) annotation (points=[-83.2,-40; -60,-40;
+            -60,-68; -38,-68], style(color=69, rgbcolor={0,127,255}));
+      connect(SourceP2.port, V3.inlet) annotation (points=[-83.2,-40; -60,-40;
+            -60,-28; -38,-28], style(color=69, rgbcolor={0,127,255}));
     end TestValve;
     
-    package Icons 
-      partial model SourceP 
-        annotation (Icon(
-            Ellipse(extent=[-80, 80; 80, -80], style(color=0, fillPattern=1)),
-            Text(
-              extent=[-20, 34; 28, -26],
-              string="P",
-              style(color=7, fillPattern=1)),
-            Text(extent=[-100, -78; 100, -106], string="%name")));
-      end SourceP;
-      
-      partial model Valve 
-        annotation (Icon(
-            Line(points=[0, 40; 0, 0], style(
-                color=0,
-                thickness=2,
-                fillPattern=1)),
-            Polygon(points=[-80, 40; -80, -40; 0, 0; -80, 40], style(
-                color=0,
-                thickness=2,
-                fillPattern=1)),
-            Polygon(points=[80, 40; 0, 0; 80, -40; 80, 40], style(
-                color=0,
-                thickness=2,
-                fillPattern=1)),
-            Rectangle(extent=[-20, 60; 20, 40], style(
-                color=0,
-                fillColor=0,
-                fillPattern=1))), Diagram);
-      end Valve;
-      
-      partial model Pump 
-        annotation (Icon(
-            Polygon(points=[-40, -24; -60, -60; 60, -60; 40, -24; -40, -24],
-                style(pattern=0, fillColor=74)),
-            Ellipse(extent=[-60, 80; 60, -40], style(gradient=3)),
-            Polygon(points=[-30, 52; -30, -8; 48, 20; -30, 52], style(
-                pattern=0,
-                gradient=2,
-                fillColor=7)),
-            Text(extent=[-100, -64; 100, -90], string="%name")));
-      end Pump;
-    end Icons;
+    model TestValveChoked "Test case for valves in choked flow" 
+      Sources.FixedAmbient_phX SourceP1( p_ambient=5e5, h_ambient=400e3,
+        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+        annotation (extent=[-52,28; -36,48]);
+      annotation (
+        Diagram,
+        experiment(StopTime=4, Tolerance=1e-006),
+        Documentation(info="<HTML>
+<p>This model tests the transition from normal to choked flow for the <tt>ValveLiq</tt> and <tt>ValveVap</tt> models.
+<p>Simulate the model for 4 s and observe the flowrate through the two valves. 
+<p><b>Revision history:</b></p>
+<ul>
+<li><i>1 Oct 2003</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco
+Casella</a>:<br>
+       First release.</li>
+</ul>
+</HTML>"));
+      Modelica.Blocks.Sources.Constant Constant1 
+        annotation (extent=[-42, 64; -22, 84]);
+      ValveLiquidChoked valveLiquid(
+        dpnom=2e5, 
+        wnom=1, 
+        rhonom=900, 
+        CvData=3, 
+        CheckValve=false, 
+        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+                          annotation (extent=[-20, 28; 0, 48]);
+      Modelica.Blocks.Sources.Sine Sine1(
+        amplitude=2.5e5,
+        freqHz=0.5,
+        phase=3.14159,
+        offset=3e5,
+        startTime=1)  annotation (extent=[2, 64; 22, 84]);
+      Sources.FixedAmbient_phX SourceP2(p_ambient=60e5, h_ambient=2.9e6,
+        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+        annotation (extent=[-62,-54; -44,-34]);
+      ValveGas valveVapour(
+        dpnom=30e5, 
+        pnom=60e5, 
+        wnom=1, 
+        rhonom=27, 
+        CvData=3, 
+        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+                  annotation (extent=[-20, -54; 0, -34]);
+      Modelica.Blocks.Sources.Constant Constant2 
+        annotation (extent=[-52, -14; -32, 6]);
+      Modelica.Blocks.Sources.Sine Sine2(
+        amplitude=49.5e5,
+        freqHz=0.5,
+        phase=3.14159,
+        offset=50e5,
+        startTime=1)  annotation (extent=[6,-10; 26,10]);
+      SinkP SinkP1(redeclare package Medium = 
+            Modelica_Media.Water.StandardWater) 
+        annotation (extent=[34,26; 54,46]);
+      SinkP SinkP2(redeclare package Medium = 
+            Modelica_Media.Water.StandardWater, h=2.9e6) 
+        annotation (extent=[34,-54; 54,-34]);
+    equation 
+      connect(SourceP1.port, valveLiquid.inlet) 
+                                             annotation (points=[-35.2,38; -20,
+            38], style(color=69, rgbcolor={0,127,255}));
+      connect(SourceP2.port, valveVapour.inlet) 
+                                             annotation (points=[-43.1,-44; -20,
+            -44], style(color=69, rgbcolor={0,127,255}));
+      connect(Constant1.y, valveLiquid.theta) 
+                                           annotation (points=[-21,74; -10,74;
+            -10,46], style(color=3, rgbcolor={0,0,255}));
+      connect(Constant2.y, valveVapour.theta) 
+                                           annotation (points=[-31,-4; -10,-4;
+            -10,-36], style(color=3, rgbcolor={0,0,255}));
+      connect(valveLiquid.outlet, SinkP1.flange) 
+                                              annotation (points=[0,38; 17,38;
+            17,36; 34,36], style(color=69, rgbcolor={0,127,255}));
+      connect(Sine1.y, SinkP1.in_p0) annotation (points=[23,74; 40,74; 40,44.8],
+          style(color=3, rgbcolor={0,0,255}));
+      connect(valveVapour.outlet, SinkP2.flange) 
+                                              annotation (points=[0,-44; 34,-44],
+          style(color=69, rgbcolor={0,127,255}));
+      connect(Sine2.y, SinkP2.in_p0) annotation (points=[27,0; 40,0; 40,-35.2],
+          style(color=3, rgbcolor={0,0,255}));
+    end TestValveChoked;
+    
+    model TestWaterPump "Test case for WaterPump" 
+      annotation (
+        Diagram,
+        experiment(StopTime=10, Tolerance=1e-006),
+        Documentation(info="<HTML>
+<p>This model tests the <tt>Pump</tt> model with the check valve option active.
+<p>The sink pressure is varied sinusoidally with a period of 10 s, so as to operate the pump in all the possible working conditions, including stopped flow.
+<p>
+Simulation Interval = [0...10] sec <br> 
+Integration Algorithm = DASSL <br>
+Algorithm Tolerance = 1e-6 
+<p><b>Revision history:</b></p>
+<ul>
+<li><i>5 Feb 2004</i>
+    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco
+Schiavo</a>:<br>
+       First release.</li>
+</ul>
+</HTML>"));
+      Sources.FixedAmbient_phX Source(redeclare package Medium = 
+            Modelica_Media.Water.StandardWater, h_ambient=1e5,
+        p_ambient=1e5) 
+        annotation (extent=[-82,24; -66,44]);
+      ValveLin ValveLin1(Kv=1e-5, redeclare package Medium = 
+            Modelica_Media.Water.StandardWater) 
+        annotation (extent=[8, 22; 28, 42]);
+      SinkP SinkP1(p0=3e5,
+        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+        annotation (extent=[42,20; 64,42]);
+      Pump Pump1(
+        rho0=1000,
+        pin_start=1e5,
+        pout_start=4e5,
+        hstart=1e5,
+        P_cons={800,1800,2000},
+        CheckValve=true,
+        head_nom={60,30,0},
+        q_nom={0,0.001,0.0015},
+      redeclare package Medium = Modelica_Media.Water.StandardWater,
+      redeclare package SatMedium = Modelica_Media.Water.StandardWater,
+        ComputeNPSHa=true, 
+        V=0.001)            annotation (extent=[-52, 26; -32, 46]);
+      Modelica.Blocks.Sources.Constant Constant1 
+        annotation (extent=[-74,64; -54,84]);
+      Modelica.Blocks.Sources.Sine Sine1(
+        amplitude=5e5,
+        freqHz=0.1,
+        offset=3e5,
+        phase=0,
+        startTime=0)   annotation (extent=[78,64; 58,84]);
+    equation 
+      connect(Constant1.y,       ValveLin1.cmd) annotation (points=[-53,74; -16,74;
+            -16,72; 18,72; 18,40],         style(color=3));
+      connect(Sine1.y,       SinkP1.in_p0) annotation (points=[57,74; 48,74; 48,
+            40.68; 48.6,40.68],  style(color=3));
+      connect(Pump1.outfl, ValveLin1.inlet) 
+        annotation (points=[-36,43.2; -14,43.2; -14,32; 8,32]);
+      connect(Source.port, Pump1.infl) annotation (points=[-65.2,34; -58,34; -58,
+            38.2; -50,38.2], style(color=69, rgbcolor={0,127,255}));
+      connect(ValveLin1.outlet, SinkP1.flange) annotation (points=[28,32; 35,32; 35,
+            31; 42,31], style(color=69, rgbcolor={0,127,255}));
+    end TestWaterPump;
+    
+    model TestWaterPumpMech "Test case for WaterPumpMech" 
+      annotation (
+        Diagram,
+        experiment(StopTime=25, Tolerance=1e-006),
+        Documentation(info="<html>
+<p>The model is designed to test the component <tt>PumpMech</tt>. The simple model of a DC motor <tt>Test.SimpleMotor</tt> is also used.<br>
+The simulation starts with a stopped motor and a closed valve.
+<ul>
+    <li>t=2 s: The voltage supplied is increased up to 380V in 5 s.
+    <li>t=15 s, The valve is opened in 5 s. 
+</ul>
+<p>
+Simulation Interval = [0...25] sec <br> 
+Integration Algorithm = DASSL <br>
+Algorithm Tolerance = 1e-6 
+</p>
+<p><b>Revision history:</b></p>
+<ul>
+        <li><i>5 Feb 2004</i> by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>, 
+        First release.</li>
+</ul>
+</html>"));
+      PumpMech Pump(
+        rho0=1000,
+        n0=100,
+        head_nom={60,30,0},
+        q_nom={0,0.001,0.0015},
+        pin_start=1e5,
+        pout_start=4e5,
+        P_cons={200,1000,1500},
+      redeclare package Medium = Modelica_Media.Water.StandardWater,
+        redeclare package SatMedium = Modelica_Media.Water.StandardWater,
+        V=0.001)              annotation (extent=[-28,6; -4,30]);
+      Sources.FixedAmbient_phX Source(redeclare package Medium = 
+            Modelica_Media.Water.StandardWater) 
+                                       annotation (extent=[-58,8; -38,32]);
+      ValveLin Valve(Kv=1e-5, redeclare package Medium = 
+            Modelica_Media.Water.StandardWater) 
+        annotation (extent=[14, 14; 34, 34]);
+      Modelica.Blocks.Sources.Ramp Ramp1(
+        height=1,
+        duration=5,
+        offset=0,
+        startTime=15)   annotation (extent=[-12, 42; 8, 62]);
+      Sources.FixedAmbient_phX Sink(p_ambient=0.8e5, redeclare package Medium 
+          = Modelica_Media.Water.StandardWater) 
+        annotation (extent=[70,14; 52,36]);
+      Modelica.Blocks.Sources.Ramp Ramp2(
+        height=380,
+        duration=5,
+        offset=0,
+        startTime=2)  annotation (extent=[-68,-34; -48,-14]);
+      SimpleMotor SimpleMotor1(
+        Rm=20,
+        Lm=0.1,
+        kT=35,
+        Jm=10,
+        dm=1) annotation (extent=[-30, -34; -10, -14]);
+    equation 
+      connect(Pump.outfl, Valve.inlet) 
+        annotation (points=[-8.8,26.64; 5.9,26.64; 5.9,24; 14,24]);
+      connect(SimpleMotor1.flange_b, Pump.MechPort) annotation (points=[-9.2,
+            -24; -6,-24; -6,0; 4,0; 4,20.16; -4.6,20.16],style(color=0));
+      connect(Valve.outlet, Sink.port) annotation (points=[34,24; 40,24; 40,25;
+            51.1,25], style(color=69, rgbcolor={0,127,255}));
+      connect(Ramp1.y, Valve.cmd) annotation (points=[9,52; 24,52; 24,32],
+          style(color=3, rgbcolor={0,0,255}));
+      connect(Source.port, Pump.infl) annotation (points=[-37,20; -27.55,20;
+            -27.55,20.64; -25.6,20.64], style(color=69, rgbcolor={0,127,255}));
+      connect(Ramp2.y, SimpleMotor1.inPort) annotation (points=[-47,-24; -29.9,-24],
+          style(color=3, rgbcolor={0,0,255}));
+    end TestWaterPumpMech;
   end Examples_Francesco;
 end Examples_Save;
