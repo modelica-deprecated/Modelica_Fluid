@@ -20,7 +20,7 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,12; -40,12; 
+    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,12; -40,12;
           -40,-16; -25.7,-16],        style(color=3));
     connect(Y_Valve_Tab.y,       drumBoiler.Y_Valve) annotation (points=[-59,
           -30; -44,-30; -44,-34; -25.7,-34],     style(

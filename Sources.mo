@@ -1,43 +1,35 @@
 package Sources "Generic fluid sources" 
   extends Modelica.Icons.Library;
-  model FixedAmbient "Ambient temperature and pressure source" 
-    import Modelica.SIunits.Conversions.*;
+  model FixedAmbient "Ambient source component" 
+    extends Interfaces.PartialSource;
     
-    extends Interfaces.PartialSource(medium(known_pd=if use_p_ambient or Medium.
-             incompressible then Medium.Choices.pd.p_known else Medium.Choices.
-            pd.d_known, known_Th=if use_T_ambient then Medium.Choices.Th.
-            T_known else Medium.Choices.Th.h_known,
-            init_p = true,
-            p_start = p_ambient,
-            T_start = T_ambient,
-            X_start = X_ambient,
-            h_start = h_ambient));
-    
-    parameter Boolean use_p_ambient=true 
-      "|Ambient pressure or ambient density| = true, if p_ambient is used, otherwise d_ambient (true is required for incompressible medium)"
-      annotation (Evaluate=true);
+    parameter Boolean use_p_ambient=true "select p_ambient or d_ambient" 
+      annotation (Evaluate=true, Dialog(group=
+            "Ambient pressure or ambient density"));
     parameter Modelica_Media.Interfaces.PartialMedium.AbsolutePressure 
-      p_ambient=101325 " Ambient pressure, if use_p_ambient = true" annotation (
+      p_ambient=
+        101325 "Ambient pressure"          annotation (
        Dialog(group="Ambient pressure or ambient density", enable=use_p_ambient));
     parameter Modelica_Media.Interfaces.PartialMedium.Density d_ambient=1 
-      " Ambient density, if use_p_ambient = false" annotation (Dialog(group=
+      "Ambient density"  annotation (Dialog(group=
             "Ambient pressure or ambient density", enable=not use_p_ambient));
-    parameter Boolean use_T_ambient=true 
-      "|Ambient temperature or ambient specific enthalpy| = true, if T_ambient is used, otherwise h_ambient"
-      annotation (Evaluate=true);
+    parameter Boolean use_T_ambient=true "select T_ambient or h_ambient" 
+      annotation (Evaluate=true, Dialog(group=
+            "Ambient temperature or ambient specific enthalpy"));
     parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=
-        from_degC(20) " Ambient temperature, if use_T_ambient = true" 
-      annotation (Dialog(group=
-            "Ambient temperature or ambient specific enthalpy", enable=
+        Modelica.SIunits.Conversions.from_degC(20) "Ambient temperature" 
+      annotation (Dialog(group="Ambient temperature or ambient specific enthalpy",
+                                                                enable=
             use_T_ambient));
     parameter Modelica_Media.Interfaces.PartialMedium.SpecificEnthalpy 
-      h_ambient=1.e4 " Ambient specific enthalpy, if use_T_ambient = false" 
-      annotation (Dialog(group=
-            "Ambient temperature or ambient specific enthalpy", enable=not 
+      h_ambient=
+        1.e4 "Ambient specific enthalpy" 
+      annotation (Dialog(group="Ambient temperature or ambient specific enthalpy",
+                                                                enable=not 
             use_T_ambient));
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
       Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
-      " Ambient mass fractions m_i/m" annotation (Dialog(group=
+      "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nX > 0));
     
     annotation (
@@ -51,16 +43,24 @@ package Sources "Generic fluid sources"
             fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
       Documentation(info="<html>
 <p>
-This element defines constant values for ambient pressure,
-temperature and mass fractions. Note, that ambient temperature
+Model <b>FixedAmbient</b> defines constant values for ambient conditions:
+</p>
+<ul>
+<li> Ambient pressure or ambient density.</li>
+<li> Ambient temperature or ambient specific enthalpy.</li>
+<li> Ambient mass fractions (only for multi-substance flow).</li>
+</ul>
+<p>
+Note, that ambient temperature, density, specific enthalpy
 and mass fractions have only an effect if the mass flow
-is not, as usual, from the port in to the ambient,
-but from the ambient in to the port.
+is from the ambient into the port. If mass is flowing from
+the port into the ambient, the ambient definitions,
+with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
     
   equation 
-    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
       use_p_ambient, Medium.reducedX, Medium.nX, X_ambient);
     if use_p_ambient or Medium.incompressible then
       medium.p = p_ambient;
@@ -77,104 +77,315 @@ but from the ambient in to the port.
     medium.X = X_ambient;
   end FixedAmbient;
   
-model VaryingAmbientPressure "Ambient temperature and pressure source" 
+  model FixedAmbient_pTX 
+    "Ambient pressure, temperature and mass fraction source" 
+    extends Interfaces.PartialSource;
     
-    import Modelica.SIunits.Conversions.*;
-    
-  extends FiniteVolume.Interfaces.PartialSource(medium(known_pd=if 
-            use_p_ambient or Medium.incompressible then Medium.Choices.pd.
-            p_known else Medium.Choices.pd.d_known, known_Th=if use_T_ambient
-             then Medium.Choices.Th.T_known else Medium.Choices.Th.h_known));
-    
-  parameter Boolean use_p_ambient=true 
-      "|Ambient pressure or ambient density| = true, if p_ambient is used, otherwise d_ambient (true is required for incompressible medium)"
-  annotation (Evaluate=true);
-    
-  //  parameter Medium.AbsolutePressure p_ambient=101325 
-    
-    //    "|Ambient pressure or ambient density| Ambient pressure, if use_p_ambient = true";
-  parameter Medium.Density d_ambient 
-      "|Ambient pressure or ambient density| Ambient density, if use_p_ambient = false";
-  parameter Boolean use_T_ambient=true 
-      "|Ambient temperature or ambient specific enthalpy| = true, if T_ambient is used, otherwise h_ambient"
-  annotation (Evaluate=true);
-    
-  parameter Medium.Temperature T_ambient=from_degC(20) 
-      "|Ambient temperature or ambient specific enthalpy| Ambient temperature, if use_T_ambient = true";
-  parameter Medium.SpecificEnthalpy h_ambient 
-      "|Ambient temperature or ambient specific enthalpy| Ambient specific enthalpy, if use_T_ambient = false";
-  parameter Medium.MassFraction X_ambient[Medium.nX](quantity=Medium.
-        substanceNames) = zeros(Medium.nX) 
-      "|Only for multi-substance flow| Ambient mass fractions m_i/m";
-    
-annotation (
-  Coordsys(
-    extent=[-100, -100; 100, 100],
-    grid=[2, 2],
-    component=[20, 20]),
-  Icon(Ellipse(extent=[-100, 80; 100, -80], style(
-        color=69,
-        gradient=3,
-        fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
-  Documentation(info="<html>
+    parameter Modelica_Media.Interfaces.PartialMedium.AbsolutePressure 
+      p_ambient=
+        101325 "Ambient pressure";
+    parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=
+        Modelica.SIunits.Conversions.from_degC(20) "Ambient temperature";
+    parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
+      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      "Ambient mass fractions m_i/m"  annotation (Dialog(group=
+            "Only for multi-substance flow", enable=Medium.nX > 0));
+    annotation (
+      Coordsys(
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
+      Icon(Ellipse(extent=[-100, 80; 100, -80], style(
+            color=69,
+            gradient=3,
+            fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
+      Documentation(info="<html>
 <p>
-This element defines constant values for ambient pressure,
-temperature and mass fractions. Note, that ambient temperature
-and mass fractions have only an effect if the mass flow
-is not, as usual, from the port in to the ambient,
-but from the ambient in to the port.
+Model <b>FixedAmbient_pt</b> defines constant values for ambient conditions:
 </p>
-</html>"),
-  Diagram);
+<ul>
+<li> Ambient pressure.</li>
+<li> Ambient temperature.</li>
+<li> Ambient mass fractions (only for multi-substance flow).</li>
+</ul>
+<p>
+Note, that ambient temperature
+and mass fractions have only an effect if the mass flow
+is from the ambient into the port. If mass is flowing from
+the port into the ambient, the ambient definitions,
+with exception of ambient pressure, do not have an effect.
+</p>
+</html>"));
     
-  Modelica.Blocks.Interfaces.RealInput p_in 
-      "Mass flow rate from an infinite reservoir in to the port as signal" 
-  annotation (extent=[-140, -20; -100, 20]);
-equation 
-    
-  Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.
-    incompressible, use_p_ambient, Medium.reducedX, Medium.nX, X_ambient);
-    
-  if use_p_ambient or Medium.incompressible then
-    medium.p = p_in;
-      
-  else
-    medium.d = d_ambient;
-      
-  end if;
-    
-  if use_T_ambient then
+  equation 
+    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+      true, Medium.reducedX, Medium.nX, X_ambient);
+    medium.p = p_ambient;
     medium.T = T_ambient;
-      
-  else
-    medium.h = h_ambient;
-      
-  end if;
+    medium.X = X_ambient;
+  end FixedAmbient_pTX;
+  
+  model FixedAmbient_phX 
+    "Ambient pressure, specific enthalpy and mass fraction source" 
+    extends Interfaces.PartialSource;
     
-  medium.X = X_ambient;
+    parameter Modelica_Media.Interfaces.PartialMedium.AbsolutePressure 
+      p_ambient=
+        101325 "Ambient pressure";
+    parameter Modelica_Media.Interfaces.PartialMedium.SpecificEnthalpy 
+      h_ambient=
+        1.e4 "Ambient specific enthalpy";
+    parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
+      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      "Ambient mass fractions m_i/m"  annotation (Dialog(group=
+            "Only for multi-substance flow", enable=Medium.nX > 0));
     
-end VaryingAmbientPressure;
+    annotation (
+      Coordsys(
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
+      Icon(Ellipse(extent=[-100, 80; 100, -80], style(
+            color=69,
+            gradient=3,
+            fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
+      Documentation(info="<html>
+<p>
+Model <b>FixedAmbient_ph</b> defines constant values for ambient conditions:
+</p>
+<ul>
+<li> Ambient pressure.</li>
+<li> Ambient specific enthalpy.</li>
+<li> Ambient mass fractions (only for multi-substance flow).</li>
+</ul>
+<p>
+Note, that ambient temperature, specific enthalpy
+and mass fractions have only an effect if the mass flow
+is from the ambient into the port. If mass is flowing from
+the port into the ambient, the ambient definitions,
+with exception of ambient pressure, do not have an effect.
+</p>
+</html>"));
+    
+  equation 
+    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+      true, Medium.reducedX, Medium.nX, X_ambient);
+      medium.p = p_ambient;
+      medium.h = h_ambient;
+      medium.X = X_ambient;
+  end FixedAmbient_phX;
+  
+  
+  annotation (Documentation(info="<html>
+<p>
+Package <b>Sources</b> contains generic sources for fluid connectors
+to define fixed or prescribed ambient conditions.
+</p>
+</html>"));
+  model PrescribedAmbient_pT 
+    "Prescribed ambient pressure and temperature source with fixed mass fraction" 
+    import SI = Modelica.SIunits;
+    extends Interfaces.PartialSource;
+    
+    parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
+      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      "Ambient mass fractions m_i/m"  annotation (Dialog(group=
+            "Only for multi-substance flow", enable=Medium.nX > 0));
+    parameter Modelica_Fluid.Types.PressureUnits unit_p="Pa" 
+      "Unit of pressure at signal input p_ambient";
+    parameter Modelica_Fluid.Types.TemperatureUnits unit_T="K" 
+      "Unit of temperature at signal input T_ambient";
+    Modelica.Blocks.Interfaces.RealInput p_ambient(unit = unit_p) 
+      "Prescribed ambient pressure" 
+      annotation (extent=[-140,40; -100,80]);
+    Modelica.Blocks.Interfaces.RealInput T_ambient(unit = unit_T) 
+      "Prescribed ambient temperature" 
+      annotation (extent=[-140,-80; -100,-40]);
+    
+    annotation (
+      Coordsys(
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
+      Icon(Ellipse(extent=[-100, 80; 100, -80], style(
+            color=69,
+            gradient=3,
+            fillColor=69)), Text(extent=[-134,168; 134,106],  string="%name"),
+        Line(points=[-100,60; -66,60], style(color=3, rgbcolor={0,0,255})),
+        Line(points=[-100,-60; -66,-60], style(color=3, rgbcolor={0,0,255})),
+        Text(
+          extent=[-148,120; -70,80],
+          style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255}),
+          string="%unit_p"),
+        Text(
+          extent=[-152,-86; -50,-126],
+          style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255}),
+          string="%unit_T")),
+      Documentation(info="<html>
+<p>
+Model <b>FixedAmbient_pt</b> defines constant values for ambient conditions:
+</p>
+<ul>
+<li> Prescribed ambient pressure via input signal p_ambient.</li>
+<li> Prescribed ambient temperature via input signal T_ambient.</li>
+<li> Fixed ambient mass fractions (only for multi-substance flow).</li>
+</ul>
+<p>
+Note, that ambient temperature
+and mass fractions have only an effect if the mass flow
+is from the ambient into the port. If mass is flowing from
+the port into the ambient, the ambient definitions,
+with exception of ambient pressure, do not have an effect.
+</p>
+</html>"));
+    
+  equation 
+    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+      true, Medium.reducedX, Medium.nX, X_ambient);
+    if unit_p == "Pa" then
+       medium.p = p_ambient;
+    elseif unit_p  == "kPa" then
+       medium.p = p_ambient*1e3;
+    elseif unit_p  == "bar" then
+       medium.p = SI.Conversions.from_bar(p_ambient);
+    elseif unit_p  == "MPa" then
+       medium.p = p_ambient*1e6;
+    else
+       assert(false, "parameter unit_p = \"" + unit_p + "\" but must be " +
+                     "Pa, kPa, bar, or MPa");
+    end if;
+    
+    if unit_T == "K" then
+       medium.T = T_ambient;
+    elseif unit_T == "degC" then
+       medium.T = SI.Conversions.from_degC(T_ambient);
+    elseif unit_T == "degF" then
+       medium.T = SI.Conversions.from_degF(T_ambient);
+    elseif unit_T == "degR" then
+       medium.T = SI.Conversions.from_degRk(T_ambient);
+    else
+       assert(false, "parameter unit_T = \"" + unit_T + "\" but must be " +
+                     "K, degC, degF, or degR");
+    end if;
+    
+    medium.X = X_ambient;
+  end PrescribedAmbient_pT;
+  
+  model PrescribedAmbient_ph 
+    "Prescribed ambient pressure and specific enthalpy source with fixed mass fraction" 
+    import SI = Modelica.SIunits;
+    extends Interfaces.PartialSource;
+    
+    parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
+      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      "Ambient mass fractions m_i/m"  annotation (Dialog(group=
+            "Only for multi-substance flow", enable=Medium.nX > 0));
+    parameter Modelica_Fluid.Types.PressureUnits unit_p="Pa" 
+      "Unit of pressure at signal input p_ambient";
+    parameter Modelica_Fluid.Types.SpecificEnthalpyUnits unit_h="J/kg" 
+      "Unit of specific enthalpy at signal input h_ambient";
+    Modelica.Blocks.Interfaces.RealInput p_ambient(unit = unit_p) 
+      "Prescribed ambient pressure" 
+      annotation (extent=[-140,40; -100,80]);
+    Modelica.Blocks.Interfaces.RealInput h_ambient(unit = unit_h) 
+      "Prescribed ambient specific enthalpy" 
+      annotation (extent=[-140,-80; -100,-40]);
+    
+    annotation (
+      Coordsys(
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
+      Icon(Ellipse(extent=[-100, 80; 100, -80], style(
+            color=69,
+            gradient=3,
+            fillColor=69)), Text(extent=[-134,168; 134,106],  string="%name"),
+        Line(points=[-100,60; -66,60], style(color=3, rgbcolor={0,0,255})),
+        Line(points=[-100,-60; -66,-60], style(color=3, rgbcolor={0,0,255})),
+        Text(
+          extent=[-148,120; -70,80],
+          style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255}),
+          string="%unit_p"),
+        Text(
+          extent=[-152,-86; -50,-126],
+          style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255}),
+          string="%unit_h")),
+      Documentation(info="<html>
+<p>
+Model <b>PrescribedAmbient_ph</b> defines values for ambient conditions:
+</p>
+<ul>
+<li> Prescribed ambient pressure via input signal p_ambient.</li>
+<li> Prescribed ambient specific enthalpy via input signal h_ambient.</li>
+<li> Fixed ambient mass fractions (only for multi-substance flow).</li>
+</ul>
+<p>
+Note, that ambient specific enthalpy
+and mass fractions have only an effect if the mass flow
+is from the ambient into the port. If mass is flowing from
+the port into the ambient, the ambient definitions,
+with exception of ambient pressure, do not have an effect.
+</p>
+</html>"));
+    
+  equation 
+    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+      true, Medium.reducedX, Medium.nX, X_ambient);
+    if unit_p == "Pa" then
+       medium.p = p_ambient;
+    elseif unit_p  == "kPa" then
+       medium.p = p_ambient*1e3;
+    elseif unit_p  == "bar" then
+       medium.p = SI.Conversions.from_bar(p_ambient);
+    elseif unit_p  == "MPa" then
+       medium.p = p_ambient*1e6;
+    else
+       assert(false, "parameter unit_p = \"" + unit_p + "\" but must be " +
+                     "Pa, kPa, bar, or MPa");
+    end if;
+    
+    if unit_h == "J/kg" then
+       medium.h = h_ambient;
+    elseif unit_h == "kJ/kg" then
+       medium.h = h_ambient*1.e3;
+    else
+       assert(false, "parameter unit_h = \"" + unit_h + "\" but must be " +
+                     "J/kg or kJ/kg");
+    end if;
+    
+    medium.X = X_ambient;
+  end PrescribedAmbient_ph;
 
-  model FixedMassFlowSource 
-    "Ideal pump that produces a constant mass flow rate from a large reservoir" 
+  model FixedMassFlowRate_TX 
+    "Ideal pump that produces a constant mass flow rate from a large reservoir at fixed temperature and mass fraction" 
     
-    import Modelica.SIunits.Conversions.*;
-    
-    extends Interfaces.PartialSource(medium(known_Th=if use_T_ambient then 
-            Medium.Choices.Th.T_known else Medium.Choices.Th.h_known));
+    extends Interfaces.PartialSource;
     
     parameter Medium.MassFlowRate m_flow 
-      "Fixed mass flow rate from an infinite reservoir in to the port";
-    parameter Boolean use_T_ambient=true 
-      "|Ambient temperature or ambient specific enthalpy| = true, if T_ambient is used, otherwise h_ambient"
-      annotation (Evaluate=true);
-    parameter Medium.Temperature T_ambient=from_degC(20) 
-      "|Ambient temperature or ambient specific enthalpy| Ambient temperature, if use_T_ambient = true";
-    parameter Medium.SpecificEnthalpy h_ambient=1.e4 
-      "|Ambient temperature or ambient specific enthalpy| Ambient specific enthalpy, if use_T_ambient = false";
-    parameter Medium.MassFraction X_ambient[Medium.nX](quantity=Medium.
-          substanceNames) = zeros(Medium.nX) 
-      "|Only for multi-substance flow| Ambient mass fractions m_i/m";
+      "Fixed mass flow rate from an infinite reservoir to the fluid port";
+    parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=
+        Modelica.SIunits.Conversions.from_degC(20) 
+      "Ambient temperature of reservoir";
+    parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
+      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      "Ambient mass fractions m_i/m of reservoir" 
+      annotation (Dialog(group="Only for multi-substance flow"));
     
     annotation (
       Coordsys(
@@ -199,7 +410,7 @@ end VaryingAmbientPressure;
           string="m"),
         Text(extent=[-142, 142; 156, 88], string="%name"),
         Text(
-          extent=[-124, -92; 148, -122],
+          extent=[-154,-88; 150,-132],
           style(color=0),
           string="%m_flow"),
         Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1))),
@@ -212,34 +423,25 @@ end VaryingAmbientPressure;
   equation 
     Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
       Medium.reducedX, Medium.nX, X_ambient);
-    if use_T_ambient then
       medium.T = T_ambient;
-    else
-      medium.h = h_ambient;
-    end if;
-    medium.X = X_ambient;
-    port.m_flow = -m_flow;
+      medium.X = X_ambient;
+      port.m_flow = -m_flow;
+  end FixedMassFlowRate_TX;
+
+  model FixedMassFlowRate_hX 
+    "Ideal pump that produces a constant mass flow rate from a large reservoir at fixed specific enthalpy and mass fraction" 
     
-  end FixedMassFlowSource;
-  
-  model MassFlowSource 
-    "Ideal pump that produces a mass flow rate from a large reservoir defined by input signal" 
+    extends Interfaces.PartialSource;
     
-    import Modelica.SIunits.Conversions.*;
-    
-    extends Interfaces.PartialSource(medium(known_Th=if use_T_ambient then 
-            Medium.Choices.Th.T_known else Medium.Choices.Th.h_known));
-    
-    parameter Boolean use_T_ambient=true 
-      "|Ambient temperature or ambient specific enthalpy| = true, if T_ambient is used, otherwise h_ambient"
-      annotation (Evaluate=true);
-    parameter Medium.Temperature T_ambient=from_degC(20) 
-      "|Ambient temperature or ambient specific enthalpy| Ambient temperature, if use_T_ambient = true";
-    parameter Medium.SpecificEnthalpy h_ambient=1.e4 
-      "|Ambient temperature or ambient specific enthalpy| Ambient specific enthalpy, if use_T_ambient = false";
-    parameter Medium.MassFraction X_ambient[Medium.nX](quantity=Medium.
-          substanceNames) = zeros(Medium.nX) 
-      "|Only for multi-substance flow| Ambient mass fractions m_i/m";
+    parameter Medium.MassFlowRate m_flow 
+      "Fixed mass flow rate from an infinite reservoir to the fluid port";
+    parameter Modelica_Media.Interfaces.PartialMedium.SpecificEnthalpy 
+      h_ambient=
+        1.e4 "Ambient specific enthalpy  of reservoir";
+    parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
+      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      "Ambient mass fractions m_i/m of reservoir" 
+      annotation (Dialog(group="Only for multi-substance flow"));
     
     annotation (
       Coordsys(
@@ -263,6 +465,10 @@ end VaryingAmbientPressure;
           style(color=41, fillColor=41),
           string="m"),
         Text(extent=[-142, 142; 156, 88], string="%name"),
+        Text(
+          extent=[-154,-88; 150,-132],
+          style(color=0),
+          string="%m_flow"),
         Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1))),
       Window(
         x=0.45,
@@ -270,20 +476,151 @@ end VaryingAmbientPressure;
         width=0.44,
         height=0.65),
       Diagram);
-    Modelica.Blocks.Interfaces.RealInput m_flow(
-                                            redeclare type SignalType = 
-          Medium.MassFlowRate) 
-      "Mass flow rate from an infinite reservoir in to the port as signal" 
-      annotation (extent=[-140, -20; -100, 20]);
   equation 
     Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
       Medium.reducedX, Medium.nX, X_ambient);
-    if use_T_ambient then
-      medium.T = T_ambient;
-    else
       medium.h = h_ambient;
+      medium.X = X_ambient;
+      port.m_flow = -m_flow;
+  end FixedMassFlowRate_hX;
+
+  model PrescribedMassFlowRate_TX 
+    "Ideal pump that produces a prescribed mass flow rate from a large reservoir at fixed temperature and mass fraction" 
+    
+    extends Interfaces.PartialSource;
+    parameter Modelica_Fluid.Types.MassFlowRateUnits unit_m_flow="kg/s" 
+      "Unit of mass flow rate at signal input m_flow_ambient";
+    parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=
+        Modelica.SIunits.Conversions.from_degC(20) 
+      "Ambient temperature of reservoir";
+    parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
+      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      "Ambient mass fractions m_i/m of reservoir" 
+      annotation (Dialog(group="Only for multi-substance flow"));
+    Modelica.Blocks.Interfaces.RealInput m_flow_ambient( unit=unit_m_flow) 
+      "Mass flow rate from large reservoir to fluid port" 
+      annotation (extent=[-140,-20; -100,20]);
+    
+    annotation (
+      Coordsys(
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
+      Icon(
+        Rectangle(extent=[20, 60; 100, -60], style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[38, 40; 100, -40], style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Ellipse(extent=[-100, 80; 60, -80], style(fillColor=7)),
+        Polygon(points=[-60, 70; 60, 0; -60, -68; -60, 70], style(color=73,
+              fillColor=73)),
+        Text(
+          extent=[-54, 32; 16, -30],
+          style(color=41, fillColor=41),
+          string="m"),
+        Text(extent=[-154,146; 144,92],   string="%name"),
+        Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1)),
+        Text(
+          extent=[-188,-42; -86,-82],
+          style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255}),
+          string="%unit_m_flow")),
+      Window(
+        x=0.45,
+        y=0.01,
+        width=0.44,
+        height=0.65),
+      Diagram);
+  equation 
+    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
+      Medium.reducedX, Medium.nX, X_ambient);
+      medium.T = T_ambient;
+      medium.X = X_ambient;
+    
+    if unit_m_flow == "kg/s" then
+       port.m_flow = -m_flow_ambient;
+    elseif unit_m_flow  == "t/h" then
+       port.m_flow = -m_flow_ambient/3.6;
+    else
+       assert(false, "parameter unit_m_flow = \"" + unit_m_flow + "\" but must be " +
+                     "kg/s, or t/h");
     end if;
-    medium.X = X_ambient;
-    port.m_flow = -m_flow;
-  end MassFlowSource;
+  end PrescribedMassFlowRate_TX;
+
+  model PrescribedMassFlowRate_hX 
+    "Ideal pump that produces a prescribed mass flow rate from a large reservoir at fixed specific enthalpy and mass fraction" 
+    
+    extends Interfaces.PartialSource;
+    parameter Modelica_Fluid.Types.MassFlowRateUnits unit_m_flow="kg/s" 
+      "Unit of mass flow rate at signal input m_flow_ambient";
+    parameter Modelica_Media.Interfaces.PartialMedium.SpecificEnthalpy 
+      h_ambient=
+        1.e4 "Ambient specific enthalpy of reservoir";
+    parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
+      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      "Ambient mass fractions m_i/m of reservoir" 
+      annotation (Dialog(group="Only for multi-substance flow"));
+    Modelica.Blocks.Interfaces.RealInput m_flow_ambient( unit=unit_m_flow) 
+      "Mass flow rate from large reservoir to fluid port" 
+      annotation (extent=[-140,-20; -100,20]);
+    
+    annotation (
+      Coordsys(
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
+      Icon(
+        Rectangle(extent=[20, 60; 100, -60], style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[38, 40; 100, -40], style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Ellipse(extent=[-100, 80; 60, -80], style(fillColor=7)),
+        Polygon(points=[-60, 70; 60, 0; -60, -68; -60, 70], style(color=73,
+              fillColor=73)),
+        Text(
+          extent=[-54, 32; 16, -30],
+          style(color=41, fillColor=41),
+          string="m"),
+        Text(extent=[-154,146; 144,92],   string="%name"),
+        Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1)),
+        Text(
+          extent=[-188,-42; -86,-82],
+          style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255}),
+          string="%unit_m_flow")),
+      Window(
+        x=0.45,
+        y=0.01,
+        width=0.44,
+        height=0.65),
+      Diagram);
+  equation 
+    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
+      Medium.reducedX, Medium.nX, X_ambient);
+      medium.h = h_ambient;
+      medium.X = X_ambient;
+    
+    if unit_m_flow == "kg/s" then
+       port.m_flow = -m_flow_ambient;
+    elseif unit_m_flow  == "t/h" then
+       port.m_flow = -m_flow_ambient/3.6;
+    else
+       assert(false, "parameter unit_m_flow = \"" + unit_m_flow + "\" but must be " +
+                     "kg/s, or t/h");
+    end if;
+  end PrescribedMassFlowRate_hX;
 end Sources;

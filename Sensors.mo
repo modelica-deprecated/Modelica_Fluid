@@ -1,103 +1,113 @@
-package Sensors "Sensor components" 
+package Sensors 
+  "Ideal sensor components (provide the variables in a fluid connector as signals)" 
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
   
+  annotation (preferedView="info", Documentation(info="<html>
+<p>
+Package <b>Sensors</b> consists of idealized sensor components that
+provide variables of a medium model and/or fluid ports as
+output signals. These signals can be, e.g., further processed
+with components of the Modelica.Blocks library.
+Also more realistic sensor models can be built, by further
+processing (e.g., by attaching block Modelica.Blocks.FirstOrder to
+model the time constant of the sensor).
+</p>
+</html>"));
   
-  model PressureSensor "Pressure sensor" 
-    extends Interfaces.PartialOnePort;
+  model Density "Ideal density sensor" 
+    extends Interfaces.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput signal(  redeclare type SignalType = 
-          SI.Conversions.NonSIunits.Pressure_bar) "Pressure at port" 
-      annotation (extent=[90, -10; 110, 10]);
-    parameter Types.PressureUnits.Temp measurementUnit=
-      Types.PressureUnits.Pascal "Measurement unit of sensor signal" 
-      annotation (Evaluate=true);
-    annotation (
-      Diagram(Line(points=[0, -70; 0, -100]), Line(points=[69, 0; 90, 0], style(
-              color=42))),
-      Icon(
+    Medium.BaseProperties medium(p=port.p, h=port.h, X=port.X);
+    parameter Modelica_Fluid.Types.DensityUnits signalUnit="kg/m3" 
+      "Unit of density at output signal d";
+    Modelica.Blocks.Interfaces.RealOutput d(unit = signalUnit) 
+      "Density in port medium" annotation (extent=[100,-10; 120,10]);
+    
+  annotation (
+    Diagram(
+        Line(points=[70,0; 100,0], style(color=3, rgbcolor={0,0,255}))),
+    Icon(
+      Text(extent=[-126,160; 138,98],   string="%name"),
+        Line(points=[70,0; 100,0], style(color=3, rgbcolor={0,0,255})),
         Text(
-          extent=[-50, -6; 58, -68],
-          string="p",
-          style(color=0)),
-        Line(points=[69, 0; 90, 0], style(color=42)),
+          extent=[212,-51; 52,-103],
+          style(color=0),
+          string="%signalUnit"),
+        Line(points=[0,-70; 0,-100])),
+    Documentation(info="<HTML>
+<p>
+This component monitors the density at the medium of the fluid port. The sensor is 
+ideal, i.e., it does not influence the fluid and provides the value
+of the port in the desired unit.
+</p>
+</HTML>
+"));
+  equation 
+    if signalUnit == "kg/m3" then
+       d = medium.d;
+    elseif signalUnit == "g/cm3" then
+       d = medium.d*1.e-3;
+    else
+       assert(false, "parameter signalUnit = \"" + signalUnit + "\" but must be " +
+                     "kg/m3, or g/cm3");
+    end if;
+  end Density;
+  
+  model Pressure "Ideal pressure sensor" 
+    import SI = Modelica.SIunits;
+    extends Interfaces.PartialAbsoluteSensor;
+    extends Modelica.Icons.RotationalSensor;
+    parameter Modelica_Fluid.Types.PressureUnits signalUnit="Pa" 
+      "Unit of pressure at output signal p";
+    Modelica.Blocks.Interfaces.RealOutput p(unit = signalUnit) 
+      "Pressure at port" 
+      annotation (extent=[100,-10; 120,10]);
+    
+    annotation (
+      Diagram(Line(points=[0, -70; 0, -100]),
+        Line(points=[70,0; 100,0], style(color=3, rgbcolor={0,0,255}))),
+      Icon(
+        Line(points=[70,0; 100,0], style(color=3, rgbcolor={0,0,255})),
         Line(points=[0, -70; 0, -100]),
-        Text(extent=[-132, 144; 108, 84], string="%name")),
-      Documentation(info="<HTML>
-<p>
-This model monitors the pressure at its port. The sensor is 
-ideal, i.e. it does not influence the fluid.
-</p>
-</HTML>
-"));
-  equation 
-    signal =
-      if measurementUnit == Types.PressureUnits.Pascal then port.p else 
-           if measurementUnit == Types.PressureUnits.Bar then SI.Conversions.to_bar(port.p) else 
-           if measurementUnit == Types.PressureUnits.KiloPascal then port.p*1e-3 else 
-           if measurementUnit == Types.PressureUnits.MegaPascal then port.p*1e-6 else 
-           port.p; // else should be Undefined
-    port.m_flow = 0;
-    port.H_flow = 0;
-    port.mX_flow = zeros(Medium.nX);
-  end PressureSensor;
-  
-  model MassFlowSensor "Mass flow rate sensor" 
-    extends Interfaces.PartialTwoPortTransport;
-    extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput signal(
-                                              redeclare type SignalType = 
-          SI.MassFlowRate) "Mass flow from port_a -> port_b" 
-      annotation (extent=[-10, -110; 10, -90], rotation=270);
-    parameter Types.MassFlowRateUnits.Temp measurementUnit=
-      Types.MassFlowRateUnits.KilogramPerSecond 
-      "Measurement unit of sensor signal" 
-      annotation (Evaluate=true);
-    SI.Pressure dp "Pressure loss due to friction";
-    Real residue=port_a.p - port_b.p - dp "momentum balance (may be modified)";
-    annotation (
-      Diagram(
-        Line(points=[-70, 0; -100, 0]),
-        Line(points=[0, -70; 0, -90]),
-        Line(points=[71, 0; 100, 0])),
-      Icon(
+        Text(extent=[-159,134; 150,69],   string="%name"),
         Text(
-          extent=[21, -58; 76, -116],
-          string="m_flow",
-          style(color=0)),
-        Line(points=[-70, 0; -100, 0]),
-        Line(points=[70, 0; 100, 0]),
-        Line(points=[0, -70; 0, -90]),
-        Text(extent=[-132, 144; 108, 84], string="%name"),
-        Text(
-          extent=[-42, 0; 44, -70],
+          extent=[206,-60; 46,-112],
           style(color=0),
-          string="m_flow")),
+          string="%signalUnit")),
       Documentation(info="<HTML>
 <p>
-This model monitors the mass flow rate flowing through it. The sensor is 
-ideal, i.e. it does not influence the flow. The output signal is positive 
-if the fluid flows from port_a to port_b.
+This component monitors the absolute pressure at its fluid port. The sensor is 
+ideal, i.e., it does not influence the fluid and provides the value
+of the port in the desired unit.
 </p>
 </HTML>
-"));
+"),   Coordsys(grid=[1,1], component=[20,20]));
   equation 
-    residue = 0;
-    dp = 0;
-    signal           =
-      if measurementUnit == Types.MassFlowRateUnits.KilogramPerSecond then m_flow else 
-           if measurementUnit == Types.MassFlowRateUnits.TonPerHour then m_flow*3.6 else 
-           m_flow; // else should be Undefined
-  end MassFlowSensor;
+    if signalUnit == "Pa" then
+       p = port.p;
+    elseif signalUnit == "kPa" then
+       p = port.p*1e-3;
+    elseif signalUnit == "bar" then
+       p = SI.Conversions.to_bar(port.p);
+    elseif signalUnit == "MPa" then
+       p = port.p*1e-6;
+    else
+       assert(false, "parameter signalUnit = \"" + signalUnit + "\" but must be " +
+                     "Pa, kPa, bar, or MPa");
+    end if;
+  end Pressure;
   
-  model Temperature "Absolute temperature sensor" 
-    extends Interfaces.PartialOnePort;
-    Modelica.Blocks.Interfaces.RealOutput T(unit = Unit) 
+  model Temperature "Ideal temperature sensor" 
+    import SI = Modelica.SIunits;
+    extends Interfaces.PartialAbsoluteSensor;
+    Medium.BaseProperties medium(p=port.p, h=port.h, X=port.X);
+    parameter Modelica_Fluid.Types.TemperatureUnits signalUnit="K" 
+      "Unit of temperature at output signal T";
+    Modelica.Blocks.Interfaces.RealOutput T(unit = signalUnit) 
+      "Temperature in port medium" 
                                  annotation (extent=[100,-10; 120,10]);
-    Medium.BaseProperties medium(p=port.p, h=port.h);
-    parameter Modelica_Fluid.Types.TemperatureUnits Unit="K" 
-      "Measurement unit of sensor signal" 
-      annotation (Evaluate=true);
+    
     annotation (
       Diagram(
         Ellipse(extent=[-20, -98; 20, -60], style(
@@ -130,97 +140,113 @@ if the fluid flows from port_a to port_b.
         Text(
           extent=[180,-28; 20,-80],
           style(color=0),
-          string="%Unit"),
+          string="%signalUnit"),
         Text(extent=[-126,160; 138,98],   string="%name")),
       Documentation(info="<HTML>
 <p>
-This model monitors the temperature at its port. The sensor is 
-ideal, i.e. it does not influence the fluid.
+This component monitors the temperature at the medium of the fluid port. The sensor is 
+ideal, i.e., it does not influence the fluid and provides the value
+of the port in the desired unit.
 </p>
 </HTML>
 "));
   equation 
-    if Unit == "K" then
+    if signalUnit == "K" then
        T = medium.T;
-    elseif Unit == "degC" then
+    elseif signalUnit == "degC" then
        T = SI.Conversions.to_degC(medium.T);
-    elseif Unit == "degF" then
+    elseif signalUnit == "degF" then
        T = SI.Conversions.to_degF(medium.T);
-    elseif Unit == "degR" then
+    elseif signalUnit == "degR" then
        T = SI.Conversions.to_degRk(medium.T);
     else
-       assert(false, "parameter Unit = \"" + Unit + "\" but must be " +
+       assert(false, "parameter signalUnit = \"" + signalUnit + "\" but must be " +
                      "K, degC, degF, or degR");
     end if;
-    port.m_flow = 0;
-    port.H_flow = 0;
-    port.mX_flow = zeros(Medium.nX);
   end Temperature;
-
-  model RelativeTemperature "Absolute temperature sensor" 
-    extends Interfaces.PartialOnePort;
-    Modelica.Blocks.Interfaces.RealOutput T(unit = Unit) 
-                                 annotation (extent=[100,-10; 120,10]);
-    Medium.BaseProperties medium(p=port.p, h=port.h);
-    parameter Modelica_Fluid.Types.TemperatureUnits Unit="K" 
-      "Measurement unit of sensor signal" 
-      annotation (Evaluate=true);
-    annotation (
-      Diagram(
-        Ellipse(extent=[-20, -98; 20, -60], style(
-            color=0,
-            thickness=2,
-            fillColor=42)),
-        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
-        Line(points=[12,0; 100,0]),
-        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
-               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
-        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
-        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
-        Line(points=[-40, -20; -12, -20], style(color=0)),
-        Line(points=[-40, 20; -12, 20], style(color=0)),
-        Line(points=[-40, 60; -12, 60], style(color=0))),
-      Icon(
-        Ellipse(extent=[-20, -98; 20, -60], style(
-            color=0,
-            thickness=2,
-            fillColor=42)),
-        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
-        Line(points=[12,0; 100,0]),
-        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
-               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
-        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
-        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
-        Line(points=[-40, -20; -12, -20], style(color=0)),
-        Line(points=[-40, 20; -12, 20], style(color=0)),
-        Line(points=[-40, 60; -12, 60], style(color=0)),
+  
+  model MassFlowRate "Ideal sensor for mass flow rate" 
+    extends Interfaces.PartialFlowRateSensor;
+    extends Modelica.Icons.RotationalSensor;
+    parameter Modelica_Fluid.Types.MassFlowRateUnits signalUnit="kg/s" 
+      "Unit of mass flow rate at output signal m_flow";
+      Modelica.Blocks.Interfaces.RealOutput m_flow(unit = signalUnit) 
+      "mass flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
+          -100], rotation=-90);
+    
+  annotation (
+    Diagram(
+        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[0,-70; 0,-100])),
+    Icon(
+      Text(extent=[-140,147; 140,82],   string="%name"),
+        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
         Text(
-          extent=[180,-28; 20,-80],
+          extent=[178,-81; 18,-133],
           style(color=0),
-          string="%Unit"),
-        Text(extent=[-126,160; 138,98],   string="%name")),
-      Documentation(info="<HTML>
+          string="%signalUnit"),
+        Line(points=[0,-70; 0,-100]),
+        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255}))),
+    Documentation(info="<HTML>
 <p>
-This model monitors the temperature at its port. The sensor is 
-ideal, i.e. it does not influence the fluid.
+This component monitors the mass flow rate flowing from port_a to port_b. 
+The sensor is ideal, i.e., it does not influence the fluid and provides the value
+of the mass flow rate in the desired unit.
 </p>
 </HTML>
 "));
   equation 
-    if Unit == "K" then
-       T = medium.T;
-    elseif Unit == "degC" then
-       T = SI.Conversions.to_degC(medium.T);
-    elseif Unit == "degF" then
-       T = SI.Conversions.to_degF(medium.T);
-    elseif Unit == "degR" then
-       T = SI.Conversions.to_degRk(medium.T);
+    if signalUnit == "kg/s" then
+       m_flow = port_a.m_flow;
+    elseif signalUnit == "t/h" then
+       m_flow = port_a.m_flow*1.e3;
     else
-       assert(false, "parameter Unit = \"" + Unit + "\" but must be " +
-                     "K, degC, degF, or degR");
+       assert(false, "parameter signalUnit = \"" + signalUnit + "\" but must be " +
+                     "kg/s, or t/h");
     end if;
-    port.m_flow = 0;
-    port.H_flow = 0;
-    port.mX_flow = zeros(Medium.nX);
-  end RelativeTemperature;
+  end MassFlowRate;
+  
+  model VolumeFlowRate "Ideal sensor for volume flow rate" 
+    extends Interfaces.PartialFlowRateSensor;
+    extends Modelica.Icons.RotationalSensor;
+    Medium.BaseProperties medium(p=port_a.p, h=port_a.h, X=port_a.X);
+    parameter Modelica_Fluid.Types.VolumeFlowRateUnits signalUnit="m3/s" 
+      "Unit of volume flow rate at output signal V_flow";
+    Modelica.Blocks.Interfaces.RealOutput V_flow(unit = signalUnit) 
+      "volume flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
+          -100], rotation=-90);
+    
+  annotation (
+    Diagram(
+        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[0,-70; 0,-100])),
+    Icon(
+      Text(extent=[-126,160; 138,98],   string="%name"),
+        Text(
+          extent=[188,-71; 28,-123],
+          style(color=0),
+          string="%signalUnit"),
+        Line(points=[0,-70; 0,-100]),
+        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255}))),
+    Documentation(info="<HTML>
+<p>
+This component monitors the volume flow rate flowing from port_a to port_b. 
+The sensor is ideal, i.e., it does not influence the fluid and provides the value
+of the volume flow rate in the desired unit.
+</p>
+</HTML>
+"));
+  equation 
+    if signalUnit == "m3/s" then
+       V_flow = port_a.m_flow/medium.d;
+    elseif signalUnit == "l/s" then
+       V_flow = port_a.m_flow*1.e-3/medium.d;
+    else
+       assert(false, "parameter signalUnit = \"" + signalUnit + "\" but must be " +
+                     "m3/s, or l/s");
+    end if;
+  end VolumeFlowRate;
 end Sensors;
