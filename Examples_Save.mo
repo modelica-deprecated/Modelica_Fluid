@@ -650,7 +650,7 @@ near its completion. It will replace this one.
         preferredMediumStates=true,
         p(start=p_ambient),
         T(start=T_start),
-        X_i(start=X_start[1:Medium.nX_i]));
+        Xi(start=X_start[1:Medium.nXi]));
       
       parameter Modelica.SIunits.Area area "Tank area";
       parameter Medium.AbsolutePressure p_ambient=101325 
@@ -673,17 +673,17 @@ near its completion. It will replace this one.
         "Component masses of the independent substances";
     initial equation 
       if not Medium.singleState then
-        mX = m*X_start[1:Medium.nX_i];
+        mX = m*X_start[1:Medium.nXi];
       end if;
       level = level_start;
       medium.T = T_start;
-      medium.X_i = X_start[1:Medium.nX_i];
+      medium.Xi = X_start[1:Medium.nXi];
     equation 
       port.p = medium.p;
       
       /* Handle reverse and zero flow */
       port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
-      port.mXi_flow = semiLinear(port.m_flow, port.X_i, medium.X);
+      port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.X);
       
       /*
   More precise equations (test later):
@@ -708,7 +708,7 @@ near its completion. It will replace this one.
       
       V = area*level;
       m = V*medium.d;
-      mX = m*medium.X_i;
+      mX = m*medium.Xi;
       U = m*medium.u;
       
       // Mass balance

@@ -44,7 +44,7 @@ ideal, i.e., it does not influence the fluid.
   equation 
     port.p   = medium.p;
     port.h   = medium.h;
-    port.X_i = medium.X_i;
+    port.Xi = medium.Xi;
     d = medium.d;
   end Density;
   
@@ -130,7 +130,7 @@ ideal, i.e., it does not influence the fluid.
   equation 
     port.p   = medium.p;
     port.h   = medium.h;
-    port.X_i = medium.X_i;
+    port.Xi = medium.Xi;
     
     T = medium.T;
   end Temperature;
@@ -199,7 +199,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
   equation 
     port_a.p   = medium.p;
     port_a.h   = medium.h;
-    port_a.X_i = medium.X_i;
+    port_a.Xi = medium.Xi;
     V_flow = port_a.m_flow/medium.d;
   end VolumeFlowRate;
   
@@ -261,7 +261,7 @@ ideal, i.e., it does not influence the fluid.
   equation 
     port.p   = medium.p;
     port.h   = medium.h;
-    port.X_i = medium.X_i;
+    port.Xi = medium.Xi;
     u = medium.u;
   end SpecificInternalEnergy;
   
@@ -300,10 +300,10 @@ the two ports of this component and is provided as output signal.
   equation 
     port_a.p   = medium_a.p;
     port_a.h   = medium_a.h;
-    port_a.X_i = medium_a.X_i;
+    port_a.Xi = medium_a.Xi;
     port_b.p   = medium_b.p;
     port_b.h   = medium_b.h;
-    port_b.X_i = medium_b.X_i;
+    port_b.Xi = medium_b.Xi;
     
     d_rel = medium_a.d - medium_b.d;
   end RelDensity;
@@ -377,10 +377,10 @@ the two ports of this component and is provided as output signal.
   equation 
     port_a.p   = medium_a.p;
     port_a.h   = medium_a.h;
-    port_a.X_i = medium_a.X_i;
+    port_a.Xi = medium_a.Xi;
     port_b.p   = medium_b.p;
     port_b.h   = medium_b.h;
-    port_b.X_i = medium_b.X_i;
+    port_b.Xi = medium_b.Xi;
     
     T_rel = medium_a.T - medium_b.T;
   end RelTemperature;
@@ -455,10 +455,10 @@ the two ports of this component and is provided as output signal.
   equation 
     port_a.p   = medium_a.p;
     port_a.h   = medium_a.h;
-    port_a.X_i = medium_a.X_i;
+    port_a.Xi = medium_a.Xi;
     port_b.p   = medium_b.p;
     port_b.h   = medium_b.h;
-    port_b.X_i = medium_b.X_i;
+    port_b.Xi = medium_b.Xi;
     
     u_rel = medium_a.u - medium_b.u;
   end RelSpecificInternalEnergy;

@@ -37,7 +37,8 @@ Simulate for 7200 seconds.
       import SI = Modelica.SIunits;
       
       // property and interface declarations
-      replaceable package Medium = Modelica.Media.Interfaces.PartialTwoPhaseMedium
+      replaceable package Medium = 
+          Modelica.Media.Interfaces.PartialTwoPhaseMedium 
         extends Modelica.Media.Interfaces.PartialTwoPhaseMedium "Medium model" 
                        annotation (choicesAllMatching=true);
       Medium.BaseProperties medium_a(h=port_a.h, p=port_a.p) "Medium in port_a";
@@ -91,11 +92,11 @@ Simulate for 7200 seconds.
       parameter SI.Volume V_start=67 "initial liquid volume";
       
     protected 
-      SI.Pressure p(start=p_start, stateSelect=StateSelect.prefer) 
+      SI.Pressure p(start=p_start, fixed = true, stateSelect=StateSelect.prefer) 
         "pressure inside drum boiler";
       SI.Temperature T "temperature inside drum boiler";
       SI.Volume V_v "volume of vapour phase";
-      SI.Volume V_l(start=V_start, stateSelect=StateSelect.prefer) 
+      SI.Volume V_l(start=V_start, fixed = true, stateSelect=StateSelect.prefer) 
         "volumes of liquid phase";
       SI.SpecificEnthalpy h_v=Medium.dewEnthalpy(medium_b.sat) 
         "specific enthalpy of vapour";
@@ -250,11 +251,13 @@ Simulate for 7200 seconds.
       Modelica.Blocks.Interfaces.RealOutput qm_S(redeclare type SignalType = 
             Modelica.SIunits.MassFlowRate) 
         annotation (extent=[100,6; 108,14],    rotation=0);
+    protected 
       Modelica.Blocks.Interfaces.RealOutput sigma_D 
         annotation (extent=[-24,1; -16,9]);
       Modelica.Blocks.Interfaces.RealOutput V_l(redeclare type SignalType = 
             Modelica.SIunits.Volume) 
         annotation (extent=[-24,16; -16,24]);
+    public 
       Modelica.Blocks.Math.Gain MW2W(k=1e6) 
         annotation (extent=[-95,-65.5; -85,-54.5]);
       Modelica.Blocks.Math.Gain Pa2bar(k=1e-5) annotation (extent=[37,29; 47,39]);

@@ -77,7 +77,7 @@ with exception of ambient pressure, do not have an effect.
       medium.h = h_ambient;
     end if;
     
-    medium.X_i = X_ambient[1:Medium.nX_i];
+    medium.Xi = X_ambient[1:Medium.nXi];
   end FixedAmbient;
   
   model FixedAmbient_pTX 
@@ -125,7 +125,7 @@ with exception of ambient pressure, do not have an effect.
       true, X_ambient);
     medium.p   = p_ambient;
     medium.T   = T_ambient;
-    medium.X_i = X_ambient[1:Medium.nX_i];
+    medium.Xi = X_ambient[1:Medium.nXi];
   end FixedAmbient_pTX;
   
   model FixedAmbient_phX 
@@ -174,7 +174,7 @@ with exception of ambient pressure, do not have an effect.
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X_ambient);
       medium.p = p_ambient;
       medium.h = h_ambient;
-      medium.X_i = X_ambient[1:Medium.nX_i];
+      medium.Xi = X_ambient[1:Medium.nXi];
   end FixedAmbient_phX;
   
   annotation (Documentation(info="<html>
@@ -249,7 +249,7 @@ with exception of ambient pressure, do not have an effect.
       true, X_ambient);
     medium.p = p_ambient;
     medium.T = T_ambient;
-    medium.X_i = X_ambient[1:Medium.nX_i];
+    medium.Xi = X_ambient[1:Medium.nXi];
   end PrescribedAmbient_pT;
   
   model PrescribedAmbient_ph 
@@ -317,7 +317,7 @@ with exception of ambient pressure, do not have an effect.
       true, X_ambient);
     medium.p = p_ambient;
     medium.h = h_ambient;
-    medium.X_i = X_ambient[1:Medium.nX_i];
+    medium.Xi = X_ambient[1:Medium.nXi];
   end PrescribedAmbient_ph;
   
   model FixedMassFlowRate_TX 
@@ -371,7 +371,7 @@ with exception of ambient pressure, do not have an effect.
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X_ambient);
       medium.T = T_ambient;
-      medium.X_i = X_ambient[1:Medium.nX_i];
+      medium.Xi = X_ambient[1:Medium.nXi];
       port.m_flow = -m_flow;
   end FixedMassFlowRate_TX;
   
@@ -426,7 +426,7 @@ with exception of ambient pressure, do not have an effect.
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X_ambient);
       medium.h = h_ambient;
-      medium.X_i = X_ambient[1:Medium.nX_i];
+      medium.Xi = X_ambient[1:Medium.nXi];
       port.m_flow = -m_flow;
   end FixedMassFlowRate_hX;
   
@@ -486,7 +486,7 @@ with exception of ambient pressure, do not have an effect.
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X_ambient);
     medium.T = T_ambient;
-    medium.X_i = X_ambient[1:Medium.nX_i];
+    medium.Xi = X_ambient[1:Medium.nXi];
     port.m_flow = -m_flow_ambient;
   end PrescribedMassFlowRate_TX;
   
@@ -547,7 +547,7 @@ with exception of ambient pressure, do not have an effect.
     Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X_ambient);
     
     medium.h = h_ambient;
-    medium.X_i = X_ambient[1:Medium.nX_i];
+    medium.Xi = X_ambient[1:Medium.nXi];
     port.m_flow = -m_flow_ambient;
   end PrescribedMassFlowRate_hX;
 end Sources;

@@ -20,7 +20,7 @@ package Utilities
       Medium.BaseProperties medium(preferredMediumStates=true) 
       "Medium properties in the middle of the finite volume";
       SI.Mass M "Total mass in volume";
-      SI.Mass[Medium.nX_i] MXi "Independent component masses";
+      SI.Mass[Medium.nXi] MXi "Independent component masses";
       SI.Energy U "Inner energy";
       parameter SI.Length L "Length of volume";
     
@@ -121,7 +121,7 @@ in piping networks which has the following properties:
     equation 
       //Extensive properties
         M   = medium.d*A_m*dx;
-        MXi = M*medium.X_i;
+        MXi = M*medium.Xi;
         U   = M*medium.u;
     
       // Mass balance over the interval a to b
@@ -176,8 +176,8 @@ in piping networks which has the following properties:
       // Upwind scheme (use properties from upwind port and handle zero flow)  
       port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium.h);
       port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium.h);
-      port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.X_i, medium.X_i);
-      port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.X_i, medium.X_i);
+      port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, medium.Xi);
+      port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.Xi, medium.Xi);
     
       // Heat port has the medium temperature
       heatPort.T = medium.T;
@@ -190,7 +190,7 @@ model PipeSegment
   import SI = Modelica.SIunits;
   extends Modelica_Fluid.Utilities.FiniteVolume(medium(
              p(start=p_start), d(start=d_start),
-             T(start=T_start), h(start=h_start), X_i(start=X_start[1:Medium.nX_i])));
+             T(start=T_start), h(start=h_start), Xi(start=X_start[1:Medium.nXi])));
   extends Modelica_Fluid.Interfaces.PartialMenuInitialization;
     
   parameter Boolean linearPressureDrop=true;
@@ -229,14 +229,14 @@ initial equation
        medium.h = h_start;
     end if;
       
-    medium.X_i = X_start[1:Medium.nX_i];
+    medium.Xi = X_start[1:Medium.nXi];
       
   elseif initType == Modelica_Fluid.Types.InitTypes.SteadyState then
     if not Medium.singleState then
       der(medium.d) = 0;
     end if;
     der(medium.u) = 0;
-    der(medium.X_i) = zeros(Medium.nX_i);
+    der(medium.Xi) = zeros(Medium.nXi);
       
   elseif initType == Modelica_Fluid.Types.InitTypes.SteadyMass then
     if not Medium.singleState then
@@ -249,7 +249,7 @@ initial equation
        medium.h = h_start;
     end if;
       
-    der(medium.X_i) = zeros(Medium.nX_i);
+    der(medium.Xi) = zeros(Medium.nXi);
   end if;
 equation 
   /*

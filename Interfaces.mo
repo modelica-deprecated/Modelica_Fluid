@@ -69,10 +69,10 @@ it is not possible to connect connectors of different media together.
     flow Medium.EnthalpyFlowRate H_flow 
       "Enthalpy flow rate into the component (if m_flow > 0, H_flow = m_flow*h)";
     
-    Medium.MassFraction X_i[Medium.nX_i] 
+    Medium.MassFraction Xi[Medium.nXi] 
       "Independent mixture mass fractions m_i/m in the connection point";
-    flow Medium.MassFlowRate mXi_flow[Medium.nX_i] 
-      "Mass flow rates of the independent substances from the connection point into the component (if m_flow > 0, mXi_flow = m_flow*X_i)";
+    flow Medium.MassFlowRate mXi_flow[Medium.nXi] 
+      "Mass flow rates of the independent substances from the connection point into the component (if m_flow > 0, mXi_flow = m_flow*Xi)";
     
     Medium.ExtraProperty C[Medium.nC] 
       "properties c_i/m in the connection point";
@@ -194,7 +194,7 @@ it is not possible to connect connectors of different media together.
   equation 
     port.p = medium.p;
     port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
-    port.mXi_flow = semiLinear(port.m_flow, port.X_i, medium.X_i);
+    port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.Xi);
     annotation (Documentation(info="<html>
 <p>
 Partial component to model the <b>volume interface</b> of a <b>source</b>
@@ -229,7 +229,7 @@ as signal.
   equation 
     port.m_flow = 0;
     port.H_flow = 0;
-    port.mXi_flow = zeros(Medium.nX_i);
+    port.mXi_flow = zeros(Medium.nXi);
   end PartialAbsoluteSensor;
   
   partial model PartialFlowRateSensor 
@@ -254,10 +254,10 @@ between fluid connectors.
   equation 
     port_a.p   = port_b.p;
     port_a.h   = port_b.h;
-    port_a.X_i = port_b.X_i;
+    port_a.Xi = port_b.Xi;
     0 = port_a.m_flow + port_b.m_flow;
     0 = port_a.H_flow + port_b.H_flow;
-    zeros(Medium.nX_i) = port_a.mXi_flow + port_b.mXi_flow;
+    zeros(Medium.nXi) = port_a.mXi_flow + port_b.mXi_flow;
   end PartialFlowRateSensor;
   
   partial model PartialTwoPortTransport 
@@ -293,19 +293,19 @@ mass flow rate \"m_flow = port_a.m_flow\".
     // Properties in the ports
     port_a.p   = medium_a.p;
     port_a.h   = medium_a.h;
-    port_a.X_i = medium_a.X_i;
+    port_a.Xi = medium_a.Xi;
     port_b.p   = medium_b.p;
     port_b.h   = medium_b.h;
-    port_b.X_i = medium_b.X_i;
+    port_b.Xi = medium_b.Xi;
     
     /* Handle reverse and zero flow */
     port_a.H_flow   = semiLinear(port_a.m_flow, port_a.h,   port_b.h);
-    port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.X_i, port_b.X_i);
+    port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, port_b.Xi);
     
     /* Energy, mass and substance mass balance */
     port_a.H_flow + port_b.H_flow = 0;
     port_a.m_flow + port_b.m_flow = 0;
-    port_a.mXi_flow + port_b.mXi_flow = zeros(Medium.nX_i);
+    port_a.mXi_flow + port_b.mXi_flow = zeros(Medium.nXi);
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
@@ -333,11 +333,11 @@ between fluid connectors.
   equation 
     port_a.m_flow = 0;
     port_a.H_flow = 0;
-    port_a.mXi_flow = zeros(Medium.nX_i);
+    port_a.mXi_flow = zeros(Medium.nXi);
     
     port_b.m_flow = 0;
     port_b.H_flow = 0;
-    port_b.mXi_flow = zeros(Medium.nX_i);
+    port_b.mXi_flow = zeros(Medium.nXi);
   end PartialRelativeSensor;
 
   model PortVolume 
@@ -374,7 +374,7 @@ between fluid connectors.
     Medium.BaseProperties medium(preferredMediumStates=true);
     SI.Energy U "Internal energy of port volume";
     SI.Mass m "Mass of junction volume";
-    SI.Mass mX_i[Medium.nX_i] "Independent substance masses of port volume";
+    SI.Mass mXi[Medium.nXi] "Independent substance masses of port volume";
     
     annotation (
      Icon(
@@ -420,21 +420,21 @@ transport. This splitting is only possible under certain assumptions.
        medium.h = h_start;
     end if;
     
-    medium.X_i = X_start[1:Medium.nX_i];
+    medium.Xi = X_start[1:Medium.nXi];
   equation 
     // port = medium properties
       port.p = medium.p;
       port.h = medium.h;
-      port.X_i = medium.X_i;
+      port.Xi = medium.Xi;
     
     // Total quantities
        m    = V*medium.d;
-       mX_i = m*medium.X_i;
+       mXi = m*medium.Xi;
        U    = m*medium.u;
     
     // Mass and energy balance
        der(m)    = port.m_flow;
-       der(mX_i) = port.mXi_flow;
+       der(mXi) = port.mXi_flow;
        der(U)    = port.H_flow;
   end PortVolume;
 end Interfaces;
