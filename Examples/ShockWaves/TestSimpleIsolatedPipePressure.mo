@@ -13,7 +13,7 @@ model TestSimpleIsolatedPipePressure "Test IsolatedPipe component"
     port(h(start=10000)),
       p_ambient=pressurePulseBase,
       T_ambient=320,
-      redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+      redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
   annotation (extent=[80,50; 60,70]);
   
 annotation (
@@ -28,7 +28,7 @@ annotation (
      "Simulate and Plot Temperature.mos"));
   
   Modelica_Fluid.Components.IsolatedPipe isolatedPipe(
-    redeclare package Medium = Modelica_Media.Air.DryAirNasa,
+    redeclare package Medium = Modelica.Media.Air.DryAirNasa,
     dp_nominal=50,
     L=0.025,
     dynamicMomentumBalance=true,
@@ -41,7 +41,7 @@ annotation (
     initType=Modelica_Fluid.Types.InitTypes.InitialStates) 
            annotation (extent=[20,50; 40,70]);
   Modelica_Fluid.Sources.PrescribedAmbient_pT prescribedAmbient(redeclare 
-      package Medium = Modelica_Media.Air.DryAirNasa) 
+      package Medium = Modelica.Media.Air.DryAirNasa) 
                   annotation (extent=[-22,50; -2,70]);
   Modelica.Blocks.Math.Add Add1 
                               annotation (extent=[-58,56; -38,76]);

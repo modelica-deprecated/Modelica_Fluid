@@ -11,18 +11,18 @@ model TestShortPipe "Test ShortPipe component"
     roughness=2e-5,
     from_dp=true,
     redeclare package Medium = 
-        Modelica_Media.Water.ConstantPropertyLiquidWater,
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     frictionType=Modelica_Fluid.Types.FrictionTypes.DetailedFriction,
     diameter=0.02) 
     annotation (extent=[-10,0; 10,20]);
   
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX MassFlowSource(T_ambient=
         from_degC(30), redeclare package Medium = 
-        Modelica_Media.Water.ConstantPropertyLiquidWater) 
+        Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[-50,0; -30,20]);
   Modelica_Fluid.Sources.FixedAmbient_pTX ambient(T_ambient=from_degC(15),
       redeclare package Medium = 
-        Modelica_Media.Water.ConstantPropertyLiquidWater) 
+        Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[50,0; 30,20]);
   Modelica.Blocks.Sources.Ramp ramp(
     duration=3,

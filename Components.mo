@@ -52,7 +52,7 @@ model IsolatedPipe
   import SI = Modelica.SIunits;
     
   replaceable package Medium = PackageMedium extends 
-      Modelica_Media.Interfaces.PartialMedium "Medium in the component" 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
                                                                        annotation (
       choicesAllMatching =                                       true);
     

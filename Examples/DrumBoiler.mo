@@ -206,25 +206,25 @@ Simulate for 7200 seconds.
             Real (unit="1")) 
         annotation (extent=[-109,-85; -100,-75]);
       Valve valve(k = 1.5e-5, redeclare package Medium = 
-            Modelica_Media.Water.WaterIF97_ph) 
+            Modelica.Media.Water.WaterIF97_ph) 
                     annotation (extent=[44, -20; 64, 0]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
-            Modelica_Media.Water.WaterIF97_pT, p_ambient=from_bar(0.5)) 
+            Modelica.Media.Water.WaterIF97_pT, p_ambient=from_bar(0.5)) 
         annotation (extent=[80, -20; 100, 0], rotation=180);
       Modelica_Fluid.Sensors.MassFlowRate massFlowRate(redeclare package Medium
-          =        Modelica_Media.Water.WaterIF97_ph) 
+          =        Modelica.Media.Water.WaterIF97_ph) 
         annotation (extent=[10, -20; 30, 0], rotation=180);
       Modelica_Fluid.Sensors.Temperature temperature(redeclare package Medium 
-          = Modelica_Media.Water.WaterIF97_ph) 
+          = Modelica.Media.Water.WaterIF97_ph) 
         annotation (extent=[10, 60; 30, 80]);
       Modelica_Fluid.Sensors.Pressure pressure(redeclare package Medium = 
-                   Modelica_Media.Water.WaterIF97_ph) 
+                   Modelica.Media.Water.WaterIF97_ph) 
         annotation (extent=[10,24; 30,44]);
       Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
         annotation (extent=[-51,33; -65,47]);
       Modelica_Fluid.Sources.PrescribedMassFlowRate_hX pump(redeclare package 
           Medium = 
-            Modelica_Media.Water.WaterIF97_ph, h_ambient=5e5) 
+            Modelica.Media.Water.WaterIF97_ph, h_ambient=5e5) 
         annotation (extent=[-80, -20; -60, 0]);
       Modelica.Blocks.Math.Feedback feedback 
         annotation (extent=[-26, 30; -46, 50]);
@@ -305,10 +305,10 @@ Simulate for 7200 seconds.
     package WaterPhaseBoundaryIF97 
       "Physical properties for water at phase boundary at boiling and dew curves" 
       
-      extends Modelica_Media.Interfaces.PartialMedium(
+      extends Modelica.Media.Interfaces.PartialMedium(
         mediumName="WaterIF97",
         substanceNames={"water"},
-        incompressible=false,
+        singleState=false,
         MassFlowRate(quantity="MassFlowRate.WaterIF97"));
       
       redeclare model extends BaseProperties 
@@ -319,17 +319,17 @@ Simulate for 7200 seconds.
         
         assert(region == 1 or region == 2,
           "WaterPhaseBoundaryIF97 medium model only valid for regions 1 and 2");
-        T = Modelica_Media.Water.IF97_Utilities.BaseIF97.Basic.tsat(p);
+        T = Modelica.Media.Water.IF97_Utilities.BaseIF97.Basic.tsat(p);
         if region == 1 then
-          d = Modelica_Media.Water.IF97_Utilities.BaseIF97.Regions.rhol_p(p);
-          h = Modelica_Media.Water.IF97_Utilities.BaseIF97.Regions.hl_p(p);
+          d = Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.rhol_p(p);
+          h = Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.hl_p(p);
         else
-          d = Modelica_Media.Water.IF97_Utilities.BaseIF97.Regions.rhov_p(p);
-          h = Modelica_Media.Water.IF97_Utilities.BaseIF97.Regions.hv_p(p);
+          d = Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.rhov_p(p);
+          h = Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.hv_p(p);
         end if;
         u = h - p/d;
-        R = Modelica.Constants.R / Modelica_Media.Water.IF97_Utilities.BaseIF97.data.MH2O;
-        MM = Modelica_Media.Water.IF97_Utilities.BaseIF97.data.MH2O;
+        R = Modelica.Constants.R / Modelica.Media.Water.IF97_Utilities.BaseIF97.data.MH2O;
+        MM = Modelica.Media.Water.IF97_Utilities.BaseIF97.data.MH2O;
       end BaseProperties;
     end WaterPhaseBoundaryIF97;
   end Components;

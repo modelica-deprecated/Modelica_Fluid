@@ -1,12 +1,10 @@
-import "FiniteVolume/FiniteVolume.mo";
 package Modelica_Fluid "Fluid package that should be included into package Modelica"
-
 annotation (
   version="0.900",
   versionDate="2004-10-18",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(Modelica(version="2.1")),
+  uses(Modelica(version="2.1"), UserInteraction(version="0.52")),
   Documentation(info="<html>
 <p>
 This library provides basic components and property models
@@ -14,7 +12,7 @@ to model <b>1-dimensional thermo-fluid flow</b> systems of
 a <b>single substance</b> or of a <b>mixture of substances</b> 
 with optional <b>multiple phases</b>. The goal is to include 
 this library in the Modelica standard library. The Modelica_Fluid
-library uses the media models from the Modelica_Media library
+library uses the media models from the Modelica.Media library
 </p>
 <p>
 The Modelica_Fluid library is still far away from a first release.
@@ -34,23 +32,23 @@ Modelica in file \"Modelica/package.mo\".
 
 extends Modelica.Icons.Library;
 
-package Tutorial "Tutorial" 
+package UsersGuide "Users Guide" 
   
   annotation (DocumentationClass=true, Documentation(info="<HTML>
-<h3><font color=\"#008000\" size=5>Tutorial of package Modelica_Fluid</font></h3>
+<h3><font color=\"#008000\" size=5>Users guide of package Modelica_Fluid</font></h3>
 <p>
 Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
 a standardized interface to components describing
 1-dimensional fluid flow in networks of pipes. A unique feature is that the
 component equations and the media models are decoupled.
 All components are implemented such that they can be used for
-media from the Modelica_Media library. This means especially that an
+media from the Modelica.Media library. This means especially that an
 incompressible or compressible medium, a single or a multiple
 substance medium with one or more phases might be used for 
 every component model in the Modelica_Fluid library.
 </p>
 <p>
-This tutorial is just a start and will be improved
+This users guide is just a start and will be improved
 considerably.
 </p>
 </HTML>"));
@@ -71,7 +69,7 @@ considerably.
 <li> Components.mo, Types.mo: moved components and types to 
      package Examples.</li>
 <li> Moved Examples from <b>file</b> Modelica_Fluid/package.mo to 
-     Modelica_Media/Examples <b>subdirectory</b> and created separate 
+     Modelica.Media/Examples <b>subdirectory</b> and created separate 
      file per sub-package. This shall simplify the maintenance of
      examples by different authors</li>
 <li> Moved Interfaces from file Modelica_Fluid/package.mo to 
@@ -141,14 +139,14 @@ standard library.
 <li><i>Sept., 2003</i><br>
        by Martin Otter: Changes according to the decisions of the
        Modelica design meeting in Dearborn, Sept. 2-4, 2003.
-       Fluid library splitt in to two packages: Modelica_Media
+       Fluid library splitt in to two packages: Modelica.Media
        that contains the media models and Modelica_Fluid that
-       contains fluid flow components. Modelica_Media is
+       contains fluid flow components. Modelica.Media is
        independent of Modelica_Fluid and my be used also from
        other packages that may have a different design as
        Modelica_Fluid.
 <li><i>Oct., 2003</i><br>
-       by Martin Otter: Adapted to latest design of the Modelica_Media
+       by Martin Otter: Adapted to latest design of the Modelica.Media
        library.<br>
        by Ruediger Franke: Included sensor components and 
        Modelica_Fluid.Examples.DrumBoiler example.</li>
@@ -158,9 +156,9 @@ standard library.
   equation 
     
   end ReleaseNotes;
-end Tutorial;
+end UsersGuide;
 
-replaceable package PackageMedium = Modelica_Media.Interfaces.PartialMedium 
+replaceable package PackageMedium = Modelica.Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (
     choicesAllMatching=true);
 end Modelica_Fluid;

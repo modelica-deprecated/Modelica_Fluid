@@ -8,19 +8,19 @@ package Utilities
       import Modelica.Math;
     
       replaceable package Medium = PackageMedium extends 
-      Modelica_Media.Interfaces.PartialMedium "Medium in the component"    annotation (
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component"    annotation (
           choicesAllMatching =                                                                            true);
     
       Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
         annotation(extent=[-120, -10; -100, 10]);
-      Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium =  Medium) 
+      Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium = Medium) 
         annotation(extent=[120, -10; 100, 10]);
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
         annotation(extent=[-10, 60; 10, 80], rotation=-90);
       Medium.BaseProperties medium(preferredMediumStates=true) 
       "Medium properties in the middle of the finite volume";
       SI.Mass M "Total mass in volume";
-      SI.Mass[Medium.nX-1] MX "Component mass";
+      SI.Mass[Medium.nX_i] MXi "Independent component masses";
       SI.Energy U "Inner energy";
       parameter SI.Length L "Length of volume";
     
@@ -61,7 +61,7 @@ in piping networks which has the following properties:
 <ul>
 <li> A FiniteVolume model is <b>independent</b> of the <b>medium</b> model. 
      The only requirement is that the medium model has to be
-     a subclass of Modelica_Media.Interfaces.<b>PartialMedium</b>.
+     a subclass of Modelica.Media.Interfaces.<b>PartialMedium</b>.
      As a consequence, the FiniteVolume model can be used
      for incompressible or compressible media, fluids with one 
      and multiple substances as well as for one and multiple phases. 
@@ -120,18 +120,18 @@ in piping networks which has the following properties:
       parameter SI.Length dx=L;
     equation 
       //Extensive properties
-        M=medium.d*A_m*dx;
-        MX=M*medium.X_reduced;
-        U=M*medium.u;
+        M   = medium.d*A_m*dx;
+        MXi = M*medium.X_i;
+        U   = M*medium.u;
     
       // Mass balance over the interval a to b
       //der(medium.d)*A_m*dx = port_a.m_flow + port_b.m_flow;
       der(M)=port_a.m_flow + port_b.m_flow;
     
       // Substance mass balances over the interval a to b
-      // der(medium.d*medium.X)*A_m*dx = port_a.mX_flow + port_b.mX_flow;
-      //(der(medium.d)*medium.X + medium.d*der(medium.X))*A_m*dx = port_a.mX_flow + port_b.mX_flow;
-      der(MX)= port_a.mX_flow + port_b.mX_flow;
+      // der(medium.d*medium.X)*A_m*dx = port_a.mXi_flow + port_b.mXi_flow;
+      //(der(medium.d)*medium.X + medium.d*der(medium.X))*A_m*dx = port_a.mXi_flow + port_b.mXi_flow;
+      der(MXi)= port_a.mXi_flow + port_b.mXi_flow;
     
       // Energy balance over the interval a to b
       // der(medium.d*medium.u)*A_m*dx = port_a.H_flow + port_b.H_flow + m_flow_middle/
@@ -176,8 +176,8 @@ in piping networks which has the following properties:
       // Upwind scheme (use properties from upwind port and handle zero flow)  
       port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium.h);
       port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium.h);
-      port_a.mX_flow = semiLinear(port_a.m_flow, port_a.X, medium.X_reduced);
-      port_b.mX_flow = semiLinear(port_b.m_flow, port_b.X, medium.X_reduced);
+      port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.X_i, medium.X_i);
+      port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.X_i, medium.X_i);
     
       // Heat port has the medium temperature
       heatPort.T = medium.T;
@@ -190,7 +190,7 @@ model PipeSegment
   import SI = Modelica.SIunits;
   extends Modelica_Fluid.Utilities.FiniteVolume(medium(
              p(start=p_start), d(start=d_start),
-             T(start=T_start), h(start=h_start), X_reduced(start=X_start)));
+             T(start=T_start), h(start=h_start), X_i(start=X_start[1:Medium.nX_i])));
   extends Modelica_Fluid.Interfaces.PartialMenuInitialization;
     
   parameter Boolean linearPressureDrop=true;
@@ -215,7 +215,7 @@ It consists of the following parts:
 </html>"));
 initial equation 
   if initType == Modelica_Fluid.Types.InitTypes.InitialStates then
-    if not Medium.incompressible then
+    if not Medium.singleState then
       if init_p then
          medium.p = p_start;
       else
@@ -229,17 +229,17 @@ initial equation
        medium.h = h_start;
     end if;
       
-    medium.X_reduced = X_start;
+    medium.X_i = X_start[1:Medium.nX_i];
       
   elseif initType == Modelica_Fluid.Types.InitTypes.SteadyState then
-    if not Medium.incompressible then
+    if not Medium.singleState then
       der(medium.d) = 0;
     end if;
     der(medium.u) = 0;
-    der(medium.X_reduced) = zeros(Medium.nX-1);
+    der(medium.X_i) = zeros(Medium.nX_i);
       
   elseif initType == Modelica_Fluid.Types.InitTypes.SteadyMass then
-    if not Medium.incompressible then
+    if not Medium.singleState then
       der(medium.d) = 0;
     end if;
       
@@ -249,7 +249,7 @@ initial equation
        medium.h = h_start;
     end if;
       
-    der(medium.X_reduced) = zeros(Medium.nX-1);
+    der(medium.X_i) = zeros(Medium.nX_i);
   end if;
 equation 
   /*
@@ -691,14 +691,15 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
     
     extends Modelica.Icons.Function;
     input String mediumName;
-    input Boolean incompressible;
+    input Boolean singleState;
     input Boolean define_p;
-    input Integer nX;
     input Real X_ambient[:];
+  protected 
+    Integer nX = size(X_ambient,1);
   algorithm 
-    assert(not incompressible or incompressible and define_p, "
+    assert(not singleState or singleState and define_p, "
 Wrong value of parameter define_p (= false) in ambient source component:
-The selected medium \"" + mediumName + "\" is incompressible.
+The selected medium \"" + mediumName + "\" has Medium.singleState=true.
 Therefore, an ambient density cannot be defined and
 define_p = true is required.
 ");
@@ -712,11 +713,10 @@ is negative. It must be positive.
 ");
     end for;
     
-    assert(nX<=1 or (nX>1 and abs(sum(X_ambient) - 1.0) <
-      1.e-10), "
-Wrong ambient mass fractions in medium \"" + mediumName + "\":
-This medium requires that the ambient mass fractions X_ambient
-sum up to 1. However, sum(X_ambient) = " + String(sum(X_ambient)) + ".
+    assert(nX==0 or (nX>0 and abs(sum(X_ambient) - 1.0) < 1.e-10), "
+The ambient mass fractions in medium \""   + mediumName + "\"
+do not sum up to 1. Instead, sum(X_ambient) = "
+                                         + String(sum(X_ambient)) + ".
 ");
     
   end checkAmbient;
