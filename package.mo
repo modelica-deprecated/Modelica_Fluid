@@ -1,4 +1,7 @@
+import "FiniteVolume/FiniteVolume.mo";
 package Modelica_Fluid "Fluid package that should be included into package Modelica"
+
+
 annotation (
   version="0.796",
   versionDate="2004-08-27",

@@ -1,8 +1,3 @@
-package Examples "Example models to show how to use the Fluid package"
-  import Modelica.Icons;
-  import Modelica.Constants;
-  import SI = Modelica.SIunits;
-
-
-  extends Icons.Library;
+package Examples 
+extends Modelica.Icons.Library;
 end Examples;

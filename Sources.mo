@@ -60,7 +60,7 @@ with exception of ambient pressure, do not have an effect.
 </html>"));
     
   equation 
-    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
       use_p_ambient, Medium.reducedX, Medium.nX, X_ambient);
     if use_p_ambient or Medium.incompressible then
       medium.p = p_ambient;
@@ -118,7 +118,7 @@ with exception of ambient pressure, do not have an effect.
 </html>"));
     
   equation 
-    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
       true, Medium.reducedX, Medium.nX, X_ambient);
     medium.p = p_ambient;
     medium.T = T_ambient;
@@ -168,13 +168,12 @@ with exception of ambient pressure, do not have an effect.
 </html>"));
     
   equation 
-    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
       true, Medium.reducedX, Medium.nX, X_ambient);
       medium.p = p_ambient;
       medium.h = h_ambient;
       medium.X = X_ambient;
   end FixedAmbient_phX;
-  
   
   annotation (Documentation(info="<html>
 <p>
@@ -248,7 +247,7 @@ with exception of ambient pressure, do not have an effect.
 </html>"));
     
   equation 
-    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
       true, Medium.reducedX, Medium.nX, X_ambient);
     if unit_p == "Pa" then
        medium.p = p_ambient;
@@ -345,7 +344,7 @@ with exception of ambient pressure, do not have an effect.
 </html>"));
     
   equation 
-    Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
       true, Medium.reducedX, Medium.nX, X_ambient);
     if unit_p == "Pa" then
        medium.p = p_ambient;
@@ -371,7 +370,7 @@ with exception of ambient pressure, do not have an effect.
     
     medium.X = X_ambient;
   end PrescribedAmbient_ph;
-
+  
   model FixedMassFlowRate_TX 
     "Ideal pump that produces a constant mass flow rate from a large reservoir at fixed temperature and mass fraction" 
     
@@ -421,13 +420,13 @@ with exception of ambient pressure, do not have an effect.
         height=0.65),
       Diagram);
   equation 
-    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
+    Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
       Medium.reducedX, Medium.nX, X_ambient);
       medium.T = T_ambient;
       medium.X = X_ambient;
       port.m_flow = -m_flow;
   end FixedMassFlowRate_TX;
-
+  
   model FixedMassFlowRate_hX 
     "Ideal pump that produces a constant mass flow rate from a large reservoir at fixed specific enthalpy and mass fraction" 
     
@@ -477,13 +476,13 @@ with exception of ambient pressure, do not have an effect.
         height=0.65),
       Diagram);
   equation 
-    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
+    Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
       Medium.reducedX, Medium.nX, X_ambient);
       medium.h = h_ambient;
       medium.X = X_ambient;
       port.m_flow = -m_flow;
   end FixedMassFlowRate_hX;
-
+  
   model PrescribedMassFlowRate_TX 
     "Ideal pump that produces a prescribed mass flow rate from a large reservoir at fixed temperature and mass fraction" 
     
@@ -539,7 +538,7 @@ with exception of ambient pressure, do not have an effect.
         height=0.65),
       Diagram);
   equation 
-    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
+    Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
       Medium.reducedX, Medium.nX, X_ambient);
       medium.T = T_ambient;
       medium.X = X_ambient;
@@ -553,7 +552,7 @@ with exception of ambient pressure, do not have an effect.
                      "kg/s, or t/h");
     end if;
   end PrescribedMassFlowRate_TX;
-
+  
   model PrescribedMassFlowRate_hX 
     "Ideal pump that produces a prescribed mass flow rate from a large reservoir at fixed specific enthalpy and mass fraction" 
     
@@ -609,7 +608,7 @@ with exception of ambient pressure, do not have an effect.
         height=0.65),
       Diagram);
   equation 
-    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
+    Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
       Medium.reducedX, Medium.nX, X_ambient);
       medium.h = h_ambient;
       medium.X = X_ambient;

@@ -1,4 +1,41 @@
 package Components "Basic components for fluid models" 
+  model ShortPipe 
+    "Simple pipe model with pressure loss (no storage of mass and energy in pipe)" 
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+    extends Modelica_Fluid.Utilities.PipeFriction;
+    annotation (Icon(
+        Rectangle(extent=[-100,60; 100,-60],   style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[-100,34; 100,-36],   style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Text(
+          extent=[-150,140; 150,80],
+          string="%name",
+          style(gradient=2, fillColor=69))), Documentation(info="<html>
+<p>
+Model <b>ShortPipe</b> defines a simple pipe model 
+with pressure loss due to friction. It is assumed that
+no mass or energy is stored in the pipe. 
+The details of the pipe friction model are described
+<a href=\"Modelica://Modelica_Fluid.Utilities.PipeFriction\">here</a>.
+</p>
+</html>"));
+  equation 
+    dp = port_a.p - port_b.p;
+    if frictionType == Modelica_Fluid.Types.FrictionTypes.DetailedFriction then
+       d = if port_a.m_flow > 0 then medium_a.d else medium_b.d;
+       eta = if port_a.m_flow > 0 then Medium.dynamicViscosity(medium_a) else 
+                                      Medium.dynamicViscosity(medium_b);
+    else
+      // Assign dummy values for auxiliary variables
+       d = 0;
+       eta = 0;
+    end if;
+  end ShortPipe;
   extends Modelica.Icons.Library;
   
   annotation (preferedView="info",
@@ -10,112 +47,71 @@ with examples first (see sub-package Examples).
 </p>
 </html>"));
   
-model ShortPipe 
+model IsolatedPipe 
+    "Model of an isolated pipe consisting of n pipe segments/FiniteVolumes" 
+  import SI = Modelica.SIunits;
     
-    import SI = Modelica.SIunits;
+  replaceable package Medium = PackageMedium extends 
+      Modelica_Media.Interfaces.PartialMedium "Medium in the component" 
+                                                                       annotation (
+      choicesAllMatching =                                       true);
     
-  extends FiniteVolume.Components.ShortVolume;
-  public 
-  parameter Boolean linearPressureDrop=true;
-  parameter SI.AbsolutePressure dp_nominal(min=1.e-10) = 1 
-      "Nominal pressure drop";
+  extends Modelica_Fluid.Interfaces.PartialMenuInitialization;
     
-  parameter SI.MassFlowRate m_dot_nominal = 1E-3 
-      "Nominal mass flow rate at nominal pressure drop";
-equation 
+  parameter Integer nVolumes(min=1)=1 "Number of pipe segments/finite volumes";
     
-  /*
-  LongPipes.Components.PipeFriction friction[pipe.n](
-    each from_dp=false, 
-    each dp_nominal=500/pipe.n, 
-    each roughness=1, 
-    each diameter=30, 
-    each length=length/pipe.n);
-*/
-    
-  // Simple linear pressure drop in each segment
-  dp_a/dp_nominal = if linearPressureDrop then m_dot_a/m_dot_nominal else abs(
-    m_dot_a)*m_dot_a/m_dot_nominal^2;
-  dp_b/dp_nominal = if linearPressureDrop then -m_dot_b/m_dot_nominal else abs(
-    -m_dot_b)*(-m_dot_b)/m_dot_nominal^2;
-    
-end ShortPipe;
-
-model LongPipe 
-  replaceable package Medium = 
-      Modelica_Media.Interfaces.PartialMedium               annotation (
-            choicesAllMatching=true);
-    
-  Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = 
-          Medium) 
-              annotation (extent=[-120, -10; -100, 10]);
-  Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium = 
-          Medium) 
-              annotation (extent=[120, -10; 100, 10]);
-    
-    import SI = Modelica.SIunits;
-    
-    import Modelica.SIunits.Conversions.*;
-    
-  parameter Integer n=10;
-    
-  parameter SI.Length L=1 "Length of pipe";
+  parameter SI.Length L "Length of pipe";
   parameter SI.AbsolutePressure dp_nominal(min=1.e-10) = 1 
       "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal pressure drop";
     
-  parameter SI.MassFlowRate m_dot_nominal = 1E-3 
+  parameter SI.MassFlowRate m_flow_nominal = 1E-3 
       "Nominal mass flow rate at nominal pressure drop";
     
-  parameter SI.Area A_a=1;
+  parameter SI.Area A_a;
   parameter SI.Area A_b=A_a;
     
   parameter SI.Length Z_a=0;
   parameter SI.Length Z_b=Z_a;
     
-  parameter SI.ThermalConductivity k=0 "Thermal conductivity";
-    
-  parameter Real viscosityFactor1=0;
-  parameter Real viscosityFactor2=1;
-    
-    parameter Boolean dynamicMomentumBalance=false 
-      "If false, der(m_dot) is neglected in momentum balance" 
+  parameter Boolean dynamicMomentumBalance=false 
+      "If false, der(m_flow) is neglected in momentum balance" 
                                                  annotation(Evaluate=true,
       Dialog(tab="Level of Detail"));
-    parameter Boolean includeKineticTerm=false 
+  parameter Boolean includeKineticTerm=false 
       "If false, d*v^2 is neglected in momentum balance" 
                                              annotation(Evaluate=true,
       Dialog(tab="Level of Detail"));
-    parameter Boolean includeThermalConductance=false 
-      "If false, thermal conductance is neglected"  annotation(Evaluate=true, Dialog(tab=
+  parameter Boolean includeViscosity=false 
+      "If false, artifical viscosity is neglected" 
+                                          annotation(Evaluate=true, Dialog(tab=
           "Level of Detail"));
-  //  parameter Boolean constantTemperature=false;
-  //  parameter SI.Temperature T0;
+  parameter Real viscosityFactor1=0 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
+  parameter Real viscosityFactor2=1 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
     
-  FiniteVolume.Components.SimpleShortPipe shortPipe[n](
-      redeclare package Medium = Medium, 
-      each L=L/n, 
-      each dp_nominal=dp_nominal/n, 
-      each A_a=A_a, 
-      each Z_a=Z_a, 
-      each m_dot_nominal=m_dot_nominal, 
-      each dynamicMomentumBalance=dynamicMomentumBalance, 
-      each k=k, 
-      each includeKineticTerm=includeKineticTerm, 
-      each includeThermalConductance=includeThermalConductance, 
-      each viscosityFactor1=viscosityFactor1, 
-      each viscosityFactor2=viscosityFactor2) 
-                      annotation (extent=[-10, -10; 10, 10]);
-equation 
-    
-  connect(port_a, shortPipe[1].port_a);
-    
-  connect(port_b, shortPipe[n].port_b);
-    
-  for i in 1:n - 1 loop
-      
-    connect(shortPipe[i].port_b, shortPipe[i + 1].port_a);
-      
-  end for;
+  Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
+              annotation (extent=[-120, -10; -100, 10]);
+  Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium = Medium) 
+              annotation (extent=[120, -10; 100, 10]);
+  Modelica_Fluid.Utilities.PipeSegment pipeSegment[nVolumes](
+      redeclare package Medium = Medium,
+      each initType = initType,
+      each init_p = init_p,
+      each p_start = p_start,
+      each d_start = d_start,
+      each init_T = init_T,
+      each T_start = T_start,
+      each h_start = h_start,
+      each X_start = X_start,
+      each L=L/nVolumes,
+      each dp_nominal=dp_nominal/nVolumes,
+      each A_a=A_a "has to be corrected: linear distribution of A",
+      each Z_a=Z_a "has to be corrected: linear distribution of Z",
+      each m_flow_nominal=m_flow_nominal,
+      each dynamicMomentumBalance=dynamicMomentumBalance,
+      each includeKineticTerm=includeKineticTerm,
+      each includeViscosity=includeViscosity,
+      each viscosityFactor1=viscosityFactor1,
+      each viscosityFactor2=viscosityFactor2);
     
 annotation (Icon(
     Rectangle(extent=[-100, 60; 100, -60], style(color=0, fillColor=8)),
@@ -124,9 +120,24 @@ annotation (Icon(
         gradient=2,
         fillColor=69)),
     Text(
-      extent=[-120, 130; 116, 64],
+      extent=[-150, 125; 150, 65],
       string="%name",
-      style(gradient=2, fillColor=69))));
-    
-end LongPipe;
+      style(gradient=2, fillColor=69)),
+      Ellipse(extent=[-58,14; -28,-14], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=0,
+            rgbfillColor={0,0,0})),
+      Ellipse(extent=[22,14; 52,-14], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=0,
+            rgbfillColor={0,0,0}))));
+equation 
+  connect(port_a, pipeSegment[1].port_a);
+  connect(port_b, pipeSegment[nVolumes].port_b);
+  for i in 1:nVolumes - 1 loop
+    connect(pipeSegment[i].port_b, pipeSegment[i + 1].port_a);
+  end for;
+end IsolatedPipe;
 end Components;
