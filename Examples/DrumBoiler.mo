@@ -307,6 +307,7 @@ Simulate for 7200 seconds.
       
       extends Modelica_Media.Interfaces.PartialMedium(
         mediumName="WaterIF97",
+        substanceNames={"water"},
         incompressible=false,
         MassFlowRate(quantity="MassFlowRate.WaterIF97"));
       
