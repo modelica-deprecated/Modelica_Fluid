@@ -1,5 +1,6 @@
 package Sources "Generic fluid sources" 
   extends Modelica.Icons.Library;
+  import SI = Modelica.SIunits;
   model FixedAmbient "Ambient source component" 
     extends Interfaces.PartialSource;
     
@@ -183,7 +184,6 @@ to define fixed or prescribed ambient conditions.
 </html>"));
   model PrescribedAmbient_pT 
     "Prescribed ambient pressure and temperature source with fixed mass fraction" 
-    import SI = Modelica.SIunits;
     extends Interfaces.PartialSource;
     
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
@@ -252,7 +252,6 @@ with exception of ambient pressure, do not have an effect.
   
   model PrescribedAmbient_ph 
     "Prescribed ambient pressure and specific enthalpy source with fixed mass fraction" 
-    import SI = Modelica.SIunits;
     extends Interfaces.PartialSource;
     
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
