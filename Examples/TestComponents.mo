@@ -3,7 +3,7 @@ package TestComponents
   
   extends Icons.Library;
   
-  model TestShortPipe "Test ShortPipe componet" 
+  model TestShortPipe "Test ShortPipe component" 
     import Modelica.SIunits.Conversions.*;
     
     extends Modelica.Icons.Example;
@@ -210,8 +210,7 @@ corresponding medium model.
   end TestCheckStateSelection;
   
   model TwoVolumesAir 
-    "This example shows the difference of a JunctionVolume and of a FixedComponentVolume"
-    
+    "This example shows the difference of a JunctionVolume and of a FixedComponentVolume" 
     
     import SI = Modelica.SIunits;
     parameter SI.Volume V=0.05 "Size of volume";
@@ -342,8 +341,7 @@ is instantaneous. The temperature is the same as in the upper part.
   end TwoVolumesAir;
   
   model TwoVolumesDetailedWater 
-    "This example shows the difference of a JunctionVolume and of a FixedComponentVolume"
-    
+    "This example shows the difference of a JunctionVolume and of a FixedComponentVolume" 
     
     import SI = Modelica.SIunits;
     parameter SI.Volume V=1.e-4 "Size of volume";
@@ -475,8 +473,7 @@ is instantaneous. The temperature is the same as in the upper part.
   end TwoVolumesDetailedWater;
   
   model OneVolumeDetailedWater 
-    "This example shows the difference of a JunctionVolume and of a FixedComponentVolume"
-    
+    "This example shows the difference of a JunctionVolume and of a FixedComponentVolume" 
     
     import SI = Modelica.SIunits;
     parameter SI.Volume V=1.e-4 "Size of volume";
@@ -551,8 +548,7 @@ is instantaneous. The temperature is the same as in the upper part.
   end OneVolumeDetailedWater;
   
   model TwoVolumesApproximationWater 
-    "This example shows the difference of a JunctionVolume and of a FixedComponentVolume"
-    
+    "This example shows the difference of a JunctionVolume and of a FixedComponentVolume" 
     
     import SI = Modelica.SIunits;
     parameter SI.Volume V=1.e-4 "Size of volume";
