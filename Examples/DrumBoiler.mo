@@ -3,10 +3,8 @@ package DrumBoiler
   
   model DrumBoilerSimulation "Simulate start-up of DrumBoiler" 
     extends Modelica.Icons.Example;
-    Components.DrumBoiler drumBoiler(temperatureSensor(measurementUnit=
-            Modelica_Fluid.Sensors.TemperatureUnits.Celsius),
-        pressureSensor(
-          measurementUnit=Modelica_Fluid.Sensors.PressureUnits.Bar)) 
+    Components.DrumBoiler drumBoiler(pressureSensor(
+          measurementUnit=Modelica_Fluid.Types.PressureUnits.Bar)) 
                                      annotation (extent=[-20, -40; 40, 20]);
     Modelica.Blocks.Sources.TimeTable q_F_Tab(table=[0, 0; 3600, 400; 7210,
           400]) annotation (extent=[-80, 2; -60, 22]);
@@ -22,7 +20,7 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,12; -40,12;
+    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,12; -40,12; 
           -40,-16; -25.7,-16],        style(color=3));
     connect(Y_Valve_Tab.y,       drumBoiler.Y_Valve) annotation (points=[-59,
           -30; -44,-30; -44,-34; -25.7,-34],     style(
@@ -267,24 +265,24 @@ Simulate for 7200 seconds.
         annotation (extent=[-139, 0; -99, -40]);
       Modelica.Blocks.Interfaces.RealInput Y_Valve 
         annotation (extent=[-139, -100; -99, -60]);
-      Valve valve(redeclare package Medium = Modelica_Media.Water.IF97_ph, k=
+      Valve valve(redeclare package Medium = Modelica_Media.Water.WaterIF97, k=
             1.5e-5) annotation (extent=[44, -20; 64, 0]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
-            Modelica_Media.Water.IF97_ph) 
+            Modelica_Media.Water.WaterIF97) 
         annotation (extent=[80, -20; 100, 0], rotation=180);
       Modelica_Fluid.Sensors.MassFlowSensor massFlowSensor(redeclare package 
-          Medium = Modelica_Media.Water.IF97_ph) 
+          Medium = Modelica_Media.Water.WaterIF97) 
         annotation (extent=[10, -20; 30, 0]);
-      Modelica_Fluid.Sensors.TemperatureSensor temperatureSensor(redeclare 
-          package Medium = Modelica_Media.Water.IF97_ph) 
+      Modelica_Fluid.Sensors.Temperature temperature(redeclare package Medium 
+          =                Modelica_Media.Water.WaterIF97, measurementUnit="degC") 
         annotation (extent=[10, 60; 30, 80]);
       Modelica_Fluid.Sensors.PressureSensor pressureSensor(redeclare package 
-          Medium = Modelica_Media.Water.IF97_ph) 
+          Medium = Modelica_Media.Water.WaterIF97) 
         annotation (extent=[10, 20; 30, 40]);
       Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
         annotation (extent=[-60, 30; -80, 50]);
       MassFlowSource_h pump(redeclare package Medium = 
-            Modelica_Media.Water.IF97_ph) 
+            Modelica_Media.Water.WaterIF97) 
         annotation (extent=[-80, -20; -60, 0]);
       Modelica.Blocks.Math.Feedback feedback 
         annotation (extent=[-26, 30; -46, 50]);
@@ -309,7 +307,7 @@ Simulate for 7200 seconds.
         annotation (points=[-40, -30; -40, -21], style(color=42));
       connect(Y_Valve, valve.Y) 
         annotation (points=[-119, -80; 54, -80; 54, -17], style(color=3));
-      connect(evaporator.port_b, temperatureSensor.port) annotation (points=[
+      connect(evaporator.port_b, temperature.port) annotation (points=[
             -29, -10; -2, -10; -2, 50; 20, 50; 20, 59], style(color=69));
       connect(evaporator.port_b, pressureSensor.port) annotation (points=[-29,
              -10; -2, -10; -2, 10; 20, 10; 20, 19], style(color=69));
@@ -329,8 +327,8 @@ Simulate for 7200 seconds.
              70; -20, 70; -20, 40; -28, 40], style(color=3));
       connect(pressureSensor.signal, p_S) 
         annotation (points=[30, 30; 38, 30], style(color=3));
-      connect(temperatureSensor.signal, T_S) 
-        annotation (points=[30, 70; 38, 70], style(color=3));
+      connect(temperature.T, T_S) 
+        annotation (points=[31,70; 38,70],   style(color=3));
       connect(massFlowSensor.signal, qm_S) 
         annotation (points=[20, -20; 20, -30; 38, -30], style(color=3));
       connect(evaporator.sigma_D, sigma_D) annotation (points=[-29, -5; -26,
@@ -357,6 +355,7 @@ Simulate for 7200 seconds.
       
       redeclare model extends BaseProperties 
         
+      annotation(structurallyIncomplete);
         parameter Integer region=0 "specify region 1 (liquid) or 2 (vapour)";
       equation 
         
@@ -371,6 +370,7 @@ Simulate for 7200 seconds.
           h = Modelica_Media.Water.IF97.BaseIF97.Regions.hv_p(p);
         end if;
         u = h - p/d;
+        R = 287.0; // data.R // Modelica.Constants.R/data.MM;
       end BaseProperties;
     end WaterPhaseBoundaryIF97;
   end Components;
