@@ -19,9 +19,9 @@ Simulate for 7200 seconds.
 </HTML>"));
   equation 
     connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,10; -40,10; 
-          -40,-28; -21.35,-28],       style(rgbcolor={0,0,127}));
+          -40,-31; -21.35,-31],       style(rgbcolor={0,0,127}));
     connect(Y_Valve_Tab.y,       drumBoiler.Y_Valve) annotation (points=[-59,
-          -30; -44,-30; -44,-34; -21.35,-34],    style(
+          -30; -44,-30; -44,-37; -21.35,-37],    style(
         rgbcolor={0,0,127},
         fillColor=7,
         fillPattern=1));
@@ -181,7 +181,7 @@ Simulate for 7200 seconds.
       
       Evaporator evaporator(redeclare package Medium = 
             Modelica.Media.Water.WaterIF97_ph) 
-                            annotation (extent=[-50, -20; -30, 0]);
+                            annotation (extent=[-50,-30; -30,-10]);
       annotation (
         uses(Modelica_Fluid(version="0.72")),
         Diagram,
@@ -210,110 +210,108 @@ Simulate for 7200 seconds.
               fillColor=7,
               fillPattern=1))));
       Modelica.Thermal.HeatTransfer.PrescribedHeatFlow furnace 
-        annotation (extent=[-50, -50; -30, -30], rotation=90);
+        annotation (extent=[-50,-60; -30,-40],   rotation=90);
       Modelica.Blocks.Interfaces.RealInput q_F(redeclare type SignalType = Real (
              unit="MW")) 
-        annotation (extent=[-109,-55; -100,-65]);
+        annotation (extent=[-109,-65; -100,-75]);
       Modelica.Blocks.Interfaces.RealInput Y_Valve(redeclare type SignalType = 
             Real (unit="1")) 
-        annotation (extent=[-109,-85; -100,-75]);
+        annotation (extent=[-109,-95; -100,-85]);
       Valve valve(k = 1.5e-5, redeclare package Medium = 
             Modelica.Media.Water.WaterIF97_ph) 
-                    annotation (extent=[44, -20; 64, 0]);
+                    annotation (extent=[44,-30; 64,-10]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
             Modelica.Media.Water.WaterIF97_pT, p_ambient=from_bar(0.5)) 
-        annotation (extent=[80, -20; 100, 0], rotation=180);
+        annotation (extent=[80,-30; 100,-10], rotation=180);
       Modelica_Fluid.Sensors.MassFlowRate massFlowRate(redeclare package Medium
           =        Modelica.Media.Water.WaterIF97_ph) 
-        annotation (extent=[10, -20; 30, 0], rotation=180);
+        annotation (extent=[10,-30; 30,-10], rotation=180);
       Modelica_Fluid.Sensors.Temperature temperature(redeclare package Medium 
           = Modelica.Media.Water.WaterIF97_ph) 
-        annotation (extent=[10, 60; 30, 80]);
+        annotation (extent=[10,50; 30,70]);
       Modelica_Fluid.Sensors.Pressure pressure(redeclare package Medium = 
                    Modelica.Media.Water.WaterIF97_ph) 
-        annotation (extent=[10,24; 30,44]);
+        annotation (extent=[10,14; 30,34]);
       Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
-        annotation (extent=[-51,33; -65,47]);
+        annotation (extent=[-51,23; -65,37]);
       Modelica_Fluid.Sources.PrescribedMassFlowRate_hX pump(redeclare package 
           Medium = 
             Modelica.Media.Water.WaterIF97_ph, h_ambient=5e5) 
-        annotation (extent=[-80, -20; -60, 0]);
+        annotation (extent=[-80,-30; -60,-10]);
       Modelica.Blocks.Math.Feedback feedback 
-        annotation (extent=[-26, 30; -46, 50]);
+        annotation (extent=[-26,20; -46,40]);
       Modelica.Blocks.Sources.Constant levelSetPoint(k=67) 
-        annotation (extent=[-43,60; -30,73]);
+        annotation (extent=[-43,50; -30,63]);
       Modelica.Blocks.Interfaces.RealOutput T_S(redeclare type SignalType = 
             Real (unit="degC")) 
-        annotation (extent=[100,66; 108,74]);
+        annotation (extent=[100,56; 108,64]);
       Modelica.Blocks.Interfaces.RealOutput p_S(redeclare type SignalType = 
             Real (unit="bar")) 
-        annotation (extent=[100,30; 108,38]);
+        annotation (extent=[100,20; 108,28]);
       Modelica.Blocks.Interfaces.RealOutput qm_S(redeclare type SignalType = 
             Modelica.SIunits.MassFlowRate) 
-        annotation (extent=[100,6; 108,14],    rotation=0);
-    protected 
+        annotation (extent=[100,-4; 108,4],    rotation=0);
       Modelica.Blocks.Interfaces.RealOutput sigma_D 
-        annotation (extent=[-24,1; -16,9]);
+        annotation (extent=[100,73; 108,81]);
       Modelica.Blocks.Interfaces.RealOutput V_l(redeclare type SignalType = 
             Modelica.SIunits.Volume) 
-        annotation (extent=[-24,16; -16,24]);
+        annotation (extent=[100,88; 108,96]);
     public 
       Modelica.Blocks.Math.Gain MW2W(k=1e6) 
-        annotation (extent=[-95,-65.5; -85,-54.5]);
-      Modelica.Blocks.Math.Gain Pa2bar(k=1e-5) annotation (extent=[37,29; 47,39]);
+        annotation (extent=[-95,-75.5; -85,-64.5]);
+      Modelica.Blocks.Math.Gain Pa2bar(k=1e-5) annotation (extent=[37,19; 47,29]);
       Modelica.Thermal.HeatTransfer.Celsius.FromKelvin K2degC 
-        annotation (extent=[38,65; 48,75]);
+        annotation (extent=[38,55; 48,65]);
       Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=500) 
-        annotation (extent=[-85,33; -71,47], rotation=180);
+        annotation (extent=[-85,23; -71,37], rotation=180);
     equation 
       connect(furnace.port, evaporator.heatPort) 
-        annotation (points=[-40, -30; -40, -21], style(color=42));
+        annotation (points=[-40,-40; -40,-31],   style(color=42));
       connect(Y_Valve, valve.Y) 
-        annotation (points=[-104.5,-80; 54,-80; 54,-17],  style(rgbcolor={0,0,127}));
-      connect(evaporator.port_b, temperature.port) annotation (points=[-29,-10;
-            -2,-10; -2,51; 20,51; 20,59],               style(color=69));
-      connect(evaporator.port_b, pressure.port) annotation (points=[-29,-10; -2,
-            -10; -2,15; 20,15; 20,23],              style(color=69));
+        annotation (points=[-104.5,-90; 54,-90; 54,-27],  style(rgbcolor={0,0,127}));
+      connect(evaporator.port_b, temperature.port) annotation (points=[-29,-20; 
+            -2,-20; -2,41; 20,41; 20,49],               style(color=69));
+      connect(evaporator.port_b, pressure.port) annotation (points=[-29,-20; -2,
+            -20; -2,5; 20,5; 20,13],                style(color=69));
       connect(evaporator.port_b, massFlowRate.port_a) 
-        annotation (points=[-29,-10; 1,-10; 1,-10; 31,-10],
-                                               style(color=69));
+        annotation (points=[-29,-20; 31,-20],  style(color=69));
       connect(massFlowRate.port_b, valve.port_a) 
-        annotation (points=[9,-10; 26,-10; 26,-10; 43,-10],
-                                               style(color=69));
-      connect(valve.port_b, sink.port) annotation (points=[65,-10; 72,-10; 72,
-            -10; 79,-10],      style(color=69));
+        annotation (points=[9,-20; 43,-20],    style(color=69));
+      connect(valve.port_b, sink.port) annotation (points=[65,-20; 79,-20],
+                               style(color=69));
       connect(pump.port, evaporator.port_a) 
-        annotation (points=[-59, -10; -51, -10], style(color=69));
+        annotation (points=[-59,-20; -51,-20],   style(color=69));
       connect(controller.u,feedback.y) 
-        annotation (points=[-49.6,40; -45,40], style(rgbcolor={0,0,127}));
+        annotation (points=[-49.6,30; -45,30], style(rgbcolor={0,0,127}));
       connect(feedback.u2,      evaporator.V) 
-        annotation (points=[-36, 32; -36, 1], style(rgbcolor={0,0,127}));
+        annotation (points=[-36,22; -36,-9],  style(rgbcolor={0,0,127}));
       connect(levelSetPoint.y,feedback.u1)             annotation (points=[
-            -29.35,66.5; -22,66.5; -22,40; -28,40],
+            -29.35,56.5; -22,56.5; -22,30; -28,30],
                                              style(rgbcolor={0,0,127}));
       connect(massFlowRate.m_flow, qm_S) 
-        annotation (points=[20,1; 20,10; 104,10],       style(rgbcolor={0,0,127}));
-      connect(evaporator.sigma_D, sigma_D) annotation (points=[-29,-5; -26,-5;
-            -26,5; -20,5],         style(rgbcolor={0,0,127}));
+        annotation (points=[20,-9; 20,0; 104,0],        style(rgbcolor={0,0,127}));
+      connect(evaporator.sigma_D, sigma_D) annotation (points=[-29,-15; -10,-15; 
+            -10,77; 104,77],       style(rgbcolor={0,0,127}));
       connect(evaporator.V, V_l) 
-        annotation (points=[-36,1; -36,20; -20,20],    style(rgbcolor={0,0,127}));
-      connect(MW2W.y,furnace.Q_flow)       annotation (points=[-84.5,-60; -40,
-            -60; -40,-50],     style(rgbcolor={0,0,127}));
+        annotation (points=[-36,-9; -36,11; -16,11; -16,92; 104,92],
+                                                       style(rgbcolor={0,0,127}));
+      connect(MW2W.y,furnace.Q_flow)       annotation (points=[-84.5,-70; -40,
+            -70; -40,-60],     style(rgbcolor={0,0,127}));
       connect(pressure.p, Pa2bar.u) 
-        annotation (points=[31,34; 36,34], style(color=74, rgbcolor={0,0,127}));
+        annotation (points=[31,24; 36,24], style(color=74, rgbcolor={0,0,127}));
       connect(Pa2bar.y, p_S) 
-        annotation (points=[47.5,34; 104,34],style(color=74, rgbcolor={0,0,127}));
-      connect(q_F, MW2W.u) annotation (points=[-104.5,-60; -96,-60],
+        annotation (points=[47.5,24; 104,24],style(color=74, rgbcolor={0,0,127}));
+      connect(q_F, MW2W.u) annotation (points=[-104.5,-70; -96,-70],
                                                                    style(color=74,
             rgbcolor={0,0,127}));
-      connect(temperature.T, K2degC.Kelvin) annotation (points=[31,70; 37,70],
+      connect(temperature.T, K2degC.Kelvin) annotation (points=[31,60; 37,60],
           style(color=74, rgbcolor={0,0,127}));
-      connect(K2degC.Celsius, T_S) annotation (points=[48.5,70; 104,70],style(
+      connect(K2degC.Celsius, T_S) annotation (points=[48.5,60; 104,60],style(
             color=74, rgbcolor={0,0,127}));
-      connect(controller.y, limiter.u) annotation (points=[-65.7,40; -69.6,40],
+      connect(controller.y, limiter.u) annotation (points=[-65.7,30; -69.6,30],
           style(color=74, rgbcolor={0,0,127}));
-      connect(limiter.y, pump.m_flow_ambient) annotation (points=[-85.7,40; -90,
-            40; -90,-10; -82,-10], style(color=74, rgbcolor={0,0,127}));
+      connect(limiter.y, pump.m_flow_ambient) annotation (points=[-85.7,30; -90,
+            30; -90,-20; -82,-20], style(color=74, rgbcolor={0,0,127}));
     end DrumBoiler;
     
   end Components;
