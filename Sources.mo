@@ -190,15 +190,11 @@ to define fixed or prescribed ambient conditions.
       Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nX > 0));
-    parameter Modelica_Fluid.Types.PressureUnits unit_p="Pa" 
-      "Unit of pressure at signal input p_ambient";
-    parameter Modelica_Fluid.Types.TemperatureUnits unit_T="K" 
-      "Unit of temperature at signal input T_ambient";
-    Modelica.Blocks.Interfaces.RealInput p_ambient(unit = unit_p) 
-      "Prescribed ambient pressure" 
+    Modelica.Blocks.Interfaces.RealInput p_ambient(redeclare type SignalType = 
+          SI.Pressure) "Prescribed ambient pressure" 
       annotation (extent=[-140,40; -100,80]);
-    Modelica.Blocks.Interfaces.RealInput T_ambient(unit = unit_T) 
-      "Prescribed ambient temperature" 
+    Modelica.Blocks.Interfaces.RealInput T_ambient(redeclare type SignalType = 
+          SI.Temperature) "Prescribed ambient temperature" 
       annotation (extent=[-140,-80; -100,-40]);
     
     annotation (
@@ -249,32 +245,8 @@ with exception of ambient pressure, do not have an effect.
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
       true, Medium.reducedX, Medium.nX, X_ambient);
-    if unit_p == "Pa" then
-       medium.p = p_ambient;
-    elseif unit_p  == "kPa" then
-       medium.p = p_ambient*1e3;
-    elseif unit_p  == "bar" then
-       medium.p = SI.Conversions.from_bar(p_ambient);
-    elseif unit_p  == "MPa" then
-       medium.p = p_ambient*1e6;
-    else
-       assert(false, "parameter unit_p = \"" + unit_p + "\" but must be " +
-                     "Pa, kPa, bar, or MPa");
-    end if;
-    
-    if unit_T == "K" then
-       medium.T = T_ambient;
-    elseif unit_T == "degC" then
-       medium.T = SI.Conversions.from_degC(T_ambient);
-    elseif unit_T == "degF" then
-       medium.T = SI.Conversions.from_degF(T_ambient);
-    elseif unit_T == "degR" then
-       medium.T = SI.Conversions.from_degRk(T_ambient);
-    else
-       assert(false, "parameter unit_T = \"" + unit_T + "\" but must be " +
-                     "K, degC, degF, or degR");
-    end if;
-    
+    medium.p = p_ambient;
+    medium.T = T_ambient;
     medium.X = X_ambient;
   end PrescribedAmbient_pT;
   
@@ -287,15 +259,11 @@ with exception of ambient pressure, do not have an effect.
       Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nX > 0));
-    parameter Modelica_Fluid.Types.PressureUnits unit_p="Pa" 
-      "Unit of pressure at signal input p_ambient";
-    parameter Modelica_Fluid.Types.SpecificEnthalpyUnits unit_h="J/kg" 
-      "Unit of specific enthalpy at signal input h_ambient";
-    Modelica.Blocks.Interfaces.RealInput p_ambient(unit = unit_p) 
-      "Prescribed ambient pressure" 
+    Modelica.Blocks.Interfaces.RealInput p_ambient(redeclare type SignalType = 
+          SI.Pressure) "Prescribed ambient pressure" 
       annotation (extent=[-140,40; -100,80]);
-    Modelica.Blocks.Interfaces.RealInput h_ambient(unit = unit_h) 
-      "Prescribed ambient specific enthalpy" 
+    Modelica.Blocks.Interfaces.RealInput h_ambient(redeclare type SignalType = 
+          SI.SpecificEnthalpy) "Prescribed ambient specific enthalpy" 
       annotation (extent=[-140,-80; -100,-40]);
     
     annotation (
@@ -346,28 +314,8 @@ with exception of ambient pressure, do not have an effect.
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
       true, Medium.reducedX, Medium.nX, X_ambient);
-    if unit_p == "Pa" then
-       medium.p = p_ambient;
-    elseif unit_p  == "kPa" then
-       medium.p = p_ambient*1e3;
-    elseif unit_p  == "bar" then
-       medium.p = SI.Conversions.from_bar(p_ambient);
-    elseif unit_p  == "MPa" then
-       medium.p = p_ambient*1e6;
-    else
-       assert(false, "parameter unit_p = \"" + unit_p + "\" but must be " +
-                     "Pa, kPa, bar, or MPa");
-    end if;
-    
-    if unit_h == "J/kg" then
-       medium.h = h_ambient;
-    elseif unit_h == "kJ/kg" then
-       medium.h = h_ambient*1.e3;
-    else
-       assert(false, "parameter unit_h = \"" + unit_h + "\" but must be " +
-                     "J/kg or kJ/kg");
-    end if;
-    
+    medium.p = p_ambient;
+    medium.h = h_ambient;
     medium.X = X_ambient;
   end PrescribedAmbient_ph;
   
@@ -487,8 +435,6 @@ with exception of ambient pressure, do not have an effect.
     "Ideal pump that produces a prescribed mass flow rate from a large reservoir at fixed temperature and mass fraction" 
     
     extends Interfaces.PartialSource;
-    parameter Modelica_Fluid.Types.MassFlowRateUnits unit_m_flow="kg/s" 
-      "Unit of mass flow rate at signal input m_flow_ambient";
     parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=
         Modelica.SIunits.Conversions.from_degC(20) 
       "Ambient temperature of reservoir";
@@ -496,8 +442,9 @@ with exception of ambient pressure, do not have an effect.
       Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
       "Ambient mass fractions m_i/m of reservoir" 
       annotation (Dialog(group="Only for multi-substance flow"));
-    Modelica.Blocks.Interfaces.RealInput m_flow_ambient( unit=unit_m_flow) 
-      "Mass flow rate from large reservoir to fluid port" 
+    Modelica.Blocks.Interfaces.RealInput m_flow_ambient(redeclare type 
+        SignalType =                                                                
+          SI.MassFlowRate) "Mass flow rate from large reservoir to fluid port" 
       annotation (extent=[-140,-20; -100,20]);
     
     annotation (
@@ -543,22 +490,13 @@ with exception of ambient pressure, do not have an effect.
       medium.T = T_ambient;
       medium.X = X_ambient;
     
-    if unit_m_flow == "kg/s" then
-       port.m_flow = -m_flow_ambient;
-    elseif unit_m_flow  == "t/h" then
-       port.m_flow = -m_flow_ambient/3.6;
-    else
-       assert(false, "parameter unit_m_flow = \"" + unit_m_flow + "\" but must be " +
-                     "kg/s, or t/h");
-    end if;
+    port.m_flow = -m_flow_ambient;
   end PrescribedMassFlowRate_TX;
   
   model PrescribedMassFlowRate_hX 
     "Ideal pump that produces a prescribed mass flow rate from a large reservoir at fixed specific enthalpy and mass fraction" 
     
     extends Interfaces.PartialSource;
-    parameter Modelica_Fluid.Types.MassFlowRateUnits unit_m_flow="kg/s" 
-      "Unit of mass flow rate at signal input m_flow_ambient";
     parameter Modelica_Media.Interfaces.PartialMedium.SpecificEnthalpy 
       h_ambient=
         1.e4 "Ambient specific enthalpy of reservoir";
@@ -566,8 +504,9 @@ with exception of ambient pressure, do not have an effect.
       Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
       "Ambient mass fractions m_i/m of reservoir" 
       annotation (Dialog(group="Only for multi-substance flow"));
-    Modelica.Blocks.Interfaces.RealInput m_flow_ambient( unit=unit_m_flow) 
-      "Mass flow rate from large reservoir to fluid port" 
+    Modelica.Blocks.Interfaces.RealInput m_flow_ambient(redeclare type 
+        SignalType =                                                                
+          SI.MassFlowRate) "Mass flow rate from large reservoir to fluid port" 
       annotation (extent=[-140,-20; -100,20]);
     
     annotation (
@@ -613,13 +552,6 @@ with exception of ambient pressure, do not have an effect.
       medium.h = h_ambient;
       medium.X = X_ambient;
     
-    if unit_m_flow == "kg/s" then
-       port.m_flow = -m_flow_ambient;
-    elseif unit_m_flow  == "t/h" then
-       port.m_flow = -m_flow_ambient/3.6;
-    else
-       assert(false, "parameter unit_m_flow = \"" + unit_m_flow + "\" but must be " +
-                     "kg/s, or t/h");
-    end if;
+    port.m_flow = -m_flow_ambient;
   end PrescribedMassFlowRate_hX;
 end Sources;
