@@ -2,71 +2,6 @@ package Sensors "Sensor components"
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
   
-  model TemperatureSensor "Absolute temperature sensor" 
-    extends Interfaces.PartialOnePort;
-    Modelica.Blocks.Interfaces.RealOutput signal(  redeclare type SignalType = 
-          SI.CelsiusTemperature) annotation (extent=[90, -10; 110, 10]);
-    Medium.BaseProperties medium(p=port.p, h=port.h);
-    parameter Modelica_Fluid.Types.TemperatureUnits.Temp measurementUnit=
-      Modelica_Fluid.Types.TemperatureUnits.Kelvin 
-      "Measurement unit of sensor signal" 
-      annotation (Evaluate=true);
-    annotation (
-      Diagram(
-        Ellipse(extent=[-20, -98; 20, -60], style(
-            color=0,
-            thickness=2,
-            fillColor=42)),
-        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
-        Line(points=[12, 0; 90, 0]),
-        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
-               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
-        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
-        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
-        Line(points=[-40, -20; -12, -20], style(color=0)),
-        Line(points=[-40, 20; -12, 20], style(color=0)),
-        Line(points=[-40, 60; -12, 60], style(color=0)),
-        Text(
-          extent=[100, -40; 36, -104],
-          string="T",
-          style(color=0))),
-      Icon(
-        Ellipse(extent=[-20, -98; 20, -60], style(
-            color=0,
-            thickness=2,
-            fillColor=42)),
-        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
-        Line(points=[12, 0; 90, 0]),
-        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
-               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
-        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
-        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
-        Line(points=[-40, -20; -12, -20], style(color=0)),
-        Line(points=[-40, 20; -12, 20], style(color=0)),
-        Line(points=[-40, 60; -12, 60], style(color=0)),
-        Text(
-          extent=[88, -40; 24, -104],
-          string="T",
-          style(color=0)),
-        Text(extent=[-132, 144; 108, 84], string="%name")),
-      Documentation(info="<HTML>
-<p>
-This model monitors the temperature at its port. The sensor is 
-ideal, i.e. it does not influence the fluid.
-</p>
-</HTML>
-"));
-  equation 
-    signal =
-      if measurementUnit == Types.TemperatureUnits.Kelvin then medium.T else 
-           if measurementUnit == Types.TemperatureUnits.Celsius then SI.Conversions.to_degC(medium.T) else 
-           if measurementUnit == Types.TemperatureUnits.Fahrenheit then SI.Conversions.to_degF(medium.T) else 
-           if measurementUnit == Types.TemperatureUnits.Rankine then SI.Conversions.to_degRk(medium.T) else 
-           medium.T; // else should be Undefined
-    port.m_flow = 0;
-    port.H_flow = 0;
-    port.mX_flow = zeros(Medium.nX);
-  end TemperatureSensor;
   
   model PressureSensor "Pressure sensor" 
     extends Interfaces.PartialOnePort;
@@ -155,7 +90,137 @@ if the fluid flows from port_a to port_b.
            m_flow; // else should be Undefined
   end MassFlowSensor;
   
-  
-  
-  
+  model Temperature "Absolute temperature sensor" 
+    extends Interfaces.PartialOnePort;
+    Modelica.Blocks.Interfaces.RealOutput T(unit = Unit) 
+                                 annotation (extent=[100,-10; 120,10]);
+    Medium.BaseProperties medium(p=port.p, h=port.h);
+    parameter Modelica_Fluid.Types.TemperatureUnits Unit="K" 
+      "Measurement unit of sensor signal" 
+      annotation (Evaluate=true);
+    annotation (
+      Diagram(
+        Ellipse(extent=[-20, -98; 20, -60], style(
+            color=0,
+            thickness=2,
+            fillColor=42)),
+        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
+        Line(points=[12,0; 100,0]),
+        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
+               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
+        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
+        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
+        Line(points=[-40, -20; -12, -20], style(color=0)),
+        Line(points=[-40, 20; -12, 20], style(color=0)),
+        Line(points=[-40, 60; -12, 60], style(color=0))),
+      Icon(
+        Ellipse(extent=[-20, -98; 20, -60], style(
+            color=0,
+            thickness=2,
+            fillColor=42)),
+        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
+        Line(points=[12,0; 100,0]),
+        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
+               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
+        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
+        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
+        Line(points=[-40, -20; -12, -20], style(color=0)),
+        Line(points=[-40, 20; -12, 20], style(color=0)),
+        Line(points=[-40, 60; -12, 60], style(color=0)),
+        Text(
+          extent=[180,-28; 20,-80],
+          style(color=0),
+          string="%Unit"),
+        Text(extent=[-126,160; 138,98],   string="%name")),
+      Documentation(info="<HTML>
+<p>
+This model monitors the temperature at its port. The sensor is 
+ideal, i.e. it does not influence the fluid.
+</p>
+</HTML>
+"));
+  equation 
+    if Unit == "K" then
+       T = medium.T;
+    elseif Unit == "degC" then
+       T = SI.Conversions.to_degC(medium.T);
+    elseif Unit == "degF" then
+       T = SI.Conversions.to_degF(medium.T);
+    elseif Unit == "degR" then
+       T = SI.Conversions.to_degRk(medium.T);
+    else
+       assert(false, "parameter Unit = \"" + Unit + "\" but must be " +
+                     "K, degC, degF, or degR");
+    end if;
+    port.m_flow = 0;
+    port.H_flow = 0;
+    port.mX_flow = zeros(Medium.nX);
+  end Temperature;
+
+  model RelativeTemperature "Absolute temperature sensor" 
+    extends Interfaces.PartialOnePort;
+    Modelica.Blocks.Interfaces.RealOutput T(unit = Unit) 
+                                 annotation (extent=[100,-10; 120,10]);
+    Medium.BaseProperties medium(p=port.p, h=port.h);
+    parameter Modelica_Fluid.Types.TemperatureUnits Unit="K" 
+      "Measurement unit of sensor signal" 
+      annotation (Evaluate=true);
+    annotation (
+      Diagram(
+        Ellipse(extent=[-20, -98; 20, -60], style(
+            color=0,
+            thickness=2,
+            fillColor=42)),
+        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
+        Line(points=[12,0; 100,0]),
+        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
+               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
+        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
+        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
+        Line(points=[-40, -20; -12, -20], style(color=0)),
+        Line(points=[-40, 20; -12, 20], style(color=0)),
+        Line(points=[-40, 60; -12, 60], style(color=0))),
+      Icon(
+        Ellipse(extent=[-20, -98; 20, -60], style(
+            color=0,
+            thickness=2,
+            fillColor=42)),
+        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
+        Line(points=[12,0; 100,0]),
+        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
+               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
+        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
+        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
+        Line(points=[-40, -20; -12, -20], style(color=0)),
+        Line(points=[-40, 20; -12, 20], style(color=0)),
+        Line(points=[-40, 60; -12, 60], style(color=0)),
+        Text(
+          extent=[180,-28; 20,-80],
+          style(color=0),
+          string="%Unit"),
+        Text(extent=[-126,160; 138,98],   string="%name")),
+      Documentation(info="<HTML>
+<p>
+This model monitors the temperature at its port. The sensor is 
+ideal, i.e. it does not influence the fluid.
+</p>
+</HTML>
+"));
+  equation 
+    if Unit == "K" then
+       T = medium.T;
+    elseif Unit == "degC" then
+       T = SI.Conversions.to_degC(medium.T);
+    elseif Unit == "degF" then
+       T = SI.Conversions.to_degF(medium.T);
+    elseif Unit == "degR" then
+       T = SI.Conversions.to_degRk(medium.T);
+    else
+       assert(false, "parameter Unit = \"" + Unit + "\" but must be " +
+                     "K, degC, degF, or degR");
+    end if;
+    port.m_flow = 0;
+    port.H_flow = 0;
+    port.mX_flow = zeros(Medium.nX);
+  end RelativeTemperature;
 end Sensors;

@@ -17,8 +17,8 @@ package Sources "Generic fluid sources"
       "|Ambient pressure or ambient density| = true, if p_ambient is used, otherwise d_ambient (true is required for incompressible medium)"
       annotation (Evaluate=true);
     parameter Modelica_Media.Interfaces.PartialMedium.AbsolutePressure 
-      p_ambient=101325 " Ambient pressure, if use_p_ambient = true" annotation 
-      (Dialog(group="Ambient pressure or ambient density", enable=use_p_ambient));
+      p_ambient=101325 " Ambient pressure, if use_p_ambient = true" annotation (
+       Dialog(group="Ambient pressure or ambient density", enable=use_p_ambient));
     parameter Modelica_Media.Interfaces.PartialMedium.Density d_ambient=1 
       " Ambient density, if use_p_ambient = false" annotation (Dialog(group=
             "Ambient pressure or ambient density", enable=not use_p_ambient));
@@ -77,6 +77,84 @@ but from the ambient in to the port.
     medium.X = X_ambient;
   end FixedAmbient;
   
+model VaryingAmbientPressure "Ambient temperature and pressure source" 
+    
+    import Modelica.SIunits.Conversions.*;
+    
+  extends FiniteVolume.Interfaces.PartialSource(medium(known_pd=if 
+            use_p_ambient or Medium.incompressible then Medium.Choices.pd.
+            p_known else Medium.Choices.pd.d_known, known_Th=if use_T_ambient
+             then Medium.Choices.Th.T_known else Medium.Choices.Th.h_known));
+    
+  parameter Boolean use_p_ambient=true 
+      "|Ambient pressure or ambient density| = true, if p_ambient is used, otherwise d_ambient (true is required for incompressible medium)"
+  annotation (Evaluate=true);
+    
+  //  parameter Medium.AbsolutePressure p_ambient=101325 
+    
+    //    "|Ambient pressure or ambient density| Ambient pressure, if use_p_ambient = true";
+  parameter Medium.Density d_ambient 
+      "|Ambient pressure or ambient density| Ambient density, if use_p_ambient = false";
+  parameter Boolean use_T_ambient=true 
+      "|Ambient temperature or ambient specific enthalpy| = true, if T_ambient is used, otherwise h_ambient"
+  annotation (Evaluate=true);
+    
+  parameter Medium.Temperature T_ambient=from_degC(20) 
+      "|Ambient temperature or ambient specific enthalpy| Ambient temperature, if use_T_ambient = true";
+  parameter Medium.SpecificEnthalpy h_ambient 
+      "|Ambient temperature or ambient specific enthalpy| Ambient specific enthalpy, if use_T_ambient = false";
+  parameter Medium.MassFraction X_ambient[Medium.nX](quantity=Medium.
+        substanceNames) = zeros(Medium.nX) 
+      "|Only for multi-substance flow| Ambient mass fractions m_i/m";
+    
+annotation (
+  Coordsys(
+    extent=[-100, -100; 100, 100],
+    grid=[2, 2],
+    component=[20, 20]),
+  Icon(Ellipse(extent=[-100, 80; 100, -80], style(
+        color=69,
+        gradient=3,
+        fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
+  Documentation(info="<html>
+<p>
+This element defines constant values for ambient pressure,
+temperature and mass fractions. Note, that ambient temperature
+and mass fractions have only an effect if the mass flow
+is not, as usual, from the port in to the ambient,
+but from the ambient in to the port.
+</p>
+</html>"),
+  Diagram);
+    
+  Modelica.Blocks.Interfaces.RealInput p_in 
+      "Mass flow rate from an infinite reservoir in to the port as signal" 
+  annotation (extent=[-140, -20; -100, 20]);
+equation 
+    
+  Modelica_Fluid.Interfaces.checkAmbient(Medium.mediumName, Medium.
+    incompressible, use_p_ambient, Medium.reducedX, Medium.nX, X_ambient);
+    
+  if use_p_ambient or Medium.incompressible then
+    medium.p = p_in;
+      
+  else
+    medium.d = d_ambient;
+      
+  end if;
+    
+  if use_T_ambient then
+    medium.T = T_ambient;
+      
+  else
+    medium.h = h_ambient;
+      
+  end if;
+    
+  medium.X = X_ambient;
+    
+end VaryingAmbientPressure;
+
   model FixedMassFlowSource 
     "Ideal pump that produces a constant mass flow rate from a large reservoir" 
     

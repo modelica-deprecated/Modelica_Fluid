@@ -1,26 +1,25 @@
 package Types "Common types for fluid models" 
-  package TemperatureUnits 
-    "Type, constants and menu choices for temperature units, as temporary solution until enumerations will be available" 
-    
-    annotation (preferedView="text");
-    
-    extends Modelica.Icons.Library;
-    constant Integer Kelvin=1;
-    constant Integer Celsius=2;
-    constant Integer Fahrenheit=3;
-    constant Integer Rankine=4;
-    type Temp 
-      "Temporary type of TemperatureUnits with choices for menus (until enumerations will be available)" 
-      
-      extends Integer;
+  type TemperatureUnits "Menu choices for temperature units" 
+      extends String;
       annotation (Evaluate=true,
-                 choices(choice=Modelica_Fluid.Types.TemperatureUnits.Kelvin "K",
-                         choice=Modelica_Fluid.Types.TemperatureUnits.Celsius "°C",
-                         choice=Modelica_Fluid.Types.TemperatureUnits.Fahrenhit "°F",
-                         choice=Modelica_Fluid.Types.TemperatureUnits.Rankine "°Rk"));
-    end Temp;
+                 choices(choice="K" "\"K\" (Kelvin)",
+                         choice="degC" "\"degC\" (degree Celsius)",
+                         choice="degF" "\"degF\" (degree Fahrenheit)",
+                         choice="degR" "\"degR\" (degree Rankine)"), 
+      Icon(Rectangle(extent=[-100,100; 100,-100], style(
+            color=0, 
+            rgbcolor={0,0,0}, 
+            fillColor=8, 
+            rgbfillColor={181,181,181})), Text(
+          extent=[-100,100; 100,-100], 
+          string="T", 
+          style(
+            color=0, 
+            rgbcolor={0,0,0}, 
+            fillColor=8, 
+            rgbfillColor={181,181,181}))));
   end TemperatureUnits;
-
+  
   package PressureUnits 
     "Type, constants and menu choices for pressure units, as temporary solution until enumerations will be available" 
     
