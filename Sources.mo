@@ -3,10 +3,15 @@ package Sources "Generic fluid sources"
   model FixedAmbient "Ambient temperature and pressure source" 
     import Modelica.SIunits.Conversions.*;
     
-    extends Interfaces.PartialSource(medium(known_pd=if use_p_ambient or Medium
-            .incompressible then Medium.Choices.pd.p_known else Medium.Choices.
+    extends Interfaces.PartialSource(medium(known_pd=if use_p_ambient or Medium.
+             incompressible then Medium.Choices.pd.p_known else Medium.Choices.
             pd.d_known, known_Th=if use_T_ambient then Medium.Choices.Th.
-            T_known else Medium.Choices.Th.h_known));
+            T_known else Medium.Choices.Th.h_known,
+            init_p = true,
+            p_start = p_ambient,
+            T_start = T_ambient,
+            X_start = X_ambient,
+            h_start = h_ambient));
     
     parameter Boolean use_p_ambient=true 
       "|Ambient pressure or ambient density| = true, if p_ambient is used, otherwise d_ambient (true is required for incompressible medium)"
@@ -28,14 +33,13 @@ package Sources "Generic fluid sources"
     
     annotation (
       Coordsys(
-        extent=[-100, -100; 100, 100], 
-        grid=[2, 2], 
-        component=[20, 20]), 
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
       Icon(Ellipse(extent=[-100, 80; 100, -80], style(
-            color=69, 
-            gradient=3, 
-            fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")), 
-         
+            color=69,
+            gradient=3,
+            fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
       Documentation(info="<html>
 <p>
 This element defines constant values for ambient pressure,
@@ -45,9 +49,9 @@ is not, as usual, from the port in to the ambient,
 but from the ambient in to the port.
 </p>
 </html>"));
-  equation 
     
-    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, 
+  equation 
+    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible,
       use_p_ambient, Medium.reducedX, Medium.nX, X_ambient);
     if use_p_ambient or Medium.incompressible then
       medium.p = p_ambient;
@@ -65,8 +69,7 @@ but from the ambient in to the port.
   end FixedAmbient;
   
   model FixedMassFlowSource 
-    "Ideal pump that produces a constant mass flow rate from a large reservoir"
-     
+    "Ideal pump that produces a constant mass flow rate from a large reservoir" 
     
     import Modelica.SIunits.Conversions.*;
     
@@ -88,39 +91,39 @@ but from the ambient in to the port.
     
     annotation (
       Coordsys(
-        extent=[-100, -100; 100, 100], 
-        grid=[2, 2], 
-        component=[20, 20]), 
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
       Icon(
         Rectangle(extent=[20, 60; 100, -60], style(
-            color=0, 
-            gradient=2, 
-            fillColor=8)), 
+            color=0,
+            gradient=2,
+            fillColor=8)),
         Rectangle(extent=[38, 40; 100, -40], style(
-            color=69, 
-            gradient=2, 
-            fillColor=69)), 
-        Ellipse(extent=[-100, 80; 60, -80], style(fillColor=7)), 
-        Polygon(points=[-60, 70; 60, 0; -60, -68; -60, 70], style(color=73, 
-              fillColor=73)), 
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Ellipse(extent=[-100, 80; 60, -80], style(fillColor=7)),
+        Polygon(points=[-60, 70; 60, 0; -60, -68; -60, 70], style(color=73,
+              fillColor=73)),
         Text(
-          extent=[-54, 32; 16, -30], 
-          style(color=41, fillColor=41), 
-          string="m"), 
-        Text(extent=[-142, 142; 156, 88], string="%name"), 
+          extent=[-54, 32; 16, -30],
+          style(color=41, fillColor=41),
+          string="m"),
+        Text(extent=[-142, 142; 156, 88], string="%name"),
         Text(
-          extent=[-124, -92; 148, -122], 
-          style(color=0), 
-          string="%m_dot"), 
-        Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1))), 
+          extent=[-124, -92; 148, -122],
+          style(color=0),
+          string="%m_dot"),
+        Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1))),
       Window(
-        x=0.45, 
-        y=0.01, 
-        width=0.44, 
-        height=0.65), 
+        x=0.45,
+        y=0.01,
+        width=0.44,
+        height=0.65),
       Diagram);
   equation 
-    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true, 
+    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
       Medium.reducedX, Medium.nX, X_ambient);
     if use_T_ambient then
       medium.T = T_ambient;
@@ -133,8 +136,7 @@ but from the ambient in to the port.
   end FixedMassFlowSource;
   
   model MassFlowSource 
-    "Ideal pump that produces a mass flow rate from a large reservoir defined by input signal"
-     
+    "Ideal pump that produces a mass flow rate from a large reservoir defined by input signal" 
     
     import Modelica.SIunits.Conversions.*;
     
@@ -154,39 +156,39 @@ but from the ambient in to the port.
     
     annotation (
       Coordsys(
-        extent=[-100, -100; 100, 100], 
-        grid=[2, 2], 
-        component=[20, 20]), 
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
       Icon(
         Rectangle(extent=[20, 60; 100, -60], style(
-            color=0, 
-            gradient=2, 
-            fillColor=8)), 
+            color=0,
+            gradient=2,
+            fillColor=8)),
         Rectangle(extent=[38, 40; 100, -40], style(
-            color=69, 
-            gradient=2, 
-            fillColor=69)), 
-        Ellipse(extent=[-100, 80; 60, -80], style(fillColor=7)), 
-        Polygon(points=[-60, 70; 60, 0; -60, -68; -60, 70], style(color=73, 
-              fillColor=73)), 
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Ellipse(extent=[-100, 80; 60, -80], style(fillColor=7)),
+        Polygon(points=[-60, 70; 60, 0; -60, -68; -60, 70], style(color=73,
+              fillColor=73)),
         Text(
-          extent=[-54, 32; 16, -30], 
-          style(color=41, fillColor=41), 
-          string="m"), 
-        Text(extent=[-142, 142; 156, 88], string="%name"), 
-        Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1))), 
+          extent=[-54, 32; 16, -30],
+          style(color=41, fillColor=41),
+          string="m"),
+        Text(extent=[-142, 142; 156, 88], string="%name"),
+        Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1))),
       Window(
-        x=0.45, 
-        y=0.01, 
-        width=0.44, 
-        height=0.65), 
+        x=0.45,
+        y=0.01,
+        width=0.44,
+        height=0.65),
       Diagram);
     Modelica.Blocks.Interfaces.InPort m_dot(redeclare type SignalType = 
           Medium.MassFlowRate) 
-      "Mass flow rate from an infinite reservoir in to the port as signal"
+      "Mass flow rate from an infinite reservoir in to the port as signal" 
       annotation (extent=[-140, -20; -100, 20]);
   equation 
-    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true, 
+    Interfaces.checkAmbient(Medium.mediumName, Medium.incompressible, true,
       Medium.reducedX, Medium.nX, X_ambient);
     if use_T_ambient then
       medium.T = T_ambient;
