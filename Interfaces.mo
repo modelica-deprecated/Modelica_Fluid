@@ -74,9 +74,9 @@ it is not possible to connect connectors of different media together.
     flow Medium.MassFlowRate mX_flow[Medium.nX](quantity=Medium.substanceNames) 
       "Mass flow rates of the independent substances from the connection point into the component (if m_flow > 0, mX_flow = m_flow*X)";
     
-    Medium.ExtraProperties C[Medium.nC] 
+    Medium.ExtraProperty C[Medium.nC] 
       "properties c_i/m in the connection point";
-    flow Medium.ExtraPropertiesFlowRate mC_flow[Medium.nC] 
+    flow Medium.ExtraPropertyFlowRate mC_flow[Medium.nC] 
       "Flow rates of auxiliary properties from the connection point into the component (if m_flow > 0, mC_flow = m_flow*C)";
     
   end FluidPort;
