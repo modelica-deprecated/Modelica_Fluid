@@ -215,7 +215,7 @@ to define fixed or prescribed ambient conditions.
             rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255}),
-          string="%unit_p"),
+          string="p"),
         Text(
           extent=[-152,-86; -50,-126],
           style(
@@ -223,7 +223,7 @@ to define fixed or prescribed ambient conditions.
             rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255}),
-          string="%unit_T")),
+          string="T")),
       Documentation(info="<html>
 <p>
 Model <b>FixedAmbient_pt</b> defines constant values for ambient conditions:
@@ -283,7 +283,7 @@ with exception of ambient pressure, do not have an effect.
             rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255}),
-          string="%unit_p"),
+          string="p"),
         Text(
           extent=[-152,-86; -50,-126],
           style(
@@ -291,7 +291,7 @@ with exception of ambient pressure, do not have an effect.
             rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255}),
-          string="%unit_h")),
+          string="h")),
       Documentation(info="<html>
 <p>
 Model <b>PrescribedAmbient_ph</b> defines values for ambient conditions:
@@ -442,7 +442,7 @@ with exception of ambient pressure, do not have an effect.
       "Ambient mass fractions m_i/m of reservoir" 
       annotation (Dialog(group="Only for multi-substance flow"));
     Modelica.Blocks.Interfaces.RealInput m_flow_ambient(redeclare type 
-        SignalType =                                                                
+        SignalType = 
           SI.MassFlowRate) "Mass flow rate from large reservoir to fluid port" 
       annotation (extent=[-140,-20; -100,20]);
     
@@ -476,7 +476,7 @@ with exception of ambient pressure, do not have an effect.
             rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255}),
-          string="%unit_m_flow")),
+          string="m_flow")),
       Window(
         x=0.45,
         y=0.01,
@@ -504,7 +504,7 @@ with exception of ambient pressure, do not have an effect.
       "Ambient mass fractions m_i/m of reservoir" 
       annotation (Dialog(group="Only for multi-substance flow"));
     Modelica.Blocks.Interfaces.RealInput m_flow_ambient(redeclare type 
-        SignalType =                                                                
+        SignalType = 
           SI.MassFlowRate) "Mass flow rate from large reservoir to fluid port" 
       annotation (extent=[-140,-20; -100,20]);
     
@@ -538,7 +538,7 @@ with exception of ambient pressure, do not have an effect.
             rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255}),
-          string="%unit_m_flow")),
+          string="m_flow")),
       Window(
         x=0.45,
         y=0.01,
