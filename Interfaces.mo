@@ -115,6 +115,24 @@ it is not possible to connect connectors of different media together.
             fillPattern=1))));
   end FluidPort_b;
   
+  connector HeatPort = Modelica.Thermal.HeatTransfer.Interfaces.HeatPort 
+    "Thermal port for 1-dim. heat transfer";
+  
+  connector HeatPort_a = Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a 
+    "Thermal port for 1-dim. heat transfer (filled rectangular icon)" 
+    annotation (Icon(Text(
+          extent=[-98,196; 102,102],
+          string="%name",
+          style(color=42))));
+  
+  connector HeatPort_b = Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b 
+    "Thermal port for 1-dim. heat transfer (unfilled rectangular icon)" 
+    annotation (Icon(
+                    Text(
+          extent=[-98,196; 102,102],
+          string="%name",
+          style(color=42))));
+  
   partial model PartialMenuInitialization 
     "Define Medium model and parameter menu to initialize medium in component that has states" 
     
@@ -271,8 +289,10 @@ between fluid connectors.
       annotation (extent=[-120, -10; -100, 10]);
     FluidPort_b port_b(redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
-    Medium.BaseProperties medium_a "Medium properties in port_a";
-    Medium.BaseProperties medium_b "Medium properties in port_b";
+    Medium.BaseProperties medium_a(T(start = 300.0),p(start = 1.0e5)) 
+      "Medium properties in port_a";
+    Medium.BaseProperties medium_b(T(start = 300.0),p(start = 1.0e5)) 
+      "Medium properties in port_b";
     Medium.MassFlowRate m_flow 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
     annotation (
@@ -339,7 +359,7 @@ between fluid connectors.
     port_b.H_flow = 0;
     port_b.mXi_flow = zeros(Medium.nXi);
   end PartialRelativeSensor;
-
+  
   model PortVolume 
     "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
     import SI = Modelica.SIunits;
