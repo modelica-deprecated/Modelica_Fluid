@@ -1,31 +1,31 @@
-package Examples_Save 
-  "Example models to show how to use the Fluid package (contains the old examples that are not yet converted to new libraries; examples do not run for this reason" 
+package Examples_Save
+  "Example models to show how to use the Fluid package (contains the old examples that are not yet converted to new libraries; examples do not run for this reason"
   import Modelica.Icons;
   import Modelica.Constants;
   import SI = Modelica.SIunits;
-  
+
   extends Icons.Library;
-  package Components "Basic components for fluids" 
+  package Components "Basic components for fluids"
     extends Modelica.Icons.Library;
-    
+
     annotation (Documentation(info="<html>
 <p>
-This package contains examples for basic component models of 
+This package contains examples for basic component models of
 the fluid library.
 </p>
 </html>"));
-    
-    model Orifice 
-      "Simple orifice with constant loss factor zeta and small laminar region" 
-      
+
+    model Orifice
+      "Simple orifice with constant loss factor zeta and small laminar region"
+
       import SI = Modelica.SIunits;
       import Modelica.SIunits.Conversions.*;
       extends Interfaces.PartialTwoPortTransport;
       parameter Real zeta=1 "Loss factor from: dp = 0.5*rho*zeto*v^2";
       parameter SI.Area A=0.01 "Area of orifice";
-      parameter Real C(unit="m^3/(Pa.s)") = 1 
+      parameter Real C(unit="m^3/(Pa.s)") = 1
         "Flow conductance for small pressure drops";
-      parameter Boolean dp_given=true 
+      parameter Boolean dp_given=true
         "|Advanced|| True, if m_flow is computed as function of pressure drop dp (otherwise, use inverse function to avoid nonlinear loop)";
       annotation (
         Diagram,
@@ -87,9 +87,9 @@ them, in order that it is possible to experiment with.
 </p>
 </html>"));
       SI.Pressure dp "Pressure loss";
-    protected 
+    protected
       parameter Real k=C*zeta/(2*A*A);
-    equation 
+    equation
       /* Function is a second order polynomial in the mass flow rate,
      i.e., it is continuous and differentiable upto any order.
          rho*C*dp = m_flow + k*m_flow^2
@@ -112,19 +112,19 @@ them, in order that it is possible to experiment with.
         port_a.m_flow = noEvent((if dp >= 0 then 1 else -1)*(-1 + sqrt(1 + 4*k*C*
           abs(dp)))/(2*k));
       else
-        C*dp = port_a.m_flow + k*port_a.m_flow^2*noEvent(if port_a.m_flow >= 0 then 
+        C*dp = port_a.m_flow + k*port_a.m_flow^2*noEvent(if port_a.m_flow >= 0 then
           +1 else -1);
       end if;
     end Orifice;
-    
-    model ShortPipe 
-      "Short pipe where mass flow rate is a function of pressure drop (only transport, no storage of mass or energy)" 
-      
+
+    model ShortPipe
+      "Short pipe where mass flow rate is a function of pressure drop (only transport, no storage of mass or energy)"
+
       /* This currently gives not a nice layout
       Images(Parameters(name="|frictionType = DetailedFriction|", source=
             "../../Images/PipeFriction1_small.png")),
 */
-      
+
       import SI = Modelica.SIunits;
       import Modelica.Math;
       import Modelica.SIunits.Conversions.*;
@@ -134,35 +134,35 @@ them, in order that it is possible to experiment with.
       extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
       SI.Pressure dp "Pressure loss due to friction";
       Real zero=port_a.p - port_b.p - dp "momentum balance (may be modified)";
-      
-      parameter FT.Temp frictionType=FT.ConstantTurbulent 
+
+      parameter FT.Temp frictionType=FT.ConstantTurbulent
         "Type of friction to determine pressure loss";
-      parameter Medium.AbsolutePressure dp_nominal(min=1.e-10) = from_bar(1.0) 
+      parameter Medium.AbsolutePressure dp_nominal(min=1.e-10) = from_bar(1.0)
         "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal pressure drop";
-      
-      parameter Medium.MassFlowRate m_flow_nominal(min=1.e-10) = 1 
+
+      parameter Medium.MassFlowRate m_flow_nominal(min=1.e-10) = 1
         "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal mass flow rate at nominal pressure drop";
-      parameter Types.Length_mm length=1000 
+      parameter Types.Length_mm length=1000
         "|frictionType = DetailedFriction| Length of pipe";
-      parameter Types.Length_mm roughness=0 
+      parameter Types.Length_mm roughness=0
         "|frictionType = DetailedFriction| Roughness of pipe";
-      parameter Modelica_Fluid.Examples_Save.Types.CrossSectionTypes.Temp 
-        crossSectionType=CrossSectionTypes.Circular 
+      parameter Modelica_Fluid.Examples_Save.Types.CrossSectionTypes.Temp
+        crossSectionType=CrossSectionTypes.Circular
         "|frictionType = DetailedFriction| Type of cross section of pipe";
-      parameter Types.Length_mm diameter=100 
+      parameter Types.Length_mm diameter=100
         "|crossSectionType = circular| Inner diameter of pipe";
-      parameter Types.Length_mm width=50 
+      parameter Types.Length_mm width=50
         "|crossSectionType = rectangular| Inner width of pipe";
-      parameter Types.Length_mm height=20 
+      parameter Types.Length_mm height=20
         "|crossSectionType = rectangular| Inner height of pipe";
-      parameter SI.Area area=0.01 
+      parameter SI.Area area=0.01
         "|crossSectionType = general| Cross sectional area of pipe";
-      parameter SI.Length perimeter=0.1 
+      parameter SI.Length perimeter=0.1
         "|crossSectionType = general| Wetted perimeter of cross sectional area";
-      parameter Boolean from_dp=true 
+      parameter Boolean from_dp=true
         "|Advanced|| = true, use m_flow = f(dp) otherwise use dp = f(m_flow), i.e., inverse equation"
         annotation (Evaluate=true);
-      parameter SI.Pressure p_small(min=1.e-10) = 1 
+      parameter SI.Pressure p_small(min=1.e-10) = 1
         "|Advanced|Only for frictionType = ConstantTurbulent| A small laminar region is introduced around p_small";
       annotation (
         Diagram,
@@ -429,42 +429,42 @@ Germany<br>
 email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
 </p>
 </html>"));
-      SI.ReynoldsNumber Re 
+      SI.ReynoldsNumber Re
         "Dummy or Reynolds number of flow, if frictionType = DetailedFriction";
-      Real lambda 
+      Real lambda
         "Dummy or friction coefficient, if frictionType = DetailedFriction";
-      Real lambda2 
+      Real lambda2
         "Dummy or non-standard friction coefficient, if frictionType = DetailedFriction (= lambda*Re^2)";
       final parameter Real Delta=roughness/D "Relative roughness";
-      
+
       // Auxiliary variables for ConstantLaminar and ConstantTurbulent
-    protected 
-      parameter Real k=if frictionType == FrictionTypes.ConstantLaminar then 
+    protected
+      parameter Real k=if frictionType == FrictionTypes.ConstantLaminar then
           dp_nominal/m_flow_nominal else (if frictionType == FrictionTypes.
-          ConstantTurbulent then dp_nominal/m_flow_nominal^2 else L/(2*D*D*D)) 
+          ConstantTurbulent then dp_nominal/m_flow_nominal^2 else L/(2*D*D*D))
         "Pressure loss coefficient (dp = k*f(m_flow))";
       parameter Real delta=if from_dp then p_small else sqrt(dp_nominal/k);
       parameter Real C1=if from_dp then 0.5/sqrt(delta) - 3.0*C3*delta^2 else 0.5
           *delta "Coefficient 1 of cubic polynomial in the laminar region";
       parameter Real C3=if from_dp then -0.25/(sqrt(delta)*delta^2) else 0.5/
           delta "Coefficient 3 of cubic polynomial in the laminar region";
-      
+
       // Auxiliary variables for DetailedFriction model
       parameter SI.Length L=length/1000 "Length of pipe in SI units";
-      parameter SI.Diameter D=if crossSectionType == CrossSectionTypes.Circular then 
+      parameter SI.Diameter D=if crossSectionType == CrossSectionTypes.Circular then
                 diameter/1000 else (if crossSectionType == CrossSectionTypes.
           Rectangular then 4*(width*height/1.e6)/(2*width*height) else 4*area/
           perimeter) "Diameter of pipe in SI units";
-      parameter SI.ReynoldsNumber Re1=(745*exp(if Delta <= 0.0065 then 1 else 
-          0.0065/Delta))^(if from_dp then 0.97 else 1) 
+      parameter SI.ReynoldsNumber Re1=(745*exp(if Delta <= 0.0065 then 1 else
+          0.0065/Delta))^(if from_dp then 0.97 else 1)
         "Re leaving laminar curve";
       parameter SI.ReynoldsNumber Re2=4000 "Re entering turbulent curve";
-      
+
       // point lg(lambda2(Re1)) with derivative at lg(Re1)
       parameter Real x1=if from_dp then Math.log10(64*Re1) else Math.log10(Re1);
       parameter Real y1=if from_dp then Math.log10(Re1) else Math.log10(64*Re1);
       parameter Real yd1=1;
-      
+
       // Point lg(lambda2(Re2)) with derivative at lg(Re2)
       parameter Real aux1=(0.5/Math.log(10))*5.74*0.9;
       parameter Real aux2=Delta/3.7 + 5.74/Re2^0.9;
@@ -474,9 +474,9 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
       parameter Real aux5=-2*sqrt(L2)*Math.log10(aux4);
       parameter Real x2=if from_dp then Math.log10(L2) else Math.log10(Re2);
       parameter Real y2=if from_dp then Math.log10(aux5) else Math.log10(L2);
-      parameter Real yd2=if from_dp then 0.5 + (2.51/Math.log(10))/(aux5*aux4) else 
+      parameter Real yd2=if from_dp then 0.5 + (2.51/Math.log(10))/(aux5*aux4) else
                 2 + 4*aux1/(aux2*aux3*(Re2)^0.9);
-      
+
       // Constants: Cubic polynomial between lg(Re1) and lg(Re2)
       parameter Real diff_x=x2 - x1;
       parameter Real m=(y2 - y1)/diff_x;
@@ -486,13 +486,13 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
       constant Real pi=Modelica.Constants.pi;
       Real dx;
       Real aux7;
-      Medium.Density d 
+      Medium.Density d
         "Dummy, or density used for detailed friction model (from upstream port)";
-      Medium.DynamicViscosity eta 
+      Medium.DynamicViscosity eta
         "Dummy, or viscosity used for detailed friction model (from upstream port)";
-    equation 
+    equation
       zero = 0;
-      
+
       if frictionType <> FrictionTypes.DetailedFriction then
         // Assign dummy values for auxiliary variables
         Re = 0;
@@ -504,13 +504,13 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
         eta = 0;
       else
         lambda = noEvent(if Re < 64 then 1 else lambda2/(Re*Re));
-        
+
         // Use d and eta from the upstream port
         d = if port_a.m_flow > 0 then medium_a.d else medium_b.d;
-        eta = if port_a.m_flow > 0 then Medium.dynamicViscosity(medium_a) else 
+        eta = if port_a.m_flow > 0 then Medium.dynamicViscosity(medium_a) else
           Medium.dynamicViscosity(medium_b);
       end if;
-      
+
       if from_dp then
         // equations in the form m_flow = m_flow(dp)
         if frictionType == FrictionTypes.ConstantLaminar then
@@ -550,14 +550,14 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
         end if;
       end if;
     end ShortPipe;
-    
-    model LongPipe 
-      "(will be soon replaced by a much better version) Pipe discretized according to the finite volume method (currently there is just one volume for easier discussion)" 
-      
+
+    model LongPipe
+      "(will be soon replaced by a much better version) Pipe discretized according to the finite volume method (currently there is just one volume for easier discussion)"
+
       import SI = Modelica.SIunits;
       import Modelica.SIunits.Conversions.*;
       extends Interfaces.PartialTwoPort;
-      
+
       constant Real pi=Modelica.Constants.pi;
       parameter Integer n(
         min=1,
@@ -565,18 +565,18 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
       parameter SI.Diameter diameter "Pipe diameter";
       parameter SI.Length length "Pipe length";
       final parameter SI.Volume V=length*pi*diameter^2/4 "Pipe volume";
-      
-      parameter Modelica_Fluid.Examples_Save.Types.FrictionTypes.Temp 
-        frictionType=Types.FrictionTypes.ConstantTurbulent 
+
+      parameter Modelica_Fluid.Examples_Save.Types.FrictionTypes.Temp
+        frictionType=Types.FrictionTypes.ConstantTurbulent
         "Type of friction to determine pressure loss";
-      parameter Medium.AbsolutePressure dp_nominal(min=1.e-10) = from_bar(1.0) 
+      parameter Medium.AbsolutePressure dp_nominal(min=1.e-10) = from_bar(1.0)
         "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal pressure drop";
-      
-      parameter Medium.MassFlowRate m_flow_nominal(min=1.e-10) = 1 
+
+      parameter Medium.MassFlowRate m_flow_nominal(min=1.e-10) = 1
         "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal mass flow rate at nominal pressure drop";
-      parameter SI.Pressure p_small(min=1.e-10) = 1 
+      parameter SI.Pressure p_small(min=1.e-10) = 1
         "|Advanced|Only for frictionType = ConstantTurbulent| A small laminar region is introduced around p_small";
-      
+
       Interfaces.JunctionVolume volume(
         V=V,
         redeclare package Medium = Medium,
@@ -648,65 +648,65 @@ JunctionVolume. A much improved LongPipe model is
 near its completion. It will replace this one.
 </p>
 </html>"));
-    equation 
-      connect(shortPipe_a.port_a, port_a) 
+    equation
+      connect(shortPipe_a.port_a, port_a)
         annotation (points=[-61, 0; -110, 0], style(color=69));
-      connect(shortPipe_a.port_b, volume.port) 
+      connect(shortPipe_a.port_b, volume.port)
         annotation (points=[-39, 0; 0, 0], style(color=69));
-      connect(shortPipe_b.port_b, port_b) 
+      connect(shortPipe_b.port_b, port_b)
         annotation (points=[61, 0; 110, 0], style(color=69));
-      connect(shortPipe_b.port_a, volume.port) 
+      connect(shortPipe_b.port_a, volume.port)
         annotation (points=[39, 0; 0, 0], style(color=69));
     end LongPipe;
-    
-    model Tank "Tank with one bottom inlet/outlet" 
+
+    model Tank "Tank with one bottom inlet/outlet"
       import Modelica.SIunits.Conversions.*;
-      
-      replaceable package Medium = PackageMedium extends 
-        Modelica_Media.Interfaces.PartialMedium "Medium in the component" 
+
+      replaceable package Medium = PackageMedium extends
+        Modelica_Media.Interfaces.PartialMedium "Medium in the component"
         annotation (choicesAllMatching=true);
-      
-      Interfaces.FluidPort_b port(redeclare package Medium = Medium) 
+
+      Interfaces.FluidPort_b port(redeclare package Medium = Medium)
         annotation (extent=[-10, -120; 10, -100], rotation=90);
       Medium.BaseProperties medium(
         preferedMediumStates=true,
         final p_start=p_ambient,
         final T_start=T_start,
         final X_start=X_start);
-      
+
       parameter Modelica.SIunits.Area area "Tank area";
-      parameter Medium.AbsolutePressure p_ambient=101325 
+      parameter Medium.AbsolutePressure p_ambient=101325
         "Tank surface pressure";
-      parameter Modelica.SIunits.Height level_start(min=0) 
+      parameter Modelica.SIunits.Height level_start(min=0)
         "|Initialization| Initial tank level";
-      parameter Medium.Temperature T_start=from_degC(20) 
+      parameter Medium.Temperature T_start=from_degC(20)
         "|Initialization| Initial tank temperature";
       parameter Medium.MassFraction X_start[Medium.nX](quantity=Medium.
-            substanceNames) = zeros(Medium.nX) 
+            substanceNames) = zeros(Medium.nX)
         "|Initialization (only for multi-substance flow)| Initial independent tank mass fractions m_i/m";
-      constant Modelica.SIunits.Acceleration g=Modelica.Constants.G_EARTH;
-      Modelica.SIunits.Height level(stateSelect=StateSelect.prefer, min=0) 
+      constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
+      Modelica.SIunits.Height level(stateSelect=StateSelect.prefer, min=0)
         "Level height of tank";
       Modelica.SIunits.Energy U "Internal energy of tank volume";
-      Modelica.SIunits.Volume V(stateSelect=StateSelect.never) 
+      Modelica.SIunits.Volume V(stateSelect=StateSelect.never)
         "Actual tank volume";
       Real m(quantity=Medium.mediumName, unit="kg") "Mass of tank volume";
-      Real mX[Medium.nX](quantity=Medium.substanceNames, each unit="kg") 
+      Real mX[Medium.nX](quantity=Medium.substanceNames, each unit="kg")
         "Component masses of the independent substances";
-    initial equation 
+    initial equation
       if not Medium.incompressible then
         mX = m*X_start;
       end if;
       level = level_start;
       medium.T = T_start;
       medium.X = X_start;
-    equation 
+    equation
       port.p = medium.p;
-      
+
       /* Handle reverse and zero flow */
       port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
       port.mX_flow = semiLinear(port.m_flow, port.X, medium.X);
-      
+
       /*
   More precise equations (test later):
   Momentum balance
@@ -727,22 +727,22 @@ near its completion. It will replace this one.
   E = U + M*g*z/2 + M*v_level^2/2
   der(E) = port.H_flow + port.m_flow*v^2/2 - p_ambient*area*der(level)
 */
-      
+
       V = area*level;
       m = V*medium.d;
       mX = m*medium.X;
       U = m*medium.u;
-      
+
       // Mass balance
       der(m) = port.m_flow;
       der(mX) = port.mX_flow;
-      
+
       // Momentum balance
       medium.p = m*g/area + p_ambient;
-      
+
       // Energy balance
       der(U) = port.H_flow - p_ambient*der(V);
-      
+
       annotation (
         Icon(
           Rectangle(extent=[-100, 90; 100, 26], style(color=7, fillColor=7)),
@@ -778,35 +778,35 @@ The whole tank is assumed to have uniform temperature and mass fractions.
 </p>
 </HTML>"),
         Diagram);
-      
+
     end Tank;
   end Components;
-  
-  package Elementary 
-    "Elementary examples to demonstrate various features of the fluid library" 
-    
+
+  package Elementary
+    "Elementary examples to demonstrate various features of the fluid library"
+
     extends Modelica.Icons.Library;
-    model SimpleMixing 
-      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume" 
-      
+    model SimpleMixing
+      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume"
+
       Interfaces.JunctionVolume junctionVolume(
         V=1.e-4,
         T_start=from_degC(50.0),
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[-10, 40; 10, 20], rotation=180);
-      
+
       import Modelica.SIunits.Conversions.*;
-      
+
       extends Modelica.Icons.Example;
       Sources.FixedAmbient fixedAmbient1(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(0),
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[-80, 20; -60, 40]);
       Components.ShortPipe shortPipe1(
         m_flow_nominal=10,
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-40, 20; -20, 40]);
       annotation (Diagram, Documentation(info="<html>
 <p>
@@ -827,12 +827,12 @@ is instantaneous. The temperature is the same as in the upper part.
       Components.ShortPipe shortPipe3(
         m_flow_nominal=10,
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[20, 20; 40, 40]);
       Sources.FixedAmbient fixedAmbient3(
         T_ambient=from_degC(20),
         p_ambient=from_bar(0.95),
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[80, 20; 60, 40]);
       Sources.FixedAmbient fixedAmbient2(
         p_ambient=from_bar(1.0),
@@ -841,7 +841,7 @@ is instantaneous. The temperature is the same as in the upper part.
       Components.ShortPipe shortPipe2(
         m_flow_nominal=10,
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-40, 60; -20, 80]);
       Sources.FixedAmbient fixedAmbient4(
         p_ambient=from_bar(1.0),
@@ -850,17 +850,17 @@ is instantaneous. The temperature is the same as in the upper part.
       Components.ShortPipe shortPipe4(
         m_flow_nominal=10,
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-40, -80; -20, -60]);
       Components.ShortPipe shortPipe6(
         m_flow_nominal=10,
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[20, -80; 40, -60]);
       Sources.FixedAmbient fixedAmbient6(
         T_ambient=from_degC(20),
         p_ambient=from_bar(0.95),
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[80, -80; 60, -60]);
       Sources.FixedAmbient fixedAmbient5(
         p_ambient=from_bar(1.0),
@@ -869,39 +869,39 @@ is instantaneous. The temperature is the same as in the upper part.
       Components.ShortPipe shortPipe5(
         m_flow_nominal=10,
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-40, -40; -20, -20]);
-    equation 
-      connect(fixedAmbient1.port, shortPipe1.port_a) 
+    equation
+      connect(fixedAmbient1.port, shortPipe1.port_a)
         annotation (points=[-59, 30; -41, 30], style(color=69));
-      connect(shortPipe3.port_b, fixedAmbient3.port) 
+      connect(shortPipe3.port_b, fixedAmbient3.port)
         annotation (points=[41, 30; 59, 30], style(color=69));
-      connect(shortPipe3.port_a, junctionVolume.port) 
+      connect(shortPipe3.port_a, junctionVolume.port)
         annotation (points=[19, 30; 0, 30], style(color=69));
-      connect(fixedAmbient2.port, shortPipe2.port_a) 
+      connect(fixedAmbient2.port, shortPipe2.port_a)
         annotation (points=[-59, 70; -41, 70], style(color=69));
-      connect(fixedAmbient4.port, shortPipe4.port_a) 
+      connect(fixedAmbient4.port, shortPipe4.port_a)
         annotation (points=[-59, -70; -41, -70], style(color=69));
-      connect(shortPipe6.port_b, fixedAmbient6.port) 
+      connect(shortPipe6.port_b, fixedAmbient6.port)
         annotation (points=[41, -70; 59, -70], style(color=69));
-      connect(fixedAmbient5.port, shortPipe5.port_a) 
+      connect(fixedAmbient5.port, shortPipe5.port_a)
         annotation (points=[-59, -30; -41, -30], style(color=69));
       connect(shortPipe5.port_b, shortPipe6.port_a) annotation (points=[-19, -30;
              0, -30; 0, -70; 19, -70], style(color=69));
-      connect(shortPipe4.port_b, shortPipe6.port_a) 
+      connect(shortPipe4.port_b, shortPipe6.port_a)
         annotation (points=[-19, -70; 19, -70], style(color=69));
-      connect(shortPipe2.port_b, junctionVolume.port) 
+      connect(shortPipe2.port_b, junctionVolume.port)
         annotation (points=[-19, 70; 0, 70; 0, 30], style(color=69));
-      connect(shortPipe1.port_b, junctionVolume.port) 
+      connect(shortPipe1.port_b, junctionVolume.port)
         annotation (points=[-19, 30; 0, 30], style(color=69));
     end SimpleMixing;
-    
+
   end Elementary;
-  
-  package Tanks "Examples with Tanks" 
+
+  package Tanks "Examples with Tanks"
     extends Icons.Library;
-    
-    model ThreeTanksOneLiquid 
+
+    model ThreeTanksOneLiquid
       import Modelica.SIunits.Conversions.*;
       extends Modelica.Icons.Example;
       annotation (
@@ -922,58 +922,58 @@ for the model ThreeTanksOneLiquid the default values are
 used for the initial mass fractions.
 </p>
 </html>"));
-      
+
       Components.Tank Tank1(
         area=1,
         T_start=from_degC(50),
         level_start=3,
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[-90, 20; -70, 40]);
       Components.Tank Tank2(
         area=1,
         T_start=from_degC(100),
         level_start=1,
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[-10, 20; 10, 40]);
       Components.ShortPipe shortPipe1(
         m_flow_nominal=2000,
         dp_nominal=from_bar(0.1),
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-50, -30; -30, -10]);
-      
+
       Components.Tank Tank3(
         area=1,
         T_start=from_degC(20),
         level_start=2,
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[70, 20; 90, 40]);
       Components.ShortPipe shortPipe3(
         m_flow_nominal=2000,
         dp_nominal=from_bar(0.1),
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[30, -30; 50, -10]);
       Components.ShortPipe shortPipe2(
         m_flow_nominal=1000,
         dp_nominal=from_bar(0.1),
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-10, -10; 10, 10], rotation=-90);
-    equation 
-      connect(Tank1.port, shortPipe1.port_a) 
+    equation
+      connect(Tank1.port, shortPipe1.port_a)
         annotation (points=[-80, 19; -80, -20; -51, -20], style(color=69));
-      connect(shortPipe3.port_b, Tank3.port) 
+      connect(shortPipe3.port_b, Tank3.port)
         annotation (points=[51, -20; 80, -20; 80, 19], style(color=69));
-      connect(Tank2.port, shortPipe2.port_a) 
+      connect(Tank2.port, shortPipe2.port_a)
         annotation (points=[0,19; 0,11; -6.73533e-016,11],    style(color=69));
-      connect(shortPipe1.port_b, shortPipe3.port_a) 
+      connect(shortPipe1.port_b, shortPipe3.port_a)
         annotation (points=[-29, -20; 29, -20], style(color=69));
       connect(shortPipe2.port_b, shortPipe3.port_a) annotation (points=[
             6.73533e-016,-11; 0,-11; 0,-20; 29,-20],     style(color=69));
     end ThreeTanksOneLiquid;
-    
-    model ThreeTanksWithPortVolume 
+
+    model ThreeTanksWithPortVolume
       import Modelica.SIunits.Conversions.*;
       extends Modelica.Icons.Example;
       annotation (
@@ -989,43 +989,43 @@ pipes are connected together contains a volume now, in order that
 the mixing of the pipe flows is modelled more realistically.
 </p>
 </html>"));
-      
+
       Components.Tank Tank1(
         area=1,
         T_start=from_degC(50),
         level_start=3,
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[-90, 20; -70, 40]);
       Components.Tank Tank2(
         area=1,
         T_start=from_degC(100),
         level_start=1,
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[-10, 20; 10, 40]);
       Components.ShortPipe shortPipe1(
         m_flow_nominal=2000,
         dp_nominal=from_bar(0.1),
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-50, -40; -30, -20]);
-      
+
       Components.Tank Tank3(
         area=1,
         T_start=from_degC(20),
         level_start=2,
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[70, 20; 90, 40]);
       Components.ShortPipe shortPipe3(
         m_flow_nominal=2000,
         dp_nominal=from_bar(0.1),
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[29, -40; 49, -20]);
       Components.ShortPipe shortPipe2(
         m_flow_nominal=1000,
         dp_nominal=from_bar(0.1),
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-10, -10; 10, 10], rotation=-90);
       Interfaces.JunctionVolume junctionVolume(
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
@@ -1033,22 +1033,22 @@ the mixing of the pipe flows is modelled more realistically.
         T_start=from_degC(50.0),
         initType=Modelica_Media.Interfaces.PartialMedium.Choices.Init.
             InitialStates) annotation (extent=[-10, -40; 10, -20]);
-    equation 
-      connect(Tank1.port, shortPipe1.port_a) 
+    equation
+      connect(Tank1.port, shortPipe1.port_a)
         annotation (points=[-80, 19; -80, -30; -51, -30], style(color=69));
-      connect(shortPipe3.port_b, Tank3.port) 
+      connect(shortPipe3.port_b, Tank3.port)
         annotation (points=[50, -30; 80, -30; 80, 19], style(color=69));
-      connect(Tank2.port, shortPipe2.port_a) 
+      connect(Tank2.port, shortPipe2.port_a)
         annotation (points=[0, 19; 0, 11; -6.73533e-016, 11], style(color=69));
       connect(shortPipe2.port_b, junctionVolume.port) annotation (points=[
             6.73533e-016, -11; 0, -11; 0, -30], style(color=69));
-      connect(shortPipe1.port_b, junctionVolume.port) 
+      connect(shortPipe1.port_b, junctionVolume.port)
         annotation (points=[-29, -30; 0, -30], style(color=69));
-      connect(shortPipe3.port_a, junctionVolume.port) 
+      connect(shortPipe3.port_a, junctionVolume.port)
         annotation (points=[28, -30; 0, -30], style(color=69));
     end ThreeTanksWithPortVolume;
-    
-    model ThreeTanksIF97 
+
+    model ThreeTanksIF97
       import Modelica.SIunits.Conversions.*;
       extends Modelica.Icons.Example;
       annotation (
@@ -1069,69 +1069,69 @@ for the model ThreeTanksOneLiquid the default values are
 used for the initial mass fractions.
 </p>
 </html>"));
-      
+
       Components.Tank Tank1(
         area=1,
         T_start=from_degC(50),
         level_start=3,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-90, 20; -70, 40]);
       Components.Tank Tank2(
         area=1,
         T_start=from_degC(100),
         level_start=1,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-10, 20; 10, 40]);
       Components.ShortPipe shortPipe1(
         m_flow_nominal=2000,
         dp_nominal=from_bar(0.1),
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-50, -30; -30, -10]);
-      
+
       Components.Tank Tank3(
         area=1,
         T_start=from_degC(20),
         level_start=2,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[70, 20; 90, 40]);
       Components.ShortPipe shortPipe3(
         m_flow_nominal=2000,
         dp_nominal=from_bar(0.1),
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[30, -30; 50, -10]);
       Components.ShortPipe shortPipe2(
         m_flow_nominal=1000,
         dp_nominal=from_bar(0.1),
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-10, -10; 10, 10], rotation=-90);
-    equation 
-      connect(Tank1.port, shortPipe1.port_a) 
+    equation
+      connect(Tank1.port, shortPipe1.port_a)
         annotation (points=[-80, 19; -80, -20; -51, -20], style(color=69));
-      connect(shortPipe3.port_b, Tank3.port) 
+      connect(shortPipe3.port_b, Tank3.port)
         annotation (points=[51, -20; 80, -20; 80, 19], style(color=69));
-      connect(Tank2.port, shortPipe2.port_a) 
+      connect(Tank2.port, shortPipe2.port_a)
         annotation (points=[0,19; 0,11; -6.73533e-016,11],    style(color=69));
-      connect(shortPipe1.port_b, shortPipe3.port_a) 
+      connect(shortPipe1.port_b, shortPipe3.port_a)
         annotation (points=[-29, -20; 29, -20], style(color=69));
       connect(shortPipe2.port_b, shortPipe3.port_a) annotation (points=[
             6.73533e-016,-11; 0,-11; 0,-20; 29,-20],     style(color=69));
     end ThreeTanksIF97;
   end Tanks;
-  
-  package TestComponents 
-    "Test components (this package will be removed for the final version)" 
-    
+
+  package TestComponents
+    "Test components (this package will be removed for the final version)"
+
     extends Icons.Library;
-    
-    model TestLongPipe "Test ShortPipe componet" 
+
+    model TestLongPipe "Test ShortPipe componet"
       import Modelica.SIunits.Conversions.*;
-      
+
       extends Modelica.Icons.Example;
       Modelica_Fluid.Sources.FixedAmbient ambient(T_ambient=from_degC(15),
-          redeclare package Medium = Modelica_Media.Air.SimpleAir) 
+          redeclare package Medium = Modelica_Media.Air.SimpleAir)
         annotation (extent=[60, 0; 40, 20]);
       annotation (Diagram, experiment(StopTime=4));
       Modelica_Fluid.Components.LongPipe LongPipe(
@@ -1140,32 +1140,32 @@ used for the initial mass fractions.
         dp_nominal=from_bar(0.01),
         diameter=0.05,
         length=1) annotation (extent=[0, 0; 20, 20]);
-      
+
       Modelica_Fluid.Sources.PrescribedMassFlowRate_TX MassFlowSource1(T_ambient=from_degC(30),
-          redeclare package Medium = Modelica_Media.Air.SimpleAir) 
+          redeclare package Medium = Modelica_Media.Air.SimpleAir)
         annotation (extent=[-40, 0; -20, 20]);
       Modelica.Blocks.Sources.Ramp ramp(
         duration=3,
         height=6,
         offset=-3)   annotation (extent=[-80, 0; -60, 20]);
-    equation 
-      connect(LongPipe.port_b, ambient.port) 
+    equation
+      connect(LongPipe.port_b, ambient.port)
         annotation (points=[21, 10; 39, 10], style(color=69));
-      connect(MassFlowSource1.port, LongPipe.port_a) 
+      connect(MassFlowSource1.port, LongPipe.port_a)
         annotation (points=[-19, 10; -1, 10], style(color=69));
-      connect(ramp.y,       MassFlowSource1.m_flow) 
+      connect(ramp.y,       MassFlowSource1.m_flow)
         annotation (points=[-59, 10; -42, 10], style(color=3));
     end TestLongPipe;
-    
-    model TestCheckStateSelection 
-      "Check whether for the choosen medium the expected states are selected" 
-      
+
+    model TestCheckStateSelection
+      "Check whether for the choosen medium the expected states are selected"
+
       import Modelica.SIunits.Conversions.*;
-      
+
       Modelica_Fluid.Interfaces.JunctionVolume junctionVolume1(
         V=1.e-4,
         T_start=from_degC(50.0),
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[-10, 90; 10, 70], rotation=180);
       extends Modelica.Icons.Example;
       Modelica_Fluid.Sources.FixedAmbient fixedAmbient1a(
@@ -1175,7 +1175,7 @@ used for the initial mass fractions.
       Modelica_Fluid.Examples_Save.Components.ShortPipe shortPipe1a(
         m_flow_nominal=10,
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-40, 70; -20, 90]);
       annotation (
         Diagram(
@@ -1200,128 +1200,128 @@ corresponding medium model.
 </p>
 </html>
 "),     Coordsys(grid=[1, 1], component=[20, 20]));
-      
+
       Modelica_Fluid.Examples_Save.Components.ShortPipe shortPipe1b(
         m_flow_nominal=10,
         redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[20, 70; 40, 90]);
       Modelica_Fluid.Sources.FixedAmbient fixedAmbient1b(
         p_ambient=from_bar(0.95),
         T_ambient=from_degC(30),
-        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater) 
+        redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater)
         annotation (extent=[80, 70; 60, 90]);
-      
+
       Modelica_Fluid.Interfaces.JunctionVolume junctionVolume2(
         redeclare package Medium = Modelica_Media.Air.SimpleAir,
         p_start=from_bar(0.96),
         T_start=from_degC(50.0),
         V=0.1) annotation (extent=[-11, 40; 9, 20], rotation=180);
-      
+
       Modelica_Fluid.Sources.FixedAmbient fixedAmbient2a(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(10),
-        redeclare package Medium = Modelica_Media.Air.SimpleAir) 
+        redeclare package Medium = Modelica_Media.Air.SimpleAir)
         annotation (extent=[-80, 20; -60, 40]);
       Modelica_Fluid.Examples_Save.Components.ShortPipe shortPipe2a(
         redeclare package Medium = Modelica_Media.Air.SimpleAir,
         dp_nominal=from_bar(0.01),
         m_flow_nominal=1,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-40, 20; -20, 40]);
-      
+
       Modelica_Fluid.Examples_Save.Components.ShortPipe shortPipe2b(
         redeclare package Medium = Modelica_Media.Air.SimpleAir,
         dp_nominal=from_bar(0.01),
         m_flow_nominal=1,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[20, 20; 40, 40]);
-      
+
       Modelica_Fluid.Sources.FixedAmbient fixedAmbient2b(
         p_ambient=from_bar(0.95),
         redeclare package Medium = Modelica_Media.Air.SimpleAir,
         T_ambient=from_degC(10)) annotation (extent=[80, 20; 60, 40]);
-      
+
       Modelica_Fluid.Interfaces.JunctionVolume junctionVolume3(
         p_start=from_bar(0.96),
         T_start=from_degC(50.0),
         V=0.1,
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-11, -10; 9, -30], rotation=180);
       Modelica_Fluid.Sources.FixedAmbient fixedAmbient3a(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(10),
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-80, -30; -60, -10]);
       Modelica_Fluid.Examples_Save.Components.ShortPipe shortPipe3a(
         dp_nominal=from_bar(0.01),
         m_flow_nominal=1,
         redeclare package Medium = Modelica_Media.Air.DetailedAir,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[-40, -30; -20, -10]);
       Modelica_Fluid.Examples_Save.Components.ShortPipe shortPipe3b(
         dp_nominal=from_bar(0.01),
         m_flow_nominal=1,
         redeclare package Medium = Modelica_Media.Air.DetailedAir,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar)
         annotation (extent=[20, -30; 40, -10]);
       Modelica_Fluid.Sources.FixedAmbient fixedAmbient3b(
         p_ambient=from_bar(0.95),
         T_ambient=from_degC(10),
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[80, -30; 60, -10]);
-    equation 
-      connect(fixedAmbient1a.port, shortPipe1a.port_a) 
+    equation
+      connect(fixedAmbient1a.port, shortPipe1a.port_a)
         annotation (points=[-59, 80; -41, 80], style(color=69));
-      connect(shortPipe1b.port_b, fixedAmbient1b.port) 
+      connect(shortPipe1b.port_b, fixedAmbient1b.port)
         annotation (points=[41, 80; 59, 80], style(color=69));
-      connect(shortPipe1b.port_a, junctionVolume1.port) 
+      connect(shortPipe1b.port_a, junctionVolume1.port)
         annotation (points=[19, 80; 0, 80], style(color=69));
-      connect(shortPipe1a.port_b, junctionVolume1.port) 
+      connect(shortPipe1a.port_b, junctionVolume1.port)
         annotation (points=[-19, 80; 0, 80], style(color=69));
-      connect(fixedAmbient2a.port, shortPipe2a.port_a) 
+      connect(fixedAmbient2a.port, shortPipe2a.port_a)
         annotation (points=[-59, 30; -41, 30], style(color=69));
-      connect(shortPipe2b.port_b, fixedAmbient2b.port) 
+      connect(shortPipe2b.port_b, fixedAmbient2b.port)
         annotation (points=[41, 30; 59, 30], style(color=69));
-      connect(shortPipe2b.port_a, junctionVolume2.port) 
+      connect(shortPipe2b.port_a, junctionVolume2.port)
         annotation (points=[19, 30; -1, 30], style(color=69));
-      connect(shortPipe2a.port_b, junctionVolume2.port) 
+      connect(shortPipe2a.port_b, junctionVolume2.port)
         annotation (points=[-19, 30; -1, 30], style(color=69));
-      connect(fixedAmbient3a.port, shortPipe3a.port_a) 
+      connect(fixedAmbient3a.port, shortPipe3a.port_a)
         annotation (points=[-59, -20; -41, -20], style(color=69));
-      connect(shortPipe3b.port_b, fixedAmbient3b.port) 
+      connect(shortPipe3b.port_b, fixedAmbient3b.port)
         annotation (points=[41, -20; 59, -20], style(color=69));
-      connect(shortPipe3b.port_a, junctionVolume3.port) 
+      connect(shortPipe3b.port_a, junctionVolume3.port)
         annotation (points=[19, -20; -1, -20], style(color=69));
-      connect(shortPipe3a.port_b, junctionVolume3.port) 
+      connect(shortPipe3a.port_b, junctionVolume3.port)
         annotation (points=[-19, -20; -1, -20], style(color=69));
     end TestCheckStateSelection;
-    
-    model TwoVolumesAir 
-      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume" 
-      
+
+    model TwoVolumesAir
+      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume"
+
       import SI = Modelica.SIunits;
       parameter SI.Volume V=0.05 "Size of volume";
-      
+
       Interfaces.JunctionVolume junctionVolume1(
         T_start=from_degC(50.0),
         V=V/2,
         redeclare package Medium = Modelica_Media.Air.DetailedAir,
         initType=Modelica_Media.Interfaces.PartialMedium.Choices.Init.
             InitialStates) annotation (extent=[-30, 40; -10, 20], rotation=180);
-      
+
       import Modelica.SIunits.Conversions.*;
-      
+
       extends Modelica.Icons.Example;
       Sources.FixedAmbient fixedAmbient1(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(10),
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-100, 20; -80, 40]);
       Components.ShortPipe shortPipe1(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-60, 20; -40, 40]);
       annotation (Diagram, Documentation(info="<html>
 <p>
@@ -1342,116 +1342,116 @@ is instantaneous. The temperature is the same as in the upper part.
       Components.ShortPipe shortPipe3(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[40, 20; 60, 40]);
       Sources.FixedAmbient fixedAmbient3(
         T_ambient=from_degC(20),
         p_ambient=from_bar(0.95),
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[100, 20; 80, 40]);
       Sources.FixedAmbient fixedAmbient2(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(20),
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-100, 60; -80, 80]);
       Components.ShortPipe shortPipe2(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-60, 60; -40, 80]);
       Interfaces.JunctionVolume junctionVolume2(
         T_start=from_degC(50.0),
         V=V/2,
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[0, 40; 20, 20], rotation=180);
       Interfaces.JunctionVolume junctionVolume3(
         T_start=from_degC(50.0),
         V=V,
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-30, -50; -10, -70], rotation=180);
       Sources.FixedAmbient fixedAmbient4(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(10),
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-100, -70; -80, -50]);
       Components.ShortPipe shortPipe4(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-60, -70; -40, -50]);
       Components.ShortPipe shortPipe5(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[0, -70; 20, -50]);
       Sources.FixedAmbient fixedAmbient5(
         T_ambient=from_degC(20),
         p_ambient=from_bar(0.95),
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[60, -70; 40, -50]);
       Sources.FixedAmbient fixedAmbient6(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(20),
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-100, -30; -80, -10]);
       Components.ShortPipe shortPipe6(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Air.DetailedAir) 
+        redeclare package Medium = Modelica_Media.Air.DetailedAir)
         annotation (extent=[-60, -30; -40, -10]);
-    equation 
-      connect(fixedAmbient1.port, shortPipe1.port_a) 
+    equation
+      connect(fixedAmbient1.port, shortPipe1.port_a)
         annotation (points=[-79, 30; -61, 30], style(color=69));
-      connect(shortPipe3.port_b, fixedAmbient3.port) 
+      connect(shortPipe3.port_b, fixedAmbient3.port)
         annotation (points=[61, 30; 79, 30], style(color=69));
-      connect(fixedAmbient2.port, shortPipe2.port_a) 
+      connect(fixedAmbient2.port, shortPipe2.port_a)
         annotation (points=[-79, 70; -61, 70], style(color=69));
-      connect(shortPipe2.port_b, junctionVolume1.port) 
+      connect(shortPipe2.port_b, junctionVolume1.port)
         annotation (points=[-39, 70; -20, 70; -20, 30], style(color=69));
-      connect(shortPipe1.port_b, junctionVolume1.port) 
+      connect(shortPipe1.port_b, junctionVolume1.port)
         annotation (points=[-39, 30; -20, 30], style(color=69));
-      connect(junctionVolume2.port, shortPipe3.port_a) 
+      connect(junctionVolume2.port, shortPipe3.port_a)
         annotation (points=[10, 30; 39, 30], style(color=69));
-      connect(junctionVolume1.port, junctionVolume2.port) 
+      connect(junctionVolume1.port, junctionVolume2.port)
         annotation (points=[-20, 30; 10, 30], style(color=69));
-      connect(fixedAmbient4.port, shortPipe4.port_a) 
+      connect(fixedAmbient4.port, shortPipe4.port_a)
         annotation (points=[-79, -60; -61, -60], style(color=69));
-      connect(shortPipe5.port_b, fixedAmbient5.port) 
+      connect(shortPipe5.port_b, fixedAmbient5.port)
         annotation (points=[21, -60; 39, -60], style(color=69));
-      connect(shortPipe5.port_a, junctionVolume3.port) 
+      connect(shortPipe5.port_a, junctionVolume3.port)
         annotation (points=[-1, -60; -20, -60], style(color=69));
-      connect(fixedAmbient6.port, shortPipe6.port_a) 
+      connect(fixedAmbient6.port, shortPipe6.port_a)
         annotation (points=[-79, -20; -61, -20], style(color=69));
-      connect(shortPipe6.port_b, junctionVolume3.port) 
+      connect(shortPipe6.port_b, junctionVolume3.port)
         annotation (points=[-39, -20; -20, -20; -20, -60], style(color=69));
-      connect(shortPipe4.port_b, junctionVolume3.port) 
+      connect(shortPipe4.port_b, junctionVolume3.port)
         annotation (points=[-39, -60; -20, -60], style(color=69));
     end TwoVolumesAir;
-    
-    model TwoVolumesDetailedWater 
-      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume" 
-      
+
+    model TwoVolumesDetailedWater
+      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume"
+
       import SI = Modelica.SIunits;
       parameter SI.Volume V=1.e-4 "Size of volume";
-      
+
       Interfaces.JunctionVolume junctionVolume1(
         T_start=from_degC(50.0),
         V=V/2,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-30, 40; -10, 20], rotation=180);
-      
+
       import Modelica.SIunits.Conversions.*;
-      
+
       extends Modelica.Icons.Example;
       Sources.FixedAmbient fixedAmbient1(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(10),
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-100, 20; -80, 40]);
       Components.ShortPipe shortPipe1(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-60, 20; -40, 40]);
       annotation (Diagram, Documentation(info="<html>
 <p>
@@ -1472,22 +1472,22 @@ is instantaneous. The temperature is the same as in the upper part.
       Components.ShortPipe shortPipe3(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[40, 20; 60, 40]);
       Sources.FixedAmbient fixedAmbient3(
         T_ambient=from_degC(20),
         p_ambient=from_bar(0.95),
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[100, 20; 80, 40]);
       Sources.FixedAmbient fixedAmbient2(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(20),
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-100, 60; -80, 80]);
       Components.ShortPipe shortPipe2(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-60, 60; -40, 80]);
       Interfaces.JunctionVolume junctionVolume2(
         T_start=from_degC(50.0),
@@ -1495,79 +1495,79 @@ is instantaneous. The temperature is the same as in the upper part.
         redeclare package Medium = Modelica_Media.Water.IF97_ph,
         initType=Modelica_Media.Interfaces.PartialMedium.Choices.Init.
             InitialStates) annotation (extent=[0, 40; 20, 20], rotation=180);
-      
+
       Interfaces.JunctionVolume junctionVolume3(
         T_start=from_degC(50.0),
         V=V,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-30, -50; -10, -70], rotation=180);
       Sources.FixedAmbient fixedAmbient4(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(10),
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-100, -70; -80, -50]);
       Components.ShortPipe shortPipe4(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-60, -70; -40, -50]);
       Components.ShortPipe shortPipe5(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[0, -70; 20, -50]);
       Sources.FixedAmbient fixedAmbient5(
         T_ambient=from_degC(20),
         p_ambient=from_bar(0.95),
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[60, -70; 40, -50]);
       Sources.FixedAmbient fixedAmbient6(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(20),
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-100, -30; -80, -10]);
       Components.ShortPipe shortPipe6(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-60, -30; -40, -10]);
-    equation 
-      connect(fixedAmbient1.port, shortPipe1.port_a) 
+    equation
+      connect(fixedAmbient1.port, shortPipe1.port_a)
         annotation (points=[-79, 30; -61, 30], style(color=69));
-      connect(shortPipe3.port_b, fixedAmbient3.port) 
+      connect(shortPipe3.port_b, fixedAmbient3.port)
         annotation (points=[61, 30; 79, 30], style(color=69));
-      connect(fixedAmbient2.port, shortPipe2.port_a) 
+      connect(fixedAmbient2.port, shortPipe2.port_a)
         annotation (points=[-79, 70; -61, 70], style(color=69));
-      connect(shortPipe2.port_b, junctionVolume1.port) 
+      connect(shortPipe2.port_b, junctionVolume1.port)
         annotation (points=[-39, 70; -20, 70; -20, 30], style(color=69));
-      connect(shortPipe1.port_b, junctionVolume1.port) 
+      connect(shortPipe1.port_b, junctionVolume1.port)
         annotation (points=[-39, 30; -20, 30], style(color=69));
-      connect(junctionVolume2.port, shortPipe3.port_a) 
+      connect(junctionVolume2.port, shortPipe3.port_a)
         annotation (points=[10, 30; 39, 30], style(color=69));
-      connect(junctionVolume1.port, junctionVolume2.port) 
+      connect(junctionVolume1.port, junctionVolume2.port)
         annotation (points=[-20, 30; 10, 30], style(color=69));
-      connect(fixedAmbient4.port, shortPipe4.port_a) 
+      connect(fixedAmbient4.port, shortPipe4.port_a)
         annotation (points=[-79, -60; -61, -60], style(color=69));
-      connect(shortPipe5.port_b, fixedAmbient5.port) 
+      connect(shortPipe5.port_b, fixedAmbient5.port)
         annotation (points=[21, -60; 39, -60], style(color=69));
-      connect(shortPipe5.port_a, junctionVolume3.port) 
+      connect(shortPipe5.port_a, junctionVolume3.port)
         annotation (points=[-1, -60; -20, -60], style(color=69));
-      connect(fixedAmbient6.port, shortPipe6.port_a) 
+      connect(fixedAmbient6.port, shortPipe6.port_a)
         annotation (points=[-79, -20; -61, -20], style(color=69));
-      connect(shortPipe6.port_b, junctionVolume3.port) 
+      connect(shortPipe6.port_b, junctionVolume3.port)
         annotation (points=[-39, -20; -20, -20; -20, -60], style(color=69));
-      connect(shortPipe4.port_b, junctionVolume3.port) 
+      connect(shortPipe4.port_b, junctionVolume3.port)
         annotation (points=[-39, -60; -20, -60], style(color=69));
     end TwoVolumesDetailedWater;
-    
-    model OneVolumeDetailedWater 
-      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume" 
-      
+
+    model OneVolumeDetailedWater
+      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume"
+
       import SI = Modelica.SIunits;
       parameter SI.Volume V=1.e-4 "Size of volume";
-      
+
       import Modelica.SIunits.Conversions.*;
-      
+
       extends Modelica.Icons.Example;
       annotation (Diagram, Documentation(info="<html>
 <p>
@@ -1588,87 +1588,87 @@ is instantaneous. The temperature is the same as in the upper part.
       Interfaces.JunctionVolume junctionVolume3(
         T_start=from_degC(50.0),
         V=V,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-10, 0; 10, -20], rotation=180);
       Sources.FixedAmbient fixedAmbient4(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(10),
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-80, -20; -60, 0]);
       Components.ShortPipe shortPipe4(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-40, -20; -20, 0]);
       Components.ShortPipe shortPipe5(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[20, -20; 40, 0]);
       Sources.FixedAmbient fixedAmbient5(
         T_ambient=from_degC(20),
         p_ambient=from_bar(0.95),
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[80, -20; 60, 0]);
       Sources.FixedAmbient fixedAmbient6(
         p_ambient=from_bar(1.0),
         T_ambient=from_degC(20),
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-80, 20; -60, 40]);
       Components.ShortPipe shortPipe6(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
-        redeclare package Medium = Modelica_Media.Water.IF97_ph) 
+        redeclare package Medium = Modelica_Media.Water.IF97_ph)
         annotation (extent=[-40, 20; -20, 40]);
-    equation 
-      connect(fixedAmbient4.port, shortPipe4.port_a) 
+    equation
+      connect(fixedAmbient4.port, shortPipe4.port_a)
         annotation (points=[-59, -10; -41, -10], style(color=69));
-      connect(shortPipe5.port_b, fixedAmbient5.port) 
+      connect(shortPipe5.port_b, fixedAmbient5.port)
         annotation (points=[41, -10; 59, -10], style(color=69));
-      connect(shortPipe5.port_a, junctionVolume3.port) 
+      connect(shortPipe5.port_a, junctionVolume3.port)
         annotation (points=[19, -10; 0, -10], style(color=69));
-      connect(fixedAmbient6.port, shortPipe6.port_a) 
+      connect(fixedAmbient6.port, shortPipe6.port_a)
         annotation (points=[-59, 30; -41, 30], style(color=69));
-      connect(shortPipe6.port_b, junctionVolume3.port) 
+      connect(shortPipe6.port_b, junctionVolume3.port)
         annotation (points=[-19, 30; 0, 30; 0, -10], style(color=69));
-      connect(shortPipe4.port_b, junctionVolume3.port) 
+      connect(shortPipe4.port_b, junctionVolume3.port)
         annotation (points=[-19, -10; 0, -10], style(color=69));
     end OneVolumeDetailedWater;
-    
-    model TwoVolumesApproximationWater 
-      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume" 
-      
+
+    model TwoVolumesApproximationWater
+      "This example shows the difference of a JunctionVolume and of a FixedComponentVolume"
+
       import SI = Modelica.SIunits;
       parameter SI.Volume V=1.e-4 "Size of volume";
-      
+
       Interfaces.JunctionVolume junctionVolume1(
         T_start=from_degC(50.0),
         V=V/2,
         p_start=from_bar(100.0),
         initType=Modelica_Media.Interfaces.PartialMedium.Choices.Init.
             InitialStates,
-      redeclare package Medium = 
-            Modelica_Media.Water.IF97LocalApproximation_ph) 
+      redeclare package Medium =
+            Modelica_Media.Water.IF97LocalApproximation_ph)
         annotation (extent=[-12,40; 8,20],     rotation=180);
-      
+
       import Modelica.SIunits.Conversions.*;
-      
+
       extends Modelica.Icons.Example;
       Sources.FixedAmbient fixedAmbient1(
         p_ambient=from_bar(100.0),
         T_ambient=from_degC(110),
-      redeclare package Medium = 
-            Modelica_Media.Water.IF97LocalApproximation_ph) 
+      redeclare package Medium =
+            Modelica_Media.Water.IF97LocalApproximation_ph)
         annotation (extent=[-100, 20; -80, 40]);
-      
+
       Components.ShortPipe shortPipe1(
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
         T_start=400.0,
-      redeclare package Medium = 
-            Modelica_Media.Water.IF97LocalApproximation_ph) 
+      redeclare package Medium =
+            Modelica_Media.Water.IF97LocalApproximation_ph)
         annotation (extent=[-60, 20; -40, 40]);
-      
+
       annotation (Diagram, Documentation(info="<html>
 <p>
 This example shows two ways of merging flows. In the upper part
@@ -1689,138 +1689,138 @@ is instantaneous. The temperature is the same as in the upper part.
         m_flow_nominal=10,
         frictionType=Types.FrictionTypes.ConstantLaminar,
         T_start=400,
-      redeclare package Medium = 
-            Modelica_Media.Water.IF97LocalApproximation_ph) 
+      redeclare package Medium =
+            Modelica_Media.Water.IF97LocalApproximation_ph)
         annotation (extent=[40, 20; 60, 40]);
-      
+
       Sources.FixedAmbient fixedAmbient3(
         p_ambient=from_bar(98),
         T_ambient=from_degC(120),
-      redeclare package Medium = 
-            Modelica_Media.Water.IF97LocalApproximation_ph) 
+      redeclare package Medium =
+            Modelica_Media.Water.IF97LocalApproximation_ph)
         annotation (extent=[100, 20; 80, 40]);
-      
-    equation 
-      connect(fixedAmbient1.port, shortPipe1.port_a) 
+
+    equation
+      connect(fixedAmbient1.port, shortPipe1.port_a)
         annotation (points=[-79, 30; -61, 30], style(color=69));
-      connect(shortPipe3.port_b, fixedAmbient3.port) 
+      connect(shortPipe3.port_b, fixedAmbient3.port)
         annotation (points=[61, 30; 79, 30], style(color=69));
-      connect(shortPipe1.port_b, junctionVolume1.port) 
+      connect(shortPipe1.port_b, junctionVolume1.port)
         annotation (points=[-39,30; -2,30],    style(color=69));
       connect(junctionVolume1.port, shortPipe3.port_a) annotation (points=[-2,
             30; 39,30], style(color=69, rgbcolor={0,127,255}));
     end TwoVolumesApproximationWater;
-    
+
   end TestComponents;
-  
-  package Types 
+
+  package Types
     import SI = Modelica.SIunits;
     annotation (preferedView="text");
-    
+
     type Length_mm = Real (
         quantity="Length",
         unit="mm",
         min=0);
-    
+
       // constant SI.MassFlowRate ResidualFlow=1E-10 "Used to take care of zero mass flow";
-    
-    package FrictionTypes 
-      "Type, constants and menu choices to define the pressure loss equations due to friction, as temporary solution until enumerations are available" 
-      
+
+    package FrictionTypes
+      "Type, constants and menu choices to define the pressure loss equations due to friction, as temporary solution until enumerations are available"
+
       annotation (preferedView="text");
-      
+
       extends Modelica.Icons.Library;
       constant Integer ConstantLaminar=1;
       constant Integer ConstantTurbulent=2;
       constant Integer DetailedFriction=3;
-      type Temp 
-        "Temporary type of FrictionTypes with choices for menus (until enumerations are available)" 
-        
+      type Temp
+        "Temporary type of FrictionTypes with choices for menus (until enumerations are available)"
+
         extends Integer;
         annotation (Evaluate=true, choices(
-            choice=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar 
+            choice=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar
               "ConstantLaminar \"dp = k*m_flow\"",
-            choice=Modelica_Fluid.Types.FrictionTypes.ConstantTurbulent 
+            choice=Modelica_Fluid.Types.FrictionTypes.ConstantTurbulent
               "ConstantTurbulent \"dp = k*m_flow^2\"",
-            choice=Modelica_Fluid.Types.FrictionTypes.DetailedFriction 
+            choice=Modelica_Fluid.Types.FrictionTypes.DetailedFriction
               "DetailedFriction \"dp = f(Re,delta,rho,L,D,nu)\""));
       end Temp;
     end FrictionTypes;
-    
-    package CrossSectionTypes 
-      "Type, constants and menu choices to define the geometric cross of pipes, as temporary solution until enumerations are available" 
-      
+
+    package CrossSectionTypes
+      "Type, constants and menu choices to define the geometric cross of pipes, as temporary solution until enumerations are available"
+
       annotation (preferedView="text");
-      
+
       extends Modelica.Icons.Library;
       constant Integer Circular=1;
       constant Integer Rectangular=2;
       constant Integer General=3;
-      type Temp 
-        "Temporary type of CrossSectionTypes with choices for menus (until enumerations are available)" 
-        
+      type Temp
+        "Temporary type of CrossSectionTypes with choices for menus (until enumerations are available)"
+
         extends Integer;
         annotation (Evaluate=true, choices(
             choice=Modelica_Fluid.Types.CrossSectionTypes.Circular "Circular",
-            choice=Modelica_Fluid.Types.CrossSectionTypes.Rectangular 
+            choice=Modelica_Fluid.Types.CrossSectionTypes.Rectangular
               "Rectangular",
             choice=Modelica_Fluid.Types.CrossSectionTypes.General "General"));
       end Temp;
     end CrossSectionTypes;
-    
-    package InitTypes 
-      "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
-      
+
+    package InitTypes
+      "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available"
+
       annotation (preferedView="text");
-      
+
       extends Modelica.Icons.Library;
       constant Integer SteadyState=1;
       constant Integer SteadyPressure=2;
       constant Integer InitialStates=3;
       constant Integer NoDefaultInit=4;
-      type Temp 
-        "Temporary type of InitializationTypes with choices for menus (until enumerations are available)" 
-        
+      type Temp
+        "Temporary type of InitializationTypes with choices for menus (until enumerations are available)"
+
         extends Integer;
         annotation (Evaluate=true, choices(
-            choice=Modelica_Fluid.Types.InitializationTypes.SteadyState 
+            choice=Modelica_Fluid.Types.InitializationTypes.SteadyState
               "SteadyState (initialize in steady state)",
-            choice=Modelica_Fluid.Types.InitializationTypes.SteadyPressure 
+            choice=Modelica_Fluid.Types.InitializationTypes.SteadyPressure
               "SteadyPressure (initialize pressure in steady state)",
-            choice=Modelica_Fluid.Types.InitializationTypes.InitialStates 
+            choice=Modelica_Fluid.Types.InitializationTypes.InitialStates
               "InitialStates (initialize medium states)",
-            choice=Modelica_Fluid.Types.InitializationTypes.NoDefaultInit 
+            choice=Modelica_Fluid.Types.InitializationTypes.NoDefaultInit
               "NoDefaultInit (no default initialization)"));
       end Temp;
     end InitTypes;
-    
-    package FixedDensityTypes 
-      "Type, constants and menu choices to define fixed density definition, as temporary solution until enumerations are available" 
-      
+
+    package FixedDensityTypes
+      "Type, constants and menu choices to define fixed density definition, as temporary solution until enumerations are available"
+
       annotation (preferedView="text");
-      
+
       extends Modelica.Icons.Library;
       constant Integer NoFixedDensity=1;
       constant Integer FixedDensity=2;
       constant Integer FixedDensity_via_pT=3;
-      type Temp 
-        "Temporary type of FixedDensityTypes with choices for menus (until enumerations are available)" 
-        
+      type Temp
+        "Temporary type of FixedDensityTypes with choices for menus (until enumerations are available)"
+
         extends Integer;
         annotation (Evaluate=true, choices(
-            choice=Modelica_Fluid.Types.FixedDensityTypes.NoFixedDensity 
+            choice=Modelica_Fluid.Types.FixedDensityTypes.NoFixedDensity
               "NoFixedDensity (no fixed density for compressible media)",
-            choice=Modelica_Fluid.Types.FixedDensityTypes.FixedDensity 
+            choice=Modelica_Fluid.Types.FixedDensityTypes.FixedDensity
               "FixedDensity (fixed density for compressible media)",
-            choice=Modelica_Fluid.Types.FixedDensityTypes.FixedDensity_via_pT 
+            choice=Modelica_Fluid.Types.FixedDensityTypes.FixedDensity_via_pT
               "FixedDensity_via_pT (fixed density defined by p, T)"));
       end Temp;
     end FixedDensityTypes;
-    
+
   end Types;
-  
-  package PipeWithShockWaves 
-    model ShockTube 
+
+  package PipeWithShockWaves
+    model ShockTube
       parameter Modelica.SIunits.Pressure p0=5E5;
       parameter Modelica.SIunits.Temperature T0=1200;
       Modelica_Fluid.Components.IsolatedPipe IsolatedPipe1(
@@ -1838,7 +1838,7 @@ is instantaneous. The temperature is the same as in the upper part.
         n=100,
         dp_nominal=0.001,
         viscosityFactor2=0.9,
-        viscosityFactor1=0.5) 
+        viscosityFactor1=0.5)
                annotation (extent=[-20,60; 0,80]);
       UserInteraction.Outputs.SpatialPlot SpatialPlot1(
         x=linspace(0, 1, IsolatedPipe1.n),
@@ -1854,19 +1854,19 @@ is instantaneous. The temperature is the same as in the upper part.
           minY=1E5,
           maxY=5E5)            annotation(extent=[-100,-20; 100,60]);
     end ShockTube;
-    
-    model TestIsolatedPipeTemperature "Test ShortPipe componet" 
-      
+
+    model TestIsolatedPipeTemperature "Test ShortPipe componet"
+
       import Modelica.SIunits.Conversions.*;
-      
+
       extends Modelica.Icons.Example;
       FiniteVolume.Sources.FixedAmbient ambient(
         T_ambient=300,
         p_ambient=1E5,
         port(h(start=10000)),
-        redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+        redeclare package Medium = Modelica_Media.Air.DryAirNasa)
       annotation (extent=[40,60; 20,80]);
-      
+
     annotation (
       Diagram,
       experiment(
@@ -1878,7 +1878,7 @@ is instantaneous. The temperature is the same as in the upper part.
       experimentSetupOutput,
       Commands(file="Simulate and plot pressure.mos", file=
          "Simulate and Plot Temperature.mos"));
-      
+
       Modelica_Fluid.Components.IsolatedPipe IsolatedPipe1(
         dp_nominal=500,
         m_flow_nominal=1,
@@ -1888,46 +1888,46 @@ is instantaneous. The temperature is the same as in the upper part.
         k=0.001,
         includeThermalConductance=true,
         dynamicMomentumBalance=false,
-        redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+        redeclare package Medium = Modelica_Media.Air.DryAirNasa)
                annotation (extent=[-20,60; 0,80]);
-      
+
     //  Real T[IsolatedPipe1.n](start=cat(1,fill(310, div(IsolatedPipe1.n,2)),fill(300, IsolatedPipe1.n-div(IsolatedPipe1.n,2))),
     //    fixed=fill(true,IsolatedPipe1.n));
-      
+
       FiniteVolume.Sources.FixedAmbient ambient1(
         p_ambient=1E5,
         port(h(start=10000)),
         T_ambient=310,
-        redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+        redeclare package Medium = Modelica_Media.Air.DryAirNasa)
       annotation (extent=[-40,80; -60,60], rotation=180);
       UserInteraction.Outputs.SpatialPlot SpatialPlot1(
         minY=295,
         maxY=315,
         x=linspace(0, 1, IsolatedPipe1.n),
-        y=IsolatedPipe1.shortPipe.medium.T) 
+        y=IsolatedPipe1.shortPipe.medium.T)
                 annotation(extent=[-100,-100; 100,0]);
-    equation 
-      
-      connect(IsolatedPipe1.port_b, ambient.port) 
+    equation
+
+      connect(IsolatedPipe1.port_b, ambient.port)
       annotation (points=[1,70; 19,70],  style(color=69));
-      
-      connect(ambient1.port, IsolatedPipe1.port_a) 
+
+      connect(ambient1.port, IsolatedPipe1.port_a)
                                              annotation(points=[-39,70; -21,70],
           style(color=69, rgbcolor={0,127,255}));
-      
+
     end TestIsolatedPipeTemperature;
-    
-    model TestThreeIsolatedPipesPressure "Test ShortPipe componet" 
-      
+
+    model TestThreeIsolatedPipesPressure "Test ShortPipe componet"
+
       import Modelica.SIunits.Conversions.*;
-      
+
       extends Modelica.Icons.Example;
       parameter Real pressurePulsHeight=1E4;
       parameter Real pressurePulsWidth=1E-3;
       parameter Real pressurePulsStart=0.1E-3;
       parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=300;
       parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient1=310;
-      
+
     annotation (
       Diagram,
       experiment(
@@ -1939,7 +1939,7 @@ is instantaneous. The temperature is the same as in the upper part.
       experimentSetupOutput,
       Commands(file="Simulate and plot pressure.mos", file=
          "Simulate and Plot Temperature.mos"));
-      
+
       Modelica_Fluid.Components.IsolatedPipe IsolatedPipe1(
         m_flow_nominal=1,
         A_a=0.01,
@@ -1949,30 +1949,30 @@ is instantaneous. The temperature is the same as in the upper part.
         L=0.5,
         redeclare package Medium = Modelica_Media.Air.DryAirNasa,
         includeKineticTerm=true,
-        includeViscosity=true) 
+        includeViscosity=true)
                annotation (extent=[12,70; 32,90]);
       Modelica_Fluid.Sources.PrescribedAmbient_pT prescribedAmbient(
-          redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+          redeclare package Medium = Modelica_Media.Air.DryAirNasa)
                       annotation (extent=[-22,70; -2,90]);
       Modelica.Blocks.Sources.Ramp Ramp1(
           duration=scalar({pressurePulsWidth/2}),
           height=scalar({pressurePulsHeight}),
           offset=1E5,
-          startTime=scalar({pressurePulsStart})) 
+          startTime=scalar({pressurePulsStart}))
                      annotation (extent=[-100,52; -80,72]);
       Modelica.Blocks.Sources.Ramp Ramp2(
           duration=scalar({pressurePulsWidth/2}),
           height=scalar({-pressurePulsHeight}),
           offset=0,
-          startTime=scalar({pressurePulsStart + pressurePulsWidth/2})) 
+          startTime=scalar({pressurePulsStart + pressurePulsWidth/2}))
                       annotation (extent=[-100,106; -80,86]);
-      Modelica.Blocks.Math.Add Add1 
+      Modelica.Blocks.Math.Add Add1
                                   annotation (extent=[-60,76; -40,96]);
       Modelica_Fluid.Sources.FixedAmbient ambient1(
         p_ambient=1E5,
         port(h(start=10000)),
         T_ambient=T_ambient,
-          redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+          redeclare package Medium = Modelica_Media.Air.DryAirNasa)
       annotation (extent=[100,70; 80,90]);
       Modelica_Fluid.Components.IsolatedPipe IsolatedPipe2(
         m_flow_nominal=1,
@@ -1983,25 +1983,25 @@ is instantaneous. The temperature is the same as in the upper part.
         L=0.5,
         redeclare package Medium = Modelica_Media.Air.DryAirNasa,
         includeKineticTerm=true,
-        includeViscosity=true) 
+        includeViscosity=true)
                annotation (extent=[48,70; 68,90]);
       UserInteraction.Outputs.SpatialPlot SpatialPlot1(
         maxY=1.1e5,
         minY=0.9e5,
           x=linspace(0, 1, IsolatedPipe1.nVolumes),
-        y=IsolatedPipe1.pipeSegment.medium.p) 
+        y=IsolatedPipe1.pipeSegment.medium.p)
                             annotation(extent=[-100,-40; 0,20]);
       UserInteraction.Outputs.SpatialPlot SpatialPlot2(
         maxY=1.1e5,
         minY=0.9e5,
           x=linspace(0, 1, IsolatedPipe2.nVolumes),
-        y=IsolatedPipe2.pipeSegment.medium.p) 
+        y=IsolatedPipe2.pipeSegment.medium.p)
                             annotation(extent=[0,-40; 100,20]);
       Modelica_Fluid.Sources.FixedAmbient ambient2(
         p_ambient=1E5,
         port(h(start=10000)),
         T_ambient=T_ambient,
-          redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+          redeclare package Medium = Modelica_Media.Air.DryAirNasa)
       annotation (extent=[100,30; 80,50]);
       Modelica_Fluid.Components.IsolatedPipe IsolatedPipe3(
         m_flow_nominal=1,
@@ -2012,60 +2012,60 @@ is instantaneous. The temperature is the same as in the upper part.
         L=0.25,
         redeclare package Medium = Modelica_Media.Air.DryAirNasa,
         includeKineticTerm=true,
-        includeViscosity=true) 
+        includeViscosity=true)
                annotation (extent=[48,30; 68,50]);
       UserInteraction.Outputs.SpatialPlot SpatialPlot3(
         maxY=1.1e5,
         minY=0.9e5,
           x=linspace(0, 1, IsolatedPipe3.nVolumes),
-        y=IsolatedPipe3.pipeSegment.medium.p) 
+        y=IsolatedPipe3.pipeSegment.medium.p)
                             annotation(extent=[6,-100; 54,-40]);
-      Modelica.Blocks.Sources.Constant Constant1(k=T_ambient1) 
+      Modelica.Blocks.Sources.Constant Constant1(k=T_ambient1)
         annotation (extent=[-60,46; -40,66]);
-    equation 
-      
-      connect(prescribedAmbient.port, IsolatedPipe1.port_a) 
+    equation
+
+      connect(prescribedAmbient.port, IsolatedPipe1.port_a)
       annotation (points=[-1,80; 11,80], style(color=69));
       connect(Ramp1.y,Add1.u2)           annotation (points=[-79,62; -72,62; -72,80;
             -62,80],          style(color=3));
-      connect(Ramp2.y,Add1.u1) 
+      connect(Ramp2.y,Add1.u1)
       annotation (points=[-79,96; -70,96; -70,92; -62,92],   style(color=3));
-      connect(Add1.y, prescribedAmbient.p_in) 
+      connect(Add1.y, prescribedAmbient.p_in)
       annotation (points=[-39,86; -26,86], style(color=3));
-      connect(IsolatedPipe2.port_a, IsolatedPipe1.port_b) 
+      connect(IsolatedPipe2.port_a, IsolatedPipe1.port_b)
                                                 annotation(points=[47,80; 33,80],
           style(color=69, rgbcolor={0,127,255}));
-      connect(IsolatedPipe2.port_b, ambient1.port) 
+      connect(IsolatedPipe2.port_b, ambient1.port)
                                              annotation(points=[69,80; 79,80],
           style(color=69, rgbcolor={0,127,255}));
-      connect(IsolatedPipe3.port_a, IsolatedPipe1.port_b) 
+      connect(IsolatedPipe3.port_a, IsolatedPipe1.port_b)
                                                 annotation(points=[47,40; 40,40;
             40,80; 33,80], style(color=69, rgbcolor={0,127,255}));
-      connect(IsolatedPipe3.port_b,ambient2. port) 
+      connect(IsolatedPipe3.port_b,ambient2. port)
                                              annotation(points=[69,40; 79,40],
           style(color=69, rgbcolor={0,127,255}));
-      
+
       connect(Constant1.y, prescribedAmbient.T_ambient)       annotation (points=[
             -39,56; -32,56; -32,74; -24,74], style(color=3, rgbcolor={0,0,255}));
     end TestThreeIsolatedPipesPressure;
-    
-    model TestThreeIsolatedPipesTemperature "Test ShortPipe componet" 
-      
+
+    model TestThreeIsolatedPipesTemperature "Test ShortPipe componet"
+
       import Modelica.SIunits.Conversions.*;
-      
+
       extends Modelica.Icons.Example;
-      
+
       parameter Integer n=20;
       parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=300;
       parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient1=310;
-      
+
       FiniteVolume.Sources.FixedAmbient ambient(
         T_ambient=T_ambient1,
         p_ambient=1E5,
         port(h(start=10000)),
-        redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+        redeclare package Medium = Modelica_Media.Air.DryAirNasa)
       annotation (extent=[-74,70; -54,90]);
-      
+
     annotation (
       Diagram,
       experiment(
@@ -2077,7 +2077,7 @@ is instantaneous. The temperature is the same as in the upper part.
       experimentSetupOutput,
       Commands(file="Simulate and plot pressure.mos", file=
          "Simulate and Plot Temperature.mos"));
-      
+
       Modelica_Fluid.Components.IsolatedPipe IsolatedPipe1(
         m_flow_nominal=1,
         A_a=0.01,
@@ -2087,13 +2087,13 @@ is instantaneous. The temperature is the same as in the upper part.
         includeThermalConductance=true,
         k=0.1,
         dynamicMomentumBalance=false,
-        redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+        redeclare package Medium = Modelica_Media.Air.DryAirNasa)
                annotation (extent=[-40,70; -20,90]);
       FiniteVolume.Sources.FixedAmbient ambient1(
         p_ambient=1E5,
         port(h(start=10000)),
         T_ambient=T_ambient1,
-        redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+        redeclare package Medium = Modelica_Media.Air.DryAirNasa)
       annotation (extent=[48,70; 28,90]);
       Modelica_Fluid.Components.IsolatedPipe IsolatedPipe2(
         m_flow_nominal=1,
@@ -2104,13 +2104,13 @@ is instantaneous. The temperature is the same as in the upper part.
         includeThermalConductance=true,
         k=0.1,
         dynamicMomentumBalance=false,
-        redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+        redeclare package Medium = Modelica_Media.Air.DryAirNasa)
                annotation (extent=[-4,70; 16,90]);
       FiniteVolume.Sources.FixedAmbient ambient2(
         p_ambient=1E5,
         port(h(start=10000)),
         T_ambient=T_ambient,
-        redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+        redeclare package Medium = Modelica_Media.Air.DryAirNasa)
       annotation (extent=[48,30; 28,50]);
       Modelica_Fluid.Components.IsolatedPipe IsolatedPipe3(
         m_flow_nominal=1,
@@ -2121,49 +2121,49 @@ is instantaneous. The temperature is the same as in the upper part.
         includeThermalConductance=true,
         k=0.1,
         dynamicMomentumBalance=false,
-        redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+        redeclare package Medium = Modelica_Media.Air.DryAirNasa)
                annotation (extent=[-4,30; 16,50]);
       UserInteraction.Outputs.SpatialPlot SpatialPlot1(
         minY=295,
         maxY=315,
           maxX=IsolatedPipe1.L,
           y=IsolatedPipe1.shortPipe.medium.T,
-          x=linspace(0, IsolatedPipe1.L, IsolatedPipe1.n)) 
+          x=linspace(0, IsolatedPipe1.L, IsolatedPipe1.n))
                                        annotation(extent=[-100,-40; 0,20]);
       UserInteraction.Outputs.SpatialPlot SpatialPlot2(
         minY=295,
         maxY=315,
           maxX=IsolatedPipe2.L,
           x=linspace(0, IsolatedPipe2.L, IsolatedPipe2.n),
-          y=IsolatedPipe2.shortPipe.medium.T) 
+          y=IsolatedPipe2.shortPipe.medium.T)
                                        annotation(extent=[0,-40; 100,20]);
       UserInteraction.Outputs.SpatialPlot SpatialPlot3(
         minY=295,
         maxY=315,
           maxX=IsolatedPipe3.L,
           x=linspace(0, IsolatedPipe3.L, IsolatedPipe3.n),
-          y=IsolatedPipe3.shortPipe.medium.T) 
+          y=IsolatedPipe3.shortPipe.medium.T)
                                        annotation(extent=[6,-100; 54,-40]);
-    equation 
-      
-      connect(IsolatedPipe2.port_a,IsolatedPipe1. port_b) 
+    equation
+
+      connect(IsolatedPipe2.port_a,IsolatedPipe1. port_b)
                                                 annotation(points=[-5,80; -19,80],
                  style(color=69, rgbcolor={0,127,255}));
-      
-      connect(IsolatedPipe2.port_b,ambient1. port) 
+
+      connect(IsolatedPipe2.port_b,ambient1. port)
                                              annotation(points=[17,80; 27,80],
           style(color=69, rgbcolor={0,127,255}));
-      
-      connect(IsolatedPipe3.port_a,IsolatedPipe1. port_b) 
+
+      connect(IsolatedPipe3.port_a,IsolatedPipe1. port_b)
                                                 annotation(points=[-5,40; -12,40;
               -12,80; -19,80],
                             style(color=69, rgbcolor={0,127,255}));
-      
-      connect(IsolatedPipe3.port_b,ambient2. port) 
+
+      connect(IsolatedPipe3.port_b,ambient2. port)
                                              annotation(points=[17,40; 27,40],
           style(color=69, rgbcolor={0,127,255}));
-      
-      connect(ambient.port, IsolatedPipe1.port_a) 
+
+      connect(ambient.port, IsolatedPipe1.port_a)
                                             annotation(points=[-53,80; -41,80],
           style(
           color=69,
@@ -2171,12 +2171,12 @@ is instantaneous. The temperature is the same as in the upper part.
           gradient=2,
           fillColor=76,
           rgbfillColor={170,170,255}));
-      
+
     end TestThreeIsolatedPipesTemperature;
   end PipeWithShockWaves;
-  
-  package Examples_Francesco 
-    model SinkP "Pressure sink for water/steam flows" 
+
+  package Examples_Francesco
+    model SinkP "Pressure sink for water/steam flows"
       annotation (Icon(
           Ellipse(extent=[-80, 80; 80, -80], style(
               color=0,
@@ -2196,19 +2196,19 @@ is instantaneous. The temperature is the same as in the upper part.
        First release.</li>
 </ul>
 </html>"));
-      replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
+      replaceable package Medium = Modelica_Media.Interfaces.PartialMedium
         "Medium model" annotation(choicesAllMatching = true);
       parameter Medium.AbsolutePressure p0=1.01325e5 "Nominal pressure";
       parameter Real R(unit="Pa/(kg.s)")=0 "Hydraulic resistance";
       parameter Medium.SpecificEnthalpy h=1e5 "Nominal specific enthalpy";
       Medium.AbsolutePressure p;
-      Modelica_Fluid.Interfaces.FluidPort_a flange(redeclare package Medium = 
+      Modelica_Fluid.Interfaces.FluidPort_a flange(redeclare package Medium =
             Medium)  annotation (extent=[-120, -20; -80, 20]);
-      Modelica.Blocks.Interfaces.RealInput in_p0 
+      Modelica.Blocks.Interfaces.RealInput in_p0
         annotation (extent=[-60, 68; -20, 108], rotation=-90);
-      Modelica.Blocks.Interfaces.RealInput in_h 
+      Modelica.Blocks.Interfaces.RealInput in_h
         annotation (extent=[20, 68; 60, 108], rotation=-90);
-    equation 
+    equation
       if R == 0 then
         flange.p = p;
       else
@@ -2247,7 +2247,7 @@ is instantaneous. The temperature is the same as in the upper part.
 </html>"));
     end SinkP;
 
-    partial model ValveBase "Base model for valves" 
+    partial model ValveBase "Base model for valves"
      annotation (Icon(
           Line(points=[0, 40; 0, 0], style(
               color=0,
@@ -2264,7 +2264,7 @@ is instantaneous. The temperature is the same as in the upper part.
           Rectangle(extent=[-20, 60; 20, 40], style(
               color=0,
               fillColor=0,
-              fillPattern=1))), Diagram, 
+              fillPattern=1))), Diagram,
         Documentation(revisions="<html>
 <ul>
 <li><i>27 Sep 2004</i>
@@ -2279,8 +2279,8 @@ is instantaneous. The temperature is the same as in the upper part.
        First release.</li>
 </ul>
 </html>"));
-      replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
-        "Medium model" 
+      replaceable package Medium = Modelica_Media.Interfaces.PartialMedium
+        "Medium model"
                      annotation(choicesAllMatching= true);
       Medium.BaseProperties fluid;
       parameter Integer CvData "(0: Av | 1: Kv | 2: Cv | 3: OpPoint)";
@@ -2297,18 +2297,18 @@ is instantaneous. The temperature is the same as in the upper part.
       Real Av "Flow coefficient";
       Medium.Density rho "Inlet density";
       Medium.Temperature Tin "Inlet temperature";
-      Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = 
+      Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium =
             Medium) annotation (extent=[-120, -20; -80, 20]);
-      Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = 
+      Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium =
             Medium)  annotation (extent=[80, -20; 120, 20]);
-      Modelica.Blocks.Interfaces.RealInput theta 
+      Modelica.Blocks.Interfaces.RealInput theta
         annotation (extent=[-20, 60; 20, 100], rotation=-90);
       annotation (
         Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
         Diagram,
         Documentation(info="<HTML>
 <p>This is the base model for the <tt>ValveLiq</tt>, <tt>ValveLiqChoked</tt>, and <tt>ValveVap</tt> valve models. The model is based on the IEC 534 / ISA S.75 standards for valve sizing.
-<p>The model optionally supports reverse flow conditions (assuming symmetrical behaviour) or check valve operation, and has been suitably modified to avoid numerical singularities at zero pressure drop. 
+<p>The model optionally supports reverse flow conditions (assuming symmetrical behaviour) or check valve operation, and has been suitably modified to avoid numerical singularities at zero pressure drop.
 <p>The flow characteristic can be customised.
 <p><b>Modelling options</b></p>
 <p>The following options are available to specify the valve flow coefficient in fully open conditions:
@@ -2332,40 +2332,40 @@ is instantaneous. The temperature is the same as in the upper part.
 </ul>
 </html>"));
     // Default functions for valve characteristics
-    function linear 
+    function linear
       input Real x;
       output Real y;
       annotation (derivative=der_linear);
-    algorithm 
+    algorithm
           y := x;
     end linear;
-      
-    function one 
+
+    function one
       input Real x;
       output Real y;
-        
+
       annotation (derivative=der_one);
-    algorithm 
+    algorithm
         y := 1;
     end one;
-      
-    function der_linear 
+
+    function der_linear
       input Real x;
       input Real der_x;
       output Real der_y;
-    algorithm 
+    algorithm
       der_y := der_x;
     end der_linear;
-      
-    function der_one 
+
+    function der_one
       input Real x;
       input Real der_x;
       output Real der_y;
-    algorithm 
+    algorithm
       der_y := 0;
     end der_one;
-      
-    equation 
+
+    equation
       if CvData == 0 then
         Av = Avnom;
       elseif CvData == 1 then
@@ -2385,7 +2385,7 @@ is instantaneous. The temperature is the same as in the upper part.
       rho=fluid.d;
     end ValveBase;
 
-    model ValveLiquid "Valve for incompressible liquid flow" 
+    model ValveLiquid "Valve for incompressible liquid flow"
       extends ValveBase;
       Real z "Normalized pressure drop";
       Real sqrtz;
@@ -2409,7 +2409,7 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
        First release.</li>
 </ul>
 </HTML>"));
-    equation 
+    equation
       z = (inlet.p - outlet.p)/dpnom;
       if CheckValve then
         sqrtz = (if z >= 0 then z/sqrt(z + b) else 0);
@@ -2419,10 +2419,10 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
       w = FlowChar(theta)*Av*sqrt(rho*dpnom)*sqrtz;
     end ValveLiquid;
 
-    model ValveLiquidChoked 
-      "Valve for liquid flow, allows choked flow conditions" 
-      
-      extends ValveBase(redeclare replaceable package Medium = 
+    model ValveLiquidChoked
+      "Valve for liquid flow, allows choked flow conditions"
+
+      extends ValveBase(redeclare replaceable package Medium =
                    Modelica_Media.Interfaces.PartialTwoPhaseMedium);
       parameter Real Flnom=0.9 "Liquid pressure recovery factor";
       replaceable function FlowChar = linear "Flow characteristic";
@@ -2435,7 +2435,7 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
       Real sqrtz;
       Medium.AbsolutePressure pv "Saturation pressure";
       Boolean chokedFlow "Choked flow conditions";
-      
+
       annotation (
         Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
         Diagram,
@@ -2458,7 +2458,7 @@ The model operating range includes choked flow operation, which takes place for 
        First release.</li>
 </ul>
 </HTML>"));
-    equation 
+    equation
       if CheckValve then
         sqrtz = (if z >= 0 then z/sqrt(z + b) else 0);
       else
@@ -2474,10 +2474,10 @@ The model operating range includes choked flow operation, which takes place for 
         z = (inlet.p - outlet.p)/dpnom;
       end if;
       w = FlowChar(theta)*Av*sqrt(rho*dpnom)*sqrtz;
-      
+
     end ValveLiquidChoked;
 
-    model ValveGas "Valve for steam flow" 
+    model ValveGas "Valve for steam flow"
       extends ValveBase;
       parameter SI.Pressure pnom=0 "Nominal inlet pressure";
       parameter Real Fxtnom=0.5 "Nominal Fk*xt critical ratio";
@@ -2509,7 +2509,7 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
        First release.</li>
 </ul>
 </HTML>"));
-    equation 
+    equation
       Fxt = Fxtnom*xtfun(theta);
       x = (inlet.p - outlet.p)/inlet.p;
       xs = if x < -Fxt then -Fxt else if x > Fxt then Fxt else x;
@@ -2522,10 +2522,10 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
       end if;
       w = FlowChar(theta)*Av*Y*sqrt(dpnom/pnom*inlet.p*rho)*sqrtz;
     end ValveGas;
-    
-    
-    
-    partial model PumpBase "Base model for centrifugal pumps" 
+
+
+
+    partial model PumpBase "Base model for centrifugal pumps"
       annotation (Icon(
           Polygon(points=[-40, -24; -60, -60; 60, -60; 40, -24; -40, -24],
               style(pattern=0, fillColor=74)),
@@ -2566,20 +2566,20 @@ PumpMech</tt> pump models.
 </ul>
 </html>"));
       import Modelica.SIunits.Conversions.NonSIunits.*;
-      replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
-        "Medium model" 
+      replaceable package Medium = Modelica_Media.Interfaces.PartialMedium
+        "Medium model"
                      annotation(choicesAllMatching= true);
-      Medium.BaseProperties fluid(p(start=pin_start), h(start=hstart)) 
+      Medium.BaseProperties fluid(p(start=pin_start), h(start=hstart))
         "Fluid propertie";
-      replaceable package SatMedium = 
-          Modelica_Media.Interfaces.PartialTwoPhaseMedium 
-        "Saturated medium model (required only for NPSH computation)" 
+      replaceable package SatMedium =
+          Modelica_Media.Interfaces.PartialTwoPhaseMedium
+        "Saturated medium model (required only for NPSH computation)"
                      annotation(choicesAllMatching= true);
       parameter Integer Np0(min=1) = 1 "Nominal number of pumps in parallel";
       parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value";
-      parameter Medium.AbsolutePressure pout_start 
+      parameter Medium.AbsolutePressure pout_start
         "Outlet Pressure Start Value";
-      parameter Medium.SpecificEnthalpy hstart=1e5 
+      parameter Medium.SpecificEnthalpy hstart=1e5
         "Fluid Specific Enthalpy Start Value";
       parameter Medium.Density rho0=1000 "Nominal Liquid Density";
       parameter AngularVelocity_rpm n0=1500 "Nominal rotational speed";
@@ -2587,27 +2587,27 @@ PumpMech</tt> pump models.
       parameter Real etaMech(
         min=0,
         max=1) = 0.98 "Mechanical Efficiency";
-      parameter Modelica.SIunits.Height head_nom[3] 
+      parameter Modelica.SIunits.Height head_nom[3]
         "Pump head for three operating points";
-      parameter Modelica.SIunits.VolumeFlowRate q_nom[3] 
+      parameter Modelica.SIunits.VolumeFlowRate q_nom[3]
         "Volume flow rate for three operating points (single pump)";
-      parameter Modelica.SIunits.Power P_cons[3] 
+      parameter Modelica.SIunits.Power P_cons[3]
         "Power consumption for three operating points (single pump)";
       parameter Boolean CheckValve=false "Reverse flow stopped";
-      parameter Boolean ComputeNPSHa=false 
+      parameter Boolean ComputeNPSHa=false
         "Compute NPSH Available at the inlet";
       constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
       Medium.Density rho "Liquid density";
       Medium.Temperature Tin "Liquid inlet temperature";
       Modelica.SIunits.MassFlowRate w "Mass flowrate (single pump)";
-      Modelica.SIunits.SpecificEnthalpy h(start=hstart) 
+      Modelica.SIunits.SpecificEnthalpy h(start=hstart)
         "Fluid specific enthalpy";
       AngularVelocity_rpm n "Shaft r.p.m.";
       Integer Np(min=1) "Number of pumps in parallel";
-      
+
       Modelica.SIunits.Power P "Power Consumption (single pump)";
       Modelica.SIunits.Power Ptot "Power Consumption (total)";
-      constant Modelica.SIunits.Power P_eps=1e-8 
+      constant Modelica.SIunits.Power P_eps=1e-8
         "Small coefficient to avoid numerical singularities";
       Modelica.SIunits.Power Phyd "Hydraulic power (single pump)";
       Real eta "Global Efficiency";
@@ -2615,34 +2615,34 @@ PumpMech</tt> pump models.
       Modelica.SIunits.Pressure pv "Saturated liquid pressure";
       Boolean FlowOn(start=true);
       Real s "Auxiliary Variable";
-      Modelica_Fluid.Interfaces.FluidPort_a infl(redeclare package Medium = 
-            Medium, p(start=pin_start), h(start=hstart)) 
+      Modelica_Fluid.Interfaces.FluidPort_a infl(redeclare package Medium =
+            Medium, p(start=pin_start), h(start=hstart))
         annotation (extent=[-100, 2; -60, 42]);
-      Modelica_Fluid.Interfaces.FluidPort_b outfl(redeclare package Medium = 
-            Medium, p(start=pout_start), h(start=hstart)) 
+      Modelica_Fluid.Interfaces.FluidPort_b outfl(redeclare package Medium =
+            Medium, p(start=pout_start), h(start=hstart))
         annotation (extent=[40,52; 80,92]);
-      Modelica.Blocks.Interfaces.RealInput in_Np "Number of  parallel pumps" 
+      Modelica.Blocks.Interfaces.RealInput in_Np "Number of  parallel pumps"
         annotation (extent=[18, 70; 38, 90], rotation=-90);
-    protected 
+    protected
       parameter Real A(fixed=false);
       parameter Real B(fixed=false);
       parameter Real C(fixed=false);
       parameter Real D(fixed=false);
       parameter Real E(fixed=false);
       parameter Real F(fixed=false);
-      
-    equation 
+
+    equation
       if cardinality(in_Np)==0 then
         Np = Np0;
         in_Np = 0;
       else
         Np = in_Np;
       end if;
-      
+
       infl.m_flow + outfl.m_flow = 0;
       w = infl.m_flow/Np;
       FlowOn = s > 0;
-      
+
       if (FlowOn or (not CheckValve)) then
         w = s;
         (outfl.p - infl.p)/rho = -A*(w/rho)^2 + B*(n/n0)*w/rho + C*(n/n0)^2;
@@ -2650,19 +2650,19 @@ PumpMech</tt> pump models.
         (outfl.p - infl.p)/rho = C*(n/n0)^2 - s*1e3;
         w = 0;
       end if;
-      
+
       P = D*(n^2)*(w/rho) - E*n*((w/rho)^2) + F*(n^2);
       Ptot = P*Np;
-      
+
       infl.H_flow=semiLinear(infl.m_flow,infl.h,fluid.h);
       outfl.H_flow=semiLinear(outfl.m_flow,outfl.h,fluid.h);
       fluid.p=infl.p;
-      
+
       rho = fluid.d;
       Tin = fluid.T;
-      
+
       h = fluid.h;
-      
+
       if V>0 then
         (rho*V*der(h)) = (outfl.m_flow/Np)*outfl.h + (infl.m_flow/Np)*infl.h + Phyd;
       else
@@ -2670,7 +2670,7 @@ PumpMech</tt> pump models.
       end if;
       Phyd = P*etaMech;
       eta = ((outfl.p - infl.p)*w/rho)/(P + P_eps);
-      
+
       if ComputeNPSHa then
         pv=SatMedium.saturationPressure(fluid.T);
         NPSHa=(infl.p-pv)/(rho*Modelica.Constants.g_n);
@@ -2678,15 +2678,15 @@ PumpMech</tt> pump models.
         pv=0;
         NPSHa=0;
       end if;
-      
-    initial equation 
+
+    initial equation
       head_nom[1]*g = -A*q_nom[1]^2 + B*q_nom[1] + C;
       head_nom[2]*g = -A*q_nom[2]^2 + B*q_nom[2] + C;
       head_nom[3]*g = -A*q_nom[3]^2 + B*q_nom[3] + C;
       P_cons[1] = D*(n0^2)*q_nom[1] - E*n0*(q_nom[1]^2) + F*(n0^2);
       P_cons[2] = D*(n0^2)*q_nom[2] - E*n0*(q_nom[2]^2) + F*(n0^2);
       P_cons[3] = D*(n0^2)*q_nom[3] - E*n0*(q_nom[3]^2) + F*(n0^2);
-      
+
       annotation (
         Icon,
         Diagram,
@@ -2721,21 +2721,21 @@ PumpMech</tt> pump models.
 </ul>
 </html>"));
     end PumpBase;
-    
-    model Pump "Centrifugal pump with ideally controlled speed" 
+
+    model Pump "Centrifugal pump with ideally controlled speed"
       extends PumpBase;
       import Modelica.SIunits.Conversions.NonSIunits.*;
       parameter AngularVelocity_rpm n_const=n0 "Constant rotational speed";
-      Modelica.Blocks.Interfaces.RealInput in_n "RPM" 
+      Modelica.Blocks.Interfaces.RealInput in_n "RPM"
         annotation (extent=[-36, 70; -16, 90], rotation=-90);
-    equation 
+    equation
       if cardinality(in_n)==0 then
         n = n_const;
         in_n = 0;
       else
         n = in_n;
       end if;
-      
+
       annotation (
         Icon(
           Text(extent=[-58,94; -30,74], string="n"),
@@ -2762,14 +2762,14 @@ PumpMech</tt> pump models.
 </ul>
 </html>"));
     end Pump;
-    
-    model PumpMech "Centrifugal pump with mechanical connector for the shaft" 
+
+    model PumpMech "Centrifugal pump with mechanical connector for the shaft"
       extends PumpBase;
       Modelica.SIunits.Angle phi "Shaft angle";
       Modelica.SIunits.AngularVelocity omega "Shaft angular velocity";
-      Modelica.Mechanics.Rotational.Interfaces.Flange_a MechPort 
+      Modelica.Mechanics.Rotational.Interfaces.Flange_a MechPort
         annotation (extent=[80,4; 110,32]);
-    equation 
+    equation
       phi = MechPort.phi;
       omega = der(phi);
       n = Modelica.SIunits.Conversions.to_rpm(omega);
@@ -2802,8 +2802,8 @@ PumpMech</tt> pump models.
 </ul>
 </html>"));
     end PumpMech;
-    
-    model ValveLin "Valve with linear pressure drop" 
+
+    model ValveLin "Valve with linear pressure drop"
      annotation (Icon(
           Line(points=[0, 40; 0, 0], style(
               color=0,
@@ -2820,7 +2820,7 @@ PumpMech</tt> pump models.
           Rectangle(extent=[-20, 60; 20, 40], style(
               color=0,
               fillColor=0,
-              fillPattern=1))), Diagram, 
+              fillPattern=1))), Diagram,
         Documentation(revisions="<html>
 <ul>
 <li><i>27 Sep 2004</i>
@@ -2831,19 +2831,19 @@ PumpMech</tt> pump models.
        First release.</li>
 </ul>
 </html>"));
-      replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
-        "Medium model" 
+      replaceable package Medium = Modelica_Media.Interfaces.PartialMedium
+        "Medium model"
                    annotation(choicesAllMatching= true);
       parameter Real Kv(unit="kg/(s.Pa)") "Nominal hydraulic conductance";
       Modelica.SIunits.MassFlowRate w "Mass flowrate";
       Modelica.SIunits.SpecificEnthalpy h "Fluid specific enthalpy";
-      Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium=Medium) 
+      Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium=Medium)
                     annotation (extent=[-120, -20; -80, 20]);
-      Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium=Medium) 
+      Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium=Medium)
                      annotation (extent=[80, -20; 120, 20]);
-      Modelica.Blocks.Interfaces.RealInput cmd 
+      Modelica.Blocks.Interfaces.RealInput cmd
         annotation (extent=[-20, 60; 20, 100], rotation=-90);
-    equation 
+    equation
       inlet.m_flow + outlet.m_flow = 0;
       w = inlet.m_flow;
       inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,h);
@@ -2864,12 +2864,12 @@ PumpMech</tt> pump models.
 </html>"));
     end ValveLin;
     annotation (uses(Modelica(version="2.1 Beta1")));
-    
-    
-    
-    model SimpleMotor 
-      "A simple model of an electrical dc motor (based on DriveLib model)." 
-      
+
+
+
+    model SimpleMotor
+      "A simple model of an electrical dc motor (based on DriveLib model)."
+
       annotation (
         Coordsys(
           extent=[-100, -100; 100, 100],
@@ -2903,7 +2903,7 @@ Schiavo</a>:<br>
 </HTML>"),
         DymolaStoredErrors,
         Diagram);
-      
+
       parameter Modelica.SIunits.Resistance Rm=10 "Motor Resistance";
       parameter Modelica.SIunits.Inductance Lm=1 "Motor Inductance";
       parameter Real kT=1 "Torque Constant";
@@ -2912,94 +2912,94 @@ Schiavo</a>:<br>
         final unit="N.m.s/rad",
         final min=0) = 0 "Damping constant";
       Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm n;
-      Modelica.Electrical.Analog.Sources.SignalVoltage Vs 
+      Modelica.Electrical.Analog.Sources.SignalVoltage Vs
         annotation (extent=[-80, 10; -60, -10], rotation=90);
-      Modelica.Electrical.Analog.Basic.Ground G 
+      Modelica.Electrical.Analog.Basic.Ground G
         annotation (extent=[-80, -60; -60, -40]);
-      Modelica.Electrical.Analog.Basic.Resistor R(R=Rm) 
+      Modelica.Electrical.Analog.Basic.Resistor R(R=Rm)
         annotation (extent=[-60, 30; -40, 50]);
-      Modelica.Electrical.Analog.Basic.Inductor L(L=Lm) 
+      Modelica.Electrical.Analog.Basic.Inductor L(L=Lm)
         annotation (extent=[-20, 30; 0, 50]);
-      Modelica.Electrical.Analog.Basic.EMF emf(k=kT) 
+      Modelica.Electrical.Analog.Basic.EMF emf(k=kT)
         annotation (extent=[0, -10; 20, 10]);
-      Modelica.Blocks.Interfaces.RealInput inPort 
+      Modelica.Blocks.Interfaces.RealInput inPort
         annotation (extent=[-108, -10; -90, 10]);
-      Modelica.Mechanics.Rotational.Inertia J(J=Jm) 
+      Modelica.Mechanics.Rotational.Inertia J(J=Jm)
         annotation (extent=[48, -10; 68, 10]);
-      Modelica.Mechanics.Rotational.Interfaces.Flange_b flange_b 
+      Modelica.Mechanics.Rotational.Interfaces.Flange_b flange_b
         annotation (extent=[96, -12; 120, 12]);
-      Modelica.Mechanics.Rotational.Fixed Fixed 
+      Modelica.Mechanics.Rotational.Fixed Fixed
         annotation (extent=[26, -52; 46, -32]);
-      Modelica.Mechanics.Rotational.Damper Damper(d=dm) 
+      Modelica.Mechanics.Rotational.Damper Damper(d=dm)
         annotation (extent=[26, -32; 46, -12], rotation=90);
-    equation 
+    equation
       connect(R.n, L.p) annotation (points=[-40, 40; -20, 40]);
       connect(L.n, emf.p) annotation (points=[0, 40; 10, 40; 10, 10]);
       connect(emf.flange_b, J.flange_a) annotation (points=[20, 0; 48, 0]);
       connect(R.p, Vs.p) annotation (points=[-60, 40; -70, 40; -70, 10]);
-      connect(Vs.n, emf.n) 
+      connect(Vs.n, emf.n)
         annotation (points=[-70, -10; -70, -20; 10, -20; 10, -10]);
       connect(G.p, Vs.n) annotation (points=[-70, -40; -70, -10]);
       connect(J.flange_b, flange_b) annotation (points=[68, 0; 108, 0]);
       n = Modelica.SIunits.Conversions.to_rpm(J.w);
-      connect(Fixed.flange_b, Damper.flange_a) 
+      connect(Fixed.flange_b, Damper.flange_a)
         annotation (points=[36, -42; 36, -32], style(color=0));
-      connect(Damper.flange_b, J.flange_a) 
+      connect(Damper.flange_b, J.flange_a)
         annotation (points=[36, -12; 36, 0; 48, 0], style(color=0));
       connect(inPort, Vs.v) annotation (points=[-99,0; -88,0; -88,-4.28612e-016;
             -77,-4.28612e-016], style(color=3, rgbcolor={0,0,255}));
     end SimpleMotor;
-    
-    model TestValve "Test case for valves" 
+
+    model TestValve "Test case for valves"
       package Medium = Modelica_Media.Water.StandardWater;
       Sources.FixedAmbient_phX SourceP1(
       redeclare package Medium = Medium,
         p_ambient=10e5,
-        h_ambient=1e5) 
+        h_ambient=1e5)
         annotation (extent=[-100,30; -82,52]);
       Sources.FixedAmbient_phX SourceP2(
       redeclare package Medium = Medium,
         p_ambient=8e5,
-        h_ambient=1e5) 
+        h_ambient=1e5)
         annotation (extent=[-100,-50; -84,-30]);
       Sources.FixedAmbient_phX SinkP1(
       redeclare package Medium = Medium,
-        p_ambient=1e5) 
+        p_ambient=1e5)
         annotation (extent=[76,-4; 60,16]);
       ValveLiquid V1(
         rhonom=1000,
         CvData=3,
         dpnom=9e5,
         wnom=1.5,
-      redeclare package Medium = Medium) 
+      redeclare package Medium = Medium)
                   annotation (extent=[-50, 58; -30, 78]);
       ValveLiquid V2(
         dpnom=5e5,
         rhonom=1000,
         CvData=3,
         wnom=1.2,
-      redeclare package Medium = Medium) 
+      redeclare package Medium = Medium)
                   annotation (extent=[-38, 26; -18, 46]);
       ValveLiquid V3(
         dpnom=3e5,
         rhonom=1000,
         CvData=3,
         wnom=1.1,
-      redeclare package Medium = Medium) 
+      redeclare package Medium = Medium)
                   annotation (extent=[-38, -38; -18, -18]);
       ValveLiquid V4(
         dpnom=8e5,
         rhonom=1000,
         CvData=3,
         wnom=1.3,
-      redeclare package Medium = Medium) 
+      redeclare package Medium = Medium)
                   annotation (extent=[-38, -78; -18, -58]);
       ValveLiquid V5(
         dpnom=4e5,
         wnom=2,
         rhonom=1000,
         CvData=3,
-      redeclare package Medium = Medium) 
+      redeclare package Medium = Medium)
                   annotation (extent=[28, -4; 48, 16]);
       annotation (
         Diagram,
@@ -3017,11 +3017,11 @@ Casella</a>:<br>
 </HTML>"));
       Sources.FixedAmbient_phX SinkP2(
       redeclare package Medium = Medium,
-        p_ambient=1e5) 
+        p_ambient=1e5)
         annotation (extent=[2,58; -16,78]);
       Sources.FixedAmbient_phX SinkP3(
       redeclare package Medium = Medium,
-        p_ambient=1e5) 
+        p_ambient=1e5)
         annotation (extent=[14,-78; -2,-58]);
       Modelica.Blocks.Sources.Ramp CloseLoad(
         duration=1,
@@ -3032,22 +3032,22 @@ Casella</a>:<br>
         duration=2,
         height=1,
         offset=0,
-        startTime=1) 
+        startTime=1)
                     annotation (extent=[-92, 74; -72, 94]);
       Modelica.Blocks.Sources.Ramp CloseValves(
         duration=2,
         height=-1,
         offset=1,
-        startTime=1) 
+        startTime=1)
                     annotation (extent=[-96, -12; -76, 8]);
-    equation 
-      connect(CloseLoad.y,       V5.theta) 
+    equation
+      connect(CloseLoad.y,       V5.theta)
         annotation (points=[29, 38; 38, 38; 38, 14], style(color=3));
-      connect(OpenRelief.y,       V1.theta) 
+      connect(OpenRelief.y,       V1.theta)
         annotation (points=[-71, 84; -40, 84; -40, 76], style(color=3));
       connect(OpenRelief.y,       V4.theta) annotation (points=[-71, 84; -70, -6;
              -42, -6; -42, -50; -28, -50; -28, -60], style(color=3));
-      connect(CloseValves.y,       V3.theta) 
+      connect(CloseValves.y,       V3.theta)
         annotation (points=[-75, -2; -28, -2; -28, -20], style(color=3));
       connect(CloseValves.y,       V2.theta) annotation (points=[-75, -2; -42,
             -2; -42, 54; -28, 54; -28, 44], style(color=3));
@@ -3055,7 +3055,7 @@ Casella</a>:<br>
           style(color=69, rgbcolor={0,127,255}));
       connect(V3.outlet, V5.inlet) annotation (points=[-18,-28; 6,-28; 6,6; 28,6],
           style(color=69, rgbcolor={0,127,255}));
-      connect(V5.outlet, SinkP1.port) 
+      connect(V5.outlet, SinkP1.port)
         annotation (points=[48,6; 59.2,6], style(color=69, rgbcolor={0,127,255}));
       connect(V4.outlet, SinkP3.port) annotation (points=[-18,-68; -2.8,-68], style(
             color=69, rgbcolor={0,127,255}));
@@ -3070,17 +3070,17 @@ Casella</a>:<br>
       connect(SourceP2.port, V3.inlet) annotation (points=[-83.2,-40; -60,-40;
             -60,-28; -38,-28], style(color=69, rgbcolor={0,127,255}));
     end TestValve;
-    
-    model TestValveChoked "Test case for valves in choked flow" 
+
+    model TestValveChoked "Test case for valves in choked flow"
       Sources.FixedAmbient_phX SourceP1( p_ambient=5e5, h_ambient=400e3,
-        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+        redeclare package Medium = Modelica_Media.Water.StandardWater)
         annotation (extent=[-52,28; -36,48]);
       annotation (
         Diagram,
         experiment(StopTime=4, Tolerance=1e-006),
         Documentation(info="<HTML>
 <p>This model tests the transition from normal to choked flow for the <tt>ValveLiq</tt> and <tt>ValveVap</tt> models.
-<p>Simulate the model for 4 s and observe the flowrate through the two valves. 
+<p>Simulate the model for 4 s and observe the flowrate through the two valves.
 <p><b>Revision history:</b></p>
 <ul>
 <li><i>1 Oct 2003</i>
@@ -3089,15 +3089,15 @@ Casella</a>:<br>
        First release.</li>
 </ul>
 </HTML>"));
-      Modelica.Blocks.Sources.Constant Constant1 
+      Modelica.Blocks.Sources.Constant Constant1
         annotation (extent=[-42, 64; -22, 84]);
       ValveLiquidChoked valveLiquid(
-        dpnom=2e5, 
-        wnom=1, 
-        rhonom=900, 
-        CvData=3, 
-        CheckValve=false, 
-        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+        dpnom=2e5,
+        wnom=1,
+        rhonom=900,
+        CvData=3,
+        CheckValve=false,
+        redeclare package Medium = Modelica_Media.Water.StandardWater)
                           annotation (extent=[-20, 28; 0, 48]);
       Modelica.Blocks.Sources.Sine Sine1(
         amplitude=2.5e5,
@@ -3106,17 +3106,17 @@ Casella</a>:<br>
         offset=3e5,
         startTime=1)  annotation (extent=[2, 64; 22, 84]);
       Sources.FixedAmbient_phX SourceP2(p_ambient=60e5, h_ambient=2.9e6,
-        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+        redeclare package Medium = Modelica_Media.Water.StandardWater)
         annotation (extent=[-62,-54; -44,-34]);
       ValveGas valveVapour(
-        dpnom=30e5, 
-        pnom=60e5, 
-        wnom=1, 
-        rhonom=27, 
-        CvData=3, 
-        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+        dpnom=30e5,
+        pnom=60e5,
+        wnom=1,
+        rhonom=27,
+        CvData=3,
+        redeclare package Medium = Modelica_Media.Water.StandardWater)
                   annotation (extent=[-20, -54; 0, -34]);
-      Modelica.Blocks.Sources.Constant Constant2 
+      Modelica.Blocks.Sources.Constant Constant2
         annotation (extent=[-52, -14; -32, 6]);
       Modelica.Blocks.Sources.Sine Sine2(
         amplitude=49.5e5,
@@ -3124,38 +3124,38 @@ Casella</a>:<br>
         phase=3.14159,
         offset=50e5,
         startTime=1)  annotation (extent=[6,-10; 26,10]);
-      SinkP SinkP1(redeclare package Medium = 
-            Modelica_Media.Water.StandardWater) 
+      SinkP SinkP1(redeclare package Medium =
+            Modelica_Media.Water.StandardWater)
         annotation (extent=[34,26; 54,46]);
-      SinkP SinkP2(redeclare package Medium = 
-            Modelica_Media.Water.StandardWater, h=2.9e6) 
+      SinkP SinkP2(redeclare package Medium =
+            Modelica_Media.Water.StandardWater, h=2.9e6)
         annotation (extent=[34,-54; 54,-34]);
-    equation 
-      connect(SourceP1.port, valveLiquid.inlet) 
+    equation
+      connect(SourceP1.port, valveLiquid.inlet)
                                              annotation (points=[-35.2,38; -20,
             38], style(color=69, rgbcolor={0,127,255}));
-      connect(SourceP2.port, valveVapour.inlet) 
+      connect(SourceP2.port, valveVapour.inlet)
                                              annotation (points=[-43.1,-44; -20,
             -44], style(color=69, rgbcolor={0,127,255}));
-      connect(Constant1.y, valveLiquid.theta) 
+      connect(Constant1.y, valveLiquid.theta)
                                            annotation (points=[-21,74; -10,74;
             -10,46], style(color=3, rgbcolor={0,0,255}));
-      connect(Constant2.y, valveVapour.theta) 
+      connect(Constant2.y, valveVapour.theta)
                                            annotation (points=[-31,-4; -10,-4;
             -10,-36], style(color=3, rgbcolor={0,0,255}));
-      connect(valveLiquid.outlet, SinkP1.flange) 
+      connect(valveLiquid.outlet, SinkP1.flange)
                                               annotation (points=[0,38; 17,38;
             17,36; 34,36], style(color=69, rgbcolor={0,127,255}));
       connect(Sine1.y, SinkP1.in_p0) annotation (points=[23,74; 40,74; 40,44.8],
           style(color=3, rgbcolor={0,0,255}));
-      connect(valveVapour.outlet, SinkP2.flange) 
+      connect(valveVapour.outlet, SinkP2.flange)
                                               annotation (points=[0,-44; 34,-44],
           style(color=69, rgbcolor={0,127,255}));
       connect(Sine2.y, SinkP2.in_p0) annotation (points=[27,0; 40,0; 40,-35.2],
           style(color=3, rgbcolor={0,0,255}));
     end TestValveChoked;
-    
-    model TestWaterPump "Test case for WaterPump" 
+
+    model TestWaterPump "Test case for WaterPump"
       annotation (
         Diagram,
         experiment(StopTime=10, Tolerance=1e-006),
@@ -3163,9 +3163,9 @@ Casella</a>:<br>
 <p>This model tests the <tt>Pump</tt> model with the check valve option active.
 <p>The sink pressure is varied sinusoidally with a period of 10 s, so as to operate the pump in all the possible working conditions, including stopped flow.
 <p>
-Simulation Interval = [0...10] sec <br> 
+Simulation Interval = [0...10] sec <br>
 Integration Algorithm = DASSL <br>
-Algorithm Tolerance = 1e-6 
+Algorithm Tolerance = 1e-6
 <p><b>Revision history:</b></p>
 <ul>
 <li><i>5 Feb 2004</i>
@@ -3174,15 +3174,15 @@ Schiavo</a>:<br>
        First release.</li>
 </ul>
 </HTML>"));
-      Sources.FixedAmbient_phX Source(redeclare package Medium = 
+      Sources.FixedAmbient_phX Source(redeclare package Medium =
             Modelica_Media.Water.StandardWater, h_ambient=1e5,
-        p_ambient=1e5) 
+        p_ambient=1e5)
         annotation (extent=[-82,24; -66,44]);
-      ValveLin ValveLin1(Kv=1e-5, redeclare package Medium = 
-            Modelica_Media.Water.StandardWater) 
+      ValveLin ValveLin1(Kv=1e-5, redeclare package Medium =
+            Modelica_Media.Water.StandardWater)
         annotation (extent=[8, 22; 28, 42]);
       SinkP SinkP1(p0=3e5,
-        redeclare package Medium = Modelica_Media.Water.StandardWater) 
+        redeclare package Medium = Modelica_Media.Water.StandardWater)
         annotation (extent=[42,20; 64,42]);
       Pump Pump1(
         rho0=1000,
@@ -3195,9 +3195,9 @@ Schiavo</a>:<br>
         q_nom={0,0.001,0.0015},
       redeclare package Medium = Modelica_Media.Water.StandardWater,
       redeclare package SatMedium = Modelica_Media.Water.StandardWater,
-        ComputeNPSHa=true, 
+        ComputeNPSHa=true,
         V=0.001)            annotation (extent=[-52, 26; -32, 46]);
-      Modelica.Blocks.Sources.Constant Constant1 
+      Modelica.Blocks.Sources.Constant Constant1
         annotation (extent=[-74,64; -54,84]);
       Modelica.Blocks.Sources.Sine Sine1(
         amplitude=5e5,
@@ -3205,20 +3205,20 @@ Schiavo</a>:<br>
         offset=3e5,
         phase=0,
         startTime=0)   annotation (extent=[78,64; 58,84]);
-    equation 
+    equation
       connect(Constant1.y,       ValveLin1.cmd) annotation (points=[-53,74; -16,74;
             -16,72; 18,72; 18,40],         style(color=3));
       connect(Sine1.y,       SinkP1.in_p0) annotation (points=[57,74; 48,74; 48,
             40.68; 48.6,40.68],  style(color=3));
-      connect(Pump1.outfl, ValveLin1.inlet) 
+      connect(Pump1.outfl, ValveLin1.inlet)
         annotation (points=[-36,43.2; -14,43.2; -14,32; 8,32]);
       connect(Source.port, Pump1.infl) annotation (points=[-65.2,34; -58,34; -58,
             38.2; -50,38.2], style(color=69, rgbcolor={0,127,255}));
       connect(ValveLin1.outlet, SinkP1.flange) annotation (points=[28,32; 35,32; 35,
             31; 42,31], style(color=69, rgbcolor={0,127,255}));
     end TestWaterPump;
-    
-    model TestWaterPumpMech "Test case for WaterPumpMech" 
+
+    model TestWaterPumpMech "Test case for WaterPumpMech"
       annotation (
         Diagram,
         experiment(StopTime=25, Tolerance=1e-006),
@@ -3227,16 +3227,16 @@ Schiavo</a>:<br>
 The simulation starts with a stopped motor and a closed valve.
 <ul>
     <li>t=2 s: The voltage supplied is increased up to 380V in 5 s.
-    <li>t=15 s, The valve is opened in 5 s. 
+    <li>t=15 s, The valve is opened in 5 s.
 </ul>
 <p>
-Simulation Interval = [0...25] sec <br> 
+Simulation Interval = [0...25] sec <br>
 Integration Algorithm = DASSL <br>
-Algorithm Tolerance = 1e-6 
+Algorithm Tolerance = 1e-6
 </p>
 <p><b>Revision history:</b></p>
 <ul>
-        <li><i>5 Feb 2004</i> by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>, 
+        <li><i>5 Feb 2004</i> by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>,
         First release.</li>
 </ul>
 </html>"));
@@ -3251,19 +3251,19 @@ Algorithm Tolerance = 1e-6
       redeclare package Medium = Modelica_Media.Water.StandardWater,
         redeclare package SatMedium = Modelica_Media.Water.StandardWater,
         V=0.001)              annotation (extent=[-28,6; -4,30]);
-      Sources.FixedAmbient_phX Source(redeclare package Medium = 
-            Modelica_Media.Water.StandardWater) 
+      Sources.FixedAmbient_phX Source(redeclare package Medium =
+            Modelica_Media.Water.StandardWater)
                                        annotation (extent=[-58,8; -38,32]);
-      ValveLin Valve(Kv=1e-5, redeclare package Medium = 
-            Modelica_Media.Water.StandardWater) 
+      ValveLin Valve(Kv=1e-5, redeclare package Medium =
+            Modelica_Media.Water.StandardWater)
         annotation (extent=[14, 14; 34, 34]);
       Modelica.Blocks.Sources.Ramp Ramp1(
         height=1,
         duration=5,
         offset=0,
         startTime=15)   annotation (extent=[-12, 42; 8, 62]);
-      Sources.FixedAmbient_phX Sink(p_ambient=0.8e5, redeclare package Medium 
-          = Modelica_Media.Water.StandardWater) 
+      Sources.FixedAmbient_phX Sink(p_ambient=0.8e5, redeclare package Medium
+          = Modelica_Media.Water.StandardWater)
         annotation (extent=[70,14; 52,36]);
       Modelica.Blocks.Sources.Ramp Ramp2(
         height=380,
@@ -3276,8 +3276,8 @@ Algorithm Tolerance = 1e-6
         kT=35,
         Jm=10,
         dm=1) annotation (extent=[-30, -34; -10, -14]);
-    equation 
-      connect(Pump.outfl, Valve.inlet) 
+    equation
+      connect(Pump.outfl, Valve.inlet)
         annotation (points=[-8.8,26.64; 5.9,26.64; 5.9,24; 14,24]);
       connect(SimpleMotor1.flange_b, Pump.MechPort) annotation (points=[-9.2,
             -24; -6,-24; -6,0; 4,0; 4,20.16; -4.6,20.16],style(color=0));
