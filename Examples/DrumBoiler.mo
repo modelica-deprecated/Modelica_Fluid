@@ -164,65 +164,6 @@ Simulate for 7200 seconds.
       port_a.m_flow =Y           *k*dp;
     end Valve;
     
-    model MassFlowSource_h 
-      "Ideal pump that produces a mass flow rate from a large reservoir defined by input signal" 
-      
-      import Modelica_Fluid.*;
-      import Modelica_Fluid.Interfaces.*;
-      import Modelica_Media.Interfaces.*;
-      
-      import SI = Modelica.SIunits;
-      import Modelica.SIunits.Conversions.*;
-      
-      FluidPort_b port(redeclare model Medium = Medium) 
-        annotation (extent=[100, -10; 120, 10], rotation=0);
-      replaceable package Medium = PartialMedium extends PartialMedium 
-        "Medium in the component"   annotation (choicesAllMatching=true);
-      
-      parameter SI.SpecificEnthalpy h_ambient=5e5 "Ambient enthalphy";
-      parameter SI.Pressure p_start=from_bar(1.0) 
-        "|Initialization|| Initial pressure";
-      annotation (
-        Coordsys(
-          extent=[-100, -100; 100, 100],
-          grid=[2, 2],
-          component=[20, 20]),
-        Icon(
-          Rectangle(extent=[20, 60; 100, -60], style(
-              color=0,
-              gradient=2,
-              fillColor=8)),
-          Rectangle(extent=[38, 40; 100, -40], style(
-              color=69,
-              gradient=2,
-              fillColor=69)),
-          Ellipse(extent=[-100, 80; 60, -80], style(fillColor=7)),
-          Polygon(points=[-60, 70; 60, 0; -60, -68; -60, 70], style(color=73,
-                 fillColor=73)),
-          Text(
-            extent=[-54, 32; 16, -30],
-            string="m'",
-            style(color=41, fillColor=41)),
-          Text(extent=[-142, 142; 156, 88], string="%name"),
-          Text(
-            extent=[-126, -86; 146, -116],
-            style(color=0),
-            string="%h_ambient")),
-        Window(
-          x=0.45,
-          y=0.01,
-          width=0.44,
-          height=0.65),
-        Diagram);
-      Modelica.Blocks.Interfaces.RealInput m_flow(
-                                              redeclare type SignalType = 
-            SI.MassFlowRate) 
-        "Mass flow rate from an infinite reservoir in to the port as signal" 
-        annotation (extent=[-140, -20; -100, 20]);
-    equation 
-      port.m_flow = -noEvent(max(m_flow,           0));
-      port.H_flow = semiLinear(port.m_flow, port.h, h_ambient);
-    end MassFlowSource_h;
     
     model DrumBoiler 
       "Complete drum boiler model, including evaporator and supplementary components" 
@@ -280,8 +221,9 @@ Simulate for 7200 seconds.
         annotation (extent=[10,24; 30,44]);
       Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
         annotation (extent=[-60, 30; -80, 50]);
-      MassFlowSource_h pump(redeclare package Medium = 
-            Modelica_Media.Water.WaterIF97_ph) 
+      Modelica_Fluid.Sources.PrescribedMassFlowRate_hX pump(redeclare package 
+          Medium = 
+            Modelica_Media.Water.WaterIF97_ph, h_ambient=5e5) 
         annotation (extent=[-80, -20; -60, 0]);
       Modelica.Blocks.Math.Feedback feedback 
         annotation (extent=[-26, 30; -46, 50]);
@@ -333,7 +275,7 @@ Simulate for 7200 seconds.
             -26,5; -20,5],         style(rgbcolor={0,0,127}));
       connect(evaporator.V, V_l) 
         annotation (points=[-36,1; -36,20; -20,20],    style(rgbcolor={0,0,127}));
-      connect(controller.y,       pump.m_flow) annotation (points=[-81, 40; -90,
+      connect(controller.y,       pump.m_flow_ambient) annotation (points=[-81, 40; -90,
              40; -90, -10; -82, -10], style(rgbcolor={0,0,127}));
       connect(MW2W.y,furnace.Q_flow)       annotation (points=[-84.5,-60; -40,
             -60; -40,-50],     style(rgbcolor={0,0,127}));
