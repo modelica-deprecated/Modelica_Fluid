@@ -703,17 +703,12 @@ is negative. It must be positive.
 ");
     end for;
     
-    assert(nX > 0 and abs(sum(X_ambient) - 1.0) <
+    assert(nX == 0 or nX > 1 and abs(sum(X_ambient) - 1.0) <
       1.e-10, "
 Wrong ambient mass fractions in medium \"" + mediumName + "\":
 This medium requires that the ambient mass fractions X_ambient
 sum up to 1. However, sum(X_ambient) = " + String(sum(X_ambient)) + ".
 ");
     
-    assert(sum(X_ambient) < 1 + 1.e-10, "
-Wrong ambient mass fractions in medium \"" + mediumName + "\":
-This medium requires that the sum of the ambient mass fractions X_ambient
-is at most 1. However, sum(X_ambient) = " + String(sum(X_ambient)) + ".
-");
   end checkAmbient;
 end Utilities;
