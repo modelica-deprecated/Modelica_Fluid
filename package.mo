@@ -2,11 +2,11 @@ import "FiniteVolume/FiniteVolume.mo";
 package Modelica_Fluid "Fluid package that should be included into package Modelica"
 
 annotation (
-  version="0.797",
+  version="0.798",
   versionDate="2004-09-27",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(Modelica(version="2.1 Beta1")),
+  uses(Modelica(version="2.1")),
   Documentation(info="<html>
 <p>
 This library provides basic components and property models
