@@ -2,8 +2,8 @@ import "FiniteVolume/FiniteVolume.mo";
 package Modelica_Fluid "Fluid package that should be included into package Modelica"
 
 annotation (
-  version="0.798",
-  versionDate="2004-09-27",
+  version="0.900",
+  versionDate="2004-10-18",
   preferedView="info",
   Settings(NewStateSelection=true),
   uses(Modelica(version="2.1")),
@@ -59,7 +59,7 @@ considerably.
     
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
-<h3><font color=\"#008000\">Version 0.797, 2004-09-27</font></h3>
+<h3><font color=\"#008000\">Version 0.900, 2004-10-18</font></h3>
 <ul>
 <li> Changes as decided on 40th Modelica Design Meeting in Dresden 
      (see also minutes)
