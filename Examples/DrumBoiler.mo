@@ -37,9 +37,11 @@ Simulate for 7200 seconds.
       import SI = Modelica.SIunits;
       
       // property and interface declarations
-      package Medium = WaterPhaseBoundaryIF97;
-      Medium.BaseProperties medium_a(region=1, p=port_a.p) "Medium in port_a";
-      Medium.BaseProperties medium_b(region=2, p=port_b.p) "Medium in port_b";
+      replaceable package Medium = Modelica.Media.Interfaces.PartialTwoPhaseMedium
+        extends Modelica.Media.Interfaces.PartialTwoPhaseMedium "Medium model" 
+                       annotation (choicesAllMatching=true);
+      Medium.BaseProperties medium_a(h=port_a.h, p=port_a.p) "Medium in port_a";
+      Medium.BaseProperties medium_b(h=port_b.h, p=port_b.p) "Medium in port_b";
       FluidPort_a port_a(redeclare package Medium = Medium) 
         annotation (extent=[-120, -10; -100, 10]);
       FluidPort_b port_b(redeclare package Medium = Medium) 
@@ -91,19 +93,24 @@ Simulate for 7200 seconds.
     protected 
       SI.Pressure p(start=p_start, stateSelect=StateSelect.prefer) 
         "pressure inside drum boiler";
+      SI.Temperature T "temperature inside drum boiler";
       SI.Volume V_v "volume of vapour phase";
       SI.Volume V_l(start=V_start, stateSelect=StateSelect.prefer) 
         "volumes of liquid phase";
-      SI.SpecificEnthalpy h_v=medium_b.h "specific enthalpy of vapour";
-      SI.SpecificEnthalpy h_l=medium_a.h "specific enthalpy of liquid";
-      SI.Density rho_v=medium_b.d "density in vapour phase";
-      SI.Density rho_l=medium_a.d "density in liquid phase";
+      SI.SpecificEnthalpy h_v=Medium.dewEnthalpy(medium_b.sat) 
+        "specific enthalpy of vapour";
+      SI.SpecificEnthalpy h_l=Medium.bubbleEnthalpy(medium_b.sat) 
+        "specific enthalpy of liquid";
+      SI.Density rho_v=Medium.dewDensity(medium_b.sat) 
+        "density in vapour phase";
+      SI.Density rho_l=Medium.bubbleDensity(medium_b.sat) 
+        "density in liquid phase";
       SI.Mass m "total mass of drum boiler";
       SI.Energy U "internal energy";
       SI.Temperature T_D=heatPort.T "temperature of drum";
       SI.HeatFlowRate q_F=heatPort.Q_flow "heat flow rate from furnace";
       SI.SpecificEnthalpy h_W=port_a.h "feed water enthalpy";
-      SI.SpecificEnthalpy h_S=medium_b.h "steam enthalpy";
+      SI.SpecificEnthalpy h_S=port_b.h "steam enthalpy";
       SI.MassFlowRate qm_W=port_a.m_flow "feed water mass flow rate";
       SI.MassFlowRate qm_S=port_b.m_flow "steam mass flow rate";
     equation 
@@ -113,9 +120,11 @@ Simulate for 7200 seconds.
       U = rho_v*V_v*h_v + rho_l*V_l*h_l - p*V_t + m_D*cp_D*T_D;
       der(m) = qm_W + qm_S;
       der(U) = q_F + qm_W*h_W + qm_S*h_S;
-      T_D = medium_a.T;
-      // ideal heat transfer between metal and water
       V_t = V_l + V_v;
+      // saturated steam constraint
+      T = Medium.saturationTemperature(p);
+      // ideal heat transfer between metal and water
+      T_D = T;
       
       // pressure and specific total enthalpies at ports
       port_a.p = p;
@@ -169,7 +178,9 @@ Simulate for 7200 seconds.
       
       import Modelica.SIunits.Conversions.*;
       
-      Evaporator evaporator annotation (extent=[-50, -20; -30, 0]);
+      Evaporator evaporator(redeclare package Medium = 
+            Modelica.Media.Water.WaterIF97_ph) 
+                            annotation (extent=[-50, -20; -30, 0]);
       annotation (
         uses(Modelica_Fluid(version="0.72")),
         Diagram,
@@ -302,35 +313,5 @@ Simulate for 7200 seconds.
             40; -90,-10; -82,-10], style(color=74, rgbcolor={0,0,127}));
     end DrumBoiler;
     
-    package WaterPhaseBoundaryIF97 
-      "Physical properties for water at phase boundary at boiling and dew curves" 
-      
-      extends Modelica.Media.Interfaces.PartialMedium(
-        mediumName="WaterIF97",
-        substanceNames={"water"},
-        singleState=false,
-        MassFlowRate(quantity="MassFlowRate.WaterIF97"));
-      
-      redeclare model extends BaseProperties 
-        
-      annotation(structurallyIncomplete);
-        parameter Integer region=0 "specify region 1 (liquid) or 2 (vapour)";
-      equation 
-        
-        assert(region == 1 or region == 2,
-          "WaterPhaseBoundaryIF97 medium model only valid for regions 1 and 2");
-        T = Modelica.Media.Water.IF97_Utilities.BaseIF97.Basic.tsat(p);
-        if region == 1 then
-          d = Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.rhol_p(p);
-          h = Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.hl_p(p);
-        else
-          d = Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.rhov_p(p);
-          h = Modelica.Media.Water.IF97_Utilities.BaseIF97.Regions.hv_p(p);
-        end if;
-        u = h - p/d;
-        R = Modelica.Constants.R / Modelica.Media.Water.IF97_Utilities.BaseIF97.data.MH2O;
-        MM = Modelica.Media.Water.IF97_Utilities.BaseIF97.data.MH2O;
-      end BaseProperties;
-    end WaterPhaseBoundaryIF97;
   end Components;
 end DrumBoiler;
