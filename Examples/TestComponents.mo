@@ -26,15 +26,15 @@ package TestComponents
         redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[59, 0; 39, 20]);
     Modelica.Blocks.Sources.Ramp ramp1(
-      height={6},
-      duration={3},
-      offset={-3}) annotation (extent=[-80, 0; -60, 20]);
+      duration=3,
+      height=6,
+      offset=-3)   annotation (extent=[-80, 0; -60, 20]);
   equation 
     connect(MassFlowSource3.port, ShortPipe3.port_a) 
       annotation (points=[-20, 10; -3, 10], style(color=69));
     connect(ShortPipe3.port_b, ambient3.port) 
       annotation (points=[19, 10; 38, 10], style(color=69));
-    connect(ramp1.outPort, MassFlowSource3.m_dot) 
+    connect(ramp1.y,       MassFlowSource3.m_flow) 
       annotation (points=[-59, 10; -43, 10], style(color=3));
   end TestShortPipe;
   
@@ -57,15 +57,15 @@ package TestComponents
         redeclare package Medium = Modelica_Media.Air.SimpleAir) 
       annotation (extent=[-40, 0; -20, 20]);
     Modelica.Blocks.Sources.Ramp ramp(
-      height={6},
-      duration={3},
-      offset={-3}) annotation (extent=[-80, 0; -60, 20]);
+      duration=3,
+      height=6,
+      offset=-3)   annotation (extent=[-80, 0; -60, 20]);
   equation 
     connect(LongPipe.port_b, ambient.port) 
       annotation (points=[21, 10; 39, 10], style(color=69));
     connect(MassFlowSource1.port, LongPipe.port_a) 
       annotation (points=[-19, 10; -1, 10], style(color=69));
-    connect(ramp.outPort, MassFlowSource1.m_dot) 
+    connect(ramp.y,       MassFlowSource1.m_flow) 
       annotation (points=[-59, 10; -42, 10], style(color=3));
   end TestLongPipe;
   
@@ -85,7 +85,7 @@ package TestComponents
       redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
       T_ambient=from_degC(10)) annotation (extent=[-80, 70; -60, 90]);
     Modelica_Fluid.Examples.Components.ShortPipe shortPipe1a(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[-40, 70; -20, 90]);
@@ -114,7 +114,7 @@ corresponding medium model.
 "),   Coordsys(grid=[1, 1], component=[20, 20]));
     
     Modelica_Fluid.Examples.Components.ShortPipe shortPipe1b(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       redeclare package Medium = Modelica_Media.Water.SimpleLiquidWater,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[20, 70; 40, 90]);
@@ -138,14 +138,14 @@ corresponding medium model.
     Modelica_Fluid.Examples.Components.ShortPipe shortPipe2a(
       redeclare package Medium = Modelica_Media.Air.SimpleAir,
       dp_nominal=from_bar(0.01),
-      m_dot_nominal=1,
+      m_flow_nominal=1,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[-40, 20; -20, 40]);
     
     Modelica_Fluid.Examples.Components.ShortPipe shortPipe2b(
       redeclare package Medium = Modelica_Media.Air.SimpleAir,
       dp_nominal=from_bar(0.01),
-      m_dot_nominal=1,
+      m_flow_nominal=1,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[20, 20; 40, 40]);
     
@@ -167,13 +167,13 @@ corresponding medium model.
       annotation (extent=[-80, -30; -60, -10]);
     Modelica_Fluid.Examples.Components.ShortPipe shortPipe3a(
       dp_nominal=from_bar(0.01),
-      m_dot_nominal=1,
+      m_flow_nominal=1,
       redeclare package Medium = Modelica_Media.Air.DetailedAir,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[-40, -30; -20, -10]);
     Modelica_Fluid.Examples.Components.ShortPipe shortPipe3b(
       dp_nominal=from_bar(0.01),
-      m_dot_nominal=1,
+      m_flow_nominal=1,
       redeclare package Medium = Modelica_Media.Air.DetailedAir,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[20, -30; 40, -10]);
@@ -231,7 +231,7 @@ corresponding medium model.
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[-100, 20; -80, 40]);
     Components.ShortPipe shortPipe1(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[-60, 20; -40, 40]);
@@ -252,7 +252,7 @@ is instantaneous. The temperature is the same as in the upper part.
 </html>
 "));
     Components.ShortPipe shortPipe3(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[40, 20; 60, 40]);
@@ -267,7 +267,7 @@ is instantaneous. The temperature is the same as in the upper part.
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[-100, 60; -80, 80]);
     Components.ShortPipe shortPipe2(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[-60, 60; -40, 80]);
@@ -287,12 +287,12 @@ is instantaneous. The temperature is the same as in the upper part.
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[-100, -70; -80, -50]);
     Components.ShortPipe shortPipe4(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[-60, -70; -40, -50]);
     Components.ShortPipe shortPipe5(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[0, -70; 20, -50]);
@@ -307,7 +307,7 @@ is instantaneous. The temperature is the same as in the upper part.
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[-100, -30; -80, -10]);
     Components.ShortPipe shortPipe6(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Air.DetailedAir) 
       annotation (extent=[-60, -30; -40, -10]);
@@ -361,7 +361,7 @@ is instantaneous. The temperature is the same as in the upper part.
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-100, 20; -80, 40]);
     Components.ShortPipe shortPipe1(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-60, 20; -40, 40]);
@@ -382,7 +382,7 @@ is instantaneous. The temperature is the same as in the upper part.
 </html>
 "));
     Components.ShortPipe shortPipe3(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[40, 20; 60, 40]);
@@ -397,7 +397,7 @@ is instantaneous. The temperature is the same as in the upper part.
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-100, 60; -80, 80]);
     Components.ShortPipe shortPipe2(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-60, 60; -40, 80]);
@@ -419,12 +419,12 @@ is instantaneous. The temperature is the same as in the upper part.
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-100, -70; -80, -50]);
     Components.ShortPipe shortPipe4(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-60, -70; -40, -50]);
     Components.ShortPipe shortPipe5(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[0, -70; 20, -50]);
@@ -439,7 +439,7 @@ is instantaneous. The temperature is the same as in the upper part.
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-100, -30; -80, -10]);
     Components.ShortPipe shortPipe6(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-60, -30; -40, -10]);
@@ -508,12 +508,12 @@ is instantaneous. The temperature is the same as in the upper part.
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-80, -20; -60, 0]);
     Components.ShortPipe shortPipe4(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-40, -20; -20, 0]);
     Components.ShortPipe shortPipe5(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[20, -20; 40, 0]);
@@ -528,7 +528,7 @@ is instantaneous. The temperature is the same as in the upper part.
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-80, 20; -60, 40]);
     Components.ShortPipe shortPipe6(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica_Media.Water.IF97_ph) 
       annotation (extent=[-40, 20; -20, 40]);
@@ -559,7 +559,8 @@ is instantaneous. The temperature is the same as in the upper part.
       p_start=from_bar(100.0),
       initType=Modelica_Media.Interfaces.PartialMedium.Choices.Init.
           InitialStates,
-    redeclare package Medium = Modelica_Media.Water.IF97LocalApproximation_ph) 
+    redeclare package Medium = 
+          Modelica_Media.Water.IF97LocalApproximation_ph) 
       annotation (extent=[-12,40; 8,20],     rotation=180);
     
     import Modelica.SIunits.Conversions.*;
@@ -568,14 +569,16 @@ is instantaneous. The temperature is the same as in the upper part.
     Sources.FixedAmbient fixedAmbient1(
       p_ambient=from_bar(100.0),
       T_ambient=from_degC(110),
-    redeclare package Medium = Modelica_Media.Water.IF97LocalApproximation_ph) 
+    redeclare package Medium = 
+          Modelica_Media.Water.IF97LocalApproximation_ph) 
       annotation (extent=[-100, 20; -80, 40]);
     
     Components.ShortPipe shortPipe1(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       T_start=400.0,
-    redeclare package Medium = Modelica_Media.Water.IF97LocalApproximation_ph) 
+    redeclare package Medium = 
+          Modelica_Media.Water.IF97LocalApproximation_ph) 
       annotation (extent=[-60, 20; -40, 40]);
     
     annotation (Diagram, Documentation(info="<html>
@@ -595,16 +598,18 @@ is instantaneous. The temperature is the same as in the upper part.
 </html>
 "));
     Components.ShortPipe shortPipe3(
-      m_dot_nominal=10,
+      m_flow_nominal=10,
       frictionType=Modelica_Fluid.Examples.Types.FrictionTypes.ConstantLaminar,
       T_start=400,
-    redeclare package Medium = Modelica_Media.Water.IF97LocalApproximation_ph) 
+    redeclare package Medium = 
+          Modelica_Media.Water.IF97LocalApproximation_ph) 
       annotation (extent=[40, 20; 60, 40]);
     
     Sources.FixedAmbient fixedAmbient3(
       p_ambient=from_bar(98),
       T_ambient=from_degC(120),
-    redeclare package Medium = Modelica_Media.Water.IF97LocalApproximation_ph) 
+    redeclare package Medium = 
+          Modelica_Media.Water.IF97LocalApproximation_ph) 
       annotation (extent=[100, 20; 80, 40]);
     
   equation 

@@ -1,18 +1,18 @@
 package DrumBoiler 
-  "Drum boiler example, see Franke, Rode, Krueger: On-line Optimization of Drum Boiler Startup, 3rd International Modelica Conference, Linkoping, 2003"
-  
+  "Drum boiler example, see Franke, Rode, Krueger: On-line Optimization of Drum Boiler Startup, 3rd International Modelica Conference, Linkoping, 2003" 
   
   model DrumBoilerSimulation "Simulate start-up of DrumBoiler" 
     extends Modelica.Icons.Example;
     Components.DrumBoiler drumBoiler(temperatureSensor(measurementUnit=
-            Modelica_Fluid.Sensors.TemperatureUnits.Celsius), pressureSensor(
+            Modelica_Fluid.Sensors.TemperatureUnits.Celsius),
+        pressureSensor(
           measurementUnit=Modelica_Fluid.Sensors.PressureUnits.Bar)) 
-                                     annotation( extent=[-20, -40; 40, 20]);
+                                     annotation (extent=[-20, -40; 40, 20]);
     Modelica.Blocks.Sources.TimeTable q_F_Tab(table=[0, 0; 3600, 400; 7210,
-          400]) annotation( extent=[-80, 2; -60, 22]);
+          400]) annotation (extent=[-80, 2; -60, 22]);
     Modelica.Blocks.Sources.TimeTable Y_Valve_Tab(table=[0, 1; 3600, 1; 7210,
-           1]) annotation( extent=[-80, -40; -60, -20]);
-    annotation(
+           1]) annotation (extent=[-80, -40; -60, -20]);
+    annotation (
       Diagram,
       experiment(StopTime=7200),
       Documentation(info="<HTML>
@@ -22,9 +22,9 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.outPort, drumBoiler.q_F) annotation( points=[-59,12; -40,12; 
+    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,12; -40,12;
           -40,-16; -25.7,-16],        style(color=3));
-    connect(Y_Valve_Tab.outPort, drumBoiler.Y_Valve) annotation( points=[-59,
+    connect(Y_Valve_Tab.y,       drumBoiler.Y_Valve) annotation (points=[-59,
           -30; -44,-30; -44,-34; -25.7,-34],     style(
         color=3,
         fillColor=7,
@@ -34,8 +34,7 @@ Simulate for 7200 seconds.
   package Components 
     
     model Evaporator 
-      "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378"
-      
+      "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378" 
       
       import Modelica_Fluid.Interfaces.*;
       import Modelica.SIunits.Conversions.*;
@@ -46,17 +45,18 @@ Simulate for 7200 seconds.
       Medium.BaseProperties medium_a(region=1, p=port_a.p) "Medium in port_a";
       Medium.BaseProperties medium_b(region=2, p=port_b.p) "Medium in port_b";
       FluidPort_a port_a(redeclare package Medium = Medium) 
-        annotation( extent=[-120, -10; -100, 10]);
+        annotation (extent=[-120, -10; -100, 10]);
       FluidPort_b port_b(redeclare package Medium = Medium) 
-        annotation( extent=[120, -10; 100, 10]);
+        annotation (extent=[120, -10; 100, 10]);
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
-        annotation( extent=[-10, -120; 10, -100]);
-      Modelica.Blocks.Interfaces.OutPort V(redeclare type SignalType = 
+        annotation (extent=[-10, -120; 10, -100]);
+      Modelica.Blocks.Interfaces.RealOutput V(
+                                           redeclare type SignalType = 
             SI.Volume) "liquid volume (level)" 
-        annotation( extent=[30, 100; 50, 120], rotation=90);
-      Modelica.Blocks.Interfaces.OutPort sigma_D "Thermal stress in metal" 
-        annotation( extent=[100, 40; 120, 60]);
-      annotation(
+        annotation (extent=[30, 100; 50, 120], rotation=90);
+      Modelica.Blocks.Interfaces.RealOutput sigma_D "Thermal stress in metal" 
+        annotation (extent=[100, 40; 120, 60]);
+      annotation (
         Coordsys(grid=[1, 1], component=[20, 20]),
         Diagram,
         Icon(
@@ -105,11 +105,11 @@ Simulate for 7200 seconds.
       SI.Mass m "total mass of drum boiler";
       SI.Energy U "internal energy";
       SI.Temperature T_D=heatPort.T "temperature of drum";
-      SI.HeatFlowRate q_F=heatPort.Q_dot "heat flow rate from furnace";
+      SI.HeatFlowRate q_F=heatPort.Q_flow "heat flow rate from furnace";
       SI.SpecificEnthalpy h_W=port_a.h "feed water enthalpy";
       SI.SpecificEnthalpy h_S=medium_b.h "steam enthalpy";
-      SI.MassFlowRate qm_W=port_a.m_dot "feed water mass flow rate";
-      SI.MassFlowRate qm_S=port_b.m_dot "steam mass flow rate";
+      SI.MassFlowRate qm_W=port_a.m_flow "feed water mass flow rate";
+      SI.MassFlowRate qm_S=port_b.m_flow "steam mass flow rate";
     equation 
       
       // balance equations  
@@ -124,18 +124,17 @@ Simulate for 7200 seconds.
       // pressure and specific total enthalpies at ports
       port_a.p = p;
       port_b.p = p;
-      port_b.H_dot = semiLinear(port_b.m_dot, port_b.h, h_v);
-      port_a.H_dot = semiLinear(port_a.m_dot, port_a.h, h_l);
+      port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, h_v);
+      port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, h_l);
       
       // thermal stress
-      sigma_D.signal[1] = 60*der(T_D);
+      sigma_D           = 60*der(T_D);
       
       // liquid level 
-      V.signal[1] = V_l;
+      V           = V_l;
     end Evaporator;
     
-    model Valve "Simple controlled valve with linear pressure drop coefficient"
-      
+    model Valve "Simple controlled valve with linear pressure drop coefficient" 
       
       import SI = Modelica.SIunits;
       import Modelica.SIunits.Conversions.*;
@@ -147,10 +146,10 @@ Simulate for 7200 seconds.
       
       parameter Real k=1e-5 "linear valve coefficient";
       
-      Modelica.Blocks.Interfaces.InPort Y "Valve position" 
-        annotation( extent=[-10, -80; 10, -60], rotation=90);
+      Modelica.Blocks.Interfaces.RealInput Y "Valve position" 
+        annotation (extent=[-10, -80; 10, -60], rotation=90);
       
-      annotation( Icon(
+      annotation (Icon(
           Text(
             extent=[-126, -76; 130, -110],
             style(color=0),
@@ -166,12 +165,11 @@ Simulate for 7200 seconds.
           Line(points=[0, 0; 0, -72])));
     equation 
       residue = 0;
-      port_a.m_dot = Y.signal[1]*k*dp;
+      port_a.m_flow =Y           *k*dp;
     end Valve;
     
     model MassFlowSource_h 
-      "Ideal pump that produces a mass flow rate from a large reservoir defined by input signal"
-      
+      "Ideal pump that produces a mass flow rate from a large reservoir defined by input signal" 
       
       import Modelica_Fluid.*;
       import Modelica_Fluid.Interfaces.*;
@@ -181,14 +179,14 @@ Simulate for 7200 seconds.
       import Modelica.SIunits.Conversions.*;
       
       FluidPort_b port(redeclare model Medium = Medium) 
-        annotation( extent=[100, -10; 120, 10], rotation=0);
+        annotation (extent=[100, -10; 120, 10], rotation=0);
       replaceable package Medium = PartialMedium extends PartialMedium 
-        "Medium in the component"   annotation( choicesAllMatching=true);
+        "Medium in the component"   annotation (choicesAllMatching=true);
       
       parameter SI.SpecificEnthalpy h_ambient=5e5 "Ambient enthalphy";
       parameter SI.Pressure p_start=from_bar(1.0) 
         "|Initialization|| Initial pressure";
-      annotation(
+      annotation (
         Coordsys(
           extent=[-100, -100; 100, 100],
           grid=[2, 2],
@@ -220,23 +218,23 @@ Simulate for 7200 seconds.
           width=0.44,
           height=0.65),
         Diagram);
-      Modelica.Blocks.Interfaces.InPort m_dot(redeclare type SignalType = 
+      Modelica.Blocks.Interfaces.RealInput m_flow(
+                                              redeclare type SignalType = 
             SI.MassFlowRate) 
         "Mass flow rate from an infinite reservoir in to the port as signal" 
-        annotation( extent=[-140, -20; -100, 20]);
+        annotation (extent=[-140, -20; -100, 20]);
     equation 
-      port.m_dot = -noEvent(max(m_dot.signal[1], 0));
-      port.H_dot = semiLinear(port.m_dot, port.h, h_ambient);
+      port.m_flow = -noEvent(max(m_flow,           0));
+      port.H_flow = semiLinear(port.m_flow, port.h, h_ambient);
     end MassFlowSource_h;
     
     model DrumBoiler 
-      "Complete drum boiler model, including evaporator and supplementary components"
-      
+      "Complete drum boiler model, including evaporator and supplementary components" 
       
       import Modelica.SIunits.Conversions.*;
       
-      Evaporator evaporator annotation( extent=[-50, -20; -30, 0]);
-      annotation(
+      Evaporator evaporator annotation (extent=[-50, -20; -30, 0]);
+      annotation (
         uses(Modelica_Fluid(version="0.72")),
         Diagram,
         Coordsys(
@@ -264,92 +262,91 @@ Simulate for 7200 seconds.
               fillColor=7,
               fillPattern=1))));
       Modelica.Thermal.HeatTransfer.PrescribedHeatFlow furnace 
-        annotation( extent=[-50, -50; -30, -30], rotation=90);
-      Modelica.Blocks.Interfaces.InPort q_F 
-        annotation( extent=[-139, 0; -99, -40]);
-      Modelica.Blocks.Interfaces.InPort Y_Valve 
-        annotation( extent=[-139, -100; -99, -60]);
+        annotation (extent=[-50, -50; -30, -30], rotation=90);
+      Modelica.Blocks.Interfaces.RealInput q_F 
+        annotation (extent=[-139, 0; -99, -40]);
+      Modelica.Blocks.Interfaces.RealInput Y_Valve 
+        annotation (extent=[-139, -100; -99, -60]);
       Valve valve(redeclare package Medium = Modelica_Media.Water.IF97_ph, k=
-            1.5e-5) annotation( extent=[44, -20; 64, 0]);
+            1.5e-5) annotation (extent=[44, -20; 64, 0]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
             Modelica_Media.Water.IF97_ph) 
-        annotation( extent=[80, -20; 100, 0], rotation=180);
+        annotation (extent=[80, -20; 100, 0], rotation=180);
       Modelica_Fluid.Sensors.MassFlowSensor massFlowSensor(redeclare package 
           Medium = Modelica_Media.Water.IF97_ph) 
-        annotation( extent=[10, -20; 30, 0]);
+        annotation (extent=[10, -20; 30, 0]);
       Modelica_Fluid.Sensors.TemperatureSensor temperatureSensor(redeclare 
           package Medium = Modelica_Media.Water.IF97_ph) 
-        annotation( extent=[10, 60; 30, 80]);
+        annotation (extent=[10, 60; 30, 80]);
       Modelica_Fluid.Sensors.PressureSensor pressureSensor(redeclare package 
           Medium = Modelica_Media.Water.IF97_ph) 
-        annotation( extent=[10, 20; 30, 40]);
-      Modelica.Blocks.Continuous.PI controller(k={10}, T={120}) 
-        annotation( extent=[-60, 30; -80, 50]);
+        annotation (extent=[10, 20; 30, 40]);
+      Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
+        annotation (extent=[-60, 30; -80, 50]);
       MassFlowSource_h pump(redeclare package Medium = 
             Modelica_Media.Water.IF97_ph) 
-        annotation( extent=[-80, -20; -60, 0]);
+        annotation (extent=[-80, -20; -60, 0]);
       Modelica.Blocks.Math.Feedback feedback 
-        annotation( extent=[-26, 30; -46, 50]);
-      Modelica.Blocks.Sources.Constant levelSetPoint(k={67}) 
-        annotation( extent=[-46, 60; -26, 80]);
+        annotation (extent=[-26, 30; -46, 50]);
+      Modelica.Blocks.Sources.Constant levelSetPoint(k=67) 
+        annotation (extent=[-46, 60; -26, 80]);
     protected 
-      Modelica.Blocks.Interfaces.OutPort T_S 
-        annotation( extent=[34, 66; 42, 74]);
-      Modelica.Blocks.Interfaces.OutPort p_S 
-        annotation( extent=[34, 26; 42, 34]);
-      Modelica.Blocks.Interfaces.OutPort qm_S 
-        annotation( extent=[34, -34; 42, -26], rotation=0);
-      Modelica.Blocks.Interfaces.OutPort sigma_D 
-        annotation( extent=[-24, 6; -16, 14]);
-      Modelica.Blocks.Interfaces.OutPort V_l 
-        annotation( extent=[-24, 24; -16, 32]);
+      Modelica.Blocks.Interfaces.RealOutput T_S 
+        annotation (extent=[34, 66; 42, 74]);
+      Modelica.Blocks.Interfaces.RealOutput p_S 
+        annotation (extent=[34, 26; 42, 34]);
+      Modelica.Blocks.Interfaces.RealOutput qm_S 
+        annotation (extent=[34, -34; 42, -26], rotation=0);
+      Modelica.Blocks.Interfaces.RealOutput sigma_D 
+        annotation (extent=[-24, 6; -16, 14]);
+      Modelica.Blocks.Interfaces.RealOutput V_l 
+        annotation (extent=[-24, 24; -16, 32]);
     public 
-      Modelica.Blocks.Math.Gain MW2W(k={1e6}) 
-        annotation( extent=[-70, -69; -50, -50]);
+      Modelica.Blocks.Math.Gain MW2W(k=1e6) 
+        annotation (extent=[-70, -69; -50, -50]);
     equation 
       connect(furnace.port, evaporator.heatPort) 
-        annotation( points=[-40, -30; -40, -21], style(color=42));
+        annotation (points=[-40, -30; -40, -21], style(color=42));
       connect(Y_Valve, valve.Y) 
-        annotation( points=[-119, -80; 54, -80; 54, -17], style(color=3));
-      connect(evaporator.port_b, temperatureSensor.port) annotation( points=[
+        annotation (points=[-119, -80; 54, -80; 54, -17], style(color=3));
+      connect(evaporator.port_b, temperatureSensor.port) annotation (points=[
             -29, -10; -2, -10; -2, 50; 20, 50; 20, 59], style(color=69));
-      connect(evaporator.port_b, pressureSensor.port) annotation( points=[-29,
+      connect(evaporator.port_b, pressureSensor.port) annotation (points=[-29,
              -10; -2, -10; -2, 10; 20, 10; 20, 19], style(color=69));
       connect(evaporator.port_b, massFlowSensor.port_a) 
-        annotation( points=[-29, -10; 9, -10], style(color=69));
+        annotation (points=[-29, -10; 9, -10], style(color=69));
       connect(massFlowSensor.port_b, valve.port_a) 
-        annotation( points=[31, -10; 43, -10], style(color=69));
-      connect(valve.port_b, sink.port) annotation( points=[65,-10; 72,-10; 72,
+        annotation (points=[31, -10; 43, -10], style(color=69));
+      connect(valve.port_b, sink.port) annotation (points=[65,-10; 72,-10; 72,
             -10; 79,-10],      style(color=69));
       connect(pump.port, evaporator.port_a) 
-        annotation( points=[-59, -10; -51, -10], style(color=69));
-      connect(controller.inPort, feedback.outPort) 
-        annotation( points=[-58, 40; -45, 40], style(color=3));
-      connect(feedback.inPort2, evaporator.V) 
-        annotation( points=[-36, 32; -36, 1], style(color=3));
-      connect(levelSetPoint.outPort, feedback.inPort1) annotation( points=[-25,
+        annotation (points=[-59, -10; -51, -10], style(color=69));
+      connect(controller.u,feedback.y) 
+        annotation (points=[-58, 40; -45, 40], style(color=3));
+      connect(feedback.u2,      evaporator.V) 
+        annotation (points=[-36, 32; -36, 1], style(color=3));
+      connect(levelSetPoint.y,feedback.u1)             annotation (points=[-25,
              70; -20, 70; -20, 40; -28, 40], style(color=3));
       connect(pressureSensor.signal, p_S) 
-        annotation( points=[30, 30; 38, 30], style(color=3));
+        annotation (points=[30, 30; 38, 30], style(color=3));
       connect(temperatureSensor.signal, T_S) 
-        annotation( points=[30, 70; 38, 70], style(color=3));
+        annotation (points=[30, 70; 38, 70], style(color=3));
       connect(massFlowSensor.signal, qm_S) 
-        annotation( points=[20, -20; 20, -30; 38, -30], style(color=3));
-      connect(evaporator.sigma_D, sigma_D) annotation( points=[-29, -5; -26,
+        annotation (points=[20, -20; 20, -30; 38, -30], style(color=3));
+      connect(evaporator.sigma_D, sigma_D) annotation (points=[-29, -5; -26,
             -5; -26, 10; -20, 10], style(color=3));
       connect(evaporator.V, V_l) 
-        annotation( points=[-36, 1; -36, 28; -20, 28], style(color=3));
-      connect(controller.outPort, pump.m_dot) annotation( points=[-81, 40; -90,
+        annotation (points=[-36, 1; -36, 28; -20, 28], style(color=3));
+      connect(controller.y,       pump.m_flow) annotation (points=[-81, 40; -90,
              40; -90, -10; -82, -10], style(color=3));
-      connect(q_F, MW2W.inPort) annotation( points=[-119, -20; -90, -20; -90,
+      connect(q_F,MW2W.u)       annotation (points=[-119, -20; -90, -20; -90,
              -59.5; -72, -59.5], style(color=3));
-      connect(MW2W.outPort, furnace.Q_dot) annotation( points=[-49, -59.5; -40,
+      connect(MW2W.y,furnace.Q_flow)       annotation (points=[-49, -59.5; -40,
              -59.5; -40, -50], style(color=3));
     end DrumBoiler;
     
     package WaterPhaseBoundaryIF97 
-      "Physical properties for water at phase boundary at boiling and dew curves"
-      
+      "Physical properties for water at phase boundary at boiling and dew curves" 
       
       extends Modelica_Media.Interfaces.PartialMedium(
         mediumName="WaterIF97",

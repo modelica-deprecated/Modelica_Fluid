@@ -19,22 +19,22 @@ the fluid library.
     parameter Real C(unit="m^3/(Pa.s)") = 1 
       "Flow conductance for small pressure drops";
     parameter Boolean dp_given=true 
-      "|Advanced|| True, if m_dot is computed as function of pressure drop dp (otherwise, use inverse function to avoid nonlinear loop)";
+      "|Advanced|| True, if m_flow is computed as function of pressure drop dp (otherwise, use inverse function to avoid nonlinear loop)";
     annotation (
-      Diagram, 
+      Diagram,
       Icon(
         Text(
-          extent=[-126, -76; 130, -110], 
-          style(color=0), 
-          string="zeta=%zeta"), 
+          extent=[-126, -76; 130, -110],
+          style(color=0),
+          string="zeta=%zeta"),
         Text(
-          extent=[-120, 130; 116, 64], 
-          string="%name", 
-          style(gradient=2, fillColor=69)), 
-        Line(points=[-60, -50; -60, 50; 60, -50; 60, 50], style(color=0, 
-              thickness=2)), 
-        Line(points=[-60, 0; -100, 0], style(color=69)), 
-        Line(points=[60, 0; 100, 0], style(color=69))), 
+          extent=[-120, 130; 116, 64],
+          string="%name",
+          style(gradient=2, fillColor=69)),
+        Line(points=[-60, -50; -60, 50; 60, -50; 60, 50], style(color=0,
+              thickness=2)),
+        Line(points=[-60, 0; -100, 0], style(color=69)),
+        Line(points=[60, 0; 100, 0], style(color=69))),
       Documentation(info="<html>
 <p>
 This component should model an orifice with constant loss
@@ -68,9 +68,9 @@ be written as:
 </p>
 <pre>
   alternative
-     m_dot = f1(dp)
+     m_flow = f1(dp)
   or
-     dp = f2(m_dot)
+     dp = f2(m_flow)
   end alternative;
 </pre>
 <p>
@@ -85,34 +85,33 @@ them, in order that it is possible to experiment with.
   equation 
     /* Function is a second order polynomial in the mass flow rate,
      i.e., it is continuous and differentiable upto any order.
-         rho*C*dp = m_dot + k*m_dot^2
-     At low mass flow rates the "k*m_dot^2" term can be neglected
+         rho*C*dp = m_flow + k*m_flow^2
+     At low mass flow rates the "k*m_flow^2" term can be neglected
      and we have laminar flow:
-         m_dot = rho*C*dp
-     At high mass flow rates the linear "m_dot" term can be neglected
+         m_flow = rho*C*dp
+     At high mass flow rates the linear "m_flow" term can be neglected
      and we have turbulent flow:
-         rho*C*dp = k*m_dot^2, i.e.,
-               dp = k/(rho*C) * m_dot^2
+         rho*C*dp = k*m_flow^2, i.e.,
+               dp = k/(rho*C) * m_flow^2
      on the other hand we have for turbulent flow:
          dp = 0.5*rho*zeta*v^2
-            = 0.5*rho*zeta*(m_dot/(rho*A))^2
-            = 0.5*zeta/(rho*A^2) * m_dot^2
+            = 0.5*rho*zeta*(m_flow/(rho*A))^2
+            = 0.5*zeta/(rho*A^2) * m_flow^2
      Comparision results in
          k = C*zeta/(2*A^2)
   */
     dp = port_a.p - port_b.p;
     if dp_given then
-      port_a.m_dot = noEvent((if dp >= 0 then 1 else -1)*(-1 + sqrt(1 + 4*k*C*
+      port_a.m_flow = noEvent((if dp >= 0 then 1 else -1)*(-1 + sqrt(1 + 4*k*C*
         abs(dp)))/(2*k));
     else
-      C*dp = port_a.m_dot + k*port_a.m_dot^2*noEvent(if port_a.m_dot >= 0 then 
+      C*dp = port_a.m_flow + k*port_a.m_flow^2*noEvent(if port_a.m_flow >= 0 then 
         +1 else -1);
     end if;
   end Orifice;
   
   model ShortPipe 
-    "Short pipe where mass flow rate is a function of pressure drop (only transport, no storage of mass or energy)"
-     
+    "Short pipe where mass flow rate is a function of pressure drop (only transport, no storage of mass or energy)" 
     
     /* This currently gives not a nice layout
       Images(Parameters(name="|frictionType = DetailedFriction|", source=
@@ -134,13 +133,14 @@ them, in order that it is possible to experiment with.
     parameter Medium.AbsolutePressure dp_nominal(min=1.e-10) = from_bar(1.0) 
       "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal pressure drop";
     
-    parameter Medium.MassFlowRate m_dot_nominal(min=1.e-10) = 1 
+    parameter Medium.MassFlowRate m_flow_nominal(min=1.e-10) = 1 
       "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal mass flow rate at nominal pressure drop";
     parameter Types.Length_mm length=1000 
       "|frictionType = DetailedFriction| Length of pipe";
     parameter Types.Length_mm roughness=0 
       "|frictionType = DetailedFriction| Roughness of pipe";
-    parameter Modelica_Fluid.Examples.Types.CrossSectionTypes.Temp crossSectionType=
+    parameter Modelica_Fluid.Examples.Types.CrossSectionTypes.Temp 
+      crossSectionType=
         Modelica_Fluid.Examples.Types.CrossSectionTypes.Circular 
       "|frictionType = DetailedFriction| Type of cross section of pipe";
     parameter Types.Length_mm diameter=100 
@@ -154,33 +154,33 @@ them, in order that it is possible to experiment with.
     parameter SI.Length perimeter=0.1 
       "|crossSectionType = general| Wetted perimeter of cross sectional area";
     parameter Boolean from_dp=true 
-      "|Advanced|| = true, use m_dot = f(dp) otherwise use dp = f(m_dot), i.e., inverse equation"
+      "|Advanced|| = true, use m_flow = f(dp) otherwise use dp = f(m_flow), i.e., inverse equation"
       annotation (Evaluate=true);
     parameter SI.Pressure p_small(min=1.e-10) = 1 
       "|Advanced|Only for frictionType = ConstantTurbulent| A small laminar region is introduced around p_small";
     annotation (
-      Diagram, 
+      Diagram,
       Icon(
         Rectangle(extent=[-100, 60; 100, -60], style(
-            color=0, 
-            gradient=2, 
-            fillColor=8)), 
+            color=0,
+            gradient=2,
+            fillColor=8)),
         Rectangle(extent=[-100, 34; 100, -36], style(
-            color=69, 
-            gradient=2, 
-            fillColor=69)), 
+            color=69,
+            gradient=2,
+            fillColor=69)),
         Text(
-          extent=[-120, 130; 116, 64], 
-          string="%name", 
-          style(gradient=2, fillColor=69)), 
+          extent=[-120, 130; 116, 64],
+          string="%name",
+          style(gradient=2, fillColor=69)),
         Text(
-          extent=[-132, -64; 140, -94], 
-          style(color=0), 
-          string="%m_dot_nominal"), 
+          extent=[-132, -64; 140, -94],
+          style(color=0),
+          string="%m_flow_nominal"),
         Text(
-          extent=[-130, -96; 142, -126], 
-          style(color=0), 
-          string="%dp_nominal")), 
+          extent=[-130, -96; 142, -126],
+          style(color=0),
+          string="%dp_nominal")),
       Documentation(info="<html>
 <p>
 This component models the pressure loss in a short pipe
@@ -190,20 +190,20 @@ mass flow rate varies only slowly). Three loss models can be selected via
 parameter <b>frictionType</b>:
 </p>
 <pre>
-   frictionType = <b>ConstantLaminar</b>  :  dp =  k*m_dot
-                = <b>ConstantTurbulent</b>:  dp =  k*m_dot^2  if m_dot &gt; 0
-                                         = -k*m_dot^2  if m_dot &lt; 0
+   frictionType = <b>ConstantLaminar</b>  :  dp =  k*m_flow
+                = <b>ConstantTurbulent</b>:  dp =  k*m_flow^2  if m_flow &gt; 0
+                                         = -k*m_flow^2  if m_flow &lt; 0
                 = <b>DetailedFriction</b> :  dp = lambda(Re,Delta)*(L*rho/D)*v^2/2
                                          = lambda2(Re,Delta)*L*eta^2/(2*D^3*rho^3)
 </pre>
 <p>
 where dp = \"port_a.p - port_b.p\" is the pressure loss and
-m_dot is the mass flow rate from port_a to port_b.
+m_flow is the mass flow rate from port_a to port_b.
 </p>
 <h3>ConstantLaminar and ConstantTurbulent</h3>
 <p>
 The pressure loss factor \"k\" is computed by providing the
-mass flow rate \"m_dot_nominal\" and the corresponding
+mass flow rate \"m_flow_nominal\" and the corresponding
 pressure loss \"dp_nominal\" for one flow condition
 (usually the desired nominal flow condition). These factors might
 be estimated or determined by measurements.
@@ -360,8 +360,8 @@ In the \"Advanced menu\" it is possible via parameter
 loss equation is actually evaluated (<b>default</b> is from_dp = <b>true</b>):
 </p>
 <pre>
-   from_dp = <b>true</b>:   m_dot = f1(dp)
-           = <b>false</b>:  dp    = f2(m_dot)
+   from_dp = <b>true</b>:   m_flow = f1(dp)
+           = <b>false</b>:  dp    = f2(m_flow)
 </pre>
 <p>
 \"from_dp\" can be useful to avoid nonlinear systems of equations
@@ -376,9 +376,9 @@ be written as:
 </p>
 <pre>
   alternative
-    // m_dot = f1(dp);
+    // m_flow = f1(dp);
   or
-    // dp = f2(m_dot);
+    // dp = f2(m_flow);
   end alternative;
 </pre>
 <p>
@@ -434,9 +434,9 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
     // Auxiliary variables for ConstantLaminar and ConstantTurbulent
   protected 
     parameter Real k=if frictionType == FrictionTypes.ConstantLaminar then 
-        dp_nominal/m_dot_nominal else (if frictionType == FrictionTypes.
-        ConstantTurbulent then dp_nominal/m_dot_nominal^2 else L/(2*D*D*D)) 
-      "Pressure loss coefficient (dp = k*f(m_dot))";
+        dp_nominal/m_flow_nominal else (if frictionType == FrictionTypes.
+        ConstantTurbulent then dp_nominal/m_flow_nominal^2 else L/(2*D*D*D)) 
+      "Pressure loss coefficient (dp = k*f(m_flow))";
     parameter Real delta=if from_dp then p_small else sqrt(dp_nominal/k);
     parameter Real C1=if from_dp then 0.5/sqrt(delta) - 3.0*C3*delta^2 else 0.5
         *delta "Coefficient 1 of cubic polynomial in the laminar region";
@@ -445,8 +445,8 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
     
     // Auxiliary variables for DetailedFriction model
     parameter SI.Length L=length/1000 "Length of pipe in SI units";
-    parameter SI.Diameter D=if crossSectionType == CrossSectionTypes.Circular
-         then diameter/1000 else (if crossSectionType == CrossSectionTypes.
+    parameter SI.Diameter D=if crossSectionType == CrossSectionTypes.Circular then 
+              diameter/1000 else (if crossSectionType == CrossSectionTypes.
         Rectangular then 4*(width*height/1.e6)/(2*width*height) else 4*area/
         perimeter) "Diameter of pipe in SI units";
     parameter SI.ReynoldsNumber Re1=(745*exp(if Delta <= 0.0065 then 1 else 
@@ -467,8 +467,8 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
     parameter Real aux5=-2*sqrt(L2)*Math.log10(aux4);
     parameter Real x2=if from_dp then Math.log10(L2) else Math.log10(Re2);
     parameter Real y2=if from_dp then Math.log10(aux5) else Math.log10(L2);
-    parameter Real yd2=if from_dp then 0.5 + (2.51/Math.log(10))/(aux5*aux4)
-         else 2 + 4*aux1/(aux2*aux3*(Re2)^0.9);
+    parameter Real yd2=if from_dp then 0.5 + (2.51/Math.log(10))/(aux5*aux4) else 
+              2 + 4*aux1/(aux2*aux3*(Re2)^0.9);
     
     // Constants: Cubic polynomial between lg(Re1) and lg(Re2)
     parameter Real diff_x=x2 - x1;
@@ -499,17 +499,17 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
       lambda = noEvent(if Re < 64 then 1 else lambda2/(Re*Re));
       
       // Use d and eta from the upstream port
-      d = if port_a.m_dot > 0 then medium_a.d else medium_b.d;
-      eta = if port_a.m_dot > 0 then Medium.dynamicViscosity(medium_a) else 
+      d = if port_a.m_flow > 0 then medium_a.d else medium_b.d;
+      eta = if port_a.m_flow > 0 then Medium.dynamicViscosity(medium_a) else 
         Medium.dynamicViscosity(medium_b);
     end if;
     
     if from_dp then
-      // equations in the form m_dot = m_dot(dp)
+      // equations in the form m_flow = m_flow(dp)
       if frictionType == FrictionTypes.ConstantLaminar then
-        m_dot = dp/k;
+        m_flow = dp/k;
       elseif frictionType == FrictionTypes.ConstantTurbulent then
-        m_dot = noEvent(if dp > delta then sqrt(dp) else (if dp < -delta then -
+        m_flow = noEvent(if dp > delta then sqrt(dp) else (if dp < -delta then -
           sqrt(-dp) else (C1 + C3*dp*dp)*dp))/sqrt(k);
       else
         lambda2 = noEvent(d*abs(dp)/(k*eta*eta));
@@ -523,30 +523,29 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
           Re = if noEvent(aux7 >= Re2) then aux7 else Re1*(lambda2/lambda2_1)^(
             1 + dx*(c2 + dx*c3));
         end if;
-        m_dot = noEvent((pi*D/4)*eta*Re*(if dp >= 0 then +1 else -1));
+        m_flow = noEvent((pi*D/4)*eta*Re*(if dp >= 0 then +1 else -1));
       end if;
     else
-      // equations in the form dp = dp(m_dot)
+      // equations in the form dp = dp(m_flow)
       if frictionType == FrictionTypes.ConstantLaminar then
-        dp = k*m_dot;
+        dp = k*m_flow;
       elseif frictionType == FrictionTypes.ConstantTurbulent then
-        dp = k*noEvent(if m_dot > delta then m_dot*m_dot else (if m_dot < -
-          delta then -m_dot*m_dot else (C1 + C3*m_dot*m_dot)*m_dot));
+        dp = k*noEvent(if m_flow > delta then m_flow*m_flow else (if m_flow < -
+          delta then -m_flow*m_flow else (C1 + C3*m_flow*m_flow)*m_flow));
       else
-        Re = noEvent((4/pi)*abs(m_dot)/(D*eta));
+        Re = noEvent((4/pi)*abs(m_flow)/(D*eta));
         dx = noEvent(if Re < Re1 or Re > Re2 then 0 else Math.log10(Re/Re1));
         lambda2 = noEvent(if Re <= Re1 then 64*Re else (if Re >= Re2 then 0.25*
-          (Re/Math.log10(Delta/3.7 + 5.74/Re^0.9))^2 else 64*Re1*(Re/Re1)^(1 + 
+          (Re/Math.log10(Delta/3.7 + 5.74/Re^0.9))^2 else 64*Re1*(Re/Re1)^(1 +
           dx*(c2 + dx*c3))));
         aux7 = 0;
-        dp = noEvent(k*lambda2*eta*eta/d*(if m_dot >= 0 then 1 else -1));
+        dp = noEvent(k*lambda2*eta*eta/d*(if m_flow >= 0 then 1 else -1));
       end if;
     end if;
   end ShortPipe;
   
   model LongPipe 
-    "(will be soon replaced by a much better version) Pipe discretized according to the finite volume method (currently there is just one volume for easier discussion)"
-     
+    "(will be soon replaced by a much better version) Pipe discretized according to the finite volume method (currently there is just one volume for easier discussion)" 
     
     import SI = Modelica.SIunits;
     import Modelica.SIunits.Conversions.*;
@@ -554,7 +553,7 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
     
     constant Real pi=Modelica.Constants.pi;
     parameter Integer n(
-      min=1, 
+      min=1,
       max=1) = 1 "Number of internal volumes (currently only one)";
     parameter SI.Diameter diameter "Pipe diameter";
     parameter SI.Length length "Pipe length";
@@ -566,73 +565,73 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
     parameter Medium.AbsolutePressure dp_nominal(min=1.e-10) = from_bar(1.0) 
       "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal pressure drop";
     
-    parameter Medium.MassFlowRate m_dot_nominal(min=1.e-10) = 1 
+    parameter Medium.MassFlowRate m_flow_nominal(min=1.e-10) = 1 
       "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal mass flow rate at nominal pressure drop";
     parameter SI.Pressure p_small(min=1.e-10) = 1 
       "|Advanced|Only for frictionType = ConstantTurbulent| A small laminar region is introduced around p_small";
     
     Interfaces.JunctionVolume volume(
-      V=V, 
-      redeclare package Medium = Medium, 
-      initType=initType, 
-      init_p=init_p, 
-      p_start=p_start, 
-      d_start=d_start, 
-      init_T=init_T, 
-      T_start=T_start, 
-      h_start=h_start, 
+      V=V,
+      redeclare package Medium = Medium,
+      initType=initType,
+      init_p=init_p,
+      p_start=p_start,
+      d_start=d_start,
+      init_T=init_T,
+      T_start=T_start,
+      h_start=h_start,
       X_start=X_start) annotation (extent=[-10, 10; 10, -10], rotation=90);
     ShortPipe shortPipe_a(
-      redeclare package Medium = Medium, 
-      frictionType=frictionType, 
-      dp_nominal=dp_nominal/2, 
-      m_dot_nominal=m_dot_nominal, 
-      p_small=p_small, 
-      init_p=init_p, 
-      p_start=p_start, 
-      d_start=d_start, 
-      init_T=init_T, 
-      T_start=T_start, 
-      h_start=h_start, 
+      redeclare package Medium = Medium,
+      frictionType=frictionType,
+      dp_nominal=dp_nominal/2,
+      m_flow_nominal=m_flow_nominal,
+      p_small=p_small,
+      init_p=init_p,
+      p_start=p_start,
+      d_start=d_start,
+      init_T=init_T,
+      T_start=T_start,
+      h_start=h_start,
       X_start=X_start) annotation (extent=[-60, -10; -40, 10]);
     ShortPipe shortPipe_b(
-      redeclare package Medium = Medium, 
-      frictionType=frictionType, 
-      dp_nominal=dp_nominal/2, 
-      m_dot_nominal=m_dot_nominal, 
-      p_small=p_small, 
-      init_p=init_p, 
-      p_start=p_start, 
-      d_start=d_start, 
-      init_T=init_T, 
-      T_start=T_start, 
-      h_start=h_start, 
+      redeclare package Medium = Medium,
+      frictionType=frictionType,
+      dp_nominal=dp_nominal/2,
+      m_flow_nominal=m_flow_nominal,
+      p_small=p_small,
+      init_p=init_p,
+      p_start=p_start,
+      d_start=d_start,
+      init_T=init_T,
+      T_start=T_start,
+      h_start=h_start,
       X_start=X_start) annotation (extent=[40, -10; 60, 10]);
     annotation (
-      Diagram, 
+      Diagram,
       Icon(
         Rectangle(extent=[-100, 60; 100, -60], style(
-            color=0, 
-            gradient=2, 
-            fillColor=8)), 
+            color=0,
+            gradient=2,
+            fillColor=8)),
         Rectangle(extent=[-100, 34; 100, -36], style(
-            color=69, 
-            gradient=2, 
-            fillColor=69)), 
+            color=69,
+            gradient=2,
+            fillColor=69)),
         Text(
-          extent=[-120, 130; 116, 64], 
-          string="%name", 
-          style(gradient=2, fillColor=69)), 
-        Ellipse(extent=[-60, 14; -30, -14], style(fillColor=0)), 
-        Ellipse(extent=[14, 14; 44, -14], style(fillColor=0)), 
+          extent=[-120, 130; 116, 64],
+          string="%name",
+          style(gradient=2, fillColor=69)),
+        Ellipse(extent=[-60, 14; -30, -14], style(fillColor=0)),
+        Ellipse(extent=[14, 14; 44, -14], style(fillColor=0)),
         Text(
-          extent=[-134, -64; 138, -94], 
-          style(color=0), 
-          string="%m_dot_nominal"), 
+          extent=[-134, -64; 138, -94],
+          style(color=0),
+          string="%m_flow_nominal"),
         Text(
-          extent=[-132, -96; 140, -126], 
-          style(color=0), 
-          string="%dp_nominal")), 
+          extent=[-132, -96; 140, -126],
+          style(color=0),
+          string="%dp_nominal")),
       Documentation(info="<html>
 <p>
 This should be a model of a pipe with discretized
@@ -643,13 +642,13 @@ near its completion. It will replace this one.
 </p>
 </html>"));
   equation 
-    connect(shortPipe_a.port_a, port_a)
+    connect(shortPipe_a.port_a, port_a) 
       annotation (points=[-61, 0; -110, 0], style(color=69));
-    connect(shortPipe_a.port_b, volume.port)
+    connect(shortPipe_a.port_b, volume.port) 
       annotation (points=[-39, 0; 0, 0], style(color=69));
-    connect(shortPipe_b.port_b, port_b)
+    connect(shortPipe_b.port_b, port_b) 
       annotation (points=[61, 0; 110, 0], style(color=69));
-    connect(shortPipe_b.port_a, volume.port)
+    connect(shortPipe_b.port_a, volume.port) 
       annotation (points=[39, 0; 0, 0], style(color=69));
   end LongPipe;
   
@@ -660,12 +659,12 @@ near its completion. It will replace this one.
       Modelica_Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching=true);
     
-    Interfaces.FluidPort_b port(redeclare package Medium = Medium)
+    Interfaces.FluidPort_b port(redeclare package Medium = Medium) 
       annotation (extent=[-10, -120; 10, -100], rotation=90);
     Medium.BaseProperties medium(
-      preferedMediumStates=true, 
-      final p_start=p_ambient, 
-      final T_start=T_start, 
+      preferedMediumStates=true,
+      final p_start=p_ambient,
+      final T_start=T_start,
       final X_start=X_start);
     
     parameter Modelica.SIunits.Area area "Tank area";
@@ -697,8 +696,8 @@ near its completion. It will replace this one.
     port.p = medium.p;
     
     /* Handle reverse and zero flow */
-    port.H_dot = semiLinear(port.m_dot, port.h, medium.h);
-    port.mX_dot = semiLinear(port.m_dot, port.X, medium.X);
+    port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
+    port.mX_flow = semiLinear(port.m_flow, port.X, medium.X);
     
     /*
   More precise equations (test later):
@@ -706,7 +705,7 @@ near its completion. It will replace this one.
   (integrated momentum equation for frictionless fluid with density that is
    independent of the level, i.e., the unsteady Bernoulli equation for incompressible fluid)
   v_level = der(level);
-  v = -port.m_dot/(rho*A_outlet);
+  v = -port.m_flow/(rho*A_outlet);
   level*der(v_level) + (v^2 - v_level^2)/2 - g*level + (p - p_ambient)/rho = 0;
   Energy balance
   Potential energy: E_pot = integ(dm*g*s)
@@ -718,7 +717,7 @@ near its completion. It will replace this one.
                           = rho*A*v^2/2*z
                           = M*v^2/2
   E = U + M*g*z/2 + M*v_level^2/2
-  der(E) = port.H_dot + port.m_dot*v^2/2 - p_ambient*area*der(level)
+  der(E) = port.H_flow + port.m_flow*v^2/2 - p_ambient*area*der(level)
 */
     
     V = area*level;
@@ -727,49 +726,49 @@ near its completion. It will replace this one.
     U = m*medium.u;
     
     // Mass balance
-    der(m) = port.m_dot;
-    der(mX) = port.mX_dot;
+    der(m) = port.m_flow;
+    der(mX) = port.mX_flow;
     
     // Momentum balance
     medium.p = m*g/area + p_ambient;
     
     // Energy balance
-    der(U) = port.H_dot - p_ambient*der(V);
+    der(U) = port.H_flow - p_ambient*der(V);
     
     annotation (
       Icon(
-        Rectangle(extent=[-100, 90; 100, 26], style(color=7, fillColor=7)), 
+        Rectangle(extent=[-100, 90; 100, 26], style(color=7, fillColor=7)),
         Rectangle(extent=[-100, 26; 100, -100], style(
-            color=69, 
-            fillColor=69, 
-            fillPattern=1)), 
+            color=69,
+            fillColor=69,
+            fillPattern=1)),
         Line(points=[-100, 100; -100, -100; 100, -100; 100, 100], style(
-            color=0, 
-            fillColor=69, 
-            fillPattern=1)), 
+            color=0,
+            fillColor=69,
+            fillPattern=1)),
         Text(
-          extent=[-112, 162; 122, 102], 
-          string="%name", 
-          style(fillColor=69, fillPattern=1)), 
+          extent=[-112, 162; 122, 102],
+          string="%name",
+          style(fillColor=69, fillPattern=1)),
         Text(
-          extent=[-86, -38; 94, -78], 
-          style(color=0), 
-          string="%level_start"), 
+          extent=[-86, -38; 94, -78],
+          style(color=0),
+          string="%level_start"),
         Text(
-          extent=[-94, 78; 94, 38], 
-          style(color=0), 
-          string="%p_ambient"), 
+          extent=[-94, 78; 94, 38],
+          style(color=0),
+          string="%p_ambient"),
         Text(
-          extent=[-94, 14; 90, -2], 
-          string="level_start =", 
-          style(color=0))), 
+          extent=[-94, 14; 90, -2],
+          string="level_start =",
+          style(color=0))),
       Documentation(info="<HTML>
 <p>
 This is a simplified model of a tank. The top part is open to the environment.
 The tank is filled with a single or multiple-substance liquid.
 The whole tank is assumed to have uniform temperature and mass fractions.
 </p>
-</HTML>"), 
+</HTML>"),
       Diagram);
     
   end Tank;

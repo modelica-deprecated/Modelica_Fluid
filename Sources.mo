@@ -76,7 +76,7 @@ but from the ambient in to the port.
     extends Interfaces.PartialSource(medium(known_Th=if use_T_ambient then 
             Medium.Choices.Th.T_known else Medium.Choices.Th.h_known));
     
-    parameter Medium.MassFlowRate m_dot 
+    parameter Medium.MassFlowRate m_flow 
       "Fixed mass flow rate from an infinite reservoir in to the port";
     parameter Boolean use_T_ambient=true 
       "|Ambient temperature or ambient specific enthalpy| = true, if T_ambient is used, otherwise h_ambient"
@@ -114,7 +114,7 @@ but from the ambient in to the port.
         Text(
           extent=[-124, -92; 148, -122],
           style(color=0),
-          string="%m_dot"),
+          string="%m_flow"),
         Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1))),
       Window(
         x=0.45,
@@ -131,7 +131,7 @@ but from the ambient in to the port.
       medium.h = h_ambient;
     end if;
     medium.X = X_ambient;
-    port.m_dot = -m_dot;
+    port.m_flow = -m_flow;
     
   end FixedMassFlowSource;
   
@@ -183,7 +183,8 @@ but from the ambient in to the port.
         width=0.44,
         height=0.65),
       Diagram);
-    Modelica.Blocks.Interfaces.InPort m_dot(redeclare type SignalType = 
+    Modelica.Blocks.Interfaces.RealInput m_flow(
+                                            redeclare type SignalType = 
           Medium.MassFlowRate) 
       "Mass flow rate from an infinite reservoir in to the port as signal" 
       annotation (extent=[-140, -20; -100, 20]);
@@ -196,6 +197,6 @@ but from the ambient in to the port.
       medium.h = h_ambient;
     end if;
     medium.X = X_ambient;
-    port.m_dot = -m_dot.signal[1];
+    port.m_flow = -m_flow;
   end MassFlowSource;
 end Sources;

@@ -1,6 +1,5 @@
 package Interfaces 
-  "Interfaces for steady state and unsteady, mixed-phase, multi-substance, incompressible and compressible flow without momentum."
-   
+  "Interfaces for steady state and unsteady, mixed-phase, multi-substance, incompressible and compressible flow without momentum." 
   
   annotation (Documentation(info="<HTML>
 <p>
@@ -56,59 +55,57 @@ it is not possible to connect connectors of different media together.
   import SI = Modelica.SIunits;
   
   connector FluidPort 
-    "Interface for quasi one-dimensional fluid flow in a piping network (incompressible or compressible, one or more phases, one or more substances)"
-     
+    "Interface for quasi one-dimensional fluid flow in a piping network (incompressible or compressible, one or more phases, one or more substances)" 
     
     replaceable package Medium = Modelica_Media.Interfaces.PartialMedium 
       "Medium model" annotation (choicesAllMatching=true);
     
     Medium.AbsolutePressure p "Pressure in the connection point";
-    flow Medium.MassFlowRate m_dot 
+    flow Medium.MassFlowRate m_flow 
       "Mass flow rate from the connection point into the component";
     
     Medium.SpecificEnthalpy h 
       "Specific mixture enthalpy in the connection point";
-    flow Medium.EnthalpyFlowRate H_dot 
-      "Enthalpy flow rate into the component (if m_dot > 0, H_dot = m_dot*h)";
+    flow Medium.EnthalpyFlowRate H_flow 
+      "Enthalpy flow rate into the component (if m_flow > 0, H_flow = m_flow*h)";
     
     Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) 
       "Independent mixture mass fractions m_i/m in the connection point";
-    flow Medium.MassFlowRate mX_dot[Medium.nX](quantity=Medium.substanceNames) 
-      "Mass flow rates of the independent substances from the connection point into the component (if m_dot > 0, mX_dot = m_dot*X)";
+    flow Medium.MassFlowRate mX_flow[Medium.nX](quantity=Medium.substanceNames) 
+      "Mass flow rates of the independent substances from the connection point into the component (if m_flow > 0, mX_flow = m_flow*X)";
     
   end FluidPort;
   
   connector FluidPort_a "Fluid connector with filled icon" 
     extends FluidPort;
-    annotation (Diagram(Rectangle(extent=[-100, 100; 100, -100], style(color=69, 
-               fillColor=69)), Text(extent=[-88, 206; 112, 112], string="%name")), 
-         Icon(Rectangle(extent=[-100, 100; 100, -100], style(color=69, 
+    annotation (Diagram(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
+               fillColor=69)), Text(extent=[-88, 206; 112, 112], string="%name")),
+         Icon(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
               fillColor=69)), Text(
-          extent=[-126, 160; 130, 104], 
-          string="%name", 
+          extent=[-126, 160; 130, 104],
+          string="%name",
           style(
-            color=0, 
-            fillColor=69, 
+            color=0,
+            fillColor=69,
             fillPattern=1))));
   end FluidPort_a;
   
   connector FluidPort_b "Fluid connector with outlined icon" 
     extends FluidPort;
-    annotation (Diagram(Rectangle(extent=[-100, 100; 100, -100], style(color=69, 
-               fillColor=7)), Text(extent=[-88, 192; 112, 98], string="%name")), 
-         Icon(Rectangle(extent=[-100, 100; 100, -100], style(color=69, 
+    annotation (Diagram(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
+               fillColor=7)), Text(extent=[-88, 192; 112, 98], string="%name")),
+         Icon(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
               fillColor=7)), Text(
-          extent=[-126, 160; 130, 104], 
-          string="%name", 
+          extent=[-126, 160; 130, 104],
+          string="%name",
           style(
-            color=0, 
-            fillColor=69, 
+            color=0,
+            fillColor=69,
             fillPattern=1))));
   end FluidPort_b;
   
   partial model PartialInit 
-    "Define Medium model and parameter menu to initialize medium in component that has states"
-     
+    "Define Medium model and parameter menu to initialize medium in component that has states" 
     
     import Modelica.SIunits.Conversions.*;
     replaceable package Medium = PackageMedium extends 
@@ -134,8 +131,7 @@ it is not possible to connect connectors of different media together.
   end PartialInit;
   
   partial model PartialInitAlgebraic 
-    "Define Medium model and parameter menu to initialize medium for algebraic equations (e.g. ShortPipe)"
-     
+    "Define Medium model and parameter menu to initialize medium for algebraic equations (e.g. ShortPipe)" 
     
     import Modelica.SIunits.Conversions.*;
     
@@ -164,20 +160,19 @@ it is not possible to connect connectors of different media together.
     
     replaceable package Medium = PackageMedium extends 
       Modelica_Media.Interfaces.PartialMedium 
-      "Medium model within the source (= different from the port medium, if port.m_dot > 0)"
+      "Medium model within the source (= different from the port medium, if port.m_flow > 0)"
        annotation (choicesAllMatching=true);
     
-    FluidPort_b port(redeclare package Medium = Medium)
+    FluidPort_b port(redeclare package Medium = Medium) 
       annotation (extent=[100, -10; 120, 10], rotation=0);
     
     Medium.BaseProperties medium "Medium in the source";
   equation 
     port.p = medium.p;
     
-    
       /* Handle reverse and zero flow (for details, see Fluid.Interfaces.semiLinear) */
-    port.H_dot = semiLinear(port.m_dot, port.h, medium.h);
-    port.mX_dot = semiLinear(port.m_dot, port.X, medium.X);
+    port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
+    port.mX_flow = semiLinear(port.m_flow, port.X, medium.X);
     annotation (Documentation(info="<html>
 <p>
 Partial component to model the <b>volume interface</b> of a <b>source</b>
@@ -187,48 +182,47 @@ features are:
 <ul>
 <li> The pressure in the connection port (= port.p) is identical to the
      pressure in the volume (= medium.p).</li>
-<li> The enthalpy flow rate (= port.H_dot) and the mass flow rates of the
-     substances (= port.mX_dot) depend on the direction of the mass flow rate,
+<li> The enthalpy flow rate (= port.H_flow) and the mass flow rates of the
+     substances (= port.mX_flow) depend on the direction of the mass flow rate,
      according to the semiLinear(..) equations.</li>
 </ul>
 </html>"));
   end PartialSource;
   
   partial model PartialTwoPortTransport 
-    "Partial element transporting fluid between two ports without storing mass or energy"
-     
+    "Partial element transporting fluid between two ports without storing mass or energy" 
     
     import SI = Modelica.SIunits;
     import Cv = Modelica.SIunits.Conversions;
     
     extends PartialInitAlgebraic;
     
-    FluidPort_a port_a(redeclare package Medium = Medium)
+    FluidPort_a port_a(redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
-    FluidPort_b port_b(redeclare package Medium = Medium)
+    FluidPort_b port_b(redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
     Medium.BaseProperties medium_a(
-      final init_p=init_p, 
-      final p_start=p_start, 
-      final d_start=d_start, 
-      final init_T=init_T, 
-      final T_start=T_start, 
-      final h_start=h_start, 
+      final init_p=init_p,
+      final p_start=p_start,
+      final d_start=d_start,
+      final init_T=init_T,
+      final T_start=T_start,
+      final h_start=h_start,
       final X_start=X_start) "Medium properties in port_a";
     Medium.BaseProperties medium_b(
-      final init_p=init_p, 
-      final p_start=p_start, 
-      final d_start=d_start, 
-      final init_T=init_T, 
-      final T_start=T_start, 
-      final h_start=h_start, 
+      final init_p=init_p,
+      final p_start=p_start,
+      final d_start=d_start,
+      final init_T=init_T,
+      final T_start=T_start,
+      final h_start=h_start,
       final X_start=X_start) "Medium properties in port_b";
-    Medium.MassFlowRate m_dot 
-      "Mass flow rate from port_a to port_b (m_dot > 0 is design flow direction)";
+    Medium.MassFlowRate m_flow 
+      "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
     
     annotation (
-      Coordsys(grid=[1, 1], component=[20, 20]), 
-      Diagram, 
+      Coordsys(grid=[1, 1], component=[20, 20]),
+      Diagram,
       Documentation(info="<html>
 <p>
 This component transports fluid between its two ports, without
@@ -237,7 +231,7 @@ care off, for details see definition of built-in operator semiLinear().
 When using this partial component,
 the momentum equation has to be added by specifying a relationship
 between the pressure drop \"dp = port_a.p - port_b.p\" and the
-mass flow rate \"port_a.m_dot\".
+mass flow rate \"port_a.m_flow\".
 </p>
 </html>"));
   equation 
@@ -250,30 +244,29 @@ mass flow rate \"port_a.m_dot\".
     medium_b.X = port_b.X;
     
     /* Handle reverse and zero flow */
-    port_a.H_dot = semiLinear(port_a.m_dot, port_a.h, port_b.h);
-    port_a.mX_dot = semiLinear(port_a.m_dot, port_a.X, port_b.X);
+    port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, port_b.h);
+    port_a.mX_flow = semiLinear(port_a.m_flow, port_a.X, port_b.X);
     
     /* Energy, mass and substance mass balance */
-    port_a.H_dot + port_b.H_dot = 0;
-    port_a.m_dot + port_b.m_dot = 0;
-    port_a.mX_dot + port_b.mX_dot = zeros(Medium.nX);
+    port_a.H_flow + port_b.H_flow = 0;
+    port_a.m_flow + port_b.m_flow = 0;
+    port_a.mX_flow + port_b.mX_flow = zeros(Medium.nX);
     
     // Design direction of mass flow rate
-    m_dot = port_a.m_dot;
+    m_flow = port_a.m_flow;
   end PartialTwoPortTransport;
   
   partial model PartialOnePort 
-    "Partial fluid component with one fluid connector (to be used as container of other components)"
-     
+    "Partial fluid component with one fluid connector (to be used as container of other components)" 
     
     extends PartialInit;
     
-    FluidPort_a port(redeclare package Medium = Medium)
+    FluidPort_a port(redeclare package Medium = Medium) 
       annotation (extent=[-10, -120; 10, -100], rotation=90);
     annotation (
-      Icon, 
-      Coordsys(grid=[1, 1], component=[20, 20]), 
-      Diagram, 
+      Icon,
+      Coordsys(grid=[1, 1], component=[20, 20]),
+      Diagram,
       Documentation(info="<html>
 <p>
 This partial component should be used for new <b>container</b> models
@@ -292,18 +285,17 @@ components together, the flow reversal is already handeled in these components.
   end PartialOnePort;
   
   partial model PartialTwoPort 
-    "Partial fluid component with two fluid connectors (to be used as container of other components)"
-     
+    "Partial fluid component with two fluid connectors (to be used as container of other components)" 
     
     extends PartialInit;
     
-    FluidPort_a port_a(redeclare package Medium = Medium)
+    FluidPort_a port_a(redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
-    FluidPort_b port_b(redeclare package Medium = Medium)
+    FluidPort_b port_b(redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
     annotation (
-      Coordsys(grid=[1, 1], component=[20, 20]), 
-      Diagram, 
+      Coordsys(grid=[1, 1], component=[20, 20]),
+      Diagram,
       Documentation(info="<html>
 <p>
 This partial component should be used for new <b>container</b> models with <b>two fluid ports</b>
@@ -327,28 +319,28 @@ components together, the flow reversal is already handeled in these components.
         choicesAllMatching=true);
     Medium.BaseProperties medium "Medium used in the this model";
     
-    FluidPort_a fluidPort(redeclare package Medium = Medium)
+    FluidPort_a fluidPort(redeclare package Medium = Medium) 
       annotation (extent=[100, -10; 120, 10], rotation=0);
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
       annotation (extent=[-120, -10; -100, 10]);
     annotation (
       Coordsys(
-        extent=[-100, -100; 100, 100], 
-        grid=[2, 2], 
-        component=[20, 20]), 
+        extent=[-100, -100; 100, 100],
+        grid=[2, 2],
+        component=[20, 20]),
       Icon(
-        Text(extent=[-134, 134; 134, 72], string="%name"), 
+        Text(extent=[-134, 134; 134, 72], string="%name"),
         Rectangle(extent=[0, 60; 60, -60], style(
-            color=0, 
-            gradient=1, 
-            fillColor=9)), 
-        Rectangle(extent=[-20, 60; 0, -60], style(color=0, fillColor=42)), 
-        Rectangle(extent=[-100, 6; -20, -6], style(color=42, fillColor=42)), 
+            color=0,
+            gradient=1,
+            fillColor=9)),
+        Rectangle(extent=[-20, 60; 0, -60], style(color=0, fillColor=42)),
+        Rectangle(extent=[-100, 6; -20, -6], style(color=42, fillColor=42)),
         Rectangle(extent=[60, 60; 100, -60], style(
-            color=69, 
-            fillColor=69, 
-            fillPattern=1))), 
-      Diagram, 
+            color=69,
+            fillColor=69,
+            fillPattern=1))),
+      Diagram,
       Documentation(info="<html>
 <p>
 This component is an adaptor between a connector from the Modelica.Thermal.HeatTransfer
@@ -360,46 +352,44 @@ the fluid.
 </html>"));
   equation 
     
-    
       // Intensive quantities of the fluidPort are used to compute medium properties
     medium.p = fluidPort.p;
     medium.h = fluidPort.h;
     medium.X = fluidPort.X;
     
     // No mass flow from the heatPort to the fluidPort
-    fluidPort.m_dot = 0;
-    fluidPort.mX_dot = zeros(Medium.nX);
+    fluidPort.m_flow = 0;
+    fluidPort.mX_flow = zeros(Medium.nX);
     
     // Energy balance between the two ports
-    heatPort.Q_dot + fluidPort.H_dot = 0;
+    heatPort.Q_flow+ fluidPort.H_flow = 0;
     
     // Boundary condition
     heatPort.T = medium.T;
   end ThermalAdaptor;
   
   model JunctionVolume 
-    "Fixed volume associated with a port by the finite volume method (the medium properties of the volume are the ones of the port)"
-     
+    "Fixed volume associated with a port by the finite volume method (the medium properties of the volume are the ones of the port)" 
     
     import SI = Modelica.SIunits;
     import Cv = Modelica.SIunits.Conversions;
     
     extends PartialInit;
     
-    FluidPort_b port(redeclare package Medium = Medium)
+    FluidPort_b port(redeclare package Medium = Medium) 
       annotation (extent=[-10, -10; 10, 10], rotation=0);
     
     parameter SI.Volume V=1e-6 "Fixed size of junction volume";
     
     Medium.BaseProperties medium(
-      preferedMediumStates=true, 
-      final initType=initType, 
-      final init_p=init_p, 
-      final p_start=p_start, 
-      final d_start=d_start, 
-      final init_T=init_T, 
-      final T_start=T_start, 
-      final h_start=h_start, 
+      preferedMediumStates=true,
+      final initType=initType,
+      final init_p=init_p,
+      final p_start=p_start,
+      final d_start=d_start,
+      final init_T=init_T,
+      final T_start=T_start,
+      final h_start=h_start,
       final X_start=X_start);
     
     SI.Energy U "Internal energy of port volume";
@@ -413,18 +403,18 @@ the fluid.
     m = V*medium.d;
     U = m*medium.u;
     mX = m*medium.X;
-    der(m) = port.m_dot;
-    der(U) = port.H_dot;
-    der(mX) = port.mX_dot;
+    der(m) = port.m_flow;
+    der(U) = port.H_flow;
+    der(mX) = port.mX_flow;
     annotation (Icon(
         Ellipse(extent=[-100, 100; 100, -100], style(
-            color=0, 
-            gradient=3, 
-            fillColor=71)), 
-        Text(extent=[-144, 178; 146, 116], string="%name"), 
+            color=0,
+            gradient=3,
+            fillColor=71)),
+        Text(extent=[-144, 178; 146, 116], string="%name"),
         Text(
-          extent=[-130, -108; 144, -150], 
-          style(color=0), 
+          extent=[-130, -108; 144, -150],
+          style(color=0),
           string="V=%V")), Documentation(info="<html>
 <p>
 This component models the <b>volume</b> of <b>fixed size</b> that is
@@ -469,7 +459,7 @@ is negative. It must be positive.
 ");
     end for;
     
-    assert(reducedX or not reducedX and nX > 0 and abs(sum(X_ambient) - 1.0) < 
+    assert(reducedX or not reducedX and nX > 0 and abs(sum(X_ambient) - 1.0) <
       1.e-10, "
 Wrong ambient mass fractions in medium \"" + mediumName + "\":
 This medium requires that the ambient mass fractions X_ambient

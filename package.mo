@@ -1,9 +1,10 @@
 package Modelica_Fluid "Fluid package that should be included into package Modelica"
 annotation (
-  version="0.795",
+  version="0.796",
   versionDate="2004-08-27",
   preferedView="info",
   Settings(NewStateSelection=true),
+  uses(Modelica(version="2.1 Beta1")),
   Documentation(info="<html>
 <p>
 This library provides basic components and property models
@@ -13,13 +14,11 @@ with optional <b>multiple phases</b>. The goal is to include
 this library in the Modelica standard library. The Modelica_Fluid
 library uses the media models from the Modelica_Media library
 </p>
-
 <p>
 The Modelica_Fluid library is still far away from a first release.
 It is currently a beta release and components may be changed without
 providing automatic conversion to a new version.
 </p>
-
 <p><b>Copyright &copy; 2002-2003, Modelica Association.</b></p>
 <p><i>
 This Modelica package is <b>free</b> software; it can be redistributed and/or modified
@@ -27,14 +26,14 @@ under the terms of the <b>Modelica license</b>, see the license conditions
 and the accompanying <b>disclaimer</b> in the documentation of package
 Modelica in file \"Modelica/package.mo\".
 </i></p>
-</html>"), 
-  uses(Modelica(version="1.6")));
-
+</html>"),
+    conversion(from(version="0.795", script=
+            "../ConvertFromModelica_Fluid_0.795.mos")));
 
 extends Modelica.Icons.Library;
 
-
 package Tutorial "Tutorial" 
+  
   annotation (DocumentationClass=true, Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Tutorial of package Modelica_Fluid</font></h3>
 <p>
@@ -48,7 +47,6 @@ incompressible or compressible medium, a single or a multiple
 substance medium with one or more phases might be used for 
 every component model in the Modelica_Fluid library.
 </p>
-
 <p>
 This tutorial is just a start and will be improved
 considerably.
@@ -56,40 +54,32 @@ considerably.
 </HTML>"));
   
   model ReleaseNotes "Release notes" 
+    
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
-
 <h3><font color=\"#008000\">Version 0.794, 2004-05-31</font></h3>
 <ul>
 <li> Sensors.mo, Examples/DrumBoiler.mo: extend sensors with user choice
      for measurement unit.</li>
-
 <li> Components.mo, Types.mo: moved components and types to 
      package Examples.</li>
-
 <li> Moved Examples from file Modelica_Media/package.mo to own 
      Modelica_Media/Examples subdirectory and created separate 
      file per sub-package. This shall simplify the maintenance of
      examples by different authors</li>
-
 <li> Moved Interfaces from file Modelica_Media/package.mo to 
      Modelica_Media/Interfaces.mo</li>
-
 </ul>
-
 <h3><font color=\"#008000\">Version 0.793, 2004-05-18</font></h3>
 <ul>
 <li> Removed \"semiLinear\" function since available as
      Modelica 2.1 built-in operator in Dymola.</li>
-
 <li> Minor bug in \"Components.ShortPipe\" corrected.</li>
-
 <li> Bug in \"Components.Orifice\" corrected
      (dp was previously calculated in
       Interfaces.PartialTwoPortTransport,
       but this was removed and not updated in Orifice).</li>
 </ul>
-
 <h3><font color=\"#008000\">Version 0.792, 2003-11-07</font></h3>
 <p>
 This is the first consolidated version made up from
@@ -98,8 +88,6 @@ Modelica_Fluid is still quite far away
 from a library that could be included in the Modelica
 standard library.
 </p>
-
-
 <h3><font color=\"#008000\">Previous Releases</font></h3>
 <ul>
 <li><i>Nov. 6, 2002</i><br>
@@ -158,7 +146,6 @@ standard library.
        by Ruediger Franke: Included sensor components and 
        Modelica_Fluid.Examples.DrumBoiler example.</li>
 </ul>
-
 </HTML>
 "));
   equation 
@@ -166,9 +153,7 @@ standard library.
   end ReleaseNotes;
 end Tutorial;
 
-
 replaceable package PackageMedium = Modelica_Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (
     choicesAllMatching=true);
-
 end Modelica_Fluid;
