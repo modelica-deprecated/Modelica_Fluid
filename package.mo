@@ -1,10 +1,9 @@
 import "FiniteVolume/FiniteVolume.mo";
 package Modelica_Fluid "Fluid package that should be included into package Modelica"
 
-
 annotation (
-  version="0.796",
-  versionDate="2004-08-27",
+  version="0.797",
+  versionDate="2004-09-27",
   preferedView="info",
   Settings(NewStateSelection=true),
   uses(Modelica(version="2.1 Beta1")),
@@ -33,9 +32,7 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
-
 extends Modelica.Icons.Library;
-
 
 package Tutorial "Tutorial" 
   
@@ -62,6 +59,11 @@ considerably.
     
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
+<h3><font color=\"#008000\">Version 0.797, 2004-09-27</font></h3>
+<ul>
+<li> Changes as decided on 40th Modelica Design Meeting in Dresden 
+     (see also minutes)
+</ul>
 <h3><font color=\"#008000\">Version 0.794, 2004-05-31</font></h3>
 <ul>
 <li> Sensors.mo, Examples/DrumBoiler.mo: extend sensors with user choice
@@ -157,7 +159,6 @@ standard library.
     
   end ReleaseNotes;
 end Tutorial;
-
 
 replaceable package PackageMedium = Modelica_Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (

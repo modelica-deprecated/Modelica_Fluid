@@ -78,9 +78,11 @@ it is not possible to connect connectors of different media together.
   
   connector FluidPort_a "Fluid connector with filled icon" 
     extends FluidPort;
-    annotation (Diagram(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
+    annotation (Diagram(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
+               fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
                fillColor=69)), Text(extent=[-88, 206; 112, 112], string="%name")),
-         Icon(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
+         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
+              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
               fillColor=69)), Text(
           extent=[-126, 160; 130, 104],
           string="%name",
@@ -92,10 +94,14 @@ it is not possible to connect connectors of different media together.
   
   connector FluidPort_b "Fluid connector with outlined icon" 
     extends FluidPort;
-    annotation (Diagram(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
+    annotation (Diagram(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
+               fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
+               fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
                fillColor=7)), Text(extent=[-88, 192; 112, 98], string="%name")),
-         Icon(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
-              fillColor=7)), Text(
+         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
+              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
+              fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
+               fillColor=7)), Text(
           extent=[-126, 160; 130, 104],
           string="%name",
           style(
@@ -293,4 +299,31 @@ mass flow rate \"m_flow = port_a.m_flow\".
     m_flow = port_a.m_flow;
   end PartialTwoPortTransport;
   
+  partial model PartialRelativeSensor 
+    "Partial component to model a sensor that measures the difference of effort variables at two ports" 
+    
+    replaceable package Medium = PackageMedium extends 
+      Modelica_Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
+        choicesAllMatching =                                                                         true);
+    
+    FluidPort_a port_a(redeclare package Medium = Medium) 
+      annotation (extent=[-120, -10; -100, 10]);
+    FluidPort_b port_b(redeclare package Medium = Medium) 
+      annotation (extent=[120, -10; 100, 10]);
+    
+    annotation (Documentation(info="<html>
+<p>
+Partial component to model a <b>sensor</b> that measures
+the <b>difference between two effort variables</b>, e.g. to obtain the temperature difference 
+between fluid connectors.
+</p>
+</html>"));
+  equation 
+    port_a.m_flow = 0;
+    port_a.H_flow = 0;
+    port_a.mX_flow = zeros(Medium.nX);
+    port_b.m_flow = 0;
+    port_b.H_flow = 0;
+    port_b.mX_flow = zeros(Medium.nX);
+  end PartialRelativeSensor;
 end Interfaces;

@@ -5,7 +5,7 @@ package DrumBoiler
     extends Modelica.Icons.Example;
     Components.DrumBoiler drumBoiler annotation (extent=[-20, -40; 40, 20]);
     Modelica.Blocks.Sources.TimeTable q_F_Tab(table=[0, 0; 3600, 400; 7210,
-          400]) annotation (extent=[-80, 2; -60, 22]);
+          400]) annotation (extent=[-80,0; -60,20]);
     Modelica.Blocks.Sources.TimeTable Y_Valve_Tab(table=[0, 1; 3600, 1; 7210,
            1]) annotation (extent=[-80, -40; -60, -20]);
     annotation (
@@ -18,11 +18,11 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,12; -40,12; 
-          -40,-16; -25.7,-16],        style(color=3));
+    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,10; -40,10; 
+          -40,-28; -21.35,-28],       style(rgbcolor={0,0,127}));
     connect(Y_Valve_Tab.y,       drumBoiler.Y_Valve) annotation (points=[-59,
-          -30; -44,-30; -44,-34; -25.7,-34],     style(
-        color=3,
+          -30; -44,-30; -44,-34; -21.35,-34],    style(
+        rgbcolor={0,0,127},
         fillColor=7,
         fillPattern=1));
   end DrumBoilerSimulation;
@@ -124,7 +124,7 @@ Simulate for 7200 seconds.
       port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, h_l);
       
       // thermal stress
-      sigma_D           = 60*der(T_D);
+      sigma_D           = -60*der(T_D);
       
       // liquid level 
       V           = V_l;
@@ -260,11 +260,10 @@ Simulate for 7200 seconds.
       Modelica.Thermal.HeatTransfer.PrescribedHeatFlow furnace 
         annotation (extent=[-50, -50; -30, -30], rotation=90);
       Modelica.Blocks.Interfaces.RealInput q_F 
-        annotation (extent=[-139, 0; -99, -40]);
+        annotation (extent=[-109,-55; -100,-65]);
       Modelica.Blocks.Interfaces.RealInput Y_Valve 
-        annotation (extent=[-139, -100; -99, -60]);
-      Valve valve(                                                           k=
-            1.5e-5, redeclare package Medium = 
+        annotation (extent=[-109,-85; -100,-75]);
+      Valve valve(k = 1.5e-5, redeclare package Medium = 
             Modelica_Media.Water.StandardWater) 
                     annotation (extent=[44, -20; 64, 0]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
@@ -272,13 +271,13 @@ Simulate for 7200 seconds.
         annotation (extent=[80, -20; 100, 0], rotation=180);
       Modelica_Fluid.Sensors.MassFlowRate massFlowRate(redeclare package Medium
           =        Modelica_Media.Water.WaterIF97) 
-        annotation (extent=[10, -20; 30, 0]);
-      Modelica_Fluid.Sensors.Temperature temperature(      signalUnit="degC",
+        annotation (extent=[10, -20; 30, 0], rotation=180);
+      Modelica_Fluid.Sensors.Temperature temperature(
           redeclare package Medium = Modelica_Media.Water.StandardWater) 
         annotation (extent=[10, 60; 30, 80]);
       Modelica_Fluid.Sensors.Pressure pressure(redeclare package Medium = 
-                   Modelica_Media.Water.WaterIF97, signalUnit="bar") 
-        annotation (extent=[10, 20; 30, 40]);
+                   Modelica_Media.Water.WaterIF97) 
+        annotation (extent=[10,24; 30,44]);
       Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
         annotation (extent=[-60, 30; -80, 50]);
       MassFlowSource_h pump(redeclare package Medium = 
@@ -288,59 +287,67 @@ Simulate for 7200 seconds.
         annotation (extent=[-26, 30; -46, 50]);
       Modelica.Blocks.Sources.Constant levelSetPoint(k=67) 
         annotation (extent=[-46, 60; -26, 80]);
-    protected 
       Modelica.Blocks.Interfaces.RealOutput T_S 
-        annotation (extent=[34, 66; 42, 74]);
+        annotation (extent=[100,66; 108,74]);
       Modelica.Blocks.Interfaces.RealOutput p_S 
-        annotation (extent=[34, 26; 42, 34]);
+        annotation (extent=[100,30; 108,38]);
       Modelica.Blocks.Interfaces.RealOutput qm_S 
-        annotation (extent=[34, -34; 42, -26], rotation=0);
+        annotation (extent=[100,6; 108,14],    rotation=0);
       Modelica.Blocks.Interfaces.RealOutput sigma_D 
-        annotation (extent=[-24, 6; -16, 14]);
+        annotation (extent=[-24,1; -16,9]);
       Modelica.Blocks.Interfaces.RealOutput V_l 
-        annotation (extent=[-24, 24; -16, 32]);
-    public 
+        annotation (extent=[-24,16; -16,24]);
       Modelica.Blocks.Math.Gain MW2W(k=1e6) 
-        annotation (extent=[-70, -69; -50, -50]);
+        annotation (extent=[-95,-65.5; -85,-54.5]);
+      Modelica.Blocks.Math.Gain Pa2bar(k=1e-5) annotation (extent=[37,29; 47,39]);
+      Modelica.Thermal.HeatTransfer.Celsius.FromKelvin K2degC 
+        annotation (extent=[38,65; 48,75]);
     equation 
       connect(furnace.port, evaporator.heatPort) 
         annotation (points=[-40, -30; -40, -21], style(color=42));
       connect(Y_Valve, valve.Y) 
-        annotation (points=[-119, -80; 54, -80; 54, -17], style(color=3));
-      connect(evaporator.port_b, temperature.port) annotation (points=[
-            -29, -10; -2, -10; -2, 50; 20, 50; 20, 59], style(color=69));
-      connect(evaporator.port_b, pressure.port) annotation (points=[-29,
-             -10; -2, -10; -2, 10; 20, 10; 20, 19], style(color=69));
+        annotation (points=[-104.5,-80; 54,-80; 54,-17],  style(rgbcolor={0,0,127}));
+      connect(evaporator.port_b, temperature.port) annotation (points=[-29,-10; 
+            -2,-10; -2,51; 20,51; 20,59],               style(color=69));
+      connect(evaporator.port_b, pressure.port) annotation (points=[-29,-10; -2,
+            -10; -2,15; 20,15; 20,23],              style(color=69));
       connect(evaporator.port_b, massFlowRate.port_a) 
-        annotation (points=[-29, -10; 9, -10], style(color=69));
+        annotation (points=[-29,-10; -5,-10; -5,-10; 31,-10],
+                                               style(color=69));
       connect(massFlowRate.port_b, valve.port_a) 
-        annotation (points=[31, -10; 43, -10], style(color=69));
+        annotation (points=[9,-10; 32,-10; 32,-10; 43,-10],
+                                               style(color=69));
       connect(valve.port_b, sink.port) annotation (points=[65,-10; 72,-10; 72,
             -10; 79,-10],      style(color=69));
       connect(pump.port, evaporator.port_a) 
         annotation (points=[-59, -10; -51, -10], style(color=69));
       connect(controller.u,feedback.y) 
-        annotation (points=[-58, 40; -45, 40], style(color=3));
+        annotation (points=[-58, 40; -45, 40], style(rgbcolor={0,0,127}));
       connect(feedback.u2,      evaporator.V) 
-        annotation (points=[-36, 32; -36, 1], style(color=3));
+        annotation (points=[-36, 32; -36, 1], style(rgbcolor={0,0,127}));
       connect(levelSetPoint.y,feedback.u1)             annotation (points=[-25,
-             70; -20, 70; -20, 40; -28, 40], style(color=3));
-      connect(pressure.p, p_S) 
-        annotation (points=[31,30; 38,30],   style(color=3));
-      connect(temperature.T, T_S) 
-        annotation (points=[31,70; 38,70],   style(color=3));
+             70; -20, 70; -20, 40; -28, 40], style(rgbcolor={0,0,127}));
       connect(massFlowRate.m_flow, qm_S) 
-        annotation (points=[20,-21; 20,-30; 38,-30],    style(color=3));
-      connect(evaporator.sigma_D, sigma_D) annotation (points=[-29, -5; -26,
-            -5; -26, 10; -20, 10], style(color=3));
+        annotation (points=[20,1; 20,10; 104,10],       style(rgbcolor={0,0,127}));
+      connect(evaporator.sigma_D, sigma_D) annotation (points=[-29,-5; -26,-5; 
+            -26,5; -20,5],         style(rgbcolor={0,0,127}));
       connect(evaporator.V, V_l) 
-        annotation (points=[-36, 1; -36, 28; -20, 28], style(color=3));
+        annotation (points=[-36,1; -36,20; -20,20],    style(rgbcolor={0,0,127}));
       connect(controller.y,       pump.m_flow) annotation (points=[-81, 40; -90,
-             40; -90, -10; -82, -10], style(color=3));
-      connect(q_F,MW2W.u)       annotation (points=[-119, -20; -90, -20; -90,
-             -59.5; -72, -59.5], style(color=3));
-      connect(MW2W.y,furnace.Q_flow)       annotation (points=[-49, -59.5; -40,
-             -59.5; -40, -50], style(color=3));
+             40; -90, -10; -82, -10], style(rgbcolor={0,0,127}));
+      connect(MW2W.y,furnace.Q_flow)       annotation (points=[-84.5,-60; -40,
+            -60; -40,-50],     style(rgbcolor={0,0,127}));
+      connect(pressure.p, Pa2bar.u) 
+        annotation (points=[31,34; 36,34], style(color=74, rgbcolor={0,0,127}));
+      connect(Pa2bar.y, p_S) 
+        annotation (points=[47.5,34; 104,34],style(color=74, rgbcolor={0,0,127}));
+      connect(q_F, MW2W.u) annotation (points=[-104.5,-60; -96,-60],
+                                                                   style(color=74,
+            rgbcolor={0,0,127}));
+      connect(temperature.T, K2degC.Kelvin) annotation (points=[31,70; 37,70],
+          style(color=74, rgbcolor={0,0,127}));
+      connect(K2degC.Celsius, T_S) annotation (points=[48.5,70; 104,70],style(
+            color=74, rgbcolor={0,0,127}));
     end DrumBoiler;
     
     package WaterPhaseBoundaryIF97 
@@ -361,13 +368,13 @@ Simulate for 7200 seconds.
         
         assert(region == 1 or region == 2,
           "WaterPhaseBoundaryIF97 medium model only valid for regions 1 and 2");
-        T = Modelica_Media.Water.IF97.BaseIF97.Basic.tsat(p);
+        T = Modelica_Media.Water.IF97_Utilities.BaseIF97.Basic.tsat(p);
         if region == 1 then
-          d = Modelica_Media.Water.IF97.BaseIF97.Regions.rhol_p(p);
-          h = Modelica_Media.Water.IF97.BaseIF97.Regions.hl_p(p);
+          d = Modelica_Media.Water.IF97_Utilities.BaseIF97.Regions.rhol_p(p);
+          h = Modelica_Media.Water.IF97_Utilities.BaseIF97.Regions.hl_p(p);
         else
-          d = Modelica_Media.Water.IF97.BaseIF97.Regions.rhov_p(p);
-          h = Modelica_Media.Water.IF97.BaseIF97.Regions.hv_p(p);
+          d = Modelica_Media.Water.IF97_Utilities.BaseIF97.Regions.rhov_p(p);
+          h = Modelica_Media.Water.IF97_Utilities.BaseIF97.Regions.hv_p(p);
         end if;
         u = h - p/d;
         R = 287.0; // data.R // Modelica.Constants.R/data.MM;
