@@ -37,7 +37,7 @@ annotation (
     p_start=2e5,
     T_start=320,
     A_a=1,
-    includeViscosity=true, 
+    includeViscosity=true,
     initType=Modelica_Fluid.Types.InitTypes.InitialStates) 
            annotation (extent=[20,50; 40,70]);
   Modelica_Fluid.Sources.PrescribedAmbient_pT prescribedAmbient(redeclare 

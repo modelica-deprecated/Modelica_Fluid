@@ -19,7 +19,9 @@ package Utilities
         annotation(extent=[-10, 60; 10, 80], rotation=-90);
       Medium.BaseProperties medium(preferredMediumStates=true) 
       "Medium properties in the middle of the finite volume";
-    
+      SI.Mass M "Total mass in volume";
+      SI.Mass[Medium.nX-1] MX "Component mass";
+      SI.Energy U "Inner energy";
       parameter SI.Length L "Length of volume";
     
       parameter SI.Area A_a;
@@ -109,27 +111,34 @@ in piping networks which has the following properties:
           Rectangle(extent=[-80,36; -6,-36], style(color=0, rgbcolor={0,0,0})),
           Rectangle(extent=[8,36; 82,-36], style(color=0, rgbcolor={0,0,0}))));
   protected 
-      Real m_flow_a;
-      Real m_flow_b;
-      Real m_flow_middle;
-    
+      SI.MassFlowRate m_flow_a;
+      SI.MassFlowRate m_flow_b;
+      SI.MassFlowRate m_flow_middle;
       constant Real pi=Modelica.Constants.pi;
       constant Real g=Modelica.Constants.g_n;
       parameter SI.Area A_m=(A_a + A_b)/2;
-      parameter Real dx=L;
+      parameter SI.Length dx=L;
     equation 
+      //Extensive properties
+        M=medium.d*A_m*dx;
+        MX=M*medium.X_reduced;
+        U=M*medium.u;
+    
       // Mass balance over the interval a to b
-      der(medium.d)*A_m*dx = port_a.m_flow + port_b.m_flow;
+      //der(medium.d)*A_m*dx = port_a.m_flow + port_b.m_flow;
+      der(M)=port_a.m_flow + port_b.m_flow;
     
       // Substance mass balances over the interval a to b
       // der(medium.d*medium.X)*A_m*dx = port_a.mX_flow + port_b.mX_flow;
-      (der(medium.d)*medium.X + medium.d*der(medium.X))*A_m*dx = port_a.mX_flow + port_b.mX_flow;
+      //(der(medium.d)*medium.X + medium.d*der(medium.X))*A_m*dx = port_a.mX_flow + port_b.mX_flow;
+      der(MX)= port_a.mX_flow + port_b.mX_flow;
     
       // Energy balance over the interval a to b
       // der(medium.d*medium.u)*A_m*dx = port_a.H_flow + port_b.H_flow + m_flow_middle/
       //   medium.d*(port_b.p - port_a.p) + heatPort.Q_flow;
-      (der(medium.d)*medium.u + medium.d*der(medium.u))*A_m*dx = port_a.H_flow + port_b.H_flow - m_flow_middle/
-        medium.d*(port_a.p - port_b.p - dp_a - dp_b) + heatPort.Q_flow;
+      //(der(medium.d)*medium.u + medium.d*der(medium.u))*A_m*dx = port_a.H_flow + port_b.H_flow - m_flow_middle/
+      //  medium.d*(port_a.p - port_b.p - dp_a - dp_b) + heatPort.Q_flow;
+      der(U)= port_a.H_flow + port_b.H_flow - m_flow_middle/medium.d*(port_a.p - port_b.p - dp_a - dp_b) + heatPort.Q_flow;
     
       m_flow_middle = (port_a.m_flow - port_b.m_flow)/2 
       "since assumed same density in entire interval a to b";
@@ -167,8 +176,8 @@ in piping networks which has the following properties:
       // Upwind scheme (use properties from upwind port and handle zero flow)  
       port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium.h);
       port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium.h);
-      port_a.mX_flow = semiLinear(port_a.m_flow, port_a.X, medium.X);
-      port_b.mX_flow = semiLinear(port_b.m_flow, port_b.X, medium.X);
+      port_a.mX_flow = semiLinear(port_a.m_flow, port_a.X, medium.X_reduced);
+      port_b.mX_flow = semiLinear(port_b.m_flow, port_b.X, medium.X_reduced);
     
       // Heat port has the medium temperature
       heatPort.T = medium.T;
@@ -181,7 +190,7 @@ model PipeSegment
   import SI = Modelica.SIunits;
   extends Modelica_Fluid.Utilities.FiniteVolume(medium(
              p(start=p_start), d(start=d_start),
-             T(start=T_start), h(start=h_start), X(start=X_start)));
+             T(start=T_start), h(start=h_start), X_reduced(start=X_start)));
   extends Modelica_Fluid.Interfaces.PartialMenuInitialization;
     
   parameter Boolean linearPressureDrop=true;
@@ -220,14 +229,14 @@ initial equation
        medium.h = h_start;
     end if;
       
-    medium.X = X_start;
+    medium.X_reduced = X_start;
       
   elseif initType == Modelica_Fluid.Types.InitTypes.SteadyState then
     if not Medium.incompressible then
       der(medium.d) = 0;
     end if;
     der(medium.u) = 0;
-    der(medium.X) = zeros(Medium.nX);
+    der(medium.X_reduced) = zeros(Medium.nX-1);
       
   elseif initType == Modelica_Fluid.Types.InitTypes.SteadyMass then
     if not Medium.incompressible then
@@ -240,7 +249,7 @@ initial equation
        medium.h = h_start;
     end if;
       
-    der(medium.X) = zeros(Medium.nX);
+    der(medium.X_reduced) = zeros(Medium.nX-1);
   end if;
 equation 
   /*
@@ -703,8 +712,8 @@ is negative. It must be positive.
 ");
     end for;
     
-    assert(nX == 0 or nX > 1 and abs(sum(X_ambient) - 1.0) <
-      1.e-10, "
+    assert(nX<=1 or (nX>1 and abs(sum(X_ambient) - 1.0) <
+      1.e-10), "
 Wrong ambient mass fractions in medium \"" + mediumName + "\":
 This medium requires that the ambient mass fractions X_ambient
 sum up to 1. However, sum(X_ambient) = " + String(sum(X_ambient)) + ".

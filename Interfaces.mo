@@ -69,9 +69,9 @@ it is not possible to connect connectors of different media together.
     flow Medium.EnthalpyFlowRate H_flow 
       "Enthalpy flow rate into the component (if m_flow > 0, H_flow = m_flow*h)";
     
-    Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) 
+    Medium.MassFraction X[Medium.nX-1](quantity=Medium.substanceNames) 
       "Independent mixture mass fractions m_i/m in the connection point";
-    flow Medium.MassFlowRate mX_flow[Medium.nX](quantity=Medium.substanceNames) 
+    flow Medium.MassFlowRate mX_flow[Medium.nX-1](quantity=Medium.substanceNames) 
       "Mass flow rates of the independent substances from the connection point into the component (if m_flow > 0, mX_flow = m_flow*X)";
     
     Medium.ExtraProperty C[Medium.nC] 
@@ -149,7 +149,8 @@ it is not possible to connect connectors of different media together.
         1.e4 "Start value of specific enthalpy h, if init_T = false" annotation (
        Dialog(enable=not init_T, tab="Initialization", group="Initialization of energy balance"));
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_start[:]=
-        zeros(Medium.nX) "Start values of independent mass fractions X" 
+        zeros(Medium.nX-1) 
+      "Start values of independent mass fractions X_reduced" 
       annotation (Dialog(tab="Initialization", group=
             "Initialization of mass fractions (only for multi-substance fluids)"));
   end PartialMenuInitialization;
@@ -176,7 +177,8 @@ it is not possible to connect connectors of different media together.
         1.e4 "Guess value of specific enthalpy h" annotation (Dialog(tab=
             "Initialization", group="Initialization of energy balance"));
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_start[:]=
-        zeros(Medium.nX) "Guess values of independent mass fractions X" 
+        zeros(Medium.nX-1) 
+      "Guess values of independent mass fractions X_reduced" 
       annotation (Dialog(tab="Initialization", group=
             "Initialization of mass fractions (only for multi-substance fluids)"));
   end PartialMenuStartGuesses;
@@ -193,7 +195,7 @@ it is not possible to connect connectors of different media together.
   equation 
     port.p = medium.p;
     port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
-    port.mX_flow = semiLinear(port.m_flow, port.X, medium.X);
+    port.mX_flow = semiLinear(port.m_flow, port.X, medium.X_reduced);
     annotation (Documentation(info="<html>
 <p>
 Partial component to model the <b>volume interface</b> of a <b>source</b>
@@ -228,7 +230,7 @@ as signal.
   equation 
     port.m_flow = 0;
     port.H_flow = 0;
-    port.mX_flow = zeros(Medium.nX);
+    port.mX_flow = zeros(Medium.nX-1);
   end PartialAbsoluteSensor;
   
   partial model PartialFlowRateSensor 
@@ -270,9 +272,9 @@ between fluid connectors.
       annotation (extent=[-120, -10; -100, 10]);
     FluidPort_b port_b(redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
-    Medium.BaseProperties medium_a(p=port_a.p, h=port_a.h, X=port_a.X) 
+    Medium.BaseProperties medium_a(p=port_a.p, h=port_a.h, X_reduced=port_a.X) 
       "Medium properties in port_a";
-    Medium.BaseProperties medium_b(p=port_b.p, h=port_b.h, X=port_b.X) 
+    Medium.BaseProperties medium_b(p=port_b.p, h=port_b.h, X_reduced=port_b.X) 
       "Medium properties in port_b";
     Medium.MassFlowRate m_flow 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
@@ -298,7 +300,7 @@ mass flow rate \"m_flow = port_a.m_flow\".
     /* Energy, mass and substance mass balance */
     port_a.H_flow + port_b.H_flow = 0;
     port_a.m_flow + port_b.m_flow = 0;
-    port_a.mX_flow + port_b.mX_flow = zeros(Medium.nX);
+    port_a.mX_flow + port_b.mX_flow = zeros(Medium.nX-1);
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
@@ -326,9 +328,9 @@ between fluid connectors.
   equation 
     port_a.m_flow = 0;
     port_a.H_flow = 0;
-    port_a.mX_flow = zeros(Medium.nX);
+    port_a.mX_flow = zeros(Medium.nX-1);
     port_b.m_flow = 0;
     port_b.H_flow = 0;
-    port_b.mX_flow = zeros(Medium.nX);
+    port_b.mX_flow = zeros(Medium.nX-1);
   end PartialRelativeSensor;
 end Interfaces;

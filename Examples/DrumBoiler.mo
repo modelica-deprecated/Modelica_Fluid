@@ -307,7 +307,6 @@ Simulate for 7200 seconds.
       
       extends Modelica_Media.Interfaces.PartialMedium(
         mediumName="WaterIF97",
-        substanceNames=fill("", 0),
         incompressible=false,
         MassFlowRate(quantity="MassFlowRate.WaterIF97"));
       
@@ -329,6 +328,7 @@ Simulate for 7200 seconds.
         end if;
         u = h - p/d;
         R = Modelica.Constants.R / Modelica_Media.Water.IF97_Utilities.BaseIF97.data.MH2O;
+        MM = Modelica_Media.Water.IF97_Utilities.BaseIF97.data.MH2O;
       end BaseProperties;
     end WaterPhaseBoundaryIF97;
   end Components;

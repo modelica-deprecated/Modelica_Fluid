@@ -18,7 +18,7 @@ model the time constant of the sensor).
   model Density "Ideal density sensor" 
     extends Interfaces.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium(p=port.p, h=port.h, X=port.X);
+    Medium.BaseProperties medium(p=port.p, h=port.h, X_reduced=port.X);
     Modelica.Blocks.Interfaces.RealOutput d(unit = "kg/m3") 
       "Density in port medium" annotation (extent=[100,-10; 120,10]);
     
@@ -78,7 +78,7 @@ ideal, i.e., it does not influence the fluid.
   model Temperature "Ideal temperature sensor" 
     import SI = Modelica.SIunits;
     extends Interfaces.PartialAbsoluteSensor;
-    Medium.BaseProperties medium(p=port.p, h=port.h, X=port.X);
+    Medium.BaseProperties medium(p=port.p, h=port.h, X_reduced=port.X);
     Modelica.Blocks.Interfaces.RealOutput T(unit = "K") 
       "Temperature in port medium" 
                                  annotation (extent=[100,-10; 120,10]);
@@ -163,7 +163,7 @@ The sensor is ideal, i.e., it does not influence the fluid.
   model VolumeFlowRate "Ideal sensor for volume flow rate" 
     extends Interfaces.PartialFlowRateSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium(p=port_a.p, h=port_a.h, X=port_a.X);
+    Medium.BaseProperties medium(p=port_a.p, h=port_a.h, X_reduced=port_a.X);
     Modelica.Blocks.Interfaces.RealOutput V_flow(unit = "m3/s") 
       "volume flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
           -100], rotation=-90);
@@ -225,7 +225,7 @@ ideal, i.e., it does not influence the fluid.
   model SpecificInternalEnergy "Ideal specific internal energy sensor" 
     extends Interfaces.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium(p=port.p, h=port.h, X=port.X);
+    Medium.BaseProperties medium(p=port.p, h=port.h, X_reduced=port.X);
     Modelica.Blocks.Interfaces.RealOutput u(unit = "J/kg") 
       "Specific internal energy in port medium" annotation (extent=[100,-10; 120,10]);
     
@@ -255,8 +255,8 @@ ideal, i.e., it does not influence the fluid.
   model RelDensity "Ideal relative density sensor" 
     extends Interfaces.PartialRelativeSensor;
     extends Modelica.Icons.TranslationalSensor;
-    Medium.BaseProperties medium_a(p=port_a.p, h=port_a.h, X=port_a.X);
-    Medium.BaseProperties medium_b(p=port_b.p, h=port_b.h, X=port_b.X);
+    Medium.BaseProperties medium_a(p=port_a.p, h=port_a.h, X_reduced=port_a.X);
+    Medium.BaseProperties medium_b(p=port_b.p, h=port_b.h, X_reduced=port_b.X);
     Modelica.Blocks.Interfaces.RealOutput d_rel(redeclare type SignalType = 
           SI.Density) "Relative density signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
     annotation (
@@ -325,8 +325,8 @@ the two ports of this component and is provided as output signal.
   model RelTemperature "Ideal relative temperature sensor" 
     extends Interfaces.PartialRelativeSensor;
     extends Modelica.Icons.TranslationalSensor;
-    Medium.BaseProperties medium_a(p=port_a.p, h=port_a.h, X=port_a.X);
-    Medium.BaseProperties medium_b(p=port_b.p, h=port_b.h, X=port_b.X);
+    Medium.BaseProperties medium_a(p=port_a.p, h=port_a.h, X_reduced=port_a.X);
+    Medium.BaseProperties medium_b(p=port_b.p, h=port_b.h, X_reduced=port_b.X);
     Modelica.Blocks.Interfaces.RealOutput T_rel(redeclare type SignalType = 
           SI.Temperature) "Relative temperature signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
     annotation (
@@ -396,8 +396,8 @@ the two ports of this component and is provided as output signal.
     "Ideal relative specific internal energy sensor" 
     extends Interfaces.PartialRelativeSensor;
     extends Modelica.Icons.TranslationalSensor;
-    Medium.BaseProperties medium_a(p=port_a.p, h=port_a.h, X=port_a.X);
-    Medium.BaseProperties medium_b(p=port_b.p, h=port_b.h, X=port_b.X);
+    Medium.BaseProperties medium_a(p=port_a.p, h=port_a.h, X_reduced=port_a.X);
+    Medium.BaseProperties medium_b(p=port_b.p, h=port_b.h, X_reduced=port_b.X);
     Modelica.Blocks.Interfaces.RealOutput u_rel(redeclare type SignalType = 
           SI.SpecificEnergy) "Relative specific internal energy signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
     annotation (

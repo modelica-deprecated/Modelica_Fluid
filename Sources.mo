@@ -29,7 +29,7 @@ package Sources "Generic fluid sources"
                                                                 enable=not 
             use_T_ambient));
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
-      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      Medium.nX-1](quantity=Medium.substanceNames[1:Medium.nX-1]) = ones(Medium.nX-1) 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nX > 0));
     
@@ -62,7 +62,7 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      use_p_ambient, Medium.nX, X_ambient);
+      use_p_ambient, Medium.nX-1, X_ambient);
     if use_p_ambient or Medium.incompressible then
       medium.p = p_ambient;
     else
@@ -75,7 +75,7 @@ with exception of ambient pressure, do not have an effect.
       medium.h = h_ambient;
     end if;
     
-    medium.X = X_ambient;
+    medium.X_reduced = X_ambient;
   end FixedAmbient;
   
   model FixedAmbient_pTX 
@@ -88,7 +88,7 @@ with exception of ambient pressure, do not have an effect.
     parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=
         Modelica.SIunits.Conversions.from_degC(20) "Ambient temperature";
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
-      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      Medium.nX-1](quantity=Medium.substanceNames[1:Medium.nX-1]) = ones(Medium.nX-1) 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nX > 0));
     annotation (
@@ -120,10 +120,10 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      true, Medium.nX, X_ambient);
+      true, Medium.nX-1, X_ambient);
     medium.p = p_ambient;
     medium.T = T_ambient;
-    medium.X = X_ambient;
+    medium.X_reduced = X_ambient;
   end FixedAmbient_pTX;
   
   model FixedAmbient_phX 
@@ -137,7 +137,7 @@ with exception of ambient pressure, do not have an effect.
       h_ambient=
         1.e4 "Ambient specific enthalpy";
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
-      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      Medium.nX-1](quantity=Medium.substanceNames[1:Medium.nX-1]) = ones(Medium.nX-1) 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nX > 0));
     
@@ -170,10 +170,10 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      true, Medium.nX, X_ambient);
+      true, Medium.nX-1, X_ambient);
       medium.p = p_ambient;
       medium.h = h_ambient;
-      medium.X = X_ambient;
+      medium.X_reduced = X_ambient;
   end FixedAmbient_phX;
   
   annotation (Documentation(info="<html>
@@ -187,7 +187,7 @@ to define fixed or prescribed ambient conditions.
     extends Interfaces.PartialSource;
     
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
-      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      Medium.nX-1](quantity=Medium.substanceNames[1:Medium.nX-1]) = ones(Medium.nX-1) 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nX > 0));
     Modelica.Blocks.Interfaces.RealInput p_ambient(redeclare type SignalType = 
@@ -244,10 +244,10 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      true, Medium.nX, X_ambient);
+      true, Medium.nX-1, X_ambient);
     medium.p = p_ambient;
     medium.T = T_ambient;
-    medium.X = X_ambient;
+    medium.X_reduced = X_ambient;
   end PrescribedAmbient_pT;
   
   model PrescribedAmbient_ph 
@@ -255,7 +255,7 @@ with exception of ambient pressure, do not have an effect.
     extends Interfaces.PartialSource;
     
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
-      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      Medium.nX-1](quantity=Medium.substanceNames[1:Medium.nX-1]) = ones(Medium.nX-1) 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nX > 0));
     Modelica.Blocks.Interfaces.RealInput p_ambient(redeclare type SignalType = 
@@ -312,10 +312,10 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      true, Medium.nX, X_ambient);
+      true, Medium.nX-1, X_ambient);
     medium.p = p_ambient;
     medium.h = h_ambient;
-    medium.X = X_ambient;
+    medium.X_reduced = X_ambient;
   end PrescribedAmbient_ph;
   
   model FixedMassFlowRate_TX 
@@ -329,7 +329,7 @@ with exception of ambient pressure, do not have an effect.
         Modelica.SIunits.Conversions.from_degC(20) 
       "Ambient temperature of reservoir";
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
-      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      Medium.nX-1](quantity=Medium.substanceNames[1:Medium.nX-1]) = ones(Medium.nX-1) 
       "Ambient mass fractions m_i/m of reservoir" 
       annotation (Dialog(group="Only for multi-substance flow"));
     
@@ -368,9 +368,9 @@ with exception of ambient pressure, do not have an effect.
       Diagram);
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
-      Medium.nX, X_ambient);
+      Medium.nX-1, X_ambient);
       medium.T = T_ambient;
-      medium.X = X_ambient;
+      medium.X_reduced = X_ambient;
       port.m_flow = -m_flow;
   end FixedMassFlowRate_TX;
   
@@ -385,8 +385,8 @@ with exception of ambient pressure, do not have an effect.
       h_ambient=
         1.e4 "Ambient specific enthalpy  of reservoir";
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
-      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
-      "Ambient mass fractions m_i/m of reservoir" 
+      Medium.nX-1](quantity=Medium.substanceNames[1:Medium.nX-1]) = ones(Medium.nX-1) 
+      "Ambient mass fractions m_i/m of reservoir, reduced" 
       annotation (Dialog(group="Only for multi-substance flow"));
     
     annotation (
@@ -424,9 +424,9 @@ with exception of ambient pressure, do not have an effect.
       Diagram);
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
-      Medium.nX, X_ambient);
+      Medium.nX-1, X_ambient);
       medium.h = h_ambient;
-      medium.X = X_ambient;
+      medium.X_reduced = X_ambient;
       port.m_flow = -m_flow;
   end FixedMassFlowRate_hX;
   
@@ -438,7 +438,7 @@ with exception of ambient pressure, do not have an effect.
         Modelica.SIunits.Conversions.from_degC(20) 
       "Ambient temperature of reservoir";
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
-      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      Medium.nX-1](quantity=Medium.substanceNames[1:Medium.nX-1]) = ones(Medium.nX-1) 
       "Ambient mass fractions m_i/m of reservoir" 
       annotation (Dialog(group="Only for multi-substance flow"));
     Modelica.Blocks.Interfaces.RealInput m_flow_ambient(redeclare type 
@@ -485,9 +485,9 @@ with exception of ambient pressure, do not have an effect.
       Diagram);
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
-      Medium.nX, X_ambient);
+      Medium.nX-1, X_ambient);
       medium.T = T_ambient;
-      medium.X = X_ambient;
+      medium.X_reduced = X_ambient;
     
     port.m_flow = -m_flow_ambient;
   end PrescribedMassFlowRate_TX;
@@ -500,7 +500,7 @@ with exception of ambient pressure, do not have an effect.
       h_ambient=
         1.e4 "Ambient specific enthalpy of reservoir";
     parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
-      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      Medium.nX-1](quantity=Medium.substanceNames[1:Medium.nX-1]) = ones(Medium.nX-1) 
       "Ambient mass fractions m_i/m of reservoir" 
       annotation (Dialog(group="Only for multi-substance flow"));
     Modelica.Blocks.Interfaces.RealInput m_flow_ambient(redeclare type 
@@ -547,9 +547,9 @@ with exception of ambient pressure, do not have an effect.
       Diagram);
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
-      Medium.nX, X_ambient);
+      Medium.nX-1, X_ambient);
       medium.h = h_ambient;
-      medium.X = X_ambient;
+      medium.X_reduced = X_ambient;
     
     port.m_flow = -m_flow_ambient;
   end PrescribedMassFlowRate_hX;
