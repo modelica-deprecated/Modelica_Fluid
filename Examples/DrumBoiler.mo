@@ -264,24 +264,24 @@ Simulate for 7200 seconds.
       Modelica.Blocks.Interfaces.RealInput Y_Valve 
         annotation (extent=[-109,-85; -100,-75]);
       Valve valve(k = 1.5e-5, redeclare package Medium = 
-            Modelica_Media.Water.StandardWater) 
+            Modelica_Media.Water.WaterIF97_ph) 
                     annotation (extent=[44, -20; 64, 0]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
-            Modelica_Media.Water.OnePhaseWater) 
+            Modelica_Media.Water.WaterIF97OnePhase_pT) 
         annotation (extent=[80, -20; 100, 0], rotation=180);
       Modelica_Fluid.Sensors.MassFlowRate massFlowRate(redeclare package Medium
-          =        Modelica_Media.Water.WaterIF97) 
+          =        Modelica_Media.Water.WaterIF97_ph) 
         annotation (extent=[10, -20; 30, 0], rotation=180);
       Modelica_Fluid.Sensors.Temperature temperature(
-          redeclare package Medium = Modelica_Media.Water.StandardWater) 
+          redeclare package Medium = Modelica_Media.Water.WaterIF97_ph) 
         annotation (extent=[10, 60; 30, 80]);
       Modelica_Fluid.Sensors.Pressure pressure(redeclare package Medium = 
-                   Modelica_Media.Water.WaterIF97) 
+                   Modelica_Media.Water.WaterIF97_ph) 
         annotation (extent=[10,24; 30,44]);
       Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
         annotation (extent=[-60, 30; -80, 50]);
       MassFlowSource_h pump(redeclare package Medium = 
-            Modelica_Media.Water.WaterIF97) 
+            Modelica_Media.Water.WaterIF97_ph) 
         annotation (extent=[-80, -20; -60, 0]);
       Modelica.Blocks.Math.Feedback feedback 
         annotation (extent=[-26, 30; -46, 50]);
@@ -307,7 +307,7 @@ Simulate for 7200 seconds.
         annotation (points=[-40, -30; -40, -21], style(color=42));
       connect(Y_Valve, valve.Y) 
         annotation (points=[-104.5,-80; 54,-80; 54,-17],  style(rgbcolor={0,0,127}));
-      connect(evaporator.port_b, temperature.port) annotation (points=[-29,-10; 
+      connect(evaporator.port_b, temperature.port) annotation (points=[-29,-10;
             -2,-10; -2,51; 20,51; 20,59],               style(color=69));
       connect(evaporator.port_b, pressure.port) annotation (points=[-29,-10; -2,
             -10; -2,15; 20,15; 20,23],              style(color=69));
@@ -329,7 +329,7 @@ Simulate for 7200 seconds.
              70; -20, 70; -20, 40; -28, 40], style(rgbcolor={0,0,127}));
       connect(massFlowRate.m_flow, qm_S) 
         annotation (points=[20,1; 20,10; 104,10],       style(rgbcolor={0,0,127}));
-      connect(evaporator.sigma_D, sigma_D) annotation (points=[-29,-5; -26,-5; 
+      connect(evaporator.sigma_D, sigma_D) annotation (points=[-29,-5; -26,-5;
             -26,5; -20,5],         style(rgbcolor={0,0,127}));
       connect(evaporator.V, V_l) 
         annotation (points=[-36,1; -36,20; -20,20],    style(rgbcolor={0,0,127}));
@@ -377,7 +377,7 @@ Simulate for 7200 seconds.
           h = Modelica_Media.Water.IF97_Utilities.BaseIF97.Regions.hv_p(p);
         end if;
         u = h - p/d;
-        R = 287.0; // data.R // Modelica.Constants.R/data.MM;
+        R = Modelica.Constants.R / Modelica_Media.Water.IF97_Utilities.BaseIF97.data.MH2O;
       end BaseProperties;
     end WaterPhaseBoundaryIF97;
   end Components;
