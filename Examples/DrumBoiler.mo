@@ -18,7 +18,7 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,10; -40,10; 
+    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,10; -40,10;
           -40,-28; -21.35,-28],       style(rgbcolor={0,0,127}));
     connect(Y_Valve_Tab.y,       drumBoiler.Y_Valve) annotation (points=[-59,
           -30; -44,-30; -44,-34; -21.35,-34],    style(
@@ -209,7 +209,7 @@ Simulate for 7200 seconds.
             Modelica_Media.Water.WaterIF97_ph) 
                     annotation (extent=[44, -20; 64, 0]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
-            Modelica_Media.Water.WaterIF97OnePhase_pT) 
+            Modelica_Media.Water.StandardWaterOnePhase) 
         annotation (extent=[80, -20; 100, 0], rotation=180);
       Modelica_Fluid.Sensors.MassFlowRate massFlowRate(redeclare package Medium
           =        Modelica_Media.Water.WaterIF97_ph) 
@@ -249,7 +249,7 @@ Simulate for 7200 seconds.
       Modelica.Blocks.Math.Gain Pa2bar(k=1e-5) annotation (extent=[37,29; 47,39]);
       Modelica.Thermal.HeatTransfer.Celsius.FromKelvin K2degC 
         annotation (extent=[38,65; 48,75]);
-      Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=500)
+      Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=500) 
         annotation (extent=[-85,33; -71,47], rotation=180);
     equation 
       connect(furnace.port, evaporator.heatPort) 
@@ -296,7 +296,7 @@ Simulate for 7200 seconds.
           style(color=74, rgbcolor={0,0,127}));
       connect(K2degC.Celsius, T_S) annotation (points=[48.5,70; 104,70],style(
             color=74, rgbcolor={0,0,127}));
-      connect(controller.y, limiter.u) annotation (points=[-65.7,40; -69.6,40], 
+      connect(controller.y, limiter.u) annotation (points=[-65.7,40; -69.6,40],
           style(color=74, rgbcolor={0,0,127}));
       connect(limiter.y, pump.m_flow_ambient) annotation (points=[-85.7,40; -90,
             40; -90,-10; -82,-10], style(color=74, rgbcolor={0,0,127}));
