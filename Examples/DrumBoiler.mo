@@ -164,7 +164,6 @@ Simulate for 7200 seconds.
       port_a.m_flow =Y           *k*dp;
     end Valve;
     
-    
     model DrumBoiler 
       "Complete drum boiler model, including evaporator and supplementary components" 
       
@@ -200,9 +199,11 @@ Simulate for 7200 seconds.
               fillPattern=1))));
       Modelica.Thermal.HeatTransfer.PrescribedHeatFlow furnace 
         annotation (extent=[-50, -50; -30, -30], rotation=90);
-      Modelica.Blocks.Interfaces.RealInput q_F 
+      Modelica.Blocks.Interfaces.RealInput q_F(redeclare type SignalType = Real (
+             unit="MW")) 
         annotation (extent=[-109,-55; -100,-65]);
-      Modelica.Blocks.Interfaces.RealInput Y_Valve 
+      Modelica.Blocks.Interfaces.RealInput Y_Valve(redeclare type SignalType = 
+            Real (unit="1")) 
         annotation (extent=[-109,-85; -100,-75]);
       Valve valve(k = 1.5e-5, redeclare package Medium = 
             Modelica_Media.Water.WaterIF97_ph) 
@@ -220,7 +221,7 @@ Simulate for 7200 seconds.
                    Modelica_Media.Water.WaterIF97_ph) 
         annotation (extent=[10,24; 30,44]);
       Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
-        annotation (extent=[-60, 30; -80, 50]);
+        annotation (extent=[-51,33; -65,47]);
       Modelica_Fluid.Sources.PrescribedMassFlowRate_hX pump(redeclare package 
           Medium = 
             Modelica_Media.Water.WaterIF97_ph, h_ambient=5e5) 
@@ -228,22 +229,28 @@ Simulate for 7200 seconds.
       Modelica.Blocks.Math.Feedback feedback 
         annotation (extent=[-26, 30; -46, 50]);
       Modelica.Blocks.Sources.Constant levelSetPoint(k=67) 
-        annotation (extent=[-46, 60; -26, 80]);
-      Modelica.Blocks.Interfaces.RealOutput T_S 
+        annotation (extent=[-43,60; -30,73]);
+      Modelica.Blocks.Interfaces.RealOutput T_S(redeclare type SignalType = 
+            Real (unit="degC")) 
         annotation (extent=[100,66; 108,74]);
-      Modelica.Blocks.Interfaces.RealOutput p_S 
+      Modelica.Blocks.Interfaces.RealOutput p_S(redeclare type SignalType = 
+            Real (unit="bar")) 
         annotation (extent=[100,30; 108,38]);
-      Modelica.Blocks.Interfaces.RealOutput qm_S 
+      Modelica.Blocks.Interfaces.RealOutput qm_S(redeclare type SignalType = 
+            Modelica.SIunits.MassFlowRate) 
         annotation (extent=[100,6; 108,14],    rotation=0);
       Modelica.Blocks.Interfaces.RealOutput sigma_D 
         annotation (extent=[-24,1; -16,9]);
-      Modelica.Blocks.Interfaces.RealOutput V_l 
+      Modelica.Blocks.Interfaces.RealOutput V_l(redeclare type SignalType = 
+            Modelica.SIunits.Volume) 
         annotation (extent=[-24,16; -16,24]);
       Modelica.Blocks.Math.Gain MW2W(k=1e6) 
         annotation (extent=[-95,-65.5; -85,-54.5]);
       Modelica.Blocks.Math.Gain Pa2bar(k=1e-5) annotation (extent=[37,29; 47,39]);
       Modelica.Thermal.HeatTransfer.Celsius.FromKelvin K2degC 
         annotation (extent=[38,65; 48,75]);
+      Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=500)
+        annotation (extent=[-85,33; -71,47], rotation=180);
     equation 
       connect(furnace.port, evaporator.heatPort) 
         annotation (points=[-40, -30; -40, -21], style(color=42));
@@ -264,19 +271,18 @@ Simulate for 7200 seconds.
       connect(pump.port, evaporator.port_a) 
         annotation (points=[-59, -10; -51, -10], style(color=69));
       connect(controller.u,feedback.y) 
-        annotation (points=[-58, 40; -45, 40], style(rgbcolor={0,0,127}));
+        annotation (points=[-49.6,40; -45,40], style(rgbcolor={0,0,127}));
       connect(feedback.u2,      evaporator.V) 
         annotation (points=[-36, 32; -36, 1], style(rgbcolor={0,0,127}));
-      connect(levelSetPoint.y,feedback.u1)             annotation (points=[-25,
-             70; -20, 70; -20, 40; -28, 40], style(rgbcolor={0,0,127}));
+      connect(levelSetPoint.y,feedback.u1)             annotation (points=[
+            -29.35,66.5; -22,66.5; -22,40; -28,40],
+                                             style(rgbcolor={0,0,127}));
       connect(massFlowRate.m_flow, qm_S) 
         annotation (points=[20,1; 20,10; 104,10],       style(rgbcolor={0,0,127}));
       connect(evaporator.sigma_D, sigma_D) annotation (points=[-29,-5; -26,-5;
             -26,5; -20,5],         style(rgbcolor={0,0,127}));
       connect(evaporator.V, V_l) 
         annotation (points=[-36,1; -36,20; -20,20],    style(rgbcolor={0,0,127}));
-      connect(controller.y,       pump.m_flow_ambient) annotation (points=[-81, 40; -90,
-             40; -90, -10; -82, -10], style(rgbcolor={0,0,127}));
       connect(MW2W.y,furnace.Q_flow)       annotation (points=[-84.5,-60; -40,
             -60; -40,-50],     style(rgbcolor={0,0,127}));
       connect(pressure.p, Pa2bar.u) 
@@ -290,6 +296,10 @@ Simulate for 7200 seconds.
           style(color=74, rgbcolor={0,0,127}));
       connect(K2degC.Celsius, T_S) annotation (points=[48.5,70; 104,70],style(
             color=74, rgbcolor={0,0,127}));
+      connect(controller.y, limiter.u) annotation (points=[-65.7,40; -69.6,40], 
+          style(color=74, rgbcolor={0,0,127}));
+      connect(limiter.y, pump.m_flow_ambient) annotation (points=[-85.7,40; -90,
+            40; -90,-10; -82,-10], style(color=74, rgbcolor={0,0,127}));
     end DrumBoiler;
     
     package WaterPhaseBoundaryIF97 
