@@ -516,8 +516,8 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
         if frictionType == FrictionTypes.ConstantLaminar then
           m_flow = dp/k;
         elseif frictionType == FrictionTypes.ConstantTurbulent then
-          m_flow = noEvent(if dp > delta then sqrt(dp) else (if dp < -delta then -
-            sqrt(-dp) else (C1 + C3*dp*dp)*dp))/sqrt(k);
+          m_flow = noEvent(if dp > delta then sqrt(dp/k) else (if dp < -delta then -
+            sqrt(-dp/k) else (C1 + C3*dp*dp)*dp));
         else
           lambda2 = noEvent(d*abs(dp)/(k*eta*eta));
           if noEvent(lambda2/64 <= Re1) then
@@ -649,12 +649,13 @@ near its completion. It will replace this one.
       Medium.BaseProperties medium(
         preferredMediumStates=true,
         p(start=p_ambient),
-        T(start=T_start),
+        T(start=T_start,stateSelect=StateSelect.always),
         Xi(start=X_start[1:Medium.nXi]));
       
       parameter Modelica.SIunits.Area area "Tank area";
       parameter Medium.AbsolutePressure p_ambient=101325 
         "Tank surface pressure";
+      parameter Boolean InitTemp = true;
       parameter Modelica.SIunits.Height level_start(min=0) 
         "|Initialization| Initial tank level";
       parameter Medium.Temperature T_start=from_degC(20) 
@@ -719,7 +720,7 @@ near its completion. It will replace this one.
       medium.p = m*g/area + p_ambient;
       
       // Energy balance
-      der(U) = port.H_flow - p_ambient*der(V);
+      der(U) = port.H_flow - 0.5*(p_ambient+medium.p)*der(V);
       
       annotation (
         Icon(
@@ -955,7 +956,9 @@ used for the initial mass fractions.
         dp_nominal=from_bar(0.1),
         redeclare package Medium = 
             Modelica.Media.Water.ConstantPropertyLiquidWater,
-        frictionType=Types.FrictionTypes.ConstantLaminar) 
+        frictionType=Types.FrictionTypes.ConstantLaminar,
+        medium_b(T(stateSelect=StateSelect.avoid)),
+        medium_a(T(stateSelect=StateSelect.avoid))) 
         annotation (extent=[-10, -10; 10, 10], rotation=-90);
     equation 
       connect(Tank1.port, shortPipe1.port_a) 
@@ -1121,6 +1124,7 @@ used for the initial mass fractions.
       connect(shortPipe2.port_b, shortPipe3.port_a) annotation (points=[
             6.73533e-016,-11; 0,-11; 0,-20; 29,-20],     style(color=69));
     end ThreeTanksIF97;
+    
   end Tanks;
   
   package TestComponents 
@@ -2249,6 +2253,7 @@ is instantaneous. The temperature is the same as in the upper part.
     end SinkP;
     
     partial model ValveBase "Base model for valves" 
+     extends Interfaces.PartialTwoPortTransport;
      annotation (Icon(
           Line(points=[0, 40; 0, 0], style(
               color=0,
@@ -2280,10 +2285,10 @@ is instantaneous. The temperature is the same as in the upper part.
        First release.</li>
 </ul>
 </html>"));
-      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
-        "Medium model" 
-                     annotation(choicesAllMatching= true);
-      Medium.BaseProperties fluid;
+      // replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+      //   "Medium model" 
+      //                annotation(choicesAllMatching= true);
+      // Medium.BaseProperties fluid;
       parameter Integer CvData "(0: Av | 1: Kv | 2: Cv | 3: OpPoint)";
       parameter Modelica.SIunits.Area Avnom=0 "Av (metric) flow coefficient";
       parameter Real Kvnom(unit="m^3/h")=0 "Kv (metric) flow coefficient";
@@ -2298,10 +2303,10 @@ is instantaneous. The temperature is the same as in the upper part.
       Real Av "Flow coefficient";
       Medium.Density rho "Inlet density";
       Medium.Temperature Tin "Inlet temperature";
-      Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = 
-            Medium) annotation (extent=[-120, -20; -80, 20]);
-      Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = 
-            Medium)  annotation (extent=[80, -20; 120, 20]);
+      // Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = 
+      //       Medium) annotation (extent=[-120, -20; -80, 20]);
+      // Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = 
+      //       Medium)  annotation (extent=[80, -20; 120, 20]);
       Modelica.Blocks.Interfaces.RealInput theta 
         annotation (extent=[-20, 60; 20, 100], rotation=-90);
       annotation (
@@ -2376,14 +2381,17 @@ is instantaneous. The temperature is the same as in the upper part.
       elseif CvData == 3 then
         Av = wnom/sqrt(rhonom*dpnom);
       end if;
-      inlet.m_flow + outlet.m_flow = 0;
-      w = inlet.m_flow;
-      inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,fluid.h);
-      outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,fluid.h);
-      inlet.H_flow+outlet.H_flow=0;
-      fluid.p=inlet.p;
-      Tin=fluid.T;
-      rho=fluid.d;
+      w = port_a.m_flow;
+      // inlet.m_flow + outlet.m_flow = 0;
+      // inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,fluid.h);
+      // outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,fluid.h);
+      // inlet.mXi_flow = semiLinear(inlet.m_flow, outlet.X_i, inlet.X_i);
+      // outlet.mXi_flow + inlet.mXi_flow = zeros(Medium.nX_i);
+      // inlet.H_flow+outlet.H_flow=0;
+      // fluid.X_i = inlet.X_i;
+      // fluid.p=inlet.p;
+      Tin=medium_a.T;
+      rho=medium_a.d;
     end ValveBase;
     
     model ValveLiquid "Valve for incompressible liquid flow" 
@@ -2411,7 +2419,7 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
 </ul>
 </HTML>"));
     equation 
-      z = (inlet.p - outlet.p)/dpnom;
+      z = (port_a.p - port_b.p)/dpnom;
       if CheckValve then
         sqrtz = (if z >= 0 then z/sqrt(z + b) else 0);
       else
@@ -2950,54 +2958,55 @@ Schiavo</a>:<br>
     model TestValve "Test case for valves" 
       package Medium = Modelica.Media.Water.StandardWater;
       Sources.FixedAmbient_phX SourceP1(
-      redeclare package Medium = Medium,
         p_ambient=10e5,
-        h_ambient=1e5) 
+        h_ambient=1e5,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
         annotation (extent=[-100,30; -82,52]);
       Sources.FixedAmbient_phX SourceP2(
-      redeclare package Medium = Medium,
         p_ambient=8e5,
-        h_ambient=1e5) 
+        h_ambient=1e5,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
         annotation (extent=[-100,-50; -84,-30]);
       Sources.FixedAmbient_phX SinkP1(
-      redeclare package Medium = Medium,
-        p_ambient=1e5) 
-        annotation (extent=[76,-4; 60,16]);
+        p_ambient=1e5,
+        h_ambient=1e5,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
+        annotation (extent=[76,0; 60,20]);
       ValveLiquid V1(
         rhonom=1000,
         CvData=3,
         dpnom=9e5,
         wnom=1.5,
-      redeclare package Medium = Medium) 
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
                   annotation (extent=[-50, 58; -30, 78]);
       ValveLiquid V2(
         dpnom=5e5,
         rhonom=1000,
         CvData=3,
         wnom=1.2,
-      redeclare package Medium = Medium) 
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
                   annotation (extent=[-38, 26; -18, 46]);
       ValveLiquid V3(
         dpnom=3e5,
         rhonom=1000,
         CvData=3,
         wnom=1.1,
-      redeclare package Medium = Medium) 
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
                   annotation (extent=[-38, -38; -18, -18]);
       ValveLiquid V4(
         dpnom=8e5,
         rhonom=1000,
         CvData=3,
         wnom=1.3,
-      redeclare package Medium = Medium) 
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
                   annotation (extent=[-38, -78; -18, -58]);
       ValveLiquid V5(
         dpnom=4e5,
         wnom=2,
         rhonom=1000,
         CvData=3,
-      redeclare package Medium = Medium) 
-                  annotation (extent=[28, -4; 48, 16]);
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
+                  annotation (extent=[28,0; 48,20]);
       annotation (
         Diagram,
         experiment(StopTime=4, Tolerance=1e-006),
@@ -3013,12 +3022,14 @@ Casella</a>:<br>
 </ul>
 </HTML>"));
       Sources.FixedAmbient_phX SinkP2(
-      redeclare package Medium = Medium,
-        p_ambient=1e5) 
+        p_ambient=1e5,
+        h_ambient=1e5,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
         annotation (extent=[2,58; -16,78]);
       Sources.FixedAmbient_phX SinkP3(
-      redeclare package Medium = Medium,
-        p_ambient=1e5) 
+        p_ambient=1e5,
+        h_ambient=1e5,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
         annotation (extent=[14,-78; -2,-58]);
       Modelica.Blocks.Sources.Ramp CloseLoad(
         duration=1,
@@ -3030,42 +3041,53 @@ Casella</a>:<br>
         height=1,
         offset=0,
         startTime=1) 
-                    annotation (extent=[-92, 74; -72, 94]);
+                    annotation (extent=[-94,74; -74,94]);
       Modelica.Blocks.Sources.Ramp CloseValves(
         duration=2,
         height=-1,
         offset=1,
         startTime=1) 
                     annotation (extent=[-96, -12; -76, 8]);
+      Interfaces.PortVolume volume(
+        h_start=1e5,
+        medium(h(start=2.0e5)),
+        T_start=300,
+        use_T_start=false,
+        p_start=7e5,
+        V=1e-4,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
+        annotation (extent=[-12,-2; 8,20]);
     equation 
       connect(CloseLoad.y,       V5.theta) 
-        annotation (points=[29, 38; 38, 38; 38, 14], style(color=3));
-      connect(OpenRelief.y,       V1.theta) 
-        annotation (points=[-71, 84; -40, 84; -40, 76], style(color=3));
-      connect(OpenRelief.y,       V4.theta) annotation (points=[-71, 84; -70, -6;
-             -42, -6; -42, -50; -28, -50; -28, -60], style(color=3));
+        annotation (points=[29,38; 38,38; 38,18],    style(color=3));
+      connect(OpenRelief.y,       V4.theta) annotation (points=[-73,84; -68,84;
+            -68,-48; -28,-48; -28,-60],              style(color=3));
       connect(CloseValves.y,       V3.theta) 
         annotation (points=[-75, -2; -28, -2; -28, -20], style(color=3));
       connect(CloseValves.y,       V2.theta) annotation (points=[-75, -2; -42,
             -2; -42, 54; -28, 54; -28, 44], style(color=3));
-      connect(V2.outlet, V5.inlet) annotation (points=[-18,36; 5,36; 5,6; 28,6],
-          style(color=69, rgbcolor={0,127,255}));
-      connect(V3.outlet, V5.inlet) annotation (points=[-18,-28; 6,-28; 6,6; 28,6],
-          style(color=69, rgbcolor={0,127,255}));
-      connect(V5.outlet, SinkP1.port) 
-        annotation (points=[48,6; 59.2,6], style(color=69, rgbcolor={0,127,255}));
-      connect(V4.outlet, SinkP3.port) annotation (points=[-18,-68; -2.8,-68], style(
-            color=69, rgbcolor={0,127,255}));
-      connect(V1.outlet, SinkP2.port) annotation (points=[-30,68; -16.9,68],
-          style(color=69, rgbcolor={0,127,255}));
-      connect(V1.inlet, SourceP1.port) annotation (points=[-50,68; -66,68; -66,
+      connect(OpenRelief.y, V1.theta) annotation (points=[-73,84; -40,84; -40,
+            76], style(color=74, rgbcolor={0,0,127}));
+      connect(V2.port_a, SourceP1.port) annotation (points=[-39,36; -64,36; -64,
             41; -81.1,41], style(color=69, rgbcolor={0,127,255}));
-      connect(SourceP1.port, V2.inlet) annotation (points=[-81.1,41; -59.55,41;
-            -59.55,36; -38,36], style(color=69, rgbcolor={0,127,255}));
-      connect(SourceP2.port, V4.inlet) annotation (points=[-83.2,-40; -60,-40;
-            -60,-68; -38,-68], style(color=69, rgbcolor={0,127,255}));
-      connect(SourceP2.port, V3.inlet) annotation (points=[-83.2,-40; -60,-40;
-            -60,-28; -38,-28], style(color=69, rgbcolor={0,127,255}));
+      connect(V5.port_b, SinkP1.port) annotation (points=[49,10; 59.2,10],
+          style(color=69, rgbcolor={0,127,255}));
+      connect(V4.port_b, SinkP3.port) annotation (points=[-17,-68; -2.8,-68],
+          style(color=69, rgbcolor={0,127,255}));
+      connect(V5.port_a, volume.port) annotation (points=[27,10; 12.5,10; 12.5,
+            9; -2,9], style(color=69, rgbcolor={0,127,255}));
+      connect(V3.port_b, volume.port) annotation (points=[-17,-28; -2,-28; -2,9],
+          style(color=69, rgbcolor={0,127,255}));
+      connect(volume.port, V2.port_b) annotation (points=[-2,9; -2,36; -17,36],
+          style(color=69, rgbcolor={0,127,255}));
+      connect(V3.port_a, SourceP2.port) annotation (points=[-39,-28; -60,-28;
+            -60,-40; -83.2,-40], style(color=69, rgbcolor={0,127,255}));
+      connect(V4.port_a, SourceP2.port) annotation (points=[-39,-68; -60,-68;
+            -60,-40; -83.2,-40], style(color=69, rgbcolor={0,127,255}));
+      connect(V1.port_b, SinkP2.port) annotation (points=[-29,68; -16.9,68],
+          style(color=69, rgbcolor={0,127,255}));
+      connect(V1.port_a, SourceP1.port) annotation (points=[-51,68; -64,68; -64,
+            41; -81.1,41], style(color=69, rgbcolor={0,127,255}));
     end TestValve;
     
     model TestValveChoked "Test case for valves in choked flow" 
@@ -3101,7 +3123,7 @@ Casella</a>:<br>
         freqHz=0.5,
         phase=3.14159,
         offset=3e5,
-        startTime=1)  annotation (extent=[2, 64; 22, 84]);
+        startTime=1)  annotation (extent=[24,72; 44,92]);
       Sources.FixedAmbient_phX SourceP2(p_ambient=60e5, h_ambient=2.9e6,
         redeclare package Medium = Modelica.Media.Water.StandardWater) 
         annotation (extent=[-62,-54; -44,-34]);
@@ -3121,12 +3143,14 @@ Casella</a>:<br>
         phase=3.14159,
         offset=50e5,
         startTime=1)  annotation (extent=[6,-10; 26,10]);
-      SinkP SinkP1(redeclare package Medium = 
-            Modelica.Media.Water.StandardWater) 
-        annotation (extent=[34,26; 54,46]);
-      SinkP SinkP2(redeclare package Medium = 
-            Modelica.Media.Water.StandardWater, h=2.9e6) 
-        annotation (extent=[34,-54; 54,-34]);
+      Sources.PrescribedAmbient_ph PrescribedAmbient_ph1(redeclare package 
+          Medium = Modelica.Media.Water.StandardWater) 
+        annotation (extent=[44,26; 24,46]);
+      Sources.PrescribedAmbient_ph PrescribedAmbient_ph2(redeclare package 
+          Medium = Modelica.Media.Water.StandardWater) 
+        annotation (extent=[46,-54; 26,-34]);
+      Modelica.Blocks.Sources.Constant Constant3(k=2e5) 
+        annotation (extent=[90,-2; 70,18]);
     equation 
       connect(SourceP1.port, valveLiquid.inlet) 
                                              annotation (points=[-35.2,38; -20,
@@ -3140,16 +3164,19 @@ Casella</a>:<br>
       connect(Constant2.y, valveVapour.theta) 
                                            annotation (points=[-31,-4; -10,-4;
             -10,-36], style(color=3, rgbcolor={0,0,255}));
-      connect(valveLiquid.outlet, SinkP1.flange) 
-                                              annotation (points=[0,38; 17,38;
-            17,36; 34,36], style(color=69, rgbcolor={0,127,255}));
-      connect(Sine1.y, SinkP1.in_p0) annotation (points=[23,74; 40,74; 40,44.8],
-          style(color=3, rgbcolor={0,0,255}));
-      connect(valveVapour.outlet, SinkP2.flange) 
-                                              annotation (points=[0,-44; 34,-44],
-          style(color=69, rgbcolor={0,127,255}));
-      connect(Sine2.y, SinkP2.in_p0) annotation (points=[27,0; 40,0; 40,-35.2],
-          style(color=3, rgbcolor={0,0,255}));
+      connect(valveLiquid.outlet, PrescribedAmbient_ph1.port) annotation (
+          points=[0,38; 12,38; 12,36; 23,36], style(color=69, rgbcolor={0,127,
+              255}));
+      connect(Sine1.y, PrescribedAmbient_ph1.p_ambient) annotation (points=[45,
+            82; 68,82; 68,42; 46,42], style(color=74, rgbcolor={0,0,127}));
+      connect(valveVapour.outlet, PrescribedAmbient_ph2.port) annotation (
+          points=[0,-44; 25,-44], style(color=69, rgbcolor={0,127,255}));
+      connect(Sine2.y, PrescribedAmbient_ph2.p_ambient) annotation (points=[27,
+            0; 60,0; 60,-38; 48,-38], style(color=74, rgbcolor={0,0,127}));
+      connect(Constant3.y, PrescribedAmbient_ph1.h_ambient) annotation (points=
+            [69,8; 60,8; 60,30; 46,30], style(color=74, rgbcolor={0,0,127}));
+      connect(PrescribedAmbient_ph2.h_ambient, Constant3.y) annotation (points=
+            [48,-50; 60,-50; 60,8; 69,8], style(color=74, rgbcolor={0,0,127}));
     end TestValveChoked;
     
     model TestWaterPump "Test case for WaterPump" 
@@ -3177,10 +3204,7 @@ Schiavo</a>:<br>
         annotation (extent=[-82,24; -66,44]);
       ValveLin ValveLin1(Kv=1e-5, redeclare package Medium = 
             Modelica.Media.Water.StandardWater) 
-        annotation (extent=[8, 22; 28, 42]);
-      SinkP SinkP1(p0=3e5,
-        redeclare package Medium = Modelica.Media.Water.StandardWater) 
-        annotation (extent=[42,20; 64,42]);
+        annotation (extent=[-2,22; 18,42]);
       Pump Pump1(
         rho0=1000,
         pin_start=1e5,
@@ -3196,23 +3220,30 @@ Schiavo</a>:<br>
         V=0.001)            annotation (extent=[-52, 26; -32, 46]);
       Modelica.Blocks.Sources.Constant Constant1 
         annotation (extent=[-74,64; -54,84]);
+      Sources.PrescribedAmbient_ph PrescribedAmbient_ph1(redeclare package 
+          Medium = Modelica.Media.Water.StandardWater) 
+        annotation (extent=[54,22; 34,42]);
+      Modelica.Blocks.Sources.Constant Constant3(k=2e5) 
+        annotation (extent=[100,-6; 80,14]);
       Modelica.Blocks.Sources.Sine Sine1(
-        amplitude=5e5,
-        freqHz=0.1,
+        amplitude=2.5e5,
+        freqHz=0.5,
+        phase=3.14159,
         offset=3e5,
-        phase=0,
-        startTime=0)   annotation (extent=[78,64; 58,84]);
+        startTime=1)  annotation (extent=[34,68; 54,88]);
     equation 
-      connect(Constant1.y,       ValveLin1.cmd) annotation (points=[-53,74; -16,74;
-            -16,72; 18,72; 18,40],         style(color=3));
-      connect(Sine1.y,       SinkP1.in_p0) annotation (points=[57,74; 48,74; 48,
-            40.68; 48.6,40.68],  style(color=3));
+      connect(Constant1.y,       ValveLin1.cmd) annotation (points=[-53,74; -16,
+            74; -16,72; 8,72; 8,40],       style(color=3));
       connect(Pump1.outfl, ValveLin1.inlet) 
-        annotation (points=[-36,43.2; -14,43.2; -14,32; 8,32]);
+        annotation (points=[-36,43.2; -14,43.2; -14,32; -2,32]);
       connect(Source.port, Pump1.infl) annotation (points=[-65.2,34; -58,34; -58,
             38.2; -50,38.2], style(color=69, rgbcolor={0,127,255}));
-      connect(ValveLin1.outlet, SinkP1.flange) annotation (points=[28,32; 35,32; 35,
-            31; 42,31], style(color=69, rgbcolor={0,127,255}));
+      connect(Sine1.y, PrescribedAmbient_ph1.p_ambient) annotation (points=[55,
+            78; 78,78; 78,38; 56,38], style(color=74, rgbcolor={0,0,127}));
+      connect(Constant3.y, PrescribedAmbient_ph1.h_ambient) annotation (points=
+            [79,4; 70,4; 70,26; 56,26], style(color=74, rgbcolor={0,0,127}));
+      connect(ValveLin1.outlet, PrescribedAmbient_ph1.port) annotation (points=
+            [18,32; 33,32], style(color=69, rgbcolor={0,127,255}));
     end TestWaterPump;
     
     model TestWaterPumpMech "Test case for WaterPumpMech" 
