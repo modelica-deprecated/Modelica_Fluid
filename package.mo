@@ -1,9 +1,9 @@
 package Modelica_Fluid "Fluid package that should be included into package Modelica"
 annotation (
-  version="0.794", 
-  versionDate="2004-05-31", 
-  preferedView="info", 
-  Settings(NewStateSelection=true), 
+  version="0.794",
+  versionDate="2004-05-31",
+  preferedView="info",
+  Settings(NewStateSelection=true),
   Documentation(info="<html>
 <p>
 This library provides basic components and property models
@@ -27,7 +27,8 @@ under the terms of the <b>Modelica license</b>, see the license conditions
 and the accompanying <b>disclaimer</b> in the documentation of package
 Modelica in file \"Modelica/package.mo\".
 </i></p>
-</html>"));
+</html>"), 
+  uses(Modelica(version="1.6")));
 
 
 extends Modelica.Icons.Library;
