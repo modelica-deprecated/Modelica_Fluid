@@ -309,7 +309,6 @@ Simulate for 7200 seconds.
         mediumName="WaterIF97",
         substanceNames=fill("", 0),
         incompressible=false,
-        reducedX=true,
         MassFlowRate(quantity="MassFlowRate.WaterIF97"));
       
       redeclare model extends BaseProperties 

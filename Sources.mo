@@ -62,7 +62,7 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      use_p_ambient, Medium.reducedX, Medium.nX, X_ambient);
+      use_p_ambient, Medium.nX, X_ambient);
     if use_p_ambient or Medium.incompressible then
       medium.p = p_ambient;
     else
@@ -120,7 +120,7 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      true, Medium.reducedX, Medium.nX, X_ambient);
+      true, Medium.nX, X_ambient);
     medium.p = p_ambient;
     medium.T = T_ambient;
     medium.X = X_ambient;
@@ -170,7 +170,7 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      true, Medium.reducedX, Medium.nX, X_ambient);
+      true, Medium.nX, X_ambient);
       medium.p = p_ambient;
       medium.h = h_ambient;
       medium.X = X_ambient;
@@ -244,7 +244,7 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      true, Medium.reducedX, Medium.nX, X_ambient);
+      true, Medium.nX, X_ambient);
     medium.p = p_ambient;
     medium.T = T_ambient;
     medium.X = X_ambient;
@@ -312,7 +312,7 @@ with exception of ambient pressure, do not have an effect.
     
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.incompressible,
-      true, Medium.reducedX, Medium.nX, X_ambient);
+      true, Medium.nX, X_ambient);
     medium.p = p_ambient;
     medium.h = h_ambient;
     medium.X = X_ambient;
@@ -368,7 +368,7 @@ with exception of ambient pressure, do not have an effect.
       Diagram);
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
-      Medium.reducedX, Medium.nX, X_ambient);
+      Medium.nX, X_ambient);
       medium.T = T_ambient;
       medium.X = X_ambient;
       port.m_flow = -m_flow;
@@ -424,7 +424,7 @@ with exception of ambient pressure, do not have an effect.
       Diagram);
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
-      Medium.reducedX, Medium.nX, X_ambient);
+      Medium.nX, X_ambient);
       medium.h = h_ambient;
       medium.X = X_ambient;
       port.m_flow = -m_flow;
@@ -485,7 +485,7 @@ with exception of ambient pressure, do not have an effect.
       Diagram);
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
-      Medium.reducedX, Medium.nX, X_ambient);
+      Medium.nX, X_ambient);
       medium.T = T_ambient;
       medium.X = X_ambient;
     
@@ -547,7 +547,7 @@ with exception of ambient pressure, do not have an effect.
       Diagram);
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.incompressible, true,
-      Medium.reducedX, Medium.nX, X_ambient);
+      Medium.nX, X_ambient);
       medium.h = h_ambient;
       medium.X = X_ambient;
     

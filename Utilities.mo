@@ -684,7 +684,6 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
     input String mediumName;
     input Boolean incompressible;
     input Boolean define_p;
-    input Boolean reducedX;
     input Integer nX;
     input Real X_ambient[:];
   algorithm 
@@ -704,14 +703,14 @@ is negative. It must be positive.
 ");
     end for;
     
-    assert(reducedX or not reducedX and nX > 0 and abs(sum(X_ambient) - 1.0) <
+    assert(nX > 0 and abs(sum(X_ambient) - 1.0) <
       1.e-10, "
 Wrong ambient mass fractions in medium \"" + mediumName + "\":
 This medium requires that the ambient mass fractions X_ambient
 sum up to 1. However, sum(X_ambient) = " + String(sum(X_ambient)) + ".
 ");
     
-    assert(not reducedX or reducedX and sum(X_ambient) < 1 + 1.e-10, "
+    assert(sum(X_ambient) < 1 + 1.e-10, "
 Wrong ambient mass fractions in medium \"" + mediumName + "\":
 This medium requires that the sum of the ambient mass fractions X_ambient
 is at most 1. However, sum(X_ambient) = " + String(sum(X_ambient)) + ".
