@@ -16,20 +16,29 @@ package Sources "Generic fluid sources"
     parameter Boolean use_p_ambient=true 
       "|Ambient pressure or ambient density| = true, if p_ambient is used, otherwise d_ambient (true is required for incompressible medium)"
       annotation (Evaluate=true);
-    parameter Medium.AbsolutePressure p_ambient=101325 
-      "|Ambient pressure or ambient density| Ambient pressure, if use_p_ambient = true";
-    parameter Medium.Density d_ambient=1 
-      "|Ambient pressure or ambient density| Ambient density, if use_p_ambient = false";
+    parameter Modelica_Media.Interfaces.PartialMedium.AbsolutePressure 
+      p_ambient=101325 " Ambient pressure, if use_p_ambient = true" annotation 
+      (Dialog(group="Ambient pressure or ambient density", enable=use_p_ambient));
+    parameter Modelica_Media.Interfaces.PartialMedium.Density d_ambient=1 
+      " Ambient density, if use_p_ambient = false" annotation (Dialog(group=
+            "Ambient pressure or ambient density", enable=not use_p_ambient));
     parameter Boolean use_T_ambient=true 
       "|Ambient temperature or ambient specific enthalpy| = true, if T_ambient is used, otherwise h_ambient"
       annotation (Evaluate=true);
-    parameter Medium.Temperature T_ambient=from_degC(20) 
-      "|Ambient temperature or ambient specific enthalpy| Ambient temperature, if use_T_ambient = true";
-    parameter Medium.SpecificEnthalpy h_ambient=1.e4 
-      "|Ambient temperature or ambient specific enthalpy| Ambient specific enthalpy, if use_T_ambient = false";
-    parameter Medium.MassFraction X_ambient[Medium.nX](quantity=Medium.
-          substanceNames) = zeros(Medium.nX) 
-      "|Only for multi-substance flow| Ambient mass fractions m_i/m";
+    parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=
+        from_degC(20) " Ambient temperature, if use_T_ambient = true" 
+      annotation (Dialog(group=
+            "Ambient temperature or ambient specific enthalpy", enable=
+            use_T_ambient));
+    parameter Modelica_Media.Interfaces.PartialMedium.SpecificEnthalpy 
+      h_ambient=1.e4 " Ambient specific enthalpy, if use_T_ambient = false" 
+      annotation (Dialog(group=
+            "Ambient temperature or ambient specific enthalpy", enable=not 
+            use_T_ambient));
+    parameter Modelica_Media.Interfaces.PartialMedium.MassFraction X_ambient[
+      Medium.nX](quantity=Medium.substanceNames) = zeros(Medium.nX) 
+      " Ambient mass fractions m_i/m" annotation (Dialog(group=
+            "Only for multi-substance flow", enable=Medium.nX > 0));
     
     annotation (
       Coordsys(

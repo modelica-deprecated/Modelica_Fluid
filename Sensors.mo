@@ -7,8 +7,9 @@ package Sensors "Sensor components"
     Modelica.Blocks.Interfaces.RealOutput signal(  redeclare type SignalType = 
           SI.CelsiusTemperature) annotation (extent=[90, -10; 110, 10]);
     Medium.BaseProperties medium(p=port.p, h=port.h);
-    parameter TemperatureUnits.Temp measurementUnit=
-      TemperatureUnits.Kelvin "Measurement unit of sensor signal" 
+    parameter Modelica_Fluid.Types.TemperatureUnits.Temp measurementUnit=
+      Modelica_Fluid.Types.TemperatureUnits.Kelvin 
+      "Measurement unit of sensor signal" 
       annotation (Evaluate=true);
     annotation (
       Diagram(
@@ -57,10 +58,10 @@ ideal, i.e. it does not influence the fluid.
 "));
   equation 
     signal =
-      if measurementUnit == TemperatureUnits.Kelvin then medium.T else 
-           if measurementUnit == TemperatureUnits.Celsius then SI.Conversions.to_degC(medium.T) else 
-           if measurementUnit == TemperatureUnits.Fahrenheit then SI.Conversions.to_degF(medium.T) else 
-           if measurementUnit == TemperatureUnits.Rankine then SI.Conversions.to_degRk(medium.T) else 
+      if measurementUnit == Types.TemperatureUnits.Kelvin then medium.T else 
+           if measurementUnit == Types.TemperatureUnits.Celsius then SI.Conversions.to_degC(medium.T) else 
+           if measurementUnit == Types.TemperatureUnits.Fahrenheit then SI.Conversions.to_degF(medium.T) else 
+           if measurementUnit == Types.TemperatureUnits.Rankine then SI.Conversions.to_degRk(medium.T) else 
            medium.T; // else should be Undefined
     port.m_flow = 0;
     port.H_flow = 0;
@@ -73,8 +74,8 @@ ideal, i.e. it does not influence the fluid.
     Modelica.Blocks.Interfaces.RealOutput signal(  redeclare type SignalType = 
           SI.Conversions.NonSIunits.Pressure_bar) "Pressure at port" 
       annotation (extent=[90, -10; 110, 10]);
-    parameter PressureUnits.Temp measurementUnit=
-      PressureUnits.Pascal "Measurement unit of sensor signal" 
+    parameter Types.PressureUnits.Temp measurementUnit=
+      Types.PressureUnits.Pascal "Measurement unit of sensor signal" 
       annotation (Evaluate=true);
     annotation (
       Diagram(Line(points=[0, -70; 0, -100]), Line(points=[69, 0; 90, 0], style(
@@ -96,10 +97,10 @@ ideal, i.e. it does not influence the fluid.
 "));
   equation 
     signal =
-      if measurementUnit == PressureUnits.Pascal then port.p else 
-           if measurementUnit == PressureUnits.Bar then SI.Conversions.to_bar(port.p) else 
-           if measurementUnit == PressureUnits.KiloPascal then port.p*1e-3 else 
-           if measurementUnit == PressureUnits.MegaPascal then port.p*1e-6 else 
+      if measurementUnit == Types.PressureUnits.Pascal then port.p else 
+           if measurementUnit == Types.PressureUnits.Bar then SI.Conversions.to_bar(port.p) else 
+           if measurementUnit == Types.PressureUnits.KiloPascal then port.p*1e-3 else 
+           if measurementUnit == Types.PressureUnits.MegaPascal then port.p*1e-6 else 
            port.p; // else should be Undefined
     port.m_flow = 0;
     port.H_flow = 0;
@@ -113,8 +114,9 @@ ideal, i.e. it does not influence the fluid.
                                               redeclare type SignalType = 
           SI.MassFlowRate) "Mass flow from port_a -> port_b" 
       annotation (extent=[-10, -110; 10, -90], rotation=270);
-    parameter MassFlowRateUnits.Temp measurementUnit=
-      MassFlowRateUnits.KilogramPerSecond "Measurement unit of sensor signal" 
+    parameter Types.MassFlowRateUnits.Temp measurementUnit=
+      Types.MassFlowRateUnits.KilogramPerSecond 
+      "Measurement unit of sensor signal" 
       annotation (Evaluate=true);
     SI.Pressure dp "Pressure loss due to friction";
     Real residue=port_a.p - port_b.p - dp "momentum balance (may be modified)";
@@ -148,71 +150,12 @@ if the fluid flows from port_a to port_b.
     residue = 0;
     dp = 0;
     signal           =
-      if measurementUnit == MassFlowRateUnits.KilogramPerSecond then m_flow else 
-           if measurementUnit == MassFlowRateUnits.TonPerHour then m_flow*3.6 else 
+      if measurementUnit == Types.MassFlowRateUnits.KilogramPerSecond then m_flow else 
+           if measurementUnit == Types.MassFlowRateUnits.TonPerHour then m_flow*3.6 else 
            m_flow; // else should be Undefined
   end MassFlowSensor;
   
-  package TemperatureUnits 
-    "Type, constants and menu choices for temperature units, as temporary solution until enumerations will be available" 
-    
-    annotation (preferedView="text");
-    
-    extends Modelica.Icons.Library;
-    constant Integer Kelvin=1;
-    constant Integer Celsius=2;
-    constant Integer Fahrenheit=3;
-    constant Integer Rankine=4;
-    type Temp 
-      "Temporary type of TemperatureUnits with choices for menus (until enumerations will be available)" 
-      
-      extends Integer;
-      annotation (Evaluate=true,
-                 choices(choice=Modelica_Fluid.Sensors.TemperatureUnits.Kelvin "K",
-                         choice=Modelica_Fluid.Sensors.TemperatureUnits.Celsius "°C",
-                         choice=Modelica_Fluid.Sensors.TemperatureUnits.Fahrenhit "°F",
-                         choice=Modelica_Fluid.Sensors.TemperatureUnits.Rankine "°Rk"));
-    end Temp;
-  end TemperatureUnits;
   
-  package PressureUnits 
-    "Type, constants and menu choices for pressure units, as temporary solution until enumerations will be available" 
-    
-    annotation (preferedView="text");
-    
-    extends Modelica.Icons.Library;
-    constant Integer Pascal=1;
-    constant Integer Bar=2;
-    constant Integer KiloPascal=3;
-    constant Integer MegaPascal=4;
-    type Temp 
-      "Temporary type of PressureUnits with choices for menus (until enumerations will be available)" 
-      
-      extends Integer;
-      annotation (Evaluate=true,
-                 choices(choice=Modelica_Fluid.Sensors.PressureUnits.Pascal "Pa",
-                         choice=Modelica_Fluid.Sensors.PressureUnits.Bar "bar",
-                         choice=Modelica_Fluid.Sensors.PressureUnits.KiloPascal "kPa",
-                         choice=Modelica_Fluid.Sensors.PressureUnits.MegaPascal "MPa"));
-    end Temp;
-  end PressureUnits;
   
-  package MassFlowRateUnits 
-    "Type, constants and menu choices for mass flow rate units, as temporary solution until enumerations will be available" 
-    
-    annotation (preferedView="text");
-    
-    extends Modelica.Icons.Library;
-    constant Integer KilogramPerSecond=1;
-    constant Integer TonPerHour=2;
-    type Temp 
-      "Temporary type of MassFlowRateUnits with choices for menus (until enumerations will be available)" 
-      
-      extends Integer;
-      annotation (Evaluate=true,
-                 choices(choice=Modelica_Fluid.Sensors.MassFlowRateUnits.KilogramPerSecond "kg/s",
-                         choice=Modelica_Fluid.Sensors.MassFlowRateUnits.TonPerHour "t/h"));
-    end Temp;
-  end MassFlowRateUnits;
   
 end Sensors;

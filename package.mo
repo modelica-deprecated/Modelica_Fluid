@@ -30,7 +30,9 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
+
 extends Modelica.Icons.Library;
+
 
 package Tutorial "Tutorial" 
   
@@ -63,12 +65,12 @@ considerably.
      for measurement unit.</li>
 <li> Components.mo, Types.mo: moved components and types to 
      package Examples.</li>
-<li> Moved Examples from file Modelica_Media/package.mo to own 
-     Modelica_Media/Examples subdirectory and created separate 
+<li> Moved Examples from <b>file</b> Modelica_Fluid/package.mo to 
+     Modelica_Media/Examples <b>subdirectory</b> and created separate 
      file per sub-package. This shall simplify the maintenance of
      examples by different authors</li>
-<li> Moved Interfaces from file Modelica_Media/package.mo to 
-     Modelica_Media/Interfaces.mo</li>
+<li> Moved Interfaces from file Modelica_Fluid/package.mo to 
+     Modelica_Fluid/Interfaces.mo</li>
 </ul>
 <h3><font color=\"#008000\">Version 0.793, 2004-05-18</font></h3>
 <ul>
@@ -152,6 +154,7 @@ standard library.
     
   end ReleaseNotes;
 end Tutorial;
+
 
 replaceable package PackageMedium = Modelica_Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (

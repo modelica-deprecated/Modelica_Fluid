@@ -183,8 +183,7 @@ features are:
 <li> The pressure in the connection port (= port.p) is identical to the
      pressure in the volume (= medium.p).</li>
 <li> The enthalpy flow rate (= port.H_flow) and the mass flow rates of the
-     substances (= port.mX_flow) depend on the direction of the mass flow rate,
-     according to the semiLinear(..) equations.</li>
+     substances (= port.mX_flow) depend on the direction of the mass flow rate.</li>
 </ul>
 </html>"));
   end PartialSource;
