@@ -206,25 +206,25 @@ Simulate for 7200 seconds.
             Real (unit="1")) 
         annotation (extent=[-109,-85; -100,-75]);
       Valve valve(k = 1.5e-5, redeclare package Medium = 
-            Modelica_Media.Water.WaterIF97OnePhase_ph) 
+            Modelica_Media.Water.WaterIF97_ph) 
                     annotation (extent=[44, -20; 64, 0]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
             Modelica_Media.Water.WaterIF97_pT, p_ambient=from_bar(0.5)) 
         annotation (extent=[80, -20; 100, 0], rotation=180);
       Modelica_Fluid.Sensors.MassFlowRate massFlowRate(redeclare package Medium
-          =        Modelica_Media.Water.WaterIF97OnePhase_ph) 
+          =        Modelica_Media.Water.WaterIF97_ph) 
         annotation (extent=[10, -20; 30, 0], rotation=180);
       Modelica_Fluid.Sensors.Temperature temperature(redeclare package Medium 
-          = Modelica_Media.Water.WaterIF97OnePhase_ph) 
+          = Modelica_Media.Water.WaterIF97_ph) 
         annotation (extent=[10, 60; 30, 80]);
       Modelica_Fluid.Sensors.Pressure pressure(redeclare package Medium = 
-                   Modelica_Media.Water.WaterIF97OnePhase_ph) 
+                   Modelica_Media.Water.WaterIF97_ph) 
         annotation (extent=[10,24; 30,44]);
       Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
         annotation (extent=[-51,33; -65,47]);
       Modelica_Fluid.Sources.PrescribedMassFlowRate_hX pump(redeclare package 
           Medium = 
-            Modelica_Media.Water.WaterIF97OnePhase_ph, h_ambient=5e5) 
+            Modelica_Media.Water.WaterIF97_ph, h_ambient=5e5) 
         annotation (extent=[-80, -20; -60, 0]);
       Modelica.Blocks.Math.Feedback feedback 
         annotation (extent=[-26, 30; -46, 50]);
@@ -261,12 +261,13 @@ Simulate for 7200 seconds.
       connect(evaporator.port_b, pressure.port) annotation (points=[-29,-10; -2,
             -10; -2,15; 20,15; 20,23],              style(color=69));
       connect(evaporator.port_b, massFlowRate.port_a) 
-        annotation (points=[-29,-10; 31,-10],  style(color=69));
-      connect(massFlowRate.port_b, valve.port_a) 
-        annotation (points=[9,-10; 32,-10; 32,-10; 43,-10],
+        annotation (points=[-29,-10; 1,-10; 1,-10; 31,-10],
                                                style(color=69));
-      connect(valve.port_b, sink.port) annotation (points=[65,-10; 79,-10],
-                               style(color=69));
+      connect(massFlowRate.port_b, valve.port_a) 
+        annotation (points=[9,-10; 26,-10; 26,-10; 43,-10],
+                                               style(color=69));
+      connect(valve.port_b, sink.port) annotation (points=[65,-10; 72,-10; 72,
+            -10; 79,-10],      style(color=69));
       connect(pump.port, evaporator.port_a) 
         annotation (points=[-59, -10; -51, -10], style(color=69));
       connect(controller.u,feedback.y) 
