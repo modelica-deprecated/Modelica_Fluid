@@ -18,7 +18,7 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,10; -40,10; 
+    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,10; -40,10;
           -40,-31; -21.35,-31],       style(rgbcolor={0,0,127}));
     connect(Y_Valve_Tab.y,       drumBoiler.Y_Valve) annotation (points=[-59,
           -30; -44,-30; -44,-37; -21.35,-37],    style(
@@ -269,7 +269,7 @@ Simulate for 7200 seconds.
         annotation (points=[-40,-40; -40,-31],   style(color=42));
       connect(Y_Valve, valve.Y) 
         annotation (points=[-104.5,-90; 54,-90; 54,-27],  style(rgbcolor={0,0,127}));
-      connect(evaporator.port_b, temperature.port) annotation (points=[-29,-20; 
+      connect(evaporator.port_b, temperature.port) annotation (points=[-29,-20;
             -2,-20; -2,41; 20,41; 20,49],               style(color=69));
       connect(evaporator.port_b, pressure.port) annotation (points=[-29,-20; -2,
             -20; -2,5; 20,5; 20,13],                style(color=69));
@@ -290,7 +290,7 @@ Simulate for 7200 seconds.
                                              style(rgbcolor={0,0,127}));
       connect(massFlowRate.m_flow, qm_S) 
         annotation (points=[20,-9; 20,0; 104,0],        style(rgbcolor={0,0,127}));
-      connect(evaporator.sigma_D, sigma_D) annotation (points=[-29,-15; -10,-15; 
+      connect(evaporator.sigma_D, sigma_D) annotation (points=[-29,-15; -10,-15;
             -10,77; 104,77],       style(rgbcolor={0,0,127}));
       connect(evaporator.V, V_l) 
         annotation (points=[-36,-9; -36,11; -16,11; -16,92; 104,92],

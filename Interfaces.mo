@@ -202,7 +202,6 @@ it is not possible to connect connectors of different media together.
   
   partial model PartialSource 
     "Partial component source with one fluid connector" 
-    
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium model within the source" 
        annotation (choicesAllMatching=true);
@@ -228,59 +227,9 @@ features are:
 </html>"));
   end PartialSource;
   
-  partial model PartialAbsoluteSensor 
-    "Partial component to model a sensor that measures a potential variable" 
-    
-    replaceable package Medium = PackageMedium extends 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the sensor" annotation (
-        choicesAllMatching =                                                                        true);
-    FluidPort_a port(redeclare package Medium = Medium) 
-      annotation (extent=[-10, -120; 10, -100], rotation=90);
-    
-    annotation (Documentation(info="<html>
-<p>
-Partial component to model an <b>absolute sensor</b>,
-e.g., to get the pressure or temperature from a fluid connector
-as signal.
-</p>
-</html>"));
-  equation 
-    port.m_flow = 0;
-    port.H_flow = 0;
-    port.mXi_flow = zeros(Medium.nXi);
-  end PartialAbsoluteSensor;
-  
-  partial model PartialFlowRateSensor 
-    "Partial component to model a sensor that measures a flow rate" 
-    
-    replaceable package Medium = PackageMedium extends 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
-        choicesAllMatching =                                                                         true);
-    
-    FluidPort_a port_a(redeclare package Medium = Medium) 
-      annotation (extent=[-120, -10; -100, 10]);
-    FluidPort_b port_b(redeclare package Medium = Medium) 
-      annotation (extent=[120, -10; 100, 10]);
-    
-    annotation (Documentation(info="<html>
-<p>
-Partial component to model a <b>sensor</b> that measures
-a <b>flow rate</b>, e.g., to get the mass flow rate 
-between fluid connectors.
-</p>
-</html>"));
-  equation 
-    port_a.p   = port_b.p;
-    port_a.h   = port_b.h;
-    port_a.Xi = port_b.Xi;
-    0 = port_a.m_flow + port_b.m_flow;
-    0 = port_a.H_flow + port_b.H_flow;
-    zeros(Medium.nXi) = port_a.mXi_flow + port_b.mXi_flow;
-  end PartialFlowRateSensor;
-  
   partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
-    
+    import Modelica.SIunits.*;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component"  annotation (
         choicesAllMatching =                                                                            true);
@@ -295,6 +244,8 @@ between fluid connectors.
       "Medium properties in port_b";
     Medium.MassFlowRate m_flow 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
+    Pressure dp "Pressure difference between port_a and port_b";
+    
     annotation (
       Coordsys(grid=[1, 1], component=[20, 20]),
       Diagram,
@@ -319,7 +270,7 @@ mass flow rate \"m_flow = port_a.m_flow\".
     port_b.Xi = medium_b.Xi;
     
     /* Handle reverse and zero flow */
-    port_a.H_flow   = semiLinear(port_a.m_flow, port_a.h,   port_b.h);
+    port_a.H_flow   = semiLinear(port_a.m_flow, port_a.h,  port_b.h);
     port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, port_b.Xi);
     
     /* Energy, mass and substance mass balance */
@@ -329,7 +280,33 @@ mass flow rate \"m_flow = port_a.m_flow\".
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
+    
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
+    
   end PartialTwoPortTransport;
+  
+  partial model PartialAbsoluteSensor 
+    "Partial component to model a sensor that measures a potential variable" 
+    
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the sensor" annotation (
+        choicesAllMatching =                                                                        true);
+    FluidPort_a port(redeclare package Medium = Medium) 
+      annotation (extent=[-10, -120; 10, -100], rotation=90);
+    
+    annotation (Documentation(info="<html>
+<p>
+Partial component to model an <b>absolute sensor</b>,
+e.g., to get the pressure or temperature from a fluid connector
+as signal.
+</p>
+</html>"));
+  equation 
+    port.m_flow = 0;
+    port.H_flow = 0;
+    port.mXi_flow = zeros(Medium.nXi);
+  end PartialAbsoluteSensor;
   
   partial model PartialRelativeSensor 
     "Partial component to model a sensor that measures the difference of effort variables at two ports" 
@@ -360,101 +337,32 @@ between fluid connectors.
     port_b.mXi_flow = zeros(Medium.nXi);
   end PartialRelativeSensor;
   
-  model PortVolume 
-    "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
-    import SI = Modelica.SIunits;
+  partial model PartialFlowRateSensor 
+    "Partial component to model a sensor that measures a flow rate" 
     
-    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
-      "Medium model" 
-       annotation (choicesAllMatching=true);
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
+        choicesAllMatching =                                                                         true);
     
-    parameter SI.Volume V=1e-6 "Fixed size of junction volume";
+    FluidPort_a port_a(redeclare package Medium = Medium) 
+      annotation (extent=[-120, -10; -100, 10]);
+    FluidPort_b port_b(redeclare package Medium = Medium) 
+      annotation (extent=[120, -10; 100, 10]);
     
-    parameter Boolean use_p_start=true "select p_start or d_start" 
-      annotation (Evaluate=true, Dialog(group="Initial pressure or initial density"));
-    parameter Medium.AbsolutePressure p_start = Medium.reference_p 
-      "Initial pressure" 
-      annotation (Dialog(group="Initial pressure or initial density", enable=use_p_start));
-    parameter Medium.Density d_start=1 "Initial density" 
-      annotation (Dialog(group="Initial pressure or initial density", enable=not use_p_start));
-    parameter Boolean use_T_start=true "select T_start or h_start" 
-      annotation (Evaluate=true, Dialog(group="Initial temperature or initial specific enthalpy"));
-    parameter Medium.Temperature T_start = Modelica.SIunits.Conversions.from_degC(20) 
-      "Initial temperature" 
-      annotation (Dialog(group="Initial temperature or initial specific enthalpy", enable=use_T_start));
-    parameter Medium.SpecificEnthalpy h_start = 1.e4 
-      "Initial specific enthalpy" 
-      annotation (Dialog(group="Initial temperature or initial specific enthalpy", enable=not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
-      "Initial mass fractions m_i/m" 
-      annotation (Dialog(group="Only for multi-substance flow", enable=Medium.nX > 0));
-    
-    Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = 
-                 Medium)                                annotation (extent=[-10, -10; 10, 10], rotation=0);
-    Medium.BaseProperties medium(preferredMediumStates=true);
-    SI.Energy U "Internal energy of port volume";
-    SI.Mass m "Mass of junction volume";
-    SI.Mass mXi[Medium.nXi] "Independent substance masses of port volume";
-    
-    annotation (
-     Icon(
-        Ellipse(extent=[-100, 100; 100, -100], style(
-            color=0,
-            rgbcolor={0,0,0},
-            gradient=3,
-            fillColor=68,
-            rgbfillColor={170,213,255})),
-        Text(extent=[-144, 178; 146, 116], string="%name"),
-        Text(
-          extent=[-130, -108; 144, -150],
-          style(color=0),
-          string="V=%V")), Documentation(info="<html>
+    annotation (Documentation(info="<html>
 <p>
-This component models the <b>volume</b> of <b>fixed size</b> that is
-associated with the <b>fluid port</b> to which it is connected.
-This means that all medium properties inside the volume, are identical
-to the port medium properties. In particular, the specific enthalpy
-inside the volume (= medium.h) is always identical to the specific enthalpy
-in the port (port.h = medium.h). Usually, this model is used when
-discretizing a component according to the finite volume method into
-volumes in internal ports that only store energy and mass and into
-transport elements that just transport energy, mass and momentum
-between the internal ports without storing these quantities during the
-transport. This splitting is only possible under certain assumptions.
+Partial component to model a <b>sensor</b> that measures
+a <b>flow rate</b>, e.g., to get the mass flow rate 
+between fluid connectors.
 </p>
-</html>"),
-      Diagram);
-    
-  initial equation 
-    if not Medium.singleState then
-      if use_p_start then
-         medium.p = p_start;
-      else
-         medium.d = d_start;
-      end if;
-    end if;
-    
-    if use_T_start then
-       medium.T = T_start;
-    else
-       medium.h = h_start;
-    end if;
-    
-    medium.Xi = X_start[1:Medium.nXi];
+</html>"));
   equation 
-    // port = medium properties
-      port.p = medium.p;
-      port.h = medium.h;
-      port.Xi = medium.Xi;
-    
-    // Total quantities
-       m    = V*medium.d;
-       mXi = m*medium.Xi;
-       U    = m*medium.u;
-    
-    // Mass and energy balance
-       der(m)    = port.m_flow;
-       der(mXi) = port.mXi_flow;
-       der(U)    = port.H_flow;
-  end PortVolume;
+    port_a.p   = port_b.p;
+    port_a.h   = port_b.h;
+    port_a.Xi = port_b.Xi;
+    0 = port_a.m_flow + port_b.m_flow;
+    0 = port_a.H_flow + port_b.H_flow;
+    zeros(Medium.nXi) = port_a.mXi_flow + port_b.mXi_flow;
+  end PartialFlowRateSensor;
+  
 end Interfaces;

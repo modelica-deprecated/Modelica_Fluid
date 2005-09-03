@@ -11,7 +11,7 @@ library.
   package FrictionTypes 
     "Type, constants and menu choices to define the pressure loss equations due to friction, as temporary solution until enumerations are available" 
     
-    extends Modelica.Icons.Library;
+    extends Modelica.Icons.Enumeration;
     constant Integer ConstantLaminar=1;
     constant Integer ConstantTurbulent=2;
     constant Integer DetailedFriction=3;
@@ -34,7 +34,7 @@ library.
     
     annotation (preferedView="text");
     
-    extends Modelica.Icons.Library;
+    extends Modelica.Icons.Enumeration;
     constant Integer Circular=1;
     constant Integer Rectangular=2;
     constant Integer General=3;
@@ -55,7 +55,7 @@ library.
   package InitTypes 
     "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
     
-    extends Modelica.Icons.Library;
+    extends Modelica.Icons.Enumeration;
     constant Integer NoInit=1;
     constant Integer InitialStates=2;
     constant Integer SteadyState=3;
@@ -75,4 +75,25 @@ library.
             "SteadyMass (initialize density or pressure in steady state)"));
     end Temp;
   end InitTypes;
+  
+  model CvTypes 
+    "Type, constants and menu choices to define the choice of valve flow coefficient" 
+    extends Modelica.Icons.Enumeration;
+    annotation (preferedView="text");
+    constant Integer Av = 0 "Av (metric) flow coefficient";
+    constant Integer Kv = 1 "Kv (metric) flow coefficient";
+    constant Integer Cv = 2 "Cv (US) flow coefficient";
+    constant Integer OpPoint = 3 "Av defined by initial equation";
+    type Temp 
+      "Temporary type with choices for menus (until enumerations are available)" 
+      extends Integer(min=0, max=3);
+      annotation (Evaluate=true, choices(
+        choice=Modelica_Fluid.Types.CvTypes.Av "Av (metric) flow coefficient",
+        choice=Modelica_Fluid.Types.CvTypes.Kv "Kv (metric) flow coefficient",
+        choice=Modelica_Fluid.Types.CvTypes.Cv "Cv (US) flow coefficient",
+        choice=Modelica_Fluid.Types.CvTypes.OpPoint 
+            "Av defined by nominal operating point"));
+    end Temp;
+    
+  end CvTypes;
 end Types;

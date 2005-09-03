@@ -241,7 +241,7 @@ is from the ambient into the port. If mass is flowing from
 the port into the ambient, the ambient definitions,
 with exception of ambient pressure, do not have an effect.
 </p>
-</html>"), 
+</html>"),
       Diagram);
     
   equation 
@@ -527,7 +527,7 @@ with exception of ambient pressure, do not have an effect.
           extent=[-54, 32; 16, -30],
           style(color=41, fillColor=41),
           string="m"),
-        Text(extent=[-154,146; 144,92],   string="%name"),
+        Text(extent=[-150,138; 148,84],   string="%name"),
         Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1)),
         Text(
           extent=[-188,-42; -86,-82],
@@ -550,4 +550,159 @@ with exception of ambient pressure, do not have an effect.
     medium.Xi = X_ambient[1:Medium.nXi];
     port.m_flow = -m_flow_ambient;
   end PrescribedMassFlowRate_hX;
+  
+  model SourceP "Prescribed pressure ambient" 
+    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium;
+    Medium.BaseProperties medium(p(start=p0),T(start=T),Xi(start=Xnom[1:Medium.nXi]));
+    parameter SI.Pressure p0=101325 "Nominal pressure";
+    parameter Real R=0 "Hydraulic resistance";
+    parameter Medium.Temperature T=300 "Nominal temperature";
+    parameter Medium.MassFraction Xnom[Medium.nX]=Medium.reference_X 
+      "Nominal medium composition";
+    
+    Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
+      annotation (extent=[80,-20; 120,20]);
+    Modelica.Blocks.Interfaces.RealInput in_p 
+      annotation (extent=[-70,54; -50,74], rotation=-90);
+    Modelica.Blocks.Interfaces.RealInput in_T 
+      annotation (extent=[-10,80; 10,100], rotation=270);
+    Modelica.Blocks.Interfaces.RealInput in_X[Medium.nX] 
+      annotation (extent=[50,52; 70,72], rotation=270);
+  equation 
+    if R == 0 then
+      port.p = medium.p;
+    else
+      port.p = medium.p + port.m_flow*R;
+    end if;
+    
+    medium.p = in_p;
+    if cardinality(in_p)==0 then
+      in_p = p0 "Pressure set by parameter";
+    end if;
+    
+    medium.T = in_T;
+    if cardinality(in_T)==0 then
+      in_T = T "Temperature set by parameter";
+    end if;
+    
+    medium.Xi = in_X[1:Medium.nXi];
+    if cardinality(in_X)==0 then
+      in_X = Xnom "Composition set by parameter";
+    end if;
+    
+    port.H_flow = semiLinear(port.m_flow,port.h,medium.h);
+    port.mXi_flow = semiLinear(port.m_flow,port.Xi,medium.Xi);
+    
+    annotation (Icon(
+           Ellipse(extent=[-80,80; 80,-80],     style(
+            color=69,
+            gradient=3,
+            fillColor=69))),
+                      Diagram,
+      Documentation(info="<html>
+<p><b>Modelling options</b></p>
+<p>The actual gas used in the component is determined by the replaceable <tt>Medium</tt> package.In the case of multiple componet, variable composition gases, the nominal gas composition is given by <tt>Xnom</tt>, whose default value is <tt>Medium.reference_X</tt> .
+<p>If <tt>R</tt> is set to zero, the pressure source is ideal; otherwise, the outlet pressure decreases proportionally to the outgoing flowrate.</p>
+<p>If the <tt>in_p</tt> connector is wired, then the source pressure is given by the corresponding signal, otherwise it is fixed to <tt>p0</tt>.</p>
+<p>If the <tt>in_T</tt> connector is wired, then the source temperature is given by the corresponding signal, otherwise it is fixed to <tt>T</tt>.</p>
+<p>If the <tt>in_X</tt> connector is wired, then the source massfraction is given by the corresponding signal, otherwise it is fixed to <tt>Xnom</tt>.</p>
+</html>", revisions="<html>
+<ul>
+<li><i>19 Nov 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Removed <tt>p0fix</tt> and <tt>Tfix</tt> and <tt>Xfix</tt>; the connection of external signals is now detected automatically.</li> <br> Adapted to Modelica.Media
+<li><i>1 Oct 2003</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       First release.</li>
+</ul>
+</html>
+"));
+  end SourceP;
+  
+  model SourceFlow "Flowrate source for medium flows" 
+    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium;
+    Medium.BaseProperties medium(p(start=p0),T(start=T),Xi(start=Xnom[1:Medium.nXi]));
+    parameter SI.Pressure p0=101325 "Nominal pressure";
+    parameter SI.Temperature T=300 "Nominal temperature";
+    parameter SI.MassFraction Xnom[Medium.nX]=Medium.reference_X 
+      "Nominal medium composition";
+    parameter SI.MassFlowRate m_flow0=0 "Nominal mass flowrate";
+    parameter Real.HydraulicConductance G(unit="kg/(s.Pa)")=0 
+      "HydraulicConductance";
+    
+    SI.MassFlowRate m_flow;
+    
+    Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
+      annotation (extent=[80,-20; 120,20]);
+    Modelica.Blocks.Interfaces.RealInput in_m_flow0 
+      annotation (extent=[-86,48; -60,74], rotation=-90);
+    Modelica.Blocks.Interfaces.RealInput in_T 
+      annotation (extent=[-6,98; -32,68], rotation=-270);
+    Modelica.Blocks.Interfaces.RealInput in_X[Medium.nX] 
+      annotation (extent=[14,54; 40,86], rotation=-90);
+  equation 
+    
+    if G == 0 then
+      port.m_flow = -m_flow;
+    else
+      port.m_flow = -m_flow + (port.p - p0)*G;
+    end if;
+    
+    m_flow0 = in_m_flow0;
+    if cardinality(in_m_flow0)==0 then
+      in_m_flow0 = m_flow0 "Flow rate set by parameter";
+    end if;
+    
+    medium.T = in_T;
+    if cardinality(in_T)==0 then
+      in_T = T "Temperature set by parameter";
+    end if;
+    
+    medium.Xi = in_X[1:Medium.nXi];
+    if cardinality(in_X)==0 then
+      in_X = Xnom "Composition set by parameter";
+    end if;
+    
+    port.p = medium.p;
+    port.H_flow = semiLinear(port.m_flow,port.h,medium.h);
+    port.mXi_flow = semiLinear(port.m_flow,port.Xi,medium.Xi);
+    
+    annotation (Icon(
+        Rectangle(extent=[20,48; 100,-72],   style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[38,28; 100,-52],   style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Ellipse(extent=[-100,68; 60,-92],   style(fillColor=7)),
+        Polygon(points=[-60,58; 60,-12; -60,-80; -60,58],   style(color=73,
+              fillColor=73)),
+        Text(
+          extent=[-54,20; 16,-42],
+          style(color=41, fillColor=41),
+          string="m"),
+        Text(extent=[-166,-88; 132,-142], string="%name"),
+        Ellipse(extent=[-26,18; -18,10],   style(color=1, fillColor=1))),
+                      uses(Modelica(version="1.6")),
+      Documentation(info="<html>
+<p><b>Modelling options</b></p>
+<p>The actual gas used in the component is determined by the replaceable <tt>Medium</tt> package. In the case of multiple component, variable composition gases, the nominal gas composition is given by <tt>Xnom</tt>,whose default value is <tt>Medium.reference_X</tt> .
+<p>If <tt>G</tt> is set to zero, the flowrate source is ideal; otherwise, the outgoing flowrate decreases proportionally to the outlet pressure.</p>
+<p>If the <tt>in_w0</tt> connector is wired, then the source massflowrate is given by the corresponding signal, otherwise it is fixed to <tt>w0</tt>.</p>
+<p>If the <tt>in_T</tt> connector is wired, then the source temperature is given by the corresponding signal, otherwise it is fixed to <tt>T</tt>.</p>
+<p>If the <tt>in_X</tt> connector is wired, then the source massfraction is given by the corresponding signal, otherwise it is fixed to <tt>Xnom</tt>.</p>
+</html>", revisions="<html>
+<ul>
+<li><i>19 Nov 2004</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Removed <tt>w0fix</tt> and <tt>Tfix</tt> and <tt>Xfix</tt>; the connection of external signals is now detected automatically.</li> <br> Adapted to Modelica.Media
+<li><i>1 Oct 2003</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       First release.</li>
+</ul>
+</html>"),
+      Diagram);
+  end SourceFlow;
 end Sources;

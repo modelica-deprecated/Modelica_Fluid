@@ -4,7 +4,8 @@ annotation (
   versionDate="2004-10-18",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(Modelica(version="2.1"), UserInteraction(version="0.52")),
+  uses(                         UserInteraction(version="0.52"),
+    Modelica(version="2.2")),
   Documentation(info="<html>
 <p>
 This library provides basic components and property models
@@ -30,7 +31,9 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
+
 extends Modelica.Icons.Library;
+
 
 package UsersGuide "Users Guide" 
   
@@ -157,6 +160,7 @@ standard library.
     
   end ReleaseNotes;
 end UsersGuide;
+
 
 replaceable package PackageMedium = Modelica.Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (
