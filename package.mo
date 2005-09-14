@@ -4,8 +4,7 @@ annotation (
   versionDate="2004-10-18",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(                         UserInteraction(version="0.52"),
-    Modelica(version="2.2")),
+  uses( Modelica(version="2.2")),
   Documentation(info="<html>
 <p>
 This library provides basic components and property models
@@ -32,7 +31,8 @@ Modelica in file \"Modelica/package.mo\".
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
 
-extends Modelica.Icons.Library;
+  extends Modelica.Icons.Library;
+  import SI = Modelica.SIunits;
 
 
 package UsersGuide "Users Guide" 

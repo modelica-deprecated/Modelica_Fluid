@@ -36,7 +36,8 @@ Schiavo</a>:<br>
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     redeclare package SatMedium = Modelica.Media.Water.StandardWater,
     ComputeNPSHa=true,
-    CheckValve=true)  annotation (extent=[-42,20; -22,40]);
+    CheckValve=true,
+    M=0.1)            annotation (extent=[-42,20; -22,40]);
   Modelica.Blocks.Sources.Constant Constant1 
   annotation (extent=[-72, 64; -52, 84]);
   Modelica.Blocks.Sources.Sine Sine1(

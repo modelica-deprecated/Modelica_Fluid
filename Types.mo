@@ -1,5 +1,4 @@
 package Types "Common types for fluid models" 
-  
   annotation (preferedView="info",
               Documentation(info="<html>
 <p>
@@ -7,6 +6,13 @@ Package <b>Types</b> contains common type definitions of the Modelica_Fluid
 library.
 </p>
 </html>"));
+  
+  type HydraulicConductance =Real (
+      final quantity="HydraulicConductance",
+      final unit="kg/(s.Pa)");
+  type HydraulicResistance =Real (
+      final quantity="HydraulicResistance",
+      final unit="Pa.s/kg");
   
   package FrictionTypes 
     "Type, constants and menu choices to define the pressure loss equations due to friction, as temporary solution until enumerations are available" 
@@ -54,25 +60,25 @@ library.
   
   package InitTypes 
     "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
-    
     extends Modelica.Icons.Enumeration;
-    constant Integer NoInit=1;
-    constant Integer InitialStates=2;
-    constant Integer SteadyState=3;
-    constant Integer SteadyMass=4;
+    constant Integer NoInit = 0 "No explicit initial conditions";
+    constant Integer InitialStates = 1 
+      "Initial values of state variables given";
+    constant Integer SteadyState = 2 "Full steady-state";
+    constant Integer SteadyStateHydraulic = 3 
+      "Hydraulic steady state, initial values of other state variables given";
     type Temp 
       "Temporary type with choices for menus (until enumerations are available)" 
-      
       extends Integer;
       annotation (Evaluate=true, choices(
           choice=Modelica_Fluid.Types.InitTypes.NoInit 
-            "NoInit (no initialization)",
+            "NoInit (No explicit initial conditions)",
           choice=Modelica_Fluid.Types.InitTypes.InitialStates 
-            "InitialStates (initialize medium states)",
+            "InitialStates (Initial values of state variables given)",
           choice=Modelica_Fluid.Types.InitTypes.SteadyState 
-            "SteadyState (initialize in steady state)",
-          choice=Modelica_Fluid.Types.InitTypes.SteadyMass 
-            "SteadyMass (initialize density or pressure in steady state)"));
+            "SteadyState (Full steady state)",
+          choice=Modelica_Fluid.Types.InitTypes.SteadyStateHydraulic 
+            "SteadyStateHydraulic (Hydraulic steady state, initial values of other states given)"));
     end Temp;
   end InitTypes;
   
@@ -83,7 +89,7 @@ library.
     constant Integer Av = 0 "Av (metric) flow coefficient";
     constant Integer Kv = 1 "Kv (metric) flow coefficient";
     constant Integer Cv = 2 "Cv (US) flow coefficient";
-    constant Integer OpPoint = 3 "Av defined by initial equation";
+    constant Integer OpPoint = 3 "Av defined by operating point";
     type Temp 
       "Temporary type with choices for menus (until enumerations are available)" 
       extends Integer(min=0, max=3);

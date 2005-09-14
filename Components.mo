@@ -1,40 +1,39 @@
 package Components "Basic components for fluid models" 
   model PortVolume 
     "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
-    import SI = Modelica.SIunits;
-    
+    import Modelica_Fluid.Types.InitTypes.*;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" 
        annotation (choicesAllMatching=true);
-    
-    parameter SI.Volume V=1e-6 "Volume";
-    
-    parameter Boolean use_p_start=true "select p_start or d_start" 
-      annotation (Evaluate=true, Dialog(group="Initial pressure or initial density"));
+    parameter SI.Volume V=1e-3 "Volume";
+    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
-      "Initial pressure" 
-      annotation (Dialog(group="Initial pressure or initial density", enable=use_p_start));
-    parameter Medium.Density d_start=1 "Initial density" 
-      annotation (Dialog(group="Initial pressure or initial density", enable=not use_p_start));
-    parameter Boolean use_T_start=true "select T_start or h_start" 
-      annotation (Evaluate=true, Dialog(group="Initial temperature or initial specific enthalpy"));
+      "Start value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
     parameter Medium.Temperature T_start = Modelica.SIunits.Conversions.from_degC(20) 
-      "Initial temperature" 
-      annotation (Dialog(group="Initial temperature or initial specific enthalpy", enable=use_T_start));
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start = 1.e4 
-      "Initial specific enthalpy" 
-      annotation (Dialog(group="Initial temperature or initial specific enthalpy", enable=not use_T_start));
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
-      "Initial mass fractions m_i/m" 
-      annotation (Dialog(group="Only for multi-substance flow", enable=Medium.nX > 0));
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
     
-    Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = 
-                 Medium)                                annotation (extent=[-10, -10; 10, 10], rotation=0);
+    Modelica_Fluid.Interfaces.FluidPort_a port(
+      redeclare package Medium = Medium) "Fluid port" 
+      annotation (extent=[-10, -10; 10, 10], rotation=0);
+    Interfaces.HeatPort_a thermalPort "Thermal port" 
+      annotation (extent=[-20,88; 20,108]);
+    
     Medium.BaseProperties medium(preferredMediumStates=true);
-    SI.Energy U "Internal energy of port volume";
-    SI.Mass m "Mass of junction volume";
-    SI.Mass mXi[Medium.nXi] "Independent substance masses of port volume";
-    
+    SI.Energy U "Internal energy of fluid";
+    SI.Mass m "Mass of fluid";
+    SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
     annotation (
      Icon(
         Ellipse(extent=[-100, 100; 100, -100], style(
@@ -63,82 +62,93 @@ transport. This splitting is only possible under certain assumptions.
 </p>
 </html>"),
       Diagram);
-    
-  /*
-initial equation 
-  if not Medium.singleState then
-    if use_p_start then
-       medium.p = p_start;
-    else
-       medium.d = d_start;
-    end if;
-  end if;
-  
-  if use_T_start then
-     medium.T = T_start;
-  else
-     medium.h = h_start;
-  end if;  
-  medium.Xi = X_start[1:Medium.nXi];
-*/
-    
-    Interfaces.HeatPort_a thermalPort annotation (extent=[-20,88; 20,108]);
   equation 
-    // port = medium properties
+    // medium properties set by port values
       port.p = medium.p;
       port.h = medium.h;
       port.Xi = medium.Xi;
       thermalPort.T = medium.T;
     
     // Total quantities
-       m    = V*medium.d;
-       mXi = m*medium.Xi;
-       U    = m*medium.u;
+       m    = V*medium.d "Total Mass";
+       mXi = m*medium.Xi "Independent component masses";
+       U    = m*medium.u "Internal energy";
     
     // Mass and energy balance
-       der(m)    = port.m_flow;
-       der(mXi)  = port.mXi_flow;
-       der(U)    = port.H_flow + thermalPort.Q_flow;
+       der(m)    = port.m_flow "Total mass balance";
+       der(mXi)  = port.mXi_flow "Independent component mass balance";
+       der(U)    = port.H_flow + thermalPort.Q_flow "Energy balance";
+    
+  initial equation 
+    // Initial conditions
+    if initOption == NoInit then
+      // no initial equations
+    elseif initOption == InitialStates then
+      medium.p = p_start;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    elseif initOption == SteadyState then
+      der(medium.p) = 0;
+      der(medium.h) = 0;
+      der(medium.Xi) = zeros(Medium.nXi);
+    elseif initOption == SteadyStateHydraulic then
+      der(medium.p) = 0;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
   end PortVolume;
-
+  
   model MixingVolume 
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
-    import SI = Modelica.SIunits;
-    
+    import Modelica_Fluid.Types.InitTypes.*;
+    import Modelica.Constants.*;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" 
        annotation (choicesAllMatching=true);
-    
-    parameter SI.Volume V=1e-6 "Fixed size of junction volume";
-    
-    parameter Boolean use_p_start=true "select p_start or d_start" 
-      annotation (Evaluate=true, Dialog(group="Initial pressure or initial density"));
+    parameter SI.Volume V=1e-3 "Volume";
+    parameter Boolean allowFlowReversal = true 
+      "Flow reversal at the ports is allowed by the equations";
+    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
-      "Initial pressure" 
-      annotation (Dialog(group="Initial pressure or initial density", enable=use_p_start));
-    parameter Medium.Density d_start=1 "Initial density" 
-      annotation (Dialog(group="Initial pressure or initial density", enable=not use_p_start));
-    parameter Boolean use_T_start=true "select T_start or h_start" 
-      annotation (Evaluate=true, Dialog(group="Initial temperature or initial specific enthalpy"));
+      "Start value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
     parameter Medium.Temperature T_start = Modelica.SIunits.Conversions.from_degC(20) 
-      "Initial temperature" 
-      annotation (Dialog(group="Initial temperature or initial specific enthalpy", enable=use_T_start));
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization"));
     parameter Medium.SpecificEnthalpy h_start = 1.e4 
-      "Initial specific enthalpy" 
-      annotation (Dialog(group="Initial temperature or initial specific enthalpy", enable=not use_T_start));
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization"));
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
-      "Initial mass fractions m_i/m" 
-      annotation (Dialog(group="Only for multi-substance flow", enable=Medium.nX > 0));
-    
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(
-      redeclare package Medium = Medium) annotation (extent=[-112,-4; -92,16]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(
-      redeclare package Medium = Medium) annotation (extent=[92,-8; 112,12]);
-    Medium.BaseProperties medium(preferredMediumStates=true);
-    SI.Energy U "Internal energy of port volume";
-    SI.Mass m "Mass of junction volume";
-    SI.Mass mXi[Medium.nXi] "Independent substance masses of port volume";
-    
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,
+                                  m_flow(min=if allowFlowReversal then -inf else 0)) 
+      "Fluid inlet port" annotation (extent=[-112,-10; -92,10]);
+    Interfaces.FluidPort_b port_b(redeclare package Medium = Medium,
+                                  m_flow(max=if allowFlowReversal then +inf else 0)) 
+      "Fluid outlet port" annotation (extent=[90,-10; 110,10]);
+    Interfaces.HeatPort_a thermalPort "Thermal port" 
+      annotation (extent=[-20,88; 20,108]);
+    Medium.BaseProperties medium(preferredMediumStates=true,
+                                 p(start=p_start), h(start=h_start),
+                                 T(start=T_start), Xi(start=X_start[1:Medium.nXi]));
+    SI.Energy U "Internal energy of fluid";
+    SI.Mass m "Mass of fluid";
+    SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
     annotation (
      Icon(
         Ellipse(extent=[-100, 100; 100, -100], style(
@@ -152,63 +162,59 @@ initial equation
           extent=[-130, -108; 144, -150],
           style(color=0),
           string="V=%V")), Documentation(info="<html>
-<p>
-This component models the <b>volume</b> of <b>fixed size</b> that is
-associated with the <b>fluid port</b> to which it is connected.
-This means that all medium properties inside the volume, are identical
-to the port medium properties. In particular, the specific enthalpy
-inside the volume (= medium.h) is always identical to the specific enthalpy
-in the port (port.h = medium.h). Usually, this model is used when
-discretizing a component according to the finite volume method into
-volumes in internal ports that only store energy and mass and into
-transport elements that just transport energy, mass and momentum
-between the internal ports without storing these quantities during the
-transport. This splitting is only possible under certain assumptions.
-</p>
 </html>"),
       Diagram);
     
-  /*
-initial equation 
-  if not Medium.singleState then
-    if use_p_start then
-       medium.p = p_start;
-    else
-       medium.d = d_start;
-    end if;
-  end if;
-  
-  if use_T_start then
-     medium.T = T_start;
-  else
-     medium.h = h_start;
-  end if;
-  
-  medium.Xi = X_start[1:Medium.nXi];
-*/
-    Interfaces.HeatPort_a thermalPort annotation (extent=[-20,88; 20,108]);
   equation 
-    // boundary condition
-      port_a.p = medium.p;
-      port_b.p = medium.p;
-      port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium.h);
-      port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium.h);
-      port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, medium.Xi);
-      port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.Xi, medium.Xi);
-      thermalPort.T = medium.T;
+    // boundary conditions
+    port_a.p = medium.p;
+    port_b.p = medium.p;
+    port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium.h);
+    port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium.h);
+    port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, medium.Xi);
+    port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.Xi, medium.Xi);
+    thermalPort.T = medium.T;
     
     // Total quantities
-       m    = V*medium.d;
-       mXi = m*medium.Xi;
-       U    = m*medium.u;
+    m    = V*medium.d;
+    mXi = m*medium.Xi;
+    U    = m*medium.u;
     
     // Mass and energy balance
-       der(m)   = port_a.m_flow + port_b.m_flow;
-       der(mXi) = port_a.mXi_flow + port_b.mXi_flow;
-       der(U)   = port_a.H_flow + port_b.H_flow + thermalPort.Q_flow;
+    der(m)   = port_a.m_flow + port_b.m_flow;
+    der(mXi) = port_a.mXi_flow + port_b.mXi_flow;
+    der(U)   = port_a.H_flow + port_b.H_flow + thermalPort.Q_flow;
+    
+  initial equation 
+    // Initial conditions
+    if initOption == NoInit then
+      // no initial equations
+    elseif initOption == InitialStates then
+      medium.p = p_start;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    elseif initOption == SteadyState then
+      der(medium.p) = 0;
+      der(medium.h) = 0;
+      der(medium.Xi) = zeros(Medium.nXi);
+    elseif initOption == SteadyStateHydraulic then
+      der(medium.p) = 0;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
   end MixingVolume;
-
-  model PressureDrop 
+  
+  model FrictionPressureDrop 
     "Simple pipe model with pressure loss (no storage of mass and energy in pipe)" 
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     extends Modelica_Fluid.Utilities.PipeFriction;
@@ -243,8 +249,7 @@ The details of the pipe friction model are described
        d = 0;
        eta = 0;
     end if;
-  end PressureDrop;
-  import Modelica.SIunits.*;
+  end FrictionPressureDrop;
   extends Modelica.Icons.Library;
   
   annotation (preferedView="info",
@@ -256,12 +261,23 @@ with examples first (see sub-package Examples).
 </p>
 </html>"));
   
-  model Tank "Tank with one bottom inlet/outlet" 
+  model Tank "Tank with one bottom inlet/outlet port" 
     import Modelica.SIunits.Conversions.*;
-    
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching=true);
+    parameter SI.Area area "Tank area";
+    parameter SI.Volume V0 "Volume of the liquid when the level is zero";
+    parameter Medium.AbsolutePressure p_ambient=101325 "Tank surface pressure";
+    parameter SI.Height level_start(min=0) "Initial tank level" 
+      annotation(Dialog(group=Initialization));
+    parameter Medium.Temperature T_start=from_degC(20) 
+      "Initial tank temperature" 
+      annotation(Dialog(group=Initialization));
+    parameter Medium.MassFraction X_start[Medium.nX](quantity=Medium.
+          substanceNames) = zeros(Medium.nX) 
+      "Initial independent tank mass fractions m_i/m" 
+      annotation(Dialog(group=Initialization),enable=(Medium.nXi>0));
     
     Interfaces.FluidPort_b port(redeclare package Medium = Medium) 
       annotation (extent=[-10, -120; 10, -100], rotation=90);
@@ -271,33 +287,14 @@ with examples first (see sub-package Examples).
       T(start=T_start),
       Xi(start=X_start[1:Medium.nXi]));
     
-    parameter Modelica.SIunits.Area area "Tank area";
-    parameter Medium.AbsolutePressure p_ambient=101325 "Tank surface pressure";
-    parameter Modelica.SIunits.Height level_start(min=0) "Initial tank level" 
-      annotation(Dialog(group=Initialization));
-    parameter Medium.Temperature T_start=from_degC(20) 
-      "Initial tank temperature" 
-      annotation(Dialog(group=Initialization));
-    parameter Medium.MassFraction X_start[Medium.nX](quantity=Medium.
-          substanceNames) = zeros(Medium.nX) 
-      "Initial independent tank mass fractions m_i/m" 
-      annotation(Dialog(group=Initialization),enable=(Medium.nXi>0));
     constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
-    Modelica.SIunits.Height level(stateSelect=StateSelect.prefer, min=0) 
+    SI.Height level(stateSelect=StateSelect.prefer, min=0) 
       "Level height of tank";
-    Modelica.SIunits.Energy U "Internal energy of tank volume";
-    Modelica.SIunits.Volume V(stateSelect=StateSelect.never) 
-      "Actual tank volume";
+    SI.Energy U "Internal energy of tank volume";
+    SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
     Real m(quantity=Medium.mediumName, unit="kg") "Mass of tank volume";
     Real mX[Medium.nX](quantity=Medium.substanceNames, each unit="kg") 
       "Component masses of the independent substances";
-  initial equation 
-    if not Medium.singleState then
-      mX = m*X_start[1:Medium.nXi];
-    end if;
-    level = level_start;
-    medium.T = T_start;
-    medium.Xi = X_start[1:Medium.nXi];
   equation 
     port.p = medium.p;
     
@@ -326,7 +323,7 @@ with examples first (see sub-package Examples).
   der(E) = port.H_flow + port.m_flow*v^2/2 - p_ambient*area*der(level)
 */
     
-    V = area*level;
+    V = area*level+V0;
     m = V*medium.d;
     mX = m*medium.Xi;
     U = m*medium.u;
@@ -340,7 +337,15 @@ with examples first (see sub-package Examples).
     
     // Energy balance
     der(U) = port.H_flow - 0.5*(p_ambient+medium.p)*der(V);
-    
+  /*
+initial equation 
+  if not Medium.singleState then
+    mX = m*X_start[1:Medium.nXi];
+  end if;
+  level = level_start;
+  medium.T = T_start;
+  medium.Xi = X_start[1:Medium.nXi];
+*/
     annotation (
       Icon(
         Rectangle(extent=[-100, 90; 100, 26], style(color=7, fillColor=7)),
@@ -376,35 +381,46 @@ The whole tank is assumed to have uniform temperature and mass fractions.
 </p>
 </HTML>"),
       Diagram);
-    
   end Tank;
   
   partial model ValveBase "Base model for valves" 
     extends Interfaces.PartialTwoPortTransport;
     import Modelica_Fluid.Types.CvTypes;
-    parameter CvTypes.Temp CvData "Selection of flow coefficient";
-    parameter Area Av(fixed = if CvData==CvTypes.Av then true else false,
-                      start = m_flow_nom/(sqrt(rhonom*dpnom))) = 0 
-      "Av (metric) flow coefficient";
-    parameter Real Kv(unit="m^3/h")=0 "Kv (metric) flow coefficient";
-    parameter Real Cv(unit="USG/min")=0 "Cv (US) flow coefficient";
-    parameter Real pnom "Nominal inlet pressure";
-    parameter Pressure dpnom "Nominal pressure drop";
-    parameter Pressure rhonom = 1000 "Nominal inlet density";
-    parameter Real stemPosition_nom = 1 "Nominal stem position";
-    parameter MassFlowRate m_flow_nom "Nominal mass flowrate";
+    parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
+       annotation(Dialog(group = "Flow Coefficient"));
+    parameter SI.Area Av(fixed = if CvData==CvTypes.Av then true else false,
+                         start = m_flow_nom/(sqrt(rhonom*dpnom))*
+                                             flowCharacteristic(stemPosition_nom)) = 0 
+      "Av (metric) flow coefficient" 
+       annotation(Dialog(group = "Flow Coefficient",
+                         enable = (CvData==CvTypes.Av)));
+    parameter Real Kv(unit="m3/h")=0 "Kv (metric) flow coefficient" 
+      annotation(Dialog(group = "Flow Coefficient",
+                        enable = (CvData==CvTypes.Kv)));
+    parameter Real Cv(unit="USG/min")=0 "Cv (US) flow coefficient" 
+      annotation(Dialog(group = "Flow Coefficient",
+                        enable = (CvData==CvTypes.Cv)));
+    parameter Medium.AbsolutePressure pnom = 1e5 "Nominal inlet pressure" 
+      annotation(Dialog(group="Nominal operating point"));
+    parameter SI.Pressure dpnom = 1e5 "Nominal pressure drop" 
+      annotation(Dialog(group="Nominal operating point"));
+    parameter Medium.MassFlowRate m_flow_nom = 1 "Nominal mass flowrate" 
+      annotation(Dialog(group="Nominal operating point"));
+    parameter Medium.Density rhonom = 1000 "Nominal inlet density" 
+      annotation(Dialog(group="Nominal operating point"));
+    parameter Real stemPosition_nom = 1 "Nominal stem position" 
+      annotation(Dialog(group="Nominal operating point"));
     parameter Boolean CheckValve=false "Reverse flow stopped";
-    parameter Real b=0.01 "Regularisation factor";
-    replaceable function FlowChar = Utilities.linear 
+    parameter Real delta=0.01 "Regularisation factor";
+    replaceable function flowCharacteristic = Utilities.linear 
       "Inherent flow characteristic";
-    Medium.Density rho "Density at port a";
-    Medium.Temperature T "Temperature at port a";
-  protected 
-    function sqrtR = Utilities.sqrtReg(delta = b*dpnom);
-  public 
     Modelica.Blocks.Interfaces.RealInput stemPosition 
       "Stem position in the range 0-1" annotation (extent=[-10,70; 10,90],    rotation=-90);
     
+    Medium.Density rho "Density at port a";
+    Medium.Temperature T "Temperature at port a";
+  protected 
+    function sqrtR = Utilities.regRoot(delta = delta*dpnom);
     annotation (
       Icon(Text(extent=[-100, -40; 100, -80], string="%name"),
         Line(points=[0,60; 0,0],   style(
@@ -437,7 +453,7 @@ The whole tank is assumed to have uniform temperature and mass fractions.
 </ul>
 <p>The nominal pressure drop <tt>dpnom</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dpnom</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical instabilities occur in valves with very low pressure drops.
 <p>If <tt>CheckValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place.
-<p>The default flow characteristic <tt>FlowChar</tt> is linear; this can be replaced by any user-defined function (e.g. equal percentage, quick opening, etc.).
+<p>The default flow characteristic <tt>flowCharacteristic</tt> is linear; this can be replaced by any user-defined function (e.g. equal percentage, quick opening, etc.).
 </HTML>",
         revisions="<html>
 <ul>
@@ -475,7 +491,6 @@ The whole tank is assumed to have uniform temperature and mass fractions.
   model ValveIncompressible "Valve for (almost) incompressible fluids" 
     extends ValveBase;
     import Modelica_Fluid.Types.CvTypes;
-    
   annotation (
     Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
     Diagram,
@@ -496,21 +511,21 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
 </HTML>"));
   initial equation 
     if CvData == CvTypes.OpPoint then
-      m_flow_nom = FlowChar(stemPosition_nom)*Av*sqrt(rhonom)*sqrtR(dp) 
+      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(rhonom)*sqrtR(dpnom) 
         "Determination of Av by the operating point";
     end if;
     
   equation 
     if CheckValve then
-      m_flow = FlowChar(stemPosition)*Av*sqrt(rho)*
+      m_flow = flowCharacteristic(stemPosition)*Av*sqrt(rho)*
                smooth(0,if dp>=0 then sqrtR(dp) else 0);
     else
-      m_flow = FlowChar(stemPosition)*Av*sqrt(rho)*sqrtR(dp);
+      m_flow = flowCharacteristic(stemPosition)*Av*sqrt(rho)*sqrtR(dp);
     end if;
   end ValveIncompressible;
   
-  model ValveIncompressibleChoked 
-    "Valve for (almost) incompressible fluids, accounts for choked flow conditions" 
+  model ValveVaporizing 
+    "Valve for possibly vaporizing (almost) incompressible fluids, accounts for choked flow conditions" 
     import Modelica_Fluid.Types.CvTypes;
     extends ValveBase(
       redeclare replaceable package Medium = 
@@ -521,9 +536,9 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     Real Ff "Ff coefficient (see IEC/ISA standard)";
     Real Fl "Pressure recovery coefficient Fl (see IEC/ISA standard)";
     Medium.AbsolutePressure pv "Saturation pressure";
-    Pressure dpEff "Effective pressure drop";
-    Pressure pin "Inlet pressure";
-    Pressure pout "Outlet pressure";
+    SI.Pressure dpEff "Effective pressure drop";
+    Medium.AbsolutePressure pin "Inlet pressure";
+    Medium.AbsolutePressure pout "Outlet pressure";
     annotation (
       Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
       Diagram,
@@ -552,7 +567,7 @@ li><i>1 Jul 2004</i>
 </HTML>"));
   initial equation 
     if CvData == CvTypes.OpPoint then
-      m_flow_nom = FlowChar(stemPosition_nom)*Av*sqrt(rhonom)*sqrtR(dp) 
+      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(rhonom)*sqrtR(dpnom) 
         "Determination of Av by the operating point";
     end if;
   equation 
@@ -560,24 +575,25 @@ li><i>1 Jul 2004</i>
     pout = port_b.p;
     pv = Medium.saturationPressure(T);
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
-    Fl = Flnom*Flfun(stemPosition);
+    Fl = Flnom*FlCharacteristic(stemPosition);
     dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 
               Fl^2*(pin - Ff*pv) else dp 
       "Effective pressure drop, accounting for possible choked conditions";
     if CheckValve then
-       m_flow = FlowChar(stemPosition)*Av*sqrt(rho)*
+       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(rho)*
            (if dpEff>=0 then sqrtR(dpEff) else 0);
      else
-       m_flow = FlowChar(stemPosition)*Av*sqrt(rho)*sqrtR(dpEff);
+       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(rho)*sqrtR(dpEff);
     end if;
-  end ValveIncompressibleChoked;
+  end ValveVaporizing;
   
   model ValveCompressible 
     "Valve for compressible fluids, accounts for choked flow conditions" 
     extends ValveBase;
     import Modelica_Fluid.Types.CvTypes;
     parameter Real Fxt_full=0.5 "Fk*xt critical ratio at full opening";
-    replaceable function xtfun = Utilities.one "Critical ratio characteristic";
+    replaceable function xtCharacteristic = Utilities.one 
+      "Critical ratio characteristic";
     Real Fxt;
     Real x "Pressure drop ratio";
     Real xs "Saturated pressure drop ratio";
@@ -595,7 +611,7 @@ li><i>1 Jul 2004</i>
     Documentation(info="<HTML>
 <p>Liquid water valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid. <p>
 Extends the <tt>ValveBase</tt> model (see the corresponding documentation for common valve features).
-<p>The product Fk*xt is given by the parameter <tt>Fxtnom</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by customising the <tt>xtfun</tt> function.
+<p>The product Fk*xt is given by the parameter <tt>Fxtnom</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by customising the <tt>xtCharacteristic</tt> function.
 </HTML>",
       revisions="<html>
 <ul>
@@ -617,11 +633,11 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
   initial equation 
     if CvData == CvTypes.OpPoint then
       // Determination of Av by the nominal operating point conditions
-      Fxt_nom = Fxt_full*xtfun(stemPosition_nom);
+      Fxt_nom = Fxt_full*xtCharacteristic(stemPosition_nom);
       x_nom = dpnom/pnom;
       xs_nom = smooth(0, if x_nom > Fxt_nom then Fxt_nom else x_nom);
       Y_nom = 1 - abs(xs_nom)/(3*Fxt_nom);
-      m_flow_nom = FlowChar(stemPosition_nom)*Av*Y_nom*sqrt(rhonom)*sqrtR(pnom*xs_nom);
+      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*Y_nom*sqrt(rhonom)*sqrtR(pnom*xs_nom);
     else
       // Dummy values
       Fxt_nom = 0;
@@ -632,15 +648,15 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     
   equation 
     p = noEvent(if dp>=0 then port_a.p else port_b.p);
-    Fxt = Fxt_full*xtfun(stemPosition);
+    Fxt = Fxt_full*xtCharacteristic(stemPosition);
     x = dp/p;
     xs = smooth(0, if x < -Fxt then -Fxt else if x > Fxt then Fxt else x);
     Y = 1 - abs(xs)/(3*Fxt);
     if CheckValve then
-      m_flow = FlowChar(stemPosition)*Av*Y*sqrt(rho)*
+      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(rho)*
         smooth(0,if xs>=0 then sqrtR(p*xs) else 0);
     else
-      m_flow = FlowChar(stemPosition)*Av*Y*sqrt(rho)*sqrtR(p*xs);
+      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(rho)*sqrtR(p*xs);
     end if;
   end ValveCompressible;
   
@@ -653,28 +669,25 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     replaceable package SatMedium = 
         Modelica.Media.Interfaces.PartialTwoPhaseMedium 
       "Saturated medium model (required only for NPSH computation)";
+    replaceable function flowCharacteristic = 
+        PumpCharacteristics.BaseFlowCharacteristic;
+    replaceable function powerCharacteristic = 
+        PumpCharacteristics.BasePowerCharacteristic;
     parameter Integer Np0(min=1) = 1 "Nominal number of pumps in parallel";
-    parameter Pressure pin_start "Inlet Pressure Start Value";
-    parameter Pressure pout_start "Outlet Pressure Start Value";
-    parameter SpecificEnthalpy hstart=1e5 "Fluid Specific Enthalpy Start Value";
-    parameter Density rho0=1000 "Nominal Liquid Density";
-    parameter AngularVelocity_rpm n0=1500 "Nominal rotational speed";
-    parameter Mass M=1 "Fluid mass inside the pump";
     parameter Real etaMech(
       min=0,
       max=1) = 0.98 "Mechanical Efficiency";
-    parameter Boolean OpPoints = true 
-      "Characteristic curves defined by operation points";
-    parameter Height head_nom[3] "Pump head for three operating points";
-    parameter VolumeFlowRate q_nom[3] 
-      "Volume flow rate for three operating points (single pump)";
-    parameter Power P_cons[3] 
-      "Power consumption for three operating points (single pump)";
+    parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value";
+    parameter Medium.AbsolutePressure pout_start "Outlet Pressure Start Value";
+    parameter Medium.SpecificEnthalpy hstart=1e5 
+      "Fluid Specific Enthalpy Start Value";
+    parameter Medium.Density rho0=1000 "Nominal Liquid Density";
+    parameter AngularVelocity_rpm n0=1500 "Nominal rotational speed";
+    parameter SI.Mass M = 0 "Fluid mass inside the pump";
     parameter Boolean CheckValve=false "Reverse flow stopped";
     parameter Boolean ComputeNPSHa=false "Compute NPSH Available at the inlet";
   //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
   //    "Initialisation option";
-    constant Acceleration g=Modelica.Constants.g_n;
     Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = Medium,
         p(start=pin_start)) 
     annotation (extent=[-100, 2; -60, 42]);
@@ -684,40 +697,25 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     Modelica.Blocks.Interfaces.IntegerInput in_Np "Number of  parallel pumps" 
     annotation (extent=[16,76; 36,96], rotation=-90);
     
-    Density rho "Liquid density";
-    SpecificEnthalpy h "Enthalpy of liquid inside the pump";
+    constant SI.Acceleration g=Modelica.Constants.g_n;
+    Medium.Density rho "Liquid density";
+    Medium.SpecificEnthalpy h_out 
+      "Enthalpy of the liquid flowing out of the pump";
     Medium.Temperature Tin "Liquid inlet temperature";
-    MassFlowRate m_flow_1 "Mass flowrate (single pump)";
+    SI.MassFlowRate m_flow_single "Mass flowrate (single pump)";
     AngularVelocity_rpm n "Shaft r.p.m.";
     Integer Np(min=1) "Number of pumps in parallel";
     
-    Power P "Power Consumption (single pump)";
-    Power Ptot "Power Consumption (total)";
-    constant Power P_eps=1e-8 
-      "Small coefficient to avoid numerical singularities";
-    Power Phyd "Hydraulic power (single pump)";
+    SI.Power P_single "Power Consumption (single pump)";
+    SI.Power P_tot "Power Consumption (total)";
+    constant SI.Power P_eps=1e-8 
+      "Small coefficient to avoid numerical singularities in efficiency computations";
+    SI.Power Phyd_single "Hydraulic power (single pump)";
     Real eta "Global Efficiency";
-    Length NPSHa "Net Positive Suction Head available";
-    Medium.AbsolutePressure pv "Saturated liquid pressure";
+    SI.Length NPSHa "Net Positive Suction Head available";
+    Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
     Boolean FlowOn(start=true);
-    Real s "Auxiliary Variable";
-    parameter Real A(fixed=false) "Flow characteristics coefficient";
-    parameter Real B(fixed=false) "Flow characteristics coefficient";
-    parameter Real C(fixed=false) "Flow characteristics coefficient";
-    parameter Real D(fixed=false) "Consumption characteristics coefficient";
-    parameter Real E(fixed=false) "Consumption characteristics coefficient";
-    parameter Real F(fixed=false) "Consumption characteristics coefficient";
-  initial equation 
-    // Computation of flow characteristics coefficients from the nominal
-    // operating points
-    if OpPoints then
-      head_nom[1]*g = -A*q_nom[1]^2 + B*q_nom[1] + C;
-      head_nom[2]*g = -A*q_nom[2]^2 + B*q_nom[2] + C;
-      head_nom[3]*g = -A*q_nom[3]^2 + B*q_nom[3] + C;
-      P_cons[1] = D*(n0^2)*q_nom[1] - E*n0*(q_nom[1]^2) + F*(n0^2);
-      P_cons[2] = D*(n0^2)*q_nom[2] - E*n0*(q_nom[2]^2) + F*(n0^2);
-      P_cons[3] = D*(n0^2)*q_nom[3] - E*n0*(q_nom[3]^2) + F*(n0^2);
-    end if;
+    Real s "Auxiliary Variable for the flow equation in parametric form";
   equation 
     // Number of pumps in parallel
     Np = in_Np;
@@ -726,29 +724,31 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     end if;
     
     // Flow equations
-    m_flow_1 = inlet.m_flow/Np "Single pump flow rate";
-    FlowOn = s > 0;
-    if (FlowOn or (not CheckValve)) then
+    m_flow_single = inlet.m_flow/Np "Single pump flow rate";
+    if (s > 0 or (not CheckValve)) then
       // Flow characteristics when check valve is open
-      m_flow_1 = s;
-      (outlet.p - inlet.p)/rho = -A*(m_flow_1/rho)^2 + B*(n/n0)*m_flow_1/rho + C*(n/n0)^2;
+      m_flow_single = s;
+      (outlet.p - inlet.p)/rho = flowCharacteristic(m_flow_single/rho, n);
     else
       // Flow characteristics when check valve is closed
-      (outlet.p - inlet.p)/rho = C*(n/n0)^2 - s*1e3;
-      m_flow_1 = 0;
+      (outlet.p - inlet.p)/rho = flowCharacteristic(0,n) - s*1e3;
+      m_flow_single = 0;
     end if;
     
     // Power consumption  
-    P = D*(n^2)*(m_flow_1/rho) - E*n*((m_flow_1/rho)^2) + F*(n^2) 
+    P_single = powerCharacteristic(m_flow_single/rho, n, rho) 
       "Power consumption (single pump)";
-    Ptot = P*Np "Power consumption (total)";
+    P_tot = P_single*Np "Power consumption (total)";
     // Hydraulic power
-    Phyd = P*etaMech "Hydraulic power transferred to the fluid (single pump)";
-    eta = ((outlet.p - inlet.p)*m_flow_1/rho)/(P + P_eps) 
+    Phyd_single = P_single*etaMech 
+      "Hydraulic power transferred to the fluid (single pump)";
+    eta = ((outlet.p - inlet.p)*m_flow_single/rho)/(P_single + P_eps) 
       "Hydraulic efficiency";
     
     // Fluid properties
     fluid.p = inlet.p;
+    fluid.h = inlet.h;
+    fluid.Xi = inlet.Xi;
     rho = fluid.d;
     Tin = fluid.T;
     
@@ -756,15 +756,14 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     inlet.m_flow + outlet.m_flow = 0 "Mass balance";
     inlet.mXi_flow + outlet.mXi_flow = zeros(Medium.nXi) 
       "Substance mass balance";
+    inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,h_out);
+    outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,h_out);
     if M > 0 then
-      M * der(h) = m_flow_1*(inlet.h - outlet.h) + Phyd 
+      M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + Phyd_single 
         "Energy balance (density variations neglected)";
     else
-      0 = m_flow_1*(inlet.h - outlet.h) + Phyd "Energy balance";
+      0 = m_flow_single*(inlet.h - h_out) + Phyd_single "Energy balance";
     end if;
-    h = fluid.h;
-    inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,fluid.h);
-    outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,fluid.h);
     
     // NPSH computations
     if ComputeNPSHa then
@@ -837,6 +836,53 @@ PumpMech</tt> pump models.
     
   end PumpBase;
   
+  package PumpCharacteristics 
+    import NonSI = Modelica.SIunits.Conversions.NonSIunits;
+    
+    partial function BaseFlowCharacteristic 
+      "Base class for pump flow characteristics" 
+      extends Modelica.Icons.Function;
+      input SI.VolumeFlowRate q "Volumetric flow rate";
+      input NonSI.AngularVelocity_rpm n "Rotational speed";
+      output SI.Length head "Pump head";
+    end BaseFlowCharacteristic;
+    
+    partial function BasePowerCharacteristic 
+      "Base class for pump power consumption characteristics" 
+      extends Modelica.Icons.Function;
+      input SI.VolumeFlowRate q "Volumetric flow rate";
+      input NonSI.AngularVelocity_rpm n "Rotational speed";
+      input SI.Density d "Density";
+      output SI.Power consumption "Power consumption";
+    end BasePowerCharacteristic;
+    
+    function LinearFlowCharacteristic 
+      extends BaseFlowCharacteristic;
+      input SI.Height head_nom[2] "Pump head for two operating points"     annotation(Dialog);
+      input SI.VolumeFlowRate q_nom[2] 
+        "Volume flow rate for two operating points (single pump)" annotation(Dialog);
+      input NonSI.AngularVelocity_rpm n0=1500 "Nominal rotational speed"  annotation(Dialog);
+    algorithm 
+      head :=head_nom[1] + (head_nom[2] - head_nom[1])/
+             (q_nom[2] - q_nom[1])*(q - q_nom[1]);
+    end LinearFlowCharacteristic;
+    
+    function QuadraticFlowCharacteristics 
+      extends BaseFlowCharacteristic;
+    end QuadraticFlowCharacteristics;
+    
+    function ConstantEfficencyPowerCharacteristics 
+       extends BasePowerCharacteristic;
+     //    Power Phyd
+    end ConstantEfficencyPowerCharacteristics;
+    
+    model QuadraticPowerCharacteristics 
+      extends BaseFlowCharacteristic;
+    algorithm 
+    end QuadraticPowerCharacteristics;
+    
+  end PumpCharacteristics;
+  
   model Pump "Centrifugal pump with ideally controlled speed" 
     extends PumpBase;
     import Modelica.SIunits.Conversions.NonSIunits.*;
@@ -875,17 +921,15 @@ PumpMech</tt> pump models.
   
   model PumpMech "Centrifugal pump with mechanical connector for the shaft" 
     extends PumpBase;
-    extends Icons.Water.PumpMech;
-    Angle phi "Shaft angle";
-    AngularVelocity omega "Shaft angular velocity";
+    SI.Angle phi "Shaft angle";
+    SI.AngularVelocity omega "Shaft angular velocity";
     Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft 
     annotation (extent=[80,4; 110,32]);
   equation 
     phi = shaft.phi;
     omega = der(phi);
     n = Modelica.SIunits.Conversions.to_rpm(omega);
-    P = omega*shaft.tau;
-    
+    P_single = omega*shaft.tau;
   annotation (
     Icon(Rectangle(extent=[60,26; 84,12], style(
             color=10,
@@ -915,7 +959,8 @@ PumpMech</tt> pump models.
   
   model ValveLinear "Valve for water/steam flows with linear pressure drop" 
     extends Interfaces.PartialTwoPortTransport;
-    parameter Real Kv(unit="kg/(s.Pa)") "Hydraulic conductance at full opening";
+    parameter Types.HydraulicConductance Kv = 1/1e5 
+      "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening 
     annotation (extent=[-20, 60; 20, 100], rotation=-90);
   equation 
@@ -954,22 +999,15 @@ PumpMech</tt> pump models.
   
   model Evaporator 
     "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378" 
-    
     import Modelica_Fluid.Interfaces.*;
     import Modelica.SIunits.Conversions.*;
-    
     // property and interface declarations
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialTwoPhaseMedium 
       extends Modelica.Media.Interfaces.PartialTwoPhaseMedium "Medium model" 
-                     annotation (choicesAllMatching=true);
+        annotation (choicesAllMatching=true);
     Medium.SaturationProperties sat 
       "State vector to compute saturation properties";
-    /* Do we need them?
-  Medium.BaseProperties medium_a(h=feedwater.h, p=feedwater.p) 
-    "Medium in feedwater";
-  Medium.BaseProperties medium_b(h=steam.h, p=steam.p) "Medium in steam";
-  */
     FluidPort_a feedwater(redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
     FluidPort_b steam(redeclare package Medium = Medium) 
@@ -977,10 +1015,8 @@ PumpMech</tt> pump models.
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
       annotation (extent=[-10, -120; 10, -100]);
     Modelica.Blocks.Interfaces.RealOutput V(
-      redeclare type SignalType = Volume) "liquid volume (level)" 
+      redeclare type SignalType = Volume) "liquid volume" 
       annotation (extent=[30, 100; 50, 120], rotation=90);
-    Modelica.Blocks.Interfaces.RealOutput sigma_D "Thermal stress in metal" 
-      annotation (extent=[100, 40; 120, 60]);
     annotation (
       Coordsys(grid=[1, 1], component=[20, 20]),
       Diagram,
@@ -1017,15 +1053,11 @@ PumpMech</tt> pump models.
     parameter Pressure p_start=from_bar(1) "initial pressure";
     parameter Volume V_start=67 "initial liquid volume";
     
-  /* why protected ?
-protected 
-*/
-    
     Medium.AbsolutePressure p(start=p_start, fixed = true, stateSelect=StateSelect.prefer) 
       "pressure inside drum boiler";
     Medium.Temperature T "temperature inside drum boiler";
-    Volume V_v "volume of vapour phase";
-    Volume V_l(start=V_start, fixed = true, stateSelect=StateSelect.prefer) 
+    SI.Volume V_v "volume of vapour phase";
+    SI.Volume V_l(start=V_start, fixed = true, stateSelect=StateSelect.prefer) 
       "volumes of liquid phase";
     Medium.SpecificEnthalpy h_v=Medium.dewEnthalpy(sat) 
       "specific enthalpy of vapour";
@@ -1033,20 +1065,20 @@ protected
       "specific enthalpy of liquid";
     Medium.Density rho_v=Medium.dewDensity(sat) "density in vapour phase";
     Medium.Density rho_l=Medium.bubbleDensity(sat) "density in liquid phase";
-    Mass m "total mass of drum boiler";
-    Energy U "internal energy";
+    SI.Mass m "total mass of drum boiler";
+    SI.Energy U "internal energy";
     Medium.Temperature T_D=heatPort.T "temperature of drum";
-    HeatFlowRate q_F=heatPort.Q_flow "heat flow rate from furnace";
-    SpecificEnthalpy h_W=feedwater.h "feed water enthalpy";
-    SpecificEnthalpy h_S=steam.h "steam enthalpy";
-    MassFlowRate qm_W=feedwater.m_flow "feed water mass flow rate";
-    MassFlowRate qm_S=steam.m_flow "steam mass flow rate";
+    SI.HeatFlowRate q_F=heatPort.Q_flow "heat flow rate from furnace";
+    Medium.SpecificEnthalpy h_W=feedwater.h "feed water enthalpy";
+    Medium.SpecificEnthalpy h_S=steam.h "steam enthalpy";
+    SI.MassFlowRate qm_W=feedwater.m_flow "feed water mass flow rate";
+    SI.MassFlowRate qm_S=steam.m_flow "steam mass flow rate";
   equation 
     // balance equations  
-    m = rho_v*V_v + rho_l*V_l; // why m_D? The balance equation is only applied to the fluid!
-    U = rho_v*V_v*h_v + rho_l*V_l*h_l - p*V_t + m_D*cp_D*T_D;
-    der(m) = qm_W + qm_S;
-    der(U) = q_F + qm_W*h_W + qm_S*h_S;
+    m = rho_v*V_v + rho_l*V_l + m_D "Total mass";
+    U = rho_v*V_v*h_v + rho_l*V_l*h_l - p*V_t + m_D*cp_D*T_D "Total energy";
+    der(m) = qm_W + qm_S "Mass balance";
+    der(U) = q_F + qm_W*h_W + qm_S*h_S "Energy balance";
     V_t = V_l + V_v;
     
     // Properties of saturated liquid and steam
@@ -1063,13 +1095,13 @@ protected
     steam.p = p;
     steam.H_flow = semiLinear(steam.m_flow, steam.h, h_v);
     
-    // thermal stress
-    // Why 60? Parameter needed!!!
-    sigma_D = -60*der(T_D);
-    
-    // liquid level 
+    // liquid volume 
     V = V_l;
   end Evaporator;
   
+  model Flow1D   
+  end Flow1D;
   
+  model Pipe   
+  end Pipe;
 end Components;
