@@ -28,14 +28,18 @@ used for the initial mass fractions.
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater) 
+          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+      V0=0.001, 
+      level(fixed=true)) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
       area=1,
       T_start=from_degC(100),
       level_start=1,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater) 
+          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+      V0=0.001, 
+      level(fixed=true)) 
       annotation (extent=[-10, 20; 10, 40]);
     Components.FrictionPressureDrop shortPipe1(
       m_flow_nominal=2000,
@@ -50,8 +54,9 @@ used for the initial mass fractions.
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater) 
-      annotation (extent=[70, 20; 90, 40]);
+          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+      V0=0.001) 
+      annotation (extent=[71,20; 91,40]);
     Components.FrictionPressureDrop shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
@@ -74,7 +79,7 @@ used for the initial mass fractions.
     connect(Tank1.port, shortPipe1.port_a) 
       annotation (points=[-80, 19; -80, -20; -51, -20], style(color=69));
     connect(shortPipe3.port_b, Tank3.port) 
-      annotation (points=[51, -20; 80, -20; 80, 19], style(color=69));
+      annotation (points=[51,-20; 81,-20; 81,19],    style(color=69));
     connect(Tank2.port, shortPipe2.port_a) 
       annotation (points=[0,19; 0,11; -6.73533e-016,11],    style(color=69));
     connect(shortPipe1.port_b, shortPipe3.port_a) 
@@ -105,16 +110,18 @@ the mixing of the pipe flows is modelled more realistically.
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater) 
+          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+      level(fixed=true)) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
       area=1,
       T_start=from_degC(100),
       level_start=1,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater) 
+          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+      level(fixed=true)) 
       annotation (extent=[-10, 20; 10, 40]);
-    Components.ShortPipe shortPipe1(
+    Components.FrictionPressureDrop shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -127,7 +134,7 @@ the mixing of the pipe flows is modelled more realistically.
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater) 
+          Modelica.Media.Water.ConstantPropertyLiquidWater) "level(fixed=true)"
       annotation (extent=[70, 20; 90, 40]);
     Components.FrictionPressureDrop shortPipe3(
       m_flow_nominal=2000,
@@ -145,11 +152,13 @@ the mixing of the pipe flows is modelled more realistically.
       frictionType=Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[-10, -10; 10, 10], rotation=-90);
     
-    Interfaces.PortVolume junctionVolume(
+    Components.PortVolume junctionVolume(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       V=1.e-4,
-      T_start=from_degC(50.0)) annotation (extent=[-10, -40; 10, -20]);
+      T_start=from_degC(50.0), 
+      initOption=Modelica_Fluid.Types.InitTypes.InitialStates) 
+                               annotation (extent=[-10, -40; 10, -20]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
       annotation (points=[-80, 19; -80, -30; -51, -30], style(color=69));

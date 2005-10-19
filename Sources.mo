@@ -231,8 +231,8 @@ to define fixed or prescribed ambient conditions.
 Model <b>FixedAmbient_pt</b> defines constant values for ambient conditions:
 </p>
 <ul>
-<li> Prescribed ambient pressure via input signal p_ambient.</li>
-<li> Prescribed ambient temperature via input signal T_ambient.</li>
+<li> Prescribed ambient pressure via input signal p.</li>
+<li> Prescribed ambient temperature via input signal T.</li>
 <li> Fixed ambient mass fractions (only for multi-substance flow).</li>
 </ul>
 <p>

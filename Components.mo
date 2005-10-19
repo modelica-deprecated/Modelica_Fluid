@@ -288,7 +288,7 @@ with examples first (see sub-package Examples).
       Xi(start=X_start[1:Medium.nXi]));
     
     constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
-    SI.Height level(stateSelect=StateSelect.prefer, min=0) 
+    SI.Height level(start=level_start,stateSelect=StateSelect.prefer, min=0) 
       "Level height of tank";
     SI.Energy U "Internal energy of tank volume";
     SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";

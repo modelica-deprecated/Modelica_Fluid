@@ -16,11 +16,11 @@ model TestShortPipe "Test ShortPipe component"
     diameter=0.02) 
     annotation (extent=[-10,0; 10,20]);
   
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX MassFlowSource(T_ambient=
+  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX MassFlowSource(T=
         from_degC(30), redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[-50,0; -30,20]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient(T_ambient=from_degC(15),
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient(T=from_degC(15),
       redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[50,0; 30,20]);
@@ -33,6 +33,7 @@ equation
     annotation (points=[-29,10; -11,10],  style(color=69));
   connect(shortPipe.port_b, ambient.port) 
     annotation (points=[11,10; 29,10],   style(color=69));
-  connect(ramp.y, MassFlowSource.m_flow_ambient) 
-    annotation (points=[-69,10; -52,10], style(color=3, rgbcolor={0,0,255}));
+  connect(ramp.y, MassFlowSource.m_flow_in) 
+    annotation (points=[-69,10; -59.9,10; -59.9,16; -50.8,16],
+                                         style(color=3, rgbcolor={0,0,255}));
 end TestShortPipe;

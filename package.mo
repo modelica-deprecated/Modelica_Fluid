@@ -30,10 +30,8 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
-
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
-
 
 package UsersGuide "Users Guide" 
   
@@ -160,7 +158,6 @@ standard library.
     
   end ReleaseNotes;
 end UsersGuide;
-
 
 replaceable package PackageMedium = Modelica.Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (
