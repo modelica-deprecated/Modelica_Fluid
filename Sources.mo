@@ -449,7 +449,7 @@ with exception of ambient pressure, do not have an effect.
     parameter Medium.MassFlowRate m_flow 
       "Fixed mass flow rate going out of the fluid port";
     parameter Medium.SpecificEnthalpy h = 1e4 
-      "Fixed value of the fluid temperature";
+      "Fixed value of the fluid specific enthalpy";
     parameter Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) = Medium.reference_X 
       "Fixed value of the fluid composition" 
       annotation (Dialog(enable=Medium.nXi>0));
@@ -527,6 +527,9 @@ with exception of ambient pressure, do not have an effect.
     Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X);
     if cardinality(m_flow_in)==0 then
       m_flow_in = m_flow;
+      port.m_flow = -m_flow;
+    else
+      port.m_flow = -m_flow_in;
     end if;
     if cardinality(h_in)==0 then
       h_in = h;
@@ -536,7 +539,6 @@ with exception of ambient pressure, do not have an effect.
     end if;
     medium.h = h;
     medium.Xi = X[1:Medium.nXi];
-    port.m_flow = -m_flow;
   end PrescribedMassFlowRate_hX;
   
 end Sources;

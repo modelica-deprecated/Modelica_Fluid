@@ -18,10 +18,10 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,10; -40,10;
+    connect(q_F_Tab.y,       drumBoiler.q_F) annotation (points=[-59,10; -40,10; 
           -40,-31; -21.35,-31],       style(rgbcolor={0,0,127}));
-    connect(Y_Valve_Tab.y,       drumBoiler.Y_Valve) annotation (points=[-59,
-          -30; -44,-30; -44,-37; -21.35,-37],    style(
+    connect(Y_Valve_Tab.y,       drumBoiler.Y_Valve) annotation (points=[-59,-30; 
+          -44,-30; -44,-37; -21.35,-37],         style(
         rgbcolor={0,0,127},
         fillColor=7,
         fillPattern=1));
@@ -147,8 +147,7 @@ Simulate for 7200 seconds.
       import Modelica_Fluid.*;
       extends Interfaces.PartialTwoPortTransport;
       SI.Pressure dp "Pressure loss due to friction";
-      Real residue=port_a.p - port_b.p - dp 
-        "momentum balance (may be modified)";
+      // Real residue=port_a.p - port_b.p - dp "momentum balance (may be modified)";
       
       parameter Real k=1e-5 "linear valve coefficient";
       
@@ -170,7 +169,7 @@ Simulate for 7200 seconds.
           Line(points=[60, 0; 100, 0], style(color=69)),
           Line(points=[0, 0; 0, -72])));
     equation 
-      residue = 0;
+      // residue = 0;
       port_a.m_flow =Y           *k*dp;
     end Valve;
     
@@ -221,7 +220,7 @@ Simulate for 7200 seconds.
             Modelica.Media.Water.WaterIF97_ph) 
                     annotation (extent=[44,-30; 64,-10]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
-            Modelica.Media.Water.WaterIF97_pT, p_ambient=from_bar(0.5)) 
+            Modelica.Media.Water.WaterIF97_pT, p=from_bar(0.5)) 
         annotation (extent=[80,-30; 100,-10], rotation=180);
       Modelica_Fluid.Sensors.MassFlowRate massFlowRate(redeclare package Medium
           =        Modelica.Media.Water.WaterIF97_ph) 
@@ -236,7 +235,7 @@ Simulate for 7200 seconds.
         annotation (extent=[-51,23; -65,37]);
       Modelica_Fluid.Sources.PrescribedMassFlowRate_hX pump(redeclare package 
           Medium = 
-            Modelica.Media.Water.WaterIF97_ph, h_ambient=5e5) 
+            Modelica.Media.Water.WaterIF97_ph, h=5e5) 
         annotation (extent=[-80,-30; -60,-10]);
       Modelica.Blocks.Math.Feedback feedback 
         annotation (extent=[-26,20; -46,40]);
@@ -310,8 +309,8 @@ Simulate for 7200 seconds.
             color=74, rgbcolor={0,0,127}));
       connect(controller.y, limiter.u) annotation (points=[-65.7,30; -69.6,30],
           style(color=74, rgbcolor={0,0,127}));
-      connect(limiter.y, pump.m_flow_ambient) annotation (points=[-85.7,30; -90,
-            30; -90,-20; -82,-20], style(color=74, rgbcolor={0,0,127}));
+      connect(limiter.y, pump.m_flow_in) annotation (points=[-85.7,30; -90,30;
+            -90,-14; -80.8,-14], style(color=74, rgbcolor={0,0,127}));
     end DrumBoiler;
     
   end Components;

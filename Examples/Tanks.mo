@@ -37,7 +37,7 @@ used for the initial mass fractions.
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater) 
       annotation (extent=[-10, 20; 10, 40]);
-    Components.ShortPipe shortPipe1(
+    Components.FrictionPressureDrop shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -52,7 +52,7 @@ used for the initial mass fractions.
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater) 
       annotation (extent=[70, 20; 90, 40]);
-    Components.ShortPipe shortPipe3(
+    Components.FrictionPressureDrop shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -60,7 +60,7 @@ used for the initial mass fractions.
       frictionType=Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[30, -30; 50, -10]);
     
-    Components.ShortPipe shortPipe2(
+    Components.FrictionPressureDrop shortPipe2(
       m_flow_nominal=1000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -129,7 +129,7 @@ the mixing of the pipe flows is modelled more realistically.
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater) 
       annotation (extent=[70, 20; 90, 40]);
-    Components.ShortPipe shortPipe3(
+    Components.FrictionPressureDrop shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -137,7 +137,7 @@ the mixing of the pipe flows is modelled more realistically.
       frictionType=Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[29, -40; 49, -20]);
     
-    Components.ShortPipe shortPipe2(
+    Components.FrictionPressureDrop shortPipe2(
       m_flow_nominal=1000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -199,7 +199,7 @@ used for the initial mass fractions.
       level_start=1,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[-10, 20; 10, 40]);
-    Components.ShortPipe shortPipe1(
+    Components.FrictionPressureDrop shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Types.FrictionTypes.ConstantLaminar,
@@ -212,13 +212,13 @@ used for the initial mass fractions.
       level_start=2,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[70, 20; 90, 40]);
-    Components.ShortPipe shortPipe3(
+    Components.FrictionPressureDrop shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[30, -30; 50, -10]);
-    Components.ShortPipe shortPipe2(
+    Components.FrictionPressureDrop shortPipe2(
       m_flow_nominal=1000,
       dp_nominal=from_bar(0.1),
       frictionType=Types.FrictionTypes.ConstantLaminar,

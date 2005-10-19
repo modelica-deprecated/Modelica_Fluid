@@ -876,7 +876,7 @@ PumpMech</tt> pump models.
      //    Power Phyd
     end ConstantEfficencyPowerCharacteristics;
     
-    model QuadraticPowerCharacteristics 
+    function QuadraticPowerCharacteristics 
       extends BaseFlowCharacteristic;
     algorithm 
     end QuadraticPowerCharacteristics;
@@ -1015,7 +1015,7 @@ PumpMech</tt> pump models.
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
       annotation (extent=[-10, -120; 10, -100]);
     Modelica.Blocks.Interfaces.RealOutput V(
-      redeclare type SignalType = Volume) "liquid volume" 
+      redeclare type SignalType = SI.Volume) "liquid volume" 
       annotation (extent=[30, 100; 50, 120], rotation=90);
     annotation (
       Coordsys(grid=[1, 1], component=[20, 20]),
@@ -1046,12 +1046,12 @@ PumpMech</tt> pump models.
         Line(points=[40, 99; 40, 60])));
     
     // public parameters
-    parameter Mass m_D=300e3 "mass of surrounding drum metal";
-    parameter SpecificHeatCapacity cp_D=500 
+    parameter SI.Mass m_D=300e3 "mass of surrounding drum metal";
+    parameter Medium.SpecificHeatCapacity cp_D=500 
       "specific heat capacity of drum metal";
-    parameter Volume V_t=100 "total volume inside drum";
-    parameter Pressure p_start=from_bar(1) "initial pressure";
-    parameter Volume V_start=67 "initial liquid volume";
+    parameter SI.Volume V_t=100 "total volume inside drum";
+    parameter Medium.AbsolutePressure p_start=from_bar(1) "initial pressure";
+    parameter SI.Volume V_start=67 "initial liquid volume";
     
     Medium.AbsolutePressure p(start=p_start, fixed = true, stateSelect=StateSelect.prefer) 
       "pressure inside drum boiler";

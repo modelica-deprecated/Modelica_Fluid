@@ -1,5 +1,6 @@
 model TestWaterPump "Test case for WaterPump" 
   extends Modelica.Icons.Example;
+  
 annotation (
   Diagram,
   experiment(StopTime=10, Tolerance=1e-006),

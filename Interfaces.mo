@@ -120,10 +120,7 @@ it is not possible to connect connectors of different media together.
   
   connector HeatPort_a = Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a 
     "Thermal port for 1-dim. heat transfer (filled rectangular icon)" 
-    annotation (Icon(Text(
-          extent=[-98,196; 102,102],
-          string="%name",
-          style(color=42))));
+    annotation (Icon);
   
   connector HeatPort_b = Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b 
     "Thermal port for 1-dim. heat transfer (unfilled rectangular icon)" 
