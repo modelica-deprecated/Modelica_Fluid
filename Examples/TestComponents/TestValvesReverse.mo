@@ -1,13 +1,13 @@
 model TestValvesReverse "Test case for valves with reverse and zero flow" 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
-  Sources.SourceP SourceP1(p0=10e5,
+  Sources.FixedAmbient_pTX SourceP1(p=10e5,
   redeclare package Medium = Medium) 
   annotation (extent=[-100,30; -80,50]);
-  Sources.SourceP SourceP2(p0=8e5,
+  Sources.FixedAmbient_pTX SourceP2(p=8e5,
   redeclare package Medium = Medium) 
   annotation (extent=[-100, -50; -80, -30]);
-  Sources.SourceP SinkP1(p0=1e5,
+  Sources.FixedAmbient_pTX SinkP1(p=1e5,
   redeclare package Medium = Medium) 
   annotation (extent=[82,-4; 62,16]);
   Components.ValveIncompressible V1(
@@ -60,16 +60,16 @@ Casella</a>:<br>
        First release.</li>
 </ul>
 </HTML>"));
-  Sources.SourceP SinkP2(p0=1e5,
+  Sources.FixedAmbient_pTX SinkP2(p=1e5,
   redeclare package Medium = Medium) 
   annotation (extent=[4,58; -16,78]);
-  Sources.SourceP SinkP3(p0=1e5, redeclare package Medium = Medium) 
+  Sources.FixedAmbient_pTX SinkP3(p=1e5, redeclare package Medium = Medium) 
   annotation (extent=[26,-78; 6,-58]);
   Modelica.Blocks.Sources.Ramp CloseLoad(
     duration=1,
-    height=-0.99,
     offset=1,
-    startTime=1)  annotation (extent=[8,28; 28,48]);
+    startTime=1, 
+    height=-0.99) annotation (extent=[8,26; 28,46]);
   Modelica.Blocks.Sources.Ramp OpenRelief(
     duration=2,
     height=1,
@@ -78,19 +78,19 @@ Casella</a>:<br>
               annotation (extent=[-92,70; -72,90]);
   Modelica.Blocks.Sources.Ramp CloseValves(
     duration=2,
-    height=-1,
     offset=1,
-    startTime=1) 
+    startTime=1, 
+    height=-1) 
               annotation (extent=[-96, -12; -76, 8]);
 equation 
-  connect(V1.port_b, SinkP2.port) annotation (points=[-29,68; -16,68]);
-  connect(V4.port_b, SinkP3.port) annotation (points=[-19,-68; 6,-68]);
+  connect(V1.port_b, SinkP2.port) annotation (points=[-29,68; -17,68]);
+  connect(V4.port_b, SinkP3.port) annotation (points=[-19,-68; 5,-68]);
   connect(SourceP1.port, V1.port_a) 
-                                   annotation (points=[-80,40; -68,40; -68,68;
+                                   annotation (points=[-79,40; -68,40; -68,68; 
         -51,68],
                style(color=69, rgbcolor={0,127,255}));
   connect(SourceP1.port, V2.port_a) 
-                                   annotation (points=[-80,40; -60,40; -60,36;
+                                   annotation (points=[-79,40; -60,40; -60,36; 
         -39,36],
                style(color=69, rgbcolor={0,127,255}));
   connect(V2.port_b, V5.port_a) 
@@ -100,11 +100,11 @@ equation
                              annotation (points=[-17,-28; 6,-28; 6,6; 29,6],
     style(color=69, rgbcolor={0,127,255}));
   connect(SourceP2.port, V4.port_a) 
-                                   annotation (points=[-80,-40; -60,-40; -60,
+                                   annotation (points=[-79,-40; -60,-40; -60,
         -68; -41,-68],
                      style(color=69, rgbcolor={0,127,255}));
   connect(SourceP2.port, V3.port_a) 
-                                   annotation (points=[-80,-40; -60,-40; -60,
+                                   annotation (points=[-79,-40; -60,-40; -60,
         -28; -39,-28],
                      style(color=69, rgbcolor={0,127,255}));
   connect(OpenRelief.y, V1.stemPosition) annotation (points=[-71,80; -40,80;
@@ -115,8 +115,8 @@ equation
         -46,54; -28,54; -28,44], style(color=74, rgbcolor={0,0,127}));
   connect(CloseValves.y, V3.stemPosition) annotation (points=[-75,-2; -28,-2;
         -28,-20], style(color=74, rgbcolor={0,0,127}));
-  connect(CloseLoad.y, V5.stemPosition) annotation (points=[29,38; 40,38; 40,14],
+  connect(CloseLoad.y, V5.stemPosition) annotation (points=[29,36; 40,36; 40,14],
       style(color=74, rgbcolor={0,0,127}));
   connect(V5.port_b, SinkP1.port) 
-    annotation (points=[51,6; 62,6], style(color=69, rgbcolor={0,127,255}));
+    annotation (points=[51,6; 61,6], style(color=69, rgbcolor={0,127,255}));
 end TestValvesReverse;

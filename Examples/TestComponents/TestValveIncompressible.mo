@@ -1,7 +1,7 @@
 model TestValveIncompressible "Test case for valves" 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
-  Sources.SourceP SourceP1(p0=10e5,
+  Sources.FixedAmbient_pTX SourceP1(p=10e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[-100,30; -80,50]);
   Components.ValveIncompressible V1(
@@ -28,7 +28,7 @@ Casella</a>:<br>
        First release.</li>
 </ul>
 </HTML>"));
-  Sources.SourceP SinkP2(p0=1e5,
+  Sources.FixedAmbient_pTX SinkP2(p=1e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[22,30; 2,50]);
   Modelica.Blocks.Sources.Ramp Opening(
@@ -38,10 +38,10 @@ Casella</a>:<br>
     startTime=1) 
               annotation (extent=[-92, 74; -72, 94]);
 equation 
-  connect(V1.port_b, SinkP2.port) annotation (points=[-29,40; 2,40]);
+  connect(V1.port_b, SinkP2.port) annotation (points=[-29,40; 1,40]);
   connect(Opening.y, V1.stemPosition) 
   annotation (points=[-71,84; -40,84; -40,48],    style(color=3));
   connect(SourceP1.port, V1.port_a) 
-                                   annotation (points=[-80,40; -51,40],
+                                   annotation (points=[-79,40; -51,40],
                style(color=69, rgbcolor={0,127,255}));
 end TestValveIncompressible;

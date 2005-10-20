@@ -438,9 +438,9 @@ with exception of ambient pressure, do not have an effect.
     if cardinality(X_in)==0 then
       X_in = X;
     end if;
+    port.m_flow = -m_flow_in;
     medium.T = T;
     medium.Xi = X[1:Medium.nXi];
-    port.m_flow = -m_flow;
   end PrescribedMassFlowRate_TX;
   
   model PrescribedMassFlowRate_hX 
@@ -527,9 +527,6 @@ with exception of ambient pressure, do not have an effect.
     Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X);
     if cardinality(m_flow_in)==0 then
       m_flow_in = m_flow;
-      port.m_flow = -m_flow;
-    else
-      port.m_flow = -m_flow_in;
     end if;
     if cardinality(h_in)==0 then
       h_in = h;
@@ -537,6 +534,7 @@ with exception of ambient pressure, do not have an effect.
     if cardinality(X_in)==0 then
       X_in = X;
     end if;
+    port.m_flow = -m_flow_in;
     medium.h = h;
     medium.Xi = X[1:Medium.nXi];
   end PrescribedMassFlowRate_hX;

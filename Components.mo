@@ -214,7 +214,7 @@ transport. This splitting is only possible under certain assumptions.
     end if;
   end MixingVolume;
   
-  model FrictionPressureDrop 
+  model PressureDropPipe 
     "Simple pipe model with pressure loss (no storage of mass and energy in pipe)" 
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     extends Modelica_Fluid.Utilities.PipeFriction;
@@ -249,7 +249,7 @@ The details of the pipe friction model are described
        d = 0;
        eta = 0;
     end if;
-  end FrictionPressureDrop;
+  end PressureDropPipe;
   extends Modelica.Icons.Library;
   
   annotation (preferedView="info",
@@ -288,7 +288,7 @@ with examples first (see sub-package Examples).
       Xi(start=X_start[1:Medium.nXi]));
     
     constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
-    SI.Height level(start=level_start,stateSelect=StateSelect.prefer, min=0) 
+    SI.Height level(start=level_start,stateSelect=StateSelect.prefer) 
       "Level height of tank";
     SI.Energy U "Internal energy of tank volume";
     SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
@@ -677,10 +677,13 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     parameter Real etaMech(
       min=0,
       max=1) = 0.98 "Mechanical Efficiency";
-    parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value";
-    parameter Medium.AbsolutePressure pout_start "Outlet Pressure Start Value";
+    parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value" 
+      annotation(Dialog(tab="Initialization"));
+    parameter Medium.AbsolutePressure pout_start "Outlet Pressure Start Value" 
+      annotation(Dialog(tab="Initialization"));
     parameter Medium.SpecificEnthalpy hstart=1e5 
-      "Fluid Specific Enthalpy Start Value";
+      "Fluid Specific Enthalpy Start Value" 
+      annotation(Dialog(tab="Initialization"));
     parameter Medium.Density rho0=1000 "Nominal Liquid Density";
     parameter AngularVelocity_rpm n0=1500 "Nominal rotational speed";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";

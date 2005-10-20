@@ -15,7 +15,7 @@ model TestPortVolumes
   Modelica_Fluid.Sources.FixedAmbient_phX Sink1(
                                          p=101325, redeclare package Medium = 
                Medium) 
-    annotation (extent=[80,-8; 60,16]);
+    annotation (extent=[86,-8; 60,16]);
   Modelica_Fluid.Components.PortVolume PortVolume2(
     V=1e-3,
     use_T_start=false,
@@ -33,7 +33,8 @@ equation
     annotation (points=[-30,4; 4,4], style(color=69, rgbcolor={0,127,255}));
   annotation (Diagram);
   connect(PortVolume2.port, Sink1.port) 
-    annotation (points=[4,4; 59,4], style(color=69, rgbcolor={0,127,255}));
+    annotation (points=[4,4; 58.7,4],
+                                    style(color=69, rgbcolor={0,127,255}));
   connect(Tout.port, PortVolume2.port) annotation (points=[38,33; 38,4; 4,4],
       style(color=69, rgbcolor={0,127,255}));
   connect(Tin.port, FlowSource1.port) annotation (points=[-50,33; -52,33; -52,4;

@@ -6,7 +6,7 @@ model TestShortPipe "Test ShortPipe component"
     Diagram,
     experiment(StopTime=3),
     Coordsys(grid=[1, 1], component=[20, 20]));
-  Modelica_Fluid.Components.FrictionPressureDrop shortPipe(
+  Modelica_Fluid.Components.PressureDropPipe shortPipe(
     dp_nominal=from_bar(0.1),
     roughness=2e-5,
     from_dp=true,

@@ -19,12 +19,12 @@ Schiavo</a>:<br>
        First release.</li>
 </ul>
 </HTML>"));
-  Sources.SourceP Source(redeclare package Medium = 
-        Modelica.Media.Water.StandardWater, p0=3e5) 
-  annotation (extent=[-80,20; -60,40]);
-  Sources.SourceP SinkP1(p0=3e5, redeclare package Medium = 
+  Sources.FixedAmbient_pTX Source(redeclare package Medium = 
+        Modelica.Media.Water.StandardWater, p=3e5) 
+  annotation (extent=[-100,20; -80,40]);
+  Sources.PrescribedAmbient_pTX SinkP1(p=3e5, redeclare package Medium = 
         Modelica.Media.Water.StandardWater) 
-  annotation (extent=[60,22; 40,42]);
+  annotation (extent=[36,26; 16,46]);
   Components.Pump Pump1(
     rho0=1000,
     OpPoints=true,
@@ -38,27 +38,31 @@ Schiavo</a>:<br>
     redeclare package SatMedium = Modelica.Media.Water.StandardWater,
     ComputeNPSHa=true,
     CheckValve=true,
-    M=0.1)            annotation (extent=[-42,20; -22,40]);
+    M=0.1, 
+    redeclare function flowCharacteristic = 
+        Modelica_Fluid.Components.PumpCharacteristics.LinearFlowCharacteristic 
+        (q_nom=[0,1])) 
+                      annotation (extent=[-66,14; -32,46]);
   Modelica.Blocks.Sources.Constant Constant1 
-  annotation (extent=[-72, 64; -52, 84]);
+  annotation (extent=[-60,60; -40,80]);
   Modelica.Blocks.Sources.Sine Sine1(
     freqHz=0.1,
     startTime=0,
     offset=5e5,
     amplitude=4e5) 
-                 annotation (extent=[92,72; 72,92]);
+                 annotation (extent=[80,60; 60,80]);
   Components.ValveLinear Valve(Kv=1e-5, redeclare package Medium = 
         Modelica.Media.Water.StandardWater) 
-  annotation (extent=[4,22; 24,42]);
+  annotation (extent=[-16,26; 2,46]);
 equation 
-  connect(SinkP1.in_p, Sine1.y) annotation (points=[56,38.4; 56,82; 71,82],
-      style(color=74, rgbcolor={0,0,127}));
-  connect(Constant1.y, Valve.opening)     annotation (points=[-51,74; 14,
-        74; 14,40], style(color=74, rgbcolor={0,0,127}));
-  connect(Valve.port_b, SinkP1.port)     annotation (points=[25,32; 40,32],
+  connect(Constant1.y, Valve.opening)     annotation (points=[-39,70; -7,70; -7,
+        44],        style(color=74, rgbcolor={0,0,127}));
+  connect(Valve.port_b, SinkP1.port)     annotation (points=[2.9,36; 15,36],
                        style(color=69, rgbcolor={0,127,255}));
-  connect(Valve.port_a, Pump1.outlet)     annotation (points=[3,32; -10,32; -10,
-        37.4; -26,37.4],         style(color=69, rgbcolor={0,127,255}));
-  connect(Pump1.inlet, Source.port) annotation (points=[-40,32.2; -50,32.2; -50,
-        30; -60,30],           style(color=69, rgbcolor={0,127,255}));
+  connect(Valve.port_a, Pump1.outlet)     annotation (points=[-16.9,36; -26,36; 
+        -26,41.84; -38.8,41.84], style(color=69, rgbcolor={0,127,255}));
+  connect(Pump1.inlet, Source.port) annotation (points=[-62.6,33.52; -62.6,30; 
+        -79,30],               style(color=69, rgbcolor={0,127,255}));
+  connect(Sine1.y, SinkP1.p_in) annotation (points=[59,70; 50,70; 50,42; 38,42], 
+      style(color=74, rgbcolor={0,0,127}));
 end TestWaterPump;
