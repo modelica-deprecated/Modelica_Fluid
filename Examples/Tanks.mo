@@ -157,7 +157,7 @@ the mixing of the pipe flows is modelled more realistically.
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       V=1.e-4,
       T_start=from_degC(50.0), 
-      initOption=Modelica_Fluid.Types.InitTypes.InitialStates) 
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
                                annotation (extent=[-10, -40; 10, -20]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
