@@ -62,8 +62,8 @@ library.
     "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
     extends Modelica.Icons.Enumeration;
     constant Integer NoInit = 0 "No explicit initial conditions";
-    constant Integer InitialStates = 1 
-      "Initial values of state variables given";
+    constant Integer InitialValues = 1 
+      "Initial conditions specified by initial values";
     constant Integer SteadyState = 2 "Full steady-state";
     constant Integer SteadyStateHydraulic = 3 
       "Hydraulic steady state, initial values of other state variables given";
@@ -73,8 +73,8 @@ library.
       annotation (Evaluate=true, choices(
           choice=Modelica_Fluid.Types.InitTypes.NoInit 
             "NoInit (No explicit initial conditions)",
-          choice=Modelica_Fluid.Types.InitTypes.InitialStates 
-            "InitialStates (Initial values of state variables given)",
+          choice=Modelica_Fluid.Types.InitTypes.InitialValues 
+            "InitialValues (Initial conditions specified by initial values)",
           choice=Modelica_Fluid.Types.InitTypes.SteadyState 
             "SteadyState (Full steady state)",
           choice=Modelica_Fluid.Types.InitTypes.SteadyStateHydraulic 
