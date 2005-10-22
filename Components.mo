@@ -734,18 +734,18 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     end if;
     
     // Flow equations
-    if (s > 0 or (not CheckValve)) then
+    if noEvent(s > 0 or (not CheckValve)) then
       // Flow characteristics when check valve is open
       m_flow_single = s;
       head = flowCharacteristic(q_flow_single, n);
     else
       // Flow characteristics when check valve is closed
-      head = flowCharacteristic(0,n) - s*1e3;
+      head = flowCharacteristic(0,n) - s;
       q_flow_single = 0;
     end if;
     
     // Power consumption  
-    P_single = powerCharacteristic(q_flow_single, dp, n) 
+    P_single = powerCharacteristic(q_flow_single, head, dp, n) 
       "Power consumption (single pump)";
     // Hydraulic power
     Phyd_single = P_single*etaMech 
@@ -861,6 +861,7 @@ PumpMech</tt> pump models.
       "Base class for pump power consumption characteristics" 
       extends Modelica.Icons.Function;
       input SI.VolumeFlowRate q_flow "Volumetric flow rate";
+      input SI.Height head "Pump head";
       input SI.Pressure dp "Outlet pressure minus inlet pressure";
       input NonSI.AngularVelocity_rpm n "Rotational speed";
       output SI.Power consumption "Power consumption";
