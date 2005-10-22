@@ -1,6 +1,8 @@
 model TestWaterPump "Test case for WaterPump" 
   extends Modelica.Icons.Example;
-  
+  import PC = Modelica_Fluid.Components.PumpCharacteristics;
+  replaceable function pumpFlowChar = PC.QuadraticFlowCharacteristic(q_nom={0,0.001,0.0015}, head_nom={100,50,0},n0=1200);
+  replaceable function pumpConsChar = PC.ConstantEfficiencyPowerCharacteristic(efficiency = 0.8);
 annotation (
   Diagram,
   experiment(StopTime=10, Tolerance=1e-006),
@@ -20,49 +22,43 @@ Schiavo</a>:<br>
 </ul>
 </HTML>"));
   Sources.FixedAmbient_pTX Source(redeclare package Medium = 
-        Modelica.Media.Water.StandardWater, p=3e5) 
+        Modelica.Media.Water.StandardWater, p=1e5) 
   annotation (extent=[-100,20; -80,40]);
-  Sources.PrescribedAmbient_pTX SinkP1(p=3e5, redeclare package Medium = 
-        Modelica.Media.Water.StandardWater) 
+  Sources.PrescribedAmbient_pTX SinkP1(       redeclare package Medium = 
+        Modelica.Media.Water.StandardWater, p=5e5) 
   annotation (extent=[36,26; 16,46]);
   Components.Pump Pump1(
-    rho0=1000,
-    OpPoints=true,
     pin_start=1e5,
     pout_start=4e5,
     hstart=1e5,
-    P_cons={800,1800,2000},
-    head_nom={60,30,0},
-    q_nom={0,0.001,0.0015},
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     redeclare package SatMedium = Modelica.Media.Water.StandardWater,
-    ComputeNPSHa=true,
+    redeclare function flowCharacteristic = pumpFlowChar,
+    redeclare function powerCharacteristic = pumpConsChar,
+    m_flow_start=1,
     CheckValve=true,
-    M=0.1, 
-    redeclare function flowCharacteristic = 
-        Modelica_Fluid.Components.PumpCharacteristics.LinearFlowCharacteristic 
-        (q_nom=[0,1])) 
-                      annotation (extent=[-66,14; -32,46]);
+    ComputeNPSHa=true, 
+    n_const=1200, 
+    Np0=1)            annotation (extent=[-66,20; -34,50]);
   Modelica.Blocks.Sources.Constant Constant1 
   annotation (extent=[-60,60; -40,80]);
-  Modelica.Blocks.Sources.Sine Sine1(
-    freqHz=0.1,
-    startTime=0,
-    offset=5e5,
-    amplitude=4e5) 
-                 annotation (extent=[80,60; 60,80]);
-  Components.ValveLinear Valve(Kv=1e-5, redeclare package Medium = 
-        Modelica.Media.Water.StandardWater) 
+  Components.ValveLinear Valve(         redeclare package Medium = 
+        Modelica.Media.Water.StandardWater, Kv=1e-5) 
   annotation (extent=[-16,26; 2,46]);
+  Modelica.Blocks.Sources.Ramp Ramp1(
+    offset=5e5,
+    startTime=1,
+    height=6e5,
+    duration=5) annotation (extent=[4,74; 24,94]);
 equation 
   connect(Constant1.y, Valve.opening)     annotation (points=[-39,70; -7,70; -7,
         44],        style(color=74, rgbcolor={0,0,127}));
   connect(Valve.port_b, SinkP1.port)     annotation (points=[2.9,36; 15,36],
                        style(color=69, rgbcolor={0,127,255}));
   connect(Valve.port_a, Pump1.outlet)     annotation (points=[-16.9,36; -26,36; 
-        -26,41.84; -38.8,41.84], style(color=69, rgbcolor={0,127,255}));
-  connect(Pump1.inlet, Source.port) annotation (points=[-62.6,33.52; -62.6,30; 
-        -79,30],               style(color=69, rgbcolor={0,127,255}));
-  connect(Sine1.y, SinkP1.p_in) annotation (points=[59,70; 50,70; 50,42; 38,42], 
+        -26,39.8; -40.4,39.8],   style(color=69, rgbcolor={0,127,255}));
+  connect(Pump1.inlet, Source.port) annotation (points=[-62.8,32; -70,32; -70,
+        30; -79,30],           style(color=69, rgbcolor={0,127,255}));
+  connect(Ramp1.y, SinkP1.p_in) annotation (points=[25,84; 58,84; 58,42; 38,42], 
       style(color=74, rgbcolor={0,0,127}));
 end TestWaterPump;

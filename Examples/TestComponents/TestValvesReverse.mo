@@ -68,7 +68,7 @@ Casella</a>:<br>
   Modelica.Blocks.Sources.Ramp CloseLoad(
     duration=1,
     offset=1,
-    startTime=1, 
+    startTime=1,
     height=-0.99) annotation (extent=[8,26; 28,46]);
   Modelica.Blocks.Sources.Ramp OpenRelief(
     duration=2,
@@ -79,18 +79,18 @@ Casella</a>:<br>
   Modelica.Blocks.Sources.Ramp CloseValves(
     duration=2,
     offset=1,
-    startTime=1, 
+    startTime=1,
     height=-1) 
               annotation (extent=[-96, -12; -76, 8]);
 equation 
   connect(V1.port_b, SinkP2.port) annotation (points=[-29,68; -17,68]);
   connect(V4.port_b, SinkP3.port) annotation (points=[-19,-68; 5,-68]);
   connect(SourceP1.port, V1.port_a) 
-                                   annotation (points=[-79,40; -68,40; -68,68; 
+                                   annotation (points=[-79,40; -68,40; -68,68;
         -51,68],
                style(color=69, rgbcolor={0,127,255}));
   connect(SourceP1.port, V2.port_a) 
-                                   annotation (points=[-79,40; -60,40; -60,36; 
+                                   annotation (points=[-79,40; -60,40; -60,36;
         -39,36],
                style(color=69, rgbcolor={0,127,255}));
   connect(V2.port_b, V5.port_a) 
