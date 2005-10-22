@@ -14,10 +14,12 @@ package Components "Basic components for fluid models"
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
-    parameter Medium.Temperature T_start = Modelica.SIunits.Conversions.from_degC(20) 
+    parameter Medium.Temperature T_start=
+      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start) 
       "Start value of temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start = 1.e4 
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.h_pTX(p_start, T_start, X_start) else 1e4 
       "Start value of specific enthalpy" 
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
@@ -30,7 +32,9 @@ package Components "Basic components for fluid models"
     Interfaces.HeatPort_a thermalPort "Thermal port" 
       annotation (extent=[-20,88; 20,108]);
     
-    Medium.BaseProperties medium(preferredMediumStates=true);
+    Medium.BaseProperties medium(preferredMediumStates=true,
+                p(start=p_start), T(start=T_start),
+                h(start=h_start), Xi(start= X_start[1:Medium.nXi]));
     SI.Energy U "Internal energy of fluid";
     SI.Mass m "Mass of fluid";
     SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
@@ -83,7 +87,7 @@ transport. This splitting is only possible under certain assumptions.
     // Initial conditions
     if initOption == NoInit then
       // no initial equations
-    elseif initOption == InitialStates then
+    elseif initOption == InitialValues then
       medium.p = p_start;
       if use_T_start then
         medium.T = T_start;
@@ -126,12 +130,14 @@ transport. This splitting is only possible under certain assumptions.
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
-    parameter Medium.Temperature T_start = Modelica.SIunits.Conversions.from_degC(20) 
+    parameter Medium.Temperature T_start=
+      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start) 
       "Start value of temperature" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Medium.SpecificEnthalpy h_start = 1.e4 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.h_pTX(p_start, T_start, X_start) else 1e4 
       "Start value of specific enthalpy" 
-      annotation(Dialog(tab = "Initialization"));
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
@@ -144,8 +150,8 @@ transport. This splitting is only possible under certain assumptions.
     Interfaces.HeatPort_a thermalPort "Thermal port" 
       annotation (extent=[-20,88; 20,108]);
     Medium.BaseProperties medium(preferredMediumStates=true,
-                                 p(start=p_start), h(start=h_start),
-                                 T(start=T_start), Xi(start=X_start[1:Medium.nXi]));
+                 p(start=p_start), h(start=h_start),
+                 T(start=T_start), Xi(start=X_start[1:Medium.nXi]));
     SI.Energy U "Internal energy of fluid";
     SI.Mass m "Mass of fluid";
     SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
@@ -189,7 +195,7 @@ transport. This splitting is only possible under certain assumptions.
     // Initial conditions
     if initOption == NoInit then
       // no initial equations
-    elseif initOption == InitialStates then
+    elseif initOption == InitialValues then
       medium.p = p_start;
       if use_T_start then
         medium.T = T_start;
