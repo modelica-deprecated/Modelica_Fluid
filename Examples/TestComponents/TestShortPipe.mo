@@ -34,6 +34,6 @@ equation
   connect(shortPipe.port_b, ambient.port) 
     annotation (points=[11,10; 29,10],   style(color=69));
   connect(ramp.y, MassFlowSource.m_flow_in) 
-    annotation (points=[-69,10; -59.9,10; -59.9,16; -50.8,16],
+    annotation (points=[-69,10; -59.9,10; -59.9,16; -49.3,16],
                                          style(color=3, rgbcolor={0,0,255}));
 end TestShortPipe;

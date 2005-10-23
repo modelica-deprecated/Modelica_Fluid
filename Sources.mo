@@ -27,7 +27,7 @@ package Sources "Generic fluid sources"
       "Ambient mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow", enable=Medium.nXi > 0));
     
-    annotation (
+    annotation (defaultComponentName = "ambient",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -55,8 +55,9 @@ with exception of ambient pressure, do not have an effect.
 </html>"));
     
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.singleState,
-      use_p, X);
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+                                          Medium.singleState, use_p, X,
+                                          "FixedAmbient");
     if use_p or Medium.singleState then
       medium.p = p;
     else
@@ -83,7 +84,7 @@ with exception of ambient pressure, do not have an effect.
       "Ambient mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow",
                   enable=Medium.nXi > 0));
-    annotation (
+    annotation (defaultComponentName = "ambient",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -110,8 +111,8 @@ with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.singleState,
-      true, X);
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+                                          Medium.singleState, true, X, "FixedAmbient_pTX");
     medium.p   = p;
     medium.T   = T;
     medium.Xi = X[1:Medium.nXi];
@@ -128,7 +129,7 @@ with exception of ambient pressure, do not have an effect.
       Medium.nX](quantity=Medium.substanceNames) = Medium.reference_X 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nXi > 0));
-    annotation (
+    annotation (defaultComponentName = "ambient",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -155,7 +156,8 @@ with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X);
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+                                          Medium.singleState, true, X, "FixedAmbient_phX");
     medium.p = p;
     medium.h = h;
     medium.Xi = X[1:Medium.nXi];
@@ -191,7 +193,7 @@ to define fixed or prescribed ambient conditions.
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](redeclare type 
         SignalType = SI.MassFraction) "Prescribed ambient composition" 
       annotation (extent=[-140,-80; -100,-40]);
-    annotation (
+    annotation (defaultComponentName = "ambient",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -245,8 +247,8 @@ with exception of ambient pressure, do not have an effect.
 </html>"),
       Diagram);
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.singleState,
-      true, X_in);
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+                                          Medium.singleState, true, X_in, "PrescribedAmbient_pTX");
     if cardinality(p_in)==0 then
       p_in = p;
     end if;
@@ -285,7 +287,7 @@ with exception of ambient pressure, do not have an effect.
       redeclare type SignalType = SI.MassFraction) 
       "Prescribed ambient composition" 
       annotation (extent=[-140,-80; -100,-40]);
-    annotation (
+    annotation (defaultComponentName = "ambient",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -330,8 +332,8 @@ with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.singleState,
-      true, X_in);
+    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+                                          Medium.singleState, true, X_in, "PrescribedAmbient_phX");
     if cardinality(p_in)==0 then
       p_in = p;
     end if;
@@ -359,7 +361,7 @@ with exception of ambient pressure, do not have an effect.
       annotation (Dialog(enable = Medium.nXi > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in(
       redeclare type SignalType = SI.MassFlowRate) "Prescribed mass flow rate" 
-      annotation (extent=[-128,40; -88,80]);
+      annotation (extent=[-113,40; -73,80]);
     Modelica.Blocks.Interfaces.RealInput T_in(
       redeclare type SignalType = SI.Temperature) 
       "Prescribed fluid temperature" 
@@ -367,14 +369,14 @@ with exception of ambient pressure, do not have an effect.
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
       redeclare type SignalType = SI.MassFraction) 
       "Prescribed fluid composition" 
-      annotation (extent=[-130,-80; -90,-40]);
-    annotation (
+      annotation (extent=[-112,-81; -72,-41]);
+    annotation (defaultComponentName = "massFlowRate",
       Coordsys(
         extent=[-100, -100; 100, 100],
-        grid=[2, 2],
-        component=[20, 20]),
+        grid=[1,1],
+        component=[20, 20],
+        scale=0),
       Icon(
-        Line(points=[-90,-60; -72,-60; -74,-60], style(color=3, rgbcolor={0,0,255})),
         Rectangle(extent=[20, 60; 100, -60], style(
             color=0,
             gradient=2,
@@ -390,15 +392,10 @@ with exception of ambient pressure, do not have an effect.
           extent=[-54, 32; 16, -30],
           style(color=41, fillColor=41),
           string="m"),
-        Text(extent=[-142, 142; 156, 88], string="%name"),
+        Text(extent=[-150,160; 150,110],  string="%name"),
         Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1)),
-        Line(points=[-88,60; -74,60], style(color=3, rgbcolor={0,0,255})),
         Text(
-          extent=[-148,-90; 156,-134],
-          style(color=0),
-          string="%m_flow"),
-        Text(
-          extent=[-158,122; -52,74],
+          extent=[-194,112; -54,80],
           style(
             color=0,
             rgbcolor={0,0,0},
@@ -406,7 +403,7 @@ with exception of ambient pressure, do not have an effect.
             rgbfillColor={255,255,255}),
           string="m_flow"),
         Text(
-          extent=[-158,40; -56,0],
+          extent=[-100,14; -60,-20],
           style(
             color=0,
             rgbcolor={0,0,0},
@@ -414,7 +411,7 @@ with exception of ambient pressure, do not have an effect.
             rgbfillColor={255,255,255}),
           string="T"),
         Text(
-          extent=[-156,-18; -54,-58],
+          extent=[-144,-90; -24,-118],
           style(
             color=0,
             rgbcolor={0,0,0},
@@ -428,7 +425,8 @@ with exception of ambient pressure, do not have an effect.
         height=0.65),
       Diagram);
   equation 
-    Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X);
+    Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+                           Medium.singleState, true, X, "PrescribedMassFlowRate_TX");
     if cardinality(m_flow_in)==0 then
       m_flow_in = m_flow;
     end if;
@@ -455,7 +453,7 @@ with exception of ambient pressure, do not have an effect.
       annotation (Dialog(enable=Medium.nXi>0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in(
       redeclare type SignalType = SI.MassFlowRate) "Prescribed mass flow rate" 
-      annotation (extent=[-128,40; -88,80]);
+      annotation (extent=[-113,40; -73,80]);
     Modelica.Blocks.Interfaces.RealInput h_in(
       redeclare type SignalType = SI.SpecificEnthalpy) 
       "Prescribed fluid specific enthalpy" 
@@ -463,14 +461,14 @@ with exception of ambient pressure, do not have an effect.
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
       redeclare type SignalType = SI.MassFraction) 
       "Prescribed fluid composition" 
-      annotation (extent=[-130,-80; -90,-40]);
-    annotation (
+      annotation (extent=[-113,-80; -73,-40]);
+    annotation (defaultComponentName = "massFlowRate",
       Coordsys(
         extent=[-100, -100; 100, 100],
-        grid=[2, 2],
-        component=[20, 20]),
+        grid=[1,1],
+        component=[20, 20],
+        scale=0),
       Icon(
-        Line(points=[-90,-60; -72,-60; -74,-60], style(color=3, rgbcolor={0,0,255})),
         Rectangle(extent=[20, 60; 100, -60], style(
             color=0,
             gradient=2,
@@ -486,15 +484,9 @@ with exception of ambient pressure, do not have an effect.
           extent=[-54, 32; 16, -30],
           style(color=41, fillColor=41),
           string="m"),
-        Text(extent=[-142, 142; 156, 88], string="%name"),
         Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1)),
-        Line(points=[-88,60; -74,60], style(color=3, rgbcolor={0,0,255})),
         Text(
-          extent=[-148,-90; 156,-134],
-          style(color=0),
-          string="%m_flow"),
-        Text(
-          extent=[-158,122; -52,74],
+          extent=[-194,115; -54,83],
           style(
             color=0,
             rgbcolor={0,0,0},
@@ -502,7 +494,7 @@ with exception of ambient pressure, do not have an effect.
             rgbfillColor={255,255,255}),
           string="m_flow"),
         Text(
-          extent=[-158,40; -56,0],
+          extent=[-100,15; -60,-19],
           style(
             color=0,
             rgbcolor={0,0,0},
@@ -510,13 +502,14 @@ with exception of ambient pressure, do not have an effect.
             rgbfillColor={255,255,255}),
           string="T"),
         Text(
-          extent=[-156,-18; -54,-58],
+          extent=[-145,-85; -25,-113],
           style(
             color=0,
             rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255}),
-          string="X")),
+          string="X"),
+        Text(extent=[-150,160; 150,110],  string="%name")),
       Window(
         x=0.45,
         y=0.01,
@@ -524,7 +517,8 @@ with exception of ambient pressure, do not have an effect.
         height=0.65),
       Diagram);
   equation 
-    Utilities.checkAmbient(Medium.mediumName, Medium.singleState, true, X);
+    Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+                           Medium.singleState, true, X, "PrescribedMassFlowRate_hX");
     if cardinality(m_flow_in)==0 then
       m_flow_in = m_flow;
     end if;

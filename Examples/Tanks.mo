@@ -28,8 +28,8 @@ used for the initial mass fractions.
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, 
-      V0=0.001, 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      V0=0.001,
       level(fixed=true)) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
@@ -37,8 +37,8 @@ used for the initial mass fractions.
       T_start=from_degC(100),
       level_start=1,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, 
-      V0=0.001, 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      V0=0.001,
       level(fixed=true)) 
       annotation (extent=[-10, 20; 10, 40]);
     Components.PressureDropPipe shortPipe1(
@@ -54,7 +54,7 @@ used for the initial mass fractions.
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
       V0=0.001) 
       annotation (extent=[71,20; 91,40]);
     Components.PressureDropPipe shortPipe3(
@@ -110,7 +110,7 @@ the mixing of the pipe flows is modelled more realistically.
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
       level(fixed=true)) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
@@ -118,7 +118,7 @@ the mixing of the pipe flows is modelled more realistically.
       T_start=from_degC(100),
       level_start=1,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
       level(fixed=true)) 
       annotation (extent=[-10, 20; 10, 40]);
     Components.PressureDropPipe shortPipe1(
@@ -156,7 +156,7 @@ the mixing of the pipe flows is modelled more realistically.
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       V=1.e-4,
-      T_start=from_degC(50.0), 
+      T_start=from_degC(50.0),
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
                                annotation (extent=[-10, -40; 10, -20]);
   equation 

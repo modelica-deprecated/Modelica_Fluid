@@ -221,10 +221,10 @@ Simulate for 7200 seconds.
                     annotation (extent=[44,-30; 64,-10]);
       Modelica_Fluid.Sources.FixedAmbient sink(redeclare package Medium = 
             Modelica.Media.Water.WaterIF97_pT, p=from_bar(0.5)) 
-        annotation (extent=[80,-30; 100,-10], rotation=180);
+        annotation (extent=[77,-30; 97,-10],  rotation=180);
       Modelica_Fluid.Sensors.MassFlowRate massFlowRate(redeclare package Medium
           =        Modelica.Media.Water.WaterIF97_ph) 
-        annotation (extent=[10,-30; 30,-10], rotation=180);
+        annotation (extent=[30,-30; 10,-10], rotation=180);
       Modelica_Fluid.Sensors.Temperature temperature(redeclare package Medium 
           = Modelica.Media.Water.WaterIF97_ph) 
         annotation (extent=[10,50; 30,70]);
@@ -273,10 +273,10 @@ Simulate for 7200 seconds.
       connect(evaporator.port_b, pressure.port) annotation (points=[-29,-20; -2,
             -20; -2,5; 20,5; 20,13],                style(color=69));
       connect(evaporator.port_b, massFlowRate.port_a) 
-        annotation (points=[-29,-20; 31,-20],  style(color=69));
+        annotation (points=[-29,-20; 9,-20],   style(color=69));
       connect(massFlowRate.port_b, valve.port_a) 
-        annotation (points=[9,-20; 43,-20],    style(color=69));
-      connect(valve.port_b, sink.port) annotation (points=[65,-20; 79,-20],
+        annotation (points=[31,-20; 43,-20],   style(color=69));
+      connect(valve.port_b, sink.port) annotation (points=[65,-20; 76,-20],
                                style(color=69));
       connect(pump.port, evaporator.port_a) 
         annotation (points=[-59,-20; -51,-20],   style(color=69));
@@ -309,8 +309,8 @@ Simulate for 7200 seconds.
             color=74, rgbcolor={0,0,127}));
       connect(controller.y, limiter.u) annotation (points=[-65.7,30; -69.6,30],
           style(color=74, rgbcolor={0,0,127}));
-      connect(limiter.y, pump.m_flow_in) annotation (points=[-85.7,30; -90,30;
-            -90,-14; -80.8,-14], style(color=74, rgbcolor={0,0,127}));
+      connect(limiter.y, pump.m_flow_in) annotation (points=[-85.7,30; -90,30; 
+            -90,-14; -79.3,-14], style(color=74, rgbcolor={0,0,127}));
     end DrumBoiler;
     
   end Components;

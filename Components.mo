@@ -15,11 +15,11 @@ package Components "Basic components for fluid models"
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
     parameter Medium.Temperature T_start=
-      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start) 
+      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start[1:Medium.nXi]) 
       "Start value of temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.h_pTX(p_start, T_start, X_start) else 1e4 
+      if use_T_start then Medium.h_pTX(p_start, T_start, X_start[1:Medium.nXi]) else 1e4 
       "Start value of specific enthalpy" 
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
@@ -88,7 +88,9 @@ transport. This splitting is only possible under certain assumptions.
     if initOption == NoInit then
       // no initial equations
     elseif initOption == InitialValues then
-      medium.p = p_start;
+      if not Medium.singleState then
+         medium.p = p_start;
+      end if;
       if use_T_start then
         medium.T = T_start;
       else
@@ -96,11 +98,15 @@ transport. This splitting is only possible under certain assumptions.
       end if;
       medium.Xi = X_start[1:Medium.nXi];
     elseif initOption == SteadyState then
-      der(medium.p) = 0;
+      if not Medium.singleState then
+         der(medium.p) = 0;
+      end if;
       der(medium.h) = 0;
       der(medium.Xi) = zeros(Medium.nXi);
     elseif initOption == SteadyStateHydraulic then
-      der(medium.p) = 0;
+      if not Medium.singleState then
+         der(medium.p) = 0;
+      end if;
       if use_T_start then
         medium.T = T_start;
       else
@@ -135,7 +141,7 @@ transport. This splitting is only possible under certain assumptions.
       "Start value of temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.h_pTX(p_start, T_start, X_start) else 1e4 
+      if use_T_start then Medium.h_pTX(p_start, T_start, X_start[1:Medium.nXi]) else 1e4 
       "Start value of specific enthalpy" 
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
@@ -196,7 +202,9 @@ transport. This splitting is only possible under certain assumptions.
     if initOption == NoInit then
       // no initial equations
     elseif initOption == InitialValues then
-      medium.p = p_start;
+      if not Medium.singleState then
+        medium.p = p_start;
+      end if;
       if use_T_start then
         medium.T = T_start;
       else
@@ -204,11 +212,15 @@ transport. This splitting is only possible under certain assumptions.
       end if;
       medium.Xi = X_start[1:Medium.nXi];
     elseif initOption == SteadyState then
-      der(medium.p) = 0;
+      if not Medium.singleState then
+         der(medium.p) = 0;
+      end if;
       der(medium.h) = 0;
       der(medium.Xi) = zeros(Medium.nXi);
     elseif initOption == SteadyStateHydraulic then
-      der(medium.p) = 0;
+      if not Medium.singleState then
+         der(medium.p) = 0;
+      end if;
       if use_T_start then
         medium.T = T_start;
       else
@@ -377,8 +389,8 @@ initial equation
           string="%p_ambient"),
         Text(
           extent=[-94, 14; 90, -2],
-          string="level_start =",
-          style(color=0))),
+          style(color=0), 
+          string="level_start")),
       Documentation(info="<HTML>
 <p>
 This is a simplified model of a tank. The top part is open to the environment.

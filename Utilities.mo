@@ -424,14 +424,17 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
     
     extends Modelica.Icons.Function;
     input String mediumName;
+    input String substanceNames[:] "Names of substances";
     input Boolean singleState;
     input Boolean define_p;
     input Real X_ambient[:];
+    input String modelName = "??? ambient ???";
   protected 
     Integer nX = size(X_ambient,1);
+    String X_str;
   algorithm 
     assert(not singleState or singleState and define_p, "
-Wrong value of parameter define_p (= false) in ambient source component:
+Wrong value of parameter define_p (= false) in model \""   + modelName + "\":
 The selected medium \"" + mediumName + "\" has Medium.singleState=true.
 Therefore, an ambient density cannot be defined and
 define_p = true is required.
@@ -439,19 +442,25 @@ define_p = true is required.
     
     for i in 1:nX loop
       assert(X_ambient[i] >= 0.0, "
-Wrong ambient mass fractions in medium \"" + mediumName + "\":
+Wrong ambient mass fractions in medium \""
+  + mediumName + "\" in model \"" + modelName + "\":
 The ambient value X_ambient(" + String(i) + ") = " + String(
         X_ambient[i]) + "
 is negative. It must be positive.
 ");
     end for;
     
-    assert(nX==0 or (nX>0 and abs(sum(X_ambient) - 1.0) < 1.e-10), "
-The ambient mass fractions in medium \""   + mediumName + "\"
-do not sum up to 1. Instead, sum(X_ambient) = "
-                                         + String(sum(X_ambient)) + ".
-");
-    
+    if nX > 0 and abs(sum(X_ambient) - 1.0) > 1.e-10 then
+       X_str :="";
+       for i in 1:nX loop
+          X_str :=X_str + "   X_ambient[" + String(i) + "] = " + String(X_ambient[
+          i]) + " \"" + substanceNames[i] + "\"\n";
+       end for;
+       Modelica.Utilities.Streams.error(
+          "The ambient mass fractions in medium \"" + mediumName + "\" in model \"" + modelName + "\"\n" +
+          "do not sum up to 1. Instead, sum(X_ambient) = " + String(sum(X_ambient)) + ":\n"
+          + X_str);
+    end if;
   end checkAmbient;
   
   function linear 

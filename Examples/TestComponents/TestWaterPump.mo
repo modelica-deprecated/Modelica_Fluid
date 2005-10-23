@@ -37,8 +37,8 @@ Schiavo</a>:<br>
     redeclare function powerCharacteristic = pumpConsChar,
     m_flow_start=1,
     CheckValve=true,
-    ComputeNPSHa=true, 
-    n_const=1200, 
+    ComputeNPSHa=true,
+    n_const=1200,
     Np0=1)            annotation (extent=[-66,20; -34,50]);
   Modelica.Blocks.Sources.Constant Constant1 
   annotation (extent=[-60,60; -40,80]);
@@ -55,10 +55,10 @@ equation
         44],        style(color=74, rgbcolor={0,0,127}));
   connect(Valve.port_b, SinkP1.port)     annotation (points=[2.9,36; 15,36],
                        style(color=69, rgbcolor={0,127,255}));
-  connect(Valve.port_a, Pump1.outlet)     annotation (points=[-16.9,36; -26,36; 
+  connect(Valve.port_a, Pump1.outlet)     annotation (points=[-16.9,36; -26,36;
         -26,39.8; -40.4,39.8],   style(color=69, rgbcolor={0,127,255}));
   connect(Pump1.inlet, Source.port) annotation (points=[-62.8,32; -70,32; -70,
         30; -79,30],           style(color=69, rgbcolor={0,127,255}));
-  connect(Ramp1.y, SinkP1.p_in) annotation (points=[25,84; 58,84; 58,42; 38,42], 
+  connect(Ramp1.y, SinkP1.p_in) annotation (points=[25,84; 58,84; 58,42; 38,42],
       style(color=74, rgbcolor={0,0,127}));
 end TestWaterPump;
