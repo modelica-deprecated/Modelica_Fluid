@@ -1,27 +1,8 @@
 package Interfaces 
-  "Interfaces for steady state and unsteady, mixed-phase, multi-substance, incompressible and compressible flow without momentum." 
+  "Interfaces for steady state and unsteady, mixed-phase, multi-substance, incompressible and compressible flow" 
   
-  annotation (Documentation(info="<HTML>
-<p>
-This library provides connector definitions for the following
-type of flow systems:
-</p>
-<ul>
-<li> One-dimensional flow of a <b>single substance</b>
-     or of a <b>mixture of substances</b> with optional <b>multiple phases</b>.</li>
-<li> <b>Incompressible</b> and <b>compressible</b> medium.</li>
-<li> <b>Steady state</b> and <b>unsteady</b> flow.</li>
-<li> <b>Momentum</b> of the flow is <b>neglected</b>.</li>
-<li> The <b>kinetic energy</b> in the flow is <b>neglected</b><br>
-     (this is usually a good approximation, if |v| &lt; 0.1 Ma, i.e.,
-     if the flow speed is less than about 10 % of the speed of sound in
-     the medium).</li>
-</ul>
-<p>
-Additionally, the medium model interfaces are defined with package
-<b>PartialMedium</b>. The definitions are made in such a way that
-it is not possible to connect connectors of different media together.
-</p>
+  annotation (Documentation(info="<html>
+</html>", revisions="<html>
 <dl>
 <dt><b>Main Author:</b>
 <dd>Hilding Elmqvist, Dynasim</dl>
@@ -49,7 +30,7 @@ it is not possible to connect connectors of different media together.
        is a component for a container component.</li>
 </li>
 </ul>
-</HTML>"));
+</html>"));
   
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
