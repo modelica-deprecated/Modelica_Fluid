@@ -389,7 +389,7 @@ initial equation
           string="%p_ambient"),
         Text(
           extent=[-94, 14; 90, -2],
-          style(color=0), 
+          style(color=0),
           string="level_start")),
       Documentation(info="<HTML>
 <p>
@@ -681,18 +681,18 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
   partial model PumpBase "Base model for centrifugal pumps" 
     import Modelica.SIunits.Conversions.NonSIunits.*;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
-      "Medium model";
+      "Medium model" annotation(choicesAllMatching=true);
     Medium.BaseProperties fluid(p(start=pin_start),h(start=hstart)) 
       "Fluid properties at the inlet";
     replaceable package SatMedium = 
         Modelica.Media.Interfaces.PartialTwoPhaseMedium 
       "Saturated medium model (required only for NPSH computation)";
     replaceable function flowCharacteristic = 
-        PumpCharacteristics.BaseFlowCharacteristic 
-      "Head vs. q_flow characteristic at nominal speed";
+        Modelica_Fluid.Components.PumpCharacteristics.BaseFlowCharacteristic 
+      "Head vs. q_flow characteristic at nominal speed" annotation(choicesAllMatching=true);
     replaceable function powerCharacteristic = 
-        PumpCharacteristics.BasePowerCharacteristic 
-      "Power consumption characteristic at nominal speed";
+        Modelica_Fluid.Components.PumpCharacteristics.BasePowerCharacteristic 
+      "Power consumption characteristic at nominal speed" annotation(choicesAllMatching=true);
     parameter Integer Np0(min=1) = 1 "Nominal number of pumps in parallel";
     parameter Real etaMech(
       min=0,
