@@ -688,18 +688,30 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
         Modelica.Media.Interfaces.PartialTwoPhaseMedium 
       "Saturated medium model (required only for NPSH computation)";
     replaceable function flowCharacteristic = 
-        Modelica_Fluid.Components.PumpCharacteristics.BaseFlowCharacteristic 
-      "Head vs. q_flow characteristic at nominal speed" annotation(choicesAllMatching=true);
+        PumpCharacteristics.BaseFlow 
+      "Head vs. q_flow characteristic at nominal speed and density" 
+      annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
     replaceable function powerCharacteristic = 
-        Modelica_Fluid.Components.PumpCharacteristics.BasePowerCharacteristic 
-      "Power consumption characteristic at nominal speed" annotation(choicesAllMatching=true);
-    parameter Integer Np0(min=1) = 1 "Nominal number of pumps in parallel";
-    parameter Real etaMech(
-      min=0,
-      max=1) = 0.98 "Mechanical Efficiency";
+      PumpCharacteristics.BasePower 
+      "Power consumption vs. q_flow at nominal speed and density" 
+      annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
+                 choicesAllMatching=true);
+    replaceable function efficiencyCharacteristic = 
+      PumpCharacteristics.ConstantEfficiency(eta_nom = 0.8) 
+      extends PumpCharacteristics.BaseEfficiency 
+      "Efficiency vs. q_flow at nominal speed and density" 
+      annotation(Dialog(group="Characteristics",enable = not usePowerCharacteristic),
+                 choicesAllMatching=true);
+    parameter Boolean usePowerCharacteristic = false "Use powerCharacteristic" 
+       annotation(Dialog(group="Characteristics"));
+    parameter AngularVelocity_rpm N_nom = 1500 "Nominal rotational speed" 
+      annotation(Dialog(group="Characteristics"));
+    parameter Medium.Density d_nom = 1000 "Nominal fluid density" 
+      annotation(Dialog(group="Characteristics"));
+    parameter Integer Np_nom(min=1) = 1 "Nominal number of pumps in parallel";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
-    parameter Boolean CheckValve=false "Reverse flow stopped";
-    parameter Boolean ComputeNPSHa=false "Compute NPSH Available at the inlet";
+    parameter Boolean checkValve=true "Reverse flow stopped";
+    parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";
     parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value" 
       annotation(Dialog(tab="Initialization"));
     parameter Medium.AbsolutePressure pout_start "Outlet Pressure Start Value" 
@@ -720,23 +732,22 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
           Medium, p(start=pout_start)) 
     annotation (extent=[40,12; 80,52]);
     SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
-    SI.Height head = dp/(rho*g) "Pump head";
-    Medium.Density rho "Liquid density";
+    SI.Height head = dp/(d*g) "Pump head";
+    Medium.Density d "Liquid density at the inlet";
     Medium.SpecificEnthalpy h_out 
       "Enthalpy of the liquid flowing out of the pump";
     Medium.Temperature Tin "Liquid inlet temperature";
     SI.MassFlowRate m_flow = inlet.m_flow "Mass flow rate (total)";
     SI.MassFlowRate m_flow_single = m_flow/Np "Mass flow rate (single pump)";
-    SI.VolumeFlowRate q_flow = m_flow/rho "Volume flow rate (total)";
+    SI.VolumeFlowRate q_flow = m_flow/d "Volume flow rate (total)";
     SI.VolumeFlowRate q_flow_single = q_flow/Np 
       "Volume flow rate (single pump)";
-    AngularVelocity_rpm n "Shaft r.p.m.";
+    AngularVelocity_rpm N "Shaft rotational speed";
     Integer Np(min=1) "Number of pumps in parallel";
-    SI.Power P_single "Power Consumption (single pump)";
-    SI.Power P_tot = P_single*Np "Power Consumption (total)";
-    constant SI.Power P_eps=1e-8 
+    SI.Power W_single "Power Consumption (single pump)";
+    SI.Power W_tot = W_single*Np "Power Consumption (total)";
+    constant SI.Power W_eps=1e-8 
       "Small coefficient to avoid numerical singularities in efficiency computations";
-    SI.Power Phyd_single "Hydraulic power (single pump)";
     Real eta "Global Efficiency";
     SI.Length NPSHa "Net Positive Suction Head available";
     Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
@@ -748,33 +759,34 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     // Number of pumps in parallel
     Np = in_Np;
     if cardinality(in_Np)==0 then
-      in_Np = Np0 "Number of pumps selected by parameter";
+      in_Np = Np_nom "Number of pumps selected by parameter";
     end if;
     
     // Flow equations
-    if noEvent(s > 0 or (not CheckValve)) then
+    if noEvent(s > 0 or (not checkValve)) then
       // Flow characteristics when check valve is open
-      m_flow_single = s;
-      head = flowCharacteristic(q_flow_single, n);
+      q_flow_single = s;
+      head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/N);
     else
       // Flow characteristics when check valve is closed
-      head = flowCharacteristic(0,n) - s;
+      head = (N/N_nom)^2*flowCharacteristic(0) - s;
       q_flow_single = 0;
     end if;
     
     // Power consumption  
-    P_single = powerCharacteristic(q_flow_single, head, dp, n) 
-      "Power consumption (single pump)";
-    // Hydraulic power
-    Phyd_single = P_single*etaMech 
-      "Hydraulic power transferred to the fluid (single pump)";
-    eta = (dp*q_flow_single)/(P_single + P_eps) "Hydraulic efficiency";
-    
+    if usePowerCharacteristic then
+      W_single = (N/N_nom)^3*(d/d_nom)*powerCharacteristic(q_flow_single*N_nom/N) 
+        "Power consumption (single pump)";
+      eta = (dp*q_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
+    else
+      eta = efficiencyCharacteristic(q_flow_single*N_nom/N);
+      W_single = dp*q_flow/eta;
+    end if;
     // Fluid properties
     fluid.p = inlet.p;
     fluid.h = inlet.h;
     fluid.Xi = inlet.Xi;
-    rho = fluid.d;
+    d = fluid.d;
     Tin = fluid.T;
     
     // Mass and energy balances
@@ -786,16 +798,16 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,h_out) 
       "Enthalpy flow at the outlet";
     if M > 0 then
-      M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + Phyd_single 
+      M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single 
         "Dynamic energy balance (density variations neglected)";
     else
-      inlet.H_flow + outlet.H_flow + Phyd_single*Np = 0 "Static energy balance";
+      inlet.H_flow + outlet.H_flow + W_single*Np = 0 "Static energy balance";
     end if;
     
     // NPSH computations
-    if ComputeNPSHa then
+    if computeNPSHa then
       pv=SatMedium.saturationPressure(fluid.T);
-      NPSHa=(inlet.p-pv)/(rho*Modelica.Constants.g_n);
+      NPSHa=(inlet.p-pv)/(d*Modelica.Constants.g_n);
     else
       pv=0;
       NPSHa=0;
@@ -827,38 +839,27 @@ initial equation
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>Pump</tt> and <tt>
 PumpMech</tt> pump models.
-<p>The model describes a centrifugal pump, or a group of <tt>Np</tt> identical pumps in parallel. The hydraulic characteristic (head vs. flowrate) is represented, as well as the pump power consumption.
-<p>In order to avoid singularities in the computation of the outlet enthalpy at zero flowrate, the thermal capacity of the fluid inside the pump body can be taken into account.
-<p>The model can either support reverse flow conditions or include a built-in check valve to avoid flow reversal.
+<p>The model describes a centrifugal pump, or a group of <tt>Np</tt> identical pumps in parallel. The pump model is based on the theory of kinematic similarity: the pump characteristics are given for nominal operating conditions (rotational speed and fluid density), and then adapted to actual operating condition, according to the similarity equations. 
 <p><b>Modelling options</b></p>
-<p>The following options are available to specify the pump characteristics:
-<ul><li><tt>OpPoints = false</tt>: the coefficients of the characteristics must be specified by 6 additional initial equations
-<li><tt>OpPoints = true</tt>: the characteristics are specified by providing a vector of three operating points (in terms of heads <tt>head[3]</tt>, volume flow rate <tt>q[3]</tt>, power consumption <tt>P_cons[3]</tt>, nominal fluid density <tt>rho0</tt>, and nominal rotational speed <tt>n0</tt>) for a single pump.
+
+<p> The nominal hydraulic characteristic (head vs. volume flow rate) is given by the the replaceable function <tt>flowCharacteristic</tt>. 
+<p> The pump energy balance can be specified in two alternative ways:
+<ul>
+<li><tt>usePowerCharacteristic = false</tt> (default option): the replaceable function <tt>efficiencyCharacteristic</tt> (efficiency vs. volume flow rate in nominal conditions) is used to determine the efficiency, and then the power consumption. The default is a constant efficiency of 0.8.
+<li><tt>usePowerCharacteristic = true</tt>: the replaceable function <tt>powerCharacteristic</tt> (power consumption vs. volume flow rate in nominal conditions) is used to determine the power consumption, and then the efficiency.
 </ul>
-<p>If the <tt>in_Np</tt> input connector is wired, it provides the number of pumps in parallel; otherwise,  <tt>Np0</tt> parallel pumps are assumed.</p>
-<p>If <tt>ThermalCapacity</tt> is set to true, the heat capacity of the fluid inside the pump is taken into account: this is necessary to avoid singularities in the computation of the outlet enthalpy in case of zero flowrate. If zero flowrate conditions are always avoided, this effect can be neglected by setting <tt>ThermalCapacity</tt> to false, thus avoiding a fast state variable in the model.
-<p>The <tt>CheckValve</tt> parameter determines whether the pump has a built-in check valve or not.
+<p>
+Several functions are provided in the package <tt>PumpCharacteristics</tt> to specify the characteristics as a function of some operating points at nominal conditions.
+<p>Depending on the value of the <tt>checkValve</tt> parameter, the model either supports reverse flow conditions, or includes a built-in check valve to avoid flow reversal.
+<p>If the <tt>in_Np</tt> input connector is wired, it provides the number of pumps in parallel; otherwise,  <tt>Np_n</tt> parallel pumps are assumed.</p>
+<p>It is possible to take into account the heat capacity of the fluid inside the pump by specifying its mass <tt>M</tt> at nominal conditions; this is necessary to avoid singularities in the computation of the outlet enthalpy in case of zero flow rate. If zero flow rate conditions are always avoided, this dynamic effect can be neglected by leaving the default value <tt>M = 0</tt>, thus avoiding a fast state variable in the model.
+<p>If <tt>computeNPSHa = true</tt>, the available net positive suction head is also computed; this requires a two-phase medium model to provide the fluid saturation pressure.
 </HTML>",
         revisions="<html>
 <ul>
-<li><i>6 Apr 2005</i>
+<li><i>31 Oct 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       <tt>CharData</tt> substituted by <tt>OpPoints</tt></li>
-<li><i>16 Dec 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Standard medium definition added.</li>
-<li><i>2 Aug 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Optional NPSHa computation added. Changed parameter names</li>
-<li><i>5 Jul 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Model restructured by using inheritance. Adapted to Modelica.Media.</li>
-<li><i>15 Jan 2004</i>
-    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>:<br>
-       <tt>ThermalCapacity</tt> and <tt>CheckValve</tt> added.</li>
-<li><i>15 Dec 2003</i>
-    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>:<br>
-       First release.</li>
+       Model added to the Fluid library</li>
 </ul>
 </html>"));
     
@@ -867,104 +868,125 @@ PumpMech</tt> pump models.
   package PumpCharacteristics 
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
     
-    partial function BaseFlowCharacteristic 
-      "Base class for pump flow characteristics" 
+    partial function BaseFlow "Base class for pump flow characteristics" 
       extends Modelica.Icons.Function;
       input SI.VolumeFlowRate q_flow "Volumetric flow rate";
-      input NonSI.AngularVelocity_rpm n "Rotational speed";
       output SI.Height head "Pump head";
-    end BaseFlowCharacteristic;
+    end BaseFlow;
     
-    partial function BasePowerCharacteristic 
+    partial function BasePower 
       "Base class for pump power consumption characteristics" 
       extends Modelica.Icons.Function;
       input SI.VolumeFlowRate q_flow "Volumetric flow rate";
-      input SI.Height head "Pump head";
-      input SI.Pressure dp "Outlet pressure minus inlet pressure";
-      input NonSI.AngularVelocity_rpm n "Rotational speed";
       output SI.Power consumption "Power consumption";
-    end BasePowerCharacteristic;
+    end BasePower;
     
-    function LinearFlowCharacteristic 
-      extends BaseFlowCharacteristic;
-      input SI.Height head_nom[2] "Pump head for two operating points"     annotation(Dialog);
+    partial function BaseEfficiency "Base class for efficiency characteristics" 
+      extends Modelica.Icons.Function;
+      input SI.VolumeFlowRate q_flow "Volumetric flow rate";
+      output Real eta "Efficiency";
+    end BaseEfficiency;
+    
+    function LinearFlow 
+      extends BaseFlow;
       input SI.VolumeFlowRate q_nom[2] 
-        "Volume flow rate for two operating points (single pump)" annotation(Dialog);
-      input NonSI.AngularVelocity_rpm n0 "Nominal rotational speed"       annotation(Dialog);
+        "Volume flow rate for two operating points (single pump)";
+      input SI.Height head_nom[2] "Pump head for two operating points";
     protected 
       constant Real g = Modelica.Constants.g_n;
       /* Linear system to determine the coefficients:
-  h_nom[1]*g = q_nom[1]*(n0/n0)*c[1] + (nO/n0)^2*c[2];
-  h_nom[2]*g = q_nom[2]*(n0/n0)*c[1] + (nO/n0)^2*c[2];
+  head_nom[1]*g = c[1] + q_nom[1]*c[2];
+  head_nom[2]*g = c[1] + q_nom[2]*c[2];
   */
-      Real c[2] = Modelica.Math.Matrices.solve([q_nom,ones(2)],head_nom*g) 
+      Real c[2] = Modelica.Math.Matrices.solve([ones(2),q_nom],head_nom*g) 
         "Coefficients of linear head curve";
     algorithm 
-      // head * g = q*(n/n0)*c[1] + (n/n0)^2*c[2];
-      head := 1/g * (q_flow*(n/n0)*c[1] + (n/n0)^2*c[2]);
-    end LinearFlowCharacteristic;
+      // Flow equation: head * g = q*c[1] + c[2];
+      head := 1/g * (c[1] + q_flow*c[2]);
+    end LinearFlow;
     
-    function QuadraticFlowCharacteristic 
-      extends BaseFlowCharacteristic;
-      input SI.Height head_nom[3] "Pump head for three operating points" annotation(Dialog);
+    function QuadraticFlow 
+      extends BaseFlow;
       input SI.VolumeFlowRate q_nom[3] 
-        "Volume flow rate for three operating points (single pump)" annotation(Dialog);
-      input NonSI.AngularVelocity_rpm n0 "Nominal rotational speed"       annotation(Dialog);
+        "Volume flow rate for three operating points (single pump)";
+      input SI.Height head_nom[3] "Pump head for three operating points";
     protected 
       constant Real g = Modelica.Constants.g_n;
       Real q_nom2[3] = {q_nom[1]^2,q_nom[2]^2, q_nom[3]^2} 
         "Squared nominal flow rates";
       /* Linear system to determine the coefficients:
-  h_nom[1]*g = q_nom[1]^2*c[1] + q_nom[1]*(n0/n0)*c[2] + (nO/n0)^2*c[3];
-  h_nom[2]*g = q_nom[2]^2*c[1] + q_nom[2]*(n0/n0)*c[2] + (nO/n0)^2*c[3];
-  h_nom[3]*g = q_nom[3]^2*c[1] + q_nom[3]*(n0/n0)*c[2] + (nO/n0)^2*c[3];
+  head_nom[1]*g = c[1] + q_nom[1]*c[2] + q_nom[1]^2*c[3];
+  head_nom[2]*g = c[1] + q_nom[2]*c[2] + q_nom[2]^2*c[3];
+  head_nom[3]*g = c[1] + q_nom[3]*c[2] + q_nom[3]^2*c[3];
   */
-      Real c[3] = Modelica.Math.Matrices.solve([q_nom2, q_nom,ones(3)],head_nom*g) 
+      Real c[3] = Modelica.Math.Matrices.solve([ones(3), q_nom, q_nom2],head_nom*g) 
         "Coefficients of quadratic head curve";
     algorithm 
-      head := 1/g * (q_flow^2*c[1] + q_flow*(n/n0)*c[2] + (n/n0)^2*c[3]);
-    end QuadraticFlowCharacteristic;
+      // Flow equation: head * g = c[1] + q_flow*c[2] + q_flow^2*c[3];
+      head := 1/g * (c[1] + q_flow*c[2] + q_flow^2*c[3]);
+    end QuadraticFlow;
     
-    function ConstantEfficiencyPowerCharacteristic 
-       extends BasePowerCharacteristic;
-       input Real efficiency "Hydraulic efficiency";
+    function PolynomialFlow 
+      extends BaseFlow;
+      input SI.VolumeFlowRate q_nom[:] 
+        "Volume flow rate for three operating points (single pump)";
+      input SI.Height head_nom[:] "Pump head for three operating points";
+    protected 
+      constant Real g = Modelica.Constants.g_n;
+      Integer N = size(q_nom,1) "Number of nominal operating points";
+      Real q_nom_pow[N,N] = {{q_nom[j]^(i-1) for j in 1:N} for i in 1:N} 
+        "Rows: different operating points; columns: increasing powers";
+      /* Linear system to determine the coefficients (example N=3):
+  head_nom[1]*g = c[1] + q_nom[1]*c[2] + q_nom[1]^2*c[3];
+  head_nom[2]*g = c[1] + q_nom[2]*c[2] + q_nom[2]^2*c[3];
+  head_nom[3]*g = c[1] + q_nom[3]*c[2] + q_nom[3]^2*c[3];
+  */
+      Real c[N] = Modelica.Math.Matrices.solve(q_nom_pow,head_nom*g) 
+        "Coefficients of polynomial head curve";
     algorithm 
-      consumption := q_flow*dp/efficiency;
-    end ConstantEfficiencyPowerCharacteristic;
+      // Flow equation (example N=3): head * g = c[1] + q_flow*c[2] + q_flow^2*c[3];
+      // Note: the implementation is numerically efficient only for low values of Na
+      head := 1/g * sum(q_flow^(i-1)*c[i] for i in 1:N);
+    end PolynomialFlow;
     
-    function QuadraticPowerCharacteristic 
-      extends BasePowerCharacteristic;
-      input SI.Height P_nom[3] "Power consumption for three operating points" 
-                                                                         annotation(Dialog);
+    function ConstantEfficiency 
+       extends BaseEfficiency;
+       input Real eta_nom "Nominal efficiency";
+    algorithm 
+      eta := eta_nom;
+    end ConstantEfficiency;
+    
+    function QuadraticPower 
+      extends BasePower;
       input SI.VolumeFlowRate q_nom[3] 
-        "Volume flow rate for three operating points (single pump)" annotation(Dialog);
-      input NonSI.AngularVelocity_rpm n0 "Nominal rotational speed"       annotation(Dialog);
+        "Volume flow rate for three operating points (single pump)";
+      input SI.Power W_nom[3] "Power consumption for three operating points";
     protected 
       Real q_nom2[3] = {q_nom[1]^2,q_nom[2]^2, q_nom[3]^2} 
         "Squared nominal flow rates";
       /* Linear system to determine the coefficients:
-  P_nom[1] = (n0/n0)^2*q_nom[1]*c[1] + (n0/n0)*q_nom[1]^2*c[2] + (nO/n0)^2*c[3];
-  P_nom[2] = (n0/n0)^2*q_nom[2]*c[1] + (n0/n0)*q_nom[2]^2*c[2] + (nO/n0)^2*c[3];
-  P_nom[3] = (n0/n0)^2*q_nom[3]*c[1] + (n0/n0)*q_nom[3]^2*c[2] + (nO/n0)^2*c[3];
+  W_nom[1]*g = c[1] + q_nom[1]*c[2] + q_nom[1]^2*c[3];
+  W_nom[2]*g = c[1] + q_nom[2]*c[2] + q_nom[2]^2*c[3];
+  W_nom[3]*g = c[1] + q_nom[3]*c[2] + q_nom[3]^2*c[3];
   */
-      Real c[3] = Modelica.Math.Matrices.solve([q_nom,q_nom2,ones(3)],P_nom) 
+      Real c[3] = Modelica.Math.Matrices.solve([ones(3),q_nom,q_nom2],W_nom) 
         "Coefficients of quadratic power consumption curve";
     algorithm 
-      consumption :=c[1]*(n/n0)^2*q_flow + c[2]*(n/n0)*q_flow^2 + c[3]*(n/n0)^2;
-    end QuadraticPowerCharacteristic;
+      consumption := c[1] + q_flow*c[2] + q_flow^2*c[3];
+    end QuadraticPower;
     
   end PumpCharacteristics;
   
   model Pump "Centrifugal pump with ideally controlled speed" 
     extends PumpBase;
     import Modelica.SIunits.Conversions.NonSIunits.*;
-    parameter AngularVelocity_rpm n_const "Constant rotational speed";
-    Modelica.Blocks.Interfaces.RealInput in_n "RPM" 
+    parameter AngularVelocity_rpm N_const = N_nom "Constant rotational speed";
+    Modelica.Blocks.Interfaces.RealInput N_in "Prescribed rotational speed" 
       annotation (extent=[-36,34; -16,54],   rotation=-90);
   equation 
-      n = in_n "Rotational speed";
-    if cardinality(in_n)==0 then
-      in_n = n_const "Rotational speed provided by parameter";
+      N = N_in "Rotational speed";
+    if cardinality(N_in)==0 then
+      N_in = N_const "Rotational speed provided by parameter";
     end if;
     annotation (
       Icon(
@@ -999,8 +1021,8 @@ PumpMech</tt> pump models.
   equation 
     phi = shaft.phi;
     omega = der(phi);
-    n = Modelica.SIunits.Conversions.to_rpm(omega);
-    P_single = omega*shaft.tau;
+    N = Modelica.SIunits.Conversions.to_rpm(omega);
+    W_single = omega*shaft.tau;
   annotation (
     Icon(Rectangle(extent=[60,26; 84,12], style(
             color=10,
