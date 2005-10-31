@@ -286,6 +286,43 @@ as signal.
     port.mXi_flow = zeros(Medium.nXi);
   end PartialAbsoluteSensor;
   
+  partial model PartialFlowSensor
+    "Partial component to model sensors that measure flow properties"
+    
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
+        choicesAllMatching = true);
+    Medium.SpecificEnthalpy h "enthalpy in flow";
+    Medium.MassFraction[Medium.nXi] Xi "flow composition";
+
+    FluidPort_a port_a(redeclare package Medium = Medium)
+      annotation (extent=[-120, -10; -100, 10]);
+    FluidPort_b port_b(redeclare package Medium = Medium) 
+      annotation (extent=[120, -10; 100, 10]);
+    
+    annotation (Documentation(info="<html>
+<p>
+Partial component to model a <b>sensor</b> that measures any intensive properties
+of a flow, e.g., to get temperature or density in the flow
+between fluid connectors.<br>
+The model includes zero-volume balance equations. Sensor models inheriting from
+this partial class should add a medium instance to calculate the measured property.
+</p>
+</html>"));
+  equation 
+    port_a.p   = port_b.p;
+    // Local *zero-volume* enthalpy and composition
+    port_a.H_flow = semiLinear(port_a.m_flow,port_a.h,h);
+    port_b.H_flow = semiLinear(port_b.m_flow,port_b.h,h);
+    port_a.mXi_flow = semiLinear(port_a.m_flow,port_a.Xi,Xi);
+    port_b.mXi_flow = semiLinear(port_b.m_flow,port_b.Xi,Xi);
+    // Static balances
+    0 = port_a.m_flow + port_b.m_flow;
+    0 = port_a.H_flow + port_b.H_flow;
+    zeros(Medium.nXi) = port_a.mXi_flow + port_b.mXi_flow;
+  end PartialFlowSensor;
+  
+protected
   partial model PartialRelativeSensor 
     "Partial component to model a sensor that measures the difference of effort variables at two ports" 
     
@@ -314,33 +351,5 @@ between fluid connectors.
     port_b.H_flow = 0;
     port_b.mXi_flow = zeros(Medium.nXi);
   end PartialRelativeSensor;
-  
-  partial model PartialFlowRateSensor 
-    "Partial component to model a sensor that measures a flow rate" 
-    
-    replaceable package Medium = PackageMedium extends 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
-        choicesAllMatching =                                                                         true);
-    
-    FluidPort_a port_a(redeclare package Medium = Medium) 
-      annotation (extent=[-120, -10; -100, 10]);
-    FluidPort_b port_b(redeclare package Medium = Medium) 
-      annotation (extent=[120, -10; 100, 10]);
-    
-    annotation (Documentation(info="<html>
-<p>
-Partial component to model a <b>sensor</b> that measures
-a <b>flow rate</b>, e.g., to get the mass flow rate 
-between fluid connectors.
-</p>
-</html>"));
-  equation 
-    port_a.p   = port_b.p;
-    port_a.h   = port_b.h;
-    port_a.Xi = port_b.Xi;
-    0 = port_a.m_flow + port_b.m_flow;
-    0 = port_a.H_flow + port_b.H_flow;
-    zeros(Medium.nXi) = port_a.mXi_flow + port_b.mXi_flow;
-  end PartialFlowRateSensor;
   
 end Interfaces;

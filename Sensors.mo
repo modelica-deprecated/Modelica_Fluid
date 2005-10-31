@@ -15,39 +15,6 @@ model the time constant of the sensor).
 </p>
 </html>"));
   
-  model Density "Ideal density sensor" 
-    extends Interfaces.PartialAbsoluteSensor;
-    extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium;
-    Modelica.Blocks.Interfaces.RealOutput d(unit = "kg/m3") 
-      "Density in port medium" annotation (extent=[100,-10; 120,10]);
-    
-  annotation (
-    Diagram(
-        Line(points=[70,0; 100,0], style(rgbcolor={0,0,127})),
-        Line(points=[0,-70; 0,-100], style(color=69))),
-    Icon(
-        Line(points=[70,0; 100,0], style(rgbcolor={0,0,127})),
-        Line(points=[0,-70; 0,-100], style(color=69)),
-        Text(extent=[-126,160; 138,98], string="%name"),
-        Text(
-          extent=[212,-51; 52,-103],
-          style(color=0),
-          string="d")),
-    Documentation(info="<HTML>
-<p>
-This component monitors the density of the medium in the fluid port. The sensor is 
-ideal, i.e., it does not influence the fluid.
-</p>
-</HTML>
-"));
-  equation 
-    port.p   = medium.p;
-    port.h   = medium.h;
-    port.Xi = medium.Xi;
-    d = medium.d;
-  end Density;
-  
   model Pressure "Ideal pressure sensor" 
     import SI = Modelica.SIunits;
     extends Interfaces.PartialAbsoluteSensor;
@@ -78,22 +45,59 @@ ideal, i.e., it does not influence the fluid.
     p = port.p;
   end Pressure;
   
+  model Density "Ideal density sensor" 
+    extends Interfaces.PartialFlowSensor;
+    extends Modelica.Icons.RotationalSensor;
+    Medium.BaseProperties medium;
+    Modelica.Blocks.Interfaces.RealOutput d(unit = "kg/m3") 
+      "Density in port medium" 
+      annotation (extent=[-10,-120; 10,-100], rotation=-90);
+    
+  annotation (
+    Diagram(
+        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
+    Icon(
+        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
+        Text(extent=[-126,160; 138,98], string="%name"),
+        Text(
+          extent=[212,-51; 52,-103],
+          style(color=0),
+          string="d")),
+    Documentation(info="<HTML>
+<p>
+This component monitors the density of the medium in the flow
+between fluid ports. The sensor is 
+ideal, i.e., it does not influence the fluid.
+</p>
+</HTML>
+"));
+  equation 
+    port_a.p = medium.p;
+    h  = medium.h;
+    Xi = medium.Xi;
+    d  = medium.d;
+  end Density;
+  
   model Temperature "Ideal temperature sensor" 
     import SI = Modelica.SIunits;
-    extends Interfaces.PartialAbsoluteSensor;
+    extends Interfaces.PartialFlowSensor;
     Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput T(unit = "K") 
       "Temperature in port medium" 
-                                 annotation (extent=[100,-10; 120,10]);
+      annotation (extent=[-10,-120; 10,-100], rotation=-90);
     
-    annotation (
-      Diagram(
+  annotation (
+    Diagram(
+        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
         Ellipse(extent=[-20, -98; 20, -60], style(
             color=0,
             thickness=2,
             fillColor=42)),
         Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
-        Line(points=[12,0; 100,0], style(rgbcolor={0,0,127})),
         Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
                12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
         Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
@@ -102,43 +106,45 @@ ideal, i.e., it does not influence the fluid.
         Line(points=[-40, 20; -12, 20], style(color=0)),
         Line(points=[-40, 60; -12, 60], style(color=0))),
       Icon(
-        Ellipse(extent=[-20, -98; 20, -60], style(
+        Ellipse(extent=[-20,-88; 20,-50],   style(
             color=0,
             thickness=2,
             fillColor=42)),
-        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
-        Line(points=[12,0; 100,0], style(rgbcolor={0,0,127})),
-        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
-               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
-        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
-        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
-        Line(points=[-40, -20; -12, -20], style(color=0)),
-        Line(points=[-40, 20; -12, 20], style(color=0)),
-        Line(points=[-40, 60; -12, 60], style(color=0)),
+        Rectangle(extent=[-12,50; 12,-58],   style(color=42, fillColor=42)),
+        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
+        Polygon(points=[-12,50; -12,90; -10,96; -6,98; 0,100; 6,98; 10,96; 12,
+              90; 12,50; -12,50],        style(color=0, thickness=2)),
+        Line(points=[-12,50; -12,-54],   style(color=0, thickness=2)),
+        Line(points=[12,50; 12,-54],   style(color=0, thickness=2)),
+        Line(points=[-40,-10; -12,-10],   style(color=0)),
+        Line(points=[-40,30; -12,30],   style(color=0)),
+        Line(points=[-40,70; -12,70],   style(color=0)),
         Text(
-          extent=[180,-28; 20,-80],
+          extent=[120,-40; 0,-90],
           style(color=0),
           string="T"),
-        Text(extent=[-126,160; 138,98],   string="%name")),
+        Text(extent=[-126,160; 138,98],   string="%name"),
+        Line(points=[-100,0; -14,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[14,0; 100,0],   style(color=69, rgbcolor={0,128,255}))),
       Documentation(info="<HTML>
 <p>
-This component monitors the temperature of the medium in the fluid port. The sensor is 
+This component monitors the temperature of the medium in the flow
+between fluid ports. The sensor is 
 ideal, i.e., it does not influence the fluid.
 </p>
 </HTML>
 "));
   equation 
-    port.p   = medium.p;
-    port.h   = medium.h;
-    port.Xi = medium.Xi;
-    
-    T = medium.T;
+    port_a.p = medium.p;
+    h  = medium.h;
+    Xi = medium.Xi;
+    T  = medium.T;
   end Temperature;
   
   model MassFlowRate "Ideal sensor for mass flow rate" 
-    extends Interfaces.PartialFlowRateSensor;
+    extends Interfaces.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-      Modelica.Blocks.Interfaces.RealOutput m_flow(unit = "kg/s") 
+    Modelica.Blocks.Interfaces.RealOutput m_flow(unit = "kg/s") 
       "mass flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
           -100], rotation=-90);
     
@@ -168,12 +174,12 @@ The sensor is ideal, i.e., it does not influence the fluid.
   end MassFlowRate;
   
   model VolumeFlowRate "Ideal sensor for volume flow rate" 
-    extends Interfaces.PartialFlowRateSensor;
+    extends Interfaces.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput V_flow(unit = "m3/s") 
-      "volume flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
-          -100], rotation=-90);
+      "volume flow rate from port_a to port_b" 
+      annotation (extent=[-10,-120; 10,-100], rotation=-90);
     
   annotation (
     Diagram(
@@ -198,24 +204,27 @@ The sensor is ideal, i.e. it does not influence the fluid.
 "));
   equation 
     port_a.p   = medium.p;
-    port_a.h   = medium.h;
-    port_a.Xi = medium.Xi;
+    h  = medium.h;
+    Xi = medium.Xi;
     V_flow = port_a.m_flow/medium.d;
   end VolumeFlowRate;
   
   model SpecificEnthalpy "Ideal specific enthalphy sensor" 
-    extends Interfaces.PartialAbsoluteSensor;
+    extends Interfaces.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput h(unit = "J/kg") 
-      "Specific enthalpy in port medium" annotation (extent=[100,-10; 120,10]);
+    Modelica.Blocks.Interfaces.RealOutput h_out(unit="J/kg") 
+      "Specific enthalpy in port medium" 
+      annotation (extent=[-10,-120; 10,-100], rotation=-90);
     
   annotation (
     Diagram(
-        Line(points=[70,0; 100,0], style(rgbcolor={0,0,127})),
-        Line(points=[0,-70; 0,-100], style(color=69))),
+        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
     Icon(
-        Line(points=[70,0; 100,0], style(rgbcolor={0,0,127})),
-        Line(points=[0,-70; 0,-100], style(color=69)),
+        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
         Text(extent=[-126,160; 138,98], string="%name"),
         Text(
           extent=[212,-51; 52,-103],
@@ -223,15 +232,68 @@ The sensor is ideal, i.e. it does not influence the fluid.
           string="h")),
     Documentation(info="<HTML>
 <p>
-This component monitors the specific enthalphy of the medium in the fluid port. The sensor is 
-ideal, i.e., it does not influence the fluid.
+This component monitors the specific enthalphy of the medium in the flow
+between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 </p>
 </HTML>
 "));
   equation 
-    h = port.h;
+    h_out = h;
   end SpecificEnthalpy;
   
+  model RelativePressure "Ideal relative pressure sensor" 
+    extends Modelica.Icons.TranslationalSensor;
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
+        choicesAllMatching = true);
+    
+    Interfaces.FluidPort_a port_a(redeclare package Medium = Medium) 
+      annotation (extent=[-120, -10; -100, 10]);
+    Interfaces.FluidPort_b port_b(redeclare package Medium = Medium) 
+      annotation (extent=[120, -10; 100, 10]);
+    
+    Modelica.Blocks.Interfaces.RealOutput p_rel(redeclare type SignalType = 
+          SI.Pressure) "Relative pressure signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
+    annotation (
+      Icon(
+        Line(points=[-100, 0; -70, 0], style(color=69)),
+        Line(points=[70, 0; 100, 0], style(color=69)),
+        Line(points=[0, -30; 0, -80], style(rgbcolor={0,0,127})),
+        Text(extent=[-140, 94; 144, 34], string="%name"),
+        Text(
+          extent=[92, -62; 34, -122],
+          string="p_rel",
+          style(color=0))),
+      Diagram(
+        Line(points=[-100, 0; -70, 0], style(color=69)),
+        Line(points=[70, 0; 100, 0], style(color=69)),
+        Line(points=[0, -30; 0, -80], style(rgbcolor={0,0,127})),
+        Text(
+          extent=[64, -74; 32, -102],
+          string="p_rel",
+          style(color=0))),
+      Documentation(info="<HTML>
+<p>
+The relative pressure \"port_a.p - port_b.p\" is determined between
+the two ports of this component and is provided as output signal. The
+sensor should be connected in parallel with other equipment, no flow
+through the sensor is allowed.
+</p>
+</HTML>
+"));
+  equation 
+    // Zero flow equations for connectors
+    port_a.m_flow = 0;
+    port_a.H_flow = 0;
+    port_a.mXi_flow = zeros(Medium.nXi);
+    port_b.m_flow = 0;
+    port_b.H_flow = 0;
+    port_b.mXi_flow = zeros(Medium.nXi);
+
+    p_rel = port_a.p - port_b.p;
+  end RelativePressure;
+  
+/*
   model SpecificInternalEnergy "Ideal specific internal energy sensor" 
     extends Interfaces.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
@@ -307,40 +369,6 @@ the two ports of this component and is provided as output signal.
     
     d_rel = medium_a.d - medium_b.d;
   end RelDensity;
-  
-  model RelPressure "Ideal relative pressure sensor" 
-    extends Interfaces.PartialRelativeSensor;
-    extends Modelica.Icons.TranslationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput p_rel(redeclare type SignalType = 
-          SI.Pressure) "Relative pressure signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
-    annotation (
-      Icon(
-        Line(points=[-100, 0; -70, 0], style(color=69)),
-        Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(rgbcolor={0,0,127})),
-        Text(extent=[-140, 94; 144, 34], string="%name"),
-        Text(
-          extent=[92, -62; 34, -122],
-          string="p_rel",
-          style(color=0))),
-      Diagram(
-        Line(points=[-100, 0; -70, 0], style(color=69)),
-        Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(rgbcolor={0,0,127})),
-        Text(
-          extent=[64, -74; 32, -102],
-          string="p_rel",
-          style(color=0))),
-      Documentation(info="<HTML>
-<p>
-The relative pressure \"port_a.p - port_b.p\" is determined between
-the two ports of this component and is provided as output signal.
-</p>
-</HTML>
-"));
-  equation 
-    p_rel = port_a.p - port_b.p;
-  end RelPressure;
   
   model RelTemperature "Ideal relative temperature sensor" 
     extends Interfaces.PartialRelativeSensor;
@@ -462,4 +490,5 @@ the two ports of this component and is provided as output signal.
     
     u_rel = medium_a.u - medium_b.u;
   end RelSpecificInternalEnergy;
+*/
 end Sensors;
