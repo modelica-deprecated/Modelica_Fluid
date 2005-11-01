@@ -10,7 +10,7 @@ package Components "Basic components for fluid models"
       annotation(Dialog(tab = "Initialization"));
     parameter Boolean use_T_start = true 
       "Use T_start if true, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"));
+      annotation(Dialog(tab = "Initialization"), Evaluate=true);
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
@@ -132,7 +132,7 @@ transport. This splitting is only possible under certain assumptions.
       annotation(Dialog(tab = "Initialization"));
     parameter Boolean use_T_start = true 
       "Use T_start if true, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"));
+      annotation(Dialog(tab = "Initialization"), Evaluate = true);
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
@@ -280,22 +280,33 @@ with examples first (see sub-package Examples).
 </html>"));
   
   model Tank "Tank with one bottom inlet/outlet port" 
-    import Modelica.SIunits.Conversions.*;
+    import Modelica_Fluid.Types.InitTypes.*;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching=true);
     parameter SI.Area area "Tank area";
-    parameter SI.Volume V0 "Volume of the liquid when the level is zero";
+    parameter SI.Volume V0 = 0 "Volume of the liquid when the level is zero";
+    parameter SI.Height H0 = 0 
+      "Height of zero level reference over the bottom port";
     parameter Medium.AbsolutePressure p_ambient=101325 "Tank surface pressure";
+    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate = true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then 293.15 else Medium.T_phX(p_ambient,h_start,X_start) 
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.h_pTX(p_ambient, T_start, X_start[1:Medium.nXi]) else 1e4 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
     parameter SI.Height level_start(min=0) "Initial tank level" 
-      annotation(Dialog(group=Initialization));
-    parameter Medium.Temperature T_start=from_degC(20) 
-      "Initial tank temperature" 
-      annotation(Dialog(group=Initialization));
-    parameter Medium.MassFraction X_start[Medium.nX](quantity=Medium.
-          substanceNames) = zeros(Medium.nX) 
-      "Initial independent tank mass fractions m_i/m" 
-      annotation(Dialog(group=Initialization),enable=(Medium.nXi>0));
+      annotation(Dialog(tab="Initialization"));
     
     Interfaces.FluidPort_b port(redeclare package Medium = Medium) 
       annotation (extent=[-10, -120; 10, -100], rotation=90);
@@ -305,65 +316,60 @@ with examples first (see sub-package Examples).
       T(start=T_start),
       Xi(start=X_start[1:Medium.nXi]));
     
-    constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
     SI.Height level(start=level_start,stateSelect=StateSelect.prefer) 
-      "Level height of tank";
+      "Height of tank level over the zero reference";
     SI.Energy U "Internal energy of tank volume";
     SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
     Real m(quantity=Medium.mediumName, unit="kg") "Mass of tank volume";
     Real mX[Medium.nX](quantity=Medium.substanceNames, each unit="kg") 
       "Component masses of the independent substances";
   equation 
-    port.p = medium.p;
-    
-    /* Handle reverse and zero flow */
-    port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
-    port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.X);
-    
-    /*
-  More precise equations (test later):
-  Momentum balance
-  (integrated momentum equation for frictionless fluid with density that is
-   independent of the level, i.e., the unsteady Bernoulli equation for incompressible fluid)
-  v_level = der(level);
-  v = -port.m_flow/(rho*A_outlet);
-  level*der(v_level) + (v^2 - v_level^2)/2 - g*level + (p - p_ambient)/rho = 0;
-  Energy balance
-  Potential energy: E_pot = integ(dm*g*s)
-                          = g*integ(rho*A*s*ds)
-                          = g*rho*A*z^2/2
-  Kinetic energy  : E_kin = integ(dm*v^2/2)
-                          = integ(rho*A*v^2/2*ds)
-                          = rho*A*v^2/2*integ(ds)
-                          = rho*A*v^2/2*z
-                          = M*v^2/2
-  E = U + M*g*z/2 + M*v_level^2/2
-  der(E) = port.H_flow + port.m_flow*v^2/2 - p_ambient*area*der(level)
-*/
-    
-    V = area*level+V0;
-    m = V*medium.d;
-    mX = m*medium.Xi;
-    U = m*medium.u;
+    medium.p = p_ambient;
+    V = area*level+V0 "Volume of fluid";
+    m = V*medium.d "Mass of fluid";
+    mX = m*medium.Xi "Mass of fluid components";
+    U = m*medium.u "Internal energy of fluid";
     
     // Mass balance
     der(m) = port.m_flow;
     der(mX) = port.mXi_flow;
     
     // Momentum balance
-    medium.p = m*g/area + p_ambient;
+    port.p = (medium.d*g*(level+H0)) + p_ambient;
     
     // Energy balance
-    der(U) = port.H_flow - 0.5*(p_ambient+medium.p)*der(V);
-  /*
-initial equation 
-  if not Medium.singleState then
-    mX = m*X_start[1:Medium.nXi];
-  end if;
-  level = level_start;
-  medium.T = T_start;
-  medium.Xi = X_start[1:Medium.nXi];
-*/
+    if Medium.singleState then
+      der(U) = port.H_flow "Mechanical work is neglected";
+    else
+      der(U) = port.H_flow - p_ambient*der(V);
+    end if;
+    
+    /* Handle reverse and zero flow */
+    port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
+    port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.X);
+    
+  initial equation 
+    if initOption == NoInit then
+      // no initial equations
+    elseif initOption == InitialValues then
+      level = level_start;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    elseif initOption == SteadyStateHydraulic then
+      der(level) = 0;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
     annotation (
       Icon(
         Rectangle(extent=[-100, 90; 100, 26], style(color=7, fillColor=7)),
@@ -393,11 +399,24 @@ initial equation
           string="level_start")),
       Documentation(info="<HTML>
 <p>
-This is a simplified model of a tank. The top part is open to the environment.
-The tank is filled with a single or multiple-substance liquid.
-The whole tank is assumed to have uniform temperature and mass fractions.
+This is a simplified model of a tank. The top part is open to the environment at the fixed pressure <tt>p_ambient</tt>. Heat transfer to the environment and to the tank walls is neglected.
+The tank is filled with a single or multiple-substance liquid, assumed to have uniform temperature and mass fractions.
+<p>The geometry of the tank is specified by the following parameters: <tt>V0</tt> is the volume of the liquid when the level is at the zero reference; <tt>area</tt> is the cross-sectional area of the tank; <tt>H0</tt> is the height of the zero-reference level plane over the port connector. It is thus possible to model rounded-bottom tanks, as long as they have a cylindrical shape in the range of operating levels.
+<p>The tank can be initialized with the following options:
+<ul>
+<li>NoInit: no explicit initial conditions
+<li>InitialValues: initial values of temperature (or specific enthalpy), composition and level are specified
+<li>SteadyStateHydraulic: initial values of temperature (or specific enthalpy) and composition are specified; the initial level is determined so that levels and pressure are at steady state.
+</ul>
+Full steady state initialization is not supported, because the corresponding intial equations for temperature/enthalpy are undetermined (the flow rate through the port at steady state is zero). 
 </p>
-</HTML>"),
+</HTML>",   revisions="<html>
+<ul>
+<li><i>1 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted from a previous version of Modelica_Fluid</li>
+</ul>
+</html>"),
       Diagram);
   end Tank;
   
