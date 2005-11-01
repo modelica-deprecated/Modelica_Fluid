@@ -57,10 +57,8 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
-
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
-
 
 package UsersGuide "Users Guide" 
   
@@ -171,7 +169,7 @@ This library has the following main features:
   equation 
     
   end Overview;
-
+  
   class GettingStarted "Getting started" 
     
     annotation (Documentation(info="<html>
@@ -915,7 +913,7 @@ ambiguity is removed by rule 2.</i></p>
 "));
   end SemiLinearDefinition;
   end ComponentDefinition;
-
+  
   class ReleaseNotes "Release notes" 
     
     annotation (Documentation(info="<HTML>
@@ -1068,8 +1066,8 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
-
 replaceable package PackageMedium = Modelica.Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (
     choicesAllMatching=true);
+  constant SI.Acceleration g = Modelica.Constants.g_n;
 end Modelica_Fluid;
