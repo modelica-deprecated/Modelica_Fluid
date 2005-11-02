@@ -428,7 +428,7 @@ Full steady state initialization is not supported, because the corresponding int
     parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
     parameter SI.Area Av(fixed = if CvData==CvTypes.Av then true else false,
-                         start = m_flow_nom/(sqrt(rhonom*dpnom))*
+                         start = m_flow_nom/(sqrt(d_nom*dp_nom))*
                                              flowCharacteristic(stemPosition_nom)) = 0 
       "Av (metric) flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient",
@@ -439,27 +439,28 @@ Full steady state initialization is not supported, because the corresponding int
     parameter Real Cv(unit="USG/min")=0 "Cv (US) flow coefficient" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Cv)));
-    parameter Medium.AbsolutePressure pnom = 1e5 "Nominal inlet pressure" 
+    parameter Medium.AbsolutePressure p_nom = 1e5 "Nominal inlet pressure" 
       annotation(Dialog(group="Nominal operating point"));
-    parameter SI.Pressure dpnom = 1e5 "Nominal pressure drop" 
+    parameter SI.Pressure dp_nom = 1e5 "Nominal pressure drop" 
       annotation(Dialog(group="Nominal operating point"));
     parameter Medium.MassFlowRate m_flow_nom = 1 "Nominal mass flowrate" 
       annotation(Dialog(group="Nominal operating point"));
-    parameter Medium.Density rhonom = 1000 "Nominal inlet density" 
+    parameter Medium.Density d_nom = 1000 "Nominal inlet density" 
       annotation(Dialog(group="Nominal operating point"));
     parameter Real stemPosition_nom = 1 "Nominal stem position" 
       annotation(Dialog(group="Nominal operating point"));
     parameter Boolean CheckValve=false "Reverse flow stopped";
     parameter Real delta=0.01 "Regularisation factor";
-    replaceable function flowCharacteristic = Utilities.linear 
-      "Inherent flow characteristic";
+    replaceable function flowCharacteristic = ValveCharacteristics.linear 
+      extends ValveCharacteristics.baseFun "Inherent flow characteristic" 
+      annotation(choicesAllMatching=true);
     Modelica.Blocks.Interfaces.RealInput stemPosition 
       "Stem position in the range 0-1" annotation (extent=[-10,70; 10,90],    rotation=-90);
     
-    Medium.Density rho "Density at port a";
+    Medium.Density d "Density at port a";
     Medium.Temperature T "Temperature at port a";
   protected 
-    function sqrtR = Utilities.regRoot(delta = delta*dpnom);
+    function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
     annotation (
       Icon(Text(extent=[-100, -40; 100, -80], string="%name"),
         Line(points=[0,60; 0,0],   style(
@@ -482,37 +483,22 @@ Full steady state initialization is not supported, because the corresponding int
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>ValveLiq</tt>, <tt>ValveLiqChoked</tt>, and <tt>ValveVap</tt> valve models. The model is based on the IEC 534 / ISA S.75 standards for valve sizing.
 <p>The model optionally supports reverse flow conditions (assuming symmetrical behaviour) or check valve operation, and has been suitably modified to avoid numerical singularities at zero pressure drop. 
-<p>The flow characteristic can be customised.
 <p><b>Modelling options</b></p>
 <p>The following options are available to specify the valve flow coefficient in fully open conditions:
-<ul><li><tt>CvData = ThermoPower.Water.ValveBase.CvTypes.Av</tt>: the flow coefficient is given by the metric <tt>Av</tt> coefficient (m^2).
-<li><tt>CvData = ThermoPower.Water.ValveBase.CvTypes.Kv</tt>: the flow coefficient is given by the metric <tt>Kv</tt> coefficient (m^3/h).
-<li><tt>CvData = ThermoPower.Water.ValveBase.CvTypes.Cv</tt>: the flow coefficient is given by the US <tt>Cv</tt> coefficient (USG/min).
-<li><tt>CvData = ThermoPower.Water.ValveBase.CvTypes.OpPoint</tt>: the flow coefficient must be specified by an additional initial equation (e.g. <tt>w=0.5</tt>); the start value given by <tt>Av</tt> is used to initialise the numerical solution of the equation.
+<ul><li><tt>CvData = Modelica_Fluid.Types.CvTypes.Av</tt>: the flow coefficient is given by the metric <tt>Av</tt> coefficient (m^2).
+<li><tt>CvData = Modelica_Fluid.Types.CvTypes.Kv</tt>: the flow coefficient is given by the metric <tt>Kv</tt> coefficient (m^3/h).
+<li><tt>CvData = Modelica_Fluid.Types.CvTypes.Cv</tt>: the flow coefficient is given by the US <tt>Cv</tt> coefficient (USG/min).
+<li><tt>CvData = Modelica_Fluid.Types.CvTypes.OpPoint</tt>: the flow is computed from the nominal operating point specified by <tt>p_nom</tt>, <tt>dp_nom</tt>, <tt>m_flow_nom</tt>, <tt>d_nom</tt>, <tt>stemPosition_nom</tt>.
 </ul>
-<p>The nominal pressure drop <tt>dpnom</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dpnom</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical instabilities occur in valves with very low pressure drops.
+<p>The nominal pressure drop <tt>dp_nom</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dp_nom</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical problems occur in valves with very low pressure drops.
 <p>If <tt>CheckValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place.
-<p>The default flow characteristic <tt>flowCharacteristic</tt> is linear; this can be replaced by any user-defined function (e.g. equal percentage, quick opening, etc.).
+<p>The inherent flow characteristic <tt>flowCharacteristic</tt>, linear by default, can be replaced by any user-defined function (e.g. equal percentage, quick opening, etc.).
 </HTML>",
         revisions="<html>
 <ul>
-<li><i>6 Apr 2005</i>
+<li><i>2 Nov 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Enumeration-type choice of CvData.</li>
-<li><i>16 Dec 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Standard medium definition added.</li>
-<li><i>18 Nov 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       <tt>Avnom</tt> removed; <tt>Av</tt> can now be set directly. <tt>Kvnom</tt> and <tt>Cvnom</tt> renamed to <tt>Kv</tt> and <tt>Cv</tt>.<br>
-<tt>CvData=3</tt> no longer uses <tt>dpnom</tt>, <tt>wnom</tt> and <tt>rhonom</tt>, and requires an additional initial equation to set the flow coefficient based on the initial working conditions.
-<li><i>1 Jul 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Valve models restructured using inheritance. <br>
-       Adapted to Modelica.Media.</li>
-<li><i>1 Oct 2003</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       First release.</li>
+       Adapted from the ThermoPower library.</li>
 </ul>
 </html>"));
   initial equation 
@@ -524,7 +510,7 @@ Full steady state initialization is not supported, because the corresponding int
     assert(CvData>=0 and CvData<=3, "Invalid CvData");
   equation 
     T = medium_a.T;
-    rho = medium_a.d;
+    d = medium_a.d;
   end ValveBase;
   
   model ValveIncompressible "Valve for (almost) incompressible fluids" 
@@ -534,32 +520,29 @@ Full steady state initialization is not supported, because the corresponding int
     Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
     Diagram,
     Documentation(info="<HTML>
-<p>Liquid water valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid. <p>
+<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluids. <p>
 Extends the <tt>ValveBase</tt> model (see the corresponding documentation for common valve features).
+<p>This model can be used with any low compressibility fluids, such as liquids or gases at very low pressure drops.
 </html>",
       revisions="<html>
 <ul>
-<li><i>1 Jul 2004</i>
+<li><i>2 Nov 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Valve model restructured using inheritance. <br>
-       Adapted to Modelica.Media.</li>
-<li><i>1 Oct 2003</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       First release.</li>
+       Adapted from the ThermoPower library.</li>
 </ul>
-</HTML>"));
+</html>"));
   initial equation 
     if CvData == CvTypes.OpPoint then
-      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(rhonom)*sqrtR(dpnom) 
+      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom) 
         "Determination of Av by the operating point";
     end if;
     
   equation 
     if CheckValve then
-      m_flow = flowCharacteristic(stemPosition)*Av*sqrt(rho)*
+      m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*
                smooth(0,if dp>=0 then sqrtR(dp) else 0);
     else
-      m_flow = flowCharacteristic(stemPosition)*Av*sqrt(rho)*sqrtR(dp);
+      m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dp);
     end if;
   end ValveIncompressible;
   
@@ -569,9 +552,9 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     extends ValveBase(
       redeclare replaceable package Medium = 
       Modelica.Media.Interfaces.PartialTwoPhaseMedium);
-    parameter Real Flnom=0.9 "Liquid pressure recovery factor";
-    replaceable function Flfun = Utilities.one 
-      "Pressure recovery characteristic";
+    parameter Real Fl_nom=0.9 "Liquid pressure recovery factor";
+    replaceable function FlCharacteristic =  ValveCharacteristics.one 
+      extends ValveCharacteristics.baseFun "Pressure recovery characteristic";
     Real Ff "Ff coefficient (see IEC/ISA standard)";
     Real Fl "Pressure recovery coefficient Fl (see IEC/ISA standard)";
     Medium.AbsolutePressure pv "Saturation pressure";
@@ -582,31 +565,22 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
       Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
       Diagram,
       Documentation(info="<HTML>
-<p>Liquid water valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid, with possible choked flow conditions. <p>
+<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid, with possible choked flow conditions. <p>
 Extends the <tt>ValveBase</tt> model (see the corresponding documentation for common valve features).<p>
 The model operating range includes choked flow operation, which takes place for low outlet pressures due to flashing in the vena contracta; otherwise, non-choking conditions are assumed.
-<p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Flnom</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by customising the <tt>Flfun</tt> function.
+<p>This model can be used with two-phase medium models, to describe the liquid and (possible) two-phase conditions.
+<p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Fl_nom</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by replacing the <tt>FlCharacteristic</tt> function.
 </HTML>",
         revisions="<html>
 <ul>
-<li><i>15 Mar 2005</i>
+<li><i>2 Nov 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Rewritten with sqrtReg.</li>
-<<li><i>16 Dec 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Standard medium definition added.</li>
-li><i>1 Jul 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Valve model restructured using inheritance. <br>
-       Adapted to Modelica.Media.</li>
-<li><i>1 Oct 2003</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       First release.</li>
+       Adapted from the ThermoPower library.</li>
 </ul>
-</HTML>"));
+</html>"));
   initial equation 
     if CvData == CvTypes.OpPoint then
-      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(rhonom)*sqrtR(dpnom) 
+      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom) 
         "Determination of Av by the operating point";
     end if;
   equation 
@@ -614,15 +588,15 @@ li><i>1 Jul 2004</i>
     pout = port_b.p;
     pv = Medium.saturationPressure(T);
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
-    Fl = Flnom*FlCharacteristic(stemPosition);
+    Fl = Fl_nom*FlCharacteristic(stemPosition);
     dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 
               Fl^2*(pin - Ff*pv) else dp 
       "Effective pressure drop, accounting for possible choked conditions";
     if CheckValve then
-       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(rho)*
+       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*
            (if dpEff>=0 then sqrtR(dpEff) else 0);
      else
-       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(rho)*sqrtR(dpEff);
+       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dpEff);
     end if;
   end ValveVaporizing;
   
@@ -631,8 +605,8 @@ li><i>1 Jul 2004</i>
     extends ValveBase;
     import Modelica_Fluid.Types.CvTypes;
     parameter Real Fxt_full=0.5 "Fk*xt critical ratio at full opening";
-    replaceable function xtCharacteristic = Utilities.one 
-      "Critical ratio characteristic";
+    replaceable function xtCharacteristic = ValveCharacteristics.one 
+      extends ValveCharacteristics.baseFun "Critical ratio characteristic";
     Real Fxt;
     Real x "Pressure drop ratio";
     Real xs "Saturated pressure drop ratio";
@@ -648,35 +622,25 @@ li><i>1 Jul 2004</i>
     Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
     Diagram,
     Documentation(info="<HTML>
-<p>Liquid water valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid. <p>
+<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid. <p>
 Extends the <tt>ValveBase</tt> model (see the corresponding documentation for common valve features).
-<p>The product Fk*xt is given by the parameter <tt>Fxtnom</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by customising the <tt>xtCharacteristic</tt> function.
+<p>The product Fk*xt is given by the parameter <tt>Fxt_full</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by replacing the <tt>xtCharacteristic</tt> function.
 </HTML>",
       revisions="<html>
 <ul>
-<li><i>15 Mar 2005</i>
+<li><i>2 Nov 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Rewritten with sqrtReg.</li>
-<li><i>16 Dec 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Standard medium definition added.</li>
-<li><i>1 Jul 2004</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Valve model restructured using inheritance. <br>
-       Adapted to Modelica.Media.</li>
-<li><i>1 Oct 2003</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       First release.</li>
+       Adapted from the ThermoPower library.</li>
 </ul>
-</HTML>"));
+</html>"));
   initial equation 
     if CvData == CvTypes.OpPoint then
       // Determination of Av by the nominal operating point conditions
       Fxt_nom = Fxt_full*xtCharacteristic(stemPosition_nom);
-      x_nom = dpnom/pnom;
+      x_nom = dp_nom/p_nom;
       xs_nom = smooth(0, if x_nom > Fxt_nom then Fxt_nom else x_nom);
       Y_nom = 1 - abs(xs_nom)/(3*Fxt_nom);
-      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*Y_nom*sqrt(rhonom)*sqrtR(pnom*xs_nom);
+      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*Y_nom*sqrt(d_nom)*sqrtR(p_nom*xs_nom);
     else
       // Dummy values
       Fxt_nom = 0;
@@ -692,13 +656,96 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     xs = smooth(0, if x < -Fxt then -Fxt else if x > Fxt then Fxt else x);
     Y = 1 - abs(xs)/(3*Fxt);
     if CheckValve then
-      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(rho)*
+      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(d)*
         smooth(0,if xs>=0 then sqrtR(p*xs) else 0);
     else
-      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(rho)*sqrtR(p*xs);
+      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(d)*sqrtR(p*xs);
     end if;
   end ValveCompressible;
   
+  package ValveCharacteristics 
+    partial function baseFun "Base class for valve characteristics" 
+      extends Modelica.Icons.Function;
+      input Real pos "Stem position (per unit)";
+      output Real rc "Relative coefficient (per unit)";
+    end baseFun;
+    
+    function linear "Linear characteristic" 
+      extends baseFun;
+    algorithm 
+      rc := pos;
+    end linear;
+    
+    function one "Constant characteristic" 
+      extends baseFun;
+    algorithm 
+      rc := 1;
+    end one;
+    
+    function quadratic "Quadratic characteristic" 
+      extends baseFun;
+    algorithm 
+      rc := pos*pos;
+    end quadratic;
+    
+    function equalPercentage "Equal percentage characteristic" 
+      extends baseFun;
+      input Real rangeability = 20 "Rangeability";
+      input Real delta = 0.01;
+    algorithm 
+      rc := if pos > delta then rangeability^(pos-1) else 
+              pos/delta*rangeability^(delta-1);
+      annotation (Documentation(info="<html>
+This characteristic is such that the relative change of the flow coefficient is proportional to the change in the stem position:
+<p> d(rc)/d(pos) = k d(pos).
+<p> The constant k is expressed in terms of the rangeability, i.e. the ratio between the maximum and the minimum useful flow coefficient:
+<p> rangeability = exp(k) = rc(1.0)/rc(0.0).
+<p> The theoretical characteristic has a non-zero opening when pos = 0; the implemented characteristic is modified so that the valve closes linearly when pos < delta.
+</html>"));
+    end equalPercentage;
+    
+  end ValveCharacteristics;
+
+  model ValveLinear "Valve for water/steam flows with linear pressure drop" 
+    extends Interfaces.PartialTwoPortTransport;
+    parameter Types.HydraulicConductance Kv = 1/1e5 
+      "Hydraulic conductance at full opening";
+    Modelica.Blocks.Interfaces.RealInput opening 
+    annotation (extent=[-20, 60; 20, 100], rotation=-90);
+  equation 
+    m_flow = Kv*opening*dp;
+    
+  annotation (
+    Icon(Text(extent=[-100,-66; 100,-100],  string="%name"),
+        Line(points=[0,54; 0,-10], style(
+            color=0,
+            thickness=2,
+            fillPattern=1)),
+        Polygon(points=[-100,42; -100,-64; 0,-10; -100,42],style(
+            color=0,
+            thickness=2,
+            fillPattern=1)),
+        Polygon(points=[100,42; 0,-10; 100,-64; 100,42],style(
+            color=0,
+            thickness=2,
+            fillPattern=1)),
+        Rectangle(extent=[-20,74; 20,54],   style(
+            color=0,
+            fillColor=0,
+            fillPattern=1))),
+    Diagram,
+    Documentation(info="<HTML>
+<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>cmd</tt> signal, without computing any fluid property.</p>
+</HTML>",
+      revisions="<html>
+<ul>
+<li><i>1 Oct 2003</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       First release.</li>
+</ul>
+</html>"));
+  end ValveLinear;
+
   partial model PumpBase "Base model for centrifugal pumps" 
     import Modelica.SIunits.Conversions.NonSIunits.*;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
@@ -709,17 +756,17 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
         Modelica.Media.Interfaces.PartialTwoPhaseMedium 
       "Saturated medium model (required only for NPSH computation)";
     replaceable function flowCharacteristic = 
-        PumpCharacteristics.BaseFlow 
+        PumpCharacteristics.baseFlow 
       "Head vs. q_flow characteristic at nominal speed and density" 
       annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
     replaceable function powerCharacteristic = 
-      PumpCharacteristics.BasePower 
+      PumpCharacteristics.basePower 
       "Power consumption vs. q_flow at nominal speed and density" 
       annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
                  choicesAllMatching=true);
     replaceable function efficiencyCharacteristic = 
-      PumpCharacteristics.ConstantEfficiency(eta_nom = 0.8) 
-      extends PumpCharacteristics.BaseEfficiency 
+      PumpCharacteristics.constantEfficiency(eta_nom = 0.8) 
+      extends PumpCharacteristics.baseEfficiency 
       "Efficiency vs. q_flow at nominal speed and density" 
       annotation(Dialog(group="Characteristics",enable = not usePowerCharacteristic),
                  choicesAllMatching=true);
@@ -862,7 +909,6 @@ initial equation
 PumpMech</tt> pump models.
 <p>The model describes a centrifugal pump, or a group of <tt>Np</tt> identical pumps in parallel. The pump model is based on the theory of kinematic similarity: the pump characteristics are given for nominal operating conditions (rotational speed and fluid density), and then adapted to actual operating condition, according to the similarity equations. 
 <p><b>Modelling options</b></p>
-
 <p> The nominal hydraulic characteristic (head vs. volume flow rate) is given by the the replaceable function <tt>flowCharacteristic</tt>. 
 <p> The pump energy balance can be specified in two alternative ways:
 <ul>
@@ -889,27 +935,27 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
   package PumpCharacteristics 
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
     
-    partial function BaseFlow "Base class for pump flow characteristics" 
+    partial function baseFlow "Base class for pump flow characteristics" 
       extends Modelica.Icons.Function;
       input SI.VolumeFlowRate q_flow "Volumetric flow rate";
       output SI.Height head "Pump head";
-    end BaseFlow;
+    end baseFlow;
     
-    partial function BasePower 
+    partial function basePower 
       "Base class for pump power consumption characteristics" 
       extends Modelica.Icons.Function;
       input SI.VolumeFlowRate q_flow "Volumetric flow rate";
       output SI.Power consumption "Power consumption";
-    end BasePower;
+    end basePower;
     
-    partial function BaseEfficiency "Base class for efficiency characteristics" 
+    partial function baseEfficiency "Base class for efficiency characteristics" 
       extends Modelica.Icons.Function;
       input SI.VolumeFlowRate q_flow "Volumetric flow rate";
       output Real eta "Efficiency";
-    end BaseEfficiency;
+    end baseEfficiency;
     
-    function LinearFlow 
-      extends BaseFlow;
+    function linearFlow 
+      extends baseFlow;
       input SI.VolumeFlowRate q_nom[2] 
         "Volume flow rate for two operating points (single pump)";
       input SI.Height head_nom[2] "Pump head for two operating points";
@@ -924,10 +970,10 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     algorithm 
       // Flow equation: head * g = q*c[1] + c[2];
       head := 1/g * (c[1] + q_flow*c[2]);
-    end LinearFlow;
+    end linearFlow;
     
-    function QuadraticFlow 
-      extends BaseFlow;
+    function quadraticFlow 
+      extends baseFlow;
       input SI.VolumeFlowRate q_nom[3] 
         "Volume flow rate for three operating points (single pump)";
       input SI.Height head_nom[3] "Pump head for three operating points";
@@ -945,10 +991,10 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     algorithm 
       // Flow equation: head * g = c[1] + q_flow*c[2] + q_flow^2*c[3];
       head := 1/g * (c[1] + q_flow*c[2] + q_flow^2*c[3]);
-    end QuadraticFlow;
+    end quadraticFlow;
     
-    function PolynomialFlow 
-      extends BaseFlow;
+    function polynomialFlow 
+      extends baseFlow;
       input SI.VolumeFlowRate q_nom[:] 
         "Volume flow rate for three operating points (single pump)";
       input SI.Height head_nom[:] "Pump head for three operating points";
@@ -968,17 +1014,17 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       // Flow equation (example N=3): head * g = c[1] + q_flow*c[2] + q_flow^2*c[3];
       // Note: the implementation is numerically efficient only for low values of Na
       head := 1/g * sum(q_flow^(i-1)*c[i] for i in 1:N);
-    end PolynomialFlow;
+    end polynomialFlow;
     
-    function ConstantEfficiency 
-       extends BaseEfficiency;
+    function constantEfficiency 
+       extends baseEfficiency;
        input Real eta_nom "Nominal efficiency";
     algorithm 
       eta := eta_nom;
-    end ConstantEfficiency;
+    end constantEfficiency;
     
-    function QuadraticPower 
-      extends BasePower;
+    function quadraticPower 
+      extends basePower;
       input SI.VolumeFlowRate q_nom[3] 
         "Volume flow rate for three operating points (single pump)";
       input SI.Power W_nom[3] "Power consumption for three operating points";
@@ -994,7 +1040,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
         "Coefficients of quadratic power consumption curve";
     algorithm 
       consumption := c[1] + q_flow*c[2] + q_flow^2*c[3];
-    end QuadraticPower;
+    end quadraticPower;
     
   end PumpCharacteristics;
   
@@ -1071,45 +1117,6 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
 </html>"));
   end PumpMech;
   
-  model ValveLinear "Valve for water/steam flows with linear pressure drop" 
-    extends Interfaces.PartialTwoPortTransport;
-    parameter Types.HydraulicConductance Kv = 1/1e5 
-      "Hydraulic conductance at full opening";
-    Modelica.Blocks.Interfaces.RealInput opening 
-    annotation (extent=[-20, 60; 20, 100], rotation=-90);
-  equation 
-    m_flow = Kv*opening*dp;
-    
-  annotation (
-    Icon(Text(extent=[-100,-66; 100,-100],  string="%name"),
-        Line(points=[0,54; 0,-10], style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-        Polygon(points=[-100,42; -100,-64; 0,-10; -100,42],style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-        Polygon(points=[100,42; 0,-10; 100,-64; 100,42],style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-        Rectangle(extent=[-20,74; 20,54],   style(
-            color=0,
-            fillColor=0,
-            fillPattern=1))),
-    Diagram,
-    Documentation(info="<HTML>
-<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>cmd</tt> signal, without computing any fluid property.</p>
-</HTML>",
-      revisions="<html>
-<ul>
-<li><i>1 Oct 2003</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       First release.</li>
-</ul>
-</html>"));
-  end ValveLinear;
   
   model Evaporator 
     "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378" 
@@ -1212,6 +1219,5 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     // liquid volume 
     V = V_l;
   end Evaporator;
-  
   
 end Components;
