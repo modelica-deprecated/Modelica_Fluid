@@ -49,17 +49,7 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
 annotation (
   Diagram,
   experiment(StopTime=4, Tolerance=1e-006),
-  Documentation(info="<HTML>
-<p>This model tests the <tt>ValveLiq</tt> model zero or reverse flow conditions.
-<p>Simulate the model for 4 s. At t = 1 s the V5 valve closes in 1 s, the V2 and V3 valves close in 2 s and the V1 and V4 valves open in 2 s. The flow in valve V3 reverses between t = 1.83 and t = 1.93.
-<p><b>Revision history:</b></p>
-<ul>
-<li><i>1 Oct 2003</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco
-Casella</a>:<br>
-       First release.</li>
-</ul>
-</HTML>"));
+  Documentation(info=""));
   Sources.FixedAmbient_pTX SinkP2(p=1e5,
   redeclare package Medium = Medium) 
   annotation (extent=[4,58; -16,78]);

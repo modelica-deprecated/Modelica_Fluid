@@ -95,7 +95,7 @@ with exception of ambient pressure, do not have an effect.
             fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
       Documentation(info="<html>
 <p>
-Model <b>FixedAmbient_pt</b> defines constant values for ambient conditions:
+Defines constant values for ambient conditions:
 </p>
 <ul>
 <li> Ambient pressure.</li>
@@ -140,7 +140,7 @@ with exception of ambient pressure, do not have an effect.
             fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
       Documentation(info="<html>
 <p>
-Model <b>FixedAmbient_ph</b> defines constant values for ambient conditions:
+Defines constant values for ambient conditions:
 </p>
 <ul>
 <li> Ambient pressure.</li>
@@ -148,7 +148,7 @@ Model <b>FixedAmbient_ph</b> defines constant values for ambient conditions:
 <li> Ambient mass fractions (only for multi-substance flow).</li>
 </ul>
 <p>
-Note, that ambient temperature, specific enthalpy
+Note, that ambient specific enthalpy
 and mass fractions have only an effect if the mass flow
 is from the ambient into the port. If mass is flowing from
 the port into the ambient, the ambient definitions,
@@ -230,13 +230,15 @@ to define fixed or prescribed ambient conditions.
           string="T")),
       Documentation(info="<html>
 <p>
-Model <b>FixedAmbient_pt</b> defines constant values for ambient conditions:
+Defines prescribed values for ambient conditions:
 </p>
 <ul>
-<li> Prescribed ambient pressure via input signal p.</li>
-<li> Prescribed ambient temperature via input signal T.</li>
-<li> Fixed ambient mass fractions (only for multi-substance flow).</li>
+<li> Prescribed ambient pressure via input signal <tt>p_in</tt>.</li>
+<li> Prescribed ambient temperature via input signal <tt>T_in</tt>.</li>
+<li> Prescribed ambient mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow).</li>
 </ul>
+<p>If the connector are left unconnected, the corresponding prescribed values
+are set by the parameters <tt>p</tt>, <tt>T</tt>, and <tt>X</tt>, respectively.
 <p>
 Note, that ambient temperature
 and mass fractions have only an effect if the mass flow
@@ -316,13 +318,15 @@ with exception of ambient pressure, do not have an effect.
           string="h")),
       Documentation(info="<html>
 <p>
-Model <b>PrescribedAmbient_ph</b> defines values for ambient conditions:
+Defines values for ambient conditions:
 </p>
 <ul>
-<li> Prescribed ambient pressure via input signal p_ambient.</li>
-<li> Prescribed ambient specific enthalpy via input signal h_ambient.</li>
-<li> Fixed ambient mass fractions (only for multi-substance flow).</li>
+<li> Prescribed ambient pressure via input signal <tt>p_in</tt>.</li>
+<li> Prescribed ambient specific enthalpy via input signal <tt>h_in</tt>.</li>
+<li> Prescribed ambient mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow).</li>
 </ul>
+<p>If the connector are left unconnected, the corresponding prescribed values
+are set by the parameters <tt>p</tt>, <tt>h</tt>, and <tt>X</tt>, respectively.
 <p>
 Note, that ambient specific enthalpy
 and mass fractions have only an effect if the mass flow
@@ -423,7 +427,26 @@ with exception of ambient pressure, do not have an effect.
         y=0.01,
         width=0.44,
         height=0.65),
-      Diagram);
+      Diagram, 
+      Documentation(info="<html>
+<p>
+Models an ideal flow source, with prescribed values of flow rate, temperature and composition:
+</p>
+<ul>
+<li> Prescribed mass flow rate via input signal <tt>m_flow_in</tt>.</li>
+<li> Prescribed temperature via input signal <tt>T_in</tt>.</li>
+<li> Prescribed mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow) .</li>
+</ul>
+<p>If the connector are left unconnected, the corresponding prescribed values
+are set by the parameters <tt>m_flow</tt>, <tt>T</tt>, and <tt>X</tt>, respectively.
+<p>
+Note, that temperature
+and mass fractions have only an effect if the mass flow
+is from the ambient into the port. If mass is flowing from
+the port into the ambient, the ambient definitions,
+with exception of ambient pressure, do not have an effect.
+</p>
+</html>"));
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
                            Medium.singleState, true, X, "PrescribedMassFlowRate_TX");
@@ -515,7 +538,26 @@ with exception of ambient pressure, do not have an effect.
         y=0.01,
         width=0.44,
         height=0.65),
-      Diagram);
+      Diagram, 
+      Documentation(info="<html>
+<p>
+Models an ideal flow source, with prescribed values of flow rate, temperature and composition:
+</p>
+<ul>
+<li> Prescribed mass flow rate via input signal <tt>m_flow_in</tt>.</li>
+<li> Prescribed specific enthalpy via input signal <tt>h_in</tt>.</li>
+<li> Prescribed mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow) .</li>
+</ul>
+<p>If the connector are left unconnected, the corresponding prescribed values
+are set by the parameters <tt>m_flow</tt>, <tt>h</tt>, and <tt>X</tt>, respectively.
+<p>
+Note, that specific enthalpy
+and mass fractions have only an effect if the mass flow
+is from the ambient into the port. If mass is flowing from
+the port into the ambient, the ambient definitions,
+with exception of ambient pressure, do not have an effect.
+</p>
+</html>"));
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
                            Medium.singleState, true, X, "PrescribedMassFlowRate_hX");

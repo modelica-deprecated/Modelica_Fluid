@@ -5,21 +5,7 @@ model TestWaterPumpDefault "Test case for WaterPump"
 annotation (
   Diagram,
   experiment(StopTime=10, Tolerance=1e-006),
-  Documentation(info="<HTML>
-<p>This model tests the <tt>Pump</tt> model with the check valve option active.
-<p>The sink pressure is varied sinusoidally with a period of 10 s, so as to operate the pump in all the possible working conditions, including stopped flow.
-<p>
-Simulation Interval = [0...10] sec <br> 
-Integration Algorithm = DASSL <br>
-Algorithm Tolerance = 1e-6 
-<p><b>Revision history:</b></p>
-<ul>
-<li><i>5 Feb 2004</i>
-    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco
-Schiavo</a>:<br>
-       First release.</li>
-</ul>
-</HTML>"));
+  Documentation(info=""));
   Sources.FixedAmbient_pTX Source(redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=1e5) 
   annotation (extent=[-100,20; -80,40]);

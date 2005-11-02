@@ -1,5 +1,5 @@
 package Utilities 
-  "Utility models to construct fluid component (should not be used directly) " 
+  "Utility models to construct fluid components (should not be used directly) " 
   extends Modelica.Icons.Library;
   
   model PipeFriction 

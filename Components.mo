@@ -2,29 +2,12 @@ package Components "Basic components for fluid models"
   model PortVolume 
     "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
     import Modelica_Fluid.Types.InitTypes.*;
+    extends Interfaces.PartialInitializationParameters;
+    
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" 
        annotation (choicesAllMatching=true);
     parameter SI.Volume V=1e-3 "Volume";
-    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Medium.AbsolutePressure p_start = Medium.reference_p 
-      "Start value of pressure" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Boolean use_T_start = true 
-      "Use T_start if true, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"), Evaluate=true);
-    parameter Medium.Temperature T_start=
-      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start[1:Medium.nXi]) 
-      "Start value of temperature" 
-      annotation(Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.h_pTX(p_start, T_start, X_start[1:Medium.nXi]) else 1e4 
-      "Start value of specific enthalpy" 
-      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
-      "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
     
     Modelica_Fluid.Interfaces.FluidPort_a port(
       redeclare package Medium = Medium) "Fluid port" 
@@ -122,31 +105,13 @@ transport. This splitting is only possible under certain assumptions.
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
     import Modelica_Fluid.Types.InitTypes.*;
     import Modelica.Constants.*;
+    extends Interfaces.PartialInitializationParameters;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" 
        annotation (choicesAllMatching=true);
     parameter SI.Volume V=1e-3 "Volume";
     parameter Boolean allowFlowReversal = true 
       "Flow reversal at the ports is allowed by the equations";
-    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Medium.AbsolutePressure p_start = Medium.reference_p 
-      "Start value of pressure" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Boolean use_T_start = true 
-      "Use T_start if true, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"), Evaluate = true);
-    parameter Medium.Temperature T_start=
-      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start) 
-      "Start value of temperature" 
-      annotation(Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.h_pTX(p_start, T_start, X_start[1:Medium.nXi]) else 1e4 
-      "Start value of specific enthalpy" 
-      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
-      "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
     Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,
                                   m_flow(min=if allowFlowReversal then -inf else 0)) 
       "Fluid inlet port" annotation (extent=[-112,-10; -92,10]);
@@ -688,7 +653,7 @@ Extends the <tt>ValveBase</tt> model (see the corresponding documentation for co
     end if;
   end ValveCompressible;
   
-  package ValveCharacteristics 
+  package ValveCharacteristics "Functions for valve characteristics" 
     partial function baseFun "Base class for valve characteristics" 
       extends Modelica.Icons.Function;
       input Real pos "Stem position (per unit)";
@@ -725,7 +690,7 @@ This characteristic is such that the relative change of the flow coefficient is 
 <p> d(rc)/d(pos) = k d(pos).
 <p> The constant k is expressed in terms of the rangeability, i.e. the ratio between the maximum and the minimum useful flow coefficient:
 <p> rangeability = exp(k) = rc(1.0)/rc(0.0).
-<p> The theoretical characteristic has a non-zero opening when pos = 0; the implemented characteristic is modified so that the valve closes linearly when pos < delta.
+<p> The theoretical characteristic has a non-zero opening when pos = 0; the implemented characteristic is modified so that the valve closes linearly when pos &lt delta.
 </html>"));
     end equalPercentage;
     
@@ -760,13 +725,14 @@ This characteristic is such that the relative change of the flow coefficient is 
             fillPattern=1))),
     Diagram,
     Documentation(info="<HTML>
-<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>cmd</tt> signal, without computing any fluid property.</p>
+<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>opening</tt> signal, without computing any fluid property.
+<p>A medium model must be nevertheless be specified, so that the fluid ports can be connected to other components using the same medium model.
 </HTML>",
       revisions="<html>
 <ul>
-<li><i>1 Oct 2003</i>
+<li><i>2 Nov 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       First release.</li>
+       Adapted from the ThermoPower library.</li>
 </ul>
 </html>"));
   end ValveLinear;
@@ -966,7 +932,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     
   end PumpBase;
   
-  package PumpCharacteristics 
+  package PumpCharacteristics "Functions for pump characteristics" 
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
     
     partial function baseFlow "Base class for pump flow characteristics" 
@@ -988,7 +954,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       output Real eta "Efficiency";
     end baseEfficiency;
     
-    function linearFlow 
+    function linearFlow "Linear flow characteristic" 
       extends baseFlow;
       input SI.VolumeFlowRate q_nom[2] 
         "Volume flow rate for two operating points (single pump)";
@@ -1006,7 +972,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       head := 1/g * (c[1] + q_flow*c[2]);
     end linearFlow;
     
-    function quadraticFlow 
+    function quadraticFlow "Quadratic flow characteristic" 
       extends baseFlow;
       input SI.VolumeFlowRate q_nom[3] 
         "Volume flow rate for three operating points (single pump)";
@@ -1027,7 +993,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       head := 1/g * (c[1] + q_flow*c[2] + q_flow^2*c[3]);
     end quadraticFlow;
     
-    function polynomialFlow 
+    function polynomialFlow "Polynomial flow characteristic" 
       extends baseFlow;
       input SI.VolumeFlowRate q_nom[:] 
         "Volume flow rate for three operating points (single pump)";
@@ -1050,14 +1016,14 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       head := 1/g * sum(q_flow^(i-1)*c[i] for i in 1:N);
     end polynomialFlow;
     
-    function constantEfficiency 
+    function constantEfficiency "Constant efficiency characteristic" 
        extends baseEfficiency;
        input Real eta_nom "Nominal efficiency";
     algorithm 
       eta := eta_nom;
     end constantEfficiency;
     
-    function quadraticPower 
+    function quadraticPower "Quadratic power consumption characteristic" 
       extends basePower;
       input SI.VolumeFlowRate q_nom[3] 
         "Volume flow rate for three operating points (single pump)";
@@ -1096,19 +1062,13 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       Documentation(info="<HTML>
 <p>This model describes a centrifugal pump (or a group of <tt>Np</tt> pumps in parallel) with controlled speed, either fixed or provided by an external signal.
 <p>The model extends <tt>PumpBase</tt>
-<p>If the <tt>in_n</tt> input connector is wired, it provides rotational speed of the pumps (rpm); otherwise, a constant rotational speed equal to <tt>n_const</tt> (which can be different from <tt>n0</tt>) is assumed.</p>
+<p>If the <tt>N_in</tt> input connector is wired, it provides rotational speed of the pumps (rpm); otherwise, a constant rotational speed equal to <tt>n_const</tt> (which can be different from <tt>N_nom</tt>) is assumed.</p>
 </HTML>",
         revisions="<html>
 <ul>
-<li><i>5 Jul 2004</i>
+<li><i>31 Oct 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Model restructured by using inheritance. Adapted to Modelica.Media.</li>
-<li><i>15 Jan 2004</i>
-    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>:<br>
-       <tt>ThermalCapacity</tt> and <tt>CheckValve</tt> added.</li>
-<li><i>15 Dec 2003</i>
-    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>:<br>
-       First release.</li>
+       Model added to the Fluid library</li>
 </ul>
 </html>"));
   end Pump;
@@ -1138,15 +1098,9 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
  </HTML>",
        revisions="<html>
 <ul>
-<li><i>5 Jul 2004</i>
+<li><i>31 Oct 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Model restructured by using inheritance. Adapted to Modelica.Media.</li>
-<li><i>15 Jan 2004</i>
-    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>:<br>
-       <tt>ThermalCapacity</tt> and <tt>CheckValve</tt> added.</li>
-<li><i>15 Dec 2003</i>
-    by <a href=\"mailto:francesco.schiavo@polimi.it\">Francesco Schiavo</a>:<br>
-       First release.</li>
+       Model added to the Fluid library</li>
 </ul>
 </html>"));
   end PumpMech;
@@ -1278,7 +1232,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
      Initialization options fixed</li>
 <li><i>6 Sep 2005</i><br>
-    Model by Ruediger Franke modified during the 45th Design Meeting</li>
+    Model by Ruediger Franke modified after the 45th Design Meeting</li>
 </ul>
 </html>", info="<html>
 Model of a simple evaporator with two states. The model assumes two-phase equilibrium inside the component; saturated steam goes out of the steam outlet.

@@ -289,7 +289,7 @@ through the sensor is allowed.
     port_b.m_flow = 0;
     port_b.H_flow = 0;
     port_b.mXi_flow = zeros(Medium.nXi);
-
+    
     p_rel = port_a.p - port_b.p;
   end RelativePressure;
   

@@ -17,17 +17,7 @@ model TestValveIncompressible "Test case for valves"
 annotation (
   Diagram,
   experiment(StopTime=4, Tolerance=1e-006),
-  Documentation(info="<HTML>
-<p>This model tests the <tt>ValveLiq</tt> model zero or reverse flow conditions.
-<p>Simulate the model for 4 s. At t = 1 s the V5 valve closes in 1 s, the V2 and V3 valves close in 2 s and the V1 and V4 valves open in 2 s. The flow in valve V3 reverses between t = 1.83 and t = 1.93.
-<p><b>Revision history:</b></p>
-<ul>
-<li><i>1 Oct 2003</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco
-Casella</a>:<br>
-       First release.</li>
-</ul>
-</HTML>"));
+  Documentation(info=""));
   Sources.FixedAmbient_pTX SinkP2(p=1e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[22,30; 2,50]);
@@ -47,7 +37,7 @@ Casella</a>:<br>
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
-    p_nom=10e5, 
+    p_nom=10e5,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Components.ValveCharacteristics.equalPercentage) 
             annotation (extent=[-50,-10; -30,10]);
@@ -64,7 +54,7 @@ Casella</a>:<br>
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
-    p_nom=10e5, 
+    p_nom=10e5,
     redeclare function flowCharacteristic = 
         Components.ValveCharacteristics.equalPercentage (rangeability=10)) 
             annotation (extent=[-50,-50; -30,-30]);
@@ -82,11 +72,11 @@ equation
         20; -40,20; -40,8], style(color=74, rgbcolor={0,0,127}));
   connect(Opening.y, V3.stemPosition) annotation (points=[-71,84; -64,84; -64,
         -22; -40,-22; -40,-32], style(color=74, rgbcolor={0,0,127}));
-  connect(SourceP2.port, V2.port_a)
+  connect(SourceP2.port, V2.port_a) 
     annotation (points=[-79,0; -51,0], style(color=69, rgbcolor={0,127,255}));
-  connect(V2.port_b, SinkP1.port) annotation (points=[-29,0; -14,0; -14,0; 1,0], 
+  connect(V2.port_b, SinkP1.port) annotation (points=[-29,0; -14,0; -14,0; 1,0],
       style(color=69, rgbcolor={0,127,255}));
-  connect(SourceP3.port, V3.port_a) annotation (points=[-79,-40; -51,-40], 
+  connect(SourceP3.port, V3.port_a) annotation (points=[-79,-40; -51,-40],
       style(color=69, rgbcolor={0,127,255}));
   connect(V3.port_b, SinkP3.port) annotation (points=[-29,-40; 1,-40], style(
         color=69, rgbcolor={0,127,255}));
