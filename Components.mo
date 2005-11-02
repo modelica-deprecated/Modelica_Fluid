@@ -288,6 +288,8 @@ with examples first (see sub-package Examples).
     parameter SI.Volume V0 = 0 "Volume of the liquid when the level is zero";
     parameter SI.Height H0 = 0 
       "Height of zero level reference over the bottom port";
+    parameter SI.Acceleration g = Modelica.Constants.g_n 
+      "Acceleration of gravity";
     parameter Medium.AbsolutePressure p_ambient=101325 "Tank surface pressure";
     parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
@@ -1211,9 +1213,5 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     V = V_l;
   end Evaporator;
   
-  model Flow1D   
-  end Flow1D;
   
-  model Pipe   
-  end Pipe;
 end Components;
