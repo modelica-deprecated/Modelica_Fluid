@@ -355,7 +355,7 @@ with exception of ambient pressure, do not have an effect.
   model PrescribedMassFlowRate_TX 
     "Ideal pump that produces a prescribed mass flow with prescribed temperature and mass fraction" 
     extends Interfaces.PartialSource;
-    parameter Medium.MassFlowRate m_flow 
+    parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port";
     parameter Modelica.Media.Interfaces.PartialMedium.Temperature T=
         Modelica.SIunits.Conversions.from_degC(20) 
@@ -427,7 +427,7 @@ with exception of ambient pressure, do not have an effect.
         y=0.01,
         width=0.44,
         height=0.65),
-      Diagram, 
+      Diagram,
       Documentation(info="<html>
 <p>
 Models an ideal flow source, with prescribed values of flow rate, temperature and composition:
@@ -467,7 +467,7 @@ with exception of ambient pressure, do not have an effect.
   model PrescribedMassFlowRate_hX 
     "Ideal pump that produces a prescribed mass flow with prescribed specific enthalpy and mass fraction" 
     extends Interfaces.PartialSource;
-    parameter Medium.MassFlowRate m_flow 
+    parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port";
     parameter Medium.SpecificEnthalpy h = 1e4 
       "Fixed value of the fluid specific enthalpy";
@@ -538,7 +538,7 @@ with exception of ambient pressure, do not have an effect.
         y=0.01,
         width=0.44,
         height=0.65),
-      Diagram, 
+      Diagram,
       Documentation(info="<html>
 <p>
 Models an ideal flow source, with prescribed values of flow rate, temperature and composition:

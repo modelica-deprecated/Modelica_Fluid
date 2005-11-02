@@ -38,8 +38,8 @@ Simulate for 7200 seconds.
       cp_D=500,
       V_t=100,
       p_start=1e5,
-      V_l_start=67, 
-      redeclare package Medium = Modelica.Media.Water.StandardWater, 
+      V_l_start=67,
+      redeclare package Medium = Modelica.Media.Water.StandardWater,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
                           annotation (extent=[-46,-29; -26,-9]);
     annotation (

@@ -275,7 +275,7 @@ This model describes the static head due to the relative height between the two 
    d = if port_a.m_flow > 0 then medium_a.d else medium_b.d;
    port_a.p = port_b.p + H_b_a*g*d;
   end StaticHead;
-
+  
   model Tank "Tank with one bottom inlet/outlet port" 
     import Modelica_Fluid.Types.InitTypes.*;
     replaceable package Medium = PackageMedium extends 
@@ -451,6 +451,7 @@ Full steady state initialization is not supported, because the corresponding int
     parameter Real stemPosition_nom = 1 "Nominal stem position" 
       annotation(Dialog(group="Nominal operating point"));
     parameter Boolean CheckValve=false "Reverse flow stopped";
+    
     parameter Real delta=0.01 "Regularisation factor";
     replaceable function flowCharacteristic = ValveCharacteristics.linear 
       extends ValveCharacteristics.baseFun "Inherent flow characteristic" 
@@ -771,6 +772,7 @@ This characteristic is such that the relative change of the flow coefficient is 
   
   partial model PumpBase "Base model for centrifugal pumps" 
     import Modelica.SIunits.Conversions.NonSIunits.*;
+    import Modelica.Constants.*;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" annotation(choicesAllMatching=true);
     Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
@@ -803,6 +805,8 @@ This characteristic is such that the relative change of the flow coefficient is 
     parameter Integer Np_nom(min=1) = 1 "Nominal number of pumps in parallel";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
     parameter Boolean checkValve=true "Reverse flow stopped";
+    parameter Boolean allowFlowReversal = true 
+      "Flow reversal at the ports is allowed by the equations";
     parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";
     parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value" 
       annotation(Dialog(tab="Initialization"));
@@ -826,10 +830,14 @@ This characteristic is such that the relative change of the flow coefficient is 
   //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
   //    "Initialisation option";
     Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = Medium,
-        p(start=pin_start), m_flow(start = m_flow_start)) 
+        p(start=pin_start),
+        m_flow(start = m_flow_start,
+               min = if allowFlowReversal and not checkValve then -inf else 0)) 
     annotation (extent=[-100,-40; -60,0]);
-    Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = 
-          Medium, p(start=pout_start), m_flow(start = -m_flow_start)) 
+    Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = Medium,
+        p(start=pout_start),
+        m_flow(start = -m_flow_start,
+               max = if allowFlowReversal and not checkValve then +inf else 0)) 
     annotation (extent=[40,12; 80,52]);
     SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
@@ -1141,6 +1149,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378" 
     import Modelica.SIunits.Conversions.*;
     import Modelica_Fluid.Types.InitTypes.*;
+    import Modelica.Constants.*;
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialTwoPhaseMedium 
       extends Modelica.Media.Interfaces.PartialTwoPhaseMedium "Medium model" 
@@ -1149,6 +1158,8 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     parameter Medium.SpecificHeatCapacity cp_D 
       "specific heat capacity of drum metal";
     parameter SI.Volume V_t "total volume inside drum";
+    parameter Boolean allowFlowReversal = false 
+      "Flow reversal at the ports is allowed by the equations";
     parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
@@ -1157,9 +1168,11 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     parameter SI.Volume V_l_start = V_t/2 
       "Start value of liquid volumeStart value of volume" 
       annotation(Dialog(tab = "Initialization"));
-    Interfaces.FluidPort_a feedwater(redeclare package Medium = Medium) 
+    Interfaces.FluidPort_a feedwater(redeclare package Medium = Medium,
+                             m_flow(min = if allowFlowReversal then -inf else 0)) 
       annotation (extent=[-120, -10; -100, 10]);
-    Interfaces.FluidPort_b steam(redeclare package Medium = Medium) 
+    Interfaces.FluidPort_b steam(redeclare package Medium = Medium,
+                             m_flow(max = if allowFlowReversal then +inf else 0)) 
       annotation (extent=[120, -10; 100, 10]);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
       annotation (extent=[-10, -120; 10, -100]);

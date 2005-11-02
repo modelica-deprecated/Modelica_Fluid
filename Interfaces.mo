@@ -138,7 +138,6 @@ package Interfaces
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
   end PartialInitializationParameters;
   
-  
   partial model PartialSource 
     "Partial component source with one fluid connector" 
     replaceable package Medium = PackageMedium extends 
@@ -169,13 +168,18 @@ features are:
   partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
     import Modelica.SIunits.*;
+    import Modelica.Constants.*;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component"  annotation (
         choicesAllMatching =                                                                            true);
+    parameter Boolean allowFlowReversal = true 
+      "Flow reversal at the ports is allowed by the equations";
     
-    FluidPort_a port_a(redeclare package Medium = Medium) 
+    FluidPort_a port_a(redeclare package Medium = Medium,
+                       m_flow(min=if allowFlowReversal then -inf else 0)) 
       annotation (extent=[-120, -10; -100, 10]);
-    FluidPort_b port_b(redeclare package Medium = Medium) 
+    FluidPort_b port_b(redeclare package Medium = Medium,
+                       m_flow(max=if allowFlowReversal then +inf else 0)) 
       annotation (extent=[120, -10; 100, 10]);
     Medium.BaseProperties medium_a "Medium properties in port_a";
     Medium.BaseProperties medium_b "Medium properties in port_b";
