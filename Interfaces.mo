@@ -111,72 +111,33 @@ package Interfaces
           string="%name",
           style(color=42))));
   
-  partial model PartialMenuInitialization 
-    "Define Medium model and parameter menu to initialize medium in component that has states" 
-    
-    replaceable package Medium = PackageMedium extends 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component"  annotation (
-        choicesAllMatching =                                                                            true);
-    
-    parameter Modelica_Fluid.Types.InitTypes.Temp initType=Modelica_Fluid.Types.InitTypes.NoInit 
-      "Type of initialization"                  annotation (Evaluate=true, Dialog(
-          tab="Initialization"));
-    parameter Boolean init_p=true 
-      "= true, if p_start is used, otherwise d_start (true is required for incompressible medium)"
-      annotation (Dialog(tab="Initialization", group=
-            "Initialization of mass balance"));
-    parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p_start=
-        Medium.reference_p "Start value of pressure p, if init_p = true" 
-    annotation(Dialog(enable=init_p,
-        tab="Initialization",
-        group="Initialization of mass balance"));
-    parameter Modelica.Media.Interfaces.PartialMedium.Density d_start=1 
-      "Start value of density d, if init_p = false" annotation (Dialog(enable=not init_p, tab=
-            "Initialization", group="Initialization of mass balance"));
-    parameter Boolean init_T=true 
-      "= true, if T_start is used, otherwise h_start" annotation (Dialog(tab=
-            "Initialization", group="Initialization of energy balance"));
-    parameter Modelica.Media.Interfaces.PartialMedium.Temperature T_start=
-        Modelica.SIunits.Conversions.from_degC(20) 
-      "Start value of temperature T, if init_T = true" 
-      annotation (Dialog(enable=init_T, tab="Initialization", group=
-            "Initialization of energy balance"));
-    parameter Modelica.Media.Interfaces.PartialMedium.SpecificEnthalpy h_start=
-        1.e4 "Start value of specific enthalpy h, if init_T = false" annotation (
-       Dialog(enable=not init_T, tab="Initialization", group="Initialization of energy balance"));
-    parameter Modelica.Media.Interfaces.PartialMedium.MassFraction X_start[Medium.nX]= Medium.reference_X 
-      "Start values of mass fractions X" 
-      annotation (Dialog(tab="Initialization", group=
-            "Initialization of mass fractions (only for multi-substance fluids)"));
-  end PartialMenuInitialization;
+  partial model PartialInitializationParameters 
+    "Define parameter menu to initialize medium in component that has one medium model" 
+    import Modelica_Fluid.Types.InitTypes.*;
+    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+      "Medium model" 
+       annotation (choicesAllMatching=true);
+    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_start = Medium.reference_p 
+      "Start value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate=true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start[1:Medium.nXi]) 
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.h_pTX(p_start, T_start, X_start[1:Medium.nXi]) else 1e4 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+  end PartialInitializationParameters;
   
-  partial model PartialMenuStartGuesses 
-    "Define Medium model and parameter menu to provide start values as guesses (for components that do not have states)" 
-    
-    import Modelica.SIunits.Conversions;
-    
-    replaceable package Medium = PackageMedium extends 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-      annotation (choicesAllMatching=true);
-    
-    parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p_start=
-        Medium.reference_p "Guess value of pressure p" 
-                                           annotation (Dialog(tab=
-            "Initialization", group="Initialization of mass balance"));
-    parameter Modelica.Media.Interfaces.PartialMedium.Density d_start=1.e3 
-      "Guess value of density d" annotation (Dialog(tab="Initialization", group=
-            "Initialization of mass balance"));
-    parameter Modelica.Media.Interfaces.PartialMedium.Temperature T_start=
-        Conversions.from_degC(20) "Guess value of temperature T" annotation (
-        Dialog(tab="Initialization", group="Initialization of energy balance"));
-    parameter Modelica.Media.Interfaces.PartialMedium.SpecificEnthalpy h_start=
-        1.e4 "Guess value of specific enthalpy h" annotation (Dialog(tab=
-            "Initialization", group="Initialization of energy balance"));
-    parameter Modelica.Media.Interfaces.PartialMedium.MassFraction X_start[Medium.nX]=
-        Medium.reference_X "Guess values of mass fractions X" 
-      annotation (Dialog(tab="Initialization", group=
-            "Initialization of mass fractions (only for multi-substance fluids)"));
-  end PartialMenuStartGuesses;
   
   partial model PartialSource 
     "Partial component source with one fluid connector" 
@@ -229,11 +190,11 @@ features are:
 <p>
 This component transports fluid between its two ports, without
 storing mass or energy. Reversal and zero mass flow rate is taken
-care off, for details see definition of built-in operator semiLinear().
+care of, for details see definition of built-in operator semiLinear().
+<p>
 When using this partial component, an equation for the momentum
 balance has to be added by specifying a relationship
-between the pressure drop \"port_a.p - port_b.p\" and the
-mass flow rate \"m_flow = port_a.m_flow\".
+between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 </p>
 </html>"));
   equation 
@@ -273,8 +234,8 @@ mass flow rate \"m_flow = port_a.m_flow\".
     
     annotation (Documentation(info="<html>
 <p>
-Partial component to model an <b>absolute sensor</b>,
-e.g., to get the pressure or temperature from a fluid connector
+Partial component to model an <b>absolute sensor</b>. Can be used for pressure sensor models.
+Use for other properties such as temperature or density is discouraged, because the enthalpy at the connector can have different meanings, depending on the connection topology. Use <tt>PartialFlowSensor</tt> instead.
 as signal.
 </p>
 </html>"));
