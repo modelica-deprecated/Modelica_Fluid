@@ -463,42 +463,6 @@ is negative. It must be positive.
     end if;
   end checkAmbient;
   
-  function linear 
-    extends Modelica.Icons.Function;
-    input Real x;
-    output Real y;
-    annotation (derivative=Utilities.linear_der);
-  algorithm 
-    y := x;
-  end linear;
-  
-  function linear_der 
-    extends Modelica.Icons.Function;
-    input Real x;
-    input Real der_x;
-    output Real der_y;
-  algorithm 
-    der_y := der_x;
-  end linear_der;
-  
-  function one 
-    extends Modelica.Icons.Function;
-    input Real x;
-    output Real y;
-    annotation (derivative=Utilities.one_der);
-  algorithm 
-    y := 1;
-  end one;
-  
-  function one_der 
-    extends Modelica.Icons.Function;
-    input Real x;
-    input Real der_x;
-    output Real der_y;
-  algorithm 
-    der_y := 0;
-  end one_der;
-  
   function regRoot 
     "Anti-symmetric square root approximation with finite derivative in the origin" 
     extends Modelica.Icons.Function;
@@ -529,6 +493,7 @@ With the default value of delta=0.01, the difference between sqrt(x) and regRoot
 </html>"));
   algorithm 
     y := x/(x*x+delta*delta)^0.25;
+    
   annotation (Documentation(info="<html>
 This function approximates sqrt(x)*sign(x), such that the derivative is finite and smooth in x=0. 
 </p>
@@ -559,6 +524,7 @@ With the default value of delta=0.01, the difference between sqrt(x) and sqrtReg
     output Real dy;
   algorithm 
     dy := dx*0.5*(x*x+2*delta*delta)/((x*x+delta*delta)^1.25);
+    
   annotation (Documentation(info="<html>
 </html>",
         revisions="<html>
@@ -599,6 +565,7 @@ With the default value of delta=0.01, the difference between x^2 and regSquare(x
 </html>"));
   algorithm 
     y := x*sqrt(x*x+delta*delta);
+    
   annotation (Documentation(info="<html>
 This function approximates sqrt(x)*sign(x), such that the derivative is finite and smooth in x=0. 
 </p>
@@ -647,6 +614,7 @@ This function approximates abs(x)^a*sign(x), such that the derivative is positiv
 </html>"));
   algorithm 
     y := x*(x*x+delta*delta)^((a-1)/2);
+    
   annotation (Documentation(info="<html>
 This function approximates sqrt(x)*sign(x), such that the derivative is finite and smooth in x=0. 
 </p>
