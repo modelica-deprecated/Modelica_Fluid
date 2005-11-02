@@ -8,12 +8,12 @@ package Components "Basic components for fluid models"
     parameter SI.Volume V=1e-3 "Volume";
     parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
-    parameter Boolean use_T_start = true 
-      "Use T_start if true, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"), Evaluate=true);
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate=true);
     parameter Medium.Temperature T_start=
       if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start[1:Medium.nXi]) 
       "Start value of temperature" 
@@ -130,12 +130,12 @@ transport. This splitting is only possible under certain assumptions.
       "Flow reversal at the ports is allowed by the equations";
     parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
-    parameter Boolean use_T_start = true 
-      "Use T_start if true, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"), Evaluate = true);
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate = true);
     parameter Medium.Temperature T_start=
       if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start) 
       "Start value of temperature" 
@@ -423,7 +423,11 @@ Full steady state initialization is not supported, because the corresponding int
   end Tank;
   
   partial model ValveBase "Base model for valves" 
-    extends Interfaces.PartialTwoPortTransport;
+    extends Interfaces.PartialTwoPortTransport(
+      medium_a(p(start=pin_start), T(start=T_start),
+               h(start=h_start),   Xi(start=X_start[1:Medium.nXi])),
+      medium_b(p(start=pout_start), T(start=T_start),
+               h(start=h_start),   Xi(start=X_start[1:Medium.nXi])));
     import Modelica_Fluid.Types.CvTypes;
     parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
@@ -439,11 +443,11 @@ Full steady state initialization is not supported, because the corresponding int
     parameter Real Cv(unit="USG/min")=0 "Cv (US) flow coefficient" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Cv)));
-    parameter Medium.AbsolutePressure p_nom = 1e5 "Nominal inlet pressure" 
+    parameter Medium.AbsolutePressure p_nom "Nominal inlet pressure" 
       annotation(Dialog(group="Nominal operating point"));
-    parameter SI.Pressure dp_nom = 1e5 "Nominal pressure drop" 
+    parameter SI.Pressure dp_nom "Nominal pressure drop" 
       annotation(Dialog(group="Nominal operating point"));
-    parameter Medium.MassFlowRate m_flow_nom = 1 "Nominal mass flowrate" 
+    parameter Medium.MassFlowRate m_flow_nom "Nominal mass flowrate" 
       annotation(Dialog(group="Nominal operating point"));
     parameter Medium.Density d_nom = 1000 "Nominal inlet density" 
       annotation(Dialog(group="Nominal operating point"));
@@ -454,6 +458,27 @@ Full steady state initialization is not supported, because the corresponding int
     replaceable function flowCharacteristic = ValveCharacteristics.linear 
       extends ValveCharacteristics.baseFun "Inherent flow characteristic" 
       annotation(choicesAllMatching=true);
+    parameter Medium.AbsolutePressure pin_start = p_nom 
+      "Start value of inlet pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure pout_start = p_nom-dp_nom 
+      "Start value of outlet pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate = true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then 293.15 else Medium.T_phX(pin_start,h_start,X_start) 
+      "Start value of inlet temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.h_pTX(pin_start, T_start, X_start[1:Medium.nXi]) else 1e4 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    
     Modelica.Blocks.Interfaces.RealInput stemPosition 
       "Stem position in the range 0-1" annotation (extent=[-10,70; 10,90],    rotation=-90);
     
@@ -705,7 +730,7 @@ This characteristic is such that the relative change of the flow coefficient is 
     end equalPercentage;
     
   end ValveCharacteristics;
-
+  
   model ValveLinear "Valve for water/steam flows with linear pressure drop" 
     extends Interfaces.PartialTwoPortTransport;
     parameter Types.HydraulicConductance Kv = 1/1e5 
@@ -745,12 +770,12 @@ This characteristic is such that the relative change of the flow coefficient is 
 </ul>
 </html>"));
   end ValveLinear;
-
+  
   partial model PumpBase "Base model for centrifugal pumps" 
     import Modelica.SIunits.Conversions.NonSIunits.*;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" annotation(choicesAllMatching=true);
-    Medium.BaseProperties fluid(p(start=pin_start),h(start=hstart)) 
+    Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
       "Fluid properties at the inlet";
     replaceable package SatMedium = 
         Modelica.Media.Interfaces.PartialTwoPhaseMedium 
@@ -759,6 +784,9 @@ This characteristic is such that the relative change of the flow coefficient is 
         PumpCharacteristics.baseFlow 
       "Head vs. q_flow characteristic at nominal speed and density" 
       annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
+    parameter Boolean usePowerCharacteristic = false 
+      "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
+       annotation(Dialog(group="Characteristics"));
     replaceable function powerCharacteristic = 
       PumpCharacteristics.basePower 
       "Power consumption vs. q_flow at nominal speed and density" 
@@ -770,8 +798,6 @@ This characteristic is such that the relative change of the flow coefficient is 
       "Efficiency vs. q_flow at nominal speed and density" 
       annotation(Dialog(group="Characteristics",enable = not usePowerCharacteristic),
                  choicesAllMatching=true);
-    parameter Boolean usePowerCharacteristic = false "Use powerCharacteristic" 
-       annotation(Dialog(group="Characteristics"));
     parameter AngularVelocity_rpm N_nom = 1500 "Nominal rotational speed" 
       annotation(Dialog(group="Characteristics"));
     parameter Medium.Density d_nom = 1000 "Nominal fluid density" 
@@ -784,20 +810,28 @@ This characteristic is such that the relative change of the flow coefficient is 
       annotation(Dialog(tab="Initialization"));
     parameter Medium.AbsolutePressure pout_start "Outlet Pressure Start Value" 
       annotation(Dialog(tab="Initialization"));
-    parameter Medium.SpecificEnthalpy hstart=1e5 
-      "Fluid Specific Enthalpy Start Value" 
-      annotation(Dialog(tab="Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate = true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then 293.15 else Medium.T_phX(pin_start,h_start,Medium.reference_X[1:Medium.nXi]) 
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.h_pTX(pin_start, T_start, Medium.reference_X[1:Medium.nXi]) else 1e4 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
     parameter SI.MassFlowRate m_flow_start = 0 
-      "Start value of mass flow rate (single pump)" 
+      "Start value of mass flow rate (total)" 
       annotation(Dialog(tab="Initialization"));
     constant SI.Acceleration g=Modelica.Constants.g_n;
   //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
   //    "Initialisation option";
     Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = Medium,
-        p(start=pin_start)) 
+        p(start=pin_start), m_flow(start = m_flow_start)) 
     annotation (extent=[-100,-40; -60,0]);
     Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = 
-          Medium, p(start=pout_start)) 
+          Medium, p(start=pout_start), m_flow(start = -m_flow_start)) 
     annotation (extent=[40,12; 80,52]);
     SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
@@ -1117,68 +1151,43 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
 </html>"));
   end PumpMech;
   
-  
   model Evaporator 
     "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378" 
-    import Modelica_Fluid.Interfaces.*;
     import Modelica.SIunits.Conversions.*;
-    // property and interface declarations
+    import Modelica_Fluid.Types.InitTypes.*;
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialTwoPhaseMedium 
       extends Modelica.Media.Interfaces.PartialTwoPhaseMedium "Medium model" 
         annotation (choicesAllMatching=true);
-    Medium.SaturationProperties sat 
-      "State vector to compute saturation properties";
-    FluidPort_a feedwater(redeclare package Medium = Medium) 
+    parameter SI.Mass m_D "mass of surrounding drum metal";
+    parameter Medium.SpecificHeatCapacity cp_D 
+      "specific heat capacity of drum metal";
+    parameter SI.Volume V_t "total volume inside drum";
+    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_start = Medium.reference_p 
+      "Start value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter SI.Volume V_l_start = V_t/2 
+      "Start value of liquid volumeStart value of volume" 
+      annotation(Dialog(tab = "Initialization"));
+    Interfaces.FluidPort_a feedwater(redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
-    FluidPort_b steam(redeclare package Medium = Medium) 
+    Interfaces.FluidPort_b steam(redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
       annotation (extent=[-10, -120; 10, -100]);
     Modelica.Blocks.Interfaces.RealOutput V(
       redeclare type SignalType = SI.Volume) "liquid volume" 
       annotation (extent=[30, 100; 50, 120], rotation=90);
-    annotation (
-      Coordsys(grid=[1, 1], component=[20, 20]),
-      Diagram,
-      Icon(
-        Rectangle(extent=[-100, 59; 100, -61], style(
-            color=0,
-            gradient=2,
-            fillColor=8)),
-        Rectangle(extent=[-100, 34; 100, -36], style(
-            color=69,
-            gradient=2,
-            fillColor=69)),
-        Ellipse(extent=[18, 0; 48, -29], style(pattern=0, fillColor=7)),
-        Ellipse(extent=[-1, 29; 29, 0], style(pattern=0, fillColor=7)),
-        Ellipse(extent=[48, 34; 78, 5], style(pattern=0, fillColor=7)),
-        Ellipse(extent=[-31, 1; -1, -28], style(pattern=0, fillColor=7)),
-        Ellipse(extent=[47, 14; 77, -15], style(pattern=0, fillColor=7)),
-        Ellipse(extent=[-72, 25; -42, -4], style(pattern=0, fillColor=7)),
-        Ellipse(extent=[71, 0; 101, -29], style(pattern=0, fillColor=7)),
-        Ellipse(extent=[74, 14; 104, -15], style(pattern=0, fillColor=7)),
-        Ellipse(extent=[71, 29; 101, 0], style(pattern=0, fillColor=7)),
-        Text(
-          extent=[-120, 117; 116, 51],
-          string="%name",
-          style(gradient=2, fillColor=69)),
-        Line(points=[0, -60; 0, -100], style(color=42)),
-        Line(points=[40, 99; 40, 60])));
     
-    // public parameters
-    parameter SI.Mass m_D=300e3 "mass of surrounding drum metal";
-    parameter Medium.SpecificHeatCapacity cp_D=500 
-      "specific heat capacity of drum metal";
-    parameter SI.Volume V_t=100 "total volume inside drum";
-    parameter Medium.AbsolutePressure p_start=from_bar(1) "initial pressure";
-    parameter SI.Volume V_start=67 "initial liquid volume";
-    
-    Medium.AbsolutePressure p(start=p_start, fixed = true, stateSelect=StateSelect.prefer) 
+    Medium.SaturationProperties sat 
+      "State vector to compute saturation properties";
+    Medium.AbsolutePressure p(start=p_start, stateSelect=StateSelect.prefer) 
       "pressure inside drum boiler";
     Medium.Temperature T "temperature inside drum boiler";
     SI.Volume V_v "volume of vapour phase";
-    SI.Volume V_l(start=V_start, fixed = true, stateSelect=StateSelect.prefer) 
+    SI.Volume V_l(start=V_l_start, stateSelect=StateSelect.prefer) 
       "volumes of liquid phase";
     Medium.SpecificEnthalpy h_v=Medium.dewEnthalpy(sat) 
       "specific enthalpy of vapour";
@@ -1218,6 +1227,66 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     
     // liquid volume 
     V = V_l;
+    
+    // Check that two-phase equilibrium is actually possible
+    assert(p<Medium.fluidConstants[1].criticalPressure-10000,
+           "Evaporator model requires subcritical pressure");
+  initial equation 
+    // Initial conditions
+    if initOption == NoInit then
+      // no initial equations
+    elseif initOption == InitialValues then
+     p = p_start;
+     V_l = V_l_start;
+    elseif initOption == SteadyState then
+      der(p) = 0;
+      der(V_l) = 0;
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
+    
+    annotation (
+      Coordsys(grid=[1, 1], component=[20, 20]),
+      Diagram,
+      Icon(
+        Rectangle(extent=[-100, 59; 100, -61], style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[-100, 34; 100, -36], style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Ellipse(extent=[18, 0; 48, -29], style(pattern=0, fillColor=7)),
+        Ellipse(extent=[-1, 29; 29, 0], style(pattern=0, fillColor=7)),
+        Ellipse(extent=[48, 34; 78, 5], style(pattern=0, fillColor=7)),
+        Ellipse(extent=[-31, 1; -1, -28], style(pattern=0, fillColor=7)),
+        Ellipse(extent=[47, 14; 77, -15], style(pattern=0, fillColor=7)),
+        Ellipse(extent=[-72, 25; -42, -4], style(pattern=0, fillColor=7)),
+        Ellipse(extent=[71, 0; 101, -29], style(pattern=0, fillColor=7)),
+        Ellipse(extent=[74, 14; 104, -15], style(pattern=0, fillColor=7)),
+        Ellipse(extent=[71, 29; 101, 0], style(pattern=0, fillColor=7)),
+        Text(
+          extent=[-120, 117; 116, 51],
+          string="%name",
+          style(gradient=2, fillColor=69)),
+        Line(points=[0, -60; 0, -100], style(color=42)),
+        Line(points=[40, 99; 40, 60])),
+      Documentation(revisions="<html>
+<ul>
+<li><i>2 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+     Initialization options fixed</li>
+<li><i>6 Sep 2005</i><br>
+    Model by Ruediger Franke modified during the 45th Design Meeting</li>
+</ul>
+</html>", info="<html>
+Model of a simple evaporator with two states. The model assumes two-phase equilibrium inside the component; saturated steam goes out of the steam outlet.
+<p>
+References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
+</html>"));
+  equation 
+    
   end Evaporator;
   
 end Components;
