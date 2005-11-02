@@ -62,13 +62,13 @@ equation
   connect(PortVolume1.port,PortVolume2. port) 
     annotation (points=[-20,20; 20,20],
                                      style(color=69, rgbcolor={0,127,255}));
-  connect(FlowSource1.port, Tport_in.port_a) annotation (points=[-79,20; -61,20], 
+  connect(FlowSource1.port, Tport_in.port_a) annotation (points=[-79,20; -61,20],
       style(color=69, rgbcolor={0,127,255}));
-  connect(Tport_in.port_b, PortVolume1.port) annotation (points=[-39,20; -20,20], 
+  connect(Tport_in.port_b, PortVolume1.port) annotation (points=[-39,20; -20,20],
       style(color=69, rgbcolor={0,127,255}));
-  connect(PortVolume2.port, Tport_out.port_a)
+  connect(PortVolume2.port, Tport_out.port_a) 
     annotation (points=[20,20; 39,20], style(color=69, rgbcolor={0,127,255}));
-  connect(Tport_out.port_b, Sink1.port)
+  connect(Tport_out.port_b, Sink1.port) 
     annotation (points=[61,20; 79,20], style(color=69, rgbcolor={0,127,255}));
   connect(FlowSource2.port, Tmix_in.port_a) annotation (points=[-79,-60; -61,
         -60], style(color=69, rgbcolor={0,127,255}));
@@ -76,6 +76,6 @@ equation
         -30.2,-60], style(color=69, rgbcolor={0,127,255}));
   connect(MixingVolume2.port_b, Tmix_out.port_a) annotation (points=[30,-60; 39,
         -60], style(color=69, rgbcolor={0,127,255}));
-  connect(Tmix_out.port_b, Sink2.port) annotation (points=[61,-60; 79,-60], 
+  connect(Tmix_out.port_b, Sink2.port) annotation (points=[61,-60; 79,-60],
       style(color=69, rgbcolor={0,127,255}));
 end TestMixingVolumes;

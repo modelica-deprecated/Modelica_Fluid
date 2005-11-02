@@ -11,38 +11,38 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
   redeclare package Medium = Medium) 
   annotation (extent=[82,-4; 62,16]);
   Components.ValveIncompressible V1(
-    dpnom=9e5,
+    dp_nom=9e5,
     m_flow_nom=1.5,
   redeclare package Medium = Medium,
-    pnom=10e5,
+    p_nom=10e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     Av=0.1) annotation (extent=[-50, 58; -30, 78]);
   Components.ValveIncompressible V2(
-    dpnom=5e5,
+    dp_nom=5e5,
     m_flow_nom=1.2,
   redeclare package Medium = Medium,
-    pnom=10e5,
+    p_nom=10e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     Av=0.1) annotation (extent=[-38, 26; -18, 46]);
   Components.ValveIncompressible V3(
-    dpnom=3e5,
+    dp_nom=3e5,
     m_flow_nom=1.1,
   redeclare package Medium = Medium,
-    pnom=8e5,
+    p_nom=8e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (extent=[-38, -38; -18, -18]);
   Components.ValveIncompressible V4(
-    dpnom=8e5,
+    dp_nom=8e5,
     m_flow_nom=1.3,
   redeclare package Medium = Medium,
-    pnom=8e5,
+    p_nom=8e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (extent=[-40,-78; -20,-58]);
   Components.ValveIncompressible V5(
-    dpnom=4e5,
+    dp_nom=4e5,
     m_flow_nom=2,
   redeclare package Medium = Medium,
-    pnom=6e5,
+    p_nom=6e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (extent=[30,-4; 50,16]);
   
