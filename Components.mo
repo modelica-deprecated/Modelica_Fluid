@@ -215,9 +215,7 @@ transport. This splitting is only possible under certain assumptions.
           string="%name",
           style(gradient=2, fillColor=69))), Documentation(info="<html>
 <p>
-Model <b>ShortPipe</b> defines a simple pipe model 
-with pressure loss due to friction. It is assumed that
-no mass or energy is stored in the pipe. 
+This model describes pressure losses due to friction in a pipe. It is assumed that no mass or energy is stored in the pipe. 
 The details of the pipe friction model are described
 <a href=\"Modelica://Modelica_Fluid.Utilities.PipeFriction\">here</a>.
 </p>
@@ -244,6 +242,40 @@ with examples first (see sub-package Examples).
 </p>
 </html>"));
   
+  model StaticHead 
+    "Models the static head between two ports at different heights" 
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+    parameter SI.Height H_b_a "Height of port b over port a";
+    parameter SI.Acceleration g = Modelica.Constants.g_n;
+    Medium.Density d "Fluid density";
+    annotation (Icon(
+        Rectangle(extent=[-100,60; 100,-60],   style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[-100,34; 100,-36],   style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Text(
+          extent=[-150,140; 150,80],
+          string="%name",
+          style(gradient=2, fillColor=69))), Documentation(info="<html>
+<p>
+This model describes the static head due to the relative height between the two connectors. No mass, energy and momentum storage, and no pressure drop due to friction are considered.
+</p>
+</html>", revisions="<html>
+<ul>
+<li><i>2 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Added to Modelica_Fluid</li>
+</ul>
+</html>"));
+  equation 
+   d = if port_a.m_flow > 0 then medium_a.d else medium_b.d;
+   port_a.p = port_b.p + H_b_a*g*d;
+  end StaticHead;
+
   model Tank "Tank with one bottom inlet/outlet port" 
     import Modelica_Fluid.Types.InitTypes.*;
     replaceable package Medium = PackageMedium extends 
@@ -698,7 +730,7 @@ This characteristic is such that the relative change of the flow coefficient is 
   
   model ValveLinear "Valve for water/steam flows with linear pressure drop" 
     extends Interfaces.PartialTwoPortTransport;
-    parameter Types.HydraulicConductance Kv = 1/1e5 
+    parameter Types.HydraulicConductance Kv 
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening 
     annotation (extent=[-20, 60; 20, 100], rotation=-90);
@@ -802,7 +834,7 @@ This characteristic is such that the relative change of the flow coefficient is 
     SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
     Medium.Density d "Liquid density at the inlet";
-    Medium.SpecificEnthalpy h_out 
+    Medium.SpecificEnthalpy h_out(start=h_start) 
       "Enthalpy of the liquid flowing out of the pump";
     Medium.Temperature Tin "Liquid inlet temperature";
     SI.MassFlowRate m_flow = inlet.m_flow "Mass flow rate (total)";
