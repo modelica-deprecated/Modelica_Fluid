@@ -216,10 +216,8 @@ features are:
       annotation (extent=[-120, -10; -100, 10]);
     FluidPort_b port_b(redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
-    Medium.BaseProperties medium_a(T(start = 300.0),p(start = 1.0e5)) 
-      "Medium properties in port_a";
-    Medium.BaseProperties medium_b(T(start = 300.0),p(start = 1.0e5)) 
-      "Medium properties in port_b";
+    Medium.BaseProperties medium_a "Medium properties in port_a";
+    Medium.BaseProperties medium_b "Medium properties in port_b";
     Medium.MassFlowRate m_flow 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
     Pressure dp "Pressure difference between port_a and port_b";
@@ -286,16 +284,16 @@ as signal.
     port.mXi_flow = zeros(Medium.nXi);
   end PartialAbsoluteSensor;
   
-  partial model PartialFlowSensor
-    "Partial component to model sensors that measure flow properties"
+  partial model PartialFlowSensor 
+    "Partial component to model sensors that measure flow properties" 
     
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
     Medium.SpecificEnthalpy h "enthalpy in flow";
     Medium.MassFraction[Medium.nXi] Xi "flow composition";
-
-    FluidPort_a port_a(redeclare package Medium = Medium)
+    
+    FluidPort_a port_a(redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
     FluidPort_b port_b(redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
@@ -322,7 +320,7 @@ this partial class should add a medium instance to calculate the measured proper
     zeros(Medium.nXi) = port_a.mXi_flow + port_b.mXi_flow;
   end PartialFlowSensor;
   
-protected
+protected 
   partial model PartialRelativeSensor 
     "Partial component to model a sensor that measures the difference of effort variables at two ports" 
     
