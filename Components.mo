@@ -222,8 +222,8 @@ The details of the pipe friction model are described
 </html>"));
   equation 
     if frictionType == Modelica_Fluid.Types.FrictionTypes.DetailedFriction then
-       d = if port_a.m_flow > 0 then medium_a.d else medium_b.d;
-       eta = if port_a.m_flow > 0 then Medium.dynamicViscosity(medium_a) else 
+       d = if dp > 0 then medium_a.d else medium_b.d;
+       eta = if dp > 0 then Medium.dynamicViscosity(medium_a) else 
                                       Medium.dynamicViscosity(medium_b);
     else
       // Assign dummy values for auxiliary variables
@@ -272,7 +272,7 @@ This model describes the static head due to the relative height between the two 
 </ul>
 </html>"));
   equation 
-   d = if port_a.m_flow > 0 then medium_a.d else medium_b.d;
+   d = if dp > 0 then medium_a.d else medium_b.d;
    port_a.p = port_b.p + H_b_a*g*d;
   end StaticHead;
   
