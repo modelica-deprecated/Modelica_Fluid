@@ -56,7 +56,7 @@ model TestMixingVolumes
                Medium) 
     annotation (extent=[100,-70; 80,-50]);
 equation 
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-60; 
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-60;
         9.8,-60],                                     style(color=69, rgbcolor=
           {0,127,255}));
   connect(PortVolume1.port,PortVolume2. port) 
@@ -72,7 +72,7 @@ equation
     annotation (points=[61,20; 79,20], style(color=69, rgbcolor={0,127,255}));
   connect(FlowSource2.port, Tmix_in.port_a) annotation (points=[-79,-60; -61,
         -60], style(color=69, rgbcolor={0,127,255}));
-  connect(Tmix_in.port_b, MixingVolume1.port_a) annotation (points=[-39,-60; 
+  connect(Tmix_in.port_b, MixingVolume1.port_a) annotation (points=[-39,-60;
         -30.2,-60], style(color=69, rgbcolor={0,127,255}));
   connect(MixingVolume2.port_b, Tmix_out.port_a) annotation (points=[30,-60; 39,
         -60], style(color=69, rgbcolor={0,127,255}));

@@ -432,7 +432,7 @@ public
     T = medium_a.T;
     d = medium_a.d;
   end PartialValve;
-
+  
   partial model PartialPump "Base model for centrifugal pumps" 
     import Modelica.SIunits.Conversions.NonSIunits.*;
     import Modelica.Constants.*;

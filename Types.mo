@@ -102,7 +102,7 @@ library.
     end Temp;
     
   end CvTypes;
-
+  
   package ValveCharacteristics "Functions for valve characteristics" 
     partial function baseFun "Base class for valve characteristics" 
       extends Modelica.Icons.Function;
@@ -145,7 +145,7 @@ This characteristic is such that the relative change of the flow coefficient is 
     end equalPercentage;
     
   end ValveCharacteristics;
-
+  
   package PumpCharacteristics "Functions for pump characteristics" 
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
     
