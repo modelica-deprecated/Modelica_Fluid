@@ -28,7 +28,7 @@ used for the initial mass fractions.
       level_start=3,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues, 
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
       V0=0.1) 
       annotation (extent=[-90,21; -70,41]);
     Components.Tank Tank2(
@@ -38,7 +38,7 @@ used for the initial mass fractions.
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
-      H0=0.5, 
+      H0=0.5,
       V0=0.1) 
       annotation (extent=[-10, 20; 10, 40]);
     Components.PressureDropPipe shortPipe1(
@@ -54,7 +54,7 @@ used for the initial mass fractions.
       level_start=2,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues, 
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
       V0=0.1) 
       annotation (extent=[71,21; 91,41]);
     Components.PressureDropPipe shortPipe3(
@@ -107,15 +107,15 @@ the mixing of the pipe flows is modelled more realistically.
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
       area=1,
       level_start=1,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, 
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues, 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
       T_start=from_degC(90)) 
       annotation (extent=[-10, 20; 10, 40]);
     Components.PressureDropPipe shortPipe1(
@@ -130,7 +130,7 @@ the mixing of the pipe flows is modelled more realistically.
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
       "level(fixed=true)" 
       annotation (extent=[70,20; 90,40]);
@@ -148,7 +148,7 @@ the mixing of the pipe flows is modelled more realistically.
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       frictionType=Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[-10, -10; 10, 10], rotation=-90);
-    Components.PortVolume junctionVolume(
+    Utilities.PortVolume junctionVolume(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       V=1.e-4,
@@ -195,14 +195,14 @@ used for the initial mass fractions.
       area=1,
       T_start=from_degC(50),
       level_start=3,
-      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph, 
+      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
       area=1,
       level_start=1,
-      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph, 
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues, 
+      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
       T_start=from_degC(90)) 
       annotation (extent=[-11,20; 9,40]);
     Components.PressureDropPipe shortPipe1(
@@ -215,7 +215,7 @@ used for the initial mass fractions.
       area=1,
       T_start=from_degC(20),
       level_start=2,
-      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph, 
+      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
       annotation (extent=[70, 20; 90, 40]);
     Components.PressureDropPipe shortPipe3(
@@ -268,14 +268,14 @@ used for the initial mass fractions.
       area=1,
       T_start=from_degC(50),
       level_start=3,
-      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph, 
+      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       initOption=Modelica_Fluid.Types.InitTypes.SteadyState) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
       area=1,
       level_start=1,
-      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph, 
-      T_start=from_degC(90), 
+      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
+      T_start=from_degC(90),
       initOption=Modelica_Fluid.Types.InitTypes.SteadyState) 
       annotation (extent=[-11,20; 9,40]);
     Components.PressureDropPipe shortPipe1(
@@ -288,7 +288,7 @@ used for the initial mass fractions.
       area=1,
       T_start=from_degC(20),
       level_start=2,
-      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph, 
+      redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       initOption=Modelica_Fluid.Types.InitTypes.SteadyState) 
       annotation (extent=[70, 20; 90, 40]);
     Components.PressureDropPipe shortPipe3(

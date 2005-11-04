@@ -26,7 +26,7 @@ model TestMixingVolumes
     annotation (extent=[-60,-70; -40,-50]);
   Sensors.Temperature Tmix_out(redeclare package Medium = Medium) 
     annotation (extent=[40,-70; 60,-50]);
-  Components.PortVolume PortVolume1(
+  Utilities.PortVolume PortVolume1(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
@@ -38,7 +38,7 @@ model TestMixingVolumes
     h=2e5,
     redeclare package Medium = Medium) 
                    annotation (extent=[-100,10; -80,30]);
-  Components.PortVolume PortVolume2(
+  Utilities.PortVolume PortVolume2(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,

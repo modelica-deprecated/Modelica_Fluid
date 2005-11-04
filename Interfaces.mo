@@ -3,18 +3,16 @@ package Interfaces
   
   annotation (Documentation(info="<html>
 </html>", revisions="<html>
-<dl>
-<dt><b>Main Author:</b>
-<dd>Hilding Elmqvist, Dynasim</dl>
-<p><b>Release Notes:</b></p>
 <ul>
-<li><i>Nov. 6, 2002</i>
-       by Hilding Elmqvist: first version.</li>
-<li><i>Nov. 11, 2002</i>
-       by Hilding Elmqvist, Martin Otter: improved version.</li>
+<li><i>Nov. 2, 2005</i>
+       by Francesco Casella: restructured after 45th Design Meeting.</li>
 <li><i>Nov. 20-21, 2002</i>
        by Hilding Elmqvist, Mike Tiller, Allan Watson, John Batteh, Chuck Newman,
        Jonas Eborn: Improved at the 32nd Modelica Design Meeting.
+<li><i>Nov. 11, 2002</i>
+       by Hilding Elmqvist, Martin Otter: improved version.</li>
+<li><i>Nov. 6, 2002</i>
+       by Hilding Elmqvist: first version.</li>
 <li><i>Aug. 11, 2002</i>
        by Martin Otter: Improved according to discussion with Hilding
        Elmqvist and Hubertus Tummescheit.<br>
@@ -315,4 +313,325 @@ between fluid connectors.
     port_b.mXi_flow = zeros(Medium.nXi);
   end PartialRelativeSensor;
   
+public 
+  partial model PartialValve "Base model for valves" 
+    extends Interfaces.PartialTwoPortTransport(
+      medium_a(p(start=pin_start), T(start=T_start),
+               h(start=h_start),   Xi(start=X_start[1:Medium.nXi])),
+      medium_b(p(start=pout_start), T(start=T_start),
+               h(start=h_start),   Xi(start=X_start[1:Medium.nXi])));
+    import Modelica_Fluid.Types.CvTypes;
+    parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
+       annotation(Dialog(group = "Flow Coefficient"));
+    parameter SI.Area Av(fixed = if CvData==CvTypes.Av then true else false,
+                         start = m_flow_nom/(sqrt(d_nom*dp_nom))*
+                                             flowCharacteristic(stemPosition_nom)) = 0 
+      "Av (metric) flow coefficient" 
+       annotation(Dialog(group = "Flow Coefficient",
+                         enable = (CvData==CvTypes.Av)));
+    parameter Real Kv(unit="m3/h")=0 "Kv (metric) flow coefficient" 
+      annotation(Dialog(group = "Flow Coefficient",
+                        enable = (CvData==CvTypes.Kv)));
+    parameter Real Cv(unit="USG/min")=0 "Cv (US) flow coefficient" 
+      annotation(Dialog(group = "Flow Coefficient",
+                        enable = (CvData==CvTypes.Cv)));
+    parameter Medium.AbsolutePressure p_nom "Nominal inlet pressure" 
+      annotation(Dialog(group="Nominal operating point"));
+    parameter SI.Pressure dp_nom "Nominal pressure drop" 
+      annotation(Dialog(group="Nominal operating point"));
+    parameter Medium.MassFlowRate m_flow_nom "Nominal mass flowrate" 
+      annotation(Dialog(group="Nominal operating point"));
+    parameter Medium.Density d_nom = 1000 "Nominal inlet density" 
+      annotation(Dialog(group="Nominal operating point"));
+    parameter Real stemPosition_nom = 1 "Nominal stem position" 
+      annotation(Dialog(group="Nominal operating point"));
+    parameter Boolean CheckValve=false "Reverse flow stopped";
+    
+    parameter Real delta=0.01 "Regularisation factor";
+    replaceable function flowCharacteristic = 
+        Modelica_Fluid.Types.ValveCharacteristics.linear 
+      extends Modelica_Fluid.Types.ValveCharacteristics.baseFun 
+      "Inherent flow characteristic" 
+      annotation(choicesAllMatching=true);
+    parameter Medium.AbsolutePressure pin_start = p_nom 
+      "Start value of inlet pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure pout_start = p_nom-dp_nom 
+      "Start value of outlet pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate = true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then 293.15 else Medium.T_phX(pin_start,h_start,X_start) 
+      "Start value of inlet temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.h_pTX(pin_start, T_start, X_start[1:Medium.nXi]) else 1e4 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    
+    Modelica.Blocks.Interfaces.RealInput stemPosition 
+      "Stem position in the range 0-1" annotation (extent=[-10,70; 10,90],    rotation=-90);
+    
+    Medium.Density d "Density at port a";
+    Medium.Temperature T "Temperature at port a";
+  protected 
+    function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
+    annotation (
+      Icon(Text(extent=[-100, -40; 100, -80], string="%name"),
+        Line(points=[0,60; 0,0],   style(
+            color=0,
+            thickness=2,
+            fillPattern=1)),
+        Polygon(points=[-100,52; -100,-54; 0,0; -100,52],  style(
+            color=0,
+            thickness=2,
+            fillPattern=1)),
+        Polygon(points=[100,52; 0,0; 100,-54; 100,52],  style(
+            color=0,
+            thickness=2,
+            fillPattern=1)),
+        Rectangle(extent=[-20,70; 20,50],   style(
+            color=0,
+            fillColor=0,
+            fillPattern=1))),
+      Diagram,
+      Documentation(info="<HTML>
+<p>This is the base model for the <tt>ValveLiq</tt>, <tt>ValveLiqChoked</tt>, and <tt>ValveVap</tt> valve models. The model is based on the IEC 534 / ISA S.75 standards for valve sizing.
+<p>The model optionally supports reverse flow conditions (assuming symmetrical behaviour) or check valve operation, and has been suitably modified to avoid numerical singularities at zero pressure drop. 
+<p><b>Modelling options</b></p>
+<p>The following options are available to specify the valve flow coefficient in fully open conditions:
+<ul><li><tt>CvData = Modelica_Fluid.Types.CvTypes.Av</tt>: the flow coefficient is given by the metric <tt>Av</tt> coefficient (m^2).
+<li><tt>CvData = Modelica_Fluid.Types.CvTypes.Kv</tt>: the flow coefficient is given by the metric <tt>Kv</tt> coefficient (m^3/h).
+<li><tt>CvData = Modelica_Fluid.Types.CvTypes.Cv</tt>: the flow coefficient is given by the US <tt>Cv</tt> coefficient (USG/min).
+<li><tt>CvData = Modelica_Fluid.Types.CvTypes.OpPoint</tt>: the flow is computed from the nominal operating point specified by <tt>p_nom</tt>, <tt>dp_nom</tt>, <tt>m_flow_nom</tt>, <tt>d_nom</tt>, <tt>stemPosition_nom</tt>.
+</ul>
+<p>The nominal pressure drop <tt>dp_nom</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dp_nom</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical problems occur in valves with very low pressure drops.
+<p>If <tt>CheckValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place.
+<p>The inherent flow characteristic <tt>flowCharacteristic</tt>, linear by default, can be replaced by any user-defined function (e.g. equal percentage, quick opening, etc.).
+</HTML>",
+        revisions="<html>
+<ul>
+<li><i>2 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted from the ThermoPower library.</li>
+</ul>
+</html>"));
+  initial equation 
+    if CvData == CvTypes.Kv then
+      Av = 2.7778e-5*Kv "Unit conversion";
+    elseif CvData == CvTypes.Cv then
+      Av = 2.4027e-5*Cv "Unit conversion";
+    end if;
+    assert(CvData>=0 and CvData<=3, "Invalid CvData");
+  equation 
+    T = medium_a.T;
+    d = medium_a.d;
+  end PartialValve;
+
+  partial model PartialPump "Base model for centrifugal pumps" 
+    import Modelica.SIunits.Conversions.NonSIunits.*;
+    import Modelica.Constants.*;
+    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+      "Medium model" annotation(choicesAllMatching=true);
+    Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
+      "Fluid properties at the inlet";
+    replaceable package SatMedium = 
+        Modelica.Media.Interfaces.PartialTwoPhaseMedium 
+      "Saturated medium model (required only for NPSH computation)";
+    replaceable function flowCharacteristic = 
+        Modelica_Fluid.Types.PumpCharacteristics.baseFlow 
+      "Head vs. q_flow characteristic at nominal speed and density" 
+      annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
+    parameter Boolean usePowerCharacteristic = false 
+      "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
+       annotation(Dialog(group="Characteristics"));
+    replaceable function powerCharacteristic = 
+      Modelica_Fluid.Types.PumpCharacteristics.basePower 
+      "Power consumption vs. q_flow at nominal speed and density" 
+      annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
+                 choicesAllMatching=true);
+    replaceable function efficiencyCharacteristic = 
+      Modelica_Fluid.Types.PumpCharacteristics.constantEfficiency(eta_nom = 0.8) 
+      extends Modelica_Fluid.Types.PumpCharacteristics.baseEfficiency 
+      "Efficiency vs. q_flow at nominal speed and density" 
+      annotation(Dialog(group="Characteristics",enable = not usePowerCharacteristic),
+                 choicesAllMatching=true);
+    parameter AngularVelocity_rpm N_nom = 1500 "Nominal rotational speed" 
+      annotation(Dialog(group="Characteristics"));
+    parameter Medium.Density d_nom = 1000 "Nominal fluid density" 
+      annotation(Dialog(group="Characteristics"));
+    parameter Integer Np_nom(min=1) = 1 "Nominal number of pumps in parallel";
+    parameter SI.Mass M = 0 "Fluid mass inside the pump";
+    parameter Boolean checkValve=true "Reverse flow stopped";
+    parameter Boolean allowFlowReversal = true 
+      "Flow reversal at the ports is allowed by the equations";
+    parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";
+    parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value" 
+      annotation(Dialog(tab="Initialization"));
+    parameter Medium.AbsolutePressure pout_start "Outlet Pressure Start Value" 
+      annotation(Dialog(tab="Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate = true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then 293.15 else Medium.T_phX(pin_start,h_start,Medium.reference_X[1:Medium.nXi]) 
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.h_pTX(pin_start, T_start, Medium.reference_X[1:Medium.nXi]) else 1e4 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter SI.MassFlowRate m_flow_start = 0 
+      "Start value of mass flow rate (total)" 
+      annotation(Dialog(tab="Initialization"));
+    constant SI.Acceleration g=Modelica.Constants.g_n;
+  //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
+  //    "Initialisation option";
+    Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = Medium,
+        p(start=pin_start),
+        m_flow(start = m_flow_start,
+               min = if allowFlowReversal and not checkValve then -inf else 0)) 
+    annotation (extent=[-100,-40; -60,0]);
+    Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = Medium,
+        p(start=pout_start),
+        m_flow(start = -m_flow_start,
+               max = if allowFlowReversal and not checkValve then +inf else 0)) 
+    annotation (extent=[40,12; 80,52]);
+    SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
+    SI.Height head = dp/(d*g) "Pump head";
+    Medium.Density d "Liquid density at the inlet";
+    Medium.SpecificEnthalpy h_out(start=h_start) 
+      "Enthalpy of the liquid flowing out of the pump";
+    Medium.Temperature Tin "Liquid inlet temperature";
+    SI.MassFlowRate m_flow = inlet.m_flow "Mass flow rate (total)";
+    SI.MassFlowRate m_flow_single = m_flow/Np "Mass flow rate (single pump)";
+    SI.VolumeFlowRate q_flow = m_flow/d "Volume flow rate (total)";
+    SI.VolumeFlowRate q_flow_single = q_flow/Np 
+      "Volume flow rate (single pump)";
+    AngularVelocity_rpm N "Shaft rotational speed";
+    Integer Np(min=1) "Number of pumps in parallel";
+    SI.Power W_single "Power Consumption (single pump)";
+    SI.Power W_tot = W_single*Np "Power Consumption (total)";
+    constant SI.Power W_eps=1e-8 
+      "Small coefficient to avoid numerical singularities in efficiency computations";
+    Real eta "Global Efficiency";
+    SI.Length NPSHa "Net Positive Suction Head available";
+    Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
+    Real s(start = m_flow_start) 
+      "Curvilinear abscissa for the flow curve in parametric form";
+    Modelica.Blocks.Interfaces.IntegerInput in_Np 
+      annotation (extent=[16,34; 36,54], rotation=-90);
+  equation 
+    // Number of pumps in parallel
+    Np = in_Np;
+    if cardinality(in_Np)==0 then
+      in_Np = Np_nom "Number of pumps selected by parameter";
+    end if;
+    
+    // Flow equations
+    if noEvent(s > 0 or (not checkValve)) then
+      // Flow characteristics when check valve is open
+      q_flow_single = s;
+      head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/N);
+    else
+      // Flow characteristics when check valve is closed
+      head = (N/N_nom)^2*flowCharacteristic(0) - s;
+      q_flow_single = 0;
+    end if;
+    
+    // Power consumption  
+    if usePowerCharacteristic then
+      W_single = (N/N_nom)^3*(d/d_nom)*powerCharacteristic(q_flow_single*N_nom/N) 
+        "Power consumption (single pump)";
+      eta = (dp*q_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
+    else
+      eta = efficiencyCharacteristic(q_flow_single*N_nom/N);
+      W_single = dp*q_flow/eta;
+    end if;
+    // Fluid properties
+    fluid.p = inlet.p;
+    fluid.h = inlet.h;
+    fluid.Xi = inlet.Xi;
+    d = fluid.d;
+    Tin = fluid.T;
+    
+    // Mass and energy balances
+    inlet.m_flow + outlet.m_flow = 0 "Mass balance";
+    inlet.mXi_flow + outlet.mXi_flow = zeros(Medium.nXi) 
+      "Substance mass balance";
+    inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,h_out) 
+      "Enthalpy flow at the inlet";
+    outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,h_out) 
+      "Enthalpy flow at the outlet";
+    if M > 0 then
+      M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single 
+        "Dynamic energy balance (density variations neglected)";
+    else
+      inlet.H_flow + outlet.H_flow + W_single*Np = 0 "Static energy balance";
+    end if;
+    
+    // NPSH computations
+    if computeNPSHa then
+      pv=SatMedium.saturationPressure(fluid.T);
+      NPSHa=(inlet.p-pv)/(d*Modelica.Constants.g_n);
+    else
+      pv=0;
+      NPSHa=0;
+    end if;
+  /*
+initial equation 
+  if initOpt == Choices.Init.Options.noInit then
+    // do nothing
+  elseif initOpt == Choices.Init.Options.steadyState then
+    if ThermalCapacity then
+      der(h)=0;
+    end if;
+  else
+    assert(false, "Unsupported initialisation option");
+  end if;
+*/
+    annotation (
+      Icon(
+        Polygon(points=[-40,-64; -60,-100; 60,-100; 40,-64; -40,-64],
+            style(pattern=0, fillColor=74)),
+        Ellipse(extent=[-60,40; 60,-80],   style(gradient=3)),
+        Polygon(points=[-30,12; -30,-48; 48,-20; -30,12],   style(
+            pattern=0,
+            gradient=2,
+            fillColor=7)),
+        Text(extent=[-100,-110; 100,-136], string="%name"),
+        Text(extent=[-10,60; 18,40],  string="Np")),
+      Diagram,
+      Documentation(info="<HTML>
+<p>This is the base model for the <tt>Pump</tt> and <tt>
+PumpMech</tt> pump models.
+<p>The model describes a centrifugal pump, or a group of <tt>Np</tt> identical pumps in parallel. The pump model is based on the theory of kinematic similarity: the pump characteristics are given for nominal operating conditions (rotational speed and fluid density), and then adapted to actual operating condition, according to the similarity equations. 
+<p><b>Modelling options</b></p>
+<p> The nominal hydraulic characteristic (head vs. volume flow rate) is given by the the replaceable function <tt>flowCharacteristic</tt>. 
+<p> The pump energy balance can be specified in two alternative ways:
+<ul>
+<li><tt>usePowerCharacteristic = false</tt> (default option): the replaceable function <tt>efficiencyCharacteristic</tt> (efficiency vs. volume flow rate in nominal conditions) is used to determine the efficiency, and then the power consumption. The default is a constant efficiency of 0.8.
+<li><tt>usePowerCharacteristic = true</tt>: the replaceable function <tt>powerCharacteristic</tt> (power consumption vs. volume flow rate in nominal conditions) is used to determine the power consumption, and then the efficiency.
+</ul>
+<p>
+Several functions are provided in the package <tt>PumpCharacteristics</tt> to specify the characteristics as a function of some operating points at nominal conditions.
+<p>Depending on the value of the <tt>checkValve</tt> parameter, the model either supports reverse flow conditions, or includes a built-in check valve to avoid flow reversal.
+<p>If the <tt>in_Np</tt> input connector is wired, it provides the number of pumps in parallel; otherwise,  <tt>Np_n</tt> parallel pumps are assumed.</p>
+<p>It is possible to take into account the heat capacity of the fluid inside the pump by specifying its mass <tt>M</tt> at nominal conditions; this is necessary to avoid singularities in the computation of the outlet enthalpy in case of zero flow rate. If zero flow rate conditions are always avoided, this dynamic effect can be neglected by leaving the default value <tt>M = 0</tt>, thus avoiding a fast state variable in the model.
+<p>If <tt>computeNPSHa = true</tt>, the available net positive suction head is also computed; this requires a two-phase medium model to provide the fluid saturation pressure.
+</HTML>",
+        revisions="<html>
+<ul>
+<li><i>31 Oct 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Model added to the Fluid library</li>
+</ul>
+</html>"));
+    
+  end PartialPump;
 end Interfaces;

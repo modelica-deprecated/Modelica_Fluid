@@ -1,6 +1,6 @@
 model TestWaterPumpDefault "Test case for WaterPump" 
   extends Modelica.Icons.Example;
-  import PC = Modelica_Fluid.Components.PumpCharacteristics;
+  import PC = Modelica_Fluid.Types.PumpCharacteristics;
   replaceable function pumpFlowChar = PC.quadraticFlow(q_nom={0,0.001,0.0015}, head_nom={100,50,0});
 annotation (
   Diagram,
