@@ -210,8 +210,8 @@ This characteristic is such that the relative change of the flow coefficient is 
     function polynomialFlow "Polynomial flow characteristic" 
       extends baseFlow;
       input SI.VolumeFlowRate q_nom[:] 
-        "Volume flow rate for three operating points (single pump)";
-      input SI.Height head_nom[:] "Pump head for three operating points";
+        "Volume flow rate for N operating points (single pump)";
+      input SI.Height head_nom[:] "Pump head for N operating points";
     protected 
       constant Real g = Modelica.Constants.g_n;
       Integer N = size(q_nom,1) "Number of nominal operating points";
