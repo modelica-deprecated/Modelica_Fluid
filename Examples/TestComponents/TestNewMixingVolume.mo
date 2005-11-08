@@ -16,7 +16,8 @@ model TestNewMixingVolume
         Modelica.Media.Water.StandardWater, p=101325) 
     annotation (extent=[60,0; 40,20]);
   Components.ValveLinear Valve(redeclare package Medium = 
-        Modelica.Media.Water.StandardWater) annotation (extent=[2,0; 22,20]);
+        Modelica.Media.Water.StandardWater, Kv=1) 
+                                            annotation (extent=[2,0; 22,20]);
   annotation (Diagram, experiment(StopTime=5));
   Modelica.Blocks.Sources.Step Step1(
     startTime=1,

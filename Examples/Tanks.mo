@@ -87,6 +87,7 @@ used for the initial mass fractions.
   end ThreeTanksOneLiquid;
   
   model ThreeTanksWithPortVolume 
+    "This model does not yet translate. Will be fixed" 
     import Modelica.SIunits.Conversions.*;
     extends Modelica.Icons.Example;
     annotation (

@@ -124,11 +124,11 @@ package Interfaces
       "Use T_start if true, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate=true);
     parameter Medium.Temperature T_start=
-      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start[1:Medium.nXi]) 
+      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start) 
       "Start value of temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.h_pTX(p_start, T_start, X_start[1:Medium.nXi]) else 1e4 
+      if use_T_start then Medium.h_pTX(p_start, T_start, X_start) else 1e4 
       "Start value of specific enthalpy" 
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
