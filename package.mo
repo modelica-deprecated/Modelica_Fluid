@@ -1,7 +1,7 @@
 package Modelica_Fluid "Fluid package that should be included into package Modelica"
 annotation (
-  version="0.910",
-  versionDate="2005-10-25",
+  version="0.950",
+  versionDate="2005-11-08",
   preferedView="info",
   Settings(NewStateSelection=true),
   uses( Modelica(version="2.2")),
