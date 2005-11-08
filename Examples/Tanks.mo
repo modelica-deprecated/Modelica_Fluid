@@ -1,6 +1,50 @@
 package Tanks "Examples with Tanks" 
   extends Modelica.Icons.Library;
   
+  model TwoTanks 
+    import Modelica.SIunits.Conversions.*;
+    extends Modelica.Icons.Example;
+    annotation (
+      Diagram,
+      Coordsys(grid=[1, 1], component=[20, 20]),
+      experiment(StopTime=50),
+      Documentation(info="<html>
+</html>"), 
+      experimentSetupOutput);
+    Components.Tank Tank1(
+      area=1,
+      T_start=from_degC(50),
+      level_start=3,
+      redeclare package Medium = 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      V0=0.1, 
+      pipeArea=0.01) 
+      annotation (extent=[-70,20; -50,40]);
+    Components.Tank Tank2(
+      area=1,
+      T_start=from_degC(100),
+      level_start=1,
+      redeclare package Medium = 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      V0=0.1, 
+      pipeArea=0.01) 
+      annotation (extent=[10,20; 30,40]);
+    Components.PressureDropPipe shortPipe1(
+      m_flow_nominal=2000,
+      dp_nominal=from_bar(0.1),
+      redeclare package Medium = 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      frictionType=Types.FrictionTypes.ConstantLaminar) 
+      annotation (extent=[-29,0; -9,20]);
+  equation 
+    connect(Tank1.port, shortPipe1.port_a) 
+      annotation (points=[-60,19; -60,10; -30,10],      style(color=69));
+    connect(shortPipe1.port_b, Tank2.port) annotation (points=[-8,10; 20,10; 20,
+          19], style(color=69, rgbcolor={0,127,255}));
+  end TwoTanks;
+  
   model ThreeTanksOneLiquid 
     import Modelica.SIunits.Conversions.*;
     extends Modelica.Icons.Example;

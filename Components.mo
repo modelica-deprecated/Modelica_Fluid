@@ -181,6 +181,7 @@ This model describes the static head due to the relative height between the two 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching=true);
     parameter SI.Area area "Tank area";
+    parameter SI.Area pipeArea "Area of outlet pipe";
     parameter SI.Volume V0 = 0 "Volume of the liquid when the level is zero";
     parameter SI.Height H0 = 0 
       "Height of zero level reference over the bottom port";
@@ -216,9 +217,11 @@ This model describes the static head due to the relative height between the two 
     
     SI.Height level(start=level_start,stateSelect=StateSelect.prefer) 
       "Height of tank level over the zero reference";
+    Medium.AbsolutePressure p_bottom "Pressure at bottom of tank";
     SI.Energy U "Internal energy of tank volume";
     SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
-    Real m(quantity=Medium.mediumName, unit="kg") "Mass of tank volume";
+    Real m(quantity=Medium.mediumName, unit="kg", stateSelect=StateSelect.never) 
+      "Mass of tank volume";
     Real mX[Medium.nX](quantity=Medium.substanceNames, each unit="kg") 
       "Component masses of the independent substances";
   equation 
@@ -229,17 +232,23 @@ This model describes the static head due to the relative height between the two 
     U = m*medium.u "Internal energy of fluid";
     
     // Mass balance
-    der(m) = port.m_flow;
+    // der(m) = port.m_flow;
+    area*der(level)*medium.d + V*der(medium.d) = port.m_flow;
     der(mX) = port.mXi_flow;
     
     // Momentum balance
-    port.p = (medium.d*g*(level+H0)) + p_ambient;
+    p_bottom = (medium.d*g*(level+H0)) + p_ambient;
+    port.p = p_bottom - smooth(2,noEvent(if port.m_flow < 0 then port.m_flow^2/(2*medium.d*pipeArea^2) else 
+                                                                 0));
     
     // Energy balance
     if Medium.singleState then
-      der(U) = port.H_flow "Mechanical work is neglected";
+      // der(U) = port.H_flow "Mechanical work is neglected";
+      m*der(medium.u) + port.m_flow*medium.u = port.H_flow 
+        "Mechanical work is neglected";
     else
-      der(U) = port.H_flow - p_ambient*der(V);
+      // der(U) = port.H_flow - p_ambient*der(V);
+      m*der(medium.u) + port.m_flow*medium.u = port.H_flow - p_ambient*der(V);
     end if;
     
     /* Handle reverse and zero flow */
