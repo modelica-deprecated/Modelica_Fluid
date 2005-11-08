@@ -66,10 +66,10 @@ drag Modelica_Fluid.Components.Environment into the top level of your model.",
           fillColor=0,
           rgbfillColor={0,0,0},
           fillPattern=1),
-        string="p,T,X"), 
+        string="p,T,X"),
       Text(
-        extent=[-142,-112; 154,-142], 
-        string="p=%p", 
+        extent=[-142,-112; 154,-142],
+        string="p=%p",
         style(color=0, rgbcolor={0,0,0}))),
     Diagram,
     Documentation(info="<HTML>

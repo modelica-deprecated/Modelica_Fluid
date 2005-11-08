@@ -408,7 +408,9 @@ To summarize, all Fluid components shall be implemented
 with the <b>energy balance 2</b> form, and the mass and energy
 balance are fulfilled for the infinitesimal small control
 volume in a connection point. The momentum balance is only
-fulfilled in certain cases.
+fulfilled in certain cases.  
+If this is not justified, an own component has to be defined that 
+models the connection, including the desired form of the momentum balance.
 </p>
 <h4><font color=\"#008000\">Multiple substance media</font></h4>
 <p>
