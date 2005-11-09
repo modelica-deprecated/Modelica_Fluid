@@ -537,7 +537,7 @@ public
     if noEvent(s > 0 or (not checkValve)) then
       // Flow characteristics when check valve is open
       q_flow_single = s;
-      head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-10)));
+      head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-6)));
     else
       // Flow characteristics when check valve is closed
       head = (N/N_nom)^2*flowCharacteristic(0) - s;
@@ -546,7 +546,7 @@ public
     
     // Power consumption  
     if usePowerCharacteristic then
-      W_single = (N/N_nom)^3*(d/d_nom)*powerCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-10))) 
+      W_single = (N/N_nom)^3*(d/d_nom)*powerCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-6))) 
         "Power consumption (single pump)";
       eta = (dp*q_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
     else
