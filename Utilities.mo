@@ -118,7 +118,7 @@ transport. This splitting is only possible under certain assumptions.
       "Dummy or upstream dynamic viscosity for detailed friction model used for pressure loss calculation";
     input SI.Density d 
       "Dummy or upstream density for detailed friction model used for pressure loss calculation";
-    SI.Pressure dp "Pressure loss due to pipe friction";
+    SI.Pressure dp(start=0) "Pressure loss due to pipe friction";
     SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
     
     parameter Modelica_Fluid.Types.FrictionTypes.Temp frictionType=Modelica_Fluid.Types.

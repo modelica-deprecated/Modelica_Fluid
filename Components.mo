@@ -121,9 +121,15 @@ The details of the pipe friction model are described
 </html>"));
   equation 
     if frictionType == Modelica_Fluid.Types.FrictionTypes.DetailedFriction then
-       d = if dp > 0 then medium_a.d else medium_b.d;
-       eta = if dp > 0 then Medium.dynamicViscosity(medium_a) else 
-                                      Medium.dynamicViscosity(medium_b);
+       if from_dp then
+          d = if dp >= 0 then medium_a.d else medium_b.d;
+          eta = if dp >= 0 then Medium.dynamicViscosity(medium_a) else 
+                               Medium.dynamicViscosity(medium_b);
+       else
+          d = if m_flow >= 0 then medium_a.d else medium_b.d;
+          eta = if m_flow >= 0 then Medium.dynamicViscosity(medium_a) else 
+                               Medium.dynamicViscosity(medium_b);
+       end if;
     else
       // Assign dummy values for auxiliary variables
        d = 0;
@@ -207,7 +213,8 @@ This model describes the static head due to the relative height between the two 
     parameter SI.Height level_start(min=0) "Initial tank level" 
       annotation(Dialog(tab="Initialization"));
     
-    Interfaces.FluidPort_b port(redeclare package Medium = Medium) 
+    Interfaces.FluidPort_b port(redeclare package Medium = Medium,
+                                m_flow(start=0), mXi_flow(each start=0)) 
       annotation (extent=[-10, -120; 10, -100], rotation=90);
     Medium.BaseProperties medium(
       preferredMediumStates=true,
@@ -232,23 +239,18 @@ This model describes the static head due to the relative height between the two 
     U = m*medium.u "Internal energy of fluid";
     
     // Mass balance
-    // der(m) = port.m_flow;
-    area*der(level)*medium.d + V*der(medium.d) = port.m_flow;
+    der(m) = port.m_flow;
     der(mX) = port.mXi_flow;
     
     // Momentum balance
     p_bottom = (medium.d*g*(level+H0)) + p_ambient;
-    port.p = p_bottom - smooth(2,noEvent(if port.m_flow < 0 then port.m_flow^2/(2*medium.d*pipeArea^2) else 
-                                                                 0));
+    port.p = p_bottom - smooth(2,noEvent(if port.m_flow < 0 then port.m_flow^2/(2*medium.d*pipeArea^2) else 0));
     
     // Energy balance
     if Medium.singleState then
-      // der(U) = port.H_flow "Mechanical work is neglected";
-      m*der(medium.u) + port.m_flow*medium.u = port.H_flow 
-        "Mechanical work is neglected";
+      der(U) = port.H_flow "Mechanical work is neglected";
     else
-      // der(U) = port.H_flow - p_ambient*der(V);
-      m*der(medium.u) + port.m_flow*medium.u = port.H_flow - p_ambient*der(V);
+      der(U) = port.H_flow - p_ambient*der(V);
     end if;
     
     /* Handle reverse and zero flow */

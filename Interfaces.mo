@@ -183,7 +183,7 @@ features are:
     Medium.BaseProperties medium_b "Medium properties in port_b";
     Medium.MassFlowRate m_flow 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
-    Pressure dp "Pressure difference between port_a and port_b";
+    Pressure dp(start=0) "Pressure difference between port_a and port_b";
     
     annotation (
       Coordsys(grid=[1, 1], component=[20, 20]),
@@ -537,7 +537,7 @@ public
     if noEvent(s > 0 or (not checkValve)) then
       // Flow characteristics when check valve is open
       q_flow_single = s;
-      head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/N);
+      head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-10)));
     else
       // Flow characteristics when check valve is closed
       head = (N/N_nom)^2*flowCharacteristic(0) - s;
@@ -546,11 +546,11 @@ public
     
     // Power consumption  
     if usePowerCharacteristic then
-      W_single = (N/N_nom)^3*(d/d_nom)*powerCharacteristic(q_flow_single*N_nom/N) 
+      W_single = (N/N_nom)^3*(d/d_nom)*powerCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-10))) 
         "Power consumption (single pump)";
       eta = (dp*q_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
     else
-      eta = efficiencyCharacteristic(q_flow_single*N_nom/N);
+      eta = efficiencyCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-10)));
       W_single = dp*q_flow/eta;
     end if;
     // Fluid properties
