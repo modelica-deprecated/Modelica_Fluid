@@ -10,7 +10,7 @@ package Components "Basic components for fluid models"
        annotation (choicesAllMatching=true);
     parameter SI.Volume V "Volume";
     parameter Boolean allowFlowReversal = true 
-      "Flow reversal at the ports is allowed by the equations";
+      "Flow reversal at the ports is allowed by the equations" annotation(Dialog(tab="Advanced"));
     Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,
                                   m_flow(min=if allowFlowReversal then -inf else 0)) 
       "Fluid inlet port" annotation (extent=[-112,-10; -92,10]);
@@ -151,7 +151,8 @@ with examples first (see sub-package Examples).
     "Models the static head between two ports at different heights" 
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     parameter SI.Height H_b_a "Height of port b over port a";
-    parameter SI.Acceleration g = Modelica.Constants.g_n;
+    parameter SI.Acceleration g = Modelica.Constants.g_n "Gravity acceleration"
+                                                                                 annotation(Dialog(tab="Advanced"));
     Medium.Density d "Fluid density";
     annotation (Icon(
         Rectangle(extent=[-100,60; 100,-60],   style(
@@ -598,8 +599,6 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
     parameter Medium.SpecificHeatCapacity cp_D 
       "specific heat capacity of drum metal";
     parameter SI.Volume V_t "total volume inside drum";
-    parameter Boolean allowFlowReversal = false 
-      "Flow reversal at the ports is allowed by the equations";
     parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 
@@ -608,6 +607,9 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
     parameter SI.Volume V_l_start = V_t/2 
       "Start value of liquid volumeStart value of volume" 
       annotation(Dialog(tab = "Initialization"));
+    parameter Boolean allowFlowReversal = false 
+      "Flow reversal at the ports is allowed by the equations" annotation(Dialog(tab="Advanced"));
+    
     Interfaces.FluidPort_a feedwater(redeclare package Medium = Medium,
                              m_flow(min = if allowFlowReversal then -inf else 0)) 
       annotation (extent=[-120, -10; -100, 10]);

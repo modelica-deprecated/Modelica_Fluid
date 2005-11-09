@@ -171,7 +171,7 @@ features are:
       Modelica.Media.Interfaces.PartialMedium "Medium in the component"  annotation (
         choicesAllMatching =                                                                            true);
     parameter Boolean allowFlowReversal = true 
-      "Flow reversal at the ports is allowed by the equations";
+      "Flow reversal at the ports is allowed by the equations"  annotation(Dialog(tab="Advanced"));
     
     FluidPort_a port_a(redeclare package Medium = Medium,
                        m_flow(min=if allowFlowReversal then -inf else 0)) 
@@ -315,12 +315,18 @@ between fluid connectors.
   
 public 
   partial model PartialValve "Base model for valves" 
+    import Modelica_Fluid.Types.CvTypes;
+    
+    parameter Medium.AbsolutePressure pin_start = p_nom 
+      "Start value of inlet pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    
     extends Interfaces.PartialTwoPortTransport(
       medium_a(p(start=pin_start), T(start=T_start),
                h(start=h_start),   Xi(start=X_start[1:Medium.nXi])),
       medium_b(p(start=pout_start), T(start=T_start),
                h(start=h_start),   Xi(start=X_start[1:Medium.nXi])));
-    import Modelica_Fluid.Types.CvTypes;
+    
     parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
     parameter SI.Area Av(fixed = if CvData==CvTypes.Av then true else false,
@@ -347,15 +353,11 @@ public
       annotation(Dialog(group="Nominal operating point"));
     parameter Boolean CheckValve=false "Reverse flow stopped";
     
-    parameter Real delta=0.01 "Regularisation factor";
     replaceable function flowCharacteristic = 
         Modelica_Fluid.Types.ValveCharacteristics.linear 
       extends Modelica_Fluid.Types.ValveCharacteristics.baseFun 
       "Inherent flow characteristic" 
       annotation(choicesAllMatching=true);
-    parameter Medium.AbsolutePressure pin_start = p_nom 
-      "Start value of inlet pressure" 
-      annotation(Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure pout_start = p_nom-dp_nom 
       "Start value of outlet pressure" 
       annotation(Dialog(tab = "Initialization"));
@@ -373,6 +375,8 @@ public
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    
+    parameter Real delta=0.01 "Regularisation factor" annotation(Dialog(tab="Advanced"));
     
     Modelica.Blocks.Interfaces.RealInput stemPosition 
       "Stem position in the range 0-1" annotation (extent=[-10,70; 10,90],    rotation=-90);
