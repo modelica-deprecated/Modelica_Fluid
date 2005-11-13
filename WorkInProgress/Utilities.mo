@@ -85,7 +85,6 @@ where
      Reynolds number at which
      the turbulent flow starts. If Re_turbulent is different for
      the two flow directions, use the smaller value as Re_turbulent.</li>
-
 <li> D is the diameter of the pipe. If the pipe has not a 
      circular cross section, D = 4*A/P, where A is the cross section
      area and P is the wetted perimeter.</li>
@@ -504,27 +503,22 @@ Loss factor for mass flow rate from port_a to port_b
 </p>
 <pre>
    zeta = [(1-A0/A1) + 0.707*(1-A0/A1)^0.375]^2*(A1/A0)^2 
-
           for Re(A0) >= 1e5,  independent of alpha
 </pre>
-
 <p>
 Loss factor for mass flow rate from port_b to port_a
 (Idelchik 1994, diagram 4-13, p. 220, with A2=A1):
 </p>
-
 <pre>
    zeta = k*(1 - A0/A1)^0.75 + (1 - A0/A1)^2 + 2*sqrt(k*(1-A0/A1)^0.375) + (1- A0/A1)
           k  = 0.13 + 0.34*10^(-(3.4*LD+88.4*LD^2.3)) 
                (there is a typing error in the formula in diagram 4-13, the above
                 equation corresponds to table (a) in diagram 4-12)
           LD = L/D0
-
           for Re(A0) >= 1e4, 40 deg &le; alpha &le; 60 deg 
                              for other values of alpha, k is given as table
                              in diagram 3-7 (this is not yet included in the function)
 </pre
-
 </html>"));
     protected 
      Real D_rel = D_min/D_pipe;
@@ -595,7 +589,6 @@ Loss factor for mass flow rate from port_b to port_a
 <p>
 Approximates the function
 </p>
-
 <pre>
    y = <b>if</b> x &ge; 0 <b>then</b> <b>sqrt</b>(k1*x) <b>else</b> -<b>sqrt</b>(k2*<b>abs</b>(x)), with k1, k2 > 0
 </pre>
@@ -605,7 +598,6 @@ the function is described by two polynomials of third order
 (one in the region -x_small .. 0 and one within the region 0 .. x_small)
 such that the 
 </p>
-
 <ul>
 <li> derviative at x=0 is finite, </li>
 <li> the overall function is continuous with a first
@@ -613,16 +605,13 @@ such that the
 <li> the first and second derivative at x=0 of the
      two polynomials are identical.
 </ul>
-
 <p>
 Typical screenshots for two different configurations
 are shown below. The first one with k1=k2=1
 </p>
-
 <p>
 <img src=\"../Images/Components/regRoot2_a.png\">
 </p>
-
 <p>
 and the second one with k1=1 and k2=3. In the last
 figure the (smooth) derivative of the function with
@@ -631,11 +620,9 @@ k1=1, k2=3 is shown:
 <p>
 <img src=\"../Images/Components/regRoot2_b.png\">
 </p>
-
 <p>
 <img src=\"../Images/Components/regRoot2_c.png\">
 </p>
-
 </html>"));
   protected 
     encapsulated function regRoot2_utility 
@@ -923,8 +910,8 @@ k1=1, k2=3 is shown:
       import Modelica.Math;
     
       replaceable package Medium = PackageMedium extends 
-      Modelica_Media.Interfaces.PartialMedium "Medium in the component"    annotation (
-          choicesAllMatching =                                                                            true);
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+          annotation (choicesAllMatching = true);
     
       Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
         annotation(extent=[-120, -10; -100, 10]);
@@ -935,7 +922,7 @@ k1=1, k2=3 is shown:
       Medium.BaseProperties medium(preferredMediumStates=true) 
       "Medium properties in the middle of the finite volume";
       SI.Mass M "Total mass in volume";
-      SI.Mass[Medium.nX-1] MX "Component mass";
+      SI.Mass[Medium.nXi] MXi "Independent component masses";
       SI.Energy U "Inner energy";
       parameter SI.Length L "Length of volume";
     
@@ -960,9 +947,9 @@ k1=1, k2=3 is shown:
       parameter Real viscosityFactor1=0 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
       parameter Real viscosityFactor2=1 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
     
-      input Real dp_a 
+      input SI.Pressure dp_a 
       "Pressure loss due to pipe friction between port_a and middle of pipe";
-      input Real dp_b 
+      input SI.Pressure dp_b 
       "Pressure loss due to pipe friction between middle of pipe and port_b";
     
       Real my "Artifical viscosity";
@@ -976,7 +963,7 @@ in piping networks which has the following properties:
 <ul>
 <li> A FiniteVolume model is <b>independent</b> of the <b>medium</b> model. 
      The only requirement is that the medium model has to be
-     a subclass of Modelica_Media.Interfaces.<b>PartialMedium</b>.
+     a subclass of Modelica.Media.Interfaces.<b>PartialMedium</b>.
      As a consequence, the FiniteVolume model can be used
      for incompressible or compressible media, fluids with one 
      and multiple substances as well as for one and multiple phases. 
@@ -1036,7 +1023,7 @@ in piping networks which has the following properties:
     equation 
       //Extensive properties
         M=medium.d*A_m*dx;
-        MX=M*medium.X_reduced;
+        MXi=M*medium.Xi;
         U=M*medium.u;
     
       // Mass balance over the interval a to b
@@ -1044,9 +1031,9 @@ in piping networks which has the following properties:
       der(M)=port_a.m_flow + port_b.m_flow;
     
       // Substance mass balances over the interval a to b
-      // der(medium.d*medium.X)*A_m*dx = port_a.mX_flow + port_b.mX_flow;
-      //(der(medium.d)*medium.X + medium.d*der(medium.X))*A_m*dx = port_a.mX_flow + port_b.mX_flow;
-      der(MX)= port_a.mX_flow + port_b.mX_flow;
+      // der(medium.d*medium.X)*A_m*dx = port_a.mXi_flow + port_b.mXi_flow;
+      //(der(medium.d)*medium.X + medium.d*der(medium.X))*A_m*dx = port_a.mXi_flow + port_b.mXi_flow;
+      der(MXi)= port_a.mXi_flow + port_b.mXi_flow;
     
       // Energy balance over the interval a to b
       // der(medium.d*medium.u)*A_m*dx = port_a.H_flow + port_b.H_flow + m_flow_middle/
@@ -1091,8 +1078,8 @@ in piping networks which has the following properties:
       // Upwind scheme (use properties from upwind port and handle zero flow)  
       port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium.h);
       port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium.h);
-      port_a.mX_flow = semiLinear(port_a.m_flow, port_a.X, medium.X_reduced);
-      port_b.mX_flow = semiLinear(port_b.m_flow, port_b.X, medium.X_reduced);
+      port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, medium.Xi);
+      port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.Xi, medium.Xi);
     
       // Heat port has the medium temperature
       heatPort.T = medium.T;
@@ -1103,10 +1090,11 @@ model PipeSegment
     "One segment of a pipe with 1 mass, 1 energy, 2 momementum balances and pipe friction" 
     
   import SI = Modelica.SIunits;
-  extends Modelica_Fluid.Utilities.FiniteVolume(medium(
-             p(start=p_start), d(start=d_start),
-             T(start=T_start), h(start=h_start), X_reduced(start=X_start)));
-  extends Modelica_Fluid.Interfaces.PartialMenuInitialization;
+  import Modelica_Fluid.Types.InitTypes.*;
+  extends FiniteVolume(medium(
+             p(start=p_start),
+             T(start=T_start), h(start=h_start), Xi(start=X_start[1:Medium.nXi])));
+  extends Modelica_Fluid.Interfaces.PartialInitializationParameters;
     
   parameter Boolean linearPressureDrop=true;
   parameter SI.AbsolutePressure dp_nominal(min=1.e-10) = 1 
@@ -1119,7 +1107,6 @@ model PipeSegment
 Model <b>PipeSegment</b> describes one segment of a pipe.
 It consists of the following parts:
 </p>
-
 <ul>
 <li> One <a href=\"Modelica:Modelica_Fluid.Utilities.FiniteVolume\">FiniteVolume</a>
      model described by 1 mass, 1 energy, and 2 momemtum balances.</li>
@@ -1129,42 +1116,37 @@ It consists of the following parts:
 </ul>
 </html>"));
 initial equation 
-  if initType == Modelica_Fluid.Types.InitTypes.InitialStates then
-    if not Medium.incompressible then
-      if init_p then
-         medium.p = p_start;
-      else
-         medium.d = d_start;
-      end if;
+  // Initial conditions
+  if initOption == NoInit then
+    // no initial equations
+  elseif initOption == InitialValues then
+    if not Medium.singleState then
+      medium.p = p_start;
     end if;
-      
-    if init_T then
-       medium.T = T_start;
+    if use_T_start then
+      medium.T = T_start;
     else
-       medium.h = h_start;
+      medium.h = h_start;
     end if;
-      
-    medium.X_reduced = X_start;
-      
-  elseif initType == Modelica_Fluid.Types.InitTypes.SteadyState then
-    if not Medium.incompressible then
-      der(medium.d) = 0;
+    medium.Xi = X_start[1:Medium.nXi];
+  elseif initOption == SteadyState then
+    if not Medium.singleState then
+       der(medium.p) = 0;
     end if;
-    der(medium.u) = 0;
-    der(medium.X_reduced) = zeros(Medium.nX-1);
-      
-  elseif initType == Modelica_Fluid.Types.InitTypes.SteadyMass then
-    if not Medium.incompressible then
-      der(medium.d) = 0;
+    der(medium.h) = 0;
+    der(medium.Xi) = zeros(Medium.nXi);
+  elseif initOption == SteadyStateHydraulic then
+    if not Medium.singleState then
+       der(medium.p) = 0;
     end if;
-      
-    if init_T then
-       medium.T = T_start;
+    if use_T_start then
+      medium.T = T_start;
     else
-       medium.h = h_start;
+      medium.h = h_start;
     end if;
-      
-    der(medium.X_reduced) = zeros(Medium.nX-1);
+    medium.Xi = X_start[1:Medium.nXi];
+  else
+    assert(false, "Unsupported initialization option");
   end if;
 equation 
   /*
@@ -1177,11 +1159,10 @@ equation
 */
     
   // Simple linear pressure drop in each segment
-  dp_a/dp_nominal = if linearPressureDrop then m_flow_a/m_flow_nominal else abs(
-    m_flow_a)*m_flow_a/m_flow_nominal^2;
-  dp_b/dp_nominal = if linearPressureDrop then -m_flow_b/m_flow_nominal else abs(
-    -m_flow_b)*(-m_flow_b)/m_flow_nominal^2;
-    
+  dp_a = dp_nominal*(if linearPressureDrop then m_flow_a/m_flow_nominal else 
+                        abs(m_flow_a)*m_flow_a/m_flow_nominal^2);
+  dp_b = dp_nominal*(if linearPressureDrop then -m_flow_b/m_flow_nominal else 
+                        abs(-m_flow_b)*(-m_flow_b)/m_flow_nominal^2);
 end PipeSegment;
   
 end Utilities;

@@ -1,13 +1,15 @@
 model PumpingSystem "Model of a pumping system for drinking water" 
   extends Modelica.Icons.Example;
   Sources.FixedAmbient source(
-    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater,
+    redeclare package Medium = 
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     use_T=true,
     T=Modelica.SIunits.Conversions.from_degC(20)) 
     annotation (extent=[-100,-90; -80,-70]);
   
   Components.PressureDropPipe pipeFriction(
-    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater,
+    redeclare package Medium = 
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantTurbulent,
     m_flow_nominal=1000,
     dp_nominal=Modelica.SIunits.Conversions.from_bar(0.3),
@@ -20,7 +22,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (extent=[-48,-64; -30,-38], rotation=90);
   Components.Pump pumps(
     checkValve=true,
-    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater,
+    redeclare package Medium = 
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     N_nom=1200,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Types.PumpCharacteristics.quadraticFlow (q_nom={0,
@@ -33,10 +36,11 @@ model PumpingSystem "Model of a pumping system for drinking water"
   Components.Tank reservoir(
     H0=18,
     initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
-    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater,
+    redeclare package Medium = 
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     area=500,
     level_start=1.8,
-    T_start=Modelica.SIunits.Conversions.from_degC(20), 
+    T_start=Modelica.SIunits.Conversions.from_degC(20),
     pipeArea=0.1) 
     annotation (extent=[-14,-16; 6,4]);
   
@@ -61,7 +65,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
   Sensors.RelativePressure reservoirPressure(redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[8,-12; 28,-32]);
-  Modelica.Blocks.Continuous.FirstOrder PT1(T=50)
+  Modelica.Blocks.Continuous.FirstOrder PT1(T=50) 
     annotation (extent=[40,60; 60,80]);
 equation 
   
@@ -105,18 +109,18 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
     annotation (points=[-19,70; -2,70], style(color=5, rgbcolor={255,0,255}));
   connect(reservoir.port, reservoirPressure.port_a) annotation (points=[-4,-17;
         3,-17; 3,-22; 7,-22], style(
-      color=3, 
-      rgbcolor={0,0,255}, 
+      color=3,
+      rgbcolor={0,0,255},
       pattern=3));
   connect(reservoirPressure.p_rel, controller.u) annotation (points=[18,-13; 18,
         50; -52,50; -52,64; -42,64], style(color=74, rgbcolor={0,0,127}));
   connect(reservoirPressure.port_b, ambient.port) annotation (points=[29,-22; 44,
         -22; 44,-48; 79,-48; 79,-30], style(
-      color=69, 
-      rgbcolor={0,127,255}, 
+      color=69,
+      rgbcolor={0,127,255},
       pattern=3));
-  connect(PumpRPMGenerator.y, PT1.u)
+  connect(PumpRPMGenerator.y, PT1.u) 
     annotation (points=[21,70; 38,70], style(color=74, rgbcolor={0,0,127}));
-  connect(PT1.y, pumps.N_in) annotation (points=[61,70; 74,70; 74,30; -64.38,30; 
+  connect(PT1.y, pumps.N_in) annotation (points=[61,70; 74,70; 74,30; -64.38,30;
         -64.38,-69.28], style(color=74, rgbcolor={0,0,127}));
 end PumpingSystem;

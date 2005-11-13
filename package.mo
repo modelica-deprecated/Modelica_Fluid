@@ -4,7 +4,9 @@ annotation (
   versionDate="2005-11-09",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses( Modelica(version="2.2")),
+  uses( Modelica(version="2.2",
+    Media(         version="0.98")),
+    UserInteraction(version="0.52")),
   Documentation(info="<html>
 <p>
 Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
@@ -33,11 +35,9 @@ A typical example with three tanks is shown in the next figure:
 <p align=\"center\">
 <img src=\"../Images/UsersGuide/ThreeTanks.png\">
 </p>
-
 <p>
 The following parts are useful, when newly starting with this library:
 </p>
-
 <ul>
 <li> <a href=\"Modelica:Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
 <li> <a href=\"Modelica:Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
@@ -45,7 +45,6 @@ The following parts are useful, when newly starting with this library:
 <li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
      contains examples that demonstrate the usage of this library.</li>
 </ul>
-
 <p><b>Copyright &copy; 2002-2005, Modelica Association.</b></p>
 <p><i>
 This Modelica package is <b>free</b> software; it can be redistributed and/or modified
@@ -57,10 +56,8 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
-
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
-
 
 package UsersGuide "Users Guide" 
   
@@ -78,14 +75,12 @@ substance medium with one or more phases might be used.
 The goal is to include 
 the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
-
 </HTML>"));
   
   class Overview "Overview" 
     
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Overview</font></h3>
-
 <p>
 The Modelica_Fluid library provides basic interfaces and 
 components to model 1-dim. thermo-fluid flow in networks of pipes.
@@ -101,11 +96,9 @@ design, reversing flow and initialization. It is planned to
 include more components in the future. User proposals are
 welcome.
 </p>
-
 <p>
 This library has the following main features:
 </p>
-
 <ul>
 <li> The connectors Modelica_Fluid.Interfaces.FluidPort_a/_b are designed
      for one-dimensional flow of a <b>single substance</b>
@@ -116,7 +109,6 @@ This library has the following main features:
      substance media have zero dimension and are therefore removed
      from the code during translation. The general connector definition
      therefore does not introduce an overhead for special cases.<br>&nbsp;</li>
-
 <li> All the components of the Modelica_Fluid library are designed
      that they can be utilized for all media models from
      Modelica.Media if this is posssible. For example, all media can
@@ -126,7 +118,6 @@ This library has the following main features:
      Modelica_Fluid.Components.Evaporator requires a two phase medium
      (extending from Modelica.Media.Interfaces.PartialTwoPhaseMedium).
      <br>&nbsp;</li>
-
 <li> In order to simplify the initialization in the components,
      there is the restriction that only media models are supported
      that have T, (p,T), (p,h), (T,X), (p,T,X) or (p,h,X) as
@@ -136,15 +127,12 @@ This library has the following main features:
      (Note, T is temperature, p is pressure, d is density,
      h is specific enthalpy, and X is a mass fraction vector).
      <br>&nbsp;</li>
-
 <li> All components work for <b>incompressible</b> and <b>compressible</b> media. 
      This is implemented by a small change in the initialization of a 
      component, if the medium is incrompressible. Otherwise, the equations
      of the components are not influenced by this property.<br>&nbsp;</li>
-
 <li> All components allow fluid flow in both directions, i.e., 
      <b>reversing flow</b> is supported.<br>&nbsp;</li> 
-
 <li> 2 or more components can be connected together. The effect can
      be interpreted as introducing an infinitesimal small control
      volume in the connecting point with <b>ideal mixing</b>. In particular,
@@ -155,7 +143,6 @@ This library has the following main features:
      models are needed for a connection, e.g., if mixing losses
      shall be taken into account, an appropriate model has to be 
      explicitly used in the connection point.<br>&nbsp;</li>
-
 <li> There is no restriction how components can be connected
      together (besides from special cases).
      E.g., PortVolumes can be directly connnected
@@ -164,8 +151,6 @@ This library has the following main features:
      linear or non-linear systems of equations.<br>&nbsp;</li>
      
 </ul>
-
-
 </HTML>
 "));
   equation 
@@ -517,7 +502,6 @@ The exact definition of the semiLinear() operator in the next
 version of the Modelica language specification is given 
 <a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.SemiLinearDefinition\">here</a>.
 </p>
-
 <p>
 If two components C1 and C2 of the above type are connected together
 (e.g., two pressure drop pipe components), the following equations
@@ -527,21 +511,17 @@ H_flow1 = C1.port_a.H_flow are used; h is the specific enthalpy
 in the connection point, h1 is the specific enthalpy in component C1
 and h2 is the specific enthalpy in component C2):
 </p>
-
 <pre>  H_flow1 = <b>if</b> m_flow1 &ge; 0 <b>then</b> m_flow1*h <b>else</b> m_flow1*h1;
   H_flow2 = <b>if</b> m_flow2 &ge; 0 <b>then</b> m_flow2*h <b>else</b> m_flow1*h2;
         0 = m_flow1 + m_flow2;
         0 = H_flow1 + H_flow2;
 </pre>
-
 <p>
 This equation system can be transformed to
 </p>
-
 <pre>   m_flow1 &ge; 0, m_flow2 &lt; 0:  0 = m_flow1*(h  - h2);  -&gt; h = h2
    m_flow1 &lt; 0, m_flow2 &ge; 0:  0 = m_flow1*(h1 - h );  -&gt; h = h1
 </pre>
-
 <p>
 For m_flow1 = m_flow2 = 0, it follows from the original equations that
 H_flow1 = H_flow2 = 0. This means that \"h\" is no longer appearing in an
@@ -551,10 +531,8 @@ semiLinear() operator, a Modelica translator can transform the
 original equations (if expressed with the semiLinear() operator)
 into:
 </p>
-
 <pre>   h = <b>if</b> m_flow1 &ge; 0 <b>then</b> h2 <b>else</b> h1;
 </pre>
-
 <p>
 In this case, the ambiguity is explicitly solved by (arbitrarily)
 defining h=h2, in case m_flow1 = 0. Note, this is performed
@@ -565,7 +543,6 @@ are determined by thermal conduction. Since thermal conduction
 along the fluid flow is neglected in Modelica_Fluid, this ambiguity
 is present.
 </p>
-
 <p>
 If 3 or more components are connected together, it is no longer
 possible to resolve the ambiguity during translation. 
@@ -573,17 +550,13 @@ Instead, the systems of equations can be transformed
 into the following scalar equation, where h is the unknown
 specific enthalpy in the connection point:
 </p>
-
 <pre>  f1(m_flow1,m_flow2,m_flow3)*h = f2(m_flow1,m_flow2,m_flow3,h1,h2,h3); 
 </pre>
-
 <p>
 If m_flow1 = m_flow2 = m_flow3 = 0, this equation degenerates into
 </p>
-
 <pre>  0*h = 0
 </pre>
-
 <p>
 and therefore there is again an infinite number of solutions for h.
 A Modelica simulation environment might resolve this ambiguity
@@ -598,7 +571,6 @@ by using the solution of h from the last accepted step.
       
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Property propagation</font></h3>
-
 <p>
 As explained in section
 <a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.FluidConnectors\">Fluid connectors</a>,
@@ -610,57 +582,47 @@ If two components are connected together, then the medium
 variables on both sides of the connector are identical.
 However, due to the connector, only the two equations
 </p>
-
 <pre>
    p1 = p2;
    h1 = h2;
 </pre>
-
 <p>
 are present. Assume, that p,T are the independent medium variables
 and that the medium properties are computed at one side of the
 connections. This means, the following equations are basically
 present:
 </p>
-
 <pre>
     h1 = h(p1,T1);
     h2 = h(p2,T2);
     p1 = p2;
     h1 = h2;
 </pre>
-
 <p>
 These equations can be solved in the following way:
 </p>
-
 <pre>
     h1 := h(p1,T1)
     p2 := p1;
     h2 := h1;
     0  := h2 - h(p2,T2);   // non-linear system of equations for T2
 </pre>
-
 <p>
 This means that T2 is computed by solving a non-linear system
 of equations. If h1 and h2 are provided as Modelica functions,
 a Modelica translator, such as Dymola, can replace
 this non-linear system of equations by the equation:
 </p>
-
 <pre>
    T2 := T1;
 </pre>
-
 <p>
 because after alias substition there are two function calls
 </p>
-
 <pre>
     h1 := h(p1,T1);
     h1 := h(p1,T2);
 </pre>
-
 <p>
 Since the left hand side of the function call and the first
 argument are the same, the second arguments T1 and T2 must also be 
@@ -674,7 +636,6 @@ system of equations appears and in the generated code
 propagation of medium properties over a connector does not
 lead to an unnecessary overhead.
 </p>
-
 </html>
 "));
   end PropertyPropagation;
@@ -693,24 +654,19 @@ be slightly modified or adapted in order that obvious
 simulation problems are avoided. Below, examples are given to
 demonstrate what problems occur and how to regularize the characteristics:  
 </p>
-
 <h4><font color=\"#008000\">Square root function</font></h4>
 <p>
 In several empirical formulae, expressions of the following form
 are present, e.g., for turbulent flow in a pipe:
 </p>
-
 <pre>   y = <b>if</b> x &lt; 0 <b>then</b> -<b>sqrt</b>( <b>abs</b>(x) ) <b>else</b> <b>sqrt</b>(x)
 </pre>
-
 <p>
 A plot of this characteristic is shown in the next figure:
 </p>
-
 <p align=\"center\">
 <img src=\"../Images/UsersGuide/sqrt.png\">
 </p>
-
 <p>
 The difficulty with this function is that the derivative at x=0 is infinity.
 In reality, such a function does not exist. E.g., for pipe flow,
@@ -718,7 +674,6 @@ the flow becomes laminar for small velocities and therefore around zero the
 sqrt() function is replaced by a linear function. Since the laminar region is
 usually of not much practical interest, the above approximation is used.
 </p>
-
 <p>
 The direct implementation above does not work in Modelica, because
 an event is generated when x &lt; 0 changes sign. In order to detect
@@ -730,16 +685,13 @@ Since this results in an imaginary number, an error occurs.
 It would be possible to fix this, by using the <b>noEvent</b>() operator
 to explicitly switch of an event:
 </p>
-
 <pre>   y = <b>if</b> <b>noEvent</b>(x &lt; 0) <b>then</b> -<b>sqrt</b>( <b>abs</b>(x) ) <b>else</b> <b>sqrt</b>(x)
 </pre>
-
 <p>
 Still, it is highly likely that good integrators will not work well
 around x=0, because they will recognize that the derivative changes very
 sharply and will reduce the step size drastically.
 </p>
-
 <p>
 There are several solutions around this problem: Around x=0, the sqrt() function
 can be replaced by a polynomial of 3rd order which is determined in such a way
@@ -749,10 +701,8 @@ such critical functions are provided in sublibrary Modelica_Fluid.Utilities.
 The above sqrt() type function is computed by function <b>Utilities.regRoot</b>().
 This function is defined as:
 </p>
-
 <pre>     y := x/(x*x+delta*delta)^0.25;
 </pre>
-
 <p>
 where \"delta\" is the size of the small region around zero where the
 sqrt() function is approximated by another function. The plot of the
@@ -762,7 +712,6 @@ any order. With the default value of delta=0.01, the difference between
 the function above and regRoot(x) is 16% around x=0.01, 0.25% around x=0.1 
 and 0.0025% around x=1.
 </p>
-
 </html>
 "));
   end RegularizingCharacteristics;
@@ -781,7 +730,6 @@ next release of the Modelica language specification
 the recommendation below and does
 not generate an event at zero mass flow rate):
 </p>
-
 <table border=1 cellspacing=0 cellpadding=2>
  <tr>
   <td width=160> <pre><b>semiLinear</b>(x,positiveSlope,
@@ -794,24 +742,19 @@ not generate an event at zero mass flow rate):
          to not generate an event]</i></td>
  </tr>
 </table>
-
 <p>In some situations, equations with the
 semiLinear function become underdetermined if the first argument (x) becomes
 zero, i.e., there are an infinite number of solutions. It is <i>recommended</i>
 that the following rules are used to transform the equations during the
 translation phase in order to select one meaningful solution in such cases:</p>
-
 <p><b>Rule 1</b>: The equations</p>
-
 <p>y = semiLinear(x,<b>sa</b>, s1);<br>
 y = semiLinear(x, s1, s2);<br>
 y = semiLinear(x, s2, s3);<br>
    ...<br>
 y = semiLinear(x, s<sub>N</sub>, <b>sb</b>);<br>
    ....</p>
-
 <p>may be replaced by</p>
-
 <p>s1 = <b>noEvent</b>(<b>if</b> x &gt;= 0 <b>then </b>sa <b>else </b>sb);<br>
 s2 = s1;<br>
 s3 = s2;<br>
@@ -819,10 +762,8 @@ s3 = s2;<br>
 s<sub>N</sub> = s<sub>N-1</sub>;<br>
 y =<b> smooth</b>(0,<b> noEvent</b>(<b>if</b> x &gt;= 0 <b>then</b> sa*x <b>else</b>
 sb*x));</p>
-
 <p><br>
 Remarks:</p>
-
 <p>
 Due to this transformation, the ambiguity for x
 == 0 is removed. In the original formulation, there is an infinite number of
@@ -832,57 +773,38 @@ ambiguity is resolved by this transformation rule to set s1 = s2 = .... = sa for
 x == 0.<br>
 A tool might also pick the other solution, i.e., s1 = sb for x == 0. This is
 useful if, e.g., x(max=0) is defined.</p>
-
 <p>
 The if-expression is discontinuous and therefore
 usually an event should be generated. In this particular case, the original
 equations have \"si*x\" and \"sj*x\" in the equation. This means that the product
 is continuous at x=0 and therefore the noEvent(..) operator can be used here.</p>
-
 <p>&nbsp;</p>
-
 <p><b>Rule 2</b>: The equations</p>
-
 <p>x = 0;<br>
 y = 0;<br>
 y = semiLinear(x, sa, sb);</p>
-
 <p>may be replaced by</p>
-
 <p>x = 0<br>
 y = 0;<br>
 sa = sb;</p>
-
-
 <p>&nbsp;</p>
-
-
 <p><b>Rule 3</b>: The expression </p>
-
 <p>         semiLinear(x, sa, sb)</p>
-
 <p>may be replaced by x*sa if&nbsp; x.min
 &gt;= 0, or by x*sb if x.max &lt;= 0<i> [see comment below]<br>
 <br>
 </i></p>
-
 <p><i>[For symbolic transformations, the
 following property is useful (this follows from the definition):</i></p>
-
 <p>semiLinear(m_flow, port_h, h);</i></p>
-
 <p><i>is identical to </i></p>
 <p>-semiLinear(-m_flow, h, port_h);</i></p>
-
 <p><i>Note, in combination with rule 1, the ambiguity
 at \"m_flow == 0\" is resolved differently leading to a different result at m_flow
 = 0.</i></p>
-
 <p><i>The semiLinear function is designed to
 handle reversing flow in fluid systems, such as</i></p>
-
 <p><i>H_flow =semiLinear(m_flow, port.h, h);</i></p>
-
 <p><i>i.e., the enthalpy flow rate H _flow is
 computed from the mass flow rate m_flow and the upstream specific enthalpy
 depending on the flow direction. In some applications, reversing flow cannot
@@ -890,17 +812,14 @@ occur. In such a case, appropriate min/max attributes might be set for m_flow
 in connectors, in order to remove the unnecessary if-branch by using Rule 3.
 This improves usually both the efficiency and the robustness (provided a
 reversal flow does really not occur).</i></p>
-
 <p><i>If 3 pipes are connected together and heat
 conduction is neglected, a system of equations of the following form occurs:</i></p>
-
 <pre>      H_flow1 = semiLinear(m_flow1, port.h, h1);
       H_flow2 = semiLinear(m_flow2, port.h, h2);
       H_flow3 = semiLinear(m_flow3, port.h, h3);
             0 = m_flow1 + m_flow2 + m_flow3;
             0 = H_flow1 + H_flow2 + H_flow3;
 </pre>
-
 <p><i>where 5 variables of the 10 unknowns are
 computed somewhere else, depending on the components that are connected
 together. If m_flow1 = m_flow2 = m_flow3 = 0, then it follows from the first
@@ -1069,7 +988,6 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
 
 replaceable package PackageMedium = Modelica.Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (

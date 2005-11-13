@@ -69,8 +69,7 @@ The water model is incompressible.
 The same tank system with a compressible water model
 is provided in ThreeTanksIF97.
 </p>
-
-</html>"), 
+</html>"),
       experimentSetupOutput);
     Components.Tank Tank1(
       area=1,
@@ -79,7 +78,7 @@ is provided in ThreeTanksIF97.
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
-      V0=0.1, 
+      V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[-90,20; -70,40]);
     Components.Tank Tank2(
@@ -90,7 +89,7 @@ is provided in ThreeTanksIF97.
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
       H0=0.5,
-      V0=0.1, 
+      V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[-10, 20; 10, 40]);
     Components.PressureDropPipe shortPipe1(
@@ -107,7 +106,7 @@ is provided in ThreeTanksIF97.
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
-      V0=0.1, 
+      V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[70,20; 90,40]);
     Components.PressureDropPipe shortPipe3(
@@ -139,7 +138,6 @@ is provided in ThreeTanksIF97.
           6.73533e-016,-11; 0,-11; 0,-20; 29,-20],     style(color=69));
   end ThreeTanksSimpleWater;
   
-  
   model ThreeTanksIF97 
     import Modelica.SIunits.Conversions.*;
     extends Modelica.Icons.Example;
@@ -153,14 +151,14 @@ This example is the same as the \"ThreeTanksSimpleWater\"
 model. The only difference is that the very detailed,
 compressible medium model WaterIF97 is used.
 </p>
-</html>"), 
+</html>"),
       experimentSetupOutput);
     Components.Tank Tank1(
       area=1,
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues, 
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
       pipeArea=0.01) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
@@ -168,7 +166,7 @@ compressible medium model WaterIF97 is used.
       level_start=1,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
-      T_start=from_degC(90), 
+      T_start=from_degC(90),
       pipeArea=0.01) 
       annotation (extent=[-10,20; 10,40]);
     Components.PressureDropPipe shortPipe1(
@@ -182,7 +180,7 @@ compressible medium model WaterIF97 is used.
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues, 
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
       pipeArea=0.01) 
       annotation (extent=[70, 20; 90, 40]);
     Components.PressureDropPipe shortPipe3(
@@ -223,14 +221,14 @@ This example is the same as ThreeTanks97. The only difference
 is that the system starts in steady state, i.e., with constant
 (mixing) temperature.
 </p>
-</html>"), 
+</html>"),
       experimentSetupOutput);
     Components.Tank Tank1(
       area=1,
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.InitTypes.SteadyState, 
+      initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
       pipeArea=0.01) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
@@ -238,7 +236,7 @@ is that the system starts in steady state, i.e., with constant
       level_start=1,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       T_start=from_degC(90),
-      initOption=Modelica_Fluid.Types.InitTypes.SteadyState, 
+      initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
       pipeArea=0.01) 
       annotation (extent=[-10,20; 10,40]);
     Components.PressureDropPipe shortPipe1(
@@ -252,7 +250,7 @@ is that the system starts in steady state, i.e., with constant
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.InitTypes.SteadyState, 
+      initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
       pipeArea=0.01) 
       annotation (extent=[70, 20; 90, 40]);
     Components.PressureDropPipe shortPipe3(

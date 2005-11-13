@@ -2,33 +2,19 @@ package Components
 model GlobalOptions "Global options" 
   import SI = Modelica.SIunits;
   import Modelica_Fluid.WorkInProgress.Types;
-  
-  replaceable package Medium = PackageMedium extends 
-    Modelica.Media.Interfaces.PartialMedium "Ambient medium model" 
-     annotation (choicesAllMatching=true);
-  parameter Medium.AbsolutePressure p = Medium.reference_p "Ambient pressure";
-  parameter Boolean use_T = true "Use T if true, otherwise h" annotation(Dialog(Evaluate=true));
-  parameter Medium.Temperature T = if use_T then 293.15 else 
-            Medium.T_phX(p,h,X[1:Medium.nXi]) "Ambient temperature" annotation(Dialog(enable=use_T));
-  parameter Medium.SpecificEnthalpy h=
-            if use_T then Medium.h_pTX(p, T, X[1:Medium.nXi]) else 1e4 
-    "Ambient specific enthalpy" annotation(Dialog(enable=not use_T));
-  parameter Medium.MassFraction X[Medium.nX] = Medium.reference_X 
-    "Ambient mass fractions m_i/m"  annotation (Dialog(enable=Medium.nXi > 0));
+    
   parameter SI.Acceleration g = Modelica.Constants.g_n "Gravity constant";
   parameter Types.Init.Temp initOption=Modelica_Fluid.WorkInProgress.Types.Init.SteadyState 
-    "Default initialization";
+      "Default initialization";
   parameter Types.Flow.Temp flowOption=Modelica_Fluid.WorkInProgress.Types.Flow.Bidirectional 
-    "Default flow type";
-  Medium.BaseProperties medium(p(start=p), T(start=T), h(start=h),
-                               Xi(start=X[1:Medium.nXi])) "Ambient medium";
+      "Default flow type";
   annotation (
     preferedView="info",
-    defaultComponentName="environment",
+    defaultComponentName="globalOptions",
     defaultComponentPrefixes="inner",
-    missingInnerMessage="An \"environment\" component is not defined. A default 
-environment component with initOptions = SteadyState will be used. If this is not desired, 
-drag Modelica_Fluid.Components.Environment into the top level of your model.",
+    missingInnerMessage="An \"globalOptions\" component is not defined. A default 
+globalOptions component with initOptions = SteadyState will be used. If this is not desired, 
+drag Modelica_Fluid.Components.GlobalOptions into the top level of your model.",
     Icon(
       Rectangle(extent=[-100,100; 100,-100], style(
           color=3,
@@ -59,36 +45,27 @@ drag Modelica_Fluid.Components.Environment into the top level of your model.",
           rgbfillColor={0,0,0},
           fillPattern=1),
         string="g"),
-      Text(
-        extent=[-86,84; 20,38],
-        style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=0,
-          rgbfillColor={0,0,0},
-          fillPattern=1),
-        string="p,T,X"),
-      Text(
-        extent=[-142,-112; 154,-142],
-        string="p=%p",
-        style(color=0, rgbcolor={0,0,0}))),
+        Text(
+          extent=[-98,76; 30,46],
+          string="options",
+          style(color=0, rgbcolor={0,0,0}))),
     Diagram,
     Documentation(info="<HTML>
 <p>
-This models defines ambient environment conditions and global
+This models defines global
 options for all components that are on the same or on a lower level
 as this component. Dragging this component in a model results
 in the following declaration:
 </p>
 <pre>
-   <b>inner</b> Modelica_Fluid.WorkInProgress.Components.Environment environment;
+   <b>inner</b> Modelica_Fluid.WorkInProgress.Components.GlobalOptions globalOptions;
 </pre>
 <p>
 The parameters and variables of this component can be 
 then accessed via a corresponding outer declaration:
 </p>
 <pre>
-   <b>outer</b> Modelica_Fluid.WorkInProgress.Components.Environment environment;
+   <b>outer</b> Modelica_Fluid.WorkInProgress.Components.GlobalOptions globalOptions;
 </pre>
 <p>
 Note, the parameters \"InitOption\" and \"FlowOption\" are used as 
@@ -97,125 +74,9 @@ be individually redefined in every Modelica_Fluid component.
 </p>
 </HTML>
 "));
-equation 
-  medium.p = p;
-  if use_T then
-    medium.T = T;
-  else
-    medium.h = h;
-  end if;
-  medium.Xi = X[1:Medium.nXi];
+    
 end GlobalOptions;
-
-
-model Environment "Environment conditions and global options (should be improved)" 
-  import SI = Modelica.SIunits;
-  import Modelica_Fluid.WorkInProgress.Types;
   
-  replaceable package Medium = PackageMedium extends 
-    Modelica.Media.Interfaces.PartialMedium "Ambient medium model" 
-     annotation (choicesAllMatching=true);
-  parameter Medium.AbsolutePressure p = Medium.reference_p "Ambient pressure";
-  parameter Boolean use_T = true "Use T if true, otherwise h" annotation(Dialog(Evaluate=true));
-  parameter Medium.Temperature T = if use_T then 293.15 else 
-            Medium.T_phX(p,h,X[1:Medium.nXi]) "Ambient temperature" annotation(Dialog(enable=use_T));
-  parameter Medium.SpecificEnthalpy h=
-            if use_T then Medium.h_pTX(p, T, X[1:Medium.nXi]) else 1e4 
-    "Ambient specific enthalpy" annotation(Dialog(enable=not use_T));
-  parameter Medium.MassFraction X[Medium.nX] = Medium.reference_X 
-    "Ambient mass fractions m_i/m"  annotation (Dialog(enable=Medium.nXi > 0));
-  parameter SI.Acceleration g = Modelica.Constants.g_n "Gravity constant";
-  parameter Types.Init.Temp initOption=Modelica_Fluid.WorkInProgress.Types.Init.SteadyState 
-    "Default initialization";
-  parameter Types.Flow.Temp flowOption=Modelica_Fluid.WorkInProgress.Types.Flow.Bidirectional 
-    "Default flow type";
-  Medium.BaseProperties medium(p(start=p), T(start=T), h(start=h),
-                               Xi(start=X[1:Medium.nXi])) "Ambient medium";
-  annotation (
-    preferedView="info",
-    defaultComponentName="environment",
-    defaultComponentPrefixes="inner",
-    missingInnerMessage="An \"environment\" component is not defined. A default 
-environment component with initOptions = SteadyState will be used. If this is not desired, 
-drag Modelica_Fluid.Components.Environment into the top level of your model.",
-    Icon(
-      Rectangle(extent=[-100,100; 100,-100], style(
-          color=3,
-          rgbcolor={0,0,255},
-          fillColor=7,
-          rgbfillColor={255,255,255})),
-      Text(
-        extent=[-160,160; 160,110],
-        style(color=3, rgbcolor={0,0,255}),
-        string="%name"),
-      Line(points=[-86,-30; 82,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[-82,-68; -52,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[-48,-68; -18,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[-14,-68; 16,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[22,-68; 52,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[40,84; 40,14], style(color=0, rgbcolor={0,0,0})),
-      Polygon(points=[26,14; 54,14; 40,-18; 26,14], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=0,
-          rgbfillColor={0,0,0})),
-      Text(
-        extent=[46,86; 94,42],
-        style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=0,
-          rgbfillColor={0,0,0},
-          fillPattern=1),
-        string="g"),
-      Text(
-        extent=[-86,84; 20,38],
-        style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=0,
-          rgbfillColor={0,0,0},
-          fillPattern=1),
-        string="p,T,X"),
-      Text(
-        extent=[-142,-112; 154,-142],
-        string="p=%p",
-        style(color=0, rgbcolor={0,0,0}))),
-    Diagram,
-    Documentation(info="<HTML>
-<p>
-This models defines ambient environment conditions and global
-options for all components that are on the same or on a lower level
-as this component. Dragging this component in a model results
-in the following declaration:
-</p>
-<pre>
-   <b>inner</b> Modelica_Fluid.WorkInProgress.Components.Environment environment;
-</pre>
-<p>
-The parameters and variables of this component can be 
-then accessed via a corresponding outer declaration:
-</p>
-<pre>
-   <b>outer</b> Modelica_Fluid.WorkInProgress.Components.Environment environment;
-</pre>
-<p>
-Note, the parameters \"InitOption\" and \"FlowOption\" are used as 
-default setting by the Modelica_Fluid components but can
-be individually redefined in every Modelica_Fluid component.
-</p>
-</HTML>
-"));
-equation 
-  medium.p = p;
-  if use_T then
-    medium.T = T;
-  else
-    medium.h = h;
-  end if;
-  medium.Xi = X[1:Medium.nXi];
-end Environment;
-
 model PressureLoss "Generic pressure loss component" 
   extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon;
   annotation (
@@ -237,16 +98,16 @@ with record \"PressureLossFactors\".
 </p>
 </html>"));
 end PressureLoss;
-
+  
 model WallFriction 
-  "Pressure loss due to friction in a straight pipe with walls of nonuniform roughness (commercial pipes)" 
+    "Pressure loss due to friction in a straight pipe with walls of nonuniform roughness (commercial pipes)" 
   import SI = Modelica.SIunits;
   extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon(
      final lossFactors = Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors.wallFriction(length, diameter, roughness));
   parameter SI.Length length "Length of pipe";
   parameter SI.Diameter diameter "Inner diameter of pipe";
   parameter SI.Length roughness(min=1e-10) 
-    "Absolute roughness of pipe (> 0 required, details see info layer)";
+      "Absolute roughness of pipe (> 0 required, details see info layer)";
   annotation (defaultComponentName="pipe",
     Documentation(info="<html>
 <p>
@@ -336,14 +197,14 @@ As a short summary:
           fillPattern=1),
         string="length")));
 end WallFriction;
-
+  
 model SuddenExpansion "Pressure drop in pipe due to suddenly expanding area" 
   import SI = Modelica.SIunits;
   extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon(
      final lossFactors = Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors.suddenExpansion(D_a, D_b));
   parameter SI.Diameter D_a "Inner diameter of pipe at port_a";
   parameter SI.Diameter D_b "Inner diameter of pipe at port_b";
-  
+    
   annotation (
     defaultComponentName="suddenExpansion",
     Diagram(
@@ -423,15 +284,15 @@ model SuddenExpansion "Pressure drop in pipe due to suddenly expanding area"
           gradient=2,
           fillColor=69))));
 end SuddenExpansion;
-
+  
 model SharpEdgedOrifice 
-  "Pressure loss due to sharp edged orifice (for both flow directions)" 
+    "Pressure loss due to sharp edged orifice (for both flow directions)" 
   import SI = Modelica.SIunits;
   import NonSI = Modelica.SIunits.Conversions.NonSIunits;
   extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon(
      final lossFactors = Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors.sharpEdgedOrifice(D_pipe, D_min, L, alpha));
   parameter SI.Diameter D_pipe 
-    "Inner diameter of pipe (= same at port_a and port_b)";
+      "Inner diameter of pipe (= same at port_a and port_b)";
   parameter SI.Diameter D_min "Smallest diameter of orifice";
   parameter SI.Diameter L "Length of orifice";
   parameter NonSI.Angle_deg alpha "Angle of orifice";
@@ -550,58 +411,56 @@ model SharpEdgedOrifice
           fillPattern=8),
         string="alpha")));
 end SharpEdgedOrifice;
-
+  
 model IsolatedPipe 
-  "Model of an isolated pipe consisting of n pipe segments/FiniteVolumes" 
+    "Model of an isolated pipe consisting of n pipe segments/FiniteVolumes" 
   import SI = Modelica.SIunits;
-  
+    
   replaceable package Medium = PackageMedium extends 
-    Modelica_Media.Interfaces.PartialMedium "Medium in the component"  annotation (
-      choicesAllMatching =                                       true);
-  
-  extends Modelica_Fluid.Interfaces.PartialMenuInitialization;
-  
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+      annotation (choicesAllMatching = true);
+    
+  extends Modelica_Fluid.Interfaces.PartialInitializationParameters;
+    
   parameter Integer nVolumes(min=1)=1 "Number of pipe segments/finite volumes";
-  
+    
   parameter SI.Length L "Length of pipe";
   parameter SI.AbsolutePressure dp_nominal(min=1.e-10) = 1 
-    "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal pressure drop";
-  
+      "|frictionType = ConstantLaminar or ConstantTurbulent| Nominal pressure drop";
+    
   parameter SI.MassFlowRate m_flow_nominal = 1E-3 
-    "Nominal mass flow rate at nominal pressure drop";
-  
+      "Nominal mass flow rate at nominal pressure drop";
+    
   parameter SI.Area A_a;
   parameter SI.Area A_b=A_a;
-  
+    
   parameter SI.Length Z_a=0;
   parameter SI.Length Z_b=Z_a;
-  
+    
   parameter Boolean dynamicMomentumBalance=false 
-    "If false, der(m_flow) is neglected in momentum balance" 
+      "If false, der(m_flow) is neglected in momentum balance" 
                                                  annotation(Evaluate=true,
       Dialog(tab="Level of Detail"));
   parameter Boolean includeKineticTerm=false 
-    "If false, d*v^2 is neglected in momentum balance" 
+      "If false, d*v^2 is neglected in momentum balance" 
                                              annotation(Evaluate=true,
       Dialog(tab="Level of Detail"));
   parameter Boolean includeViscosity=false 
-    "If false, artifical viscosity is neglected" 
+      "If false, artifical viscosity is neglected" 
                                           annotation(Evaluate=true, Dialog(tab=
           "Level of Detail"));
   parameter Real viscosityFactor1=0 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
   parameter Real viscosityFactor2=1 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
-  
+    
   Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
               annotation (extent=[-120, -10; -100, 10]);
   Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium = Medium) 
               annotation (extent=[120, -10; 100, 10]);
-  Modelica_Fluid.Utilities.PipeSegment pipeSegment[nVolumes](
+  Modelica_Fluid.WorkInProgress.Utilities.PipeSegment pipeSegment[nVolumes](
       redeclare package Medium = Medium,
-      each initType = initType,
-      each init_p = init_p,
+      each initOption = initOption,
       each p_start = p_start,
-      each d_start = d_start,
-      each init_T = init_T,
+      each use_T_start = use_T_start,
       each T_start = T_start,
       each h_start = h_start,
       each X_start = X_start,
@@ -615,7 +474,7 @@ model IsolatedPipe
       each includeViscosity=includeViscosity,
       each viscosityFactor1=viscosityFactor1,
       each viscosityFactor2=viscosityFactor2);
-  
+    
 annotation (Icon(
     Rectangle(extent=[-100, 60; 100, -60], style(color=0, fillColor=8)),
     Rectangle(extent=[-100, 34; 100, -36], style(
@@ -643,5 +502,5 @@ equation
     connect(pipeSegment[i].port_b, pipeSegment[i + 1].port_a);
   end for;
 end IsolatedPipe;
-
+  
 end Components;

@@ -112,9 +112,9 @@ package Interfaces
   partial model PartialInitializationParameters 
     "Define parameter menu to initialize medium in component that has one medium model" 
     import Modelica_Fluid.Types.InitTypes.*;
-    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
-      "Medium model" 
-       annotation (choicesAllMatching=true);
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
     parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_start = Medium.reference_p 

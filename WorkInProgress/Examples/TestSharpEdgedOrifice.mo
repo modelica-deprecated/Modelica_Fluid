@@ -12,7 +12,6 @@ model TestSharpEdgedOrifice
     experimentSetupOutput,
     Coordsys(extent=[-100,-100; 100,100]),
     Documentation(info="<html>
-
 </html>"));
   Sources.PrescribedAmbient_pTX ambient(redeclare package Medium = Medium) 
     annotation (extent=[-40,40; -20,60]);

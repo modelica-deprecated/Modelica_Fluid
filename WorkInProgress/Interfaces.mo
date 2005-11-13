@@ -172,7 +172,6 @@ _
       Diagram,
       Icon,
       Documentation(info="<html>
-
 </html>"));
   end PressureLossWithoutIcon;
 end Interfaces;

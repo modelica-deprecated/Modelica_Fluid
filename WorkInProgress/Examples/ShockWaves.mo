@@ -1,24 +1,24 @@
-package ShockWaves "Examples demonstrating shock waves in pipes"
+package ShockWaves "Examples demonstrating shock waves in pipes" 
 extends Modelica.Icons.Library;
-
+  
 model TestSimpleIsolatedPipePressure "Test IsolatedPipe component" 
-  
+    
   import Modelica.SIunits.Conversions.*;
-  
+    
   extends Modelica.Icons.Example;
-  
+    
   parameter Real pressurePulseHeight=1E5;
   parameter Real pressurePulseWidth=50E-6;
   parameter Real pressurePulseStart=0.1E-3;
   parameter Real pressurePulseBase=2E5;
-  
+    
   Modelica_Fluid.Sources.FixedAmbient_pTX ambient(
     port(h(start=10000)),
-      p_ambient=pressurePulseBase,
-      T_ambient=320,
-      redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+      p=pressurePulseBase,
+      T=320,
+      redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
   annotation (extent=[80,50; 60,70]);
-  
+    
 annotation (
   Diagram,
   experiment(
@@ -29,9 +29,9 @@ annotation (
   experimentSetupOutput,
   Commands(file="Simulate and plot pressure.mos", file=
      "Simulate and Plot Temperature.mos"));
-  
-  Modelica_Fluid.Components.IsolatedPipe isolatedPipe(
-    redeclare package Medium = Modelica_Media.Air.DryAirNasa,
+    
+  Modelica_Fluid.WorkInProgress.Components.IsolatedPipe isolatedPipe(
+    redeclare package Medium = Modelica.Media.Air.DryAirNasa,
     dp_nominal=50,
     L=0.025,
     dynamicMomentumBalance=true,
@@ -41,19 +41,13 @@ annotation (
     T_start=320,
     A_a=1,
     includeViscosity=true,
-    initType=Modelica_Fluid.Types.InitTypes.InitialStates) 
+    initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
            annotation (extent=[20,50; 40,70]);
-  Modelica_Fluid.Sources.PrescribedAmbient_pT prescribedAmbient(redeclare 
-      package Medium = Modelica_Media.Air.DryAirNasa) 
+  Modelica_Fluid.Sources.PrescribedAmbient_pTX prescribedAmbient(redeclare 
+        package Medium=Modelica.Media.Air.DryAirNasa) 
                   annotation (extent=[-22,50; -2,70]);
   Modelica.Blocks.Math.Add Add1 
                               annotation (extent=[-58,56; -38,76]);
-  UserInteraction.Outputs.SpatialPlot SpatialPlot1(
-    y=isolatedPipe.pipeSegment.medium.p,
-    x=linspace(0, 1, isolatedPipe.nVolumes),
-      minY=pressurePulseBase - pressurePulseHeight,
-      maxY=pressurePulseBase + pressurePulseHeight) 
-                           annotation(extent=[-100,-100; 100,20]);
   Modelica.Blocks.Sources.Ramp Ramp3(
       duration=scalar({pressurePulseWidth/2}),
       height=scalar({pressurePulseHeight}),
@@ -68,8 +62,15 @@ annotation (
                   annotation (extent=[-100,90; -80,70]);
   Modelica.Blocks.Sources.Constant Constant1(k=320) 
     annotation (extent=[-60,20; -40,40]);
+    
+  UserInteraction.Outputs.SpatialPlot SpatialPlot1(
+    y=isolatedPipe.pipeSegment.medium.p,
+    x=linspace(0, 1, isolatedPipe.nVolumes),
+      minY=pressurePulseBase - pressurePulseHeight,
+      maxY=pressurePulseBase + pressurePulseHeight) 
+                           annotation(extent=[-100,-100; 100,20]);
+    
 equation 
-  
   connect(isolatedPipe.port_b, ambient.port) 
   annotation (points=[41,60; 59,60], style(color=69));
   connect(prescribedAmbient.port, isolatedPipe.port_a)    annotation(points=
@@ -78,49 +79,52 @@ equation
         -60,60],          style(color=3));
   connect(Ramp4.y,Add1.u1) 
   annotation (points=[-79,80; -70,80; -70,72; -60,72],   style(color=3));
-  
-  connect(Add1.y, prescribedAmbient.p_ambient) 
-    annotation (points=[-37,66; -24,66], style(color=3, rgbcolor={0,0,255}));
-  connect(Constant1.y, prescribedAmbient.T_ambient) annotation (points=[-39,30;
-        -32,30; -32,54; -24,54], style(color=3, rgbcolor={0,0,255}));
+    
+  connect(Constant1.y, prescribedAmbient.T_in) annotation (points=[-39,30; -32,30;
+        -32,60; -24,60], style(color=74, rgbcolor={0,0,127}));
+    connect(Add1.y, prescribedAmbient.p_in) annotation (points=[-37,66; -24,66],
+        style(color=74, rgbcolor={0,0,127}));
 end TestSimpleIsolatedPipePressure;
-
+  
 model TestThreeIsolatedPipesPressure "Test ShortPipe componet" 
-  
-  import Modelica.SIunits.Conversions.*;
-  
+    
+    import Modelica.SIunits.Conversions.*;
+    
   extends Modelica.Icons.Example;
   parameter Real pressurePulsHeight=1E4;
   parameter Real pressurePulsWidth=1E-3;
   parameter Real pressurePulsStart=0.1E-3;
-  parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient=300;
-  parameter Modelica_Media.Interfaces.PartialMedium.Temperature T_ambient1=310;
-  
+  parameter Modelica.Media.Interfaces.PartialMedium.Temperature T_ambient=300;
+  parameter Modelica.Media.Interfaces.PartialMedium.Temperature T_ambient1=310;
+    
 annotation (
   Diagram,
   experiment(
-      StopTime=0.001, 
-      NumberOfIntervals=5000, 
-      Tolerance=1e-006, 
-      fixedstepsize=1e-006, 
+      StopTime=0.001,
+      NumberOfIntervals=5000,
+      Tolerance=1e-006,
+      fixedstepsize=1e-006,
       Algorithm="Dassl"),
   experimentSetupOutput,
   Commands(file="Simulate and plot pressure.mos", file=
      "Simulate and Plot Temperature.mos"));
-  
-  Modelica_Fluid.Components.IsolatedPipe IsolatedPipe1(
+    
+  Modelica_Fluid.WorkInProgress.Components.IsolatedPipe IsolatedPipe1(
     m_flow_nominal=1,
     A_a=0.01,
     dp_nominal=50,
     dynamicMomentumBalance=true,
     L=0.5,
-    redeclare package Medium = Modelica_Media.Air.DryAirNasa,
+    redeclare package Medium = Modelica.Media.Air.DryAirNasa,
     includeKineticTerm=true,
-    includeViscosity=true, 
-    nVolumes=25) 
+    includeViscosity=true,
+    nVolumes=25,
+      h_start=1e4,
+      T_start=293.15,
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
            annotation (extent=[12,70; 32,90]);
-  Modelica_Fluid.Sources.PrescribedAmbient_pT prescribedAmbient(
-      redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+  Modelica_Fluid.Sources.PrescribedAmbient_pTX prescribedAmbient(
+      redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
                   annotation (extent=[-22,70; -2,90]);
   Modelica.Blocks.Sources.Ramp Ramp1(
       duration=scalar({pressurePulsWidth/2}),
@@ -137,21 +141,23 @@ annotation (
   Modelica.Blocks.Math.Add Add1 
                               annotation (extent=[-60,76; -40,96]);
   Modelica_Fluid.Sources.FixedAmbient ambient1(
-    p_ambient=1E5,
+    p=1E5,
     port(h(start=10000)),
-    T_ambient=T_ambient,
-      redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+    T=T_ambient,
+      redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
   annotation (extent=[100,70; 80,90]);
-  Modelica_Fluid.Components.IsolatedPipe IsolatedPipe2(
+  Modelica_Fluid.WorkInProgress.Components.IsolatedPipe IsolatedPipe2(
     m_flow_nominal=1,
     dp_nominal=50,
     A_a=0.01/2,
     dynamicMomentumBalance=true,
     L=0.5,
-    redeclare package Medium = Modelica_Media.Air.DryAirNasa,
+    redeclare package Medium = Modelica.Media.Air.DryAirNasa,
     includeKineticTerm=true,
-    includeViscosity=true, 
-    nVolumes=25) 
+    includeViscosity=true,
+    nVolumes=25,
+      T_start=293.15,
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
            annotation (extent=[48,70; 68,90]);
   UserInteraction.Outputs.SpatialPlot SpatialPlot1(
     maxY=1.1e5,
@@ -166,21 +172,23 @@ annotation (
     y=IsolatedPipe2.pipeSegment.medium.p) 
                         annotation(extent=[0,-40; 100,20]);
   Modelica_Fluid.Sources.FixedAmbient ambient2(
-    p_ambient=1E5,
+    p=1E5,
     port(h(start=10000)),
-    T_ambient=T_ambient,
-      redeclare package Medium = Modelica_Media.Air.DryAirNasa) 
+    T=T_ambient,
+      redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
   annotation (extent=[100,30; 80,50]);
-  Modelica_Fluid.Components.IsolatedPipe IsolatedPipe3(
+  Modelica_Fluid.WorkInProgress.Components.IsolatedPipe IsolatedPipe3(
     m_flow_nominal=1,
     dp_nominal=25,
     A_a=0.01/2,
     dynamicMomentumBalance=true,
     L=0.25,
-    redeclare package Medium = Modelica_Media.Air.DryAirNasa,
+    redeclare package Medium = Modelica.Media.Air.DryAirNasa,
     includeKineticTerm=true,
-    includeViscosity=true, 
-    nVolumes=20) 
+    includeViscosity=true,
+    nVolumes=20,
+      T_start=293.15,
+      initOption=Modelica_Fluid.Types.InitTypes.InitialValues) 
            annotation (extent=[48,30; 68,50]);
   UserInteraction.Outputs.SpatialPlot SpatialPlot3(
     maxY=1.1e5,
@@ -191,7 +199,7 @@ annotation (
   Modelica.Blocks.Sources.Constant Constant1(k=T_ambient1) 
     annotation (extent=[-60,46; -40,66]);
 equation 
-  
+    
   connect(prescribedAmbient.port, IsolatedPipe1.port_a) 
   annotation (points=[-1,80; 11,80], style(color=69));
   connect(Ramp1.y,Add1.u2)           annotation (points=[-79,62; -72,62; -72,80;
@@ -210,12 +218,11 @@ equation
   connect(IsolatedPipe3.port_b,ambient2. port) 
                                          annotation(points=[69,40; 79,40],
       style(color=69, rgbcolor={0,127,255}));
-  
-  connect(Constant1.y, prescribedAmbient.T_ambient)       annotation (points=[
-        -39,56; -32,56; -32,74; -24,74], style(color=3, rgbcolor={0,0,255}));
-  connect(Add1.y, prescribedAmbient.p_ambient)
-    annotation (points=[-39,86; -24,86], style(color=3, rgbcolor={0,0,255}));
+    
+  connect(Add1.y, prescribedAmbient.p_in) annotation (points=[-39,86; -32,86;
+        -32,86; -24,86], style(color=74, rgbcolor={0,0,127}));
+  connect(Constant1.y, prescribedAmbient.T_in) annotation (points=[-39,56; -32,
+        56; -32,80; -24,80], style(color=74, rgbcolor={0,0,127}));
 end TestThreeIsolatedPipesPressure;
-
-
+  
 end ShockWaves;

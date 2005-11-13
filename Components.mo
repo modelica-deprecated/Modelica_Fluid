@@ -5,9 +5,9 @@ package Components "Basic components for fluid models"
     import Modelica_Fluid.Types.InitTypes.*;
     import Modelica.Constants.*;
     extends Interfaces.PartialInitializationParameters;
-    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
-      "Medium model" 
-       annotation (choicesAllMatching=true);
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
     parameter SI.Volume V "Volume";
     parameter Boolean allowFlowReversal = true 
       "Flow reversal at the ports is allowed by the equations" annotation(Dialog(tab="Advanced"));
