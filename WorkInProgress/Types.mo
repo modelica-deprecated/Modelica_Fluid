@@ -97,7 +97,7 @@ package Types
             "UseEnvironmentOption (use FlowReversal defined in environment component)"));
     end Temp;
   end FlowWithGlobalDefault;
-
+  
   package OrificeCharacteristics "Functions for valve characteristics" 
     
     annotation (preferedView="info",
@@ -261,9 +261,6 @@ when the flow is laminar.
     equation 
       
     end suddenExpansion;
-    
-    
-    
     
   end OrificeCharacteristics;
 end Types;
