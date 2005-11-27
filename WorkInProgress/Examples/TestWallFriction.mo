@@ -6,7 +6,7 @@ model TestWallFriction
     extends Modelica.Media.Interfaces.PartialMedium "Medium in all components" 
                                                       annotation (
     choicesAllMatching =                                                                            true);
-  parameter Modelica.SIunits.Length roughness = 1e-3;
+  parameter Modelica.SIunits.Length roughness = 0.025e-3;
   
   annotation (Diagram,
     experiment(StopTime=10, NumberOfIntervals=10000),

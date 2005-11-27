@@ -96,23 +96,34 @@ The laminar and the transition region is usually of
 not much technical interest because the operating point is
 mostly in the turbulent regime. For simplification and for
 numercial reasons, this whole region is described by two
-polynomials of third order, one polynomial for 0 &le; Re &le; Re_turbulent
-and one for -Re_turbulent&le; Re &le; 0. The common derivative
+polynomials of third order, one polynomial for m_flow &ge; 0 
+and one for m_flow &lt; 0. The polynomials start at 
+Re = |m_flow|*4/(&pi;*D_Re*&eta;), where D_Re is the
+smallest diameter between port_a and port_b.
+The common derivative
 of the two polynomials at Re = 0 is
 computed from the equation \"c0/Re\". Note, the pressure drop
 equation above in the laminar region is always defined
 with respect to the smallest diameter D_Re.
 </p>
 <p>
-If no data is available
-(c1, c2 not given), the derivative at Re = 0 is computed in such
+If no data for c0 is available, the derivative at Re = 0 is computed in such
 a way, that the second derivatives of the two polynomials
 are identical at Re = 0. The polynomials are constructed, such that
 they smoothly touch the characteristic curves in the turbulent
 regions. The whole characteristic is therefore <b>continuous</b>
 and has a <b>finite</b>, <b>continuous first derivative everywhere</b>.
+In some cases, the constructed polynomials would \"vibrate\". This is 
+avoided by reducing the derivative at Re=0 in such a way that
+the polynomials are guaranteed to be monotonically increasing.
+The used sufficient criteria for monotonicity follows from:
 </p>
- 
+
+<dl>
+<dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
+<dd> <b>Monotone piecewise cubic interpolation</b>.
+     SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
+</dl>
 </html>"));
     
    encapsulated function wallFriction 
@@ -241,7 +252,7 @@ As a short summary:
    algorithm 
      data.D_a          := diameter;
      data.D_b          := diameter;
-     data.zeta1        := (length/diameter)/(2*lg(3.7 / Delta))^2;
+     data.zeta1        := (length/diameter)/(2*lg(3.7 /Delta))^2;
      data.zeta2        := data.zeta1;
      data.Re_turbulent := 4000 
         ">= 560/Delta flow does not depend on Re, but interpolation is bad";
@@ -633,8 +644,8 @@ k1=1, k2=3 is shown:
        input Real x1 "approximation of function abs(x) < x1";
        input Real k1 "y = if x>=0 then sqrt(k1*x) else -sqrt(k2*|x|); k1 >= k2";
        input Real k2 "y = if x>=0 then sqrt(k1*x) else -sqrt(k2*|x|))";
-       input Boolean use_yd0 = false "= true, if yd0 shall be used";
-       input Real yd0(min=0)=1 "Desired derivative at x=0: dy/dx = yd0";
+       input Boolean use_yd0 "= true, if yd0 shall be used";
+       input Real yd0(min=0) "Desired derivative at x=0: dy/dx = yd0";
        output Real y;
        annotation(smoothOrder=2);
     protected 
@@ -647,8 +658,11 @@ k1=1, k2=3 is shown:
        Real y2d;
        Real w;
        Real y0d;
+       Real w1;
+       Real w2;
     algorithm 
-       x2 :=-x1*(k2/k1);
+       //x2 :=-x1*(k2/k1);
+       x2 :=-x1;
        if x <= x2 then
           y := -sqrt(k2*abs(x));
        else
@@ -701,6 +715,14 @@ k1=1, k2=3 is shown:
              y0d := ( (3*y2 - x2*y2d)/w - (3*y1 - x1*y1d)*w) /(2*x1*(1 - w));
           end if;
         
+          /* Modify derivative y0d, such that the polynomial is 
+           monotonically increasing. A sufficient condition is
+             0 <= y0d <= sqrt(8.75*k_i/|x_i|)
+        */
+          w1 :=sqrt(8.75*k1/x1);
+          w2 :=sqrt(8.75*k2/abs(x2));
+          y0d :=min(y0d, 0.9*min(w1, w2));
+        
           /* Perform interpolation in scaled polynomial:
            y_new = y/y1
            x_new = x/x1
@@ -722,8 +744,8 @@ k1=1, k2=3 is shown:
     input Real x;
     input Real x_small(min=0)=0.01 
       "approximation of function for |x| <= x_small";
-    input Real k1(min=0)=1 "y = (if x>=0 then k1 else -k2)*x*|x|";
-    input Real k2(min=0)=1 "y = (if x>=0 then k1 else -k2)*x*|x|";
+    input Real k1(min=0)=1 "y = (if x>=0 then k1 else k2)*x*|x|";
+    input Real k2(min=0)=1 "y = (if x>=0 then k1 else k2)*x*|x|";
     input Boolean use_yd0 = false "= true, if yd0 shall be used";
     input Real yd0(min=0)=1 "Desired derivative at x=0: dy/dx = yd0";
     output Real y;
@@ -781,9 +803,12 @@ k1=1, k2=3 is shown:
        Real y1d;
        Real y2d;
        Real w;
+       Real w1;
+       Real w2;
        Real y0d;
     algorithm 
-       x2 :=-x1*(k2/k1)^2;
+       // x2 :=-x1*(k2/k1)^2;
+       x2 := -x1;
        if x <= x2 then
           y := -k2*x^2;
        else
@@ -801,6 +826,14 @@ k1=1, k2=3 is shown:
              w :=x2/x1;
              y0d := ( (3*y2 - x2*y2d)/w - (3*y1 - x1*y1d)*w) /(2*x1*(1 - w));
           end if;
+        
+          /* Modify derivative y0d, such that the polynomial is 
+           monotonically increasing. A sufficient condition is
+             0 <= y0d <= sqrt(5)*k_i*|x_i|
+        */
+          w1 :=sqrt(5)*k1*x1;
+          w2 :=sqrt(5)*k2*abs(x2);
+          y0d :=min(y0d, 0.9*min(w1, w2));
         
           y := if x >= 0 then evaluatePoly3_derivativeAtZero(x,x1,y1,y1d,y0d) else 
                               evaluatePoly3_derivativeAtZero(x,x2,y2,y2d,y0d);
