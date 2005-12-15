@@ -408,7 +408,11 @@ partial model Flow1D
           color=69,
           gradient=2,
           fillColor=69))));
-    
+  protected 
+  SI.Force[np] DI_flow "Delta momentum flow across flow grid boundaries";
+  SI.Force[np] F_g "Static head";
+  SI.Force[np] F_f "Friction force";
+  SI.Force[np] F_p "Pressure forces";
 initial equation 
   // Initial conditions
   if not static then
@@ -512,7 +516,7 @@ equation
   end for;
     
   // Momentum balance (always static for lumped_dp = true)
-  if lumped_dp then
+ /* if lumped_dp then
     0 = port_a.p - port_b.p - dp[1] - (if gravityTerm then g*H_ab*sum(medium.d)
       /n else 0);
     medium.p = ones(n)*((port_a.p - port_b.p)/2 + port_b.p);
@@ -536,6 +540,33 @@ equation
       medium[n].d - 1/d_port_b)/A_inner else 0) - (if gravityTerm then A_inner*g*
       H_ab/n*(if noEvent(m_flow[n + 1] >= 0) then medium[n].d else d_port_b) else 
             0);
+end if*/
+if lumped_dp then
+    F_g[1] = if gravityTerm then -A_inner*g*H_ab*sum(medium.d)
+      /n else 0;
+    F_p[1] = (port_a.p - port_b.p)*A_inner;
+    F_f[1] = -dp[1]*A_inner;
+    DI_flow[1] = 0;//Neglected in lumped balance
+    zeros(np) = F_p + F_f + F_g;
+    medium.p = ones(n)*(port_a.p + port_b.p)/2;
+  else
+    F_g[1] = if gravityTerm then -A_inner*g*H_ab/n/2*d_port_a else 0;
+    F_p[1] = (port_a.p-medium[1].p)*A_inner;
+    F_f[1] = -dp[1]*A_inner;
+    DI_flow[1] = if kineticTerm then (Modelica_Fluid.Utilities.regSquare(x=m_flow[1], delta=max(0.0001, 0.01*mflow_start))/A_inner*(1/d_port_a-1/medium[1].d)) else 0;
+    (if dynamicTerm then der(m_flow[1])*length/n/2 else 0) = F_p[1] + F_f[1] + F_g[1] + DI_flow[1];
+    for i in 2:n loop
+      F_g[i] = if gravityTerm then -A_inner*g*H_ab/n*(if (m_flow[i] >= 0) then medium[i].d else medium[1].d) else 0;
+      F_p[i] = (medium[i-1].p-medium[i].p)*A_inner;
+      F_f[i] = -dp[i]*A_inner;
+      DI_flow[i] = if kineticTerm then (Modelica_Fluid.Utilities.regSquare(x=m_flow[i], delta=max(0.0001, 0.01*mflow_start))/A_inner*(1/medium[i-1].d-1/medium[i].d)) else 0;
+      (if dynamicTerm then der(m_flow[i])*length/n else 0) = F_p[i] + F_f[i] + F_g[i] + DI_flow[i];
+    end for;
+    F_g[np] = if gravityTerm then -A_inner*g*H_ab/n/2*d_port_b else 0;
+    F_p[np] = (medium[n].p-port_b.p)*A_inner;
+    F_f[np] = -dp[np]*A_inner;
+    DI_flow[np] = if kineticTerm then (Modelica_Fluid.Utilities.regSquare(x=m_flow[np], delta=max(0.0001, 0.01*mflow_start))/A_inner*(1/medium[n].d-1/d_port_b)) else 0;
+    (if dynamicTerm then der(m_flow[n + 1])*length/n/2 else 0) = F_p[np] + F_f[np] + F_g[np] + DI_flow[np];
   end if;
     
 //port medium
@@ -543,8 +574,8 @@ equation
   point which would give wrong densities at the pipe outlet for pressure drop calculations
   if fluid flows with substantially different densities are mixed
   Be careful when using port states*/
-  d_port_a = if noEvent(dp[1] >= 0) then medium_a.d else medium[1].d;
-  d_port_b = if noEvent(dp[np] >= 0) then medium[n].d else medium_b.d;
+  d_port_a = noEvent(if (dp[1] >= 0) then medium_a.d else medium[1].d);
+  d_port_b = noEvent(if (dp[np] >= 0) then medium[n].d else medium_b.d);
   state_a = medium_a.state;//No conditional because of Integer possible in state
   state_b = medium_b.state;//No conditional because of Integer possible in state
     
