@@ -1,6 +1,7 @@
 package Types 
   package Init 
     "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
+    
     annotation (preferedView="text");
     extends Modelica.Icons.Enumeration;
     constant Integer NoInit = 1 
@@ -27,6 +28,7 @@ package Types
   
   package InitWithGlobalDefault 
     "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
+    
     annotation (preferedView="text");
     extends Modelica.Icons.Enumeration;
     constant Integer NoInit = 1 
@@ -58,6 +60,7 @@ package Types
   
   package Flow 
     "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available" 
+    
     annotation (preferedView="text");
     extends Modelica.Icons.Enumeration;
     constant Integer Unidirectional = 1 "Fluid flows only in one direction";
@@ -77,6 +80,7 @@ package Types
   
   package FlowWithGlobalDefault 
     "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available" 
+    
     annotation (preferedView="text");
     extends Modelica.Icons.Enumeration;
     constant Integer Unidirectional = 1 "Fluid flows only in one direction";

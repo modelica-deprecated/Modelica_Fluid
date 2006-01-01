@@ -67,13 +67,7 @@ package Interfaces
                fillColor=69)), Text(extent=[-88, 206; 112, 112], string="%name")),
          Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
               fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
-              fillColor=69)), Text(
-          extent=[-126, 160; 130, 104],
-          string="%name",
-          style(
-            color=0,
-            fillColor=69,
-            fillPattern=1))));
+              fillColor=69))));
   end FluidPort_a;
   
   connector FluidPort_b "Fluid connector with outlined icon" 
@@ -85,29 +79,11 @@ package Interfaces
          Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
               fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
               fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
-               fillColor=7)), Text(
-          extent=[-126, 160; 130, 104],
-          string="%name",
-          style(
-            color=0,
-            fillColor=69,
-            fillPattern=1))));
+               fillColor=7))));
   end FluidPort_b;
   
-  connector HeatPort = Modelica.Thermal.HeatTransfer.Interfaces.HeatPort 
-    "Thermal port for 1-dim. heat transfer";
   
-  connector HeatPort_a = Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a 
-    "Thermal port for 1-dim. heat transfer (filled rectangular icon)" 
-    annotation (Icon);
   
-  connector HeatPort_b = Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b 
-    "Thermal port for 1-dim. heat transfer (unfilled rectangular icon)" 
-    annotation (Icon(
-                    Text(
-          extent=[-98,196; 102,102],
-          string="%name",
-          style(color=42))));
   
   partial model PartialInitializationParameters 
     "Define parameter menu to initialize medium in component that has one medium model" 

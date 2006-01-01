@@ -1,8 +1,9 @@
 model TestSharpEdgedOrifice 
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  replaceable package Medium = 
-      Modelica.Media.Water.ConstantPropertyLiquidWater 
+  // Modelica.Media.Water.ConstantPropertyLiquidWater 
+  // Modelica.Media.Water.WaterIF97_ph 
+  replaceable package Medium = Modelica.Media.IdealGases.SingleGases.O2 
     extends Modelica.Media.Interfaces.PartialMedium "Medium in all components" 
                                                       annotation (
     choicesAllMatching =                                                                            true);
@@ -22,7 +23,7 @@ model TestSharpEdgedOrifice
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
-    annotation (extent=[62,40; 42,60]);
+    annotation (extent=[60,40; 40,60]);
   Sources.FixedAmbient_pTX ambient_p2(
     redeclare package Medium = Medium,
     p=1.0e5,
@@ -51,7 +52,7 @@ equation
       fillColor=3,
       rgbfillColor={0,0,255},
       fillPattern=8));
-  connect(orifice1.port_b, ambient_p1.port) annotation (points=[21,50; 41,50],
+  connect(orifice1.port_b, ambient_p1.port) annotation (points=[21,50; 39,50],
       style(
       color=69,
       rgbcolor={0,127,255},

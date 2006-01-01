@@ -13,7 +13,8 @@ package Utilities
     Interfaces.FluidPort_a port(
       redeclare package Medium = Medium) "Fluid port" 
       annotation (extent=[-10, -10; 10, 10], rotation=0);
-    Interfaces.HeatPort_a thermalPort "Thermal port" 
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
+      "Thermal port" 
       annotation (extent=[-20,88; 20,108]);
     
     Medium.BaseProperties medium(preferredMediumStates=true,

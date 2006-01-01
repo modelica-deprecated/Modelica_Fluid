@@ -664,7 +664,8 @@ model Pipe
       "Pressure drop due to friction" 
                                     annotation(Dialog(tab="Advanced", group="Heat transfer and friction loss"), choicesAllMatching, extent=[-58,-20;
         -18,20]);
-  Modelica_Fluid.Interfaces.HeatPort_a[n] thermalPort "Thermal port" 
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort 
+      "Thermal port" 
     annotation (extent=[-20,60; 20,80]);
   replaceable model Wall = 
         Modelica_Fluid.WorkInProgress.Components.Wall_constProps                    extends 
@@ -928,7 +929,7 @@ equation
       gradient=2,
       fillColor=42,
       rgbfillColor={213,0,0}));
-  connect(pipe_1.port_a, port_a1) annotation (points=[-40.6,-30; -75.3,-30; 
+  connect(pipe_1.port_a, port_a1) annotation (points=[-40.6,-30; -75.3,-30;
           -75.3,-2; -110,-2],
                             style(
       color=69,
@@ -937,7 +938,7 @@ equation
       gradient=2,
       fillColor=42,
       rgbfillColor={213,0,0}));
-  connect(pipe_2.port_a, port_a2) annotation (points=[-40.6,58; -76,58; -76,46; 
+  connect(pipe_2.port_a, port_a2) annotation (points=[-40.6,58; -76,58; -76,46;
           -110,46],
                   style(
       color=69,

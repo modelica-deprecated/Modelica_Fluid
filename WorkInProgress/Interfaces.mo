@@ -166,8 +166,8 @@ _
        dp = port_a.p - port_b.p,
        d_a = medium_a.d,
        d_b = medium_b.d,
-       eta_a = if use_Re then Medium.dynamicViscosity(medium_a) else 0,
-       eta_b = if use_Re then Medium.dynamicViscosity(medium_b) else 0);
+       eta_a = if use_Re then Medium.dynamicViscosity(medium_a.state) else 0,
+       eta_b = if use_Re then Medium.dynamicViscosity(medium_b.state) else 0);
     annotation (
       Diagram,
       Icon,
@@ -586,9 +586,11 @@ partial model PartialPipeWall "Wall interface"
   parameter SI.Diameter a_inner "Inner cross section area" annotation(Dialog(tab="No Input", enable=false));
   parameter SI.Length a_outer "Outer cross section area" annotation(Dialog(tab="No Input", enable=false));
   parameter SI.Length length "Pipe length" annotation(Dialog(tab="No Input", enable=false));
-  Modelica_Fluid.Interfaces.HeatPort_a[n] thermalPort_a "Thermal port" 
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_a 
+      "Thermal port" 
     annotation (extent=[-20,40; 20,60]);
-  Modelica_Fluid.Interfaces.HeatPort_a[n] thermalPort_b "Thermal port" 
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_b 
+      "Thermal port" 
     annotation (extent=[-20,-40; 20,-60]);
     
  annotation (Diagram, Icon(Rectangle(extent=[-100,40; 100,-40], style(

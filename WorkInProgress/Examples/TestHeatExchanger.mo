@@ -31,12 +31,12 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     initOption_1=Modelica_Fluid.Types.InitTypes.InitialValues,
     initOption_2=Modelica_Fluid.Types.InitTypes.InitialValues,
     mflow_start_2=0.2,
-      K1=3, 
+      K1=3,
     redeclare model PipeFriction = 
         Modelica_Fluid.WorkInProgress.Utilities.PipeFriction.PipeFriction_SimpleLinear
         (
-        m_flow_nominal=0.2, 
-        dp_nominal=600, 
+        m_flow_nominal=0.2,
+        dp_nominal=600,
         d_nominal=1000))       annotation (extent=[-26,-12; 34,48]);
   
   Sources.FixedAmbient_pTX ambient2(
@@ -62,7 +62,7 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     offset=0.2,
     startTime=50) annotation (extent=[-100,24; -80,44]);
 equation 
-  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-45,34; 
+  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-45,34;
         -40,34; -40,31.8; -29,31.8],     style(
       color=69,
       rgbcolor={0,127,255},
@@ -83,13 +83,13 @@ equation
       fillColor=70,
       rgbfillColor={0,63,125},
       fillPattern=1));
-  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,4.2; 
+  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,4.2;
         49.5,4.2; 49.5,-18; 61,-18], style(
       color=69,
       rgbcolor={0,127,255},
       fillColor=70,
       rgbfillColor={0,63,125},
       fillPattern=1));
-  connect(Ramp1.y, massFlowRate2.m_flow_in) annotation (points=[-79,34; -74,34; 
+  connect(Ramp1.y, massFlowRate2.m_flow_in) annotation (points=[-79,34; -74,34;
         -74,40; -65.3,40], style(color=74, rgbcolor={0,0,127}));
 end TestHeatExchanger;

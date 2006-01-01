@@ -100,10 +100,10 @@ extends Modelica.Icons.Example;
         -68,74]);
 equation 
   connect(pipe3.port_b, pipe2.port_a) 
-                                     annotation (points=[-22,42; -2,42; -2,32; 
+                                     annotation (points=[-22,42; -2,42; -2,32;
         7.8,32],
       style(color=69, rgbcolor={0,127,255}));
-  connect(pipe1.port_b, pipe2.port_a) annotation (points=[-22,18; -2,18; -2,32; 
+  connect(pipe1.port_b, pipe2.port_a) annotation (points=[-22,18; -2,18; -2,32;
         7.8,32],  style(color=69, rgbcolor={0,127,255}));
   connect(pipe2.port_b, ambient.port) annotation (points=[28,32; 40,32; 40,30;
         49,30], style(color=69, rgbcolor={0,127,255}));

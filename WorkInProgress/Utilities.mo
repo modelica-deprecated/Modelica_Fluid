@@ -1197,7 +1197,7 @@ equation
   dp_b = dp_nominal*(if linearPressureDrop then -m_flow_b/m_flow_nominal else 
                         abs(-m_flow_b)*(-m_flow_b)/m_flow_nominal^2);
 end PipeSegment;
-
+  
   package PipeFriction 
     partial model PartialPipeFriction 
       parameter Boolean from_dp=true 
@@ -1347,7 +1347,7 @@ As a short summary:
       end if;
     end PipeFriction_SimpleLinear;
   end PipeFriction;
-
+  
   package PipeHeatTransfer 
     
     partial model PartialPipeHeatTransfer 
@@ -1356,7 +1356,8 @@ As a short summary:
       SI.HeatFlowRate[n] Q_flow "Heat flow rates";
       parameter SI.Area A_h "Total heat transfer area" annotation(Dialog(tab="No input", enable=false));
       parameter SI.Length d_h "Hydraulic diameter" annotation(Dialog(tab="No input", enable=false));
-      Modelica_Fluid.Interfaces.HeatPort_a[n] thermalPort "Thermal port" 
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort 
+        "Thermal port" 
         annotation (extent=[-20,60; 20,80]);
       SI.Temperature[n] T;
     equation 
@@ -1378,7 +1379,7 @@ As a short summary:
             string="%name")));
     end PartialPipeHeatTransfer;
     
-    model PipeHT_constAlpha 
+    partial model PipeHT_constAlpha 
       extends PartialPipeHeatTransfer;
       parameter SI.CoefficientOfHeatTransfer alpha0=200;
     equation 

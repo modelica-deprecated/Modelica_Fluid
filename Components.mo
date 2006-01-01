@@ -17,7 +17,8 @@ package Components "Basic components for fluid models"
     Interfaces.FluidPort_b port_b(redeclare package Medium = Medium,
                                   m_flow(max=if allowFlowReversal then +inf else 0)) 
       "Fluid outlet port" annotation (extent=[90,-10; 110,10]);
-    Interfaces.HeatPort_a thermalPort "Thermal port" 
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
+      "Thermal port" 
       annotation (extent=[-20,88; 20,108]);
     Medium.BaseProperties medium(preferredMediumStates=true,
                  p(start=p_start), h(start=h_start),
