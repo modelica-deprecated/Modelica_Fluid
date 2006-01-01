@@ -82,9 +82,6 @@ package Interfaces
                fillColor=7))));
   end FluidPort_b;
   
-  
-  
-  
   partial model PartialInitializationParameters 
     "Define parameter menu to initialize medium in component that has one medium model" 
     import Modelica_Fluid.Types.InitTypes.*;

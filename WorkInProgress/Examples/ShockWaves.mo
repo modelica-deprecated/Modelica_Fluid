@@ -3,7 +3,7 @@ extends Modelica.Icons.Library;
   
 model TestSimpleIsolatedPipePressure "Test IsolatedPipe component" 
     
-  import Modelica.SIunits.Conversions.*;
+    import Modelica.SIunits.Conversions.*;
     
   extends Modelica.Icons.Example;
     

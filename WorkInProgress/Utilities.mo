@@ -1,7 +1,7 @@
 package Utilities 
  record PressureLossFactors 
     "Data structure defining constant loss factors zeta for dp = zeta*rho*v*|v|/2 and functions providing the data for some loss types" 
-  import SI = Modelica.SIunits;
+    import SI = Modelica.SIunits;
   extends Modelica.Icons.Record;
     
   parameter SI.Diameter D_a "Diameter at port_a";
@@ -128,9 +128,9 @@ The used sufficient criteria for monotonicity follows from:
     
    encapsulated function wallFriction 
       "Compute pressure loss factors due to friction in a straight pipe with walls of nonuniform roughness (commercial pipes)" 
-       import SI = Modelica.SIunits;
-       import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
-       import lg = Modelica.Math.log10;
+      import SI = Modelica.SIunits;
+      import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
+      import lg = Modelica.Math.log10;
       
      input SI.Length length "Length of pipe";
      input SI.Diameter diameter "Inner diameter of pipe";
@@ -265,8 +265,8 @@ As a short summary:
     
    encapsulated function suddenExpansion 
       "Compute pressure loss factors for sudden expansion or contraction in a pipe (for both flow directions)" 
-     import SI = Modelica.SIunits;
-     import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
+      import SI = Modelica.SIunits;
+      import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
       
      input SI.Diameter D_a "Inner diameter of pipe at port_a";
      input SI.Diameter D_b "Inner diameter of pipe at port_b";
@@ -393,9 +393,9 @@ port_a to port_b as:
     
    encapsulated function sharpEdgedOrifice 
       "Compute pressure loss factors for sharp edged orifice (for both flow directions)" 
-     import SI = Modelica.SIunits;
-     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
-     import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
+      import SI = Modelica.SIunits;
+      import NonSI = Modelica.SIunits.Conversions.NonSIunits;
+      import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
       
      input SI.Diameter D_pipe 
         "Inner diameter of pipe (= same at port_a and port_b)";
@@ -939,8 +939,8 @@ k1=1, k2=3 is shown:
     model FiniteVolume 
     "One dimensional volume according to the finite volume method with 1 mass, 1 energy and 2 momentum balances" 
     
-      import SI = Modelica.SIunits;
-      import Modelica.Math;
+    import SI = Modelica.SIunits;
+    import Modelica.Math;
     
       replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -1122,8 +1122,8 @@ in piping networks which has the following properties:
 model PipeSegment 
     "One segment of a pipe with 1 mass, 1 energy, 2 momementum balances and pipe friction" 
     
-  import SI = Modelica.SIunits;
-  import Modelica_Fluid.Types.InitTypes.*;
+    import SI = Modelica.SIunits;
+    import Modelica_Fluid.Types.InitTypes.*;
   extends FiniteVolume(medium(
              p(start=p_start),
              T(start=T_start), h(start=h_start), Xi(start=X_start[1:Medium.nXi])));

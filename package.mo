@@ -1,4 +1,4 @@
-package Modelica_Fluid "Fluid package that should be included into package Modelica"
+package Modelica_Fluid "Fluid package that should be included into package Modelica (requires package Modelica 2.2.1)"
 annotation (
   version="0.952",
   versionDate="2005-11-09",
@@ -8,6 +8,18 @@ annotation (
     Media(         version="0.98")),
     UserInteraction(version="0.52")),
   Documentation(info="<html>
+<p>
+Note, the current version of Modelica_Fluid does <b>not</b> work with
+the current version 2.2 of the Modelica standard library shipped with
+the Modelica tools. The reason is that some additional functions have been
+added to Modelica.Media that are called in Modelica_Fluid.
+In order to run Modelica_Fluid, the current version of the Modelica 
+standard library from the Modelica cvs server has to be used.
+It has the version number 2.2.1 and will be officially released
+and made available for Modelica tools in mid or end of January 2006.
+</p>
+
+</p>
 <p>
 Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
 components describing

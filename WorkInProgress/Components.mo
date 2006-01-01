@@ -1,7 +1,7 @@
 package Components 
 model GlobalOptions "Global options" 
-  import SI = Modelica.SIunits;
-  import Modelica_Fluid.WorkInProgress.Types;
+    import SI = Modelica.SIunits;
+    import Modelica_Fluid.WorkInProgress.Types;
     
   parameter SI.Acceleration g = Modelica.Constants.g_n "Gravity constant";
   parameter Types.Init.Temp initOption=Modelica_Fluid.WorkInProgress.Types.Init.SteadyState 
@@ -201,7 +201,7 @@ end PressureLoss;
   
 model WallFriction 
     "Pressure loss due to friction in a straight pipe with walls of nonuniform roughness (commercial pipes)" 
-  import SI = Modelica.SIunits;
+    import SI = Modelica.SIunits;
   extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon(
      final lossFactors = Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors.wallFriction(length, diameter, roughness));
   parameter SI.Length length "Length of pipe";
@@ -299,7 +299,7 @@ As a short summary:
 end WallFriction;
   
 model SuddenExpansion "Pressure drop in pipe due to suddenly expanding area" 
-  import SI = Modelica.SIunits;
+    import SI = Modelica.SIunits;
   extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon(
      final lossFactors = Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors.suddenExpansion(D_a, D_b));
   parameter SI.Diameter D_a "Inner diameter of pipe at port_a";
@@ -387,8 +387,8 @@ end SuddenExpansion;
   
 model SharpEdgedOrifice 
     "Pressure loss due to sharp edged orifice (for both flow directions)" 
-  import SI = Modelica.SIunits;
-  import NonSI = Modelica.SIunits.Conversions.NonSIunits;
+    import SI = Modelica.SIunits;
+    import NonSI = Modelica.SIunits.Conversions.NonSIunits;
   extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon(
      final lossFactors = Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors.sharpEdgedOrifice(D_pipe, D_min, L, alpha));
   parameter SI.Diameter D_pipe 
@@ -514,7 +514,7 @@ end SharpEdgedOrifice;
   
 model IsolatedPipe 
     "Model of an isolated pipe consisting of n pipe segments/FiniteVolumes" 
-  import SI = Modelica.SIunits;
+    import SI = Modelica.SIunits;
     
   replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -689,7 +689,25 @@ model Pipe
         extent=[-100,-60; 100,-100],
         string="%name",
         style(color=3, rgbcolor={0,0,255}))),
-                            Diagram);
+                            Diagram, 
+      Documentation(info="<html>
+<p>
+From Katrins email, Nov. 28, 2005:
+</p>
+
+<p>
+extends Interfaces.1DFlow. Pressure drop and heat transfer are added in terms of replaceable components. The main problem here is to make all required variables and parameters available to the respective component (medium state, pipe geometry, Medium functions, empirical parameters). Only those shared by all future replaceable models (the simple one parameter model and the highly sophisticated (fictitious) two phase Nusselt correlation) can be set by modifiers (which is not straightforward in Dymola at the moment if a contsraining clause is used).  Those not required by all models as i.e. viscosity and conductivitiy must be computed inside the component from medium properties made available via inner and outer. I always try to avoid this as it it as bit like free climbing, but in this case I see no better solution.
+</p>
+
+<p>
+Martin, I have not tested your latest pressure drop implementation with this model, but will do so as soon as possible. However, it is used in a completely different way, that means as an array of components, not as a  base class, in order to be able to handle distributed flow. I will check if another implementation would be more practical.
+</p>
+
+<p>
+The pipe model contains a Boolean flag useWall which determines if a wall component is added. Unfortunately the icon does not represent the difference. In this way a heat exchanger can be created using two instances of the pipe model, one with a wall and one without. If interested in transients it could also make sense to include a wall in an insulated pipe. 
+</p>
+
+</html>"));
 equation 
 if use_wall then
   connect(wall.thermalPort_a, thermalPort) annotation (points=[30,50; 30,60; 0,
