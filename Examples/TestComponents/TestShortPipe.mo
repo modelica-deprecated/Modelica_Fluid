@@ -28,11 +28,13 @@ model TestShortPipe "Test ShortPipe component"
     duration=3,
     height=6,
     offset=-3)   annotation (extent=[-90,0; -70,20]);
+  inner Components.FluidOptions fluidOptions 
+    annotation (extent=[-100,-100; -80,-80]);
 equation 
   connect(MassFlowSource.port, shortPipe.port_a) 
-    annotation (points=[-29,10; -11,10],  style(color=69));
+    annotation (points=[-30,10; -10,10],  style(color=69));
   connect(shortPipe.port_b, ambient.port) 
-    annotation (points=[11,10; 29,10],   style(color=69));
+    annotation (points=[10,10; 30,10],   style(color=69));
   connect(ramp.y, MassFlowSource.m_flow_in) 
     annotation (points=[-69,10; -59.9,10; -59.9,16; -49.3,16],
                                          style(color=3, rgbcolor={0,0,255}));

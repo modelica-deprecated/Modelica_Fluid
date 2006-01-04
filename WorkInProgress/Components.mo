@@ -1,81 +1,4 @@
 package Components 
-model GlobalOptions "Global options" 
-    import SI = Modelica.SIunits;
-    import Modelica_Fluid.WorkInProgress.Types;
-    
-  parameter SI.Acceleration g = Modelica.Constants.g_n "Gravity constant";
-  parameter Types.Init.Temp initOption=Modelica_Fluid.WorkInProgress.Types.Init.SteadyState 
-      "Default initialization";
-  parameter Types.Flow.Temp flowOption=Modelica_Fluid.WorkInProgress.Types.Flow.Bidirectional 
-      "Default flow type";
-  annotation (
-    preferedView="info",
-    defaultComponentName="globalOptions",
-    defaultComponentPrefixes="inner",
-    missingInnerMessage="An \"globalOptions\" component is not defined. A default 
-globalOptions component with initOptions = SteadyState will be used. If this is not desired, 
-drag Modelica_Fluid.Components.GlobalOptions into the top level of your model.",
-    Icon(
-      Rectangle(extent=[-100,100; 100,-100], style(
-          color=3,
-          rgbcolor={0,0,255},
-          fillColor=7,
-          rgbfillColor={255,255,255})),
-      Text(
-        extent=[-160,160; 160,110],
-        style(color=3, rgbcolor={0,0,255}),
-        string="%name"),
-      Line(points=[-86,-30; 82,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[-82,-68; -52,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[-48,-68; -18,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[-14,-68; 16,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[22,-68; 52,-30], style(color=0, rgbcolor={0,0,0})),
-      Line(points=[40,84; 40,14], style(color=0, rgbcolor={0,0,0})),
-      Polygon(points=[26,14; 54,14; 40,-18; 26,14], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=0,
-          rgbfillColor={0,0,0})),
-      Text(
-        extent=[46,86; 94,42],
-        style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=0,
-          rgbfillColor={0,0,0},
-          fillPattern=1),
-        string="g"),
-        Text(
-          extent=[-98,76; 30,46],
-          string="options",
-          style(color=0, rgbcolor={0,0,0}))),
-    Diagram,
-    Documentation(info="<HTML>
-<p>
-This models defines global
-options for all components that are on the same or on a lower level
-as this component. Dragging this component in a model results
-in the following declaration:
-</p>
-<pre>
-   <b>inner</b> Modelica_Fluid.WorkInProgress.Components.GlobalOptions globalOptions;
-</pre>
-<p>
-The parameters and variables of this component can be 
-then accessed via a corresponding outer declaration:
-</p>
-<pre>
-   <b>outer</b> Modelica_Fluid.WorkInProgress.Components.GlobalOptions globalOptions;
-</pre>
-<p>
-Note, the parameters \"InitOption\" and \"FlowOption\" are used as 
-default setting by the Modelica_Fluid components but can
-be individually redefined in every Modelica_Fluid component.
-</p>
-</HTML>
-"));
-    
-end GlobalOptions;
   
 model PressureLoss "Generic pressure loss component" 
   extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon;
@@ -190,7 +113,7 @@ avoided by reducing the derivative at Re=0 in such a way that
 the polynomials are guaranteed to be monotonically increasing.
 The used sufficient criteria for monotonicity follows from:
 </p>
-
+ 
 <dl>
 <dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
 <dd> <b>Monotone piecewise cubic interpolation</b>.
@@ -689,24 +612,24 @@ model Pipe
         extent=[-100,-60; 100,-100],
         string="%name",
         style(color=3, rgbcolor={0,0,255}))),
-                            Diagram, 
+                            Diagram,
       Documentation(info="<html>
 <p>
 From Katrins email, Nov. 28, 2005:
 </p>
-
+ 
 <p>
 extends Interfaces.1DFlow. Pressure drop and heat transfer are added in terms of replaceable components. The main problem here is to make all required variables and parameters available to the respective component (medium state, pipe geometry, Medium functions, empirical parameters). Only those shared by all future replaceable models (the simple one parameter model and the highly sophisticated (fictitious) two phase Nusselt correlation) can be set by modifiers (which is not straightforward in Dymola at the moment if a contsraining clause is used).  Those not required by all models as i.e. viscosity and conductivitiy must be computed inside the component from medium properties made available via inner and outer. I always try to avoid this as it it as bit like free climbing, but in this case I see no better solution.
 </p>
-
+ 
 <p>
 Martin, I have not tested your latest pressure drop implementation with this model, but will do so as soon as possible. However, it is used in a completely different way, that means as an array of components, not as a  base class, in order to be able to handle distributed flow. I will check if another implementation would be more practical.
 </p>
-
+ 
 <p>
 The pipe model contains a Boolean flag useWall which determines if a wall component is added. Unfortunately the icon does not represent the difference. In this way a heat exchanger can be created using two instances of the pipe model, one with a wall and one without. If interested in transients it could also make sense to include a wall in an insulated pipe. 
 </p>
-
+ 
 </html>"));
 equation 
 if use_wall then
@@ -759,45 +682,43 @@ model HeatExchanger "Double pipe heat exchanger with neglectible outer wall"
   parameter SI.Temperature T_start_w "Start value of wall termperature" annotation(Dialog(tab="Initialization", group="Wall"));
   final parameter SI.Mass m_wall=sum(pipe_1.wall.m) "Wall mass";
   //Initialization pipe 1
-  parameter Modelica_Fluid.Types.InitTypes.Temp initOption_1 
-      "Initialization option" 
+  parameter Modelica_Fluid.Types.Init.Temp initOption_1 "Initialization option"
     annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe"));
   parameter Boolean use_T_start_1=true "Use T_start if true, otherwise h_start"
     annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe"));
-  parameter Medium_1.AbsolutePressure p_start_1=Medium_1.reference_p 
+  parameter Medium_1.AbsolutePressure p_start_1=Medium_1.p_default 
       "Start value of pressure" 
     annotation(Dialog(tab = "Initialization", group = "Inner pipe"));
-  parameter Medium_1.Temperature T_start_1=if use_T_start_1 then 293.15 else 
-      Medium_1.T_phX(p_start_1, h_start_1, X_start_1) 
+  parameter Medium_1.Temperature T_start_1=if use_T_start_1 then Medium_1.T_default else 
+      Medium_1.temperature_phX(p_start_1, h_start_1, X_start_1) 
       "Start value of temperature" 
     annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe", enable = use_T_start_1));
   parameter Medium_1.SpecificEnthalpy h_start_1=if use_T_start_1 then 
-      Medium_1.h_pTX(p_start_1, T_start_1, X_start_1[1:Medium_1.nXi]) else 1e4 
+      Medium_1.specificEnthalpy_pTX(p_start_1, T_start_1, X_start_1[1:Medium_1.nXi]) else Medium_1.h_default 
       "Start value of specific enthalpy" 
     annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe", enable = not use_T_start_1));
-  parameter Medium_1.MassFraction X_start_1[Medium_1.nX]=Medium_1.reference_X 
+  parameter Medium_1.MassFraction X_start_1[Medium_1.nX]=Medium_1.X_default 
       "Start value of mass fractions m_i/m" 
     annotation (Dialog(tab="Initialization", group = "Inner pipe", enable=(Medium_1.nXi > 0)));
   parameter Medium_1.MassFlowRate mflow_start_1 "Start value of mass flow rate"
                                     annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe"));
   //Initialization pipe 2
-  parameter Modelica_Fluid.Types.InitTypes.Temp initOption_2 
-      "Initialization option" 
+  parameter Modelica_Fluid.Types.Init.Temp initOption_2 "Initialization option"
     annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe"));
   parameter Boolean use_T_start_2=true "Use T_start if true, otherwise h_start"
     annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe"));
-  parameter Medium_2.AbsolutePressure p_start_2=Medium_2.reference_p 
+  parameter Medium_2.AbsolutePressure p_start_2=Medium_2.p_default 
       "Start value of pressure" 
     annotation(Dialog(tab = "Initialization", group = "Outer pipe"));
-  parameter Medium_2.Temperature T_start_2=if use_T_start_2 then 293.15 else 
-      Medium_2.T_phX(p_start_2, h_start_2, X_start_2) 
+  parameter Medium_2.Temperature T_start_2=if use_T_start_2 then Medium_2.T_default else 
+      Medium_2.temperature_phX(p_start_2, h_start_2, X_start_2) 
       "Start value of temperature" 
     annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe", enable = use_T_start_2));
   parameter Medium_2.SpecificEnthalpy h_start_2=if use_T_start_2 then 
-      Medium_2.h_pTX(p_start_2, T_start_2, X_start_2[1:Medium_2.nXi]) else 1e4 
+      Medium_2.specificEnthalpy_pTX(p_start_2, T_start_2, X_start_2[1:Medium_2.nXi]) else Medium_2.h_default 
       "Start value of specific enthalpy" 
     annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe", enable = not use_T_start_2));
-  parameter Medium_2.MassFraction X_start_2[Medium_2.nX]=Medium_2.reference_X 
+  parameter Medium_2.MassFraction X_start_2[Medium_2.nX]=Medium_2.X_default 
       "Start value of mass fractions m_i/m" 
     annotation (Dialog(tab="Initialization", group = "Outer pipe", enable=Medium_2.nXi>0));
   parameter Medium_2.MassFlowRate mflow_start_2 "Start value of mass flow rate"
@@ -947,7 +868,7 @@ equation
       gradient=2,
       fillColor=42,
       rgbfillColor={213,0,0}));
-  connect(pipe_1.port_a, port_a1) annotation (points=[-40.6,-30; -75.3,-30;
+  connect(pipe_1.port_a, port_a1) annotation (points=[-40.6,-30; -75.3,-30; 
           -75.3,-2; -110,-2],
                             style(
       color=69,
@@ -956,7 +877,7 @@ equation
       gradient=2,
       fillColor=42,
       rgbfillColor={213,0,0}));
-  connect(pipe_2.port_a, port_a2) annotation (points=[-40.6,58; -76,58; -76,46;
+  connect(pipe_2.port_a, port_a2) annotation (points=[-40.6,58; -76,58; -76,46; 
           -110,46],
                   style(
       color=69,
@@ -975,7 +896,7 @@ model Wall_constProps
       "Specific heat capacity of wall material";
   parameter SI.Temperature T_start "Start value for wall temperature";
   parameter SI.Mass[n] m=ones(n)*(a_outer-a_inner)*length*d_wall/n "Wall mass";
-  parameter Modelica_Fluid.Types.InitTypes.Temp initOption;
+  parameter Modelica_Fluid.Types.Init.Temp initOption;
   SI.Temperature[n] T(start=ones(n)*T_start, stateSelect=StateSelect.prefer) 
       "Wall temperature";
 initial equation 

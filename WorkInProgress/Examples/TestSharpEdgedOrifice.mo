@@ -45,28 +45,32 @@ model TestSharpEdgedOrifice
 equation 
   connect(p_table.y, ambient.p_in)  annotation (points=[-59,50; -52,50; -52,56;
         -42,56], style(color=74, rgbcolor={0,0,127}));
-  connect(ambient.port, orifice1.port_a) annotation (points=[-19,50; -1,50],
+  connect(ambient.port, orifice1.port_a) annotation (points=[-20,50; -1,
+        50],
       style(
       color=69,
       rgbcolor={0,127,255},
       fillColor=3,
       rgbfillColor={0,0,255},
       fillPattern=8));
-  connect(orifice1.port_b, ambient_p1.port) annotation (points=[21,50; 39,50],
+  connect(orifice1.port_b, ambient_p1.port) annotation (points=[21,50; 40,
+        50],
       style(
       color=69,
       rgbcolor={0,127,255},
       fillColor=3,
       rgbfillColor={0,0,255},
       fillPattern=8));
-  connect(ambient.port, orifice2.port_a) annotation (points=[-19,50; -12,50;
-        -12,20; -1,20], style(
+  connect(ambient.port, orifice2.port_a) annotation (points=[-20,50; -12,
+        50; -12,20; -1,20],
+                        style(
       color=69,
       rgbcolor={0,127,255},
       fillColor=3,
       rgbfillColor={0,0,255},
       fillPattern=8));
-  connect(orifice2.port_b, ambient_p2.port) annotation (points=[21,20; 39,20],
+  connect(orifice2.port_b, ambient_p2.port) annotation (points=[21,20; 40,
+        20],
       style(
       color=69,
       rgbcolor={0,127,255},

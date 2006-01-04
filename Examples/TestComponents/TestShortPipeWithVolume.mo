@@ -1,5 +1,5 @@
 model TestShortPipeWithVolume "Test ShortPipe with PortVolume" 
-  import Modelica_Fluid.Types.InitTypes;
+  import Modelica_Fluid.Types.Init;
   import SI = Modelica.SIunits;
   extends Modelica.Icons.Example;
   replaceable package Medium = Modelica.Media.Air.SimpleAir 
@@ -7,7 +7,7 @@ model TestShortPipeWithVolume "Test ShortPipe with PortVolume"
     "Medium model" annotation (choicesAllMatching=true);
   parameter SI.AbsolutePressure p_start = 1.0e5 "Initial value of pressure";
   parameter SI.Temperature T_start = 300 "Initial value of temperature";
-  parameter Real X_start[Medium.nX] = Medium.reference_X 
+  parameter Real X_start[Medium.nX] = Medium.X_default 
     "Initial value of mass fractions";
   Sources.PrescribedMassFlowRate_TX pump(
     m_flow=1,
@@ -17,7 +17,7 @@ model TestShortPipeWithVolume "Test ShortPipe with PortVolume"
   Utilities.PortVolume volume(
     redeclare package Medium = Medium,
     V=0.1,
-    initOption=InitTypes.InitialValues,
+    initOption=Init.InitialValues,
     p_start=p_start,
     T_start=T_start,
     X_start=X_start) annotation (extent=[-40,0; -20,20]);
@@ -31,12 +31,14 @@ model TestShortPipeWithVolume "Test ShortPipe with PortVolume"
     p=p_start,
     T=T_start,
     X=X_start) annotation (extent=[60,0; 40,20]);
+  inner Components.FluidOptions fluidOptions 
+    annotation (extent=[-100,-100; -80,-80]);
 equation 
-  connect(pump.port, volume.port) annotation (points=[-59,10; -30,10], style(
+  connect(pump.port, volume.port) annotation (points=[-60,10; -30,10], style(
         color=69, rgbcolor={0,127,255}));
-  connect(volume.port, pipe.port_a) annotation (points=[-30,10; -1,10], style(
+  connect(volume.port, pipe.port_a) annotation (points=[-30,10; 0,10],  style(
         color=69, rgbcolor={0,127,255}));
-  connect(pipe.port_b, ambient.port) annotation (points=[21,10; 39,10], style(
+  connect(pipe.port_b, ambient.port) annotation (points=[20,10; 40,10], style(
         color=69, rgbcolor={0,127,255}));
   annotation (Diagram);
 end TestShortPipeWithVolume;

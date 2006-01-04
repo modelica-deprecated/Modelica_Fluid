@@ -25,7 +25,7 @@ changes until water from tank1 is flowing into tank2.
       level_start=3,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      initOption=Modelica_Fluid.Types.Init.InitialValues,
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[-70,20; -50,40]);
@@ -35,7 +35,7 @@ changes until water from tank1 is flowing into tank2.
       level_start=1,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      initOption=Modelica_Fluid.Types.Init.InitialValues,
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[10,20; 30,40]);
@@ -46,10 +46,12 @@ changes until water from tank1 is flowing into tank2.
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       frictionType=Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[-29,0; -9,20]);
+    inner Components.FluidOptions fluidOptions 
+      annotation (extent=[-100,-100; -80,-80]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
-      annotation (points=[-60,19; -60,10; -30,10],      style(color=69));
-    connect(shortPipe1.port_b, Tank2.port) annotation (points=[-8,10; 20,10; 20,
+      annotation (points=[-60,19; -60,10; -29,10],      style(color=69));
+    connect(shortPipe1.port_b, Tank2.port) annotation (points=[-9,10; 20,10; 20,
           19], style(color=69, rgbcolor={0,127,255}));
   end TwoTanksSimpleWater;
   
@@ -77,7 +79,7 @@ is provided in ThreeTanksIF97.
       level_start=3,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      initOption=Modelica_Fluid.Types.Init.InitialValues,
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[-90,20; -70,40]);
@@ -87,7 +89,7 @@ is provided in ThreeTanksIF97.
       level_start=1,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      initOption=Modelica_Fluid.Types.Init.InitialValues,
       H0=0.5,
       V0=0.1,
       pipeArea=0.01) 
@@ -105,7 +107,7 @@ is provided in ThreeTanksIF97.
       level_start=2,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      initOption=Modelica_Fluid.Types.Init.InitialValues,
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[70,20; 90,40]);
@@ -125,17 +127,19 @@ is provided in ThreeTanksIF97.
       medium_b(T(stateSelect=StateSelect.avoid)),
       medium_a(T(stateSelect=StateSelect.avoid))) 
       annotation (extent=[-10, -10; 10, 10], rotation=-90);
+    inner Components.FluidOptions fluidOptions 
+      annotation (extent=[-100,-100; -80,-80]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
-      annotation (points=[-80,19; -80,-20; -51,-20],    style(color=69));
+      annotation (points=[-80,19; -80,-20; -50,-20],    style(color=69));
     connect(shortPipe3.port_b, Tank3.port) 
-      annotation (points=[51,-20; 80,-20; 80,19],    style(color=69));
+      annotation (points=[50,-20; 80,-20; 80,19],    style(color=69));
     connect(Tank2.port, shortPipe2.port_a) 
-      annotation (points=[0,19; 0,11; -6.73533e-016,11],    style(color=69));
+      annotation (points=[0,19; 0,10; -6.12303e-016,10],    style(color=69));
     connect(shortPipe1.port_b, shortPipe3.port_a) 
-      annotation (points=[-29, -20; 29, -20], style(color=69));
+      annotation (points=[-30,-20; 30,-20],   style(color=69));
     connect(shortPipe2.port_b, shortPipe3.port_a) annotation (points=[
-          6.73533e-016,-11; 0,-11; 0,-20; 29,-20],     style(color=69));
+          6.12303e-016,-10; 0,-10; 0,-20; 30,-20],     style(color=69));
   end ThreeTanksSimpleWater;
   
   model ThreeTanksIF97 
@@ -158,14 +162,14 @@ compressible medium model WaterIF97 is used.
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      initOption=Modelica_Fluid.Types.Init.InitialValues,
       pipeArea=0.01) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
       area=1,
       level_start=1,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      initOption=Modelica_Fluid.Types.Init.InitialValues,
       T_start=from_degC(90),
       pipeArea=0.01) 
       annotation (extent=[-10,20; 10,40]);
@@ -180,7 +184,7 @@ compressible medium model WaterIF97 is used.
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+      initOption=Modelica_Fluid.Types.Init.InitialValues,
       pipeArea=0.01) 
       annotation (extent=[70, 20; 90, 40]);
     Components.PressureDropPipe shortPipe3(
@@ -195,20 +199,22 @@ compressible medium model WaterIF97 is used.
       frictionType=Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[-10,-10; 10,10],   rotation=-90);
+    inner Components.FluidOptions fluidOptions 
+      annotation (extent=[-100,-100; -80,-80]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
-      annotation (points=[-80, 19; -80, -20; -51, -20], style(color=69));
+      annotation (points=[-80,19; -80,-20; -50,-20],    style(color=69));
     connect(shortPipe3.port_b, Tank3.port) 
-      annotation (points=[51, -20; 80, -20; 80, 19], style(color=69));
+      annotation (points=[50,-20; 80,-20; 80,19],    style(color=69));
     connect(Tank2.port, shortPipe2.port_a) 
-      annotation (points=[0,19; 0,11; -6.73533e-016,11],    style(color=69));
+      annotation (points=[0,19; 0,10; -6.12303e-016,10],    style(color=69));
     connect(shortPipe1.port_b, shortPipe3.port_a) 
-      annotation (points=[-29, -20; 29, -20], style(color=69));
+      annotation (points=[-30,-20; 30,-20],   style(color=69));
     connect(shortPipe2.port_b, shortPipe3.port_a) annotation (points=[
-          6.73533e-016,-11; 0,-11; 0,-20; 29,-20],     style(color=69));
+          6.12303e-016,-10; 0,-10; 0,-20; 30,-20],     style(color=69));
   end ThreeTanksIF97;
   
-  model ThreeTanksIF97SteadyHydraulic 
+  model ThreeTanksIF97SteadyState 
     import Modelica.SIunits.Conversions.*;
     extends Modelica.Icons.Example;
     annotation (
@@ -228,7 +234,6 @@ is that the system starts in steady state, i.e., with constant
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
       pipeArea=0.01) 
       annotation (extent=[-90, 20; -70, 40]);
     Components.Tank Tank2(
@@ -236,7 +241,6 @@ is that the system starts in steady state, i.e., with constant
       level_start=1,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       T_start=from_degC(90),
-      initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
       pipeArea=0.01) 
       annotation (extent=[-10,20; 10,40]);
     Components.PressureDropPipe shortPipe1(
@@ -250,7 +254,6 @@ is that the system starts in steady state, i.e., with constant
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
       pipeArea=0.01) 
       annotation (extent=[70, 20; 90, 40]);
     Components.PressureDropPipe shortPipe3(
@@ -265,16 +268,19 @@ is that the system starts in steady state, i.e., with constant
       frictionType=Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[-10, -10; 10, 10], rotation=-90);
+    inner Components.FluidOptions fluidOptions(default_initOption=
+          Modelica_Fluid.Types.Init.SteadyState) 
+      annotation (extent=[-100,-100; -80,-80]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
-      annotation (points=[-80, 19; -80, -20; -51, -20], style(color=69));
+      annotation (points=[-80,19; -80,-20; -50,-20],    style(color=69));
     connect(shortPipe3.port_b, Tank3.port) 
-      annotation (points=[51, -20; 80, -20; 80, 19], style(color=69));
+      annotation (points=[50,-20; 80,-20; 80,19],    style(color=69));
     connect(Tank2.port, shortPipe2.port_a) 
-      annotation (points=[0,19; 0,11; -6.73533e-016,11],    style(color=69));
+      annotation (points=[0,19; 0,10; -6.12303e-016,10],    style(color=69));
     connect(shortPipe1.port_b, shortPipe3.port_a) 
-      annotation (points=[-29, -20; 29, -20], style(color=69));
+      annotation (points=[-30,-20; 30,-20],   style(color=69));
     connect(shortPipe2.port_b, shortPipe3.port_a) annotation (points=[
-          6.73533e-016,-11; 0,-11; 0,-20; 29,-20],     style(color=69));
-  end ThreeTanksIF97SteadyHydraulic;
+          6.12303e-016,-10; 0,-10; 0,-20; 30,-20],     style(color=69));
+  end ThreeTanksIF97SteadyState;
 end Tanks;

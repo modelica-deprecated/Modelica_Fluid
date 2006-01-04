@@ -7,4 +7,6 @@ model TestWaterPump2
           pumpConsChar2));
   
   annotation (Diagram);
+  inner Components.FluidOptions fluidOptions 
+    annotation (extent=[-100,-100; -80,-80]);
 end TestWaterPump2;

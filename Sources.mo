@@ -6,7 +6,8 @@ package Sources "Generic fluid sources"
     parameter Boolean use_p=true "select p or d" 
       annotation (Evaluate = true,
                   Dialog(group = "Ambient pressure or ambient density"));
-    parameter Medium.AbsolutePressure p = Medium.reference_p "Ambient pressure"
+    parameter Medium.AbsolutePressure p = fluidOptions.default_p_ambient 
+      "Ambient pressure" 
       annotation (Dialog(group = "Ambient pressure or ambient density",
                          enable = use_p));
     parameter Medium.Density d=1000 "Ambient density" 
@@ -15,15 +16,16 @@ package Sources "Generic fluid sources"
     parameter Boolean use_T=true "select T or h" 
       annotation (Evaluate = true,
                   Dialog(group = "Ambient temperature or ambient specific enthalpy"));
-    parameter Medium.Temperature T = Modelica.SIunits.Conversions.from_degC(20) 
+    parameter Medium.Temperature T = fluidOptions.default_T_ambient 
       "Ambient temperature" 
       annotation (Dialog(group = "Ambient temperature or ambient specific enthalpy",
                          enable = use_T));
-    parameter Medium.SpecificEnthalpy h = 1.e4 "Ambient specific enthalpy" 
+    parameter Medium.SpecificEnthalpy h = Medium.h_default 
+      "Ambient specific enthalpy" 
       annotation (Dialog(group="Ambient temperature or ambient specific enthalpy",
                   enable = not use_T));
     parameter Medium.MassFraction X[Medium.nX](
-         quantity=Medium.substanceNames)=Medium.reference_X 
+         quantity=Medium.substanceNames)=Medium.X_default 
       "Ambient mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow", enable=Medium.nXi > 0));
     
@@ -54,6 +56,9 @@ with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
     
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
                                           Medium.singleState, use_p, X,
@@ -76,11 +81,11 @@ with exception of ambient pressure, do not have an effect.
     "Ambient pressure, temperature and mass fraction source" 
     extends Interfaces.PartialSource;
     parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p=
-        Medium.reference_p "Ambient pressure";
+        fluidOptions.default_p_ambient "Ambient pressure";
     parameter Modelica.Media.Interfaces.PartialMedium.Temperature T=
-        Modelica.SIunits.Conversions.from_degC(20) "Ambient temperature";
+        fluidOptions.default_T_ambient "Ambient temperature";
     parameter Modelica.Media.Interfaces.PartialMedium.MassFraction X[Medium.nX](
-         quantity=Medium.substanceNames) = Medium.reference_X 
+         quantity=Medium.substanceNames) = Medium.X_default 
       "Ambient mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow",
                   enable=Medium.nXi > 0));
@@ -110,6 +115,9 @@ the port into the ambient, the ambient definitions,
 with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
                                           Medium.singleState, true, X, "FixedAmbient_pTX");
@@ -122,11 +130,11 @@ with exception of ambient pressure, do not have an effect.
     "Ambient pressure, specific enthalpy and mass fraction source" 
     extends Interfaces.PartialSource;
     parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p=
-        Medium.reference_p "Ambient pressure";
-    parameter Modelica.Media.Interfaces.PartialMedium.SpecificEnthalpy h=
-        1.e4 "Ambient specific enthalpy";
+        fluidOptions.default_p_ambient "Ambient pressure";
+    parameter Modelica.Media.Interfaces.PartialMedium.SpecificEnthalpy h=Medium.h_default 
+      "Ambient specific enthalpy";
     parameter Modelica.Media.Interfaces.PartialMedium.MassFraction X[
-      Medium.nX](quantity=Medium.substanceNames) = Medium.reference_X 
+      Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nXi > 0));
     annotation (defaultComponentName = "ambient",
@@ -155,6 +163,9 @@ the port into the ambient, the ambient definitions,
 with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
                                           Medium.singleState, true, X, "FixedAmbient_phX");
@@ -172,14 +183,15 @@ to define fixed or prescribed ambient conditions.
   model PrescribedAmbient_pTX 
     "Ambient with prescribed pressure, temperature and composition" 
     extends Interfaces.PartialSource;
-    parameter SI.Pressure p = 101325 "Fixed value of pressure" 
+    parameter SI.Pressure p = fluidOptions.default_p_ambient 
+      "Fixed value of pressure" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(p_in)==0)));
-    parameter SI.Temperature T = Modelica.SIunits.Conversions.from_degC(20) 
+    parameter SI.Temperature T = fluidOptions.default_T_ambient 
       "Fixed value of temperature" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(T_in)==0)));
-    parameter SI.MassFraction X[Medium.nX] = Medium.reference_X 
+    parameter SI.MassFraction X[Medium.nX] = Medium.X_default 
       "Fixed value of composition" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(X_in)==0) or Medium.nXi > 0));
@@ -248,6 +260,9 @@ with exception of ambient pressure, do not have an effect.
 </p>
 </html>"),
       Diagram);
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
                                           Medium.singleState, true, X_in, "PrescribedAmbient_pTX");
@@ -268,13 +283,15 @@ with exception of ambient pressure, do not have an effect.
   model PrescribedAmbient_phX 
     "Ambient with prescribed pressure, specific enthalpy and composition" 
     extends Interfaces.PartialSource;
-    parameter SI.Pressure p = 101325 "Fixed value of pressure" 
+    parameter SI.Pressure p = fluidOptions.default_p_ambient 
+      "Fixed value of pressure" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(p_in)==0)));
-    parameter SI.SpecificEnthalpy h = 1e4 "Fixed value of specific enthalpy" 
+    parameter SI.SpecificEnthalpy h = Medium.h_default 
+      "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(h_in)==0)));
-    parameter SI.MassFraction X[Medium.nX] = Medium.reference_X 
+    parameter SI.MassFraction X[Medium.nX] = Medium.X_default 
       "Fixed value of composition" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(X_in)==0) or Medium.nXi > 0));
@@ -335,6 +352,9 @@ the port into the ambient, the ambient definitions,
 with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
   equation 
     Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
                                           Medium.singleState, true, X_in, "PrescribedAmbient_phX");
@@ -358,9 +378,8 @@ with exception of ambient pressure, do not have an effect.
     parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port";
     parameter Modelica.Media.Interfaces.PartialMedium.Temperature T=
-        Modelica.SIunits.Conversions.from_degC(20) 
-      "Fixed value of the fluid temperature";
-    parameter Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) = Medium.reference_X 
+        fluidOptions.default_T_ambient "Fixed value of the fluid temperature";
+    parameter Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
       "Fixed value of the fluid composition" 
       annotation (Dialog(enable = Medium.nXi > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in(
@@ -447,6 +466,9 @@ the port into the ambient, the ambient definitions,
 with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
   equation 
     Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
                            Medium.singleState, true, X, "PrescribedMassFlowRate_TX");
@@ -469,9 +491,9 @@ with exception of ambient pressure, do not have an effect.
     extends Interfaces.PartialSource;
     parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port";
-    parameter Medium.SpecificEnthalpy h = 1e4 
+    parameter Medium.SpecificEnthalpy h = Medium.h_default 
       "Fixed value of the fluid specific enthalpy";
-    parameter Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) = Medium.reference_X 
+    parameter Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
       "Fixed value of the fluid composition" 
       annotation (Dialog(enable=Medium.nXi>0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in(

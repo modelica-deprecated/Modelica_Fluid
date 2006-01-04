@@ -72,41 +72,49 @@ annotation (
     startTime=1,
     height=-1) 
               annotation (extent=[-96, -12; -76, 8]);
+  inner Components.FluidOptions fluidOptions 
+    annotation (extent=[-100,-100; -80,-80]);
 equation 
-  connect(V1.port_b, SinkP2.port) annotation (points=[-29,68; -17,68]);
-  connect(V4.port_b, SinkP3.port) annotation (points=[-19,-68; 5,-68]);
+  connect(V1.port_b, SinkP2.port) annotation (points=[-30,68; -16,68]);
+  connect(V4.port_b, SinkP3.port) annotation (points=[-20,-68; 6,-68]);
   connect(SourceP1.port, V1.port_a) 
-                                   annotation (points=[-79,40; -68,40; -68,68;
-        -51,68],
+                                   annotation (points=[-80,40; -68,40;
+        -68,68; -50,68],
                style(color=69, rgbcolor={0,127,255}));
   connect(SourceP1.port, V2.port_a) 
-                                   annotation (points=[-79,40; -60,40; -60,36;
-        -39,36],
+                                   annotation (points=[-80,40; -60,40;
+        -60,36; -38,36],
                style(color=69, rgbcolor={0,127,255}));
   connect(V2.port_b, V5.port_a) 
-                             annotation (points=[-17,36; 5,36; 5,6; 29,6],
+                             annotation (points=[-18,36; 5,36; 5,6; 30,6],
     style(color=69, rgbcolor={0,127,255}));
   connect(V3.port_b, V5.port_a) 
-                             annotation (points=[-17,-28; 6,-28; 6,6; 29,6],
+                             annotation (points=[-18,-28; 6,-28; 6,6; 30,
+        6],
     style(color=69, rgbcolor={0,127,255}));
   connect(SourceP2.port, V4.port_a) 
-                                   annotation (points=[-79,-40; -60,-40; -60,
-        -68; -41,-68],
+                                   annotation (points=[-80,-40; -60,-40;
+        -60,-68; -40,-68],
                      style(color=69, rgbcolor={0,127,255}));
   connect(SourceP2.port, V3.port_a) 
-                                   annotation (points=[-79,-40; -60,-40; -60,
-        -28; -39,-28],
+                                   annotation (points=[-80,-40; -60,-40;
+        -60,-28; -38,-28],
                      style(color=69, rgbcolor={0,127,255}));
-  connect(OpenRelief.y, V1.stemPosition) annotation (points=[-71,80; -40,80;
-        -40,76], style(color=74, rgbcolor={0,0,127}));
-  connect(OpenRelief.y, V4.stemPosition) annotation (points=[-71,80; -64,80;
-        -64,-52; -30,-52; -30,-60], style(color=74, rgbcolor={0,0,127}));
-  connect(CloseValves.y, V2.stemPosition) annotation (points=[-75,-2; -46,-2;
-        -46,54; -28,54; -28,44], style(color=74, rgbcolor={0,0,127}));
-  connect(CloseValves.y, V3.stemPosition) annotation (points=[-75,-2; -28,-2;
-        -28,-20], style(color=74, rgbcolor={0,0,127}));
-  connect(CloseLoad.y, V5.stemPosition) annotation (points=[29,36; 40,36; 40,14],
+  connect(OpenRelief.y, V1.stemPosition) annotation (points=[-71,80; -40,
+        80; -40,77],
+                 style(color=74, rgbcolor={0,0,127}));
+  connect(OpenRelief.y, V4.stemPosition) annotation (points=[-71,80; -64,
+        80; -64,-52; -30,-52; -30,-59],
+                                    style(color=74, rgbcolor={0,0,127}));
+  connect(CloseValves.y, V2.stemPosition) annotation (points=[-75,-2; -46,
+        -2; -46,54; -28,54; -28,45],
+                                 style(color=74, rgbcolor={0,0,127}));
+  connect(CloseValves.y, V3.stemPosition) annotation (points=[-75,-2; -28,
+        -2; -28,-19],
+                  style(color=74, rgbcolor={0,0,127}));
+  connect(CloseLoad.y, V5.stemPosition) annotation (points=[29,36; 40,36;
+        40,15],
       style(color=74, rgbcolor={0,0,127}));
   connect(V5.port_b, SinkP1.port) 
-    annotation (points=[51,6; 61,6], style(color=69, rgbcolor={0,127,255}));
+    annotation (points=[50,6; 62,6], style(color=69, rgbcolor={0,127,255}));
 end TestValvesReverse;

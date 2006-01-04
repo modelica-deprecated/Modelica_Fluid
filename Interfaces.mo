@@ -84,39 +84,66 @@ package Interfaces
   
   partial model PartialInitializationParameters 
     "Define parameter menu to initialize medium in component that has one medium model" 
-    import Modelica_Fluid.Types.InitTypes.*;
+    import Modelica_Fluid.Types;
+    
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
-    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
+    parameter Types.InitWithGlobalDefault.Temp initOption=
+              Types.InitWithGlobalDefault.UseGlobalFluidOption 
+      "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
-    parameter Medium.AbsolutePressure p_start = Medium.reference_p 
+    parameter Medium.AbsolutePressure p_start = Medium.p_default 
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
     parameter Boolean use_T_start = true 
       "Use T_start if true, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate=true);
     parameter Medium.Temperature T_start=
-      if use_T_start then 293.15 else Medium.T_phX(p_start,h_start,X_start) 
+      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
       "Start value of temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.h_pTX(p_start, T_start, X_start) else 1e4 
+      if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
       "Start value of specific enthalpy" 
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter Types.Init.Temp initOption2=
+        if initOption == Types.InitWithGlobalDefault.UseGlobalFluidOption then 
+             fluidOptions.default_initOption else initOption 
+        annotation(Evaluate=true, Hide=true);
   end PartialInitializationParameters;
   
   partial model PartialSource 
     "Partial component source with one fluid connector" 
+    import Modelica.Constants;
+    import Modelica_Fluid.Types.FlowDirection;
+    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium model within the source" 
        annotation (choicesAllMatching=true);
-    FluidPort_b port(redeclare package Medium = Medium) 
-      annotation (extent=[100, -10; 120, 10], rotation=0);
+    FluidPort_b port(redeclare package Medium = Medium,
+                     m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+      annotation (extent=[90,-10; 110,10],    rotation=0);
     Medium.BaseProperties medium "Medium in the source";
+    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
+              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+      "Unidirectional (out of port_b) or bidirectional flow component" 
+                                                                annotation(Dialog(tab="Advanced"));
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter Boolean allowFlowReversal=
+       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+      "= false, if flow only out of port_b, otherwise reversing flow allowed" 
+       annotation(Evaluate=true, Hide=true);
   equation 
     port.p = medium.p;
     port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
@@ -133,30 +160,38 @@ features are:
 <li> The enthalpy flow rate (= port.H_flow) and the mass flow rates of the
      substances (= port.mX_flow) depend on the direction of the mass flow rate.</li>
 </ul>
-</html>"));
+</html>"),
+      Diagram,
+      Coordsys(grid=[1,1], scale=0));
   end PartialSource;
   
   partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
-    import Modelica.SIunits.*;
-    import Modelica.Constants.*;
+    import SI = Modelica.SIunits;
+    import Modelica.Constants;
+    import Modelica_Fluid.Types.FlowDirection;
+    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component"  annotation (
         choicesAllMatching =                                                                            true);
-    parameter Boolean allowFlowReversal = true 
-      "Flow reversal at the ports is allowed by the equations"  annotation(Dialog(tab="Advanced"));
+    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
+              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
     
     FluidPort_a port_a(redeclare package Medium = Medium,
-                       m_flow(min=if allowFlowReversal then -inf else 0)) 
-      annotation (extent=[-120, -10; -100, 10]);
+                       m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+      "Fluid connector a (positive design flow direction is from port_a to port_b)"
+      annotation (extent=[-110,-10; -90,10]);
     FluidPort_b port_b(redeclare package Medium = Medium,
-                       m_flow(max=if allowFlowReversal then +inf else 0)) 
-      annotation (extent=[120, -10; 100, 10]);
+                       m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
+      "Fluid connector b (positive design flow direction is from port_a to port_b)"
+      annotation (extent=[110,-10; 90,10]);
     Medium.BaseProperties medium_a "Medium properties in port_a";
     Medium.BaseProperties medium_b "Medium properties in port_b";
     Medium.MassFlowRate m_flow 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
-    Pressure dp(start=0) "Pressure difference between port_a and port_b";
+    SI.Pressure dp(start=0) "Pressure difference between port_a and port_b";
     
     annotation (
       Coordsys(grid=[1, 1], component=[20, 20]),
@@ -171,7 +206,17 @@ When using this partial component, an equation for the momentum
 balance has to be added by specifying a relationship
 between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 </p>
-</html>"));
+</html>"),
+      Icon);
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter Boolean allowFlowReversal=
+       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+      "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+       annotation(Evaluate=true, Hide=true);
   equation 
     // Properties in the ports
     port_a.p   = medium_a.p;
@@ -205,7 +250,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor" annotation (
         choicesAllMatching =                                                                        true);
     FluidPort_a port(redeclare package Medium = Medium) 
-      annotation (extent=[-10, -120; 10, -100], rotation=90);
+      annotation (extent=[-10,-110; 10,-90],    rotation=90);
     
     annotation (Documentation(info="<html>
 <p>
@@ -213,7 +258,9 @@ Partial component to model an <b>absolute sensor</b>. Can be used for pressure s
 Use for other properties such as temperature or density is discouraged, because the enthalpy at the connector can have different meanings, depending on the connection topology. Use <tt>PartialFlowSensor</tt> instead.
 as signal.
 </p>
-</html>"));
+</html>"),
+      Diagram,
+      Coordsys(grid=[1,1], scale=0));
   equation 
     port.m_flow = 0;
     port.H_flow = 0;
@@ -223,16 +270,27 @@ as signal.
   partial model PartialFlowSensor 
     "Partial component to model sensors that measure flow properties" 
     
+    import Modelica.Constants;
+    import Modelica_Fluid.Types.FlowDirection;
+    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
+    
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
     Medium.SpecificEnthalpy h "enthalpy in flow";
     Medium.MassFraction[Medium.nXi] Xi "flow composition";
     
-    FluidPort_a port_a(redeclare package Medium = Medium) 
-      annotation (extent=[-120, -10; -100, 10]);
-    FluidPort_b port_b(redeclare package Medium = Medium) 
-      annotation (extent=[120, -10; 100, 10]);
+    FluidPort_a port_a(redeclare package Medium = Medium,
+                       m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+      annotation (extent=[-110,-10; -90,10]);
+    FluidPort_b port_b(redeclare package Medium = Medium,
+                       m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
+      annotation (extent=[110,-10; 90,10]);
+    
+    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
+              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
     
     annotation (Documentation(info="<html>
 <p>
@@ -242,7 +300,18 @@ between fluid connectors.<br>
 The model includes zero-volume balance equations. Sensor models inheriting from
 this partial class should add a medium instance to calculate the measured property.
 </p>
-</html>"));
+</html>"),
+      Diagram,
+      Coordsys(grid=[1,1], scale=0));
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter Boolean allowFlowReversal=
+       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+      "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+       annotation(Evaluate=true, Hide=true);
   equation 
     port_a.p   = port_b.p;
     // Local *zero-volume* enthalpy and composition
@@ -338,37 +407,37 @@ public
       "Use T_start if true, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate = true);
     parameter Medium.Temperature T_start=
-      if use_T_start then 293.15 else Medium.T_phX(pin_start,h_start,X_start) 
+      if use_T_start then Medium.T_default else Medium.temperature_phX(pin_start,h_start,X_start) 
       "Start value of inlet temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.h_pTX(pin_start, T_start, X_start[1:Medium.nXi]) else 1e4 
+      if use_T_start then Medium.specificEnthalpy_pTX(pin_start, T_start, X_start[1:Medium.nXi]) else Medium.h_default 
       "Start value of specific enthalpy" 
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
     
     parameter Real delta=0.01 "Regularisation factor" annotation(Dialog(tab="Advanced"));
     
     Modelica.Blocks.Interfaces.RealInput stemPosition 
-      "Stem position in the range 0-1" annotation (extent=[-10,70; 10,90],    rotation=-90);
+      "Stem position in the range 0-1" annotation (extent=[-20,70; 20,110],   rotation=-90);
     
     Medium.Density d "Density at port a";
     Medium.Temperature T "Temperature at port a";
   protected 
     function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
     annotation (
-      Icon(Text(extent=[-100, -40; 100, -80], string="%name"),
+      Icon(Text(extent=[-143,-66; 148,-106],  string="%name"),
         Line(points=[0,60; 0,0],   style(
             color=0,
             thickness=2,
             fillPattern=1)),
-        Polygon(points=[-100,52; -100,-54; 0,0; -100,52],  style(
+        Polygon(points=[-100,50; -100,-50; 0,0; -100,50],  style(
             color=0,
             thickness=2,
             fillPattern=1)),
-        Polygon(points=[100,52; 0,0; 100,-54; 100,52],  style(
+        Polygon(points=[100,50; 0,0; 100,-50; 100,50],  style(
             color=0,
             thickness=2,
             fillPattern=1)),
@@ -397,7 +466,8 @@ public
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Adapted from the ThermoPower library.</li>
 </ul>
-</html>"));
+</html>"),
+      Coordsys(grid=[2,2], scale=0));
   initial equation 
     if CvData == CvTypes.Kv then
       Av = 2.7778e-5*Kv "Unit conversion";
@@ -412,7 +482,9 @@ public
   
   partial model PartialPump "Base model for centrifugal pumps" 
     import Modelica.SIunits.Conversions.NonSIunits.*;
-    import Modelica.Constants.*;
+    import Modelica.Constants;
+    import Modelica_Fluid.Types.FlowDirection;
+    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" annotation(choicesAllMatching=true);
     Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
@@ -445,26 +517,33 @@ public
     parameter Integer Np_nom(min=1) = 1 "Nominal number of pumps in parallel";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
     parameter Boolean checkValve=true "Reverse flow stopped";
-    parameter Boolean allowFlowReversal = true 
-      "Flow reversal at the ports is allowed by the equations";
+    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
+              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+      "Unidirectional (inlet -> outlet) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
     parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";
-    parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value" 
+    parameter Medium.AbsolutePressure pin_start 
+      "Guess value for inlet pressure" 
       annotation(Dialog(tab="Initialization"));
-    parameter Medium.AbsolutePressure pout_start "Outlet Pressure Start Value" 
+    parameter Medium.AbsolutePressure pout_start 
+      "Guess value for outlet pressure" 
       annotation(Dialog(tab="Initialization"));
     parameter Boolean use_T_start = true 
       "Use T_start if true, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate = true);
     parameter Medium.Temperature T_start=
-      if use_T_start then 293.15 else Medium.T_phX(pin_start,h_start,Medium.reference_X[1:Medium.nXi]) 
-      "Start value of temperature" 
+      if use_T_start then Medium.T_default else Medium.temperature_phX(pin_start,h_start,X_start) 
+      "Guess value for temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.h_pTX(pin_start, T_start, Medium.reference_X[1:Medium.nXi]) else 1e4 
-      "Start value of specific enthalpy" 
+      if use_T_start then Medium.specificEnthalpy_pTX(pin_start, T_start, X_start) else Medium.h_default 
+      "Guess value for specific enthalpy" 
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Guess value for mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
     parameter SI.MassFlowRate m_flow_start = 0 
-      "Start value of mass flow rate (total)" 
+      "Guess value for mass flow rate (total)" 
       annotation(Dialog(tab="Initialization"));
     constant SI.Acceleration g=Modelica.Constants.g_n;
   //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
@@ -472,12 +551,12 @@ public
     Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = Medium,
         p(start=pin_start),
         m_flow(start = m_flow_start,
-               min = if allowFlowReversal and not checkValve then -inf else 0)) 
+               min = if allowFlowReversal and not checkValve then -Constants.inf else 0)) 
     annotation (extent=[-100,-40; -60,0]);
     Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = Medium,
         p(start=pout_start),
         m_flow(start = -m_flow_start,
-               max = if allowFlowReversal and not checkValve then +inf else 0)) 
+               max = if allowFlowReversal and not checkValve then +Constants.inf else 0)) 
     annotation (extent=[40,12; 80,52]);
     SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
@@ -503,6 +582,15 @@ public
       "Curvilinear abscissa for the flow curve in parametric form";
     Modelica.Blocks.Interfaces.IntegerInput in_Np 
       annotation (extent=[16,34; 36,54], rotation=-90);
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+   parameter Boolean allowFlowReversal=
+       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+      "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+       annotation(Evaluate=true, Hide=true);
   equation 
     // Number of pumps in parallel
     Np = in_Np;

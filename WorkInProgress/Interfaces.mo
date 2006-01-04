@@ -54,8 +54,8 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
   partial model PartialPressureLoss 
     "Generic pressure loss with constant turbulent loss factors" 
     import SI = Modelica.SIunits;
-    import Modelica_Fluid.WorkInProgress.Utilities.regRoot2;
-    import Modelica_Fluid.WorkInProgress.Utilities.regSquare2;
+    import Modelica_Fluid.Utilities.regRoot2;
+    import Modelica_Fluid.Utilities.regSquare2;
     
     parameter Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors 
       lossFactors "Loss factors for both flow directions";
@@ -147,13 +147,13 @@ _
         m_flow_turbulent = regRoot2(dp_turbulent, dp_turbulent, d_a/k1, d_b/k2) 
         "for information purposes";
         yd0 = if use_Re and withLaminar then (d_a+d_b)/(k0*(eta_a+eta_b)) else 0;
-        m_flow = regRoot2(dp, dp_turbulent, d_a/k1, d_b/k2, withLaminar, yd0);
+        m_flow = regRoot2(dp, dp_turbulent, d_a/k1, d_b/k2, use_Re and withLaminar, yd0);
      else
         m_flow_turbulent = if use_Re then (pi/4)*lossFactors.D_Re*eta*lossFactors.Re_turbulent else m_flow_small;
         dp_turbulent = regSquare2(m_flow_turbulent, m_flow_turbulent, k1/d_a, k2/d_b) 
         "for information purposes";
         yd0 = if use_Re and withLaminar then k0*(eta_a+eta_b)/(d_a+d_b) else 0;
-        dp = regSquare2(m_flow, m_flow_turbulent, k1/d_a, k2/d_b, withLaminar, yd0);
+        dp = regSquare2(m_flow, m_flow_turbulent, k1/d_a, k2/d_b, use_Re and withLaminar, yd0);
      end if;
     
   end PartialPressureLoss;
@@ -270,7 +270,7 @@ avoided by reducing the derivative at Re=0 in such a way that
 the polynomials are guaranteed to be monotonically increasing.
 The used sufficient criteria for monotonicity follows from:
 </p>
-
+ 
 <dl>
 <dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
 <dd> <b>Monotone piecewise cubic interpolation</b>.
@@ -280,7 +280,7 @@ The used sufficient criteria for monotonicity follows from:
   end PressureLossWithoutIcon;
   
 partial model Flow1D 
-    import Modelica_Fluid.Types.InitTypes.*;
+  import Modelica_Fluid.Types;
     import Modelica.Constants.*;
   replaceable package Medium = PackageMedium 
     extends Modelica.Media.Interfaces.PartialMedium "Fluid medium model" 
@@ -306,25 +306,27 @@ partial model Flow1D
   parameter Boolean gravityTerm=true " = true, include static head" 
                                             annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
   parameter Boolean dynamicTerm=false 
-      " = true, include dynamic term, only if not lumped_dp and not static"                                                                   annotation(Dialog(tab="Advanced", group="Momentum balance", enable=(not static and not lumped_dp)),Evaluate=true);
+      " = true, include dynamic term, only if not lumped_dp and not static"                               annotation(Dialog(tab="Advanced", group="Momentum balance", enable=(not static and not lumped_dp)),Evaluate=true);
     
 //Initialization
-  parameter Modelica_Fluid.Types.InitTypes.Temp initOption=NoInit 
+  parameter Types.InitWithGlobalDefault.Temp initOption=
+            Types.InitWithGlobalDefault.UseGlobalFluidOption 
       "Initialization option" 
-    annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    annotation(Dialog(tab = "Initialization"));
   parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start" 
     annotation(Evaluate=true, Dialog(tab = "Initialization"));
-  parameter Medium.AbsolutePressure p_start=Medium.reference_p 
+  parameter Medium.AbsolutePressure p_start=Medium.p_default 
       "Start value of pressure" 
     annotation(Dialog(tab = "Initialization"));
-  parameter Medium.Temperature T_start=if use_T_start then 293.15 else 
-      Medium.T_phX(p_start, h_start, X_start) "Start value of temperature" 
+  parameter Medium.Temperature T_start=if use_T_start then Medium.T_default else 
+      Medium.temperature_phX(p_start, h_start, X_start) 
+      "Start value of temperature" 
     annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
-  parameter Medium.SpecificEnthalpy h_start=if use_T_start then Medium.h_pTX(p_start,
-      T_start, X_start[1:Medium.nXi]) else 1e4 
+  parameter Medium.SpecificEnthalpy h_start=if use_T_start then Medium.specificEnthalpy_pTX(p_start,
+      T_start, X_start) else Medium.h_default 
       "Start value of specific enthalpy" 
     annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
-  parameter Medium.MassFraction X_start[Medium.nX]=Medium.reference_X 
+  parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default 
       "Start value of mass fractions m_i/m" 
     annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
   parameter Medium.MassFlowRate mflow_start "Start value for mass flow rate" annotation(Evaluate=true, Dialog(tab = "Initialization"));
@@ -407,20 +409,20 @@ partial model Flow1D
   annotation (Diagram, Icon(Rectangle(extent=[-100,40; 100,-40], style(
           color=69,
           gradient=2,
-          fillColor=69))), 
+          fillColor=69))),
       Documentation(info="<html>
 <p>
 From Katrins email, Nov. 28, 2005:
 </p>
-
+ 
 <p>
 Distributed volume model, properties and flow variables are arrays, no components as in the isolated pipe. Momentum and energy balances on a staggered grid, half a momentum balance on each end of the pipe. The medium properties in the ports are those of the upstream volume. I am strongly in favour with not using the energy balance 2 (the one where the momentum balance has been substracted) here, because you are loosing all the benefits of a staggered grid. You need twice as many momentum balances to calculate the algebraic pressures at the volume boundary which appear now in the energy balance. (And I am not sure if this can be  properly handled by the tool). The pressure drop is then also part of the energy balance and needs to be in accordance with the chosen grid. I agree with you that neglecting potential and kinetic energy in this case might not comply with a highly accurate formulation for teaching purposes, but for most applications it is more than sufficient. However, velocity and gravity can play a significant role in the momentum balance, which should have the option to include those terms (-> dynamic pressure). Not intertwining the two balances has also the advantage to be able to neglect specific terms in one of the balances and not in both.
 </p>
-
+ 
 <p>
 The model contains source terms in mass and energy balances, which are not determined here. Therefore it is a partial model and could also be used for reactions or partial condensing gases with neglectable liquid volume (-> i.e. moist air).
 </p>
-
+ 
 <pre>
 Modelling options (via boolean flags) are:
 - static or dynamic (mass and energy) balances
@@ -428,22 +430,31 @@ Modelling options (via boolean flags) are:
 - lumped composition (not sure yet if that is feasible)
 - including velocity and gravity term in momentum balance, perhaps also the dynamic term.
 </pre>
-
+ 
 <p>
 One issue not solved yet: For pressure drop and velocity term the densities at the ports are required. A medium function computing density from p and h would be most convenient. 
 </p>
 </html>"));
   protected 
+  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+  parameter Types.Init.Temp initOption2=
+      if initOption == Types.InitWithGlobalDefault.UseGlobalFluidOption then 
+           fluidOptions.default_initOption else initOption 
+      annotation(Evaluate=true, Hide=true);
+    
   SI.Force[np] DI_flow "Delta momentum flow across flow grid boundaries";
   SI.Force[np] F_g "Static head";
   SI.Force[np] F_f "Friction force";
   SI.Force[np] F_p "Pressure forces";
+    
 initial equation 
   // Initial conditions
   if not static then
-    if initOption == NoInit then
+    if initOption2 == Types.Init.NoInit then
     // no initial equations
-    elseif (initOption == InitialValues or initOption == SteadyStateHydraulic) then
+    elseif (initOption2 == Types.Init.InitialValues or 
+            initOption2 == Types.Init.SteadyStateHydraulic) then
       if not Medium.singleState then
         if not lumped_dp then
           medium.p = ones(n)*p_start;
@@ -457,7 +468,7 @@ initial equation
       for i in 1:n loop
         medium[i].Xi[:] = X_start[1:Medium.nXi];
       end for;
-    elseif initOption == SteadyState then
+    elseif initOption2 == Types.Init.SteadyState then
       if not Medium.singleState then
         if lumped_dp then
           der(medium[1].p) = 0;
@@ -469,7 +480,7 @@ initial equation
       for i in 1:n loop
         der(medium[i].Xi) = zeros(Medium.nXi);
       end for;
-    elseif initOption == SteadyStateHydraulic then
+    elseif initOption2 == Types.Init.SteadyStateHydraulic then
       if not Medium.singleState then
         if lumped_dp then
           der(medium[1].p) = 0;

@@ -2,7 +2,7 @@ model TestNewMixingVolume
   extends Modelica.Icons.Example;
   Components.MixingVolume Volume(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
+    initOption=Modelica_Fluid.Types.Init.SteadyState,
     p_start=2e5,
     V=1,
     use_T_start=false,
@@ -23,13 +23,17 @@ model TestNewMixingVolume
     startTime=1,
     height=-0.5,
     offset=1) annotation (extent=[-36,48; -16,68]);
+  inner Components.FluidOptions fluidOptions 
+    annotation (extent=[-100,-100; -80,-80]);
 equation 
-  connect(FlowSource.port, Volume.port_a) annotation (points=[-61,10; -42.2,10],
+  connect(FlowSource.port, Volume.port_a) annotation (points=[-62,10;
+        -42.2,10],
       style(color=69, rgbcolor={0,127,255}));
   connect(Volume.port_b, Valve.port_a) 
-    annotation (points=[-22,10; 1,10], style(color=69, rgbcolor={0,127,255}));
+    annotation (points=[-22,10; 2,10], style(color=69, rgbcolor={0,127,255}));
   connect(Valve.port_b, Sink.port) 
-    annotation (points=[23,10; 39,10], style(color=69, rgbcolor={0,127,255}));
-  connect(Step1.y, Valve.opening) annotation (points=[-15,58; 12,58; 12,18],
+    annotation (points=[22,10; 40,10], style(color=69, rgbcolor={0,127,255}));
+  connect(Step1.y, Valve.opening) annotation (points=[-15,58; 12,58; 12,
+        19],
       style(color=74, rgbcolor={0,0,127}));
 end TestNewMixingVolume;

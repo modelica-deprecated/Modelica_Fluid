@@ -61,23 +61,28 @@ annotation (
   Sources.FixedAmbient_pTX SinkP3(p=1e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[22,-50; 2,-30]);
+  inner Components.FluidOptions fluidOptions 
+    annotation (extent=[-100,-100; -80,-80]);
 equation 
-  connect(V1.port_b, SinkP2.port) annotation (points=[-29,40; 1,40]);
+  connect(V1.port_b, SinkP2.port) annotation (points=[-30,40; 2,40]);
   connect(Opening.y, V1.stemPosition) 
-  annotation (points=[-71,84; -40,84; -40,48],    style(color=3));
+  annotation (points=[-71,84; -40,84; -40,49],    style(color=3));
   connect(SourceP1.port, V1.port_a) 
-                                   annotation (points=[-79,40; -51,40],
+                                   annotation (points=[-80,40; -50,40],
                style(color=69, rgbcolor={0,127,255}));
-  connect(Opening.y, V2.stemPosition) annotation (points=[-71,84; -64,84; -64,
-        20; -40,20; -40,8], style(color=74, rgbcolor={0,0,127}));
-  connect(Opening.y, V3.stemPosition) annotation (points=[-71,84; -64,84; -64,
-        -22; -40,-22; -40,-32], style(color=74, rgbcolor={0,0,127}));
+  connect(Opening.y, V2.stemPosition) annotation (points=[-71,84; -64,84;
+        -64,20; -40,20; -40,9],
+                            style(color=74, rgbcolor={0,0,127}));
+  connect(Opening.y, V3.stemPosition) annotation (points=[-71,84; -64,84;
+        -64,-22; -40,-22; -40,-31],
+                                style(color=74, rgbcolor={0,0,127}));
   connect(SourceP2.port, V2.port_a) 
-    annotation (points=[-79,0; -51,0], style(color=69, rgbcolor={0,127,255}));
-  connect(V2.port_b, SinkP1.port) annotation (points=[-29,0; -14,0; -14,0; 1,0],
+    annotation (points=[-80,0; -50,0], style(color=69, rgbcolor={0,127,255}));
+  connect(V2.port_b, SinkP1.port) annotation (points=[-30,0; -14,0; -14,0;
+        2,0],
       style(color=69, rgbcolor={0,127,255}));
-  connect(SourceP3.port, V3.port_a) annotation (points=[-79,-40; -51,-40],
+  connect(SourceP3.port, V3.port_a) annotation (points=[-80,-40; -50,-40],
       style(color=69, rgbcolor={0,127,255}));
-  connect(V3.port_b, SinkP3.port) annotation (points=[-29,-40; 1,-40], style(
+  connect(V3.port_b, SinkP3.port) annotation (points=[-30,-40; 2,-40], style(
         color=69, rgbcolor={0,127,255}));
 end TestValveIncompressible;

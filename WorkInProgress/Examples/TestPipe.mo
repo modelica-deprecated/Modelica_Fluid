@@ -1,4 +1,5 @@
 model TestPipe 
+  import Modelica_Fluid;
   
 extends Modelica.Icons.Example;
   replaceable package Medium=Modelica.Media.IdealGases.SingleGases.Air;
@@ -19,7 +20,6 @@ extends Modelica.Icons.Example;
       heat(alpha0=2000),
     n=5,
     kineticTerm=false,
-    initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
     T_start=400,
     p_start=1.5e5,
     redeclare 
@@ -51,7 +51,6 @@ extends Modelica.Icons.Example;
       heat(alpha0=2000),
     n=5,
     kineticTerm=false,
-    initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
     p_start=1e5,
     T_start=350,
     redeclare 
@@ -83,7 +82,6 @@ extends Modelica.Icons.Example;
       heat(alpha0=2000),
     n=5,
     kineticTerm=false,
-    initOption=Modelica_Fluid.Types.InitTypes.SteadyState,
     p_start=1.5e5,
     T_start=300,
     redeclare 
@@ -98,6 +96,9 @@ extends Modelica.Icons.Example;
     T=400,
     p=1.5e5)                                                        annotation (extent=[-88,54;
         -68,74]);
+  inner Modelica_Fluid.Components.FluidOptions fluidOptions(default_initOption=
+        Modelica_Fluid.Types.Init.SteadyState) 
+    annotation (extent=[-100,-100; -80,-80]);
 equation 
   connect(pipe3.port_b, pipe2.port_a) 
                                      annotation (points=[-22,42; -2,42; -2,32;
@@ -105,10 +106,13 @@ equation
       style(color=69, rgbcolor={0,127,255}));
   connect(pipe1.port_b, pipe2.port_a) annotation (points=[-22,18; -2,18; -2,32;
         7.8,32],  style(color=69, rgbcolor={0,127,255}));
-  connect(pipe2.port_b, ambient.port) annotation (points=[28,32; 40,32; 40,30;
-        49,30], style(color=69, rgbcolor={0,127,255}));
-  connect(ambient2.port, pipe3.port_a) annotation (points=[-67,64; -62,64; -62,
-        42; -42.2,42], style(color=69, rgbcolor={0,127,255}));
-  connect(ambient1.port, pipe1.port_a) annotation (points=[-67,-4; -62,-4; -62,
-        20; -42.2,20; -42.2,18], style(color=69, rgbcolor={0,127,255}));
+  connect(pipe2.port_b, ambient.port) annotation (points=[28,32; 40,32;
+        40,30; 50,30],
+                style(color=69, rgbcolor={0,127,255}));
+  connect(ambient2.port, pipe3.port_a) annotation (points=[-68,64; -62,64;
+        -62,42; -42.2,42],
+                       style(color=69, rgbcolor={0,127,255}));
+  connect(ambient1.port, pipe1.port_a) annotation (points=[-68,-4; -62,-4;
+        -62,20; -42.2,20; -42.2,18],
+                                 style(color=69, rgbcolor={0,127,255}));
 end TestPipe;

@@ -35,7 +35,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
   
   Components.Tank reservoir(
     H0=18,
-    initOption=Modelica_Fluid.Types.InitTypes.InitialValues,
+    initOption=Modelica_Fluid.Types.Init.InitialValues,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     area=500,
@@ -67,6 +67,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (extent=[8,-12; 28,-32]);
   Modelica.Blocks.Continuous.FirstOrder PT1(T=50) 
     annotation (extent=[40,60; 60,80]);
+  inner Components.FluidOptions fluidOptions 
+    annotation (extent=[80,-100; 100,-80]);
 equation 
   
   annotation (
@@ -88,21 +90,24 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
 </html>"),
     experiment(StopTime=2000, NumberOfIntervals=5000),
     experimentSetupOutput(equdistant=false));
-  connect(pumps.outlet, pipeHead.port_a) annotation (points=[-53.2,-70.84; -46,
-        -72; -38,-72; -38,-65.3; -39,-65.3], style(color=69, rgbcolor={0,127,
+  connect(pumps.outlet, pipeHead.port_a) annotation (points=[-53.2,-70.84;
+        -46,-72; -38,-72; -38,-64; -39,-64], style(color=69, rgbcolor={0,127,
           255}));
-  connect(pipeFriction.port_b, reservoir.port) annotation (points=[-15.2,-30;
+  connect(pipeFriction.port_b, reservoir.port) annotation (points=[-16,-30;
         -4,-30; -4,-17], style(color=69, rgbcolor={0,127,255}));
-  connect(reservoir.port, userValve.port_a) annotation (points=[-4,-17; -4,-30;
-        57.2,-30], style(color=69, rgbcolor={0,127,255}));
-  connect(userValve.port_b, ambient.port)  annotation (points=[74.8,-30; 79,-30],
+  connect(reservoir.port, userValve.port_a) annotation (points=[-4,-17; -4,
+        -30; 58,-30],
+                   style(color=69, rgbcolor={0,127,255}));
+  connect(userValve.port_b, ambient.port)  annotation (points=[74,-30; 80,
+        -30],
       style(color=69, rgbcolor={0,127,255}));
-  connect(source.port, pumps.inlet) annotation (points=[-79,-80; -73.2,-80;
+  connect(source.port, pumps.inlet) annotation (points=[-80,-80; -73.2,-80;
         -73.2,-77.6; -71.4,-77.6], style(color=69, rgbcolor={0,127,255}));
-  connect(valveOpening.y, userValve.opening) annotation (points=[85,10; 98,10;
-        98,-12; 66,-12; 66,-23.6], style(color=74, rgbcolor={0,0,127}));
-  connect(pipeHead.port_b, pipeFriction.port_a) annotation (points=[-39,-36.7;
-        -39,-30; -32.8,-30], style(color=69, rgbcolor={0,127,255}));
+  connect(valveOpening.y, userValve.opening) annotation (points=[85,10; 98,
+        10; 98,-12; 66,-12; 66,-22.8],
+                                   style(color=74, rgbcolor={0,0,127}));
+  connect(pipeHead.port_b, pipeFriction.port_a) annotation (points=[-39,-38;
+        -39,-30; -32,-30],   style(color=69, rgbcolor={0,127,255}));
   connect(PressureSetPoint.y, controller.reference) annotation (points=[-79,70;
         -60,70; -60,76; -42,76], style(color=74, rgbcolor={0,0,127}));
   connect(controller.y, PumpRPMGenerator.u) 
@@ -114,8 +119,9 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
       pattern=3));
   connect(reservoirPressure.p_rel, controller.u) annotation (points=[18,-13; 18,
         50; -52,50; -52,64; -42,64], style(color=74, rgbcolor={0,0,127}));
-  connect(reservoirPressure.port_b, ambient.port) annotation (points=[29,-22; 44,
-        -22; 44,-48; 79,-48; 79,-30], style(
+  connect(reservoirPressure.port_b, ambient.port) annotation (points=[29,-22;
+        44,-22; 44,-48; 80,-48; 80,-30],
+                                      style(
       color=69,
       rgbcolor={0,127,255},
       pattern=3));

@@ -28,8 +28,8 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     redeclare model HeatTransfer = 
         Modelica_Fluid.WorkInProgress.Utilities.PipeHeatTransfer.PipeHT_constAlpha
         (alpha0=1000),
-    initOption_1=Modelica_Fluid.Types.InitTypes.InitialValues,
-    initOption_2=Modelica_Fluid.Types.InitTypes.InitialValues,
+    initOption_1=Modelica_Fluid.Types.Init.InitialValues,
+    initOption_2=Modelica_Fluid.Types.Init.InitialValues,
     mflow_start_2=0.2,
       K1=3,
     redeclare model PipeFriction = 

@@ -40,29 +40,33 @@ model TestSuddenExpansion
 equation 
   connect(p_table.y, ambient.p_in)  annotation (points=[-59,50; -52,50; -52,56;
         -42,56], style(color=74, rgbcolor={0,0,127}));
-  connect(ambient.port, expansion1.port_a) annotation (points=[-19,50; -1,50],
+  connect(ambient.port, expansion1.port_a) annotation (points=[-20,50; -1,
+        50],
       style(
       color=69,
       rgbcolor={0,127,255},
       fillColor=7,
       rgbfillColor={255,255,255},
       fillPattern=1));
-  connect(expansion1.port_b, ambient_p1.port) annotation (points=[21,50; 41,50],
+  connect(expansion1.port_b, ambient_p1.port) annotation (points=[21,50;
+        42,50],
       style(
       color=69,
       rgbcolor={0,127,255},
       fillColor=7,
       rgbfillColor={255,255,255},
       fillPattern=1));
-  connect(expansion2.port_b, ambient_p2.port) annotation (points=[21,20; 39,20],
+  connect(expansion2.port_b, ambient_p2.port) annotation (points=[21,20;
+        40,20],
       style(
       color=69,
       rgbcolor={0,127,255},
       fillColor=7,
       rgbfillColor={255,255,255},
       fillPattern=1));
-  connect(expansion2.port_a, ambient.port) annotation (points=[-1,20; -10,20;
-        -10,50; -19,50], style(
+  connect(expansion2.port_a, ambient.port) annotation (points=[-1,20; -10,
+        20; -10,50; -20,50],
+                         style(
       color=69,
       rgbcolor={0,127,255},
       fillColor=7,

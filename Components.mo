@@ -1,21 +1,119 @@
 package Components "Basic components for fluid models" 
   
+model FluidOptions 
+    "Default options and environment settings for components of Modelica_Fluid" 
+    import SI = Modelica.SIunits;
+    import Modelica_Fluid.Types.FlowDirection;
+    import Modelica_Fluid.Types.Init;
+    import Modelica.SIunits.Conversions;
+    
+  parameter Init.Temp default_initOption = Init.NoInit 
+      "Default initialization option" 
+    annotation(Dialog(group="Defaults"));
+  parameter FlowDirection.Temp default_flowDirection=FlowDirection.Bidirectional 
+      "Default flow direction defined via Advanced.flowDirection" 
+    annotation(Dialog(group="Defaults"));
+  parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure 
+      default_p_ambient =                                                                101325 
+      "Default ambient pressure" 
+      annotation(Dialog(group="Defaults"));
+  parameter Modelica.Media.Interfaces.PartialMedium.Temperature 
+      default_T_ambient=
+      Conversions.from_degC(20) "Default ambient temperature" 
+      annotation(Dialog(group="Defaults"));
+  parameter SI.Acceleration g=9.81 "Constant gravity acceleration" annotation(Dialog(group="Environment"));
+    
+  annotation (
+    preferedView="info",
+    defaultComponentName="fluidOptions",
+    defaultComponentPrefixes="inner",
+    missingInnerMessage="An inner \"fluidOptions\" component is not defined. A default 
+fluidOptions component will be used. If this is not desired, 
+drag Modelica_Fluid.Components.FluidOptions into the top level of your model.",
+    Icon(
+      Rectangle(extent=[-100,100; 100,-100], style(
+          color=3,
+          rgbcolor={0,0,255},
+          fillColor=7,
+          rgbfillColor={255,255,255})),
+      Text(
+        extent=[-160,160; 160,110],
+        style(color=3, rgbcolor={0,0,255}),
+        string="%name"),
+      Line(points=[-86,-30; 82,-30], style(color=0, rgbcolor={0,0,0})),
+      Line(points=[-82,-68; -52,-30], style(color=0, rgbcolor={0,0,0})),
+      Line(points=[-48,-68; -18,-30], style(color=0, rgbcolor={0,0,0})),
+      Line(points=[-14,-68; 16,-30], style(color=0, rgbcolor={0,0,0})),
+      Line(points=[22,-68; 52,-30], style(color=0, rgbcolor={0,0,0})),
+      Line(points=[74,84; 74,14], style(color=0, rgbcolor={0,0,0})),
+      Polygon(points=[60,14; 88,14; 74,-18; 60,14], style(
+          color=0,
+          rgbcolor={0,0,0},
+          fillColor=0,
+          rgbfillColor={0,0,0})),
+      Text(
+        extent=[16,20; 60,-18],
+        style(
+          color=0,
+          rgbcolor={0,0,0},
+          fillColor=0,
+          rgbfillColor={0,0,0},
+          fillPattern=1),
+        string="g"),
+        Text(
+          extent=[-90,82; 74,50],
+          style(color=0, rgbcolor={0,0,0}),
+          string="defaults")),
+    Diagram,
+    Documentation(info="<HTML>
+<p>
+This models defines <b>default options</b> (such as the default 
+for \"allowFlowReversal\") for all components that are on the same 
+or on a lower level as this component, as well as the constant 
+gravity acceleration. Dragging this component in a model results
+in the following declaration:
+</p>
+<pre>
+   <b>inner</b> Modelica_Fluid.Components.FluidOptions fluidOptions;
+</pre>
+<p>
+The parameters of this instance can be 
+then accessed via a corresponding outer declaration:
+</p>
+<pre>
+   <b>outer</b> Modelica_Fluid.Components.FluidOptions fluidOptions;
+</pre>
+<p>
+Note, all parameters under group \"Defaults\" are used as 
+default setting by the Modelica_Fluid components. They can
+be individually redefined in the corresponding
+component.
+</p>
+</HTML>
+"));
+    
+end FluidOptions;
+  
   model MixingVolume 
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
-    import Modelica_Fluid.Types.InitTypes.*;
-    import Modelica.Constants.*;
+    import Modelica_Fluid.Types.Init;
+    import Modelica.Constants;
+    import Modelica_Fluid.Types.FlowDirection;
+    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
     extends Interfaces.PartialInitializationParameters;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
     parameter SI.Volume V "Volume";
-    parameter Boolean allowFlowReversal = true 
-      "Flow reversal at the ports is allowed by the equations" annotation(Dialog(tab="Advanced"));
+    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
+              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
     Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,
-                                  m_flow(min=if allowFlowReversal then -inf else 0)) 
+                       m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
       "Fluid inlet port" annotation (extent=[-112,-10; -92,10]);
     Interfaces.FluidPort_b port_b(redeclare package Medium = Medium,
-                                  m_flow(max=if allowFlowReversal then +inf else 0)) 
+                       m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
       "Fluid outlet port" annotation (extent=[90,-10; 110,10]);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
       "Thermal port" 
@@ -41,7 +139,15 @@ package Components "Basic components for fluid models"
           string="V=%V")), Documentation(info="<html>
 </html>"),
       Diagram);
-    
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter Boolean allowFlowReversal=
+       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+      "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+       annotation(Evaluate=true, Hide=true);
   equation 
     // boundary conditions
     port_a.p = medium.p;
@@ -64,9 +170,9 @@ package Components "Basic components for fluid models"
     
   initial equation 
     // Initial conditions
-    if initOption == NoInit then
+    if initOption == Init.NoInit then
       // no initial equations
-    elseif initOption == InitialValues then
+    elseif initOption == Init.InitialValues then
       if not Medium.singleState then
         medium.p = p_start;
       end if;
@@ -76,13 +182,13 @@ package Components "Basic components for fluid models"
         medium.h = h_start;
       end if;
       medium.Xi = X_start[1:Medium.nXi];
-    elseif initOption == SteadyState then
+    elseif initOption == Init.SteadyState then
       if not Medium.singleState then
          der(medium.p) = 0;
       end if;
       der(medium.h) = 0;
       der(medium.Xi) = zeros(Medium.nXi);
-    elseif initOption == SteadyStateHydraulic then
+    elseif initOption == Init.SteadyStateHydraulic then
       if not Medium.singleState then
          der(medium.p) = 0;
       end if;
@@ -184,7 +290,8 @@ This model describes the static head due to the relative height between the two 
   end StaticHead;
   
   model Tank "Tank with one bottom inlet/outlet port" 
-    import Modelica_Fluid.Types.InitTypes.*;
+    import Modelica_Fluid.Types;
+    import Modelica.Utilities.Streams;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching=true);
@@ -193,23 +300,24 @@ This model describes the static head due to the relative height between the two 
     parameter SI.Volume V0 = 0 "Volume of the liquid when the level is zero";
     parameter SI.Height H0 = 0 
       "Height of zero level reference over the bottom port";
-    parameter SI.Acceleration g = Modelica.Constants.g_n 
-      "Acceleration of gravity";
-    parameter Medium.AbsolutePressure p_ambient=101325 "Tank surface pressure";
-    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
+    parameter Medium.AbsolutePressure p_ambient=fluidOptions.default_p_ambient 
+      "Tank surface pressure";
+    parameter Types.InitWithGlobalDefault.Temp initOption=
+              Types.InitWithGlobalDefault.UseGlobalFluidOption 
+      "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
     parameter Boolean use_T_start = true 
       "Use T_start if true, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate = true);
     parameter Medium.Temperature T_start=
-      if use_T_start then 293.15 else Medium.T_phX(p_ambient,h_start,X_start) 
+      if use_T_start then Medium.T_default else Medium.temperature_phX(p_ambient,h_start,X_start) 
       "Start value of temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.h_pTX(p_ambient, T_start, X_start[1:Medium.nXi]) else 1e4 
+      if use_T_start then Medium.specificEnthalpy_pTX(p_ambient, T_start, X_start) else Medium.h_default 
       "Start value of specific enthalpy" 
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.reference_X 
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
     parameter SI.Height level_start(min=0) "Initial tank level" 
@@ -233,6 +341,13 @@ This model describes the static head due to the relative height between the two 
       "Mass of tank volume";
     Real mX[Medium.nX](quantity=Medium.substanceNames, each unit="kg") 
       "Component masses of the independent substances";
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter Types.Init.Temp initOption2=
+        if initOption == Types.InitWithGlobalDefault.UseGlobalFluidOption then 
+             fluidOptions.default_initOption else initOption 
+        annotation(Evaluate=true, Hide=true);
   equation 
     medium.p = p_ambient;
     V = area*level+V0 "Volume of fluid";
@@ -245,7 +360,7 @@ This model describes the static head due to the relative height between the two 
     der(mX) = port.mXi_flow;
     
     // Momentum balance
-    p_bottom = (medium.d*g*(level+H0)) + p_ambient;
+    p_bottom = (medium.d*fluidOptions.g*(level+H0)) + p_ambient;
     port.p = p_bottom - smooth(2,noEvent(if port.m_flow < 0 then port.m_flow^2/(2*medium.d*pipeArea^2) else 0));
     
     // Energy balance
@@ -260,9 +375,9 @@ This model describes the static head due to the relative height between the two 
     port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.X);
     
   initial equation 
-    if initOption == NoInit then
+    if initOption2 == Types.Init.NoInit then
       // no initial equations
-    elseif initOption == InitialValues then
+    elseif initOption2 == Types.Init.InitialValues then
       level = level_start;
       if use_T_start then
         medium.T = T_start;
@@ -270,7 +385,11 @@ This model describes the static head due to the relative height between the two 
         medium.h = h_start;
       end if;
       medium.Xi = X_start[1:Medium.nXi];
-    elseif initOption == SteadyStateHydraulic then
+    elseif initOption2 == Types.Init.SteadyState then
+      der(level) = 0;
+      der(medium.h) = 0;
+      der(medium.Xi) = zeros(Medium.nXi);
+    elseif initOption2 == Types.Init.SteadyStateHydraulic then
       der(level) = 0;
       if use_T_start then
         medium.T = T_start;
@@ -279,7 +398,8 @@ This model describes the static head due to the relative height between the two 
       end if;
       medium.Xi = X_start[1:Medium.nXi];
     else
-      assert(false, "Unsupported initialization option");
+      assert(false,"Unsupported initialization option initOption = " + String(initOption2)
+                   +"\nin model Modelica_Fluid.Components.Tank");
     end if;
     annotation (
       Icon(
@@ -348,7 +468,8 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Adapted from the ThermoPower library.</li>
 </ul>
-</html>"));
+</html>"),
+      Coordsys(grid=[1,1], scale=0));
   initial equation 
     if CvData == CvTypes.OpPoint then
       m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom) 
@@ -490,28 +611,29 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
     parameter Types.HydraulicConductance Kv 
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening 
-    annotation (extent=[-20, 60; 20, 100], rotation=-90);
+    annotation (extent=[-20,70; 20,110],   rotation=-90);
   equation 
     m_flow = Kv*opening*dp;
     
   annotation (
-    Icon(Text(extent=[-100,-66; 100,-100],  string="%name"),
-        Line(points=[0,54; 0,-10], style(
+    Icon(
+        Polygon(points=[-100,50; -100,-50; 0,0; -100,50],  style(
             color=0,
             thickness=2,
             fillPattern=1)),
-        Polygon(points=[-100,42; -100,-64; 0,-10; -100,42],style(
+        Line(points=[0,60; 0,0],   style(
             color=0,
             thickness=2,
             fillPattern=1)),
-        Polygon(points=[100,42; 0,-10; 100,-64; 100,42],style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-        Rectangle(extent=[-20,74; 20,54],   style(
+        Rectangle(extent=[-20,70; 20,50],   style(
             color=0,
             fillColor=0,
-            fillPattern=1))),
+            fillPattern=1)),
+        Polygon(points=[100,50; 0,0; 100,-50; 100,50],  style(
+            color=0,
+            thickness=2,
+            fillPattern=1)),
+           Text(extent=[-143,-66; 148,-106],  string="%name")),
     Diagram,
     Documentation(info="<HTML>
 <p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>opening</tt> signal, without computing any fluid property.
@@ -523,7 +645,8 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Adapted from the ThermoPower library.</li>
 </ul>
-</html>"));
+</html>"),
+      Coordsys(grid=[1,1], scale=0));
   end ValveLinear;
   
   model Pump "Centrifugal pump with ideally controlled speed" 
@@ -590,8 +713,10 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
   model Evaporator 
     "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378" 
     import Modelica.SIunits.Conversions.*;
-    import Modelica_Fluid.Types.InitTypes.*;
-    import Modelica.Constants.*;
+    import Modelica.Constants;
+    import Modelica_Fluid.Types;
+    import Modelica_Fluid.Types.FlowDirection;
+    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialTwoPhaseMedium 
       extends Modelica.Media.Interfaces.PartialTwoPhaseMedium "Medium model" 
@@ -600,25 +725,30 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
     parameter Medium.SpecificHeatCapacity cp_D 
       "specific heat capacity of drum metal";
     parameter SI.Volume V_t "total volume inside drum";
-    parameter Types.InitTypes.Temp initOption = NoInit "Initialization option" 
+    parameter Types.InitWithGlobalDefault.Temp initOption=
+              Types.InitWithGlobalDefault.UseGlobalFluidOption 
+      "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
-    parameter Medium.AbsolutePressure p_start = Medium.reference_p 
+    parameter Medium.AbsolutePressure p_start = Medium.p_default 
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
     parameter SI.Volume V_l_start = V_t/2 
       "Start value of liquid volumeStart value of volume" 
       annotation(Dialog(tab = "Initialization"));
-    parameter Boolean allowFlowReversal = false 
-      "Flow reversal at the ports is allowed by the equations" annotation(Dialog(tab="Advanced"));
+    
+    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
+              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
     
     Interfaces.FluidPort_a feedwater(redeclare package Medium = Medium,
-                             m_flow(min = if allowFlowReversal then -inf else 0)) 
-      annotation (extent=[-120, -10; -100, 10]);
+                       m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+      annotation (extent=[-110,-10; -90,10]);
     Interfaces.FluidPort_b steam(redeclare package Medium = Medium,
-                             m_flow(max = if allowFlowReversal then +inf else 0)) 
-      annotation (extent=[120, -10; 100, 10]);
+                       m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
+      annotation (extent=[110,-10; 90,10]);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
-      annotation (extent=[-10, -120; 10, -100]);
+      annotation (extent=[-10,-110; 10,-90]);
     Modelica.Blocks.Interfaces.RealOutput V(
       redeclare type SignalType = SI.Volume) "liquid volume" 
       annotation (extent=[30, 100; 50, 120], rotation=90);
@@ -645,6 +775,19 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
     Medium.SpecificEnthalpy h_S=steam.h "steam enthalpy";
     SI.MassFlowRate qm_W=feedwater.m_flow "feed water mass flow rate";
     SI.MassFlowRate qm_S=steam.m_flow "steam mass flow rate";
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter Types.Init.Temp initOption2=
+        if initOption == Types.InitWithGlobalDefault.UseGlobalFluidOption then 
+             fluidOptions.default_initOption else initOption 
+        annotation(Evaluate=true, Hide=true);
+    parameter Boolean allowFlowReversal=
+       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+      "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+       annotation(Evaluate=true, Hide=true);
   equation 
     // balance equations  
     m = rho_v*V_v + rho_l*V_l + m_D "Total mass";
@@ -675,14 +818,17 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
            "Evaporator model requires subcritical pressure");
   initial equation 
     // Initial conditions
-    if initOption == NoInit then
+    if initOption2 == Types.Init.NoInit then
       // no initial equations
-    elseif initOption == InitialValues then
+    elseif initOption2 == Types.Init.InitialValues then
      p = p_start;
      V_l = V_l_start;
-    elseif initOption == SteadyState then
+    elseif initOption2 == Types.Init.SteadyState then
       der(p) = 0;
       der(V_l) = 0;
+    elseif initOption2 == Types.Init.SteadyStateHydraulic then
+      der(p) = 0;
+      V_l = V_l_start;
     else
       assert(false, "Unsupported initialization option");
     end if;
@@ -709,7 +855,7 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
         Ellipse(extent=[74, 14; 104, -15], style(pattern=0, fillColor=7)),
         Ellipse(extent=[71, 29; 101, 0], style(pattern=0, fillColor=7)),
         Text(
-          extent=[-120, 117; 116, 51],
+          extent=[-139,111; 144,57],
           string="%name",
           style(gradient=2, fillColor=69)),
         Line(points=[0, -60; 0, -100], style(color=42)),
