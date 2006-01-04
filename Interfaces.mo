@@ -62,7 +62,8 @@ package Interfaces
   
   connector FluidPort_a "Fluid connector with filled icon" 
     extends FluidPort;
-    annotation (Diagram(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
+    annotation (defaultComponentName="port_a",
+                Diagram(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
                fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
                fillColor=69)), Text(extent=[-88, 206; 112, 112], string="%name")),
          Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
@@ -72,7 +73,8 @@ package Interfaces
   
   connector FluidPort_b "Fluid connector with outlined icon" 
     extends FluidPort;
-    annotation (Diagram(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
+    annotation (defaultComponentName="port_b",
+                Diagram(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
                fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
                fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
                fillColor=7)), Text(extent=[-88, 192; 112, 98], string="%name")),
@@ -699,4 +701,21 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
 </html>"));
     
   end PartialPump;
+
+  partial model PartialTwoPort 
+    "Partial component with Medium definition and two fluid ports" 
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+      annotation (choicesAllMatching = true);
+    
+    FluidPort_a port_a(redeclare package Medium = Medium) 
+      "Fluid connector a (positive design flow direction is from port_a to port_b)"
+      annotation (extent=[-110,-10; -90,10]);
+    FluidPort_b port_b(redeclare package Medium = Medium) 
+      "Fluid connector b (positive design flow direction is from port_a to port_b)"
+      annotation (extent=[110,-10; 90,10]);
+    annotation (Documentation(info="<html>
+ 
+</html>"));
+  end PartialTwoPort;
 end Interfaces;

@@ -1,439 +1,8 @@
 package Components 
   
-model PressureLoss "Generic pressure loss component" 
-  extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon;
-  annotation (
-    defaultComponentName="orifice",
-    Diagram,
-    Icon(
-      Text(
-        extent=[-120, 130; 116, 64],
-        string="%name",
-        style(gradient=2, fillColor=69)),
-      Line(points=[-60, -50; -60, 50; 60, -50; 60, 50], style(color=0,
-            thickness=2)),
-      Line(points=[-60, 0; -100, 0], style(color=69)),
-      Line(points=[60, 0; 100, 0], style(color=69))),
-    Documentation(info="<html>
-<p>
-This model computes the pressure loss of a pipe
-segment (orifice, bending etc.) with a minimum amount of data
-provided via parameter <b>lossFactors</b>.
-If available, data should be provided for <b>both flow directions</b>,
-i.e., flow from port_a to port_b and from port_b to port_a, 
-as well as for the <b>laminar</b> and the <b>turbulent</b> region.
-It is also an option to provide the loss factor <b>only</b> for the
-<b>turbulent</b> region for a flow from port_a to port_b.
-</p>
-<p>
-The following equations are used:
-</p>
-<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
-      = 0.5*&zeta;/A^2 * (1/&rho;) * m_flow*|m_flow|
-        Re = |v|*D*&rho;/&eta;
-</pre>
-<table border=1 cellspacing=0 cellpadding=2>
-<tr><td><b>flow type</b></td>
-    <td><b>&zeta;</b> = </td>
-    <td><b>flow region</b></td></tr>
-<tr><td>turbulent</td>
-    <td><b>zeta1</b> = const.</td>
-    <td>Re &ge;  Re_turbulent, v &ge; 0</td></tr>
-<tr><td></td>
-    <td><b>zeta2</b> = const.</td>
-    <td>Re &ge; Re_turbulent, v &lt; 0</td></tr>
-<tr><td>laminar</td>
-    <td><b>c0</b>/Re</td>
-    <td>both flow directions, Re small; c0 = const.</td></tr>
-</table>
-<p>
-where
-</p>
-<ul>
-<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
-<li> v is the mean velocity.</li>
-<li> &rho; is the density.</li>
-<li> &zeta; is the loss factor that depends on the geometry of
-     the pipe. In the turbulent flow regime, it is assumed that
-     &zeta; is constant and is given by \"zeta1\" and
-     \"zeta2\" depending on the flow direction.<br>
-     When the Reynolds number Re is below \"Re_turbulent\", the
-     flow is laminar for small flow velocities. For higher 
-     velocities there is a transition region from 
-     laminar to turbulent flow. The loss factor for
-     laminar flow at small velocities is defined by the often occuring
-     approximation c0/Re. If c0 is different for the two
-     flow directions, the mean value has to be used 
-     (c0 = (c0_ab + c0_ba)/2).<li>
-<li> The equation \"&Delta;p = 0.5*&zeta;*&rho;*v*|v|\" is either with
-     respect to port_a or to port_b, depending on the definition
-     of the particular loss factor &zeta; (in some references loss
-     factors are defined with respect to port_a, in other references
-     with respect to port_b).</li>
- 
-<li> Re = |v|*D_Re*&rho;/&eta; = |m_flow|*D_Re/(A_Re*&eta;) 
-     is the Reynolds number at the smallest cross
-     section area. This is often at port_a or at port_b, but can
-     also be between the two ports. In the record, the diameter
-     D_Re of this smallest cross section area has to be provided, as
-     well, as Re_turbulent, the absolute value of the 
-     Reynolds number at which
-     the turbulent flow starts. If Re_turbulent is different for
-     the two flow directions, use the smaller value as Re_turbulent.</li>
-<li> D is the diameter of the pipe. If the pipe has not a 
-     circular cross section, D = 4*A/P, where A is the cross section
-     area and P is the wetted perimeter.</li>
-<li> A is the cross section area with A = &pi;(D/2)^2.
-<li> &eta; is the dynamic viscosity.</li>
-</ul>
-<p>
-The laminar and the transition region is usually of
-not much technical interest because the operating point is
-mostly in the turbulent regime. For simplification and for
-numercial reasons, this whole region is described by two
-polynomials of third order, one polynomial for m_flow &ge; 0 
-and one for m_flow &lt; 0. The polynomials start at 
-Re = |m_flow|*4/(&pi;*D_Re*&eta;), where D_Re is the
-smallest diameter between port_a and port_b.
-The common derivative
-of the two polynomials at Re = 0 is
-computed from the equation \"c0/Re\". Note, the pressure drop
-equation above in the laminar region is always defined
-with respect to the smallest diameter D_Re.
-</p>
-<p>
-If no data for c0 is available, the derivative at Re = 0 is computed in such
-a way, that the second derivatives of the two polynomials
-are identical at Re = 0. The polynomials are constructed, such that
-they smoothly touch the characteristic curves in the turbulent
-regions. The whole characteristic is therefore <b>continuous</b>
-and has a <b>finite</b>, <b>continuous first derivative everywhere</b>.
-In some cases, the constructed polynomials would \"vibrate\". This is 
-avoided by reducing the derivative at Re=0 in such a way that
-the polynomials are guaranteed to be monotonically increasing.
-The used sufficient criteria for monotonicity follows from:
-</p>
- 
-<dl>
-<dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
-<dd> <b>Monotone piecewise cubic interpolation</b>.
-     SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
-</dl>
-</html>"));
-end PressureLoss;
   
-model WallFriction 
-    "Pressure loss due to friction in a straight pipe with walls of nonuniform roughness (commercial pipes)" 
-    import SI = Modelica.SIunits;
-  extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon(
-     final lossFactors = Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors.wallFriction(length, diameter, roughness));
-  parameter SI.Length length "Length of pipe";
-  parameter SI.Diameter diameter "Inner diameter of pipe";
-  parameter SI.Length roughness(min=1e-10) 
-      "Absolute roughness of pipe (> 0 required, details see info layer)";
-  annotation (defaultComponentName="pipe",
-    Documentation(info="<html>
-<p>
-The absolute roughness <font face=\"Symbol\">d</font> has usually to
-be estimated. In <i>[Idelchik 1994, pp. 105-109,
-Table 2-5; Miller 1990, p. 190, Table 8-1]</i> many examples are given.
-As a short summary:
-</p>
-<table border=1 cellspacing=0 cellpadding=2>
-  <tr><td><b>Smooth pipes</b></td>
-      <td>Drawn brass, coper, aluminium, glass, etc.</td>
-      <td><font face=\"Symbol\">d</font> = 0.0025 mm</td>
-  </tr>
-  <tr><td rowspan=\"3\"><b>Steel pipes</b></td>
-      <td>New smooth pipes</td>
-      <td><font face=\"Symbol\">d</font> = 0.025 mm</td>
-  </tr>
-  <tr><td>Mortar lined, average finish</td>
-      <td><font face=\"Symbol\">d</font> = 0.1 mm</td>
-  </tr>
-  <tr><td>Heavy rust</td>
-      <td><font face=\"Symbol\">d</font> = 1 mm</td>
-  </tr>
-  <tr><td rowspan=\"3\"><b>Concrete pipes</b></td>
-      <td>Steel forms, first class workmanship</td>
-      <td><font face=\"Symbol\">d</font> = 0.025 mm</td>
-  </tr>
-  <tr><td>Steel forms, average workmanship</td>
-      <td><font face=\"Symbol\">d</font> = 0.1 mm</td>
-  </tr>
-  <tr><td>Block linings</td>
-      <td><font face=\"Symbol\">d</font> = 1 mm</td>
-  </tr>
-</table>
-</html>"),
-    Icon(
-      Text(
-        extent=[-150,140; 150,80],
-        string="%name",
-        style(gradient=2, fillColor=69)),
-      Rectangle(extent=[-100,60; 100,-60],   style(
-          color=0,
-          gradient=2,
-          fillColor=8)),
-      Rectangle(extent=[-100,34; 100,-36],   style(
-          color=69,
-          gradient=2,
-          fillColor=69))),
-    Diagram(
-      Rectangle(extent=[-100,50; 100,-50], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255})),
-      Line(points=[-50,-50; -50,50], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[-40,26; 28,14],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="diameter"),
-      Line(points=[-100,60; 100,60], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[-30,74; 38,62],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="length")));
-end WallFriction;
   
-model SuddenExpansion "Pressure drop in pipe due to suddenly expanding area" 
-    import SI = Modelica.SIunits;
-  extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon(
-     final lossFactors = Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors.suddenExpansion(D_a, D_b));
-  parameter SI.Diameter D_a "Inner diameter of pipe at port_a";
-  parameter SI.Diameter D_b "Inner diameter of pipe at port_b";
-    
-  annotation (
-    defaultComponentName="suddenExpansion",
-    Diagram(
-      Line(points=[0,40; -100,40; -100,-40; 0,-40; 0,-100; 100,-100; 100,100; 0,
-            100; 0,40], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=1)),
-      Rectangle(extent=[-100,40; 0,-40], style(
-          color=7,
-          rgbcolor={255,255,255},
-          fillColor=7,
-          rgbfillColor={255,255,255})),
-      Rectangle(extent=[0,100; 100,-100], style(
-          color=7,
-          rgbcolor={255,255,255},
-          fillColor=7,
-          rgbfillColor={255,255,255})),
-      Line(points=[0,40; -100,40; -100,-40; 0,-40; 0,-100; 100,-100; 100,100; 0,
-            100; 0,40], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=1)),
-      Line(points=[-60,-40; -60,40], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[-50,16; -26,-10],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="D_a"),
-      Line(points=[34,-100; 34,100], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[54,16; 78,-10],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="D_b")),
-    Icon(
-      Text(
-        extent=[-116,154; 120,88],
-        string="%name",
-        style(gradient=2, fillColor=69)),
-      Rectangle(extent=[-100,80; 100,-80],   style(
-          color=0,
-          gradient=2,
-          fillColor=8)),
-      Rectangle(extent=[-100,20; 0,-20],     style(
-          color=69,
-          gradient=2,
-          fillColor=69)),
-      Rectangle(extent=[0,60; 100,-60],      style(
-          color=69,
-          gradient=2,
-          fillColor=69))));
-end SuddenExpansion;
   
-model SharpEdgedOrifice 
-    "Pressure loss due to sharp edged orifice (for both flow directions)" 
-    import SI = Modelica.SIunits;
-    import NonSI = Modelica.SIunits.Conversions.NonSIunits;
-  extends Modelica_Fluid.WorkInProgress.Interfaces.PressureLossWithoutIcon(
-     final lossFactors = Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors.sharpEdgedOrifice(D_pipe, D_min, L, alpha));
-  parameter SI.Diameter D_pipe 
-      "Inner diameter of pipe (= same at port_a and port_b)";
-  parameter SI.Diameter D_min "Smallest diameter of orifice";
-  parameter SI.Diameter L "Length of orifice";
-  parameter NonSI.Angle_deg alpha "Angle of orifice";
-  annotation (defaultComponentName="orifice",
-    Documentation(info="<html>
-</html>"),
-    Icon(
-      Text(
-        extent=[-150,140; 150,80],
-        string="%name",
-        style(gradient=2, fillColor=69)),
-      Rectangle(extent=[-100,80; 100,-80],   style(
-          color=0,
-          gradient=2,
-          fillColor=8)),
-      Rectangle(extent=[-100,60; 100,-60],   style(
-          color=69,
-          gradient=2,
-          fillColor=69)),
-      Polygon(points=[-24,60; -24,12; 36,50; 36,60; -24,60], style(
-          color=0,
-          rgbcolor={0,0,0},
-          gradient=2,
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=8)),
-      Polygon(points=[-22,-10; -22,-60; 38,-60; 38,-50; -22,-10], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=8))),
-    Diagram(       Rectangle(extent=[-100,60; 100,-60], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255})),
-      Polygon(points=[-30,60; -30,12; 30,50; 30,60; -30,60], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=8)),
-      Polygon(points=[-30,-10; -30,-60; 30,-60; 30,-50; -30,-10], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=8)),
-      Line(points=[-82,-60; -82,60], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[-78,16; -44,-8],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="D_pipe"),
-      Line(points=[-30,-10; -30,12], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[-24,14; 8,-10],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="D_min"),
-      Text(
-        extent=[-20,84; 18,70],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="L"),
-      Line(points=[30,68; -30,68],   style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Line(points=[16,40; 32,18; 36,-2; 34,-20; 20,-42], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=8)),
-      Text(
-        extent=[38,8; 92,-6],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=8),
-        string="alpha")));
-end SharpEdgedOrifice;
   
 model IsolatedPipe 
     "Model of an isolated pipe consisting of n pipe segments/FiniteVolumes" 
@@ -914,4 +483,138 @@ equation
   thermalPort_b.T=T;
 end Wall_constProps;
   
+  model ShortPipe2 
+    "Short pipe with two volumes, wall friction and gravity effect" 
+    import SI = Modelica.SIunits;
+    import Modelica_Fluid;
+    
+    extends Modelica_Fluid.Interfaces.PartialTwoPort;
+    replaceable package WallFriction = 
+      Modelica_Fluid.PressureLosses.Utilities.WallFriction.QuadraticTurbulent 
+      extends 
+      Modelica_Fluid.PressureLosses.Utilities.WallFriction.PartialWallFriction 
+      "Characteristic of wall friction"  annotation(choicesAllMatching=true);
+    
+    parameter SI.Length length "Length of pipe";
+    parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+    parameter SI.Length height_ab = 0.0 "Height of port_b over port_a" annotation(Evaluate=true);
+    parameter SI.Length roughness(min=0) = 2.5e-5 
+      "Absolute roughness of pipe (default = smooth steel pipe)" 
+        annotation(Dialog(enable=WallFriction.use_roughness));
+    parameter Boolean use_nominal = false 
+      "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
+        annotation(Evaluate=true);
+    parameter SI.DynamicViscosity eta_nominal = 0.01 
+      "Nominal dynamic viscosity (for wall friction computation)" annotation(Dialog(enable=use_nominal));
+    parameter SI.Density d_nominal = 0.01 
+      "Nominal density (for wall friction computation)" annotation(Dialog(enable=use_nominal));
+    parameter SI.AbsolutePressure dp_small = 1 
+      "Turbulent flow for wall friction if |dp| >= dp_small" 
+      annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
+    final parameter SI.Volume V = Modelica.Constants.pi*(diameter/2)^2*length;
+    
+    parameter Types.InitWithGlobalDefault.Temp initVolume1=
+              Types.InitWithGlobalDefault.UseGlobalFluidOption 
+      "Initialization option for volume 1" 
+      annotation(Dialog(tab = "Initialization"));
+    
+    parameter Types.InitWithGlobalDefault.Temp initVolume2=
+              Types.InitWithGlobalDefault.UseGlobalFluidOption 
+      "Initialization option for volume 2" 
+      annotation(Dialog(tab = "Initialization"));
+    
+    parameter Medium.AbsolutePressure p_start = Medium.p_default 
+      "Start value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "Use T_start if true, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate=true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    annotation (defaultComponentName="pipe",Icon(
+        Rectangle(extent=[-100,60; 100,-60],   style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[-100,34; 100,-36],   style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Text(
+          extent=[-150,-60; 150,-110],
+          string="%name",
+          style(gradient=2, fillColor=69)),
+        Ellipse(extent=[-90,15; -60,-15], style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Ellipse(extent=[60,15; 90,-15],   style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0}))),       Documentation(info="<html>
+<p>
+Simple pipe model consisting of two volumes, 
+wall friction (with different friction correlations)
+and gravity effect. This model is mostly used to demonstrate how
+to build up more detailed models from the basic components.
+</p>
+</html>"),
+      Diagram,
+      Coordsys(grid=[1,1], scale=0));
+    PressureLosses.WallFrictionAndGravity frictionAndGravity(
+      redeclare package Medium = Medium,
+      flowDirection=flowDirection,
+      redeclare package WallFriction = WallFriction,
+      diameter=diameter,
+      roughness=roughness,
+      use_nominal=use_nominal,
+      eta_nominal=eta_nominal,
+      d_nominal=d_nominal,
+      from_dp=true,
+      dp_small=dp_small,
+      show_Re=false,
+      length=length,
+      height_ab=height_ab) 
+                         annotation (extent=[-10,-10; 10,10]);
+    Modelica_Fluid.Utilities.PortVolume volume1(
+      redeclare package Medium = Medium,
+      p_start=p_start,
+      use_T_start=use_T_start,
+      T_start=T_start,
+      h_start=h_start,
+      X_start=X_start,
+      V=V/2,
+      initOption=initVolume1) 
+      annotation (extent=[-70,-10; -50,10]);
+    Modelica_Fluid.Utilities.PortVolume volume2(
+      redeclare package Medium = Medium,
+      p_start=p_start,
+      use_T_start=use_T_start,
+      T_start=T_start,
+      h_start=h_start,
+      X_start=X_start,
+      V=V/2,
+      initOption=initVolume2) 
+      annotation (extent=[50,-10; 70,10]);
+  equation 
+    connect(volume1.port, port_a) 
+      annotation (points=[-60,0; -100,0], style(color=69, rgbcolor={0,127,255}));
+    connect(volume1.port, frictionAndGravity.port_a) 
+      annotation (points=[-60,0; -10,0], style(color=69, rgbcolor={0,127,255}));
+    connect(frictionAndGravity.port_b, volume2.port) 
+      annotation (points=[10,0; 60,0], style(color=69, rgbcolor={0,127,255}));
+    connect(volume2.port, port_b) 
+      annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
+  end ShortPipe2;
 end Components;

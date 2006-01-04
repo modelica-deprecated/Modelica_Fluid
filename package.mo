@@ -68,8 +68,10 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
+
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
+
 
 package UsersGuide "Users Guide" 
   
@@ -739,7 +741,11 @@ wall of a pipe under the assumption of quasi steady state flow (i.e., the
 mass flow rate varies only slowly). In this section it is explained how this case is
 handeled in the Modelica_Fluid library for commercial pipes with
 <b>nonuniform roughness</b>, including the smooth pipe
-as a special case. The treatment is non-standard in order to get a 
+as a special case (see 
+<a href=\"Modelica://Modelica_Fluid.PressureLosses.WallFrictionAndGravity\">PressureLosses.WallFrictionAndGravity</a>
+and 
+<a href=\"Modelica://Modelica_Fluid.PressureLosses.Utilities.WallFriction\">PressureLosses.Utilities.WallFriction</a>).
+The treatment is non-standard in order to get a 
 numerically well-posed description.
 </p>
  
@@ -1285,6 +1291,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 replaceable package PackageMedium = Modelica.Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (

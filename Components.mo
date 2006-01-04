@@ -203,8 +203,122 @@ end FluidOptions;
     end if;
   end MixingVolume;
   
+  model ShortPipe 
+    "Short pipe with one volume, wall friction and gravity effect" 
+    import SI = Modelica.SIunits;
+    
+    extends Interfaces.PartialInitializationParameters;
+    extends Modelica_Fluid.Interfaces.PartialTwoPort;
+    replaceable package WallFriction = 
+      Modelica_Fluid.PressureLosses.Utilities.WallFriction.QuadraticTurbulent 
+      extends 
+      Modelica_Fluid.PressureLosses.Utilities.WallFriction.PartialWallFriction 
+      "Characteristic of wall friction"  annotation(choicesAllMatching=true);
+    
+    parameter SI.Length length "Length of pipe";
+    parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+    parameter SI.Length height_ab = 0.0 "Height of port_b over port_a" annotation(Evaluate=true);
+    parameter SI.Length roughness(min=0) = 2.5e-5 
+      "Absolute roughness of pipe (default = smooth steel pipe)" 
+        annotation(Dialog(enable=WallFriction.use_roughness));
+    parameter Boolean use_nominal = false 
+      "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
+        annotation(Evaluate=true);
+    parameter SI.DynamicViscosity eta_nominal = 0.01 
+      "Nominal dynamic viscosity (for wall friction computation)" annotation(Dialog(enable=use_nominal));
+    parameter SI.Density d_nominal = 0.01 
+      "Nominal density (for wall friction computation)" annotation(Dialog(enable=use_nominal));
+    parameter SI.AbsolutePressure dp_small = 1 
+      "Turbulent flow for wall friction if |dp| >= dp_small" 
+      annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
+    
+    annotation (defaultComponentName="pipe",Icon(
+        Rectangle(extent=[-100,60; 100,-60],   style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[-100,34; 100,-36],   style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Text(
+          extent=[-150,-60; 150,-110],
+          string="%name",
+          style(gradient=2, fillColor=69)),
+        Ellipse(extent=[-15,15; 15,-15],  style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Line(points=[0,0; 0,70], style(color=42, rgbcolor={194,0,0}))),
+                                             Documentation(info="<html>
+<p>
+Simple pipe model consisting of one volume, 
+wall friction (with different friction correlations)
+and gravity effect. This model is mostly used to demonstrate how
+to build up more detailed models from the basic components.
+Note, if the \"thermalPort\" is not connected, then the pipe
+is totally isolated (= no thermal flow from the fluid to the
+pipe wall/environment).
+</p>
+</html>"),
+      Diagram,
+      Coordsys(grid=[1,1], scale=0));
+    PressureLosses.WallFrictionAndGravity frictionAndGravity1(
+      redeclare package Medium = Medium,
+      flowDirection=flowDirection,
+      redeclare package WallFriction = WallFriction,
+      length=length/2,
+      diameter=diameter,
+      height_ab=height_ab/2,
+      roughness=roughness,
+      use_nominal=use_nominal,
+      eta_nominal=eta_nominal,
+      d_nominal=d_nominal,
+      from_dp=true,
+      dp_small=dp_small,
+      show_Re=false)     annotation (extent=[-60,-10; -40,10]);
+    Utilities.PortVolume volume(
+      redeclare package Medium = Medium, 
+      V=Modelica.Constants.pi*(diameter/2)^2*length, 
+      initOption=initOption, 
+      p_start=p_start, 
+      use_T_start=use_T_start, 
+      T_start=T_start, 
+      h_start=h_start, 
+      X_start=X_start) 
+      annotation (extent=[-10,-10; 10,10]);
+    PressureLosses.WallFrictionAndGravity frictionAndGravity2(
+      redeclare package Medium = Medium,
+      flowDirection=flowDirection,
+      redeclare package WallFriction = WallFriction,
+      length=length/2,
+      diameter=diameter,
+      height_ab=height_ab/2,
+      roughness=roughness,
+      use_nominal=use_nominal,
+      eta_nominal=eta_nominal,
+      d_nominal=d_nominal,
+      from_dp=true,
+      dp_small=dp_small,
+      show_Re=false)     annotation (extent=[40,-10; 60,10]);
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
+      annotation (extent=[-10,60; 10,80]);
+  equation 
+    connect(frictionAndGravity1.port_a, port_a) 
+      annotation (points=[-60,0; -100,0], style(color=69, rgbcolor={0,127,255}));
+    connect(frictionAndGravity1.port_b, volume.port) 
+      annotation (points=[-40,0; 0,0], style(color=69, rgbcolor={0,127,255}));
+    connect(frictionAndGravity2.port_a, volume.port) 
+      annotation (points=[40,0; 0,0], style(color=69, rgbcolor={0,127,255}));
+    connect(frictionAndGravity2.port_b, port_b) 
+      annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
+    connect(volume.thermalPort, thermalPort) 
+      annotation (points=[0,10; 0,70], style(color=42, rgbcolor={191,0,0}));
+  end ShortPipe;
+
   model PressureDropPipe 
-    "Simple pipe model with pressure loss (no storage of mass and energy in pipe)" 
+    "Obsolet. Use instead PressureLosses.WallFrictionAndGravity" 
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     extends Modelica_Fluid.Utilities.PipeFriction;
     annotation (Icon(

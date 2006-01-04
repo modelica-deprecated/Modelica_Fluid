@@ -1,5 +1,5 @@
 package PressureLosses 
-  "Models and functions providing pressure drop correlations " 
+  "Models and functions providing pressure loss correlations " 
 model SimpleGenericOrifice 
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
   import SI = Modelica.SIunits;
@@ -19,7 +19,7 @@ model SimpleGenericOrifice
       "Turbulent flow if |m_flow| >= m_flow_small" 
     annotation(Dialog(tab="Advanced", enable=not from_dp));
   annotation (
-    defaultComponentName="orifice",
+    preferedView="info",
     Diagram,
     Icon(
       Text(
@@ -86,9 +86,9 @@ equation
      dp = SimpleGenericOrifice.pressureLoss_m_flow(m_flow, medium_a.d, medium_b.d, diameter, zeta);
   end if;
 end SimpleGenericOrifice;
-
+  
   model WallFrictionAndGravity 
-    "Pressure drop in pipe due to wall friction and gravity (for both flow directions, no storage of mass and energy in pipe)" 
+    "Pressure drop in pipe due to wall friction and gravity (for both flow directions)" 
     import SI = Modelica.SIunits;
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     
@@ -142,9 +142,35 @@ end SimpleGenericOrifice;
           string="%name",
           style(gradient=2, fillColor=69))), Documentation(info="<html>
 <p>
-This model describes pressure losses due to friction in a pipe. It is assumed that no mass or energy is stored in the pipe. 
-The details of the pipe friction model are described
-<a href=\"Modelica://Modelica_Fluid.Utilities.PipeFriction\">here</a>.
+This model describes pressure losses due to <b>wall friction</b> in a pipe
+and due to gravity.
+It is assumed that no mass or energy is stored in the pipe. 
+Correlations of different complexity and validity can be
+seleted via the replaceable package <b>WallFriction</b> (see parameter menu below).
+The details of the pipe wall friction model are described in the
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
+Basically, different variants of the equation
+</p>
+ 
+<pre>
+   dp = &lambda;(Re,<font face=\"Symbol\">D</font>)*(L/D)*&rho;*v*|v|/2
+</pre>
+ 
+<p>
+are used, where the friction loss factor &lambda; is shown
+in the next figure:
+</p>
+ 
+<img src=\"../Images/Components/PipeFriction1.png\">
+ 
+<p>
+By default, the correlations are computed with media data
+at the actual time instant.
+In order to reduce non-linear equation systems, parameter
+<b>use_nominal</b> provides the option
+to compute the correlations with constant media values
+at the desired operating point. This might speed-up the
+simulation and/or might give a more robust simulation.
 </p>
 </html>"),
       Diagram(
@@ -431,7 +457,6 @@ model SharpEdgedOrifice
         string="alpha")));
 end SharpEdgedOrifice;
   
-  
   package Utilities 
     "Components that are used to implement the pressure drop components" 
    extends Modelica.Icons.Library;
@@ -477,7 +502,7 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
                    d_a/lossConstant_D_zeta(D,zeta),
                    d_b/lossConstant_D_zeta(D,zeta));
       end massFlowRate_dp;
-
+      
       function pressureLoss_m_flow 
         "Return pressure drop from mass flow rate (dp = f(m_flow))" 
         import SI = Modelica.SIunits;
@@ -554,7 +579,7 @@ can appear, this component should not be used.
 </p>
 </html>"));
     end SimpleGenericOrifice;
-
+    
     package QuadraticTurbulent 
       "Pressure loss components that are mainly defined by a quadratic turbulent regime with constant loss factor data" 
       extends Modelica.Icons.Library;
@@ -688,7 +713,6 @@ The used sufficient criteria for monotonicity follows from:
      SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
 </dl>
 </html>"));
-        
         
        encapsulated function wallFriction 
           "Return pressure loss data due to friction in a straight pipe with walls of nonuniform roughness (not useful for smooth pipes, since zeta is no function of Re)" 
@@ -847,12 +871,12 @@ As a short summary:
         
        encapsulated function suddenExpansion 
           "Return pressure loss data for sudden expansion or contraction in a pipe (for both flow directions)" 
-          import SI = Modelica.SIunits;
-          import 
+         import SI = Modelica.SIunits;
+         import 
             Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData;
           
-         input SI.Diameter D_a "Inner diameter of pipe at port_a";
-         input SI.Diameter D_b "Inner diameter of pipe at port_b";
+         input SI.Diameter D_a "Inner diameter of pipe at port_a" annotation(Dialog);
+         input SI.Diameter D_b "Inner diameter of pipe at port_b" annotation(Dialog);
          output LossFactorData data 
             "Pressure loss factors for both flow directions";
          annotation (Icon(
@@ -976,16 +1000,17 @@ port_a to port_b as:
         
        encapsulated function sharpEdgedOrifice 
           "Return pressure loss data for sharp edged orifice (for both flow directions)" 
-          import SI = Modelica.SIunits;
-          import NonSI = Modelica.SIunits.Conversions.NonSIunits;
-          import 
+         import SI = Modelica.SIunits;
+         import NonSI = Modelica.SIunits.Conversions.NonSIunits;
+         import 
             Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData;
           
          input SI.Diameter D_pipe 
-            "Inner diameter of pipe (= same at port_a and port_b)";
-         input SI.Diameter D_min "Smallest diameter of orifice";
-         input SI.Diameter L "Length of orifice";
-         input NonSI.Angle_deg alpha "Angle of orifice";
+            "Inner diameter of pipe (= same at port_a and port_b)" 
+                                                                  annotation(Dialog);
+         input SI.Diameter D_min "Smallest diameter of orifice" annotation(Dialog);
+         input SI.Diameter L "Length of orifice" annotation(Dialog);
+         input NonSI.Angle_deg alpha "Angle of orifice" annotation(Dialog);
          output LossFactorData data 
             "Pressure loss factors for both flow directions";
          annotation (Icon(Rectangle(extent=[-100,60; 100,-60], style(
@@ -1147,9 +1172,9 @@ Loss factor for mass flow rate from port_b to port_a
         input LossFactorData data 
           "Constant loss factors for both flow directions" annotation (
             choices(
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.wallFriction(),
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.suddenExpansion(),
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.wallFriction(),
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.suddenExpansion(),
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
         input SI.AbsolutePressure dp_small = 1 
           "Turbulent flow if |dp| >= dp_small";
         output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
@@ -1224,9 +1249,9 @@ where
         input LossFactorData data 
           "Constant loss factors for both flow directions" annotation (
             choices(
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.wallFriction(),
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.suddenExpansion(),
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.wallFriction(),
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.suddenExpansion(),
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
         output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         
         annotation (smoothOrder=1, Documentation(info="<html>
@@ -1325,9 +1350,9 @@ Laminar region:
         input LossFactorData data 
           "Constant loss factors for both flow directions" annotation (
             choices(
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.wallFriction(),
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.suddenExpansion(),
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.wallFriction(),
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.suddenExpansion(),
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
         input SI.MassFlowRate m_flow_small = 0.01 
           "Turbulent flow if |m_flow| >= m_flow_small";
         output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
@@ -1368,9 +1393,9 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
         input LossFactorData data 
           "Constant loss factors for both flow directions" annotation (
             choices(
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.wallFriction(),
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.suddenExpansion(),
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.wallFriction(),
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.suddenExpansion(),
+            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
         output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
         
         annotation (smoothOrder=1, Documentation(info="<html>
@@ -1717,12 +1742,35 @@ The used sufficient criteria for monotonicity follows from:
       extends Modelica_Fluid.Icons.VariantLibrary;
       
       annotation (Documentation(info="<html>
+<p>
+This package provides functions to compute
+pressure losses due to <b>wall friction</b> in a pipe.
+Every correlation is defined by a package that is derived
+by inheritance from the package WallFriction.PartialWallFriction.
+The details of the underlying pipe wall friction model are described in the
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
+Basically, different variants of the equation
+</p>
+ 
+<pre>
+   dp = &lambda;(Re,<font face=\"Symbol\">D</font>)*(L/D)*&rho;*v*|v|/2
+</pre>
+ 
+<p>
+are used, where the friction loss factor &lambda; is shown
+in the next figure:
+</p>
+ 
+<img src=\"../Images/Components/PipeFriction1.png\">
  
 </html>"));
       package NoFriction "No pipe wall friction" 
         
         annotation (Documentation(info="<html>
- 
+<p>
+This component sets the pressure loss due to wall friction 
+to zero, i.e., it allows to switch off pipe wall friction.
+</p>
 </html>"));
         
         extends PartialWallFriction(
@@ -1756,6 +1804,24 @@ The used sufficient criteria for monotonicity follows from:
         "Pipe wall friction in the laminar regime (linear correlation)" 
         
         annotation (Documentation(info="<html>
+<p>
+This component defines only the laminar region of wall friction:
+dp = k*m_flow, where \"k\" depends on density and dynamic viscosity.
+The roughness of the wall does not have an influence on the laminar
+flow and therefore argument roughness is ignored.
+Since this is a linear relationship, the occuring systems of equations
+are usually much simpler (e.g. either linear instead of non-linear).
+By using nominal values for density and dynamic viscosity, the 
+systems of equations can still further be reduced. 
+</p>
+ 
+<p>
+In the following figure the complete friction regime is shown.
+This component describes only the \"light blue curve\" called
+<b>Hagen-Poiseuille</b>.
+</p>
+ 
+<img src=\"../Images/Components/PipeFriction1.png\">
  
 </html>"));
         
@@ -1790,6 +1856,21 @@ The used sufficient criteria for monotonicity follows from:
         "Pipe wall friction in the quadratic turbulent regime (simple characteristic, eta not used)" 
         
         annotation (Documentation(info="<html>
+<p>
+This component defines only the quadratic turbulent regime of wall friction:
+dp = k*m_flow*|m_flow|, where \"k\" depends on density and the roughness
+of the pipe and is no longer a function of the Reynolds number.
+This relationship is only valid for large Reynolds numbers.
+</p>
+ 
+<p>
+In the following figure the complete friction regime is shown.
+This component describes only the asymptotic behaviour for large
+Reynolds numbers, i.e., the values at the right ordinate where
+&lambda; is constant.
+</p>
+ 
+<img src=\"../Images/Components/PipeFriction1.png\">
  
 </html>"));
         
@@ -1859,7 +1940,16 @@ The used sufficient criteria for monotonicity follows from:
         "Pipe wall friction in the laminar and quadratic turbulent regime (simple characteristic)" 
         
         annotation (Documentation(info="<html>
- 
+<p>
+This component defines the quadratic turbulent regime of wall friction:
+dp = k*m_flow*|m_flow|, where \"k\" depends on density and the roughness
+of the pipe and is no longer a function of the Reynolds number.
+This relationship is only valid for large Reynolds numbers.
+At Re=4000, a polynomial is constructed that approaches
+the constant &lambda; (for large Reynolds-numbers) at Re=4000
+smoothly and has a derivative at zero mass flow rate that is
+identical to laminar wall friction.
+</p>
 </html>"));
         
         extends PartialWallFriction(
@@ -1991,7 +2081,20 @@ Laminar region:
         "Pipe wall friction in the whole regime (detailed characteristic)" 
         
         annotation (Documentation(info="<html>
+<p>
+This component defines the complete regime of wall friction.
+The details are described in the
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
+The functional relationship of the friction loss factor &lambda; is
+displayed in the next figure. Function massFlowRate_dp() defines the \"red curve\"
+(\"Swamee and Jain\"), where as function pressureLoss_m_flow() defines the
+\"blue curve\" (\"Colebrook-White\"). The two functions are inverses from 
+each other and give slightly different results in the transition region
+between Re = 1500 .. 4000, in order to get explicit equations without
+solving a non-linear equation.
+</p>
  
+<img src=\"../Images/Components/PipeFriction1.png\">
 </html>"));
         
         extends PartialWallFriction(
@@ -2166,8 +2269,41 @@ Laminar region:
   annotation (Documentation(info="<html>
 <p>
 This sublibrary contains models and functions providing pressure 
-drop correlations.
+loss correlations. All models in this library have the property
+that no mass and no energy is stored in the component. Therefore,
+none of the models has a state. The basic correlations are implemented
+with functions of sublibrary
+<a href=\"Modelica://Modelica_Fluid.PressureLosses.Utilities\">PressureLosses.Utilities</a>
+These functions might also be directly called 
+(e.g. in another component implementation).
 </p>
+ 
+<p>
+All functions are continuous and have a finite, non-zero, smooth, first derivative.
+The functions are all guaranteed to be strict monontonically increasing.
+The mentioned properties guarantee that a unique inverse of every
+function exists. Note, the usual quadratic pressure loss correlation
+</p>
+ 
+<ul>
+<li> in the form m_flow = f(dp) has an infinite derivative at zero 
+     mass flow rate and is therefore problematic to use.</li>
+<li> in the form dp = f(m_flow) has a zero derivative at zero mass flow rate
+     and is therefore problematic to invert, since the inverse function has
+     then an infinite derivative at zero mass flow rate.</li>
+</ul>
+<p>
+The two mentioned problems are solved in this package by approximating
+the characteristics around zero mass flow rates with appropriate
+polynomials. The monotonicity is guaranteed using results from:
+</p>
+ 
+<dl>
+<dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
+<dd> <b>Monotone piecewise cubic interpolation</b>.
+     SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
+</dl>
+ 
 </html>", revisions="<html>
 <ul>
 <li><i>Jan. 3, 2006</i>

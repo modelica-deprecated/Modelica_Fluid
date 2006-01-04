@@ -16,7 +16,7 @@ package Utilities
       annotation (extent=[-10, -10; 10, 10], rotation=0);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
       "Thermal port" 
-      annotation (extent=[-20,88; 20,108]);
+      annotation (extent=[-10,90; 10,110]);
     
     Medium.BaseProperties medium(preferredMediumStates=true,
                 p(start=p_start), T(start=T_start),
@@ -32,11 +32,8 @@ package Utilities
             gradient=3,
             fillColor=68,
             rgbfillColor={170,213,255})),
-        Text(extent=[-144, 178; 146, 116], string="%name"),
-        Text(
-          extent=[-130, -108; 144, -150],
-          style(color=0),
-          string="V=%V")), Documentation(info="<html>
+        Text(extent=[-150,-100; 150,-150], string="%name")),
+                           Documentation(info="<html>
 <p>
 This component models the <b>volume</b> of <b>fixed size</b> that is
 associated with the <b>fluid port</b> to which it is connected.
@@ -775,7 +772,7 @@ such that
      at x=0 is explicitly provided via the additional argument
      yd0. If necessary, the derivative yd0 is automatically 
      reduced in order that the polynomials are strict monotonically  
-     increasing.</li>
+     increasing <i>[Fritsch and Carlson, 1980]</i>.</li>
 </ul>
 <p>
 Typical screenshots for two different configurations
@@ -797,6 +794,22 @@ k1=1, k2=3 is shown in the next figure:
 <p>
 <img src=\"../Images/Components/regRoot2_c.png\">
 </p>
+
+<p>
+<b>Literature</b>
+</p>
+
+<dl>
+<dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
+<dd> <b>Monotone piecewise cubic interpolation</b>.
+     SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
+</dl>
+</html>", revisions="<html>
+<ul>
+<li><i>Nov., 2005</i>
+    by <a href=\"mailto:Martin.Otter@DLR.de\">Martin Otter</a>:<br>
+    Designed and implementated.</li>
+</ul>
 </html>"));
   protected 
     encapsulated function regRoot2_utility 
@@ -936,7 +949,7 @@ such that
      at x=0 is explicitly provided via the additional argument
      yd0. If necessary, the derivative yd0 is automatically 
      reduced in order that the polynomials are strict monotonically  
-     increasing.</li>
+     increasing <i>[Fritsch and Carlson, 1980]</i>.</li>
 </ul>
 </ul>
 <p>
@@ -954,6 +967,22 @@ k1=1, k2=3 is shown in the next figure:
 <p>
 <img src=\"../Images/Components/regSquare2_c.png\">
 </p>
+
+<p>
+<b>Literature</b>
+</p>
+
+<dl>
+<dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
+<dd> <b>Monotone piecewise cubic interpolation</b>.
+     SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
+</dl>
+</html>", revisions="<html>
+<ul>
+<li><i>Nov., 2005</i>
+    by <a href=\"mailto:Martin.Otter@DLR.de\">Martin Otter</a>:<br>
+    Designed and implementated.</li>
+</ul>
 </html>"));
   protected 
     encapsulated function regSquare2_utility 
