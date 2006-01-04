@@ -1,5 +1,92 @@
 package PressureLosses 
   "Models and functions providing pressure drop correlations " 
+model SimpleGenericOrifice 
+    "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
+  import SI = Modelica.SIunits;
+  import Modelica_Fluid.PressureLosses.Utilities.SimpleGenericOrifice;
+  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(m_flow(start=0), dp(start=0));
+    
+  parameter Real zeta "Loss factor for flow of port_a -> port_b";
+  parameter SI.Diameter diameter 
+      "Diameter at which zeta is defined (either port_a or port_b)";
+  parameter Boolean from_dp = true 
+      "= true, use m_flow = f(dp) else dp = f(m_flow)" 
+    annotation (Evaluate=true, Dialog(tab="Advanced"));
+  parameter SI.AbsolutePressure dp_small = 1 
+      "Turbulent flow if |dp| >= dp_small" 
+    annotation(Dialog(tab="Advanced", enable=from_dp));
+  parameter SI.MassFlowRate m_flow_small = 0.01 
+      "Turbulent flow if |m_flow| >= m_flow_small" 
+    annotation(Dialog(tab="Advanced", enable=not from_dp));
+  annotation (
+    defaultComponentName="orifice",
+    Diagram,
+    Icon(
+      Text(
+        extent=[-148,109; 148,58],
+        string="%name",
+        style(gradient=2, fillColor=69)),
+      Line(points=[-60, -50; -60, 50; 60, -50; 60, 50], style(color=0,
+            thickness=2)),
+      Line(points=[-60, 0; -100, 0], style(color=69)),
+      Line(points=[60, 0; 100, 0], style(color=69)),
+        Text(
+          extent=[-168,-92; 180,-134],
+          string="zeta=%zeta",
+          style(color=0, rgbcolor={0,0,0})),
+        Line(points=[-50,-70; 50,-70], style(color=69, rgbcolor={0,128,255})),
+        Polygon(points=[24,-60; 24,-80; 50,-70; 24,-60], style(
+            color=69,
+            rgbcolor={0,128,255},
+            fillColor=69,
+            rgbfillColor={0,128,255}))),
+    Documentation(info="<html>
+<p>
+This pressure drop component defines a
+simple, generic orifice, where the loss factor &zeta; is provided
+for one flow direction (e.g., from loss table of a book):
+</p>
+ 
+<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
+      = 8*&zeta;/(&pi;^2*D^4*&rho;) * m_flow*|m_flow|
+</pre>
+ 
+<p>
+where
+</p>
+<ul>
+<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
+<li> D is the diameter of the orifice at the position where
+     &zeta; is defined (either at port_a or port_b). If the orifice has not a 
+     circular cross section, D = 4*A/P, where A is the cross section
+     area and P is the wetted perimeter.</li>
+<li> &zeta; is the loss factor with respect to D 
+     that depends on the geometry of
+     the orifice. In the turbulent flow regime, it is assumed that
+     &zeta; is constant.<br>
+     For small mass flow rates, the flow is laminar and is approximated 
+     by a polynomial that has a finite derivative for m_flow=0.</li>
+<li> v is the mean velocity.</li>
+<li> &rho; is the upstream density.</li>
+</ul>
+ 
+<p>
+Since the pressure loss factor zeta is provided only for a mass flow
+from port_a to port_b, the pressure loss is not correct when the
+flow is reversing. If reversing flow only occurs in a short time interval,
+this is most likely uncritical. If significant reversing flow
+can appear, this component should not be used.
+</p>
+</html>"),
+      Coordsys(grid=[1,1], scale=0));
+equation 
+  if from_dp then
+     m_flow = SimpleGenericOrifice.massFlowRate_dp(dp, medium_a.d, medium_b.d, diameter, zeta);
+  else
+     dp = SimpleGenericOrifice.pressureLoss_m_flow(m_flow, medium_a.d, medium_b.d, diameter, zeta);
+  end if;
+end SimpleGenericOrifice;
+
   model WallFrictionAndGravity 
     "Pressure drop in pipe due to wall friction and gravity (for both flow directions, no storage of mass and energy in pipe)" 
     import SI = Modelica.SIunits;
@@ -344,37 +431,91 @@ model SharpEdgedOrifice
         string="alpha")));
 end SharpEdgedOrifice;
   
-model SimpleGenericOrifice 
-    "Simple generic orifice defined by D_a and zeta (only for flow from port_a to port_b)" 
-    import SI = Modelica.SIunits;
-  extends Utilities.QuadraticTurbulent.BaseModel(
-     final data = Utilities.QuadraticTurbulent.LossFactorData.simpleGenericOrifice(D_a, zeta));
-  parameter SI.Diameter D_a "Diameter at port_a";
-  parameter Real zeta 
-      "Loss factor for flow of port_a -> port_b (zeta with respect to D_a)";
-  annotation (
-    defaultComponentName="orifice",
-    Diagram,
-    Icon(
-      Text(
-        extent=[-148,109; 148,58],
-        string="%name",
-        style(gradient=2, fillColor=69)),
-      Line(points=[-60, -50; -60, 50; 60, -50; 60, 50], style(color=0,
-            thickness=2)),
-      Line(points=[-60, 0; -100, 0], style(color=69)),
-      Line(points=[60, 0; 100, 0], style(color=69)),
-        Text(
-          extent=[-168,-92; 180,-134],
-          string="zeta=%zeta",
-          style(color=0, rgbcolor={0,0,0})),
-        Line(points=[-50,-70; 50,-70], style(color=69, rgbcolor={0,128,255})),
-        Polygon(points=[24,-60; 24,-80; 50,-70; 24,-60], style(
-            color=69,
-            rgbcolor={0,128,255},
-            fillColor=69,
-            rgbfillColor={0,128,255}))),
-    Documentation(info="<html>
+  
+  package Utilities 
+    "Components that are used to implement the pressure drop components" 
+   extends Modelica.Icons.Library;
+    
+    package SimpleGenericOrifice 
+      "Simple pressure loss component defined by two constants (diameter, zeta) for the quadratic turbulent regime" 
+      extends Modelica.Icons.Library;
+      
+      function massFlowRate_dp 
+        "Return mass flow rate from pressure drop (m_flow = f(dp))" 
+        import SI = Modelica.SIunits;
+        import Modelica_Fluid.PressureLosses.Utilities.lossConstant_D_zeta;
+        extends Modelica.Icons.Function;
+        
+        input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
+        input SI.Density d_a "Density at port_a";
+        input SI.Density d_b "Density at port_b";
+        input SI.Diameter D "Diameter at port_a or port_b";
+        input Real zeta 
+          "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
+        input SI.AbsolutePressure dp_small = 1 
+          "Turbulent flow if |dp| >= dp_small";
+        output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+        
+        annotation (Documentation(info="<html>
+<p>
+Compute mass flow rate from constant loss factor and pressure drop (m_flow = f(dp)).
+For small pressure drops (dp &lt; dp_small), the characteristic is approximated by 
+a polynomial in order to have a finite derivative at zero mass flow rate.
+</p>
+</html>"));
+      algorithm 
+        /*
+   dp = 0.5*zeta*d*v*|v|
+      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
+      = k/d * m_flow * |m_flow| 
+   k  = 0.5*zeta/A^2
+      = 0.5*zeta/(pi*(D/2)^2)^2
+      = 8*zeta/(pi*D^2)^2 
+  */
+        m_flow :=Modelica_Fluid.Utilities.regRoot2(dp, dp_small,
+                   d_a/lossConstant_D_zeta(D,zeta),
+                   d_b/lossConstant_D_zeta(D,zeta));
+      end massFlowRate_dp;
+
+      function pressureLoss_m_flow 
+        "Return pressure drop from mass flow rate (dp = f(m_flow))" 
+        import SI = Modelica.SIunits;
+        import Modelica_Fluid.PressureLosses.Utilities.lossConstant_D_zeta;
+        extends Modelica.Icons.Function;
+        
+        input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+        input SI.Density d_a "Density at port_a";
+        input SI.Density d_b "Density at port_b";
+        input SI.Diameter D "Diameter at port_a or port_b";
+        input Real zeta 
+          "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
+        input SI.MassFlowRate m_flow_small = 0.01 
+          "Turbulent flow if |m_flow| >= m_flow_small";
+        output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
+        
+        annotation (Documentation(info="<html>
+<p>
+Compute pressure drop from mass flow rate (dp = f(m_flow)).
+For small mass flow rates(|m_flow| &lt; m_flow_small), the characteristic is approximated by 
+a polynomial in order to have a finite derivative at zero mass flow rate.
+</p>
+</html>"));
+      algorithm 
+        /*
+   dp = 0.5*zeta*d*v*|v|
+      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
+      = k/d * m_flow * |m_flow| 
+   k  = 0.5*zeta/A^2
+      = 0.5*zeta/(pi*(D/2)^2)^2
+      = 8*zeta/(pi*D^2)^2
+  */
+        dp :=Modelica_Fluid.Utilities.regSquare2(m_flow, m_flow_small,
+                lossConstant_D_zeta(D,zeta)/d_a,
+                lossConstant_D_zeta(D,zeta)/d_b);
+      end pressureLoss_m_flow;
+      annotation (Documentation(info="<html>
 <p>
 This pressure drop component defines a
 simple, generic orifice, where the loss factor &zeta;=zeta is provided
@@ -382,7 +523,7 @@ for one flow direction (e.g., from loss table of a book):
 </p>
  
 <pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
-      = 8*&zeta;/(&pi;^2*D_a^4*&rho;) * m_flow*|m_flow|
+      = 8*&zeta;/(&pi;^2*D^4*&rho;) * m_flow*|m_flow|
 </pre>
  
 <p>
@@ -390,16 +531,18 @@ where
 </p>
 <ul>
 <li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
-<li> v is the mean velocity.</li>
-<li> &rho; is the upstream density.</li>
-<li> &zeta; is the loss factor that depends on the geometry of
+<li> D is the diameter of the orifice at the position where
+     &zeta; is defined (either at port_a or port_b). If the orifice has not a 
+     circular cross section, D = 4*A/P, where A is the cross section
+     area and P is the wetted perimeter.</li>
+<li> &zeta; is the loss factor with respect to D 
+     that depends on the geometry of
      the orifice. In the turbulent flow regime, it is assumed that
      &zeta; is constant.<br>
      For small mass flow rates, the flow is laminar and is approximated 
      by a polynomial that has a finite derivative for m_flow=0.</li>
-<li> D_a is the diameter of the orifice at port_a. If the orifice has not a 
-     circular cross section, D_a = 4*A/P, where A is the cross section
-     area and P is the wetted perimeter.</li>
+<li> v is the mean velocity.</li>
+<li> &rho; is the upstream density.</li>
 </ul>
  
 <p>
@@ -409,14 +552,9 @@ flow is reversing. If reversing flow only occurs in a short time interval,
 this is most likely uncritical. If significant reversing flow
 can appear, this component should not be used.
 </p>
-</html>"),
-      Coordsys(grid=[1,1], scale=0));
-end SimpleGenericOrifice;
-  
-  package Utilities 
-    "Components that are used to implement the pressure drop components" 
-   extends Modelica.Icons.Library;
-    
+</html>"));
+    end SimpleGenericOrifice;
+
     package QuadraticTurbulent 
       "Pressure loss components that are mainly defined by a quadratic turbulent regime with constant loss factor data" 
       extends Modelica.Icons.Library;
@@ -551,70 +689,6 @@ The used sufficient criteria for monotonicity follows from:
 </dl>
 </html>"));
         
-       encapsulated function simpleGenericOrifice 
-          "Return pressure loss data for simple generic orifice" 
-          import SI = Modelica.SIunits;
-          import 
-            Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData;
-          
-         input SI.Diameter D_a "Diameter at port_a";
-         input Real zeta 
-            "Loss factor for flow of port_a -> port_b (zeta with respect to D_a)";
-         output LossFactorData data "Pressure loss factors";
-         annotation (Icon(
-             Line(points=[-80,-80; -80,80; 80,-80; 80,80], style(color=0, rgbcolor={0,
-                     0,0}))),      Diagram(
-             Line(points=[-80,-80; -80,80; 80,-80; 80,80], style(color=0, rgbcolor={0,
-                     0,0}))),
-           Documentation(info="<html>
-<p>
-This function provides the LossFactorData data record for a
-simple, generic orifice, where the loss factor &zeta;=zeta is provided
-for one flow direction (e.g., from loss table of a book):
-</p>
- 
-<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
-      = 8*&zeta;/(&pi;^2*D_a^4*&rho;) * m_flow*|m_flow|
-</pre>
- 
-<p>
-where
-</p>
-<ul>
-<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
-<li> v is the mean velocity.</li>
-<li> &rho; is the upstream density.</li>
-<li> &zeta; is the loss factor that depends on the geometry of
-     the orifice. In the turbulent flow regime, it is assumed that
-     &zeta; is constant.<br>
-     For small mass flow rates, the flow is laminar and is approximated 
-     by a polynomial that has a finite derivative for m_flow=0.</li>
-<li> D_a is the diameter of the orifice at port_a. If the orifice has not a 
-     circular cross section, D_a = 4*A/P, where A is the cross section
-     area and P is the wetted perimeter.</li>
-</ul>
- 
-<p>
-Since the pressure loss factor zeta is provided only for a mass flow
-from port_a to port_b, the pressure loss is not correct when the
-flow is reversing. If reversing flow only occurs in a short time interval,
-this is most likely uncritical. If significant reversing flow
-can appear, this component should not be used.
-</p>
- 
-</html>"), Coordsys(grid=[1,1], scale=0));
-       algorithm 
-         data.D_a          := D_a;
-         data.D_b          := D_a;
-         data.zeta1        := zeta;
-         data.zeta2        := zeta;
-         data.Re_turbulent := 1000;
-         data.D_Re         := D_a;
-         data.zeta1_at_a   := true;
-         data.zeta2_at_a   := true;
-         data.zetaLaminarKnown := false;
-         data.c0               := 1;
-       end simpleGenericOrifice;
         
        encapsulated function wallFriction 
           "Return pressure loss data due to friction in a straight pipe with walls of nonuniform roughness (not useful for smooth pipes, since zeta is no function of Re)" 
@@ -1064,6 +1138,7 @@ Loss factor for mass flow rate from port_b to port_a
       function massFlowRate_dp 
         "Return mass flow rate from constant loss factor data and pressure drop (m_flow = f(dp))" 
         import SI = Modelica.SIunits;
+        import Modelica_Fluid.PressureLosses.Utilities.lossConstant_D_zeta;
         extends Modelica.Icons.Function;
         
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
@@ -1072,7 +1147,6 @@ Loss factor for mass flow rate from port_b to port_a
         input LossFactorData data 
           "Constant loss factors for both flow directions" annotation (
             choices(
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.simpleGenericOrifice(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.wallFriction(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.suddenExpansion(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
@@ -1080,13 +1154,16 @@ Loss factor for mass flow rate from port_b to port_a
           "Turbulent flow if |dp| >= dp_small";
         output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         
-        annotation (Inline=false, smoothOrder=1, Documentation(info="<html>
+        annotation (smoothOrder=1, Documentation(info="<html>
 <p>
 Compute mass flow rate from constant loss factor and pressure drop (m_flow = f(dp)).
 For small pressure drops (dp &lt; dp_small), the characteristic is approximated by 
 a polynomial in order to have a finite derivative at zero mass flow rate.
 </p>
 </html>"));
+      protected 
+        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
+        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
       algorithm 
         /*
    dp = 0.5*zeta*d*v*|v|
@@ -1097,11 +1174,7 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
   */
-        m_flow :=Modelica_Fluid.Utilities.regRoot2(dp, dp_small,
-                   d_a*Modelica.Constants.pi^2*
-                   (if data.zeta1_at_a then data.D_a else data.D_b)^4/(8*data.zeta1),
-                   d_b*Modelica.Constants.pi^2*
-                   (if data.zeta2_at_a then data.D_a else data.D_b)^4/(8*data.zeta2));
+        m_flow :=Modelica_Fluid.Utilities.regRoot2(dp, dp_small, d_a/k1, d_b/k2);
       end massFlowRate_dp;
       annotation (Documentation(info="<html>
 <p>
@@ -1140,6 +1213,7 @@ where
       function massFlowRate_dp_and_Re 
         "Return mass flow rate from constant loss factor data, pressure drop and Re (m_flow = f(dp))" 
         import SI = Modelica.SIunits;
+        import Modelica_Fluid.PressureLosses.Utilities.lossConstant_D_zeta;
         extends Modelica.Icons.Function;
         
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
@@ -1150,7 +1224,6 @@ where
         input LossFactorData data 
           "Constant loss factors for both flow directions" annotation (
             choices(
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.simpleGenericOrifice(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.wallFriction(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.suddenExpansion(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
@@ -1192,10 +1265,8 @@ The used sufficient criteria for monotonicity follows from:
       protected 
         constant Real pi=Modelica.Constants.pi;
         Real k0=2*data.c0/(pi*data.D_Re^3);
-        Real k1=if data.zeta1_at_a then 8*data.zeta1/(pi*data.D_a^2)^2 else 
-                                        8*data.zeta1/(pi*data.D_b^2)^2;
-        Real k2=if data.zeta2_at_a then 8*data.zeta2/(pi*data.D_a^2)^2 else 
-                                        8*data.zeta2/(pi*data.D_b^2)^2;
+        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
+        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
         Real yd0 
           "Derivative of m_flow=m_flow(dp) at zero, if data.zetaLaminarKnown";
         SI.AbsolutePressure dp_turbulent 
@@ -1243,8 +1314,9 @@ Laminar region:
       end massFlowRate_dp_and_Re;
       
       function pressureLoss_m_flow 
-        "Return mass flow rate from constant loss factor data and pressure drop (m_flow = f(dp))" 
+        "Return pressure drop from constant loss factor and mass flow rate (dp = f(m_flow))" 
         import SI = Modelica.SIunits;
+        import Modelica_Fluid.PressureLosses.Utilities.lossConstant_D_zeta;
         extends Modelica.Icons.Function;
         
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
@@ -1253,7 +1325,6 @@ Laminar region:
         input LossFactorData data 
           "Constant loss factors for both flow directions" annotation (
             choices(
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.simpleGenericOrifice(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.wallFriction(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.suddenExpansion(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
@@ -1261,13 +1332,16 @@ Laminar region:
           "Turbulent flow if |m_flow| >= m_flow_small";
         output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
         
-        annotation (Inline=false, smoothOrder=1, Documentation(info="<html>
+        annotation (smoothOrder=1, Documentation(info="<html>
 <p>
-Compute mass flow rate from constant loss factor and pressure drop (m_flow = f(dp)).
-For small pressure drops (dp &lt; dp_small), the characteristic is approximated by 
+Compute pressure drop from constant loss factor and mass flow rate (dp = f(m_flow)).
+For small mass flow rates(|m_flow| &lt; m_flow_small), the characteristic is approximated by 
 a polynomial in order to have a finite derivative at zero mass flow rate.
 </p>
 </html>"));
+      protected 
+        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
+        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
       algorithm 
         /*
    dp = 0.5*zeta*d*v*|v|
@@ -1278,15 +1352,11 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
   */
-        dp :=Modelica_Fluid.Utilities.regSquare2(m_flow, m_flow_small,
-                   8*data.zeta1/(d_a*Modelica.Constants.pi^2*
-                   (if data.zeta1_at_a then data.D_a else data.D_b)^4),
-                   8*data.zeta2/(d_b*Modelica.Constants.pi^2*
-                   (if data.zeta2_at_a then data.D_a else data.D_b)^4));
+        dp :=Modelica_Fluid.Utilities.regSquare2(m_flow, m_flow_small, k1/d_a, k2/d_b);
       end pressureLoss_m_flow;
       
       function pressureLoss_m_flow_and_Re 
-        "Return mass flow rate from constant loss factor data, pressure drop and Re (m_flow = f(dp))" 
+        "Return pressure drop from constant loss factor, mass flow rate and Re (dp = f(m_flow))" 
         import SI = Modelica.SIunits;
         extends Modelica.Icons.Function;
         
@@ -1298,7 +1368,6 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
         input LossFactorData data 
           "Constant loss factors for both flow directions" annotation (
             choices(
-            choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.simpleGenericOrifice(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.wallFriction(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.suddenExpansion(),
             choice=Modelica_Fluid.PressureLosses.Functions.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
@@ -1306,7 +1375,7 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
         
         annotation (smoothOrder=1, Documentation(info="<html>
 <p>
-Compute mass flow rate from constant loss factor and pressure drop (m_flow = f(dp)).
+Compute pressure drop from constant loss factor and mass flow rate (dp = f(m_flow)).
 If the Reynolds-number Re &ge; data.Re_turbulent, the flow
 is treated as a turbulent flow with constant loss factor zeta.
 If the Reynolds-number Re &lt; data.Re_turbulent, the flow
@@ -1339,11 +1408,9 @@ The used sufficient criteria for monotonicity follows from:
 </html>"));
       protected 
         constant Real pi=Modelica.Constants.pi;
-        Real k0=2*data.c0/(pi*data.D_Re^3);
-        Real k1=if data.zeta1_at_a then 8*data.zeta1/(pi*data.D_a^2)^2 else 
-                                        8*data.zeta1/(pi*data.D_b^2)^2;
-        Real k2=if data.zeta2_at_a then 8*data.zeta2/(pi*data.D_a^2)^2 else 
-                                        8*data.zeta2/(pi*data.D_b^2)^2;
+        Real k0 = 2*data.c0/(pi*data.D_Re^3);
+        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
+        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
         Real yd0 
           "Derivative of dp = f(m_flow) at zero, if data.zetaLaminarKnown";
         SI.MassFlowRate m_flow_turbulent 
@@ -2080,6 +2147,21 @@ Laminar region:
     annotation (Documentation(info="<html>
  
 </html>"));
+    function lossConstant_D_zeta "Return the loss constant 8*zeta/(pi^2*D^4)" 
+      import SI = Modelica.SIunits;
+      extends Modelica.Icons.Function;
+      
+      input SI.Diameter D "Diameter at port_a or port_b";
+      input Real zeta 
+        "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
+      output Real k "Loss constant (= 8*zeta/(pi^2*D^4))";
+      
+      annotation (Documentation(info="<html>
+ 
+</html>"));
+    algorithm 
+      k :=8*zeta/(Modelica.Constants.pi*Modelica.Constants.pi*D*D*D*D);
+    end lossConstant_D_zeta;
   end Utilities;
   annotation (Documentation(info="<html>
 <p>
