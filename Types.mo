@@ -59,8 +59,7 @@ library.
     end Temp;
   end CrossSectionTypes;
   
-  package initOptions 
-    "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
+  package InitTypes "Obsolete (will be removed), use Types.Init" 
     extends Modelica.Icons.Enumeration;
     constant Integer NoInit = 0 "No explicit initial conditions";
     constant Integer InitialValues = 1 
@@ -81,7 +80,7 @@ library.
           choice=Modelica_Fluid.Types.Init.SteadyStateHydraulic 
             "SteadyStateHydraulic (Hydraulic steady state, initial values of other states given)"));
     end Temp;
-  end initOptions;
+  end InitTypes;
   
   package Init 
     "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
