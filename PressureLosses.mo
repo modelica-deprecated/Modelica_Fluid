@@ -1,6 +1,6 @@
 package PressureLosses 
   "Models and functions providing pressure drop correlations " 
-  model WallFriction 
+  model WallFrictionAndGravity 
     "Pressure drop in pipe due to wall friction and gravity (for both flow directions, no storage of mass and energy in pipe)" 
     import SI = Modelica.SIunits;
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
@@ -124,7 +124,7 @@ The details of the pipe friction model are described
        dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
             + height_ab*fluidOptions.g*(d_a+d_b)/2;
     end if;
-  end WallFriction;
+  end WallFrictionAndGravity;
   extends Modelica.Icons.Library;
   
 model SuddenExpansion 

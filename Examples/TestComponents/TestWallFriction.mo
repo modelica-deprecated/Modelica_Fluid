@@ -43,7 +43,7 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,10; 40,30]);
-  Modelica_Fluid.PressureLosses.WallFriction pipe1(
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium,
@@ -53,7 +53,7 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
         Modelica_Fluid.PressureLosses.Utilities.WallFriction.Detailed,
     dp_small=0.1,
     show_Re=true)     annotation (extent=[0,40; 20,60]);
-  Modelica_Fluid.PressureLosses.WallFriction pipe2(
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
     length=1,
     diameter=0.1,
     from_dp=false,

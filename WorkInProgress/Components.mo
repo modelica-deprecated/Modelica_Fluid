@@ -868,7 +868,7 @@ equation
       gradient=2,
       fillColor=42,
       rgbfillColor={213,0,0}));
-  connect(pipe_1.port_a, port_a1) annotation (points=[-40.6,-30; -75.3,-30; 
+  connect(pipe_1.port_a, port_a1) annotation (points=[-40.6,-30; -75.3,-30;
           -75.3,-2; -110,-2],
                             style(
       color=69,
@@ -877,7 +877,7 @@ equation
       gradient=2,
       fillColor=42,
       rgbfillColor={213,0,0}));
-  connect(pipe_2.port_a, port_a2) annotation (points=[-40.6,58; -76,58; -76,46; 
+  connect(pipe_2.port_a, port_a2) annotation (points=[-40.6,58; -76,58; -76,46;
           -110,46],
                   style(
       color=69,
