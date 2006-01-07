@@ -1,9 +1,5 @@
 package Components 
   
-  
-  
-  
-  
 model IsolatedPipe 
     "Model of an isolated pipe consisting of n pipe segments/FiniteVolumes" 
     import SI = Modelica.SIunits;
@@ -617,4 +613,513 @@ to build up more detailed models from the basic components.
     connect(volume2.port, port_b) 
       annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
   end ShortPipe2;
+  
+  model PipeAttachment2 "Equations to attach pipe at tank" 
+    import SI = Modelica.SIunits;
+      replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+      annotation (choicesAllMatching=true);
+    
+      Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
+      annotation (extent=[-10,-112; 10,-92],    rotation=90);
+     // Real mXi_flow;
+      parameter SI.Height pipeHeight "Height of pipe";
+      parameter SI.Diameter pipeDiameter "Inner (hydraulic) pipe diameter";
+      input SI.AbsolutePressure p_ambient "Tank surface pressure" annotation(Dialog);
+      input SI.Height level "Actual tank level" annotation(Dialog);
+      input Medium.SpecificEnthalpy h 
+      "Actual specific enthalpy of fluid in tank"                 annotation(Dialog);
+      input Medium.Density d "Actual specific density of fluid in tank" 
+                                                        annotation(Dialog);
+      input Medium.MassFraction Xi[Medium.nXi] 
+      "Actual mass fractions of fluid in tank"                    annotation(Dialog);
+      parameter Real k_small(min=0) = 0 
+      "Small regularization range if tank level is below pipe height; k_small = 0 gives ideal switch"
+                annotation(Evaluate=true);
+      parameter Medium.MassFlowRate m_flow_nominal = 1 
+      "Nominal mass flow rate used for scaling (has only an effect if k_small > 0)";
+    
+      output Medium.EnthalpyFlowRate H_flow 
+      "= port.H_flow (used to transform vector of connectors in vector of Real numbers)";
+      output Medium.MassFlowRate m_flow 
+      "= port.m_flow (used to transform vector of connectors in vector of Real numbers)";
+      output Medium.MassFlowRate mXi_flow[Medium.nXi] 
+      "= port.mXi_flow (used to transform vector of connectors in vector of Real numbers)";
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter SI.Area pipeArea = Modelica.Constants.pi*(pipeDiameter/2)^2;
+    SI.Length aboveLevel = level - pipeHeight;
+    Boolean m_flow_out(start=true) "true= massflow out of tank";
+    
+  equation 
+  m_flow_out = (pre(m_flow_out) and not port.p>p_ambient) or (port.m_flow < -1e-6);
+    
+  if (aboveLevel > 0) then
+    port.p = aboveLevel*fluidOptions.g*d + p_ambient - smooth(2,noEvent(if m_flow < 0 then m_flow^2/(2*d*pipeArea^2) else 0));
+  else
+   if pre(m_flow_out) then
+      m_flow = 0;
+    else
+      port.p = p_ambient;
+    end if;
+  end if;
+  /* Martin Otter: The following equations are a declarative form 
+   (parameterized curve description) of the above equations and
+   should theoretically work better. However, most examples with
+   IF97 water fail, whereas the above works. Therefore, not used. 
+ 
+HTML documentation:
+ 
+<p>
+If a bottom or side connector is above the actual tank level, the
+following characteristic is used to compute the mass flow rate port.m_flow
+from the connector to the tank and the absolute pressure port.p
+in the port:
+</p>
+ 
+<img src="../Images/Components/Tank_PipeAboveTankLevel.png">
+ 
+ 
+  Real s(start=0) 
+    "path parameter of parameterized curve description (either m_flow/m_flow_nominal or (port.p-p_ambient)/p_ambient)";
+equation 
+  m_flow_out = s < 0;
+  if aboveLevel > 0 then
+     m_flow = m_flow_nominal*s 
+      "equation to compute s, which is a dummy in this branch";
+     port.p = p_ambient + aboveLevel*fluidOptions.g*d  -
+                          smooth(2,if m_flow_out then m_flow^2/(2*d*pipeArea^2) else -k_small*p_ambient*s);
+  else
+     m_flow = m_flow_nominal*(if m_flow_out then k_small*s else s);
+     port.p = p_ambient*(1 + (if m_flow_out then s else k_small*s));
+  end if;
+*/
+    
+    /* Handle reverse and zero flow */
+    H_flow = port.H_flow;
+    m_flow = port.m_flow;
+    mXi_flow = port.mXi_flow;
+    port.H_flow = semiLinear(port.m_flow, port.h, h);
+    port.mXi_flow = semiLinear(port.m_flow, port.Xi, Xi);
+    annotation (Documentation(info="<html>
+<p>
+This component contains the equations that attach the pipe
+to the tank. The main reason to introduce this component is
+that Dymola has currently limitations for connector arrays
+when the dimension is zero. Without this utility component
+it would not be possible to set, e.g., n_topPorts to zero.
+</p>
+</html>"), Icon(Rectangle(extent=[-100,0; 100,-100], style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255})), Text(
+          extent=[-122,48; 132,6],
+          style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255},
+            fillPattern=1),
+          string="%name")));
+  end PipeAttachment2;
+  
+  model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
+    import SI = Modelica.SIunits;
+    import Modelica_Fluid.Types;
+    replaceable package Medium = PackageMedium 
+      extends Modelica.Media.Interfaces.PartialMedium "Medium in the component"
+      annotation (choicesAllMatching=true);
+    
+    parameter SI.Height height "Height of tank";
+    parameter SI.Area area "Area of tank";
+    parameter SI.Volume V0=0 "Volume of the liquid when the level is zero";
+    parameter Real k = 4.9 "Heat transfer coefficient from tank to ambient";
+    
+    parameter Integer n_topPorts = 0 "Number of topPorts" 
+      annotation(Dialog(group="topPorts (= pipes at top of tank; in and out flow of tank)"));
+    parameter SI.Height top_heights[n_topPorts]=fill(height,n_topPorts) 
+      "Heights of topPorts" 
+      annotation(Dialog(group="topPorts (= pipes at top of tank; in and out flow of tank)"));
+    parameter SI.Diameter top_diameters[n_topPorts] 
+      "Inner (hydraulic) diameters of topPorts" 
+      annotation(Dialog(group="topPorts (= pipes at top of tank; in and out flow of tank)"));
+    
+    parameter Integer n_bottomPorts = 0 "Number of bottomPorts" 
+       annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)"));
+    parameter SI.Height bottom_heights[n_bottomPorts]=fill(0.0,n_bottomPorts) 
+      "Heights of bottomPorts" 
+       annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)"));
+    parameter SI.Diameter bottom_diameters[n_bottomPorts] 
+      "Inner (hydraulic) diameters of bottomPorts" 
+       annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)"));
+    
+    parameter Integer n_sidePorts = 0 "Number of sidePorts" 
+       annotation(Dialog(group="sidePorts (= pipes at side of tank; in and out flow of tank)"));
+    parameter SI.Height side_heights[n_sidePorts] "Heights of sidePorts" 
+       annotation(Dialog(group="sidePorts (= pipes at side of tank; in and out flow of tank)"));
+    parameter SI.Area side_diameters[n_sidePorts] 
+      "Inner (hydraulic) diameters of sidePorts" 
+       annotation(Dialog(group="sidePorts (= pipes at side of tank; in and out flow of tank)"));
+    
+    parameter Medium.AbsolutePressure p_ambient=fluidOptions.default_p_ambient 
+      "Tank surface pressure" 
+      annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
+    parameter Medium.Temperature T_ambient = fluidOptions.default_T_ambient 
+      "Tank surface Temperature" 
+      annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
+    
+    parameter Types.InitWithGlobalDefault.Temp initOption=
+              Types.InitWithGlobalDefault.UseGlobalFluidOption 
+      "Initialization option" 
+      annotation(Dialog(tab = "Ambient and Initialization", group = "Initialization"));
+    parameter SI.Height level_start "Start value of tank level" 
+      annotation(Dialog(tab="Ambient and Initialization", group = "Initialization"));
+    parameter Medium.Temperature T_start=T_ambient "Start value of temperature"
+      annotation(Dialog(tab = "Ambient and Initialization", group = "Initialization"));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nXi > 0));
+    
+    Modelica_Fluid.Interfaces.FluidPort_ArrayIcon topPorts[n_topPorts](redeclare 
+        package Medium = Medium, m_flow(each start=0), mXi_flow(each start=0)) 
+      annotation (extent=[-30,100; 30,108]);
+    Modelica_Fluid.Interfaces.FluidPort_ArrayIcon bottomPorts[n_bottomPorts](redeclare 
+        package Medium = Medium, m_flow(each start=0), mXi_flow(each start=0)) 
+      annotation (extent=[-30,-108; 30,-100],   rotation=90);
+    Modelica_Fluid.Interfaces.FluidPort_ArrayIcon sidePorts[n_sidePorts](redeclare 
+        package Medium = Medium, m_flow(each start=0), mXi_flow(each start=0)) 
+      annotation (extent=[100,30; 108,-30]);
+    
+    Medium.BaseProperties medium(
+      preferredMediumStates=true,
+      p(start=p_ambient),
+      T(start=T_start),
+      h(start=h_start),
+      Xi(start=X_start[1:Medium.nXi]));
+    
+    SI.Height level(stateSelect=StateSelect.prefer, start=level_start) 
+      "Level height of tank";
+    SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
+    SI.Energy U "Internal energy of tank volume";
+    SI.Mass m "Mass of fluid in tank";
+    SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
+    Real Q_lost "Wärmeverlust";
+    
+  encapsulated model PipeAttachment "Equations to attach pipe at tank" 
+      import Modelica_Fluid;
+      import Modelica;
+      import SI = Modelica.SIunits;
+      replaceable package Medium = PackageMedium extends 
+        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+      annotation (choicesAllMatching=true);
+      
+      Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
+      annotation (extent=[-10,-112; 10,-92],    rotation=90);
+     // Real mXi_flow;
+      parameter SI.Height pipeHeight "Height of pipe";
+      parameter SI.Diameter pipeDiameter "Inner (hydraulic) pipe diameter";
+      input SI.AbsolutePressure p_ambient "Tank surface pressure" annotation(Dialog);
+      input SI.Height level "Actual tank level" annotation(Dialog);
+      input Medium.SpecificEnthalpy h 
+        "Actual specific enthalpy of fluid in tank"               annotation(Dialog);
+      input Medium.Density d "Actual specific density of fluid in tank" 
+                                                        annotation(Dialog);
+      input Medium.MassFraction Xi[Medium.nXi] 
+        "Actual mass fractions of fluid in tank"                  annotation(Dialog);
+      parameter Real k_small(min=0) = 0 
+        "Small regularization range if tank level is below pipe height; k_small = 0 gives ideal switch"
+                annotation(Evaluate=true);
+      parameter Medium.MassFlowRate m_flow_nominal = 1 
+        "Nominal mass flow rate used for scaling (has only an effect if k_small > 0)";
+      
+      output Medium.EnthalpyFlowRate H_flow 
+        "= port.H_flow (used to transform vector of connectors in vector of Real numbers)";
+      output Medium.MassFlowRate m_flow 
+        "= port.m_flow (used to transform vector of connectors in vector of Real numbers)";
+      output Medium.MassFlowRate mXi_flow[Medium.nXi] 
+        "= port.mXi_flow (used to transform vector of connectors in vector of Real numbers)";
+    protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+        "Global default options";
+    parameter SI.Area pipeArea = Modelica.Constants.pi*(pipeDiameter/2)^2;
+    SI.Length aboveLevel = level - pipeHeight;
+    Boolean m_flow_out(start=true) "true= massflow out of tank";
+      
+  equation 
+  m_flow_out = (pre(m_flow_out) and not port.p>p_ambient) or (port.m_flow < -1e-6);
+      
+  if (aboveLevel > 0) then
+    port.p = aboveLevel*fluidOptions.g*d + p_ambient - smooth(2,noEvent(if m_flow < 0 then m_flow^2/(2*d*pipeArea^2) else 0));
+  else
+   if pre(m_flow_out) then
+      m_flow = 0;
+    else
+      port.p = p_ambient;
+    end if;
+  end if;
+  /* Martin Otter: The following equations are a declarative form 
+   (parameterized curve description) of the above equations and
+   should theoretically work better. However, most examples with
+   IF97 water fail, whereas the above works. Therefore, not used. 
+ 
+HTML documentation:
+ 
+<p>
+If a bottom or side connector is above the actual tank level, the
+following characteristic is used to compute the mass flow rate port.m_flow
+from the connector to the tank and the absolute pressure port.p
+in the port:
+</p>
+ 
+<img src="../Images/Components/Tank_PipeAboveTankLevel.png">
+ 
+ 
+  Real s(start=0) 
+    "path parameter of parameterized curve description (either m_flow/m_flow_nominal or (port.p-p_ambient)/p_ambient)";
+equation 
+  m_flow_out = s < 0;
+  if aboveLevel > 0 then
+     m_flow = m_flow_nominal*s 
+      "equation to compute s, which is a dummy in this branch";
+     port.p = p_ambient + aboveLevel*fluidOptions.g*d  -
+                          smooth(2,if m_flow_out then m_flow^2/(2*d*pipeArea^2) else -k_small*p_ambient*s);
+  else
+     m_flow = m_flow_nominal*(if m_flow_out then k_small*s else s);
+     port.p = p_ambient*(1 + (if m_flow_out then s else k_small*s));
+  end if;
+*/
+      
+    /* Handle reverse and zero flow */
+    H_flow = port.H_flow;
+    m_flow = port.m_flow;
+    mXi_flow = port.mXi_flow;
+    port.H_flow = semiLinear(port.m_flow, port.h, h);
+    port.mXi_flow = semiLinear(port.m_flow, port.Xi, Xi);
+    annotation (Documentation(info="<html>
+<p>
+This component contains the equations that attach the pipe
+to the tank. The main reason to introduce this component is
+that Dymola has currently limitations for connector arrays
+when the dimension is zero. Without this utility component
+it would not be possible to set, e.g., n_topPorts to zero.
+</p>
+</html>"), Icon(Rectangle(extent=[-100,0; 100,-100], style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255})), Text(
+          extent=[-122,48; 132,6],
+          style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255},
+            fillPattern=1),
+          string="%name")));
+  end PipeAttachment;
+    
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter Medium.SpecificEnthalpy h_start = Medium.specificEnthalpy_pTX(p_ambient, T_start, X_start);
+    parameter Types.Init.Temp initOption2=
+        if initOption == Types.InitWithGlobalDefault.UseGlobalFluidOption then 
+             fluidOptions.default_initOption else initOption 
+        annotation(Evaluate=true, Hide=true);
+    parameter Integer precision = 3 "Precision for tank level in animation" annotation(Hide=false);
+    
+    Medium.EnthalpyFlowRate H_flow_topPorts[n_topPorts];
+    Medium.EnthalpyFlowRate H_flow_bottomPorts[n_bottomPorts];
+    Medium.EnthalpyFlowRate H_flow_sidePorts[n_sidePorts];
+    
+    Medium.MassFlowRate m_flow_topPorts[n_topPorts];
+    Medium.MassFlowRate m_flow_bottomPorts[n_bottomPorts];
+    Medium.MassFlowRate m_flow_sidePorts[n_sidePorts];
+    
+    Medium.MassFlowRate mXi_flow_topPorts[n_topPorts,Medium.nXi];
+    Medium.MassFlowRate mXi_flow_bottomPorts[n_bottomPorts,Medium.nXi];
+    Medium.MassFlowRate mXi_flow_sidePorts[n_sidePorts,Medium.nXi];
+    
+    OpenTank.PipeAttachment pipeAttachmentTop[n_topPorts](
+      each h=medium.h,
+      each d=medium.d,
+      each Xi=medium.Xi,
+      each p_ambient=p_ambient,
+      each level=level,
+      H_flow=H_flow_topPorts,
+      m_flow=m_flow_topPorts,
+      mXi_flow = mXi_flow_topPorts,
+      pipeHeight=top_heights,
+      pipeDiameter=top_diameters,
+      redeclare package Medium = Medium) 
+        annotation (extent=[-20,80; 20,40]);
+    OpenTank.PipeAttachment pipeAttachmentBottom[n_bottomPorts](
+      each h=medium.h,
+      each d=medium.d,
+      each Xi=medium.Xi,
+      each p_ambient=p_ambient,
+      each level=level,
+      H_flow=H_flow_bottomPorts,
+      m_flow=m_flow_bottomPorts,
+      mXi_flow = mXi_flow_bottomPorts,
+      pipeHeight=bottom_heights,
+      pipeDiameter=bottom_diameters,
+      redeclare package Medium = Medium) 
+        annotation (extent=[-20,-80; 20,-40]);
+    OpenTank.PipeAttachment pipeAttachmentSide[n_sidePorts](
+      each h=medium.h,
+      each d=medium.d,
+      each Xi=medium.Xi,
+      each p_ambient=p_ambient,
+      each level=level,
+      H_flow=H_flow_sidePorts,
+      m_flow=m_flow_sidePorts,
+      mXi_flow = mXi_flow_sidePorts,
+      pipeHeight=side_heights,
+      pipeDiameter=side_diameters,
+      redeclare package Medium = Medium) 
+        annotation (extent=[40,-20; 80,20], rotation=90);
+    
+  equation 
+    for i in 1:n_bottomPorts loop
+      connect(pipeAttachmentBottom[i].port, bottomPorts[i]) 
+        annotation (points=[0,-80.4; 0,-104],
+                                            style(color=3, rgbcolor={0,0,255}));
+    end for;
+    
+    for i in 1:n_topPorts loop
+       connect(pipeAttachmentTop[i].port, topPorts[i]) 
+         annotation (points=[0,80.4; 0,104],
+                                           style(color=3, rgbcolor={0,0,255}));
+    end for;
+    
+    for i in 1:n_sidePorts loop
+       connect(pipeAttachmentSide[i].port, sidePorts[i]) 
+         annotation (points=[80.4,-1.2491e-015; 104,0],
+                                             style(color=3, rgbcolor={0,0,255}));
+    end for;
+    
+    medium.p = p_ambient;
+    V = area*level+V0 "Volume of fluid";
+    m = V*medium.d "Mass of fluid";
+    mXi = m*medium.Xi "Mass of fluid components";
+    U = m*medium.u "Internal energy of fluid";
+    Q_lost = - k*2*sqrt(Modelica.Constants.pi*area)*level*(medium.T - T_ambient);
+    
+    // Mass balances
+    der(m) = sum(m_flow_bottomPorts) + sum(m_flow_sidePorts) + sum(m_flow_topPorts);
+    for i in 1:Medium.nXi loop
+      der(mXi[i]) = sum(mXi_flow_bottomPorts[i,:]) +
+                    sum(mXi_flow_sidePorts[i,:]) +
+                    sum(mXi_flow_topPorts[i,:]);
+    end for;
+    
+    // Energy balance
+    if Medium.singleState then
+      der(U) = sum(H_flow_bottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) + Q_lost 
+        "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
+    else
+      der(U) = sum(H_flow_bottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) - p_ambient*der(V) + Q_lost;
+    end if;
+    
+     assert(level < height,   " 
+    Tank ist überfüllt.
+    ");
+    
+  initial equation 
+    if initOption2 == Types.Init.NoInit then
+      // no initial equations
+    elseif initOption2 == Types.Init.InitialValues then
+      level = level_start;
+      medium.T = T_start;
+      medium.Xi = X_start[1:Medium.nXi];
+    elseif initOption2 == Types.Init.SteadyState then
+      der(level) = 0;
+      der(medium.h) = 0;
+      der(medium.Xi) = zeros(Medium.nXi);
+    elseif initOption2 == Types.Init.SteadyStateHydraulic then
+      der(level) = 0;
+      medium.T = T_start;
+      medium.Xi = X_start[1:Medium.nXi];
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
+    annotation (defaultComponentName="tank",
+      Icon(
+        Rectangle(extent=[-100,100; 100,0],     style(color=7, fillColor=7)),
+        Rectangle(extent=DynamicSelect([-100,-100; 100,10],
+                                       [-100, -100; 100, (-100 + 200*level/height)]),
+            style(
+            color=69,
+            rgbcolor={0,127,255},
+            fillColor=71,
+            rgbfillColor={85,170,255},
+            fillPattern=1)),
+        Line(points=[-100, 100; -100, -100; 100, -100; 100, 100], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=69,
+            rgbfillColor={0,127,255},
+            fillPattern=1)),
+        Text(
+          extent=[-95,90; 95,60],
+          string="%name",
+          style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=69,
+            rgbfillColor={0,127,255},
+            fillPattern=1)),
+        Text(
+          extent=[-95,50; 95,35],
+          style(color=0),
+          string="%level_start",
+        Line(points=[-100,100; 100,100], style(
+            color=0,
+            rgbcolor={0,0,0},
+            pattern=3))),
+        Text(
+          extent=[-95,30; 95,5],
+          style(color=0),
+          string=DynamicSelect(" ",realString(level,1,integer(precision)))),
+        Line(points=[-100,100; 100,100], style(
+            color=0,
+            rgbcolor={0,0,0},
+            pattern=3)),
+        Text(
+          extent=[-40,124; -22,112],
+          string="1",
+          style(color=10, rgbcolor={135,135,135})),
+        Text(
+          extent=[111,37; 129,25],
+          string="1",
+          style(color=10, rgbcolor={135,135,135})),
+        Text(
+          extent=[-38,-112; -20,-124],
+          string="1",
+          style(color=10, rgbcolor={135,135,135}))),
+      Documentation(info="<HTML>
+<p>
+This is a simplified model of a tank. The top part is open to the environment at the fixed pressure <tt>p_ambient</tt>. Heat transfer to the environment and to the tank walls is neglected.
+The tank is filled with a single or multiple-substance liquid, assumed to have uniform temperature and mass fractions.
+<p>The geometry of the tank is specified by the following parameters: <tt>V0</tt> is the volume of the liquid when the level is at the zero reference; <tt>area</tt> is the cross-sectional area of the tank; <tt>H0</tt> is the height of the zero-reference level plane over the port connector. It is thus possible to model rounded-bottom tanks, as long as they have a cylindrical shape in the range of operating levels.
+<p>The tank can be initialized with the following options:
+<ul>
+<li>NoInit: no explicit initial conditions
+<li>InitialValues: initial values of temperature (or specific enthalpy), composition and level are specified
+<li>SteadyStateHydraulic: initial values of temperature (or specific enthalpy) and composition are specified; the initial level is determined so that levels and pressure are at steady state.
+</ul>
+Full steady state initialization is not supported, because the corresponding intial equations for temperature/enthalpy are undetermined (the flow rate through the port at steady state is zero). 
+</p>
+ 
+ 
+ 
+</HTML>"),
+      Diagram,
+      uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")),
+      Coordsys(grid=[1,1], scale=0.2));
+  end OpenTank;
+  
 end Components;

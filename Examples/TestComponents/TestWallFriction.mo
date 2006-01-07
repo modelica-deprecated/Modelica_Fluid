@@ -50,7 +50,7 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     roughness=roughness,
     port_a(m_flow(start=-0.6)),
     dp_small=0.1,
-    show_Re=true, 
+    show_Re=true,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.Utilities.WallFriction.Detailed) 
                       annotation (extent=[0,40; 20,60]);

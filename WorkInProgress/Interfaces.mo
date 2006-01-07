@@ -280,7 +280,7 @@ The used sufficient criteria for monotonicity follows from:
   end PressureLossWithoutIcon;
   
 partial model Flow1D 
-  import Modelica_Fluid.Types;
+    import Modelica_Fluid.Types;
     import Modelica.Constants.*;
   replaceable package Medium = PackageMedium 
     extends Modelica.Media.Interfaces.PartialMedium "Fluid medium model" 
@@ -645,4 +645,117 @@ partial model PartialPipeWall "Wall interface"
           fillPattern=7))));
 end PartialPipeWall;
   
+  partial model PartialTwoPortTransportWithDz 
+    "Partial element transporting fluid between two ports without storing mass or energy" 
+    import Modelica.SIunits.*;
+    import Modelica.Constants.*;
+    replaceable package Medium = 
+        Modelica.Media.Interfaces.PartialTwoPhaseMedium                          extends 
+      Modelica.Media.Interfaces.PartialTwoPhaseMedium "Medium in the component"
+                                                                         annotation (
+        choicesAllMatching =                                                                            true);
+    parameter Boolean allowFlowReversal = true 
+      "Flow reversal at the ports is allowed by the equations";
+    
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
+          Medium, m_flow(min=if allowFlowReversal then -inf else 0)) 
+      annotation (extent=[-120, -10; -100, 10]);
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
+          Medium, m_flow(max=if allowFlowReversal then +inf else 0)) 
+      annotation (extent=[120, -10; 100, 10]);
+    Medium.BaseProperties medium_a "Medium properties in port_a";
+    Medium.BaseProperties medium_b "Medium properties in port_b";
+    Medium.MassFlowRate m_flow 
+      "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
+    Pressure dp(start=0) "Pressure difference between port_a and port_b";
+    Real dz_in=0 "dz=hb-ha difference of height";
+    constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
+    parameter Medium.AbsolutePressure p_ambient=101325 "ambient pressure";
+    Medium.SaturationProperties sat 
+      "State vector to compute saturation properties";
+    Medium.Density rho_l=Medium.bubbleDensity(sat) "density in liquid phase";
+    Medium.Density rho_v=Medium.dewDensity(sat) "density in liquid phase";
+    Integer help;
+    Boolean liquid( start=true);
+    annotation (
+      Coordsys(grid=[1, 1], component=[20, 20]),
+      Diagram,
+      Documentation(info="<html>
+<p>
+This component transports fluid between its two ports, without
+storing mass or energy. Reversal and zero mass flow rate is taken
+care of, for details see definition of built-in operator semiLinear().
+<p>
+When using this partial component, an equation for the momentum
+balance has to be added by specifying a relationship
+between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
+</p>
+</html>"));
+  equation 
+    // Properties in the ports
+    port_a.p   = medium_a.p;
+    port_a.h   = medium_a.h;
+    port_a.Xi = medium_a.Xi;
+    port_b.p   = medium_b.p;
+    port_b.h   = medium_b.h;
+    port_b.Xi = medium_b.Xi;
+    
+  if m_flow > 0 then
+    if pre(liquid) then
+      if medium_a.d < 1*rho_v+0*rho_l then
+        liquid = false;
+        help = 1;
+      else
+        liquid = true;
+        help = 2;
+      end if;
+    else
+      if medium_a.d > 1*rho_l+0*rho_v then
+        liquid = true;
+        help = 3;
+      else
+        liquid = false;
+        help = 4;
+      end if;
+    end if;
+  else
+    if pre(liquid) then
+      if medium_b.d < 1*rho_v+0*rho_l then
+        liquid = false;
+        help = 5;
+      else
+        liquid = true;
+        help = 6;
+      end if;
+    else
+      if medium_b.d > 1*rho_l+0*rho_v then
+        liquid = true;
+        help = 7;
+      else
+        liquid = false;
+        help = 8;
+      end if;
+    end if;
+  end if;
+    
+    sat.psat = p_ambient;
+    sat.Tsat = Medium.saturationTemperature(p_ambient);
+    
+    /* Handle reverse and zero flow */
+    port_a.H_flow   = semiLinear(port_a.m_flow, port_a.h,  port_b.h);
+    port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, port_b.Xi);
+    
+    /* Energy, mass and substance mass balance */
+    port_a.H_flow + port_b.H_flow = 0;
+    port_a.m_flow + port_b.m_flow = 0;
+    port_a.mXi_flow + port_b.mXi_flow = zeros(Medium.nXi);
+    
+    // Design direction of mass flow rate
+    m_flow = port_a.m_flow;
+    
+    // Pressure difference between ports
+    
+    dp = port_a.p - port_b.p - dz_in*g*(if pre(liquid) then rho_l else rho_v);
+    
+  end PartialTwoPortTransportWithDz;
 end Interfaces;

@@ -84,6 +84,18 @@ package Interfaces
                fillColor=7))));
   end FluidPort_b;
   
+  connector FluidPort_ArrayIcon 
+    "Fluid connector with icon suited for an array of FluidPorts" 
+    extends FluidPort;
+    annotation (defaultComponentName="ports",
+                Diagram(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
+               fillColor=69)), Rectangle(extent=[-100, 100; 100, -100], style(color=16,
+               fillColor=69)), Text(extent=[-88, 206; 112, 112], string="%name")),
+         Icon(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
+              fillColor=69)), Rectangle(extent=[-100, 100; 100, -100], style(color=16,
+              fillColor=69))));
+  end FluidPort_ArrayIcon;
+  
   partial model PartialInitializationParameters 
     "Define parameter menu to initialize medium in component that has one medium model" 
     import Modelica_Fluid.Types;
@@ -99,7 +111,7 @@ package Interfaces
       "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));
     parameter Boolean use_T_start = true 
-      "Use T_start if true, otherwise h_start" 
+      "= true, use T_start, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate=true);
     parameter Medium.Temperature T_start=
       if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
@@ -120,6 +132,32 @@ package Interfaces
              fluidOptions.default_initOption else initOption 
         annotation(Evaluate=true, Hide=true);
   end PartialInitializationParameters;
+  
+  partial model PartialGuessValueParameters 
+    "Define parameter menu to initialize guess values of medium in component that has one medium model" 
+    import Modelica_Fluid.Types;
+    
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
+    parameter Medium.AbsolutePressure p_start = Medium.p_default 
+      "Guess value of pressure" 
+      annotation(Dialog(tab = "Guess Value Initialization"));
+    parameter Boolean use_T_start = true 
+      "= true, use T_start, otherwise h_start" 
+      annotation(Dialog(tab = "Guess Value Initialization"), Evaluate=true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
+      "Guess value of temperature" 
+      annotation(Dialog(tab = "Guess Value Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
+      "Guess value of specific enthalpy" 
+      annotation(Dialog(tab = "Guess Value Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Guess value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Guess Value Initialization", enable=Medium.nXi > 0));
+  end PartialGuessValueParameters;
   
   partial model PartialSource 
     "Partial component source with one fluid connector" 
@@ -176,6 +214,8 @@ features are:
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component"  annotation (
         choicesAllMatching =                                                                            true);
+    
+    extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
     parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
               FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
@@ -189,9 +229,13 @@ features are:
                        m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
       "Fluid connector b (positive design flow direction is from port_a to port_b)"
       annotation (extent=[110,-10; 90,10]);
-    Medium.BaseProperties medium_a "Medium properties in port_a";
-    Medium.BaseProperties medium_b "Medium properties in port_b";
-    Medium.MassFlowRate m_flow 
+    Medium.BaseProperties medium_a(p(start=p_start), h(start=h_start),
+                 T(start=T_start), Xi(start=X_start[1:Medium.nXi])) 
+      "Medium properties in port_a";
+    Medium.BaseProperties medium_b(p(start=p_start), h(start=h_start),
+                 T(start=T_start), Xi(start=X_start[1:Medium.nXi])) 
+      "Medium properties in port_b";
+    Medium.MassFlowRate m_flow(start=0) 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
     SI.Pressure dp(start=0) "Pressure difference between port_a and port_b";
     
@@ -604,7 +648,8 @@ public
     if noEvent(s > 0 or (not checkValve)) then
       // Flow characteristics when check valve is open
       q_flow_single = s;
-      head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-6)));
+      // head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-6)));
+      head = noEvent((((if abs(N) > 1e-6 then N else 1e-6))/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/((if abs(N) > 1e-6 then N else 1e-6))));
     else
       // Flow characteristics when check valve is closed
       head = (N/N_nom)^2*flowCharacteristic(0) - s;
@@ -701,7 +746,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
 </html>"));
     
   end PartialPump;
-
+  
   partial model PartialTwoPort 
     "Partial component with Medium definition and two fluid ports" 
     replaceable package Medium = PackageMedium extends 

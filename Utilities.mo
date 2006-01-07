@@ -1085,4 +1085,128 @@ k1=1, k2=3 is shown in the next figure:
  
 </html>"));
   end ReynoldsNumber_m_flow;
+  
+  model PipeAttachment "Equations to attach pipe at tank" 
+    import SI = Modelica.SIunits;
+      replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+      annotation (choicesAllMatching=true);
+    
+      Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
+      annotation (extent=[-10,-112; 10,-92],    rotation=90);
+     // Real mXi_flow;
+      parameter Boolean onlyInFlow = false 
+      "= true, if flow only into the tank (e.g. top ports)" annotation(Evaluate=true);
+      parameter SI.Diameter pipeDiameter=0.0 "Inner (hydraulic) pipe diameter" 
+                                                                           annotation(Dialog(enable=not onlyInFlow));
+      parameter SI.Height pipeHeight "Height of pipe";
+      input SI.AbsolutePressure p_ambient "Tank surface pressure" annotation(Dialog);
+      input SI.Height level "Actual tank level" annotation(Dialog);
+      input Medium.SpecificEnthalpy h 
+      "Actual specific enthalpy of fluid in tank"                 annotation(Dialog);
+      input Medium.Density d "Actual specific density of fluid in tank" 
+                                                        annotation(Dialog);
+      input Medium.MassFraction Xi[Medium.nXi] 
+      "Actual mass fractions of fluid in tank"                    annotation(Dialog);
+      parameter Real k_small(min=0) = 0 
+      "Small regularization range if tank level is below pipe height; k_small = 0 gives ideal switch"
+                annotation(Evaluate=true);
+      parameter Medium.MassFlowRate m_flow_nominal = 1 
+      "Nominal mass flow rate used for scaling (has only an effect if k_small > 0)";
+    
+      output Medium.EnthalpyFlowRate H_flow 
+      "= port.H_flow (used to transform vector of connectors in vector of Real numbers)";
+      output Medium.MassFlowRate m_flow 
+      "= port.m_flow (used to transform vector of connectors in vector of Real numbers)";
+      output Medium.MassFlowRate mXi_flow[Medium.nXi] 
+      "= port.mXi_flow (used to transform vector of connectors in vector of Real numbers)";
+  protected 
+    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+      "Global default options";
+    parameter SI.Area pipeArea = Modelica.Constants.pi*(pipeDiameter/2)^2;
+    SI.Length aboveLevel = level - pipeHeight;
+    Boolean m_flow_out(start=true,fixed=true) "true= massflow out of tank";
+  equation 
+    H_flow = port.H_flow;
+    m_flow = port.m_flow;
+    mXi_flow = port.mXi_flow;
+    
+    if onlyInFlow then
+       m_flow_out = false "Dummy value in this if branch";
+       port.p = p_ambient;
+       port.H_flow = port.m_flow*port.h;
+       port.mXi_flow = port.m_flow*port.Xi;
+      
+    else
+       m_flow_out = (pre(m_flow_out) and not port.p>p_ambient) or (port.m_flow < -1e-6);
+      
+       if (aboveLevel > 0) then
+         port.p = aboveLevel*fluidOptions.g*d + p_ambient - smooth(2,noEvent(if m_flow < 0 then m_flow^2/(2*d*pipeArea^2) else 0));
+       else
+         if pre(m_flow_out) then
+            m_flow = 0;
+         else
+            port.p = p_ambient;
+         end if;
+       end if;
+      
+       port.H_flow = semiLinear(port.m_flow, port.h, h);
+       port.mXi_flow = semiLinear(port.m_flow, port.Xi, Xi);
+    end if;
+    
+    annotation (Documentation(info="<html>
+<p>
+This component contains the equations that attach the pipe
+to the tank. The main reason to introduce this component is
+that Dymola has currently limitations for connector arrays
+when the dimension is zero. Without this utility component
+it would not be possible to set, e.g., n_topPorts to zero.
+</p>
+</html>"), Icon(Rectangle(extent=[-100,0; 100,-100], style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255})), Text(
+          extent=[-122,48; 132,6],
+          style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255},
+            fillPattern=1),
+          string="%name")));
+    
+  /* Martin Otter: The following equations are a declarative form 
+   (parameterized curve description) of the above equations and
+   should theoretically work better. However, most examples with
+   IF97 water fail, whereas the above works. Therefore, not used. 
+ 
+HTML documentation:
+ 
+<p>
+If a bottom or side connector is above the actual tank level, the
+following characteristic is used to compute the mass flow rate port.m_flow
+from the connector to the tank and the absolute pressure port.p
+in the port:
+</p>
+ 
+<img src="../Images/Components/Tank_PipeAboveTankLevel.png">
+ 
+ 
+  Real s(start=0) 
+    "path parameter of parameterized curve description (either m_flow/m_flow_nominal or (port.p-p_ambient)/p_ambient)";
+equation 
+  m_flow_out = s < 0;
+  if aboveLevel > 0 then
+     m_flow = m_flow_nominal*s 
+      "equation to compute s, which is a dummy in this branch";
+     port.p = p_ambient + aboveLevel*fluidOptions.g*d  -
+                          smooth(2,if m_flow_out then m_flow^2/(2*d*pipeArea^2) else -k_small*p_ambient*s);
+  else
+     m_flow = m_flow_nominal*(if m_flow_out then k_small*s else s);
+     port.p = p_ambient*(1 + (if m_flow_out then s else k_small*s));
+  end if;
+*/
+    
+  end PipeAttachment;
 end Utilities;

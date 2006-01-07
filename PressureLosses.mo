@@ -2,8 +2,8 @@ package PressureLosses
   "Models and functions providing pressure loss correlations " 
 model SimpleGenericOrifice 
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
-  import SI = Modelica.SIunits;
-  import Modelica_Fluid.PressureLosses.Utilities.SimpleGenericOrifice;
+    import SI = Modelica.SIunits;
+    import Modelica_Fluid.PressureLosses.Utilities.SimpleGenericOrifice;
   extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(m_flow(start=0), dp(start=0));
     
   parameter Real zeta "Loss factor for flow of port_a -> port_b";
@@ -100,7 +100,8 @@ end SimpleGenericOrifice;
     
     parameter SI.Length length "Length of pipe";
     parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
-    parameter SI.Length height_ab = 0.0 "Height of port_b over port_a" annotation(Evaluate=true);
+    parameter SI.Length height_ab = 0.0 "Height(port_b) - Height(port_a)" 
+                                                                       annotation(Evaluate=true);
     parameter SI.Length roughness(min=0) = 2.5e-5 
       "Absolute roughness of pipe (default = smooth steel pipe)" 
         annotation(Dialog(enable=WallFriction.use_roughness));
@@ -109,21 +110,23 @@ end SimpleGenericOrifice;
       "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
                                                                                                     annotation(Evaluate=true);
     parameter SI.DynamicViscosity eta_nominal = 0.01 
-      "Nominal dynamic viscosity (e.g. eta_liquidWater = 0.2, eta_air = 0.3)" annotation(Dialog(enable=use_nominal));
+      "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
+                                                                              annotation(Dialog(enable=use_nominal));
     parameter SI.Density d_nominal = 0.01 
-      "Nominal density (e.g. d_liquidWater = xx, d_air = xxx)" annotation(Dialog(enable=use_nominal));
+      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+                                                               annotation(Dialog(enable=use_nominal));
     
     parameter Boolean show_Re = false 
       "= true, if Reynolds number is included for plotting" 
        annotation (Evaluate=true, Dialog(tab="Advanced"));
     parameter Boolean from_dp=true 
-      " = true, use m_flow = f(dp) else dp = f(m_flow)" 
+      " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
       annotation (Evaluate=true, Dialog(tab="Advanced"));
     parameter SI.AbsolutePressure dp_small = 1 
-      "Turbulent flow if |dp| >= dp_small (only used if WallFriction.use_dp_small = true)"
+      "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
     parameter SI.MassFlowRate m_flow_small = 0.01 
-      "Turbulent flow if |m_flow| >= m_flow_small (only used if WallFriction.use_m_flow_small = true)"
+      "Turbulent flow if |m_flow| >= m_flow_small (only used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
     SI.ReynoldsNumber Re = Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(m_flow, (eta_a+eta_b)/2, diameter) if show_Re 
       "Reynolds number of pipe";
@@ -230,7 +233,7 @@ simulation and/or might give a more robust simulation.
     SI.Density d_a = if use_nominal then d_nominal else medium_a.d;
     SI.Density d_b = if use_nominal then d_nominal else medium_b.d;
   equation 
-    if from_dp then
+    if from_dp and not WallFriction.dp_is_zero then
        m_flow = WallFriction.massFlowRate_dp(dp-height_ab*fluidOptions.g*(d_a+d_b)/2,
                                              d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
     else
@@ -871,8 +874,8 @@ As a short summary:
         
        encapsulated function suddenExpansion 
           "Return pressure loss data for sudden expansion or contraction in a pipe (for both flow directions)" 
-         import SI = Modelica.SIunits;
-         import 
+          import SI = Modelica.SIunits;
+          import 
             Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData;
           
          input SI.Diameter D_a "Inner diameter of pipe at port_a" annotation(Dialog);
@@ -1000,9 +1003,9 @@ port_a to port_b as:
         
        encapsulated function sharpEdgedOrifice 
           "Return pressure loss data for sharp edged orifice (for both flow directions)" 
-         import SI = Modelica.SIunits;
-         import NonSI = Modelica.SIunits.Conversions.NonSIunits;
-         import 
+          import SI = Modelica.SIunits;
+          import NonSI = Modelica.SIunits.Conversions.NonSIunits;
+          import 
             Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData;
           
          input SI.Diameter D_pipe 
@@ -1686,6 +1689,8 @@ The used sufficient criteria for monotonicity follows from:
           "= true, if dp_small is used in function, otherwise value is not used";
         constant Boolean use_m_flow_small = true 
           "= true, if m_flow_small is used in function, otherwise value is not used";
+        constant Boolean dp_is_zero = false 
+          "= true, if no wall friction is present, i.e., dp = 0 (function massFlowRate_dp() cannot be used)";
         
       // pressure loss characteristic functions
         replaceable partial function massFlowRate_dp 
@@ -1777,7 +1782,8 @@ to zero, i.e., it allows to switch off pipe wall friction.
                   final use_eta = false,
                   final use_roughness = false,
                   final use_dp_small = false,
-                  final use_m_flow_small = false);
+                  final use_m_flow_small = false,
+                  final dp_is_zero = true);
         
         redeclare function extends massFlowRate_dp 
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction" 
@@ -1786,7 +1792,9 @@ to zero, i.e., it allows to switch off pipe wall friction.
  
 </html>"));
         algorithm 
-          m_flow := 0;
+          assert(false, "function massFlowRate_dp (option: from_dp=true)
+cannot be used for WallFriction.NoFriction. Use instead
+function pressureLoss_m_flow (option: from_dp=false)");
         end massFlowRate_dp;
         
         redeclare function extends pressureLoss_m_flow 

@@ -33,21 +33,21 @@ model TestSimpleGenericOrifice
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,10; 40,30]);
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice expansion1(
-    redeclare package Medium = Medium, 
-    zeta=zeta, 
+    redeclare package Medium = Medium,
+    zeta=zeta,
     diameter=D_a) 
              annotation (extent=[0,40; 20,60]);
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice expansion2(
     redeclare package Medium = Medium,
-    from_dp=false, 
-    zeta=zeta, 
+    from_dp=false,
+    zeta=zeta,
     diameter=D_a) annotation (extent=[0,10; 20,30]);
   inner Components.FluidOptions fluidOptions 
     annotation (extent=[-100,-100; -80,-80]);
   Modelica_Fluid.PressureLosses.SuddenExpansion expansion3(
     redeclare package Medium = Medium,
-    use_Re=false, 
-    D_a=D_a, 
+    use_Re=false,
+    D_a=D_a,
     D_b=D_b) annotation (extent=[0,-20; 20,0]);
   Sources.FixedAmbient_pTX ambient_p3(
     redeclare package Medium = Medium,
@@ -56,9 +56,9 @@ model TestSimpleGenericOrifice
     annotation (extent=[60,-20; 40,0]);
   Modelica_Fluid.PressureLosses.SuddenExpansion expansion4(
     redeclare package Medium = Medium,
-    use_Re=false, 
-    D_a=D_a, 
-    D_b=D_b, 
+    use_Re=false,
+    D_a=D_a,
+    D_b=D_b,
     from_dp=false) 
              annotation (extent=[0,-60; 20,-40]);
   Sources.FixedAmbient_pTX ambient_p4(
@@ -97,11 +97,11 @@ equation
       fillColor=7,
       rgbfillColor={255,255,255},
       fillPattern=1));
-  connect(ambient.port, expansion3.port_a) annotation (points=[-20,50; -10,50; 
+  connect(ambient.port, expansion3.port_a) annotation (points=[-20,50; -10,50;
         -10,-10; 0,-10], style(color=69, rgbcolor={0,127,255}));
   connect(expansion3.port_b, ambient_p3.port) annotation (points=[20,-10; 40,
         -10], style(color=69, rgbcolor={0,127,255}));
-  connect(ambient.port, expansion4.port_a) annotation (points=[-20,50; -10,50; 
+  connect(ambient.port, expansion4.port_a) annotation (points=[-20,50; -10,50;
         -10,-50; 0,-50], style(color=69, rgbcolor={0,127,255}));
   connect(expansion4.port_b, ambient_p4.port) annotation (points=[20,-50; 40,
         -50], style(color=69, rgbcolor={0,127,255}));

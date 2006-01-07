@@ -3,7 +3,8 @@ model ThreeTanksIF97WithShortPipe2
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
   
-  replaceable package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater
+  replaceable package Medium = 
+      Modelica.Media.Water.ConstantPropertyLiquidWater 
       extends Modelica.Media.Interfaces.PartialMedium "Medium in the component"
       annotation (choicesAllMatching = true);
   // replaceable package Medium = Modelica.Media.Water.WaterIF97_ph 
