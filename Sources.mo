@@ -97,7 +97,7 @@ with exception of ambient pressure, do not have an effect.
       Icon(Ellipse(extent=[-100,100; 100,-100], style(
             color=69,
             gradient=3,
-            fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
+            fillColor=69)), Text(extent=[-150,150; 150,100],   string="%name")),
       Documentation(info="<html>
 <p>
 Defines constant values for ambient conditions:

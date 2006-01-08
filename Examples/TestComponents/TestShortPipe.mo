@@ -16,7 +16,7 @@ model TestShortPipe "Test ShortPipe component"
     diameter=0.02) 
     annotation (extent=[-10,0; 10,20]);
   
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX m_flow_source(T=from_degC(30), 
+  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX m_flow_source(T=from_degC(30),
       redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[-50,0; -30,20]);

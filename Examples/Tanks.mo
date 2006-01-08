@@ -290,7 +290,7 @@ is that the system starts in steady state, i.e., with constant
     // replaceable package Medium = Modelica.Media.Water.StandardWaterOnePhase extends 
     // replaceable package Medium = Modelica.Media.Incompressible.Examples.Glycol47 extends
      replaceable package Medium = 
-        Modelica.Media.Water.StandardWaterOnePhase                           extends 
+        Modelica.Media.Water.ConstantPropertyLiquidWater                           extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
     

@@ -237,6 +237,8 @@ features are:
       "Medium properties in port_b";
     Medium.MassFlowRate m_flow(start=0) 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
+    SI.VolumeFlowRate V_flow_a = port_a.m_flow/medium_a.d 
+      "Volume flow rate near port_a";
     SI.Pressure dp(start=0) "Pressure difference between port_a and port_b";
     
     annotation (

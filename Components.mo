@@ -92,6 +92,9 @@ component.
 </HTML>
 "));
     
+    Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape dummyShape 
+      "Just temporarily, to force Dymola to open an animation window (only then animation setup is available for diagram animation)"
+      annotation (extent=[-60,20; -40,40]);
 end FluidOptions;
   
   model MixingVolume 
@@ -329,7 +332,41 @@ with examples first (see sub-package Examples).
 </p>
 </html>"));
   
-  
+  model StaticHead 
+    "Models the static head between two ports at different heights" 
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+    parameter SI.Height H_b_a "Height of port b over port a";
+    parameter SI.Acceleration g = Modelica.Constants.g_n "Gravity acceleration"
+                                                                                 annotation(Dialog(tab="Advanced"));
+    Medium.Density d "Fluid density";
+    annotation (Icon(
+        Rectangle(extent=[-100,60; 100,-60],   style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[-100,34; 100,-36],   style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Text(
+          extent=[-150,140; 150,80],
+          string="%name",
+          style(gradient=2, fillColor=69))), Documentation(info="<html>
+<p>
+This model describes the static head due to the relative height between the two connectors. No mass, energy and momentum storage, and no pressure drop due to friction are considered.
+</p>
+</html>", revisions="<html>
+<ul>
+<li><i>2 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Added to Modelica_Fluid</li>
+</ul>
+</html>"));
+  equation 
+   d = if dp > 0 then medium_a.d else medium_b.d;
+   port_a.p = port_b.p + H_b_a*g*d;
+  end StaticHead;
+
   model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
     import SI = Modelica.SIunits;
     import Modelica_Fluid.Types;
@@ -346,24 +383,24 @@ with examples first (see sub-package Examples).
       annotation(Dialog(group="topPorts (= pipes at top of tank; only flow into tank)"));
     parameter SI.Height top_heights[n_topPorts]=fill(height,n_topPorts) 
       "Heights of topPorts" 
-      annotation(Dialog(group="topPorts (= pipes at top of tank; only flow into tank)"));
+      annotation(Dialog(group="topPorts (= pipes at top of tank; only flow into tank)",enable=n_topPorts > 0));
     
     parameter Integer n_bottomPorts = 0 "Number of bottomPorts" 
        annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)"));
     parameter SI.Height bottom_heights[n_bottomPorts]=fill(0.0,n_bottomPorts) 
       "Heights of bottomPorts" 
-       annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)"));
+       annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)",enable=n_bottomPorts > 0));
     parameter SI.Diameter bottom_diameters[n_bottomPorts] 
       "Inner (hydraulic) diameters of bottomPorts" 
-       annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)"));
+       annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)", enable=n_bottomPorts > 0));
     
     parameter Integer n_sidePorts = 0 "Number of sidePorts" 
        annotation(Dialog(group="sidePorts (= pipes at side of tank; in and out flow of tank)"));
     parameter SI.Height side_heights[n_sidePorts] "Heights of sidePorts" 
-       annotation(Dialog(group="sidePorts (= pipes at side of tank; in and out flow of tank)"));
+       annotation(Dialog(group="sidePorts (= pipes at side of tank; in and out flow of tank)",enable=n_sidePorts > 0));
     parameter SI.Area side_diameters[n_sidePorts] 
       "Inner (hydraulic) diameters of sidePorts" 
-       annotation(Dialog(group="sidePorts (= pipes at side of tank; in and out flow of tank)"));
+       annotation(Dialog(group="sidePorts (= pipes at side of tank; in and out flow of tank)",enable=n_sidePorts > 0));
     
     parameter Medium.AbsolutePressure p_ambient=fluidOptions.default_p_ambient 
       "Tank surface pressure" 
@@ -382,6 +419,12 @@ with examples first (see sub-package Examples).
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nXi > 0));
+    
+  /*
+  parameter Real k_small(min=0) = 0 
+    "Small regularization range if tank level is below bottom_heights[i] or side_heights[i]; k_small = 0 gives ideal switch"
+              annotation(Evaluate=true, Dialog(tab="Advanced"));
+*/
     
     Modelica_Fluid.Interfaces.FluidPort_ArrayIcon topPorts[n_topPorts](redeclare 
         package Medium = Medium, m_flow(each start=0), mXi_flow(each start=0)) 
@@ -438,6 +481,9 @@ with examples first (see sub-package Examples).
       each Xi=medium.Xi,
       each p_ambient=p_ambient,
       each level=level,
+      each h_start = h_start,
+      each X_start = X_start,
+      each level_start = level_start,
       H_flow=H_flow_topPorts,
       m_flow=m_flow_topPorts,
       mXi_flow=mXi_flow_topPorts,
@@ -451,6 +497,9 @@ with examples first (see sub-package Examples).
       each Xi=medium.Xi,
       each p_ambient=p_ambient,
       each level=level,
+      each h_start = h_start,
+      each X_start = X_start,
+      each level_start = level_start,
       H_flow=H_flow_bottomPorts,
       m_flow=m_flow_bottomPorts,
       mXi_flow=mXi_flow_bottomPorts,
@@ -464,6 +513,9 @@ with examples first (see sub-package Examples).
       each Xi=medium.Xi,
       each p_ambient=p_ambient,
       each level=level,
+      each h_start = h_start,
+      each X_start = X_start,
+      each level_start = level_start,
       H_flow=H_flow_sidePorts,
       m_flow=m_flow_sidePorts,
       mXi_flow=mXi_flow_sidePorts,
@@ -499,21 +551,27 @@ with examples first (see sub-package Examples).
     // Q_lost = - k*2*sqrt(Modelica.Constants.pi*area)*level*(medium.T - T_ambient);
     
     // Mass balances
-    der(m) = sum(m_flow_bottomPorts) + sum(m_flow_sidePorts) + sum(m_flow_topPorts);
+    if level >= 0 then
+       der(m) = sum(m_flow_bottomPorts) + sum(m_flow_sidePorts) + sum(m_flow_topPorts);
+    else
+       der(m) = 0;
+    end if;
+    
     for i in 1:Medium.nXi loop
-      der(mXi[i]) = sum(mXi_flow_bottomPorts[i,:]) +
-                    sum(mXi_flow_sidePorts[i,:]) +
-                    sum(mXi_flow_topPorts[i,:]);
+      if level >= 0 then
+         der(mXi[i]) = sum(mXi_flow_bottomPorts[i,:]) +
+                       sum(mXi_flow_sidePorts[i,:]) +
+                       sum(mXi_flow_topPorts[i,:]);
+      end if;
     end for;
     
     // Energy balance
     if Medium.singleState then
-      der(U) = sum(H_flow_bottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) + Q_lost 
+       der(U) = sum(H_flow_bottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) + Q_lost 
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
     else
-      der(U) = sum(H_flow_bottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) - p_ambient*der(V) + Q_lost;
+       der(U) = sum(H_flow_bottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) - p_ambient*der(V) + Q_lost;
     end if;
-    
     assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
     
   initial equation 
@@ -606,6 +664,7 @@ whether a pipe is connected to the top, bottom or side of the tank.
 All ports are defined by height (with respect to bottom of tank)
 and the diameter of the component that is attached to this port.
 </p>
+ 
  
 </HTML>", revisions="<html>
 <ul>
@@ -824,27 +883,27 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
     parameter Medium.MassFlowRate m_flow_leakage = 0 
       "Leakage flow (might eliminate numerical problems if > 0)";
     Modelica.Blocks.Interfaces.BooleanInput open 
-    annotation (extent=[-20,70; 20,110],   rotation=-90);
+    annotation (extent=[-20,60; 20,100],   rotation=-90);
   equation 
     m_flow = if open then Kv*dp else m_flow_leakage;
     
   annotation (
     Icon(
-        Line(points=[0,54; 0,-10], style(
+        Line(points=[0,50; 0,0],   style(
             color=0,
             rgbcolor={0,0,0},
             fillPattern=1)),
-        Polygon(points=[-100,50; -100,-50; 0,-10; -100,50], style(
+        Polygon(points=[-100,50; -100,-50; 0,0; -100,50],   style(
             color=0,
             rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255})),
-        Polygon(points=[100,50; 0,-10; 100,-50; 100,50], style(
+        Polygon(points=[100,50; 0,0; 100,-50; 100,50],   style(
             color=0,
             rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255})),
-        Rectangle(extent=[-20,70; 20,50],   style(
+        Rectangle(extent=[-20,60; 20,50],   style(
             color=0,
             fillColor=0,
             fillPattern=1)),
@@ -1294,39 +1353,5 @@ The details of the pipe friction model are described
        eta = 0;
     end if;
   end PressureDropPipe;
-
-  model StaticHead 
-    "Obsolet. Use instead PressureLosses.WallfrictionAndGravity (StaticHead: Models the static head between two ports at different heights)" 
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
-    parameter SI.Height H_b_a "Height of port b over port a";
-    parameter SI.Acceleration g = Modelica.Constants.g_n "Gravity acceleration"
-                                                                                 annotation(Dialog(tab="Advanced"));
-    Medium.Density d "Fluid density";
-    annotation (Icon(
-        Rectangle(extent=[-100,60; 100,-60],   style(
-            color=0,
-            gradient=2,
-            fillColor=8)),
-        Rectangle(extent=[-100,34; 100,-36],   style(
-            color=69,
-            gradient=2,
-            fillColor=69)),
-        Text(
-          extent=[-150,140; 150,80],
-          string="%name",
-          style(gradient=2, fillColor=69))), Documentation(info="<html>
-<p>
-This model describes the static head due to the relative height between the two connectors. No mass, energy and momentum storage, and no pressure drop due to friction are considered.
-</p>
-</html>", revisions="<html>
-<ul>
-<li><i>2 Nov 2005</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Added to Modelica_Fluid</li>
-</ul>
-</html>"));
-  equation 
-   d = if dp > 0 then medium_a.d else medium_b.d;
-   port_a.p = port_b.p + H_b_a*g*d;
-  end StaticHead;
+  
 end Components;

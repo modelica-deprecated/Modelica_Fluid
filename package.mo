@@ -1,12 +1,10 @@
 package Modelica_Fluid "Fluid package that shall be included into package Modelica (requires package Modelica 2.2.1)"
 annotation (
-  version="0.952",
-  versionDate="2005-11-09",
+  version="0.96",
+  versionDate="2006-01-08",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses( Modelica(version="2.2",
-    Media(         version="0.98")),
-    UserInteraction(version="0.52")),
+  uses( Modelica(version="2.2")),
   Documentation(info="<html>
 <p>
 Note, the current version of Modelica_Fluid does <b>not</b> work with
@@ -1142,6 +1140,18 @@ ambiguity is removed by rule 2.</i></p>
     
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
+
+<h3><font color=\"#008000\">Version 0.96, 2006-01-08</font></h3>
+
+<ul>
+<li> New package Modelica_Fluid.PressureLosses.</li>
+<li> New package Modelica_Fluid.WorkInProgress.</li>
+<li> New components in Modelica_Fluid.Components:<br>
+     ShortPipe, OpenTank, ValveDiscrete, StaticHead.</li>
+<li> New components in Modelica_Fluid.Examples.</li>
+<li> Improved users guide.</li>
+</ul>
+
 <h3><font color=\"#008000\">Version 0.910, 2005-10-25</font></h3>
 <ul>
 <li> Changes as decided on 41th-45th Modelica Design Meetings
