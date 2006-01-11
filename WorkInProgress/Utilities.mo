@@ -776,9 +776,9 @@ It consists of the following parts:
 </html>"));
 initial equation 
   // Initial conditions
-  if initOption == NoInit then
+  if initOption2 == NoInit then
     // no initial equations
-  elseif initOption == InitialValues then
+  elseif initOption2 == InitialValues then
     if not Medium.singleState then
       medium.p = p_start;
     end if;
@@ -788,13 +788,13 @@ initial equation
       medium.h = h_start;
     end if;
     medium.Xi = X_start[1:Medium.nXi];
-  elseif initOption == SteadyState then
+  elseif initOption2 == SteadyState then
     if not Medium.singleState then
        der(medium.p) = 0;
     end if;
     der(medium.h) = 0;
     der(medium.Xi) = zeros(Medium.nXi);
-  elseif initOption == SteadyStateHydraulic then
+  elseif initOption2 == SteadyStateHydraulic then
     if not Medium.singleState then
        der(medium.p) = 0;
     end if;
