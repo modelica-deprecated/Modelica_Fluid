@@ -337,9 +337,10 @@ is that the system starts in steady state, i.e., with constant
   end TwoOpenTanks;
   
   model ThreeOpenTanks "Demonstrating the usage of OpenTank" 
+    
     annotation (
       Diagram,
-      experiment(StopTime=40),
+      experiment(StopTime=150),
       Coordsys(grid=[1, 1], component=[20, 20]),
       uses(Modelica_Fluid(version="0.952")),
       experimentSetupOutput,
@@ -391,11 +392,11 @@ is that the system starts in steady state, i.e., with constant
       top_heights={10},
       redeclare package Medium = Medium,
       initOption=Modelica_Fluid.Types.Init.InitialValues,
-      height=10,
       n_sidePorts=1,
       side_diameters={0.05},
       n_topPorts=1,
-      side_heights={6.5})                                   annotation (extent=[-40,-90;
+      side_heights={6.5},
+      height=20)                                            annotation (extent=[-40,-90;
           0,-50]);
     
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(

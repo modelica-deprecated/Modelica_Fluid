@@ -103,8 +103,8 @@ package Interfaces
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
-    parameter Types.InitWithGlobalDefault.Temp initOption=
-              Types.InitWithGlobalDefault.UseGlobalFluidOption 
+    parameter Modelica_Fluid.Types.InitWithGlobalDefault.Temp initOption=
+              Modelica_Fluid.Types.InitWithGlobalDefault.UseGlobalFluidOption 
       "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_start = Medium.p_default 
@@ -128,7 +128,7 @@ package Interfaces
     outer Modelica_Fluid.Components.FluidOptions fluidOptions 
       "Global default options";
     parameter Types.Init.Temp initOption2=
-        if initOption == Types.InitWithGlobalDefault.UseGlobalFluidOption then 
+        if initOption == Modelica_Fluid.Types.InitWithGlobalDefault.UseGlobalFluidOption then 
              fluidOptions.default_initOption else initOption 
         annotation(Evaluate=true, Hide=true);
   end PartialInitializationParameters;
@@ -162,8 +162,6 @@ package Interfaces
   partial model PartialSource 
     "Partial component source with one fluid connector" 
     import Modelica.Constants;
-    import Modelica_Fluid.Types.FlowDirection;
-    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium model within the source" 
        annotation (choicesAllMatching=true);
@@ -171,17 +169,18 @@ package Interfaces
                      m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
       annotation (extent=[90,-10; 110,10],    rotation=0);
     Medium.BaseProperties medium "Medium in the source";
-    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
-              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+    parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
+      flowDirection=
+              Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
       "Unidirectional (out of port_b) or bidirectional flow component" 
                                                                 annotation(Dialog(tab="Advanced"));
   protected 
     outer Modelica_Fluid.Components.FluidOptions fluidOptions 
       "Global default options";
     parameter Boolean allowFlowReversal=
-       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
-       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
-       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+       flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "= false, if flow only out of port_b, otherwise reversing flow allowed" 
        annotation(Evaluate=true, Hide=true);
   equation 
@@ -209,32 +208,25 @@ features are:
     "Partial element transporting fluid between two ports without storing mass or energy" 
     import SI = Modelica.SIunits;
     import Modelica.Constants;
-    import Modelica_Fluid.Types.FlowDirection;
-    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component"  annotation (
         choicesAllMatching =                                                                            true);
     
-    extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
-    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
-              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+    parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
+      flowDirection= Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
     
     FluidPort_a port_a(redeclare package Medium = Medium,
-                       m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+                       m_flow(start=0,min=if allowFlowReversal then -Constants.inf else 0)) 
       "Fluid connector a (positive design flow direction is from port_a to port_b)"
       annotation (extent=[-110,-10; -90,10]);
     FluidPort_b port_b(redeclare package Medium = Medium,
-                       m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
+                       m_flow(start=0,max=if allowFlowReversal then +Constants.inf else 0)) 
       "Fluid connector b (positive design flow direction is from port_a to port_b)"
       annotation (extent=[110,-10; 90,10]);
-    Medium.BaseProperties medium_a(p(start=p_start), h(start=h_start),
-                 T(start=T_start), Xi(start=X_start[1:Medium.nXi])) 
-      "Medium properties in port_a";
-    Medium.BaseProperties medium_b(p(start=p_start), h(start=h_start),
-                 T(start=T_start), Xi(start=X_start[1:Medium.nXi])) 
-      "Medium properties in port_b";
+    Medium.BaseProperties medium_a "Medium properties in port_a";
+    Medium.BaseProperties medium_b "Medium properties in port_b";
     Medium.MassFlowRate m_flow(start=0) 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
     SI.VolumeFlowRate V_flow_a = port_a.m_flow/medium_a.d 
@@ -260,9 +252,9 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     outer Modelica_Fluid.Components.FluidOptions fluidOptions 
       "Global default options";
     parameter Boolean allowFlowReversal=
-       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
-       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
-       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+       flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
   equation 
@@ -319,8 +311,6 @@ as signal.
     "Partial component to model sensors that measure flow properties" 
     
     import Modelica.Constants;
-    import Modelica_Fluid.Types.FlowDirection;
-    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
     
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
@@ -335,8 +325,9 @@ as signal.
                        m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
       annotation (extent=[110,-10; 90,10]);
     
-    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
-              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+    parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
+      flowDirection=
+              Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
     
@@ -355,9 +346,9 @@ this partial class should add a medium instance to calculate the measured proper
     outer Modelica_Fluid.Components.FluidOptions fluidOptions 
       "Global default options";
     parameter Boolean allowFlowReversal=
-       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
-       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
-       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+       flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
   equation 
@@ -531,8 +522,6 @@ public
   partial model PartialPump "Base model for centrifugal pumps" 
     import Modelica.SIunits.Conversions.NonSIunits.*;
     import Modelica.Constants;
-    import Modelica_Fluid.Types.FlowDirection;
-    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" annotation(choicesAllMatching=true);
     Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
@@ -565,8 +554,9 @@ public
     parameter Integer Np_nom(min=1) = 1 "Nominal number of pumps in parallel";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
     parameter Boolean checkValve=true "Reverse flow stopped";
-    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
-              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+    parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
+      flowDirection=
+              Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
       "Unidirectional (inlet -> outlet) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
     parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";
@@ -634,9 +624,9 @@ public
     outer Modelica_Fluid.Components.FluidOptions fluidOptions 
       "Global default options";
    parameter Boolean allowFlowReversal=
-       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
-       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
-       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+       flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional
+       or flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption
+       and fluidOptions.default_flowDirection ==Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
   equation 

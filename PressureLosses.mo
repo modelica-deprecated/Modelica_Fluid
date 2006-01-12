@@ -4,7 +4,13 @@ model SimpleGenericOrifice
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
     import SI = Modelica.SIunits;
     import Modelica_Fluid.PressureLosses.Utilities.SimpleGenericOrifice;
-  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(m_flow(start=0), dp(start=0));
+    
+  extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
+  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+                medium_a(p(start=p_start), h(start=h_start),
+                         T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
+                medium_b(p(start=p_start), h(start=h_start),
+                         T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
     
   parameter Real zeta "Loss factor for flow of port_a -> port_b";
   parameter SI.Diameter diameter 
@@ -90,7 +96,13 @@ end SimpleGenericOrifice;
   model WallFrictionAndGravity 
     "Pressure drop in pipe due to wall friction and gravity (for both flow directions)" 
     import SI = Modelica.SIunits;
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+    
+    extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+                  medium_a(p(start=p_start), h(start=h_start),
+                           T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
+                  medium_b(p(start=p_start), h(start=h_start),
+                           T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
     
     replaceable package WallFriction = 
       Modelica_Fluid.PressureLosses.Utilities.WallFriction.QuadraticTurbulent 
@@ -1485,7 +1497,13 @@ Laminar region:
       
       model BaseModel 
         "Generic pressure drop component with constant turbulent loss factor data and without an icon" 
-        extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(m_flow(start=0), dp(start=0));
+        
+        extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
+        extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+                      medium_a(p(start=p_start), h(start=h_start),
+                               T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
+                      medium_b(p(start=p_start), h(start=h_start),
+                               T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
         
         SI.ReynoldsNumber Re = Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
               m_flow, (Medium.dynamicViscosity(medium_a) + Medium.dynamicViscosity(medium_b))/2,

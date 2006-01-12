@@ -13,12 +13,12 @@ model PumpingSystem "Model of a pumping system for drinking water"
     frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantTurbulent,
     m_flow_nominal=1000,
     dp_nominal=Modelica.SIunits.Conversions.from_bar(0.3),
-    allowFlowReversal=false) 
+    flowDirection= Modelica_Fluid.Types.FlowDirection.Unidirectional) 
     annotation (extent=[-32,-40; -16,-20]);
   
   Components.StaticHead pipeHead(H_b_a=50, redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
-    allowFlowReversal=false) 
+    flowDirection= Modelica_Fluid.Types.FlowDirection.Unidirectional) 
     annotation (extent=[-48,-64; -30,-38], rotation=90);
   Components.Pump pumps(
     checkValve=true,
@@ -46,7 +46,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
   
   Components.ValveLinear userValve(redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater, Kv=200/2e5,
-    allowFlowReversal=false) 
+    flowDirection= Modelica_Fluid.Types.FlowDirection.Unidirectional) 
     annotation (extent=[58,-38; 74,-22]);
   Sources.FixedAmbient ambient(redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 

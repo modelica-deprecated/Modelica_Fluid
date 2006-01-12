@@ -232,6 +232,11 @@ end FluidOptions;
       "Nominal dynamic viscosity (for wall friction computation)" annotation(Dialog(enable=use_nominal));
     parameter SI.Density d_nominal = 0.01 
       "Nominal density (for wall friction computation)" annotation(Dialog(enable=use_nominal));
+    parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
+      flowDirection=
+              Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
     parameter SI.AbsolutePressure dp_small = 1 
       "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
@@ -366,7 +371,7 @@ This model describes the static head due to the relative height between the two 
    d = if dp > 0 then medium_a.d else medium_b.d;
    port_a.p = port_b.p + H_b_a*g*d;
   end StaticHead;
-
+  
   model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
     import SI = Modelica.SIunits;
     import Modelica_Fluid.Types;
@@ -475,7 +480,7 @@ This model describes the static head due to the relative height between the two 
     Medium.MassFlowRate mXi_flow_sidePorts[n_sidePorts,Medium.nXi];
     
   protected 
-    Modelica_Fluid.Utilities.PipeAttachment pipeAttachmentTop[n_topPorts](
+    Modelica_Fluid.Utilities.TankAttachment tankAttachmentTop[n_topPorts](
       each h=medium.h,
       each d=medium.d,
       each Xi=medium.Xi,
@@ -484,14 +489,14 @@ This model describes the static head due to the relative height between the two 
       each h_start = h_start,
       each X_start = X_start,
       each level_start = level_start,
+      each onlyInFlow=true,
       H_flow=H_flow_topPorts,
       m_flow=m_flow_topPorts,
       mXi_flow=mXi_flow_topPorts,
       pipeHeight=top_heights,
-      redeclare package Medium = Medium,
-      each onlyInFlow=true) 
+      redeclare package Medium = Medium) 
         annotation (extent=[-20,80; 20,40]);
-    Modelica_Fluid.Utilities.PipeAttachment pipeAttachmentBottom[n_bottomPorts](
+    Modelica_Fluid.Utilities.TankAttachment tankAttachmentBottom[n_bottomPorts](
       each h=medium.h,
       each d=medium.d,
       each Xi=medium.Xi,
@@ -500,6 +505,7 @@ This model describes the static head due to the relative height between the two 
       each h_start = h_start,
       each X_start = X_start,
       each level_start = level_start,
+      each onlyInFlow=false,
       H_flow=H_flow_bottomPorts,
       m_flow=m_flow_bottomPorts,
       mXi_flow=mXi_flow_bottomPorts,
@@ -507,7 +513,7 @@ This model describes the static head due to the relative height between the two 
       pipeDiameter=bottom_diameters,
       redeclare package Medium = Medium) 
         annotation (extent=[-20,-80; 20,-40]);
-    Modelica_Fluid.Utilities.PipeAttachment pipeAttachmentSide[n_sidePorts](
+    Modelica_Fluid.Utilities.TankAttachment tankAttachmentSide[n_sidePorts](
       each h=medium.h,
       each d=medium.d,
       each Xi=medium.Xi,
@@ -516,6 +522,7 @@ This model describes the static head due to the relative height between the two 
       each h_start = h_start,
       each X_start = X_start,
       each level_start = level_start,
+      each onlyInFlow=false,
       H_flow=H_flow_sidePorts,
       m_flow=m_flow_sidePorts,
       mXi_flow=mXi_flow_sidePorts,
@@ -526,19 +533,19 @@ This model describes the static head due to the relative height between the two 
     
   equation 
     for i in 1:n_bottomPorts loop
-      connect(pipeAttachmentBottom[i].port, bottomPorts[i]) 
+      connect(tankAttachmentBottom[i].port, bottomPorts[i]) 
         annotation (points=[0,-80.4; 0,-104],
                                             style(color=3, rgbcolor={0,0,255}));
     end for;
     
     for i in 1:n_topPorts loop
-       connect(pipeAttachmentTop[i].port, topPorts[i]) 
+       connect(tankAttachmentTop[i].port, topPorts[i]) 
          annotation (points=[0,80.4; 0,104],
                                            style(color=3, rgbcolor={0,0,255}));
     end for;
     
     for i in 1:n_sidePorts loop
-       connect(pipeAttachmentSide[i].port, sidePorts[i]) 
+       connect(tankAttachmentSide[i].port, sidePorts[i]) 
          annotation (points=[80.4,-1.2491e-015; 104,0],
                                              style(color=3, rgbcolor={0,0,255}));
     end for;
@@ -551,18 +558,11 @@ This model describes the static head due to the relative height between the two 
     // Q_lost = - k*2*sqrt(Modelica.Constants.pi*area)*level*(medium.T - T_ambient);
     
     // Mass balances
-    if level >= 0 then
-       der(m) = sum(m_flow_bottomPorts) + sum(m_flow_sidePorts) + sum(m_flow_topPorts);
-    else
-       der(m) = 0;
-    end if;
-    
+    der(m) = sum(m_flow_bottomPorts) + sum(m_flow_sidePorts) + sum(m_flow_topPorts);
     for i in 1:Medium.nXi loop
-      if level >= 0 then
          der(mXi[i]) = sum(mXi_flow_bottomPorts[i,:]) +
                        sum(mXi_flow_sidePorts[i,:]) +
                        sum(mXi_flow_topPorts[i,:]);
-      end if;
     end for;
     
     // Energy balance
@@ -665,6 +665,10 @@ All ports are defined by height (with respect to bottom of tank)
 and the diameter of the component that is attached to this port.
 </p>
  
+<p>
+In a diagram animation, the fill level of the tank
+is visualized, as well as the value of level.
+</p>
  
 </HTML>", revisions="<html>
 <ul>
@@ -879,13 +883,13 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
   model ValveDiscrete "Valve for water/steam flows with linear pressure drop" 
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     parameter Modelica_Fluid.Types.HydraulicConductance Kv 
-      "Hydraulic conductance at full opening";
-    parameter Medium.MassFlowRate m_flow_leakage = 0 
-      "Leakage flow (might eliminate numerical problems if > 0)";
+      "Hydraulic conductance for open valve (m_flow = Kv*dp)";
+    parameter Real Kv_small_rel = 0 
+      "Relative hydraulic conductance for closed valve (m_flow = Kv_small_rel*Kv*dp)";
     Modelica.Blocks.Interfaces.BooleanInput open 
     annotation (extent=[-20,60; 20,100],   rotation=-90);
   equation 
-    m_flow = if open then Kv*dp else m_flow_leakage;
+    m_flow = if open then Kv*dp else Kv_small_rel*Kv*dp;
     
   annotation (
     Icon(
@@ -893,25 +897,31 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
             color=0,
             rgbcolor={0,0,0},
             fillPattern=1)),
-        Polygon(points=[-100,50; -100,-50; 0,0; -100,50],   style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-        Polygon(points=[100,50; 0,0; 100,-50; 100,50],   style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
         Rectangle(extent=[-20,60; 20,50],   style(
             color=0,
             fillColor=0,
             fillPattern=1)),
-           Text(extent=[-145,-58; 146,-98],   string="%name")),
+           Text(extent=[-145,-58; 146,-98],   string="%name"),
+        Polygon(points=[-100,50; 100,-50; 100,50; 0,0; -100,-50; -100,50], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=DynamicSelect(7, if open > 0.5 then 2 else 7)))),
     Diagram,
     Documentation(info="<HTML>
-<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>opening</tt> signal, without computing any fluid property.
-<p>A medium model must be nevertheless be specified, so that the fluid ports can be connected to other components using the same medium model.
+<
+<p>
+This very simple model provides a pressure drop which is proportional to the flowrate if the Boolean open signal is <b>true</b>. Otherwise, the
+mass flow rate is zero. If Kv_small_rel > 0, a small leakage
+mass flow rate occurs when open = <b>false</b>. This might be
+useful in certain situations when the model is not
+mathematically well-defined due to a closed valve.
+</p>
+
+<p>
+In a diagram animation, the valve is shown in \"green\", when
+it is open.
+</p>
+
 </HTML>",
       revisions="<html>
 <ul>

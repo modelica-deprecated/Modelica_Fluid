@@ -118,7 +118,7 @@ transport. This splitting is only possible under certain assumptions.
     input SI.Density d 
       "Dummy or upstream density for detailed friction model used for pressure loss calculation";
     SI.Pressure dp(start=0) "Pressure loss due to pipe friction";
-    SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+    SI.MassFlowRate m_flow(start=0) "Mass flow rate from port_a to port_b";
     
     parameter Modelica_Fluid.Types.FrictionTypes.Temp frictionType=Modelica_Fluid.Types.
         FrictionTypes.ConstantTurbulent 
@@ -794,11 +794,11 @@ k1=1, k2=3 is shown in the next figure:
 <p>
 <img src=\"../Images/Components/regRoot2_c.png\">
 </p>
-
+ 
 <p>
 <b>Literature</b>
 </p>
-
+ 
 <dl>
 <dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
 <dd> <b>Monotone piecewise cubic interpolation</b>.
@@ -967,11 +967,11 @@ k1=1, k2=3 is shown in the next figure:
 <p>
 <img src=\"../Images/Components/regSquare2_c.png\">
 </p>
-
+ 
 <p>
 <b>Literature</b>
 </p>
-
+ 
 <dl>
 <dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
 <dd> <b>Monotone piecewise cubic interpolation</b>.
@@ -1086,7 +1086,7 @@ k1=1, k2=3 is shown in the next figure:
 </html>"));
   end ReynoldsNumber_m_flow;
   
-  model PipeAttachment "Equations to attach pipe at tank" 
+  model TankAttachment "Equations to attach pipe at tank" 
     import SI = Modelica.SIunits;
       replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -1106,7 +1106,8 @@ k1=1, k2=3 is shown in the next figure:
       "Start value of mass fractions m_i/m";
       parameter SI.Height level_start "Start value of tank level";
     
-      input SI.AbsolutePressure p_ambient "Tank surface pressure" annotation(Dialog);
+      parameter SI.AbsolutePressure p_ambient "Tank surface pressure" 
+                                                                  annotation(Dialog);
       input SI.Height level "Actual tank level" annotation(Dialog);
       input Medium.SpecificEnthalpy h 
       "Actual specific enthalpy of fluid in tank"                 annotation(Dialog);
@@ -1114,12 +1115,10 @@ k1=1, k2=3 is shown in the next figure:
                                                         annotation(Dialog);
       input Medium.MassFraction Xi[Medium.nXi] 
       "Actual mass fractions of fluid in tank"                    annotation(Dialog);
-      parameter Real k_small(min=0) = 0 
+      parameter Real k_small(min=0) = 1e-5 
       "Small regularization range if tank level is below bottom_height or side_height; k_small = 0 gives ideal switch"
                 annotation(Evaluate=true);
       parameter Real s_start = 0;
-      final parameter Medium.MassFlowRate m_flow_nominal = 1 
-      "Nominal mass flow rate used for scaling (has only an effect if k_small > 0)";
     
       output Medium.EnthalpyFlowRate H_flow 
       "= port.H_flow (used to transform vector of connectors in vector of Real numbers)";
@@ -1137,7 +1136,7 @@ when the dimension is zero. Without this utility component
 it would not be possible to set, e.g., n_topPorts to zero.
 </p>
  
-
+ 
 </html>"), Icon(Rectangle(extent=[-100,0; 100,-100], style(
             color=3,
             rgbcolor={0,0,255},
@@ -1155,11 +1154,13 @@ it would not be possible to set, e.g., n_topPorts to zero.
     outer Modelica_Fluid.Components.FluidOptions fluidOptions 
       "Global default options";
     parameter SI.Area pipeArea = Modelica.Constants.pi*(pipeDiameter/2)^2;
+    parameter Medium.MassFlowRate m_flow_nominal = 1 
+      "Nominal mass flow rate used for scaling (has only an effect if k_small > 0)";
+    parameter Medium.AbsolutePressure p_nominal = p_ambient;
     SI.Length aboveLevel = level - pipeHeight;
     Boolean m_flow_out(start=true,fixed=true) "true= massflow out of tank";
     Real s(start=s_start) 
       "path parameter of parameterized curve description (either m_flow/m_flow_nominal or (port.p-p_ambient)/p_ambient)";
-    
   equation 
     H_flow = port.H_flow;
     m_flow = port.m_flow;
@@ -1202,15 +1203,15 @@ it would not be possible to set, e.g., n_topPorts to zero.
    IF97 water fail, whereas the above works. Therefore, not used. 
        Add the following text to OpenTank, once the initialization
    with this solution works for Modelica_Fluid.Examples.Tanks.ThreeOpenTanks:
-
+ 
 OpenTank:
 <p>
 The situation when the tank level is below bottom_heights[i] or side_heights[i]
 is handeled properly. Details are described
-<a href="Modelica:Modelica_Fluid.Utilities.PipeAttachment">here</a>
+<a href="Modelica:Modelica_Fluid.Utilities.TankAttachment">here</a>
 </p> 
  
-PipeAttachment:
+TankAttachment:
 <p>
 If a bottom or side connector is above the actual tank level, the
 following characteristic is used to compute the mass flow rate port.m_flow
@@ -1219,17 +1220,16 @@ in the port:
 </p>
  
 <img src="../Images/Components/Tank_PipeAboveTankLevel.png">   
-
-equations
-     m_flow_out = s < 0;
-     if aboveLevel > 0 or initial() then
-        m_flow = m_flow_nominal*s 
-        "equation to compute s, which is a dummy in this branch";
-        port.p = p_ambient + aboveLevel*fluidOptions.g*d  -
-                             smooth(2,if m_flow_out then m_flow^2/(2*d*pipeArea^2) else -k_small*p_ambient*s);
+ 
+ 
+     m_flow_out = s <= 0;
+     if aboveLevel >= 0 then
+        m_flow = m_flow_nominal*s "equation to compute s, which is a dummy in this branch";
+        port.p - p_ambient = aboveLevel*fluidOptions.g*d  -
+                             smooth(2,if m_flow_out then s*abs(s)*m_flow_nominal^2/(2*d*pipeArea^2) else k_small*m_flow_nominal*s);
      else
-        m_flow = m_flow_nominal*(if m_flow_out then k_small*s else s);
-        port.p = p_ambient*(1 + (if m_flow_out then s else k_small*s));
+        m_flow = (if m_flow_out then k_small*p_nominal else m_flow_nominal)*s;
+        port.p - p_ambient = (if m_flow_out then p_nominal else k_small*m_flow_nominal)*s;
      end if;
 */
       
@@ -1260,5 +1260,5 @@ equations
   der(E) = port.H_flow + port.m_flow*v^2/2 - p_ambient*area*der(level)
 */
     
-  end PipeAttachment;
+  end TankAttachment;
 end Utilities;
