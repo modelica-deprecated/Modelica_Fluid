@@ -1364,4 +1364,412 @@ The details of the pipe friction model are described
     end if;
   end PressureDropPipe;
   
+model LongPipe "Distributed pipe model with optional wall" 
+    import Modelica_Fluid;
+    
+  extends Modelica_Fluid.Interfaces.Flow1D(
+    Qs_flow=heat.Q_flow,
+    ms_flow=zeros(n),
+    msXi_flow=zeros(n, Medium.nXi));
+    
+  parameter SI.Area area_h = P_inner*length "Heat transfer area" annotation(Dialog(tab="General", group="Heat transfer"));
+    
+  parameter Boolean use_wall=false 
+      "= true, use wall component between fluid and thermalPort" 
+                                                                annotation(Dialog(tab="General", group="Wall - optional"),Evaluate=true);
+  parameter SI.Diameter d_outer "Outer diameter of circular pipe" annotation(Dialog(tab="General", group="Wall - optional", enable=(crossSectionType==1 and use_wall)));
+  parameter SI.Length h_outer "Outer height of rectangular pipe"  annotation(Dialog(tab="General", group="Wall - optional", enable=(crossSectionType==2 and use_wall)));
+  parameter SI.Length w_outer "Outer width of rectangular pipe"  annotation(Dialog(tab="General", group="Wall - optional", enable=(crossSectionType==2 and use_wall)));
+  parameter SI.Length A_outer = if crossSectionType == 1 then Modelica.Constants.pi*d_outer*d_outer/4 else if crossSectionType == 2 then h_outer*w_outer else 1 
+      "Outer cross section area" 
+                               annotation(Dialog(tab="General", group="Wall - optional", enable=(use_wall and crossSectionType==3)));
+  inner Medium.ThermodynamicState[n] state = medium.state;
+    
+  replaceable 
+      Modelica_Fluid.WorkInProgress.Utilities.PipeHeatTransfer.PipeHT_constAlpha
+      heat(
+    redeclare final package Medium = Medium,
+    final n=n,
+    final d_h=d_h,
+    final A_h=area_h,
+    T=medium.T) extends Modelica_Fluid.HeatTransfer.PartialPipeHeatTransfer(
+    redeclare final package Medium = Medium,
+    final n=n,
+    final d_h=d_h,
+    final A_h=area_h,
+    T=medium.T) "Convective heat transfer" 
+                annotation (Dialog(tab="General", group="Heat transfer"),choicesAllMatching, extent=[-20,-20;
+        20,20]);
+    
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort 
+      "Thermal port" 
+    annotation (extent=[-20,60; 20,80]);
+  replaceable model Wall = 
+        Modelica_Fluid.Components.Wall_constProps                    extends 
+      Modelica_Fluid.Interfaces.PartialPipeWall "Wall model"       annotation(choicesAllMatching, Dialog(enable=use_wall, tab="General", group="Wall - optional"));
+  Wall wall(final n=n, final a_inner=A_inner, final a_outer=A_outer, final 
+        length=length) if use_wall 
+                           annotation (extent=[10,20; 50,60]);
+  annotation (Icon(Rectangle(extent=[-100,60; 100,40], style(
+          color=0,
+          rgbcolor={0,0,0},
+          fillColor=10,
+          rgbfillColor={95,95,95},
+          fillPattern=7)), Rectangle(extent=[-100,-40; 100,-60], style(
+          color=0,
+          rgbcolor={0,0,0},
+          fillColor=10,
+          rgbfillColor={95,95,95},
+          fillPattern=7)),
+      Text(
+        extent=[-100,-60; 100,-100],
+        string="%name",
+        style(color=3, rgbcolor={0,0,255}))),
+                            Diagram,
+      Documentation(info="<html>
+<p>
+From Katrins email, Nov. 28, 2005:
+</p>
+ 
+<p>
+extends Interfaces.1DFlow. Pressure drop and heat transfer are added in terms of replaceable components. The main problem here is to make all required variables and parameters available to the respective component (medium state, pipe geometry, Medium functions, empirical parameters). Only those shared by all future replaceable models (the simple one parameter model and the highly sophisticated (fictitious) two phase Nusselt correlation) can be set by modifiers (which is not straightforward in Dymola at the moment if a contsraining clause is used).  Those not required by all models as i.e. viscosity and conductivitiy must be computed inside the component from medium properties made available via inner and outer. I always try to avoid this as it it as bit like free climbing, but in this case I see no better solution.
+</p>
+ 
+<p>
+Martin, I have not tested your latest pressure drop implementation with this model, but will do so as soon as possible. However, it is used in a completely different way, that means as an array of components, not as a  base class, in order to be able to handle distributed flow. I will check if another implementation would be more practical.
+</p>
+ 
+<p>
+The pipe model contains a Boolean flag useWall which determines if a wall component is added. Unfortunately the icon does not represent the difference. In this way a heat exchanger can be created using two instances of the pipe model, one with a wall and one without. If interested in transients it could also make sense to include a wall in an insulated pipe. 
+</p>
+ 
+</html>"));
+equation 
+    
+if use_wall then
+  connect(wall.thermalPort_a, thermalPort) annotation (points=[30,50; 30,60; 0,
+          60; 0,70],
+      style(
+      color=10,
+      rgbcolor={95,95,95},
+      fillColor=0,
+      rgbfillColor={0,0,0},
+      fillPattern=7));
+  connect(wall.thermalPort_b, heat.thermalPort) 
+                                              annotation (points=[30,30; 30,22;
+          0,22; 0,14],
+      style(
+      color=10,
+      rgbcolor={95,95,95},
+      fillColor=0,
+      rgbfillColor={0,0,0},
+      fillPattern=7));
+else
+  connect(thermalPort, heat.thermalPort) 
+                                       annotation (points=[0,70; 0,14],
+      style(
+      color=10,
+      rgbcolor={95,95,95},
+      fillColor=0,
+      rgbfillColor={0,0,0},
+      fillPattern=7));
+end if;
+end LongPipe;
+  
+model Wall_constProps 
+    "Pipe wall, assuming ideal 1D-conduction and constant material properties" 
+  extends Modelica_Fluid.Interfaces.PartialPipeWall;
+  parameter SI.Density d_wall "Density of wall material";
+  parameter SI.SpecificHeatCapacity c_wall 
+      "Specific heat capacity of wall material";
+  parameter SI.Temperature T_start "Start value for wall temperature";
+  parameter SI.Mass[n] m=ones(n)*(a_outer-a_inner)*length*d_wall/n "Wall mass";
+  parameter Modelica_Fluid.Types.Init.Temp initOption;
+  SI.Temperature[n] T(start=ones(n)*T_start, stateSelect=StateSelect.prefer) 
+      "Wall temperature";
+initial equation 
+  if initOption==3 then
+    der(T)=zeros(n);
+  else
+    T=ones(n)*T_start;
+  end if;
+equation 
+    
+  for i in 1:n loop
+   assert(m[i]>0, "Wall has negative dimensions");
+   c_wall*m[i]*der(T[i]) = thermalPort_a[i].Q_flow + thermalPort_b[i].Q_flow;
+  end for;
+  //assuming ideal heat conduction perpendicular to fluid flow, conduction in remaining two dimensions is neglected
+  thermalPort_a.T=T;
+  thermalPort_b.T=T;
+end Wall_constProps;
+  
+model HeatExchanger "Double pipe heat exchanger with outer wall neglected" 
+    
+  //General
+  parameter Integer n(min=1) "Spatial segmentation";
+  replaceable package Medium_1 = Modelica.Media.Water.StandardWater extends 
+      Modelica.Media.Interfaces.PartialMedium "Inner pipe medium" 
+                                                    annotation(choicesAllMatching);
+  replaceable package Medium_2 = Modelica.Media.Water.StandardWater extends 
+      Modelica.Media.Interfaces.PartialMedium "Outer pipe medium" 
+                                                    annotation(choicesAllMatching);
+  parameter SI.Length di_1(min=0) "Inner diameter of inner pipe"     annotation(Dialog(tab="General", group="Dimensions"));
+  parameter SI.Length da_1(min=0) "Outer diameter of inner pipe"     annotation(Dialog(tab="General", group="Dimensions"));
+  parameter SI.Length di_2(min=0) "Inner diameter of outer pipe"     annotation(Dialog(tab="General", group="Dimensions"));
+  parameter SI.Length length(min=0) "Length of both pipes" annotation(Dialog(tab="General", group="Dimensions"));
+    
+  //Wall
+  parameter SI.Density d_wall "Density of wall material" annotation(Dialog(tab="General", group="Constant material properties"));
+  parameter SI.SpecificHeatCapacity c_wall 
+      "Specific heat capacity of wall material"                                      annotation(Dialog(tab="General", group="Constant material properties"));
+  final parameter SI.Mass m_wall=sum(pipe_1.wall.m) "Wall mass";
+  parameter Boolean initWall_steadyState=false 
+      "= true, Wall initialization in steady state"                                    annotation(Dialog(tab="Initialization", group="Wall"));
+  parameter SI.Temperature T_start_wall "Start value of wall temperature" annotation(Dialog(tab="Initialization", group="Wall"));
+    
+  //Initialization pipe 1
+  parameter Modelica_Fluid.Types.Init.Temp initOption_1 "Initialization option"
+    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe"));
+  parameter Boolean use_T_start_1=true "Use T_start if true, otherwise h_start"
+    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe"));
+  parameter Medium_1.AbsolutePressure p_a_start1=Medium_1.p_default 
+      "Start value of pressure" 
+    annotation(Dialog(tab = "Initialization", group = "Inner pipe"));
+  parameter Medium_1.AbsolutePressure p_b_start1=Medium_1.p_default 
+      "Start value of pressure" 
+    annotation(Dialog(tab = "Initialization", group = "Inner pipe"));
+  parameter Medium_1.Temperature T_start_1=if use_T_start_1 then Medium_1.T_default else 
+      Medium_1.temperature_phX((p_a_start1+p_b_start1)/2, h_start_1, X_start_1) 
+      "Start value of temperature" 
+    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe", enable = use_T_start_1));
+  parameter Medium_1.SpecificEnthalpy h_start_1=if use_T_start_1 then 
+      Medium_1.specificEnthalpy_pTX((p_a_start1+p_b_start1)/2, T_start_1, X_start_1[1:Medium_1.nXi]) else Medium_1.h_default 
+      "Start value of specific enthalpy" 
+    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe", enable = not use_T_start_1));
+  parameter Medium_1.MassFraction X_start_1[Medium_1.nX]=Medium_1.X_default 
+      "Start value of mass fractions m_i/m" 
+    annotation (Dialog(tab="Initialization", group = "Inner pipe", enable=(Medium_1.nXi > 0)));
+  parameter Medium_1.MassFlowRate mflow_start_1 "Start value of mass flow rate"
+                                    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe"));
+  //Initialization pipe 2
+  parameter Modelica_Fluid.Types.Init.Temp initOption_2 "Initialization option"
+    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe"));
+  parameter Boolean use_T_start_2=true "Use T_start if true, otherwise h_start"
+    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe"));
+  parameter Medium_2.AbsolutePressure p_a_start2=Medium_2.p_default 
+      "Start value of pressure" 
+    annotation(Dialog(tab = "Initialization", group = "Outer pipe"));
+  parameter Medium_2.AbsolutePressure p_b_start2=Medium_2.p_default 
+      "Start value of pressure" 
+    annotation(Dialog(tab = "Initialization", group = "Outer pipe"));
+  parameter Medium_2.Temperature T_start_2=if use_T_start_2 then Medium_2.T_default else 
+      Medium_2.temperature_phX((p_a_start2+p_b_start2)/2, h_start_2, X_start_2) 
+      "Start value of temperature" 
+    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe", enable = use_T_start_2));
+  parameter Medium_2.SpecificEnthalpy h_start_2=if use_T_start_2 then 
+      Medium_2.specificEnthalpy_pTX((p_a_start2+p_b_start2)/2, T_start_2, X_start_2[1:Medium_2.nXi]) else Medium_2.h_default 
+      "Start value of specific enthalpy" 
+    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe", enable = not use_T_start_2));
+  parameter Medium_2.MassFraction X_start_2[Medium_2.nX]=Medium_2.X_default 
+      "Start value of mass fractions m_i/m" 
+    annotation (Dialog(tab="Initialization", group = "Outer pipe", enable=Medium_2.nXi>0));
+  parameter Medium_2.MassFlowRate mflow_start_2 "Start value of mass flow rate"
+                                       annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe"));
+  //Advanced
+  parameter Boolean lumped_dp = true 
+      " = true, lumped pressure drop, reduces number of pressure states to one"
+                              annotation(Evaluate=true, Dialog(tab="Advanced", group="Conservation of mass, energy, momentum"));
+  parameter Boolean static "= true, use quasistatic mass and energy balances" 
+                           annotation(Evaluate=true, Dialog(tab="Advanced", group="Conservation of mass, energy, momentum"));
+  parameter Boolean kineticTerm 
+      " = true, include kinetic term in momentum balance" 
+                                annotation(Evaluate=true, Dialog(tab="Advanced", group="Conservation of mass, energy, momentum"));
+  parameter Real K1=1 
+      "Enhancement factor for heat transfer area pipe 1(=>parallel tubes)" 
+                                                                          annotation(Dialog(tab="General", group="Heat transfer"));
+  parameter Real K2=1 
+      "Enhancement factor for heat transfer area pipe 2(=>parallel tubes)" 
+                                                                          annotation(Dialog(tab="General", group="Heat transfer"));
+  parameter Boolean dynamicTerm=false 
+      " = true, include dynamic term in momentum balance, only if not lumped_dp and not static"
+                                                                                              annotation(Evaluate=true, Dialog(tab="Advanced", group="Conservation of mass, energy, momentum"));
+    
+  //Pressure drop and heat transfer    
+  replaceable package WallFriction = 
+      PressureLosses.Utilities.WallFriction.QuadraticTurbulent extends 
+      Modelica_Fluid.PressureLosses.Utilities.WallFriction.PartialWallFriction 
+      "Characteristic of wall friction"                                                          annotation(choicesAllMatching, Dialog(tab="General", group="Pressure drop"));
+  parameter SI.Length roughness_1=2.5e-5 
+      "Absolute roughness of pipe (default = smooth steel pipe)" 
+                                                               annotation(Dialog(tab="General", group="Pressure drop"));
+  parameter SI.Length roughness_2=2.5e-5 
+      "Absolute roughness of pipe (default = smooth steel pipe)" 
+                                                               annotation(Dialog(tab="General", group="Pressure drop"));
+  parameter SI.DynamicViscosity eta_nominal_M1=0.01 
+      "Nominal dynamic viscosity of medium 1(e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
+                                                                                           annotation(Dialog(tab="General", group="Pressure drop"));
+  parameter SI.DynamicViscosity eta_nominal_M2=0.01 
+      "Nominal dynamic viscosity of medium 1(e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
+                                                                                       annotation(Dialog(tab="General", group="Pressure drop"));
+  parameter Boolean use_eta_nominal=false 
+      "= true, if eta_nominal is used, otherwise computed from medium" 
+                                                                     annotation(Evaluate=true, Dialog(tab="General", group="Pressure drop"));
+  replaceable model HeatTransfer_1 = 
+      Modelica_Fluid.HeatTransfer.PipeHT_constAlpha 
+      extends Modelica_Fluid.HeatTransfer.PartialPipeHeatTransfer 
+      "Heat transfer model"                                                                       annotation(choicesAllMatching, Dialog(tab="General", group="Heat transfer"));
+  replaceable model HeatTransfer_2 = 
+      Modelica_Fluid.HeatTransfer.PipeHT_constAlpha 
+      extends Modelica_Fluid.HeatTransfer.PartialPipeHeatTransfer 
+      "Heat transfer model"                                                                       annotation(choicesAllMatching, Dialog(tab="General", group="Heat transfer"));
+  //Display variables
+  SI.HeatFlowRate Q_flow_1 "Total heat flow rate of inner pipe";
+  SI.HeatFlowRate Q_flow_2 "Total heat flow rate of outer pipe";
+    
+  Modelica_Fluid.Components.LongPipe pipe_1(
+    redeclare package Medium = Medium_1,
+    n=n,
+    static=static,
+    lumped_dp=lumped_dp,
+    kineticTerm=kineticTerm,
+    crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
+    length=length,
+    use_wall=true,
+    area_h=Modelica.Constants.pi*di_1*length*K1,
+    redeclare HeatTransfer_1 heat,
+    initOption=initOption_1,
+    use_T_start=use_T_start_1,
+    T_start=T_start_1,
+    h_start=h_start_1,
+    X_start=X_start_1,
+    mflow_start=mflow_start_1,
+    d_inner=di_1,
+    d_outer=da_1,
+    redeclare package WallFriction = WallFriction,
+    roughness=roughness_1,
+    use_eta_nominal=use_eta_nominal,
+    eta_nominal=eta_nominal_M1,
+    redeclare final model Wall = 
+        Modelica_Fluid.Components.Wall_constProps (
+        d_wall=d_wall,
+        c_wall=c_wall,
+        initOption=if initWall_steadyState then 3 else 2,
+        T_start=T_start_wall),
+      dynamicTerm=dynamicTerm) 
+                             annotation (extent=[-40,-60; 20,0]);
+    
+  Modelica_Fluid.Components.LongPipe pipe_2(
+    redeclare package Medium = Medium_2,
+    n=n,
+    static=static,
+    lumped_dp=lumped_dp,
+    kineticTerm=kineticTerm,
+    crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.General,
+    length=length,
+    redeclare HeatTransfer_2 heat,
+    use_T_start=use_T_start_2,
+    T_start=T_start_2,
+    h_start=h_start_2,
+    X_start=X_start_2,
+    initOption=initOption_2,
+    mflow_start=mflow_start_2,
+    P_inner=Modelica.Constants.pi*(da_1 + di_2),
+    A_inner=Modelica.Constants.pi/4*(di_2*di_2 - da_1*da_1),
+    area_h=Modelica.Constants.pi*da_1*length*K2,
+    p_a_start=p_a_start1,
+    p_b_start=p_b_start2,
+    redeclare package WallFriction = WallFriction,
+    roughness=roughness_2,
+    use_eta_nominal=use_eta_nominal,
+    eta_nominal=eta_nominal_M2,
+    dynamicTerm=dynamicTerm) 
+              annotation (extent=[-40,88; 20,28]);
+  annotation (Diagram(Line(points=[-10,36; -10,-8], style(
+          color=1,
+          rgbcolor={255,0,0},
+          thickness=2))), Icon(
+      Rectangle(extent=[-100,-26; 100,-30], style(
+          color=0,
+          rgbcolor={0,0,0},
+          fillColor=10,
+          rgbfillColor={95,95,95},
+          fillPattern=7)),
+      Rectangle(extent=[-100,30; 100,26], style(
+          color=0,
+          rgbcolor={0,0,0},
+          fillColor=10,
+          rgbfillColor={95,95,95},
+          fillPattern=7)),
+      Rectangle(extent=[-100,60; 100,30], style(
+          color=0,
+          rgbcolor={0,0,0},
+          gradient=2,
+          fillColor=70,
+          rgbfillColor={0,63,125})),
+      Rectangle(extent=[-100,-30; 100,-60], style(
+          color=0,
+          rgbcolor={0,0,0},
+          gradient=2,
+          fillColor=70,
+          rgbfillColor={0,63,125})),
+      Rectangle(extent=[-100,26; 100,-26], style(
+          color=69,
+          rgbcolor={0,128,255},
+          gradient=2,
+          fillColor=69,
+          rgbfillColor={0,128,255})),
+      Text(
+        extent=[-100,-60; 100,-100],
+        string="%name",
+        style(color=3, rgbcolor={0,0,255}))));
+  Modelica_Fluid.Interfaces.FluidPort_b port_b1(redeclare package Medium = 
+        Medium_1) annotation (extent=[100,-12; 120,8]);
+  Modelica_Fluid.Interfaces.FluidPort_a port_a1(redeclare package Medium = 
+        Medium_1) annotation (extent=[-120,-12; -100,8]);
+  Modelica_Fluid.Interfaces.FluidPort_a port_a2(redeclare package Medium = 
+        Medium_2) annotation (extent=[-120,36; -100,56]);
+  Modelica_Fluid.Interfaces.FluidPort_b port_b2(redeclare package Medium = 
+        Medium_2) annotation (extent=[100,-56; 120,-36]);
+    
+equation 
+  Q_flow_1=sum(pipe_1.Qs_flow);
+  Q_flow_2=sum(pipe_2.Qs_flow);
+  connect(pipe_2.thermalPort, pipe_1.thermalPort);
+  connect(pipe_2.port_b, port_b2) annotation (points=[20,58; 60,58; 60,-46; 110,
+        -46], style(
+      color=69,
+      rgbcolor={0,127,255},
+      thickness=2,
+      gradient=2,
+      fillColor=42,
+      rgbfillColor={213,0,0}));
+  connect(pipe_1.port_b, port_b1) annotation (points=[20,-30; 42,-30; 42,-2;
+        110,-2], style(
+      color=69,
+      rgbcolor={0,127,255},
+      thickness=2,
+      gradient=2,
+      fillColor=42,
+      rgbfillColor={213,0,0}));
+  connect(pipe_1.port_a, port_a1) annotation (points=[-40.6,-30; -75.3,-30; 
+          -75.3,-2; -110,-2],
+                            style(
+      color=69,
+      rgbcolor={0,127,255},
+      thickness=2,
+      gradient=2,
+      fillColor=42,
+      rgbfillColor={213,0,0}));
+  connect(pipe_2.port_a, port_a2) annotation (points=[-40.6,58; -76,58; -76,46; 
+          -110,46],
+                  style(
+      color=69,
+      rgbcolor={0,127,255},
+      thickness=2,
+      gradient=2,
+      fillColor=42,
+      rgbfillColor={213,0,0}));
+end HeatExchanger;
+  
 end Components;
