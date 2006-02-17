@@ -1385,9 +1385,7 @@ model LongPipe "Distributed pipe model with optional wall"
                                annotation(Dialog(tab="General", group="Wall - optional", enable=(use_wall and crossSectionType==3)));
   inner Medium.ThermodynamicState[n] state = medium.state;
     
-  replaceable 
-      Modelica_Fluid.WorkInProgress.Utilities.PipeHeatTransfer.PipeHT_constAlpha
-      heat(
+  replaceable Modelica_Fluid.HeatTransfer.PipeHT_constAlpha heat(
     redeclare final package Medium = Medium,
     final n=n,
     final d_h=d_h,
