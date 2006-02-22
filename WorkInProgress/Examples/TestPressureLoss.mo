@@ -250,7 +250,7 @@ equation
       style(color=69, rgbcolor={0,127,255}));
   connect(orifice_m1.port_b, ambient_m1.port) annotation (points=[160,70; 180,
         70], style(color=69, rgbcolor={0,127,255}));
-  connect(ambient.port, orifice_p2.port_a) annotation (points=[-40,70; -30,70; 
+  connect(ambient.port, orifice_p2.port_a) annotation (points=[-40,70; -30,70;
         -30,40; -20,40], style(color=69, rgbcolor={0,127,255}));
   connect(orifice_p2.port_b, ambient_p2.port) 
     annotation (points=[0,40; 20,40], style(color=69, rgbcolor={0,127,255}));
@@ -258,18 +258,18 @@ equation
     annotation (points=[0,10; 20,10], style(color=69, rgbcolor={0,127,255}));
   connect(orifice_p4.port_b, ambient_p4.port) 
     annotation (points=[0,-20; 20,-20], style(color=69, rgbcolor={0,127,255}));
-  connect(ambient.port, orifice_p3.port_a) annotation (points=[-40,70; -30,70; 
+  connect(ambient.port, orifice_p3.port_a) annotation (points=[-40,70; -30,70;
         -30,10; -20,10], style(color=69, rgbcolor={0,127,255}));
-  connect(ambient.port, orifice_p4.port_a) annotation (points=[-40,70; -30,70; 
+  connect(ambient.port, orifice_p4.port_a) annotation (points=[-40,70; -30,70;
         -30,-20; -20,-20], style(color=69, rgbcolor={0,127,255}));
   connect(orifice_p5.port_b, ambient_p5.port) 
     annotation (points=[0,-50; 20,-50],
                                       style(color=69, rgbcolor={0,127,255}));
   connect(ambient.port,orifice_p5. port_a) 
-                                         annotation (points=[-40,70; -30,70; 
+                                         annotation (points=[-40,70; -30,70;
         -30,-50; -20,-50],
       style(color=69, rgbcolor={0,127,255}));
-  connect(ambient.port, orifice_p6.port_a) annotation (points=[-40,70; -30,70; 
+  connect(ambient.port, orifice_p6.port_a) annotation (points=[-40,70; -30,70;
         -30,-80; -20,-80], style(color=69, rgbcolor={0,127,255}));
   connect(orifice_p6.port_b, ambient_p6.port) 
     annotation (points=[0,-80; 20,-80], style(color=69, rgbcolor={0,127,255}));
@@ -278,9 +278,9 @@ equation
                                       style(color=69, rgbcolor={0,127,255}));
   connect(orifice_p8.port_b, ambient_p8.port) annotation (points=[0,-140; 20,
         -140], style(color=69, rgbcolor={0,127,255}));
-  connect(ambient.port, orifice_p7.port_a) annotation (points=[-40,70; -30,70; 
+  connect(ambient.port, orifice_p7.port_a) annotation (points=[-40,70; -30,70;
         -30,-110; -20,-110], style(color=69, rgbcolor={0,127,255}));
-  connect(ambient.port, orifice_p8.port_a) annotation (points=[-40,70; -30,70; 
+  connect(ambient.port, orifice_p8.port_a) annotation (points=[-40,70; -30,70;
         -30,-140; -20,-140], style(color=69, rgbcolor={0,127,255}));
   connect(pump_m2.port, orifice_m2.port_a) annotation (points=[120,40; 140,40],
       style(color=69, rgbcolor={0,127,255}));

@@ -72,9 +72,9 @@ annotation (
     
 equation 
   connect(isolatedPipe.port_b, ambient.port) 
-  annotation (points=[41,60; 59,60], style(color=69));
-  connect(prescribedAmbient.port, isolatedPipe.port_a)    annotation(points=
-       [-1,60; 19,60], style(color=69, rgbcolor={0,127,255}));
+  annotation (points=[41,60; 60,60], style(color=69));
+  connect(prescribedAmbient.port, isolatedPipe.port_a)    annotation(points=[-2,60;
+          19,60],      style(color=69, rgbcolor={0,127,255}));
   connect(Ramp3.y,Add1.u2)           annotation (points=[-79,40; -72,40; -72,60;
         -60,60],          style(color=3));
   connect(Ramp4.y,Add1.u1) 
@@ -201,7 +201,7 @@ annotation (
 equation 
     
   connect(prescribedAmbient.port, IsolatedPipe1.port_a) 
-  annotation (points=[-1,80; 11,80], style(color=69));
+  annotation (points=[-2,80; 11,80], style(color=69));
   connect(Ramp1.y,Add1.u2)           annotation (points=[-79,62; -72,62; -72,80;
         -62,80],          style(color=3));
   connect(Ramp2.y,Add1.u1) 
@@ -210,13 +210,13 @@ equation
                                             annotation(points=[47,80; 33,80],
       style(color=69, rgbcolor={0,127,255}));
   connect(IsolatedPipe2.port_b, ambient1.port) 
-                                         annotation(points=[69,80; 79,80],
+                                         annotation(points=[69,80; 80,80],
       style(color=69, rgbcolor={0,127,255}));
   connect(IsolatedPipe3.port_a, IsolatedPipe1.port_b) 
                                             annotation(points=[47,40; 40,40;
         40,80; 33,80], style(color=69, rgbcolor={0,127,255}));
   connect(IsolatedPipe3.port_b,ambient2. port) 
-                                         annotation(points=[69,40; 79,40],
+                                         annotation(points=[69,40; 80,40],
       style(color=69, rgbcolor={0,127,255}));
     
   connect(Add1.y, prescribedAmbient.p_in) annotation (points=[-39,86; -32,86;

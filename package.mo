@@ -1,10 +1,10 @@
 package Modelica_Fluid "Fluid package that shall be included into package Modelica (requires package Modelica 2.2.1)"
 annotation (
-  version="0.961",
+  version="1.0",
   versionDate="2006-01-12",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses( Modelica(version="2.2")),
+  uses( Modelica(version="2.2.1")),
   Documentation(info="<html>
 <p>
 Note, the current version of Modelica_Fluid does <b>not</b> work with
@@ -66,8 +66,10 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
+
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
+
 
 package UsersGuide "Users Guide" 
   
@@ -1299,6 +1301,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 replaceable package PackageMedium = Modelica.Media.Interfaces.PartialMedium 
   "To allow change of default medium for all components" annotation (

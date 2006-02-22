@@ -279,8 +279,6 @@ The used sufficient criteria for monotonicity follows from:
 </html>"));
   end PressureLossWithoutIcon;
   
-  
-  
   partial model PartialTwoPortTransportWithDz 
     "Partial element transporting fluid between two ports without storing mass or energy" 
     import Modelica.SIunits.*;

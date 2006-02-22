@@ -55,13 +55,13 @@ model TestIsolatedPipe "Test ShortPipe component"
     annotation (extent=[50,-40; 30,-20]);
 equation 
   connect(massFlowSource_1.port, insulatedPipe_1.port_a) 
-    annotation (points=[-29,10; -10,10],  style(color=69));
+    annotation (points=[-30,10; -10,10],  style(color=69));
   connect(insulatedPipe_1.port_b, ambient_1.port) 
-    annotation (points=[12,10; 29,10],   style(color=69));
+    annotation (points=[12,10; 30,10],   style(color=69));
   connect(massFlowSource_2.port, insulatedPipe_2.port_a) 
-    annotation (points=[-29,-30; -10,-30],style(color=69));
+    annotation (points=[-30,-30; -10,-30],style(color=69));
   connect(insulatedPipe_2.port_b, ambient_2.port) 
-    annotation (points=[12,-30; 29,-30], style(color=69));
+    annotation (points=[12,-30; 30,-30], style(color=69));
   connect(massFlowSignal.y, massFlowSource_1.m_flow_in) annotation (points=[-69,
         10; -63,10; -63,16; -49.3,16], style(color=74, rgbcolor={0,0,127}));
   connect(massFlowSignal.y, massFlowSource_2.m_flow_in) annotation (points=[-69,

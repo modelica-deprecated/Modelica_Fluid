@@ -91,9 +91,6 @@ equation
   end for;
 end IsolatedPipe;
   
-  
-  
-  
   model ShortPipe2 
     "Short pipe with two volumes, wall friction and gravity effect" 
     import SI = Modelica.SIunits;

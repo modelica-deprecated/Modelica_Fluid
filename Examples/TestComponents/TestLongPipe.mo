@@ -207,10 +207,9 @@ equation
   connect(ambient1.port, pipe1.port_a) annotation (points=[-68,26; -40.2,26],
                        style(color=69, rgbcolor={0,127,255}));
   connect(pipe2.port_b,pipe5. port_a) annotation (points=[-20,52; -10,52; -10,
-          32; 9.8,32],
-                     style(color=69, rgbcolor={0,127,255}));
+        32; 9.8,32], style(color=69, rgbcolor={0,127,255}));
   connect(pipe1.port_b,pipe5. port_a) annotation (points=[-20,26; -4,26; -4,32;
-          9.8,32],   style(color=69, rgbcolor={0,127,255}));
+        9.8,32],     style(color=69, rgbcolor={0,127,255}));
   connect(pipe5.port_b, ambient.port) annotation (points=[30,32; 40,32; 40,30;
         50,30], style(color=69, rgbcolor={0,127,255}));
   connect(ramp.y, ambient.p_in) annotation (points=[81,72; 76,72; 76,36; 72,36],
@@ -218,11 +217,9 @@ equation
   connect(ambient3.port, pipe3.port_a) annotation (points=[-68,-2; -40.2,-2],
                    style(color=69, rgbcolor={0,127,255}));
   connect(pipe5.port_a, pipe3.port_b) annotation (points=[9.8,32; -4,32; -4,-2;
-          -20,-2],
-                 style(color=69, rgbcolor={0,127,255}));
+        -20,-2], style(color=69, rgbcolor={0,127,255}));
   connect(ambient4.port, pipe4.port_a) annotation (points=[-68,-30; -40.2,-30],
       style(color=69, rgbcolor={0,127,255}));
   connect(pipe5.port_a, pipe4.port_b) annotation (points=[9.8,32; 6,32; 6,-30;
-          -20,-30],
-                  style(color=69, rgbcolor={0,127,255}));
+        -20,-30], style(color=69, rgbcolor={0,127,255}));
 end TestLongPipe;

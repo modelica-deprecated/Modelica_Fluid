@@ -442,9 +442,9 @@ is that the system starts in steady state, i.e., with constant
     connect(pipe1.port_a, tank3.topPorts[1]) 
                        annotation (points=[-20,-40; -20,-49.2],
         style(color=69, rgbcolor={0,127,255}));
-    connect(pipe2.port_a, tank1.sidePorts[1]) annotation (points=[50,30; 50,23; 
+    connect(pipe2.port_a, tank1.sidePorts[1]) annotation (points=[50,30; 50,23;
           0.8,23], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe3.port_b, tank1.sidePorts[2]) annotation (points=[30,-20; 30,16; 
+    connect(pipe3.port_b, tank1.sidePorts[2]) annotation (points=[30,-20; 30,16;
           0.8,16; 0.8,17], style(color=69, rgbcolor={0,127,255}));
     connect(pipe3.port_a, tank3.sidePorts[1]) annotation (points=[30,-40; 30,
           -70; 0.8,-70],
