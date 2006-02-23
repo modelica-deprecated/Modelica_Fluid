@@ -6,7 +6,7 @@ package ControlValves
       "Start value of inlet pressure" 
     annotation(Dialog(tab = "Initialization"));
     
-  extends Interfaces.PartialTwoPortTransport(
+  extends BaseClasses.Common.PartialTwoPortTransport(
     medium_a(p(start=pin_start), T(start=T_start),
              h(start=h_start),   Xi(start=X_start[1:Medium.nXi])),
     medium_b(p(start=pout_start), T(start=T_start),
@@ -39,8 +39,8 @@ package ControlValves
   parameter Boolean CheckValve=false "Reverse flow stopped";
     
   replaceable function flowCharacteristic = 
-      Modelica_Fluid.Types.ValveCharacteristics.linear 
-    extends Modelica_Fluid.Types.ValveCharacteristics.baseFun 
+      BaseClasses.ControlValves.ValveCharacteristics.linear 
+    extends BaseClasses.ControlValves.ValveCharacteristics.baseFun 
       "Inherent flow characteristic" 
     annotation(choicesAllMatching=true);
   parameter Medium.AbsolutePressure pout_start = p_nom-dp_nom 

@@ -1,13 +1,13 @@
 package ControlValves 
     model ValveIncompressible "Valve for (almost) incompressible fluids" 
-    extends Interfaces.PartialValve;
+    extends BaseClasses.ControlValves.PartialValve;
     import Modelica_Fluid.Types.CvTypes;
     annotation (
     Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
     Diagram,
     Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluids. <p>
-Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding documentation for common valve features).
+Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
 <p>This model can be used with any low compressibility fluids, such as liquids or gases at very low pressure drops.
 </html>",
       revisions="<html>
@@ -36,13 +36,14 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
   model ValveVaporizing 
     "Valve for possibly vaporizing (almost) incompressible fluids, accounts for choked flow conditions" 
     import Modelica_Fluid.Types.CvTypes;
-    extends Interfaces.PartialValve(
+    extends BaseClasses.ControlValves.PartialValve(
       redeclare replaceable package Medium = 
       Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     parameter Real Fl_nom=0.9 "Liquid pressure recovery factor";
     replaceable function FlCharacteristic = 
-        Modelica_Fluid.Types.ValveCharacteristics.one 
-      extends Modelica_Fluid.Types.ValveCharacteristics.baseFun 
+        Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.one 
+      extends 
+      Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.baseFun 
       "Pressure recovery characteristic";
     Real Ff "Ff coefficient (see IEC/ISA standard)";
     Real Fl "Pressure recovery coefficient Fl (see IEC/ISA standard)";
@@ -55,7 +56,7 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
       Diagram,
       Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid, with possible choked flow conditions. <p>
-Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding documentation for common valve features).<p>
+Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).<p>
 The model operating range includes choked flow operation, which takes place for low outlet pressures due to flashing in the vena contracta; otherwise, non-choking conditions are assumed.
 <p>This model can be used with two-phase medium models, to describe the liquid and (possible) two-phase conditions.
 <p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Fl_nom</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by replacing the <tt>FlCharacteristic</tt> function.
@@ -91,12 +92,13 @@ The model operating range includes choked flow operation, which takes place for 
   
   model ValveCompressible 
     "Valve for compressible fluids, accounts for choked flow conditions" 
-    extends Interfaces.PartialValve;
+    extends BaseClasses.ControlValves.PartialValve;
     import Modelica_Fluid.Types.CvTypes;
     parameter Real Fxt_full=0.5 "Fk*xt critical ratio at full opening";
     replaceable function xtCharacteristic = 
-        Modelica_Fluid.Types.ValveCharacteristics.one 
-      extends Modelica_Fluid.Types.ValveCharacteristics.baseFun 
+        Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.one 
+      extends 
+      Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.baseFun 
       "Critical ratio characteristic";
     Real Fxt;
     Real x "Pressure drop ratio";
@@ -114,7 +116,7 @@ The model operating range includes choked flow operation, which takes place for 
     Diagram,
     Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid. <p>
-Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding documentation for common valve features).
+Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
 <p>The product Fk*xt is given by the parameter <tt>Fxt_full</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by replacing the <tt>xtCharacteristic</tt> function.
 </HTML>",
       revisions="<html>
@@ -155,7 +157,7 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
   end ValveCompressible;
   
   model ValveLinear "Valve for water/steam flows with linear pressure drop" 
-    extends Interfaces.PartialTwoPortTransport;
+    extends BaseClasses.Common.PartialTwoPortTransport;
     parameter Types.HydraulicConductance Kv 
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening 
@@ -198,7 +200,7 @@ Extends the <tt>Interfaces.PartialValve</tt> model (see the corresponding docume
   end ValveLinear;
   
   model ValveDiscrete "Valve for water/steam flows with linear pressure drop" 
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+    extends Modelica_Fluid.BaseClasses.Common.PartialTwoPortTransport;
     parameter Modelica_Fluid.Types.HydraulicConductance Kv 
       "Hydraulic conductance for open valve (m_flow = Kv*dp)";
     parameter Real Kv_small_rel = 0 

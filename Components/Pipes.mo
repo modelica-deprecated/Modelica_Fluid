@@ -1,8 +1,7 @@
 package Pipes 
   model DistributedPipeFV "Distributed pipe model with optional wall" 
-    import Modelica_Fluid;
     
-  extends Modelica_Fluid.Interfaces.Flow1D(
+  extends BaseClasses.Pipes.Flow1D_FV(
     Qs_flow=heat.Q_flow,
     ms_flow=zeros(n),
     msXi_flow=zeros(n, Medium.nXi));
@@ -20,12 +19,12 @@ package Pipes
                                annotation(Dialog(tab="General", group="Wall - optional", enable=(use_wall and crossSectionType==3)));
   inner Medium.ThermodynamicState[n] state = medium.state;
     
-  replaceable Modelica_Fluid.HeatTransfer.PipeHT_constAlpha heat(
+  replaceable BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha heat(
     redeclare final package Medium = Medium,
     final n=n,
     final d_h=d_h,
     final A_h=area_h,
-    T=medium.T) extends Modelica_Fluid.HeatTransfer.PartialPipeHeatTransfer(
+    T=medium.T) extends BaseClasses.Pipes.HeatTransfer.PartialPipeHeatTransfer(
     redeclare final package Medium = Medium,
     final n=n,
     final d_h=d_h,
@@ -38,8 +37,8 @@ package Pipes
       "Thermal port" 
     annotation (extent=[-20,60; 20,80]);
   replaceable model Wall = 
-        Modelica_Fluid.Components.Wall_constProps                    extends 
-      Modelica_Fluid.Interfaces.PartialPipeWall "Wall model"       annotation(choicesAllMatching, Dialog(enable=use_wall, tab="General", group="Wall - optional"));
+        Components.Thermal.WallConstProps  extends 
+      Components.Thermal.PartialPipeWall "Wall model"              annotation(choicesAllMatching, Dialog(enable=use_wall, tab="General", group="Wall - optional"));
   Wall wall(final n=n, final a_inner=A_inner, final a_outer=A_outer, final 
         length=length) if use_wall 
                            annotation (extent=[10,20; 50,60]);
@@ -112,12 +111,10 @@ The pipe model contains a Boolean flag useWall which determines if a wall compon
 model LumpedPipe "Short pipe with one volume, wall friction and gravity effect" 
     import SI = Modelica.SIunits;
     
-  extends Interfaces.PartialInitializationParameters;
-  extends Modelica_Fluid.Interfaces.PartialTwoPort;
+  extends BaseClasses.Common.PartialInitializationParameters;
   replaceable package WallFriction = 
-    Modelica_Fluid.PressureLosses.Utilities.WallFriction.QuadraticTurbulent 
-    extends 
-      Modelica_Fluid.PressureLosses.Utilities.WallFriction.PartialWallFriction 
+    BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent 
+    extends BaseClasses.PressureLosses.WallFriction.PartialWallFriction 
       "Characteristic of wall friction" 
                                        annotation(choicesAllMatching=true);
     
@@ -137,14 +134,20 @@ model LumpedPipe "Short pipe with one volume, wall friction and gravity effect"
   parameter SI.Density d_nominal = 0.01 
       "Nominal density (for wall friction computation)" 
                                                       annotation(Dialog(enable=use_nominal));
-  parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
-      flowDirection=
-            Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+  parameter Types.FlowDirection.Temp flowDirection=
+                  Types.FlowDirection.Unidirectional 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
   parameter SI.AbsolutePressure dp_small = 1 
       "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
     annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
+    
+    Interfaces.FluidPort_a port_a(redeclare package Medium = Medium) 
+      "Fluid connector a (positive design flow direction is from port_a to port_b)"
+      annotation (extent=[-110,-10; -90,10]);
+    Interfaces.FluidPort_b port_b(redeclare package Medium = Medium) 
+      "Fluid connector b (positive design flow direction is from port_a to port_b)"
+      annotation (extent=[110,-10; 90,10]);
     
   annotation (defaultComponentName="pipe",Icon(
       Rectangle(extent=[-100,60; 100,-60],   style(
@@ -159,7 +162,7 @@ model LumpedPipe "Short pipe with one volume, wall friction and gravity effect"
         extent=[-150,-60; 150,-110],
         string="%name",
         style(gradient=2, fillColor=69)),
-      Ellipse(extent=[-15,15; 15,-15],  style(
+      Ellipse(extent=[-16,13; 14,-17],  style(
             color=0,
             rgbcolor={0,0,0},
             fillColor=0,
@@ -192,10 +195,10 @@ pipe wall/environment).
     from_dp=true,
     dp_small=dp_small,
     show_Re=false)     annotation (extent=[-60,-10; -40,10]);
-  Utilities.PortVolume volume(
+  BaseClasses.Pipes.PortVolume volume(
     redeclare package Medium = Medium,
     V=Modelica.Constants.pi*(diameter/2)^2*length,
-    initOption=initOption,
+    initType=initType,
     p_start=p_start,
     use_T_start=use_T_start,
     T_start=T_start,

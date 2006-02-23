@@ -1,44 +1,44 @@
 model TestValvesReverse "Test case for valves with reverse and zero flow" 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
-  Sources.FixedAmbient_pTX SourceP1(p=10e5,
+  Components.Sources.FixedAmbient_pTX SourceP1(p=10e5,
   redeclare package Medium = Medium) 
   annotation (extent=[-100,30; -80,50]);
-  Sources.FixedAmbient_pTX SourceP2(p=8e5,
+  Components.Sources.FixedAmbient_pTX SourceP2(p=8e5,
   redeclare package Medium = Medium) 
   annotation (extent=[-100, -50; -80, -30]);
-  Sources.FixedAmbient_pTX SinkP1(p=1e5,
+  Components.Sources.FixedAmbient_pTX SinkP1(p=1e5,
   redeclare package Medium = Medium) 
   annotation (extent=[82,-4; 62,16]);
-  Components.ValveIncompressible V1(
+  Components.ControlValves.ValveIncompressible V1(
     dp_nom=9e5,
     m_flow_nom=1.5,
   redeclare package Medium = Medium,
     p_nom=10e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     Av=0.1) annotation (extent=[-50, 58; -30, 78]);
-  Components.ValveIncompressible V2(
+  Components.ControlValves.ValveIncompressible V2(
     dp_nom=5e5,
     m_flow_nom=1.2,
   redeclare package Medium = Medium,
     p_nom=10e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     Av=0.1) annotation (extent=[-38, 26; -18, 46]);
-  Components.ValveIncompressible V3(
+  Components.ControlValves.ValveIncompressible V3(
     dp_nom=3e5,
     m_flow_nom=1.1,
   redeclare package Medium = Medium,
     p_nom=8e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (extent=[-38, -38; -18, -18]);
-  Components.ValveIncompressible V4(
+  Components.ControlValves.ValveIncompressible V4(
     dp_nom=8e5,
     m_flow_nom=1.3,
   redeclare package Medium = Medium,
     p_nom=8e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (extent=[-40,-78; -20,-58]);
-  Components.ValveIncompressible V5(
+  Components.ControlValves.ValveIncompressible V5(
     dp_nom=4e5,
     m_flow_nom=2,
   redeclare package Medium = Medium,
@@ -50,10 +50,10 @@ annotation (
   Diagram,
   experiment(StopTime=4, Tolerance=1e-006),
   Documentation(info=""));
-  Sources.FixedAmbient_pTX SinkP2(p=1e5,
+  Components.Sources.FixedAmbient_pTX SinkP2(p=1e5,
   redeclare package Medium = Medium) 
   annotation (extent=[4,58; -16,78]);
-  Sources.FixedAmbient_pTX SinkP3(p=1e5, redeclare package Medium = Medium) 
+  Components.Sources.FixedAmbient_pTX SinkP3(p=1e5, redeclare package Medium = Medium) 
   annotation (extent=[26,-78; 6,-58]);
   Modelica.Blocks.Sources.Ramp CloseLoad(
     duration=1,
@@ -72,8 +72,8 @@ annotation (
     startTime=1,
     height=-1) 
               annotation (extent=[-96, -12; -76, 8]);
-  inner Components.FluidOptions fluidOptions 
-    annotation (extent=[-100,-100; -80,-80]);
+  
+  inner Components.Ambient ambient annotation (extent=[60,68; 80,88]);
 equation 
   connect(V1.port_b, SinkP2.port) annotation (points=[-30,68; -16,68]);
   connect(V4.port_b, SinkP3.port) annotation (points=[-20,-68; 6,-68]);

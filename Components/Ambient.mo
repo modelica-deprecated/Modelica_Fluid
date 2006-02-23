@@ -1,5 +1,4 @@
-model Ambient 
-  "Default options and environment settings for components of Modelica_Fluid" 
+model Ambient "Ambient field component" 
     import SI = Modelica.SIunits;
     import Modelica_Fluid.Types.FlowDirection;
     import Modelica_Fluid.Types.Init;
@@ -23,11 +22,9 @@ model Ambient
   
   annotation (
     preferedView="info",
-    defaultComponentName="fluidOptions",
+    defaultComponentName="ambient",
     defaultComponentPrefixes="inner",
-    missingInnerMessage="An inner \"fluidOptions\" component is not defined. A default 
-fluidOptions component will be used. If this is not desired, 
-drag Modelica_Fluid.Components.FluidOptions into the top level of your model.",
+    missingInnerMessage="An inner \"ambient\" component is not defined. Drag Modelica_Fluid.Components.Ambient into your model and specify ambient conditions.",
     Icon(
       Rectangle(extent=[-100,100; 100,-100], style(
           color=3,
@@ -72,14 +69,14 @@ gravity acceleration. Dragging this component in a model results
 in the following declaration:
 </p>
 <pre>
-   <b>inner</b> Modelica_Fluid.Components.FluidOptions fluidOptions;
+   <b>inner</b> Modelica_Fluid.Components.Ambient ambient;
 </pre>
 <p>
 The parameters of this instance can be 
 then accessed via a corresponding outer declaration:
 </p>
 <pre>
-   <b>outer</b> Modelica_Fluid.Components.FluidOptions fluidOptions;
+   <b>outer</b> Modelica_Fluid.Components.Ambient ambient;
 </pre>
 <p>
 Note, all parameters under group \"Defaults\" are used as 

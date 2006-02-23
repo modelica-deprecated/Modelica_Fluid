@@ -11,20 +11,20 @@ partial model PartialPump "Base model for centrifugal pumps"
       Modelica.Media.Interfaces.PartialTwoPhaseMedium 
       "Saturated medium model (required only for NPSH computation)";
   replaceable function flowCharacteristic = 
-      Modelica_Fluid.Types.PumpCharacteristics.baseFlow 
+      PumpCharacteristics.baseFlow 
       "Head vs. q_flow characteristic at nominal speed and density" 
     annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
   parameter Boolean usePowerCharacteristic = false 
       "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
      annotation(Dialog(group="Characteristics"));
   replaceable function powerCharacteristic = 
-    Modelica_Fluid.Types.PumpCharacteristics.basePower 
+    PumpCharacteristics.basePower 
       "Power consumption vs. q_flow at nominal speed and density" 
     annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
                choicesAllMatching=true);
   replaceable function efficiencyCharacteristic = 
-    Modelica_Fluid.Types.PumpCharacteristics.constantEfficiency(eta_nom = 0.8) 
-    extends Modelica_Fluid.Types.PumpCharacteristics.baseEfficiency 
+    PumpCharacteristics.constantEfficiency(eta_nom = 0.8) 
+    extends BaseClasses.Turbomachinery.PumpCharacteristics.baseEfficiency 
       "Efficiency vs. q_flow at nominal speed and density" 
     annotation(Dialog(group="Characteristics",enable = not usePowerCharacteristic),
                choicesAllMatching=true);
@@ -35,9 +35,8 @@ partial model PartialPump "Base model for centrifugal pumps"
   parameter Integer Np_nom(min=1) = 1 "Nominal number of pumps in parallel";
   parameter SI.Mass M = 0 "Fluid mass inside the pump";
   parameter Boolean checkValve=true "Reverse flow stopped";
-  parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
-      flowDirection=
-            Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+  parameter Types.FlowDirection.Temp flowDirection=
+                   Types.FlowDirection.Unidirectional 
       "Unidirectional (inlet -> outlet) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
   parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";
@@ -65,12 +64,12 @@ partial model PartialPump "Base model for centrifugal pumps"
   constant SI.Acceleration g=Modelica.Constants.g_n;
 //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
 //    "Initialisation option";
-  Modelica_Fluid.Interfaces.FluidPort_a inlet(redeclare package Medium = Medium,
+  Interfaces.FluidPort_a inlet(redeclare package Medium = Medium,
       p(start=pin_start),
       m_flow(start = m_flow_start,
              min = if allowFlowReversal and not checkValve then -Constants.inf else 0)) 
   annotation (extent=[-100,-40; -60,0]);
-  Modelica_Fluid.Interfaces.FluidPort_b outlet(redeclare package Medium = Medium,
+  Interfaces.FluidPort_b outlet(redeclare package Medium = Medium,
       p(start=pout_start),
       m_flow(start = -m_flow_start,
              max = if allowFlowReversal and not checkValve then +Constants.inf else 0)) 
@@ -98,13 +97,11 @@ partial model PartialPump "Base model for centrifugal pumps"
       "Curvilinear abscissa for the flow curve in parametric form";
   Modelica.Blocks.Interfaces.IntegerInput in_Np 
     annotation (extent=[16,34; 36,54], rotation=-90);
+//  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+//    "Global default options";
   protected 
-  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
-      "Global default options";
  parameter Boolean allowFlowReversal=
-     flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional
-     or flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption
-     and fluidOptions.default_flowDirection ==Modelica_Fluid.Types.FlowDirection.Bidirectional 
+     flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
      annotation(Evaluate=true, Hide=true);
 equation 

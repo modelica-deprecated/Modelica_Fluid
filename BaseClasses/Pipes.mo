@@ -26,9 +26,9 @@ partial model Flow1D_FV
       " = true, include dynamic term, only if not lumped_dp and not static"                               annotation(Dialog(tab="Advanced", group="Momentum balance", enable=(not static and not lumped_dp)),Evaluate=true);
     
 //Initialization
-    parameter Types.InitWithGlobalDefault.Temp initOption=Types.
-        InitWithGlobalDefault.UseGlobalFluidOption "Initialization option" 
-    annotation(Dialog(tab = "Initialization"));
+    parameter Types.Init.Temp initType=Types.
+        Init.NoInit "Initialization option" 
+    annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
     annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_a_start=Medium.p_default 
@@ -80,9 +80,8 @@ partial model Flow1D_FV
     
 //Pressure Drop
   replaceable package WallFriction = 
-      Modelica_Fluid.PressureLosses.Utilities.WallFriction.QuadraticTurbulent 
-    extends 
-      Modelica_Fluid.PressureLosses.Utilities.WallFriction.PartialWallFriction 
+      BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent 
+    extends BaseClasses.PressureLosses.WallFriction.PartialWallFriction 
       "Characteristic of wall friction" 
                                        annotation(Dialog(tab="General", group="Pressure loss"),choicesAllMatching=true);
   parameter SI.Diameter d_h=4*A_inner/P_inner "Hydraulic diameter" annotation(Dialog(tab="General", group="Pressure loss"));
@@ -200,6 +199,8 @@ One issue not solved yet: For pressure drop and velocity term the densities at t
 </p>
 </html>"));
     
+outer Components.Ambient ambient "Ambient conditions";
+    
   protected 
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else eta[1]);//approximation
   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else eta[n]);//approximation
@@ -222,12 +223,6 @@ One issue not solved yet: For pressure drop and velocity term the densities at t
  The outlet port medium model (medium_a or medium_b) describes the medium properties just after the outlet connection
   point which would give wrong densities at the pipe outlet for pressure drop calculations
   if fluid flows with substantially different densities are mixed*/
-  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
-      "Global default options";
-  parameter Types.Init.Temp initOption2=if initOption == Types.
-      InitWithGlobalDefault.UseGlobalFluidOption then fluidOptions.
-      default_initOption else initOption 
-      annotation(Evaluate=true, Hide=true);
   parameter SI.Pressure[np] dp0={if lumped_dp then dp_start else dp_start/(if i
        > 1 and i < np then n else 2*n) for i in 1:np};
     
@@ -239,9 +234,9 @@ One issue not solved yet: For pressure drop and velocity term the densities at t
 initial equation 
   // Initial conditions
   if not static then
-    if initOption2 == Types.Init.NoInit then
+    if initType == Types.Init.NoInit then
     // no initial equations
-    elseif initOption2 == Types.Init.SteadyState then
+    elseif initType == Types.Init.SteadyState then
     //steady state initialization
       if use_T_start then
         der(medium.T) = zeros(n);
@@ -259,14 +254,14 @@ initial equation
       for i in 1:n loop
         der(medium[i].Xi) = zeros(Medium.nXi);
       end for;
-    elseif initOption2 == Types.Init.InitialValues then
+    elseif initType == Types.Init.InitialValues then
     //Initialization with initial values
       if use_T_start then
         medium.T = ones(n)*T_start;
       else
         medium.h = ones(n)*h_start;
       end if;
-    elseif initOption2 == Types.Init.SteadyStateHydraulic then
+    elseif initType == Types.Init.SteadyStateHydraulic then
     //Steady state initialization for hydraulic states (p, m_flow)
       if use_T_start then
         medium.T = ones(n)*T_start;
@@ -358,40 +353,40 @@ equation
 //Pressure drop and gravity
  if from_dp and not WallFriction.dp_is_zero then
     if lumped_dp then
-      m_flow[1] = WallFriction.massFlowRate_dp(dp[1] - height_ab*fluidOptions.g*(
+      m_flow[1] = WallFriction.massFlowRate_dp(dp[1] - height_ab*ambient.g*(
         d_a + d_b)/2, d_a, d_b, eta_a, eta_b, length, d_h, roughness,
         dp_small);
     else
       m_flow[1] = WallFriction.massFlowRate_dp(dp[1] - height_ab/2/n*
-        fluidOptions.g*(d_a + d[1])/2, d_a, d[1], eta_a, eta[1],
+        ambient.g*(d_a + d[1])/2, d_a, d[1], eta_a, eta[1],
         length/n/2, d_h, roughness, dp_small);
       for i in 2:n loop
         m_flow[i] = WallFriction.massFlowRate_dp(dp[i] - height_ab/n*
-          fluidOptions.g*(d[i-1] + d[i])/2, d[i-1],
+          ambient.g*(d[i-1] + d[i])/2, d[i-1],
           d[i], eta[i - 1], eta[i], length/n, d_h, roughness,
           dp_small);
       end for;
       m_flow[n + 1] = WallFriction.massFlowRate_dp(dp[np] - height_ab/n/2*
-        fluidOptions.g*(d[n] + d_b)/2, d[n], d_b, eta[n], eta_b,
+        ambient.g*(d[n] + d_b)/2, d[n], d_b, eta[n], eta_b,
         length/n/2, d_h, roughness, dp_small);
     end if;
   else
     if lumped_dp then
       dp[1] = WallFriction.pressureLoss_m_flow(m_flow[1], d_a, d_b, eta_a,
         eta_b, length, d_h, roughness, m_flow_small) + height_ab*
-        fluidOptions.g*(d_a + d_b)/2;
+        ambient.g*(d_a + d_b)/2;
     else
       dp[1] = WallFriction.pressureLoss_m_flow(m_flow[1], d_a, d[1], eta_a,
         eta[1], length/n/2, d_h, roughness, m_flow_small) + height_ab/2/n*
-        fluidOptions.g*(d_a + d[1])/2;
+        ambient.g*(d_a + d[1])/2;
       for i in 2:n loop
         dp[i] = WallFriction.pressureLoss_m_flow(m_flow[i], d[i-1], d[i], eta[i-1],
           eta[i], length/n, d_h, roughness, m_flow_small) + height_ab/n*
-          fluidOptions.g*(d[i-1] + d[i])/2;
+          ambient.g*(d[i-1] + d[i])/2;
       end for;
       dp[np] = WallFriction.pressureLoss_m_flow(m_flow[np], d[n], d_b, eta[n],
         eta_b, length/n/2, d_h, roughness, m_flow_small) + height_ab/n/2*
-        fluidOptions.g*(d[n] + d_b)/2;
+        ambient.g*(d[n] + d_b)/2;
     end if;
   end if;
     
@@ -420,7 +415,7 @@ end Flow1D_FV;
 model PortVolume 
     "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
   import Modelica_Fluid.Types;
-  extends Interfaces.PartialInitializationParameters;
+  extends BaseClasses.Common.PartialInitializationParameters;
     
   replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -485,9 +480,9 @@ equation
     
 initial equation 
   // Initial conditions
-  if initOption2 == Types.Init.NoInit then
+  if initType == Types.Init.NoInit then
     // no initial equations
-  elseif initOption2 == Types.Init.InitialValues then
+  elseif initType == Types.Init.InitialValues then
     if not Medium.singleState then
        medium.p = p_start;
     end if;
@@ -497,13 +492,13 @@ initial equation
       medium.h = h_start;
     end if;
     medium.Xi = X_start[1:Medium.nXi];
-  elseif initOption2 == Types.Init.SteadyState then
+  elseif initType == Types.Init.SteadyState then
     if not Medium.singleState then
        der(medium.p) = 0;
     end if;
     der(medium.h) = 0;
     der(medium.Xi) = zeros(Medium.nXi);
-  elseif initOption2 == Types.Init.SteadyStateHydraulic then
+  elseif initType == Types.Init.SteadyStateHydraulic then
     if not Medium.singleState then
        der(medium.p) = 0;
     end if;
@@ -517,7 +512,7 @@ initial equation
     assert(false, "Unsupported initialization option");
   end if;
 end PortVolume;
-
+  
 package HeatTransfer 
   partial model PartialPipeHeatTransfer 
     replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(Dialog(tab="No input", enable=false));

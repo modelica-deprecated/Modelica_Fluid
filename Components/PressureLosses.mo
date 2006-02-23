@@ -2,10 +2,10 @@ package PressureLosses
   "Models and functions providing pressure loss correlations " 
 model StaticHead 
     "Models the static head between two ports at different heights" 
-  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+  extends BaseClasses.Common.PartialTwoPortTransport;
   parameter SI.Height height_ab "Height(port_b) - Height(port_a)";
-  parameter SI.Acceleration g = Modelica.Constants.g_n "Gravity acceleration"  annotation(Dialog(tab="Advanced"));
   Medium.Density d "Fluid density";
+  outer Components.Ambient ambient "Ambient conditions";
   annotation (Icon(
       Rectangle(extent=[-100,60; 100,-60],   style(
           color=0,
@@ -32,17 +32,14 @@ This model describes the static head due to the relative height between the two 
 </html>"));
 equation 
  d = if dp > 0 then medium_a.d else medium_b.d;
- dp = height_ab*g*d;
+ dp = height_ab*ambient.g*d;
 end StaticHead;
   
 model SimpleGenericOrifice 
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
     import SI = Modelica.SIunits;
-    import 
-      Modelica_Fluid.Components.PressureLosses.Utilities.SimpleGenericOrifice;
-    
-  extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
-  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+    extends BaseClasses.Common.PartialGuessValueParameters;
+    extends BaseClasses.Common.PartialTwoPortTransport(
                 medium_a(p(start=p_start), h(start=h_start),
                          T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
                 medium_b(p(start=p_start), h(start=h_start),
@@ -123,9 +120,9 @@ can appear, this component should not be used.
       Coordsys(grid=[1,1], scale=0));
 equation 
   if from_dp then
-     m_flow = SimpleGenericOrifice.massFlowRate_dp(dp, medium_a.d, medium_b.d, diameter, zeta);
+     m_flow = BaseClasses.PressureLosses.SimpleGenericOrifice.massFlowRate_dp(dp, medium_a.d, medium_b.d, diameter, zeta);
   else
-     dp = SimpleGenericOrifice.pressureLoss_m_flow(m_flow, medium_a.d, medium_b.d, diameter, zeta);
+     dp = BaseClasses.PressureLosses.SimpleGenericOrifice.pressureLoss_m_flow(m_flow, medium_a.d, medium_b.d, diameter, zeta);
   end if;
 end SimpleGenericOrifice;
   
@@ -133,17 +130,16 @@ end SimpleGenericOrifice;
     "Pressure drop in pipe due to wall friction and gravity (for both flow directions)" 
     import SI = Modelica.SIunits;
     
-    extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+    extends BaseClasses.Common.PartialGuessValueParameters;
+    extends BaseClasses.Common.PartialTwoPortTransport(
                   medium_a(p(start=p_start), h(start=h_start),
                            T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
                   medium_b(p(start=p_start), h(start=h_start),
                            T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
     
     replaceable package WallFriction = 
-      Modelica_Fluid.Components.PressureLosses.Utilities.WallFriction.QuadraticTurbulent
-      extends 
-      Modelica_Fluid.Components.PressureLosses.Utilities.WallFriction.PartialWallFriction
+      BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent 
+      extends BaseClasses.PressureLosses.WallFriction.PartialWallFriction 
       "Characteristic of wall friction"  annotation(choicesAllMatching=true);
     
     parameter SI.Length length "Length of pipe";
@@ -176,8 +172,10 @@ end SimpleGenericOrifice;
     parameter SI.MassFlowRate m_flow_small = 0.01 
       "Turbulent flow if |m_flow| >= m_flow_small (only used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
-    SI.ReynoldsNumber Re = Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(m_flow, (eta_a+eta_b)/2, diameter) if show_Re 
+    SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, (eta_a+eta_b)/2, diameter) if show_Re 
       "Reynolds number of pipe";
+    
+    outer Components.Ambient ambient "Ambient conditions";
     
     annotation (defaultComponentName="pipe",Icon(
         Rectangle(extent=[-100,60; 100,-60],   style(
@@ -273,7 +271,6 @@ simulation and/or might give a more robust simulation.
           string="length")),
       Coordsys(grid=[1,1], scale=0));
   protected 
-    outer Modelica_Fluid.Components.FluidOptions fluidOptions;
     SI.DynamicViscosity eta_a = if not WallFriction.use_eta then 1.e-10 else 
                                 (if use_nominal then eta_nominal else Medium.dynamicViscosity(medium_a));
     SI.DynamicViscosity eta_b = if not WallFriction.use_eta then 1.e-10 else 
@@ -282,11 +279,11 @@ simulation and/or might give a more robust simulation.
     SI.Density d_b = if use_nominal then d_nominal else medium_b.d;
   equation 
     if from_dp and not WallFriction.dp_is_zero then
-       m_flow = WallFriction.massFlowRate_dp(dp-height_ab*fluidOptions.g*(d_a+d_b)/2,
+       m_flow = WallFriction.massFlowRate_dp(dp-height_ab*ambient.g*(d_a+d_b)/2,
                                              d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
     else
        dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
-            + height_ab*fluidOptions.g*(d_a+d_b)/2;
+            + height_ab*ambient.g*(d_a+d_b)/2;
     end if;
   end WallFrictionAndGravity;
   extends Modelica.Icons.Library;
@@ -294,8 +291,8 @@ simulation and/or might give a more robust simulation.
 model SuddenExpansion 
     "Pressure drop in pipe due to suddenly expanding area (for both flow directions)" 
     import SI = Modelica.SIunits;
-  extends Utilities.QuadraticTurbulent.BaseModel(
-     final data = Utilities.QuadraticTurbulent.LossFactorData.suddenExpansion(D_a, D_b));
+  extends BaseClasses.PressureLosses.QuadraticTurbulent.BaseModel(
+     final data = BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.suddenExpansion(D_a, D_b));
   parameter SI.Diameter D_a "Inner diameter of pipe at port_a";
   parameter SI.Diameter D_b "Inner diameter of pipe at port_b";
     
@@ -385,8 +382,8 @@ model SharpEdgedOrifice
     "Pressure drop due to sharp edged orifice (for both flow directions)" 
     import SI = Modelica.SIunits;
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
-  extends Utilities.QuadraticTurbulent.BaseModel(
-     final data = Utilities.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(D_pipe, D_min, L, alpha));
+  extends BaseClasses.PressureLosses.QuadraticTurbulent.BaseModel(
+     final data = BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(D_pipe, D_min, L, alpha));
   parameter SI.Diameter D_pipe 
       "Inner diameter of pipe (= same at port_a and port_b)";
   parameter SI.Diameter D_min "Smallest diameter of orifice";
@@ -553,4 +550,45 @@ polynomials. The monotonicity is guaranteed using results from:
     New design and implementation based on previous iterations.</li>
 </ul>
 </html>"));
+  
+model PressureDropPipe 
+    "Obsolet component (use instead PressureLosses.WallFrictionAndGravity)" 
+  extends Modelica_Fluid.BaseClasses.Common.PartialTwoPortTransport;
+  extends Modelica_Fluid.BaseClasses.PressureLosses.PipeFriction;
+  annotation (Icon(
+      Rectangle(extent=[-100,60; 100,-60],   style(
+          color=0,
+          gradient=2,
+          fillColor=8)),
+      Rectangle(extent=[-100,34; 100,-36],   style(
+          color=69,
+          gradient=2,
+          fillColor=69)),
+      Text(
+        extent=[-150,140; 150,80],
+        string="%name",
+        style(gradient=2, fillColor=69))), Documentation(info="<html>
+<p>
+This model describes pressure losses due to friction in a pipe. It is assumed that no mass or energy is stored in the pipe. 
+The details of the pipe friction model are described
+<a href=\"Modelica://Modelica_Fluid.Utilities.PipeFriction\">here</a>.
+</p>
+</html>"));
+equation 
+  if frictionType == Modelica_Fluid.Types.FrictionTypes.DetailedFriction then
+     if from_dp then
+        d = if dp >= 0 then medium_a.d else medium_b.d;
+        eta = if dp >= 0 then Medium.dynamicViscosity(medium_a) else 
+                             Medium.dynamicViscosity(medium_b);
+     else
+        d = if m_flow >= 0 then medium_a.d else medium_b.d;
+        eta = if m_flow >= 0 then Medium.dynamicViscosity(medium_a) else 
+                             Medium.dynamicViscosity(medium_b);
+     end if;
+  else
+    // Assign dummy values for auxiliary variables
+     d = 0;
+     eta = 0;
+  end if;
+end PressureDropPipe;
 end PressureLosses;

@@ -14,9 +14,8 @@ package Boilers
   parameter Medium.SpecificHeatCapacity cp_D 
       "specific heat capacity of drum metal";
   parameter SI.Volume V_t "total volume inside drum";
-  parameter Types.InitWithGlobalDefault.Temp initOption=
-            Types.InitWithGlobalDefault.UseGlobalFluidOption 
-      "Initialization option" 
+  parameter Types.Init.Temp initType=
+            Types.Init.NoInit "Initialization option" 
     annotation(Dialog(tab = "Initialization"));
   parameter Medium.AbsolutePressure p_start = Medium.p_default 
       "Start value of pressure" 
@@ -64,17 +63,11 @@ package Boilers
   Medium.SpecificEnthalpy h_S=steam.h "steam enthalpy";
   SI.MassFlowRate qm_W=feedwater.m_flow "feed water mass flow rate";
   SI.MassFlowRate qm_S=steam.m_flow "steam mass flow rate";
+  /*outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+    "Global default options";*/
   protected 
-  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
-      "Global default options";
-  parameter Types.Init.Temp initOption2=
-      if initOption == Types.InitWithGlobalDefault.UseGlobalFluidOption then 
-           fluidOptions.default_initOption else initOption 
-      annotation(Evaluate=true, Hide=true);
   parameter Boolean allowFlowReversal=
-     flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
-     or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
-     and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+     flowDirection == FlowDirection.Bidirectional 
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
      annotation(Evaluate=true, Hide=true);
   equation 
@@ -107,15 +100,15 @@ package Boilers
          "Evaporator model requires subcritical pressure");
   initial equation 
   // Initial conditions
-  if initOption2 == Types.Init.NoInit then
+  if initType == Types.Init.NoInit then
     // no initial equations
-  elseif initOption2 == Types.Init.InitialValues then
+  elseif initType == Types.Init.InitialValues then
    p = p_start;
    V_l = V_l_start;
-  elseif initOption2 == Types.Init.SteadyState then
+  elseif initType == Types.Init.SteadyState then
     der(p) = 0;
     der(V_l) = 0;
-  elseif initOption2 == Types.Init.SteadyStateHydraulic then
+  elseif initType == Types.Init.SteadyStateHydraulic then
     der(p) = 0;
     V_l = V_l_start;
   else

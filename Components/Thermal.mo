@@ -1,7 +1,7 @@
 package Thermal 
 model WallConstProps 
     "Pipe wall, assuming ideal 1D-conduction and constant material properties" 
-  extends Modelica_Fluid.Interfaces.PartialPipeWall;
+  extends PartialPipeWall;
   parameter SI.Density d_wall "Density of wall material";
   parameter SI.SpecificHeatCapacity c_wall 
       "Specific heat capacity of wall material";

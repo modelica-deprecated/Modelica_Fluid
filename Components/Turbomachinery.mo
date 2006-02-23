@@ -1,8 +1,10 @@
 package Turbomachinery 
   model Pump "Centrifugal pump with ideally controlled speed" 
-    extends Interfaces.PartialPump;
-    import Modelica.SIunits.Conversions.NonSIunits.*;
-    parameter AngularVelocity_rpm N_const = N_nom "Constant rotational speed";
+    extends BaseClasses.Turbomachinery.PartialPump;
+   // import Modelica.SIunits.Conversions.NonSIunits.*;
+    parameter Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm 
+      N_const =                                                                     N_nom 
+      "Constant rotational speed";
     Modelica.Blocks.Interfaces.RealInput N_in(redeclare type SignalType = 
           Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm) 
       "Prescribed rotational speed" 
@@ -31,7 +33,7 @@ package Turbomachinery
   end Pump;
   
   model PumpShaft "Centrifugal pump with mechanical connector for the shaft" 
-    extends Interfaces.PartialPump;
+    extends BaseClasses.Turbomachinery.PartialPump;
     SI.Angle phi "Shaft angle";
     SI.AngularVelocity omega "Shaft angular velocity";
     Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft 

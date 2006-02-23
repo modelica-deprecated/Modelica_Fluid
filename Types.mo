@@ -134,8 +134,7 @@ Integer type that can have the following values
     end Temp;
   end Init;
   
-  package InitWithGlobalDefault 
-    "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
+  package InitWithGlobalDefault "Obsolete (will be removed), use Types.Init" 
     
     annotation (Documentation(info="<html>
  
@@ -241,7 +240,7 @@ Integer type that can have the following values
   end FlowDirection;
   
   package FlowDirectionWithGlobalDefault 
-    "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available" 
+    "Obsolete (will be removed), use Types.FLowDirection" 
     
     extends Modelica.Icons.Enumeration;
     constant Integer Unidirectional = 1 "Fluid flows only in one direction";

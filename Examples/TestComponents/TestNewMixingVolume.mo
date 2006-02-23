@@ -1,21 +1,21 @@
 model TestNewMixingVolume 
   extends Modelica.Icons.Example;
-  Components.MixingVolume Volume(
+  Components.FluidStorage.MixingVolume Volume(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    initOption=Modelica_Fluid.Types.Init.SteadyState,
+    initType=Modelica_Fluid.Types.Init.SteadyState,
     p_start=2e5,
     V=1,
     use_T_start=false,
     h_start=3e6) 
          annotation (extent=[-42,0; -22,20]);
-  Sources.PrescribedMassFlowRate_hX FlowSource(
+  Components.Sources.PrescribedMassFlowRate_hX FlowSource(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow=1,
     h=3e6) annotation (extent=[-82,0; -62,20]);
-  Sources.FixedAmbient_pTX Sink(redeclare package Medium = 
+  Components.Sources.FixedAmbient_pTX Sink(redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=101325) 
     annotation (extent=[60,0; 40,20]);
-  Components.ValveLinear Valve(redeclare package Medium = 
+  Components.ControlValves.ValveLinear Valve(redeclare package Medium = 
         Modelica.Media.Water.StandardWater, Kv=1) 
                                             annotation (extent=[2,0; 22,20]);
   annotation (Diagram, experiment(StopTime=5));
@@ -23,7 +23,7 @@ model TestNewMixingVolume
     startTime=1,
     height=-0.5,
     offset=1) annotation (extent=[-36,48; -16,68]);
-  inner Components.FluidOptions fluidOptions 
+  inner Components.Ambient ambient 
     annotation (extent=[-100,-100; -80,-80]);
 equation 
   connect(FlowSource.port, Volume.port_a) annotation (points=[-62,10;

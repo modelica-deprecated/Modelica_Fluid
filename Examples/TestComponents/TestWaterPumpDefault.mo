@@ -1,18 +1,18 @@
 model TestWaterPumpDefault "Test case for WaterPump" 
   extends Modelica.Icons.Example;
-  import PC = Modelica_Fluid.Types.PumpCharacteristics;
+  import PC = Modelica_Fluid.BaseClasses.Turbomachinery.PumpCharacteristics;
   replaceable function pumpFlowChar = PC.quadraticFlow(q_nom={0,0.001,0.0015}, head_nom={100,50,0});
 annotation (
   Diagram,
   experiment(StopTime=10, Tolerance=1e-006),
   Documentation(info=""));
-  Sources.FixedAmbient_pTX Source(redeclare package Medium = 
+  Components.Sources.FixedAmbient_pTX Source(redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=1e5) 
   annotation (extent=[-100,20; -80,40]);
-  Sources.PrescribedAmbient_pTX SinkP1(redeclare package Medium = 
+  Components.Sources.PrescribedAmbient_pTX SinkP1(redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=5e5) 
   annotation (extent=[36,26; 16,46]);
-  Components.Pump Pump1(
+  Components.Turbomachinery.Pump Pump1(
     pin_start=1e5,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     redeclare package SatMedium = Modelica.Media.Water.StandardWater,
@@ -21,7 +21,7 @@ annotation (
     pout_start=7e5)        annotation (extent=[-66,20; -34,50]);
   Modelica.Blocks.Sources.Constant Constant1 
   annotation (extent=[-60,60; -40,80]);
-  Components.ValveLinear Valve(redeclare package Medium = 
+  Components.ControlValves.ValveLinear Valve(redeclare package Medium = 
         Modelica.Media.Water.StandardWater, Kv=1e-5) 
   annotation (extent=[-16,26; 2,46]);
   Modelica.Blocks.Sources.Ramp Ramp1(
@@ -29,8 +29,8 @@ annotation (
     startTime=1,
     height=6e5,
     duration=5) annotation (extent=[4,74; 24,94]);
-  inner Components.FluidOptions fluidOptions 
-    annotation (extent=[-100,-100; -80,-80]);
+  
+  inner Components.Ambient ambient annotation (extent=[64,-4; 84,16]);
 equation 
   connect(Constant1.y, Valve.opening)     annotation (points=[-39,70; -7,70;
         -7,45],     style(color=74, rgbcolor={0,0,127}));

@@ -4,7 +4,7 @@ extends Modelica.Icons.Example;
   
 replaceable package Medium = Modelica.Media.Water.StandardWater;
   
-  Modelica_Fluid.Components.HeatExchanger HEX(
+  Subsystems.HeatExchanger HEX(
     d_wall=200,
     c_wall=500,
     use_T_start_1=true,
@@ -22,37 +22,39 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
         Medium,
     mflow_start_1=0.2,
     static=false,
-    initOption_1=Modelica_Fluid.Types.Init.InitialValues,
-    initOption_2=Modelica_Fluid.Types.Init.InitialValues,
+    initType_1=Modelica_Fluid.Types.Init.InitialValues,
+    initType_2=Modelica_Fluid.Types.Init.InitialValues,
     mflow_start_2=0.2,
     T_start_wall=300,
     redeclare model HeatTransfer_1 = 
-        Modelica_Fluid.HeatTransfer.PipeHT_constAlpha (
+        Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha (
          alpha0=1000),
     K1=20,
     K2=20,
     redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.Utilities.WallFriction.Detailed,
+        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Detailed,
     redeclare model HeatTransfer_2 = 
-        Modelica_Fluid.HeatTransfer.PipeHT_constAlpha,
+        Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha,
     use_eta_nominal=true,
     lumped_dp=false,
     kineticTerm=false)         annotation (extent=[-26,-14; 34,46]);
   
-  Sources.FixedAmbient_pTX ambient2(
+  Components.Sources.FixedAmbient_pTX ambient2(
     redeclare package Medium = Medium,
     p=1e5,
     T=280)                                                          annotation (extent=[82,-28;
         62,-8]);
-  Sources.FixedAmbient_pTX ambient1(
+  Components.Sources.FixedAmbient_pTX ambient1(
                                    redeclare package Medium=Medium,
     p=1e5,
     T=300)                                                          annotation (extent=[82,24;
         62,44]);
-  Sources.PrescribedMassFlowRate_TX massFlowRate2(redeclare package Medium = Medium,
+  Components.Sources.PrescribedMassFlowRate_TX massFlowRate2(redeclare package 
+      Medium =                                                                          Medium,
     m_flow=0.2,
     T=360)      annotation (extent=[-66,24; -46,44]);
-  Sources.PrescribedMassFlowRate_TX massFlowRate1(redeclare package Medium = Medium,
+  Components.Sources.PrescribedMassFlowRate_TX massFlowRate1(redeclare package 
+      Medium =                                                                          Medium,
     T=300,
     m_flow=0.5)  annotation (extent=[-66,-10; -46,10]);
   annotation (Diagram, experiment(StopTime=100, Tolerance=1e-005));
@@ -61,6 +63,7 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     duration=5,
     height=-1,
     offset=0.5)   annotation (extent=[-100,24; -80,44]);
+  inner Components.Ambient ambient annotation (extent=[60,70; 80,90]);
 equation 
   connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34;
         -40,34; -40,29.8; -29,29.8],     style(

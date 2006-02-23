@@ -5,7 +5,7 @@ package Sensors
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor" annotation (
         choicesAllMatching =                                                                        true);
-    FluidPort_a port(redeclare package Medium = Medium) 
+    Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
       annotation (extent=[-10,-110; 10,-90],    rotation=90);
     
     annotation (Documentation(info="<html>
@@ -34,16 +34,15 @@ as signal.
     Medium.SpecificEnthalpy h "enthalpy in flow";
     Medium.MassFraction[Medium.nXi] Xi "flow composition";
     
-    FluidPort_a port_a(redeclare package Medium = Medium,
+    Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,
                        m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
       annotation (extent=[-110,-10; -90,10]);
-    FluidPort_b port_b(redeclare package Medium = Medium,
+    Interfaces.FluidPort_b port_b(redeclare package Medium = Medium,
                        m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
       annotation (extent=[110,-10; 90,10]);
     
-    parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
-      flowDirection=
-              Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+    parameter Modelica_Fluid.Types.FlowDirection.Temp flowDirection=
+              Modelica_Fluid.Types.FlowDirection.Unidirectional 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
     
@@ -58,13 +57,10 @@ this partial class should add a medium instance to calculate the measured proper
 </html>"),
       Diagram,
       Coordsys(grid=[1,1], scale=0));
+    
   protected 
-    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
-      "Global default options";
     parameter Boolean allowFlowReversal=
-       flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional
-       or flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption
-       and fluidOptions.default_flowDirection ==Modelica_Fluid.Types.FlowDirection.Bidirectional 
+       flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
   equation 
@@ -88,9 +84,9 @@ protected
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
         choicesAllMatching =                                                                         true);
     
-    FluidPort_a port_a(redeclare package Medium = Medium) 
+    Interfaces.FluidPort_a port_a(redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
-    FluidPort_b port_b(redeclare package Medium = Medium) 
+    Interfaces.FluidPort_b port_b(redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
     
     annotation (Documentation(info="<html>

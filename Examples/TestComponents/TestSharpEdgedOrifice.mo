@@ -14,22 +14,23 @@ model TestSharpEdgedOrifice
     Coordsys(extent=[-100,-100; 100,100]),
     Documentation(info="<html>
 </html>"));
-  Sources.PrescribedAmbient_pTX ambient(redeclare package Medium = Medium) 
+  Components.Sources.PrescribedAmbient_pTX ambient_p(redeclare package Medium 
+      = Medium) 
     annotation (extent=[-40,40; -20,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.1e5; 10,2e5]) 
     annotation (extent=[-80,40; -60,60]);
   
-  Sources.FixedAmbient_pTX ambient_p1(
+  Components.Sources.FixedAmbient_pTX ambient_p1(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,40; 40,60]);
-  Sources.FixedAmbient_pTX ambient_p2(
+  Components.Sources.FixedAmbient_pTX ambient_p2(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,10; 40,30]);
-  Modelica_Fluid.PressureLosses.SharpEdgedOrifice orifice1(
+  Modelica_Fluid.Components.PressureLosses.SharpEdgedOrifice orifice1(
     redeclare package Medium = Medium,
     D_pipe=0.1,
     alpha=50,
@@ -37,19 +38,22 @@ model TestSharpEdgedOrifice
     L=0.005,
     show_Re=true) 
              annotation (extent=[0,40; 20,60]);
-  Modelica_Fluid.PressureLosses.SharpEdgedOrifice orifice2(
+  Modelica_Fluid.Components.PressureLosses.SharpEdgedOrifice orifice2(
     redeclare package Medium = Medium,
     D_pipe=0.1,
     alpha=50,
     from_dp=false,
     D_min=0.02,
     L=0.005) annotation (extent=[0,10; 20,30]);
-  inner Modelica_Fluid.Components.FluidOptions fluidOptions 
-    annotation (extent=[-100,-100; -80,-80]);
+  
+  inner Modelica_Fluid.Components.Ambient ambient
+    annotation (extent=[60,-68; 80,-48]);
 equation 
-  connect(p_table.y, ambient.p_in)  annotation (points=[-59,50; -52,50; -52,56;
+  connect(p_table.y, ambient_p.p_in) 
+                                    annotation (points=[-59,50; -52,50; -52,56;
         -42,56], style(color=74, rgbcolor={0,0,127}));
-  connect(ambient.port, orifice1.port_a) annotation (points=[-20,50; 0,50],
+  connect(ambient_p.port, orifice1.port_a) 
+                                         annotation (points=[-20,50; 0,50],
       style(
       color=69,
       rgbcolor={0,127,255},
@@ -64,7 +68,8 @@ equation
       fillColor=3,
       rgbfillColor={0,0,255},
       fillPattern=8));
-  connect(ambient.port, orifice2.port_a) annotation (points=[-20,50; -12,
+  connect(ambient_p.port, orifice2.port_a) 
+                                         annotation (points=[-20,50; -12,
         50; -12,20; 0,20],
                         style(
       color=69,

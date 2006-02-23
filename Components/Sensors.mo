@@ -17,7 +17,7 @@ model the time constant of the sensor).
   
   model Pressure "Ideal pressure sensor" 
     import SI = Modelica.SIunits;
-    extends Interfaces.PartialAbsoluteSensor;
+    extends BaseClasses.Sensors.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput p(unit = "Pa") "Pressure at port" 
       annotation (extent=[100,-10; 120,10]);
@@ -46,7 +46,7 @@ ideal, i.e., it does not influence the fluid.
   end Pressure;
   
   model Density "Ideal density sensor" 
-    extends Interfaces.PartialFlowSensor;
+    extends BaseClasses.Sensors.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput d(unit = "kg/m3") 
@@ -84,7 +84,7 @@ ideal, i.e., it does not influence the fluid.
   
   model Temperature "Ideal temperature sensor" 
     import SI = Modelica.SIunits;
-    extends Interfaces.PartialFlowSensor;
+    extends BaseClasses.Sensors.PartialFlowSensor;
     Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput T(unit = "K") 
       "Temperature in port medium" 
@@ -142,7 +142,7 @@ ideal, i.e., it does not influence the fluid.
   end Temperature;
   
   model MassFlowRate "Ideal sensor for mass flow rate" 
-    extends Interfaces.PartialFlowSensor;
+    extends BaseClasses.Sensors.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput m_flow(unit = "kg/s") 
       "mass flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
@@ -174,7 +174,7 @@ The sensor is ideal, i.e., it does not influence the fluid.
   end MassFlowRate;
   
   model VolumeFlowRate "Ideal sensor for volume flow rate" 
-    extends Interfaces.PartialFlowSensor;
+    extends BaseClasses.Sensors.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput V_flow(unit = "m3/s") 
@@ -210,7 +210,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
   end VolumeFlowRate;
   
   model SpecificEnthalpy "Ideal specific enthalphy sensor" 
-    extends Interfaces.PartialFlowSensor;
+    extends BaseClasses.Sensors.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput h_out(unit="J/kg") 
       "Specific enthalpy in port medium" 
@@ -295,7 +295,7 @@ through the sensor is allowed.
   
 /*
   model SpecificInternalEnergy "Ideal specific internal energy sensor" 
-    extends Interfaces.PartialAbsoluteSensor;
+    extends BaseClasses.Sensors.PartialSensor;
     extends Modelica.Icons.RotationalSensor;
     Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput u(unit = "J/kg") 

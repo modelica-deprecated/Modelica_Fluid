@@ -1,17 +1,14 @@
 package FluidStorage 
     model MixingVolume 
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
-    import Modelica_Fluid.Types.Init;
     import Modelica.Constants;
-    import Modelica_Fluid.Types.FlowDirection;
-    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
-    extends Interfaces.PartialInitializationParameters;
+    extends BaseClasses.Common.PartialInitializationParameters;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
     parameter SI.Volume V "Volume";
-    parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
-              FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+    parameter Types.FlowDirection.Temp flowDirection=
+              Types.FlowDirection.Unidirectional 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
     Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,
@@ -45,12 +42,8 @@ package FluidStorage
 </html>"),
       Diagram);
   protected 
-    outer Modelica_Fluid.Components.FluidOptions fluidOptions 
-      "Global default options";
     parameter Boolean allowFlowReversal=
-       flowDirection == FlowDirectionWithGlobalDefault.Bidirectional
-       or flowDirection == FlowDirectionWithGlobalDefault.UseGlobalFluidOption
-       and fluidOptions.default_flowDirection ==FlowDirection.Bidirectional 
+       flowDirection == Types.FlowDirection.Bidirectional 
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
     equation 
@@ -75,9 +68,9 @@ package FluidStorage
     
     initial equation 
     // Initial conditions
-    if initOption == Init.NoInit then
+    if initType == Types.Init.NoInit then
       // no initial equations
-    elseif initOption == Init.InitialValues then
+    elseif initType == Types.Init.InitialValues then
       if not Medium.singleState then
         medium.p = p_start;
       end if;
@@ -87,13 +80,13 @@ package FluidStorage
         medium.h = h_start;
       end if;
       medium.Xi = X_start[1:Medium.nXi];
-    elseif initOption == Init.SteadyState then
+    elseif initType == Types.Init.SteadyState then
       if not Medium.singleState then
          der(medium.p) = 0;
       end if;
       der(medium.h) = 0;
       der(medium.Xi) = zeros(Medium.nXi);
-    elseif initOption == Init.SteadyStateHydraulic then
+    elseif initType == Types.Init.SteadyStateHydraulic then
       if not Medium.singleState then
          der(medium.p) = 0;
       end if;
@@ -108,9 +101,163 @@ package FluidStorage
     end if;
     end MixingVolume;
   
-model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
-    import SI = Modelica.SIunits;
+model Tank "Obsolet component (use instead Components.OpenTank)" 
     import Modelica_Fluid.Types;
+  replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+    annotation (choicesAllMatching=true);
+  parameter SI.Area area "Tank area";
+  parameter SI.Area pipeArea "Area of outlet pipe";
+  parameter SI.Volume V0 = 0 "Volume of the liquid when the level is zero";
+  parameter SI.Height H0 = 0 
+      "Height of zero level reference over the bottom port";
+  parameter Medium.AbsolutePressure p_ambient=ambient.default_p_ambient 
+      "Tank surface pressure";
+  parameter Types.Init.Temp initType=
+            Types.Init.NoInit "Initialization option" 
+    annotation(Dialog(tab = "Initialization"));
+  parameter Boolean use_T_start = true "Use T_start if true, otherwise h_start"
+    annotation(Dialog(tab = "Initialization"), Evaluate = true);
+  parameter Medium.Temperature T_start=
+    if use_T_start then Medium.T_default else Medium.temperature_phX(p_ambient,h_start,X_start) 
+      "Start value of temperature" 
+    annotation(Dialog(tab = "Initialization", enable = use_T_start));
+  parameter Medium.SpecificEnthalpy h_start=
+    if use_T_start then Medium.specificEnthalpy_pTX(p_ambient, T_start, X_start) else Medium.h_default 
+      "Start value of specific enthalpy" 
+    annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+  parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+    annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+  parameter SI.Height level_start(min=0) "Initial tank level" 
+    annotation(Dialog(tab="Initialization"));
+    
+  Interfaces.FluidPort_b port(redeclare package Medium = Medium,
+                              m_flow(start=0), mXi_flow(each start=0)) 
+    annotation (extent=[-10, -120; 10, -100], rotation=90);
+  Medium.BaseProperties medium(
+    preferredMediumStates=true,
+    p(start=p_ambient),
+    T(start=T_start),
+    Xi(start=X_start[1:Medium.nXi]));
+    outer Modelica_Fluid.Components.Ambient ambient "Ambient conditions";
+    
+  SI.Height level(start=level_start,stateSelect=StateSelect.prefer) 
+      "Height of tank level over the zero reference";
+  Medium.AbsolutePressure p_bottom "Pressure at bottom of tank";
+  SI.Energy U "Internal energy of tank volume";
+  SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
+  Real m(quantity=Medium.mediumName, unit="kg", stateSelect=StateSelect.never) 
+      "Mass of tank volume";
+  Real mX[Medium.nX](quantity=Medium.substanceNames, each unit="kg") 
+      "Component masses of the independent substances";
+    
+equation 
+  medium.p = p_ambient;
+  V = area*level+V0 "Volume of fluid";
+  m = V*medium.d "Mass of fluid";
+  mX = m*medium.Xi "Mass of fluid components";
+  U = m*medium.u "Internal energy of fluid";
+    
+  // Mass balance
+  der(m) = port.m_flow;
+  der(mX) = port.mXi_flow;
+    
+  // Momentum balance
+  p_bottom = (medium.d*ambient.g*(level+H0)) + p_ambient;
+  port.p = p_bottom - smooth(2,noEvent(if port.m_flow < 0 then port.m_flow^2/(2*medium.d*pipeArea^2) else 0));
+    
+  // Energy balance
+  if Medium.singleState then
+    der(U) = port.H_flow "Mechanical work is neglected";
+  else
+    der(U) = port.H_flow - p_ambient*der(V);
+  end if;
+    
+  /* Handle reverse and zero flow */
+  port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
+  port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.X);
+    
+initial equation 
+  if initType == Types.Init.NoInit then
+    // no initial equations
+  elseif initType == Types.Init.InitialValues then
+    level = level_start;
+    if use_T_start then
+      medium.T = T_start;
+    else
+      medium.h = h_start;
+    end if;
+    medium.Xi = X_start[1:Medium.nXi];
+  elseif initType == Types.Init.SteadyState then
+    der(level) = 0;
+    der(medium.h) = 0;
+    der(medium.Xi) = zeros(Medium.nXi);
+  elseif initType == Types.Init.SteadyStateHydraulic then
+    der(level) = 0;
+    if use_T_start then
+      medium.T = T_start;
+    else
+      medium.h = h_start;
+    end if;
+    medium.Xi = X_start[1:Medium.nXi];
+  else
+    assert(false,"Unsupported initialization option initType = " + String(initType)
+                 +"\nin model Modelica_Fluid.Components.Tank");
+  end if;
+  annotation (
+    Icon(
+      Rectangle(extent=[-100, 90; 100, 26], style(color=7, fillColor=7)),
+      Rectangle(extent=[-100, 26; 100, -100], style(
+          color=69,
+          fillColor=69,
+          fillPattern=1)),
+      Line(points=[-100, 100; -100, -100; 100, -100; 100, 100], style(
+          color=0,
+          fillColor=69,
+          fillPattern=1)),
+      Text(
+        extent=[-112, 162; 122, 102],
+        string="%name",
+        style(fillColor=69, fillPattern=1)),
+      Text(
+        extent=[-86, -38; 94, -78],
+        style(color=0),
+        string="%level_start"),
+      Text(
+        extent=[-94, 78; 94, 38],
+        style(color=0),
+        string="%p_ambient"),
+      Text(
+        extent=[-94, 14; 90, -2],
+        style(color=0),
+        string="level_start")),
+    Documentation(info="<HTML>
+<p>
+This is a simplified model of a tank. The top part is open to the environment at the fixed pressure <tt>p_ambient</tt>. Heat transfer to the environment and to the tank walls is neglected.
+The tank is filled with a single or multiple-substance liquid, assumed to have uniform temperature and mass fractions.
+<p>The geometry of the tank is specified by the following parameters: <tt>V0</tt> is the volume of the liquid when the level is at the zero reference; <tt>area</tt> is the cross-sectional area of the tank; <tt>H0</tt> is the height of the zero-reference level plane over the port connector. It is thus possible to model rounded-bottom tanks, as long as they have a cylindrical shape in the range of operating levels.
+<p>The tank can be initialized with the following options:
+<ul>
+<li>NoInit: no explicit initial conditions
+<li>InitialValues: initial values of temperature (or specific enthalpy), composition and level are specified
+<li>SteadyStateHydraulic: initial values of temperature (or specific enthalpy) and composition are specified; the initial level is determined so that levels and pressure are at steady state.
+</ul>
+Full steady state initialization is not supported, because the corresponding intial equations for temperature/enthalpy are undetermined (the flow rate through the port at steady state is zero). 
+</p>
+</HTML>", revisions="<html>
+<ul>
+<li><i>1 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Adapted from a previous version of Modelica_Fluid</li>
+</ul>
+</html>"),
+    Diagram);
+end Tank;
+
+model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
+  import SI = Modelica.SIunits;
+  import Modelica_Fluid.Types;
   replaceable package Medium = PackageMedium 
     extends Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
@@ -143,16 +290,16 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
       "Inner (hydraulic) diameters of sidePorts" 
      annotation(Dialog(group="sidePorts (= pipes at side of tank; in and out flow of tank)",enable=n_sidePorts > 0));
     
-  parameter Medium.AbsolutePressure p_ambient=fluidOptions.default_p_ambient 
+  parameter Medium.AbsolutePressure p_ambient=ambient.default_p_ambient 
       "Tank surface pressure" 
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-  parameter Medium.Temperature T_ambient = fluidOptions.default_T_ambient 
+  parameter Medium.Temperature T_ambient = ambient.default_T_ambient 
       "Tank surface Temperature" 
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
     
-  parameter Types.InitWithGlobalDefault.Temp initOption=
+  parameter Types.InitWithGlobalDefault.Temp initType=
             Types.InitWithGlobalDefault.InitialValues "Initialization option" 
-    annotation(Dialog(tab = "Ambient and Initialization", group = "Initialization"));
+    annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
   parameter SI.Height level_start "Start value of tank level" 
     annotation(Dialog(tab="Ambient and Initialization", group = "Initialization"));
   parameter Medium.Temperature T_start=T_ambient "Start value of temperature" 
@@ -167,13 +314,13 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
               annotation(Evaluate=true, Dialog(tab="Advanced"));
 */
     
-  Modelica_Fluid.Interfaces.FluidPort_ArrayIcon topPorts[n_topPorts](redeclare 
+  Modelica_Fluid.BaseClasses.FluidStorage.FluidPort_ArrayIcon topPorts[n_topPorts](redeclare 
         package Medium=Medium, m_flow(each start=0), mXi_flow(each start=0)) 
     annotation (extent=[-30,100; 30,108]);
-  Modelica_Fluid.Interfaces.FluidPort_ArrayIcon bottomPorts[n_bottomPorts](redeclare 
+  Modelica_Fluid.BaseClasses.FluidStorage.FluidPort_ArrayIcon bottomPorts[n_bottomPorts](redeclare 
         package Medium=Medium, m_flow(each start=0), mXi_flow(each start=0)) 
     annotation (extent=[-30,-108; 30,-100],   rotation=90);
-  Modelica_Fluid.Interfaces.FluidPort_ArrayIcon sidePorts[n_sidePorts](redeclare 
+  Modelica_Fluid.BaseClasses.FluidStorage.FluidPort_ArrayIcon sidePorts[n_sidePorts](redeclare 
         package Medium=Medium, m_flow(each start=0), mXi_flow(each start=0)) 
     annotation (extent=[100,30; 108,-30]);
     
@@ -191,16 +338,10 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
   SI.Mass m "Mass of fluid in tank";
   SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
     
+Components.Ambient ambient;
   protected 
   Real Q_lost = 0 "Wärmeverlust (currently dummy)";
-    
-  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
-      "Global default options";
   parameter Medium.SpecificEnthalpy h_start = Medium.specificEnthalpy_pTX(p_ambient, T_start, X_start);
-  parameter Types.Init.Temp initOption2=
-      if initOption == Types.InitWithGlobalDefault.UseGlobalFluidOption then 
-           fluidOptions.default_initOption else initOption 
-      annotation(Evaluate=true, Hide=true);
   parameter Integer precision = 3 "Precision for tank level in animation" annotation(Hide=false);
     
   Medium.EnthalpyFlowRate H_flow_topPorts[n_topPorts];
@@ -216,7 +357,7 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
   Medium.MassFlowRate mXi_flow_sidePorts[n_sidePorts,Medium.nXi];
     
   protected 
-  Modelica_Fluid.Utilities.TankAttachment tankAttachmentTop[n_topPorts](
+  Modelica_Fluid.BaseClasses.FluidStorage.TankAttachment tankAttachmentTop[n_topPorts](
     each h=medium.h,
     each d=medium.d,
     each Xi=medium.Xi,
@@ -232,7 +373,7 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
     pipeHeight=top_heights,
     redeclare package Medium = Medium) 
       annotation (extent=[-20,80; 20,40]);
-  Modelica_Fluid.Utilities.TankAttachment tankAttachmentBottom[n_bottomPorts](
+  Modelica_Fluid.BaseClasses.FluidStorage.TankAttachment tankAttachmentBottom[n_bottomPorts](
     each h=medium.h,
     each d=medium.d,
     each Xi=medium.Xi,
@@ -249,7 +390,7 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
     pipeDiameter=bottom_diameters,
     redeclare package Medium = Medium) 
       annotation (extent=[-20,-80; 20,-40]);
-  Modelica_Fluid.Utilities.TankAttachment tankAttachmentSide[n_sidePorts](
+  Modelica_Fluid.BaseClasses.FluidStorage.TankAttachment tankAttachmentSide[n_sidePorts](
     each h=medium.h,
     each d=medium.d,
     each Xi=medium.Xi,
@@ -311,17 +452,17 @@ equation
   assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
     
 initial equation 
-  if initOption2 == Types.Init.NoInit then
+  if initType == Types.Init.NoInit then
     // no initial equations
-  elseif initOption2 == Types.Init.InitialValues then
+  elseif initType == Types.Init.InitialValues then
     level = level_start;
     medium.T = T_start;
     medium.Xi = X_start[1:Medium.nXi];
-  elseif initOption2 == Types.Init.SteadyState then
+  elseif initType == Types.Init.SteadyState then
     der(level) = 0;
     der(medium.h) = 0;
     der(medium.Xi) = zeros(Medium.nXi);
-  elseif initOption2 == Types.Init.SteadyStateHydraulic then
+  elseif initType == Types.Init.SteadyStateHydraulic then
     der(level) = 0;
     medium.T = T_start;
     medium.Xi = X_start[1:Medium.nXi];
@@ -418,164 +559,4 @@ is visualized, as well as the value of level.
     uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")),
     Coordsys(grid=[1,1], scale=0.2));
 end OpenTank;
-  
-model Tank "Obsolet component (use instead Components.OpenTank)" 
-    import Modelica_Fluid.Types;
-  replaceable package Medium = PackageMedium extends 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-    annotation (choicesAllMatching=true);
-  parameter SI.Area area "Tank area";
-  parameter SI.Area pipeArea "Area of outlet pipe";
-  parameter SI.Volume V0 = 0 "Volume of the liquid when the level is zero";
-  parameter SI.Height H0 = 0 
-      "Height of zero level reference over the bottom port";
-  parameter Medium.AbsolutePressure p_ambient=fluidOptions.default_p_ambient 
-      "Tank surface pressure";
-  parameter Types.InitWithGlobalDefault.Temp initOption=
-            Types.InitWithGlobalDefault.UseGlobalFluidOption 
-      "Initialization option" 
-    annotation(Dialog(tab = "Initialization"));
-  parameter Boolean use_T_start = true "Use T_start if true, otherwise h_start"
-    annotation(Dialog(tab = "Initialization"), Evaluate = true);
-  parameter Medium.Temperature T_start=
-    if use_T_start then Medium.T_default else Medium.temperature_phX(p_ambient,h_start,X_start) 
-      "Start value of temperature" 
-    annotation(Dialog(tab = "Initialization", enable = use_T_start));
-  parameter Medium.SpecificEnthalpy h_start=
-    if use_T_start then Medium.specificEnthalpy_pTX(p_ambient, T_start, X_start) else Medium.h_default 
-      "Start value of specific enthalpy" 
-    annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-  parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
-      "Start value of mass fractions m_i/m" 
-    annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-  parameter SI.Height level_start(min=0) "Initial tank level" 
-    annotation(Dialog(tab="Initialization"));
-    
-  Interfaces.FluidPort_b port(redeclare package Medium = Medium,
-                              m_flow(start=0), mXi_flow(each start=0)) 
-    annotation (extent=[-10, -120; 10, -100], rotation=90);
-  Medium.BaseProperties medium(
-    preferredMediumStates=true,
-    p(start=p_ambient),
-    T(start=T_start),
-    Xi(start=X_start[1:Medium.nXi]));
-    
-  SI.Height level(start=level_start,stateSelect=StateSelect.prefer) 
-      "Height of tank level over the zero reference";
-  Medium.AbsolutePressure p_bottom "Pressure at bottom of tank";
-  SI.Energy U "Internal energy of tank volume";
-  SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
-  Real m(quantity=Medium.mediumName, unit="kg", stateSelect=StateSelect.never) 
-      "Mass of tank volume";
-  Real mX[Medium.nX](quantity=Medium.substanceNames, each unit="kg") 
-      "Component masses of the independent substances";
-  protected 
-  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
-      "Global default options";
-  parameter Types.Init.Temp initOption2=
-      if initOption == Types.InitWithGlobalDefault.UseGlobalFluidOption then 
-           fluidOptions.default_initOption else initOption 
-      annotation(Evaluate=true, Hide=true);
-equation 
-  medium.p = p_ambient;
-  V = area*level+V0 "Volume of fluid";
-  m = V*medium.d "Mass of fluid";
-  mX = m*medium.Xi "Mass of fluid components";
-  U = m*medium.u "Internal energy of fluid";
-    
-  // Mass balance
-  der(m) = port.m_flow;
-  der(mX) = port.mXi_flow;
-    
-  // Momentum balance
-  p_bottom = (medium.d*fluidOptions.g*(level+H0)) + p_ambient;
-  port.p = p_bottom - smooth(2,noEvent(if port.m_flow < 0 then port.m_flow^2/(2*medium.d*pipeArea^2) else 0));
-    
-  // Energy balance
-  if Medium.singleState then
-    der(U) = port.H_flow "Mechanical work is neglected";
-  else
-    der(U) = port.H_flow - p_ambient*der(V);
-  end if;
-    
-  /* Handle reverse and zero flow */
-  port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
-  port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.X);
-    
-initial equation 
-  if initOption2 == Types.Init.NoInit then
-    // no initial equations
-  elseif initOption2 == Types.Init.InitialValues then
-    level = level_start;
-    if use_T_start then
-      medium.T = T_start;
-    else
-      medium.h = h_start;
-    end if;
-    medium.Xi = X_start[1:Medium.nXi];
-  elseif initOption2 == Types.Init.SteadyState then
-    der(level) = 0;
-    der(medium.h) = 0;
-    der(medium.Xi) = zeros(Medium.nXi);
-  elseif initOption2 == Types.Init.SteadyStateHydraulic then
-    der(level) = 0;
-    if use_T_start then
-      medium.T = T_start;
-    else
-      medium.h = h_start;
-    end if;
-    medium.Xi = X_start[1:Medium.nXi];
-  else
-    assert(false,"Unsupported initialization option initOption = " + String(initOption2)
-                 +"\nin model Modelica_Fluid.Components.Tank");
-  end if;
-  annotation (
-    Icon(
-      Rectangle(extent=[-100, 90; 100, 26], style(color=7, fillColor=7)),
-      Rectangle(extent=[-100, 26; 100, -100], style(
-          color=69,
-          fillColor=69,
-          fillPattern=1)),
-      Line(points=[-100, 100; -100, -100; 100, -100; 100, 100], style(
-          color=0,
-          fillColor=69,
-          fillPattern=1)),
-      Text(
-        extent=[-112, 162; 122, 102],
-        string="%name",
-        style(fillColor=69, fillPattern=1)),
-      Text(
-        extent=[-86, -38; 94, -78],
-        style(color=0),
-        string="%level_start"),
-      Text(
-        extent=[-94, 78; 94, 38],
-        style(color=0),
-        string="%p_ambient"),
-      Text(
-        extent=[-94, 14; 90, -2],
-        style(color=0),
-        string="level_start")),
-    Documentation(info="<HTML>
-<p>
-This is a simplified model of a tank. The top part is open to the environment at the fixed pressure <tt>p_ambient</tt>. Heat transfer to the environment and to the tank walls is neglected.
-The tank is filled with a single or multiple-substance liquid, assumed to have uniform temperature and mass fractions.
-<p>The geometry of the tank is specified by the following parameters: <tt>V0</tt> is the volume of the liquid when the level is at the zero reference; <tt>area</tt> is the cross-sectional area of the tank; <tt>H0</tt> is the height of the zero-reference level plane over the port connector. It is thus possible to model rounded-bottom tanks, as long as they have a cylindrical shape in the range of operating levels.
-<p>The tank can be initialized with the following options:
-<ul>
-<li>NoInit: no explicit initial conditions
-<li>InitialValues: initial values of temperature (or specific enthalpy), composition and level are specified
-<li>SteadyStateHydraulic: initial values of temperature (or specific enthalpy) and composition are specified; the initial level is determined so that levels and pressure are at steady state.
-</ul>
-Full steady state initialization is not supported, because the corresponding intial equations for temperature/enthalpy are undetermined (the flow rate through the port at steady state is zero). 
-</p>
-</HTML>", revisions="<html>
-<ul>
-<li><i>1 Nov 2005</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Adapted from a previous version of Modelica_Fluid</li>
-</ul>
-</html>"),
-    Diagram);
-end Tank;
 end FluidStorage;

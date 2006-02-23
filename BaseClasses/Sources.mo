@@ -4,22 +4,17 @@ partial model PartialSource "Partial component source with one fluid connector"
   replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium model within the source" 
      annotation (choicesAllMatching=true);
-  FluidPort_b port(redeclare package Medium = Medium,
+  Interfaces.FluidPort_b port(redeclare package Medium = Medium,
                    m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
     annotation (extent=[90,-10; 110,10],    rotation=0);
   Medium.BaseProperties medium "Medium in the source";
-  parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
-      flowDirection=
-            Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+  parameter Types.FlowDirection.Temp flowDirection=
+                   Types.FlowDirection.Unidirectional 
       "Unidirectional (out of port_b) or bidirectional flow component" 
                                                               annotation(Dialog(tab="Advanced"));
   protected 
-  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
-      "Global default options";
-  parameter Boolean allowFlowReversal=
-     flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional
-     or flowDirection == Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption
-     and fluidOptions.default_flowDirection ==Modelica_Fluid.Types.FlowDirection.Bidirectional 
+    parameter Boolean allowFlowReversal=
+     flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "= false, if flow only out of port_b, otherwise reversing flow allowed" 
      annotation(Evaluate=true, Hide=true);
 equation 

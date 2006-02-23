@@ -19,35 +19,35 @@ changes until water from tank1 is flowing into tank2.
 </p>
 </html>"),
       experimentSetupOutput);
-    Components.Tank Tank1(
+    Components.FluidStorage.Tank Tank1(
       area=1,
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[-70,20; -50,40]);
-    Components.Tank Tank2(
+    Components.FluidStorage.Tank Tank2(
       area=1,
       T_start=from_degC(100),
       level_start=1,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[10,20; 30,40]);
-    Components.PressureDropPipe shortPipe1(
+    Components.PressureLosses.PressureDropPipe shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       frictionType=Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[-29,0; -9,20]);
-    inner Components.FluidOptions fluidOptions 
-      annotation (extent=[-100,-100; -80,-80]);
+    
+    inner Components.Ambient ambient annotation (extent=[46,64; 66,84]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
       annotation (points=[-60,19; -60,10; -29,10],      style(color=69));
@@ -73,52 +73,52 @@ is provided in ThreeTanksIF97.
 </p>
 </html>"),
       experimentSetupOutput);
-    Components.Tank Tank1(
+    Components.FluidStorage.Tank Tank1(
       area=1,
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[-90,20; -70,40]);
-    Components.Tank Tank2(
+    Components.FluidStorage.Tank Tank2(
       area=1,
       T_start=from_degC(100),
       level_start=1,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       H0=0.5,
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[-10, 20; 10, 40]);
-    Components.PressureDropPipe shortPipe1(
+    Components.PressureLosses.PressureDropPipe shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       frictionType=Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[-50, -30; -30, -10]);
-    Components.Tank Tank3(
+    Components.FluidStorage.Tank Tank3(
       area=1,
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[70,20; 90,40]);
-    Components.PressureDropPipe shortPipe3(
+    Components.PressureLosses.PressureDropPipe shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       frictionType=Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[30, -30; 50, -10]);
-    Components.PressureDropPipe shortPipe2(
+    Components.PressureLosses.PressureDropPipe shortPipe2(
       m_flow_nominal=1000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -127,8 +127,8 @@ is provided in ThreeTanksIF97.
       medium_b(T(stateSelect=StateSelect.avoid)),
       medium_a(T(stateSelect=StateSelect.avoid))) 
       annotation (extent=[-10, -10; 10, 10], rotation=-90);
-    inner Components.FluidOptions fluidOptions 
-      annotation (extent=[-100,-100; -80,-80]);
+    
+    inner Components.Ambient ambient annotation (extent=[49,65; 69,85]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
       annotation (points=[-80,19; -80,-20; -50,-20],    style(color=69));
@@ -157,50 +157,50 @@ compressible medium model WaterIF97 is used.
 </p>
 </html>"),
       experimentSetupOutput);
-    Components.Tank Tank1(
+    Components.FluidStorage.Tank Tank1(
       area=1,
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       pipeArea=0.01) 
       annotation (extent=[-90, 20; -70, 40]);
-    Components.Tank Tank2(
+    Components.FluidStorage.Tank Tank2(
       area=1,
       level_start=1,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       T_start=from_degC(90),
       pipeArea=0.01) 
       annotation (extent=[-10,20; 10,40]);
-    Components.PressureDropPipe shortPipe1(
+    Components.PressureLosses.PressureDropPipe shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[-50, -30; -30, -10]);
-    Components.Tank Tank3(
+    Components.FluidStorage.Tank Tank3(
       area=1,
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       pipeArea=0.01) 
       annotation (extent=[70, 20; 90, 40]);
-    Components.PressureDropPipe shortPipe3(
+    Components.PressureLosses.PressureDropPipe shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[30, -30; 50, -10]);
-    Components.PressureDropPipe shortPipe2(
+    Components.PressureLosses.PressureDropPipe shortPipe2(
       m_flow_nominal=1000,
       dp_nominal=from_bar(0.1),
       frictionType=Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[-10,-10; 10,10],   rotation=-90);
-    inner Components.FluidOptions fluidOptions 
-      annotation (extent=[-100,-100; -80,-80]);
+    
+    inner Components.Ambient ambient annotation (extent=[50,61; 70,81]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
       annotation (points=[-80,19; -80,-20; -50,-20],    style(color=69));
@@ -229,48 +229,46 @@ is that the system starts in steady state, i.e., with constant
 </p>
 </html>"),
       experimentSetupOutput);
-    Components.Tank Tank1(
+    Components.FluidStorage.Tank Tank1(
       area=1,
       T_start=from_degC(50),
       level_start=3,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       pipeArea=0.01) 
       annotation (extent=[-90, 20; -70, 40]);
-    Components.Tank Tank2(
+    Components.FluidStorage.Tank Tank2(
       area=1,
       level_start=1,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       T_start=from_degC(90),
       pipeArea=0.01) 
       annotation (extent=[-10,20; 10,40]);
-    Components.PressureDropPipe shortPipe1(
+    Components.PressureLosses.PressureDropPipe shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[-50, -30; -30, -10]);
-    Components.Tank Tank3(
+    Components.FluidStorage.Tank Tank3(
       area=1,
       T_start=from_degC(20),
       level_start=2,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       pipeArea=0.01) 
       annotation (extent=[70, 20; 90, 40]);
-    Components.PressureDropPipe shortPipe3(
+    Components.PressureLosses.PressureDropPipe shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[30, -30; 50, -10]);
-    Components.PressureDropPipe shortPipe2(
+    Components.PressureLosses.PressureDropPipe shortPipe2(
       m_flow_nominal=1000,
       dp_nominal=from_bar(0.1),
       frictionType=Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[-10, -10; 10, 10], rotation=-90);
-    inner Components.FluidOptions fluidOptions(default_initOption=
-          Modelica_Fluid.Types.Init.SteadyState) 
-      annotation (extent=[-100,-100; -80,-80]);
+    inner Components.Ambient ambient annotation (extent=[60,65; 80,85]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
       annotation (points=[-80,19; -80,-20; -50,-20],    style(color=69));
@@ -294,7 +292,7 @@ is that the system starts in steady state, i.e., with constant
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
     
-    Components.OpenTank tank1(
+    Components.FluidStorage.OpenTank tank1(
       height=10,
       area=1,
       n_bottomPorts=1,
@@ -302,7 +300,7 @@ is that the system starts in steady state, i.e., with constant
       level_start=6,
       redeclare package Medium = Medium) 
                      annotation (extent=[-80,20; -40,60]);
-    Components.OpenTank tank2(
+    Components.FluidStorage.OpenTank tank2(
       height=10,
       area=1,
       n_bottomPorts=1,
@@ -310,15 +308,15 @@ is that the system starts in steady state, i.e., with constant
       level_start=3,
       redeclare package Medium = Medium) 
                      annotation (extent=[20,20; 60,60]);
-    PressureLosses.WallFrictionAndGravity pipe1(
+    Components.PressureLosses.WallFrictionAndGravity pipe1(
       length=1,
-      p_start=fluidOptions.default_p_ambient,
-      T_start=fluidOptions.default_T_ambient,
+      p_start=ambient.default_p_ambient,
+      T_start=ambient.default_T_ambient,
       diameter=0.1,
       height_ab=0,
       redeclare package Medium = Medium,
       redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.Utilities.WallFriction.Detailed) 
+          Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Detailed) 
             annotation (extent=[-20,-10; 0,10],  rotation=0);
     annotation (Diagram,
       experiment(StopTime=40),
@@ -326,8 +324,8 @@ is that the system starts in steady state, i.e., with constant
       Documentation(info="<html>
   
 </html>"));
-    inner Components.FluidOptions fluidOptions 
-      annotation (extent=[-100,-40; -80,-20]);
+    
+    inner Components.Ambient ambient annotation (extent=[60,-34; 80,-14]);
   equation 
     connect(pipe1.port_a, tank1.bottomPorts[1]) 
                                                annotation (points=[-20,0; -60,0;
@@ -357,12 +355,12 @@ is that the system starts in steady state, i.e., with constant
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
     
-    Modelica_Fluid.Components.OpenTank tank1(
+    Modelica_Fluid.Components.FluidStorage.OpenTank tank1(
       area=1,
       V0=0,
       bottom_heights={0},
       redeclare package Medium = Medium,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       height=10,
       bottom_diameters={0.05},
       n_sidePorts=2,
@@ -373,25 +371,25 @@ is that the system starts in steady state, i.e., with constant
       level_start=1) 
                     annotation (extent=[-40,0; 0,40]);
     
-    Modelica_Fluid.Components.OpenTank tank2(
+    Modelica_Fluid.Components.FluidStorage.OpenTank tank2(
       area=1,
       V0=0,
       bottom_heights={0},
       bottom_diameters={0.1},
       redeclare package Medium = Medium,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       height=10,
       level_start=9,
       n_bottomPorts=1) 
                      annotation (extent=[30,60; 70,100]);
     
-    Modelica_Fluid.Components.OpenTank tank3(
+    Modelica_Fluid.Components.FluidStorage.OpenTank tank3(
       area=1,
       V0=0,
       level_start=6,
       top_heights={10},
       redeclare package Medium = Medium,
-      initOption=Modelica_Fluid.Types.Init.InitialValues,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
       n_sidePorts=1,
       side_diameters={0.05},
       n_topPorts=1,
@@ -399,38 +397,38 @@ is that the system starts in steady state, i.e., with constant
       height=20)                                            annotation (extent=[-40,-90;
           0,-50]);
     
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
+    Modelica_Fluid.Components.PressureLosses.WallFrictionAndGravity pipe1(
       redeclare package Medium = Medium,
       length=1,
       height_ab=2,
       diameter=0.05,
-      p_start=fluidOptions.default_p_ambient,
-      T_start=fluidOptions.default_T_ambient,
+      p_start=ambient.default_p_ambient,
+      T_start=ambient.default_T_ambient,
       redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.Utilities.WallFriction.NoFriction) 
+          Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.NoFriction) 
             annotation (extent=[-30,-40; -10,-20],
                                                  rotation=90);
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
+    Modelica_Fluid.Components.PressureLosses.WallFrictionAndGravity pipe2(
       redeclare package Medium = Medium,
       length=1,
       diameter=0.1,
       height_ab=2,
-      p_start=fluidOptions.default_p_ambient,
-      T_start=fluidOptions.default_T_ambient,
+      p_start=ambient.default_p_ambient,
+      T_start=ambient.default_T_ambient,
       redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.Utilities.WallFriction.NoFriction) 
+          Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.NoFriction) 
             annotation (extent=[40,30; 60,50],   rotation=90);
-    inner Modelica_Fluid.Components.FluidOptions fluidOptions 
+    inner Modelica_Fluid.Components.Ambient ambient 
       annotation (extent=[-90,-90; -70,-70]);
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe3(
+    Modelica_Fluid.Components.PressureLosses.WallFrictionAndGravity pipe3(
       redeclare package Medium = Medium,
       length=1,
       height_ab=2,
       diameter=0.05,
-      p_start=fluidOptions.default_p_ambient,
-      T_start=fluidOptions.default_T_ambient,
+      p_start=ambient.default_p_ambient,
+      T_start=ambient.default_T_ambient,
       redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.Utilities.WallFriction.NoFriction) 
+          Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.NoFriction) 
             annotation (extent=[20,-40; 40,-20], rotation=90);
   equation 
     connect(tank2.bottomPorts[1], pipe2.port_b) 
@@ -442,9 +440,9 @@ is that the system starts in steady state, i.e., with constant
     connect(pipe1.port_a, tank3.topPorts[1]) 
                        annotation (points=[-20,-40; -20,-49.2],
         style(color=69, rgbcolor={0,127,255}));
-    connect(pipe2.port_a, tank1.sidePorts[1]) annotation (points=[50,30; 50,23;
+    connect(pipe2.port_a, tank1.sidePorts[1]) annotation (points=[50,30; 50,23; 
           0.8,23], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe3.port_b, tank1.sidePorts[2]) annotation (points=[30,-20; 30,16;
+    connect(pipe3.port_b, tank1.sidePorts[2]) annotation (points=[30,-20; 30,16; 
           0.8,16; 0.8,17], style(color=69, rgbcolor={0,127,255}));
     connect(pipe3.port_a, tank3.sidePorts[1]) annotation (points=[30,-40; 30,
           -70; 0.8,-70],

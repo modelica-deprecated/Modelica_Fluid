@@ -1,10 +1,10 @@
 model TestValveIncompressible "Test case for valves" 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
-  Sources.FixedAmbient_pTX SourceP1(p=10e5,
+  Components.Sources.FixedAmbient_pTX SourceP1(p=10e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[-100,30; -80,50]);
-  Components.ValveIncompressible V1(
+  Components.ControlValves.ValveIncompressible V1(
     d_nom=1000,
     dp_nom=9e5,
     m_flow_nom=1.5,
@@ -18,7 +18,7 @@ annotation (
   Diagram,
   experiment(StopTime=4, Tolerance=1e-006),
   Documentation(info=""));
-  Sources.FixedAmbient_pTX SinkP2(p=1e5,
+  Components.Sources.FixedAmbient_pTX SinkP2(p=1e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[22,30; 2,50]);
   Modelica.Blocks.Sources.Ramp Opening(
@@ -27,10 +27,10 @@ annotation (
     offset=0,
     startTime=1) 
               annotation (extent=[-92, 74; -72, 94]);
-  Sources.FixedAmbient_pTX SourceP2(p=10e5,
+  Components.Sources.FixedAmbient_pTX SourceP2(p=10e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[-100,-10; -80,10]);
-  Components.ValveIncompressible V2(
+  Components.ControlValves.ValveIncompressible V2(
     d_nom=1000,
     dp_nom=9e5,
     m_flow_nom=1.5,
@@ -39,15 +39,15 @@ annotation (
     Cv=10,
     p_nom=10e5,
     redeclare function flowCharacteristic = 
-        Modelica_Fluid.Types.ValveCharacteristics.equalPercentage) 
+        Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.equalPercentage)
             annotation (extent=[-50,-10; -30,10]);
-  Sources.FixedAmbient_pTX SinkP1(p=1e5,
+  Components.Sources.FixedAmbient_pTX SinkP1(p=1e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[22,-10; 2,10]);
-  Sources.FixedAmbient_pTX SourceP3(p=10e5,
+  Components.Sources.FixedAmbient_pTX SourceP3(p=10e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[-100,-50; -80,-30]);
-  Components.ValveIncompressible V3(
+  Components.ControlValves.ValveIncompressible V3(
     d_nom=1000,
     dp_nom=9e5,
     m_flow_nom=1.5,
@@ -56,13 +56,14 @@ annotation (
     Cv=10,
     p_nom=10e5,
     redeclare function flowCharacteristic = 
-        Modelica_Fluid.Types.ValveCharacteristics.equalPercentage (rangeability=10)) 
+        Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.equalPercentage
+        (                                                                              rangeability=10)) 
             annotation (extent=[-50,-50; -30,-30]);
-  Sources.FixedAmbient_pTX SinkP3(p=1e5,
+  Components.Sources.FixedAmbient_pTX SinkP3(p=1e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater) 
   annotation (extent=[22,-50; 2,-30]);
-  inner Components.FluidOptions fluidOptions 
-    annotation (extent=[-100,-100; -80,-80]);
+  
+  inner Components.Ambient ambient annotation (extent=[58,72; 78,92]);
 equation 
   connect(V1.port_b, SinkP2.port) annotation (points=[-30,40; 2,40]);
   connect(Opening.y, V1.stemPosition) 
