@@ -1,29 +1,27 @@
 package Pipes 
-partial model Flow1D_FV 
-    import Modelica_Fluid.Types;
-    import Modelica.Constants.*;
+partial model PartialFlow1D_FV 
+  import Modelica_Fluid.Types;
+  import Modelica.Constants.*;
   replaceable package Medium = PackageMedium 
     extends Modelica.Media.Interfaces.PartialMedium "Fluid medium model" 
    annotation (choicesAllMatching=true);
     
 //Discretization
   parameter Integer n(min=1) "Number of pipe segments";
-  final parameter Integer np=if lumped_dp then 1 else n + 1 
+  final parameter Integer np=if lumped_dp then 2 else n + 1 
       "Number of momentum balances"                                                     annotation(Dialog(tab="Advanced"),Evaluate=true);
     
 //Advanced model options
   parameter Boolean allowFlowReversal=true 
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-                                                                     annotation(Dialog(tab="Advanced", group="Mass and energy balances"));
+                                                                     annotation(Dialog(tab="Advanced", group="Mass and energy balances", enable=not static));
   parameter Boolean static=true "= true, no mass or energy is stored" 
-                                annotation(Dialog(tab="Advanced", group="Mass and energy balances", enable=not dynamicTerm),Evaluate=true);
+                                annotation(Dialog(tab="Advanced", group="Mass and energy balances"),Evaluate=true);
   parameter Boolean lumped_dp=true 
       " = true, lumped pressure drop, reduces number of pressure states to one"
-                                                                              annotation(Dialog(tab="Advanced", group="Momentum balance", enable=not dynamicTerm),Evaluate=true);
+                                                                              annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
   parameter Boolean kineticTerm=false " = true, include kinetic term" 
                                               annotation(Dialog(tab="Advanced", group="Momentum balance", enable=not lumped_dp),Evaluate=true);
-  parameter Boolean dynamicTerm=false 
-      " = true, include dynamic term, only if not lumped_dp and not static"                               annotation(Dialog(tab="Advanced", group="Momentum balance", enable=(not static and not lumped_dp)),Evaluate=true);
     
 //Initialization
     parameter Types.Init.Temp initType=Types.
@@ -146,7 +144,7 @@ partial model Flow1D_FV
   Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
         Medium, m_flow(min=if allowFlowReversal and not static then -inf else 0)) 
       "Fluid inlet port" 
-                       annotation (extent=[-112,-10; -92,10]);
+                       annotation (extent=[-110,-10; -90,10]);
   Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
         Medium, m_flow(max=if allowFlowReversal and not static then +inf else 0)) 
       "Fluid outlet port" 
@@ -157,52 +155,17 @@ partial model Flow1D_FV
     each h(start=h_start),
     each T(start=T_start),
     each Xi(start=X_start[1:Medium.nXi]));
- /* Medium.BaseProperties medium_a(
-    preferredMediumStates=false,
-    p(start=p_a_start),
-    h(start=h_start),
-    T(start=T_start),
-    Xi(start=X_start[1:Medium.nXi]));
-  Medium.BaseProperties medium_b(
-    preferredMediumStates=false,
-    p(start=p_b_start),
-    h(start=h_start),
-    T(start=T_start),
-    Xi(start=X_start[1:Medium.nXi]));*/
-  annotation (Diagram, Icon(Rectangle(extent=[-100,40; 100,-40], style(
+   annotation (Diagram, Icon(Rectangle(extent=[-100,40; 100,-40], style(
           color=69,
           gradient=2,
           fillColor=69))),
       Documentation(info="<html>
-<p>
-From Katrins email, Nov. 28, 2005:
-</p>
- 
-<p>
-Distributed volume model, properties and flow variables are arrays, no components as in the isolated pipe. Momentum and energy balances on a staggered grid, half a momentum balance on each end of the pipe. The medium properties in the ports are those of the upstream volume. I am strongly in favour with not using the energy balance 2 (the one where the momentum balance has been substracted) here, because you are loosing all the benefits of a staggered grid. You need twice as many momentum balances to calculate the algebraic pressures at the volume boundary which appear now in the energy balance. (And I am not sure if this can be  properly handled by the tool). The pressure drop is then also part of the energy balance and needs to be in accordance with the chosen grid. I agree with you that neglecting potential and kinetic energy in this case might not comply with a highly accurate formulation for teaching purposes, but for most applications it is more than sufficient. However, velocity and gravity can play a significant role in the momentum balance, which should have the option to include those terms (-> dynamic pressure). Not intertwining the two balances has also the advantage to be able to neglect specific terms in one of the balances and not in both.
-</p>
- 
-<p>
-The model contains source terms in mass and energy balances, which are not determined here. Therefore it is a partial model and could also be used for reactions or partial condensing gases with neglectable liquid volume (-> i.e. moist air).
-</p>
- 
-<pre>
-Modelling options (via boolean flags) are:
-- static or dynamic (mass and energy) balances
-- lumped pressure drop
-- lumped composition (not sure yet if that is feasible)
-- including velocity and gravity term in momentum balance, perhaps also the dynamic term.
-</pre>
- 
-<p>
-One issue not solved yet: For pressure drop and velocity term the densities at the ports are required. A medium function computing density from p and h would be most convenient. 
-</p>
 </html>"));
     
 outer Components.Ambient ambient "Ambient conditions";
     
   protected 
-   SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else eta[1]);//approximation
+  SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else eta[1]);//approximation
   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else eta[n]);//approximation
   SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else 
             (if use_eta_nominal then fill(eta_nominal, n) else 
@@ -210,19 +173,6 @@ outer Components.Ambient ambient "Ambient conditions";
   SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
   SI.Density d_a=if use_d_nominal then d_nominal else medium[1].d;//approximation
   SI.Density d_b=if use_d_nominal then d_nominal else medium[n].d;//approximation
-  /*SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else noEvent(if (dp[1] >= 0) then 
-      Medium.dynamicViscosity(medium_a) else Medium.dynamicViscosity(medium[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else noEvent(if (dp[np] >= 0) then 
-      Medium.dynamicViscosity(medium[n]) else Medium.dynamicViscosity(medium_b)));
-  SI.Density d_a=if use_d_nominal then d_nominal else noEvent(if (dp[1] >= 0) then 
-            medium_a.d else medium[1].d);
-  SI.Density d_b=if use_d_nominal then d_nominal else noEvent(if (dp[np] >= 0) then 
-           medium[n].d else medium_b.d);
- The outlet port medium model (medium_a or medium_b) describes the medium properties just after the outlet connection
-  point which would give wrong densities at the pipe outlet for pressure drop calculations
-  if fluid flows with substantially different densities are mixed*/
   parameter SI.Pressure[np] dp0={if lumped_dp then dp_start else dp_start/(if i
        > 1 and i < np then n else 2*n) for i in 1:np};
     
@@ -246,10 +196,7 @@ initial equation
       if not (lumped_dp or Medium.singleState) then
         der(medium.p) = zeros(n);
       elseif lumped_dp then
-      //  der(medium[1].p) = 0;
-      end if;
-      if dynamicTerm then
-        der(m_flow[1:n]) = zeros(n);
+       der(medium[integer(n/2)+1].p) = 0;
       end if;
       for i in 1:n loop
         der(medium[i].Xi) = zeros(Medium.nXi);
@@ -261,8 +208,13 @@ initial equation
       else
         medium.h = ones(n)*h_start;
       end if;
+      if not (lumped_dp or Medium.singleState) then
+         medium.p=p_start;
+      elseif lumped_dp then
+       medium[integer(n/2)+1].p=p_start[integer(n/2)+1];
+      end if;
     elseif initType == Types.Init.SteadyStateHydraulic then
-    //Steady state initialization for hydraulic states (p, m_flow)
+    //Steady state initialization for hydraulic states (p)
       if use_T_start then
         medium.T = ones(n)*T_start;
       else
@@ -271,10 +223,7 @@ initial equation
       if not (lumped_dp or Medium.singleState) then
         der(medium.p) = zeros(n);
       elseif lumped_dp then
-        der(medium[1].p) = 0;
-      end if;
-      if dynamicTerm and not Medium.singleState then
-        der(m_flow[1:n])=zeros(n);
+        der(medium[integer(n/2)+1].p) = 0;
       end if;
     else
       assert(false, "Unsupported initialization option");
@@ -282,14 +231,6 @@ initial equation
   end if;
     
 equation 
-    
-  //Port medium models
-/*  port_a.p = medium_a.p;
-  port_b.p = medium_b.p;
-  port_a.h = medium_a.h;
-  port_b.h = medium_b.h;
-  port_a.Xi = medium_a.Xi;
-  port_b.Xi = medium_b.Xi;*/
     
   // Boundary conditions
   port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium[1].h);
@@ -353,8 +294,11 @@ equation
 //Pressure drop and gravity
  if from_dp and not WallFriction.dp_is_zero then
     if lumped_dp then
-      m_flow[1] = WallFriction.massFlowRate_dp(dp[1] - height_ab*ambient.g*(
-        d_a + d_b)/2, d_a, d_b, eta_a, eta_b, length, d_h, roughness,
+      m_flow[1] = WallFriction.massFlowRate_dp(dp[1] - ((integer(n/2)+1)*2-1)/(2*n)*height_ab*ambient.g*(
+        d_a + d_b)/2, d_a, d_b, eta_a, eta_b, ((integer(n/2)+1)*2-1)/(2*n)*length, d_h, roughness,
+        dp_small);
+      m_flow[n+1] = WallFriction.massFlowRate_dp(dp[2] - (2*n-(integer(n/2)+1)*2+1)/(2*n)*height_ab*ambient.g*(
+        d_a + d_b)/2,d_a, d_b, eta_a, eta_b, (2*n-(integer(n/2)+1)*2+1)/(2*n)*length, d_h, roughness,
         dp_small);
     else
       m_flow[1] = WallFriction.massFlowRate_dp(dp[1] - height_ab/2/n*
@@ -372,9 +316,12 @@ equation
     end if;
   else
     if lumped_dp then
-      dp[1] = WallFriction.pressureLoss_m_flow(m_flow[1], d_a, d_b, eta_a,
-        eta_b, length, d_h, roughness, m_flow_small) + height_ab*
-        ambient.g*(d_a + d_b)/2;
+      dp[1] = (WallFriction.pressureLoss_m_flow(m_flow[1], d_a, d_b, eta_a,
+        eta_b, ((integer(n/2)+1)*2-1)/(2*n)*length, d_h, roughness, m_flow_small) + ((integer(n/2)+1)*2-1)/(2*n)*height_ab*
+        ambient.g*(d_a + d_b)/2);
+      dp[2] = (WallFriction.pressureLoss_m_flow(m_flow[1], d_a, d_b, eta_a,
+        eta_b, (2*n-(integer(n/2)+1)*2+1)/(2*n)*length, d_h, roughness, m_flow_small) + (2*n-(integer(n/2)+1)*2+1)/(2*n)*height_ab*
+        ambient.g*(d_a + d_b)/2);
     else
       dp[1] = WallFriction.pressureLoss_m_flow(m_flow[1], d_a, d[1], eta_a,
         eta[1], length/n/2, d_h, roughness, m_flow_small) + height_ab/2/n*
@@ -392,25 +339,32 @@ equation
     
 //Momentum Balance
 if lumped_dp then
-    F_p[1] = (port_a.p - port_b.p)*A_inner;
+    F_p[1] = (port_a.p - medium[integer(n/2)+1].p)*A_inner;
+    F_p[2] = (medium[integer(n/2)+1].p - port_b.p)*A_inner;
     F_f[1] = -dp[1]*A_inner;
+    F_f[2] = -dp[2]*A_inner;
     zeros(np) = F_p + F_f;
-    medium.p = ones(n)*(port_a.p + port_b.p)/2;
+    if n==2 then
+      medium[2].p=medium[1].p;
+    elseif n>2 then
+      medium[1:integer(n/2)].p=ones(integer(n/2))*medium[integer(n/2)+1].p;
+      medium[integer(n/2)+2:n].p=ones(n-integer(n/2)-1)*medium[integer(n/2)+1].p;
+    end if;
   else
     F_p[1] = (port_a.p-medium[1].p)*A_inner;
     F_f[1] = -dp[1]*A_inner;
-    (if dynamicTerm then der(m_flow[1])*length/n/2 else 0) = F_p[1] + F_f[1] + (I_flow[1]-I_flow[2])/2;
+    0 = F_p[1] + F_f[1] + (I_flow[1]-I_flow[2])/2;
     for i in 2:n loop
       F_p[i] = (medium[i-1].p-medium[i].p)*A_inner;
       F_f[i] = -dp[i]*A_inner;
-      (if dynamicTerm then der(m_flow[i])*length/n else 0) = F_p[i] + F_f[i] + (I_flow[i-1]-I_flow[i+1])/2;
+      0 = F_p[i] + F_f[i] + (I_flow[i-1]-I_flow[i+1])/2;
     end for;
     F_p[np] = (medium[n].p-port_b.p)*A_inner;
     F_f[np] = -dp[np]*A_inner;
-    (if dynamicTerm then der(m_flow[n + 1])*length/n/2 else 0) = F_p[np] + F_f[np] + (I_flow[n]-I_flow[n+1])/2;
+    0 = F_p[np] + F_f[np] + (I_flow[n]-I_flow[n+1])/2;
   end if;
     
-end Flow1D_FV;
+end PartialFlow1D_FV;
   
 model PortVolume 
     "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
