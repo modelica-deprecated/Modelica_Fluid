@@ -1,7 +1,16 @@
 package Thermal 
 model WallConstProps 
     "Pipe wall, assuming ideal 1D-conduction and constant material properties" 
-  extends PartialPipeWall;
+  parameter Integer n(min=1) "Pipe segmentation" annotation(Dialog(tab="No Input", enable=false));
+  parameter SI.Diameter a_inner "Inner cross section area" annotation(Dialog(tab="No Input", enable=false));
+  parameter SI.Length a_outer "Outer cross section area" annotation(Dialog(tab="No Input", enable=false));
+  parameter SI.Length length "Pipe length" annotation(Dialog(tab="No Input", enable=false));
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_a 
+      "Thermal port" 
+    annotation (extent=[-20,40; 20,60]);
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_b 
+      "Thermal port" 
+    annotation (extent=[-20,-40; 20,-60]);
   parameter SI.Density d_wall "Density of wall material";
   parameter SI.SpecificHeatCapacity c_wall 
       "Specific heat capacity of wall material";
@@ -25,27 +34,13 @@ equation
   //assuming ideal heat conduction perpendicular to fluid flow, conduction in remaining two dimensions is neglected
   thermalPort_a.T=T;
   thermalPort_b.T=T;
-end WallConstProps;
-  
-partial model PartialPipeWall "Wall interface - to be removed" 
-  parameter Integer n(min=1) "Pipe segmentation" annotation(Dialog(tab="No Input", enable=false));
-  parameter SI.Diameter a_inner "Inner cross section area" annotation(Dialog(tab="No Input", enable=false));
-  parameter SI.Length a_outer "Outer cross section area" annotation(Dialog(tab="No Input", enable=false));
-  parameter SI.Length length "Pipe length" annotation(Dialog(tab="No Input", enable=false));
-  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_a 
-      "Thermal port" 
-    annotation (extent=[-20,40; 20,60]);
-  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_b 
-      "Thermal port" 
-    annotation (extent=[-20,-40; 20,-60]);
-    
- annotation (Diagram, Icon(Rectangle(extent=[-100,40; 100,-40], style(
+    annotation (Icon(      Rectangle(extent=[-100,40; 100,-40], style(
           color=0,
           rgbcolor={0,0,0},
           fillColor=10,
           rgbfillColor={95,95,95},
           fillPattern=7)), Text(
-        extent=[-78,20; 80,-18],
+        extent=[-82,18; 76,-18],
         string="%name",
         style(
           color=0,
@@ -53,5 +48,6 @@ partial model PartialPipeWall "Wall interface - to be removed"
           fillColor=0,
           rgbfillColor={0,0,0},
           fillPattern=7))));
-end PartialPipeWall;
+end WallConstProps;
+  
 end Thermal;

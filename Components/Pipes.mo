@@ -1,7 +1,7 @@
 package Pipes 
-  model DistributedPipeFV "Distributed pipe model with optional wall" 
+  model DistributedPipeFV_mitWand "Distributed pipe model with optional wall" 
     
-  extends BaseClasses.Pipes.Flow1D_FV(
+  extends BaseClasses.Pipes.PartialFlow1D_FV(
     Qs_flow=heat.Q_flow,
     ms_flow=zeros(n),
     msXi_flow=zeros(n, Medium.nXi));
@@ -106,7 +106,7 @@ The pipe model contains a Boolean flag useWall which determines if a wall compon
       rgbfillColor={0,0,0},
       fillPattern=7));
     end if;
-  end DistributedPipeFV;
+  end DistributedPipeFV_mitWand;
   
 model LumpedPipe "Short pipe with one volume, wall friction and gravity effect" 
     import SI = Modelica.SIunits;
@@ -150,25 +150,23 @@ model LumpedPipe "Short pipe with one volume, wall friction and gravity effect"
       annotation (extent=[110,-10; 90,10]);
     
   annotation (defaultComponentName="pipe",Icon(
-      Rectangle(extent=[-100,60; 100,-60],   style(
+      Rectangle(extent=[-100,44; 100,-44],   style(
           color=0,
           gradient=2,
           fillColor=8)),
-      Rectangle(extent=[-100,34; 100,-36],   style(
+      Rectangle(extent=[-100,40; 100,-40],   style(
           color=69,
           gradient=2,
           fillColor=69)),
       Text(
-        extent=[-150,-60; 150,-110],
+        extent=[-145,-40; 155,-90],
         string="%name",
         style(gradient=2, fillColor=69)),
-      Ellipse(extent=[-16,13; 14,-17],  style(
+      Ellipse(extent=[-11,10; 9,-10],   style(
             color=0,
             rgbcolor={0,0,0},
             fillColor=0,
-            rgbfillColor={0,0,0})),
-      Line(points=[0,0; 0,70], style(color=42, rgbcolor={194,0,0}))),
-                                           Documentation(info="<html>
+            rgbfillColor={0,0,0}))),       Documentation(info="<html>
 <p>
 Simple pipe model consisting of one volume, 
 wall friction (with different friction correlations)
@@ -220,7 +218,7 @@ pipe wall/environment).
     dp_small=dp_small,
     show_Re=false)     annotation (extent=[40,-10; 60,10]);
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
-    annotation (extent=[-10,60; 10,80]);
+    annotation (extent=[-10,44; 10,64]);
 equation 
   connect(frictionAndGravity1.port_a, port_a) 
     annotation (points=[-60,0; -100,0], style(color=69, rgbcolor={0,127,255}));
@@ -231,6 +229,93 @@ equation
   connect(frictionAndGravity2.port_b, port_b) 
     annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
   connect(volume.thermalPort, thermalPort) 
-    annotation (points=[0,10; 0,70], style(color=42, rgbcolor={191,0,0}));
+    annotation (points=[0,10; 0,54], style(color=42, rgbcolor={191,0,0}));
 end LumpedPipe;
+
+  model DistributedPipeFV "Distributed pipe model" 
+    
+  extends BaseClasses.Pipes.PartialFlow1D_FV(
+    Qs_flow=heatTransfer.Q_flow,
+    ms_flow=zeros(n),
+    msXi_flow=zeros(n, Medium.nXi));
+    
+  parameter SI.Area area_h = P_inner*length "Heat transfer area" annotation(Dialog(tab="General", group="Heat transfer"));
+  inner Medium.ThermodynamicState[n] state = medium.state;
+    
+  replaceable BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha heatTransfer(
+      redeclare final package Medium = Medium,
+      final n=n,
+      final d_h=d_h,
+      final A_h=area_h,
+      T=medium.T) extends 
+      BaseClasses.Pipes.HeatTransfer.PartialPipeHeatTransfer(
+      redeclare final package Medium = Medium,
+      final n=n,
+      final d_h=d_h,
+      final A_h=area_h,
+      T=medium.T) "Convective heat transfer" 
+                annotation (Dialog(tab="General", group="Heat transfer"),choicesAllMatching, extent=[-20,-20;
+        20,20]);
+    
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort 
+      "Thermal port" 
+    annotation (extent=[-10,44; 10,64]);
+  annotation (Icon(Rectangle(extent=[-100,44; 100,40], style(
+            color=0, 
+            rgbcolor={0,0,0}, 
+            fillColor=10, 
+            rgbfillColor={95,95,95})),
+                           Rectangle(extent=[-100,-40; 100,-44], style(
+            color=0, 
+            rgbcolor={0,0,0}, 
+            fillColor=10, 
+            rgbfillColor={95,95,95})),
+        Ellipse(extent=[-72,10; -52,-10], style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Ellipse(extent=[-30,10; -10,-10], style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Ellipse(extent=[10,10; 30,-10],   style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Ellipse(extent=[50,10; 70,-10],   style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Text(
+          extent=[-143,-42; 157,-92],
+          string="%name",
+          style(gradient=2, fillColor=69))),
+                            Diagram,
+      Documentation(info="<html>
+<p>
+From Katrins email, Nov. 28, 2005:
+</p>
+ 
+<p>
+extends Interfaces.1DFlow. Pressure drop and heat transfer are added in terms of replaceable components. The main problem here is to make all required variables and parameters available to the respective component (medium state, pipe geometry, Medium functions, empirical parameters). Only those shared by all future replaceable models (the simple one parameter model and the highly sophisticated (fictitious) two phase Nusselt correlation) can be set by modifiers (which is not straightforward in Dymola at the moment if a contsraining clause is used).  Those not required by all models as i.e. viscosity and conductivitiy must be computed inside the component from medium properties made available via inner and outer. I always try to avoid this as it it as bit like free climbing, but in this case I see no better solution.
+</p>
+ 
+<p>
+Martin, I have not tested your latest pressure drop implementation with this model, but will do so as soon as possible. However, it is used in a completely different way, that means as an array of components, not as a  base class, in order to be able to handle distributed flow. I will check if another implementation would be more practical.
+</p>
+ 
+<p>
+The pipe model contains a Boolean flag useWall which determines if a wall component is added. Unfortunately the icon does not represent the difference. In this way a heat exchanger can be created using two instances of the pipe model, one with a wall and one without. If interested in transients it could also make sense to include a wall in an insulated pipe. 
+</p>
+ 
+</html>"));
+  equation 
+    
+    connect(thermalPort, heatTransfer.thermalPort)
+      annotation (points=[0,54; 0,14], style(color=42, rgbcolor={191,0,0}));
+  end DistributedPipeFV;
 end Pipes;
