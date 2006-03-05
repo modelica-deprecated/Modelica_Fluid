@@ -4,12 +4,10 @@ extends Modelica.Icons.Example;
   
 //replaceable package Medium=Modelica.Media.Air.DryAirNasa;
 replaceable package Medium=Modelica.Media.Air.MoistAir;
-  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe2(
+  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe2(
     redeclare package Medium = Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
-    redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heatTransfer(alpha0=2000),
     length=1,
     use_eta_nominal=true,
     use_T_start=true,
@@ -25,9 +23,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     kineticTerm=false,
     use_d_nominal=false,
     n=5,
-    singleState_hydraulic=false, 
-    static=false, 
-    singleState_thermal=false) 
+    static=false) 
             annotation (extent=[-38,42; -18,62]);
   
   annotation (Diagram, experiment(StopTime=20, Tolerance=1e-005),
@@ -37,12 +33,10 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     p=1e5,
     T=300)                                                          annotation (extent=[70,20;
         50,40]);
-  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe5(
+  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe5(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
-    redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heatTransfer(alpha0=2000),
     T_start=340,
     length=1,
     use_eta_nominal=true,
@@ -58,9 +52,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     kineticTerm=false,
     use_d_nominal=false,
     n=5,
-    singleState_hydraulic=false, 
-    static=false, 
-    singleState_thermal=false) 
+    static=false) 
             annotation (extent=[12,22; 32,42]);
   
   Components.Sources.FixedAmbient_pTX ambient1(
@@ -68,12 +60,10 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     p=2e5,
     T=300)                                                          annotation (extent=[-88,16;
         -68,36]);
-  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe1(
+  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe1(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
-    redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heatTransfer(alpha0=2000),
     length=1,
     use_eta_nominal=true,
     use_T_start=true,
@@ -89,9 +79,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     kineticTerm=false,
     use_d_nominal=false,
     n=5,
-    singleState_hydraulic=false, 
-    static=false, 
-    singleState_thermal=false) 
+    static=false) 
             annotation (extent=[-38,16; -18,36]);
   
   Components.Sources.FixedAmbient_pTX ambient2(
@@ -114,12 +102,10 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     p=2e5,
     T=330)                                                          annotation (extent=[-88,-12;
         -68,8]);
-  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe3(
+  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe3(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
-    redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heatTransfer(alpha0=2000),
     length=1,
     use_eta_nominal=true,
     use_T_start=true,
@@ -135,21 +121,17 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     kineticTerm=false,
     use_d_nominal=false,
     n=5,
-    singleState_hydraulic=false, 
-    static=false, 
-    singleState_thermal=false) 
+    static=false) 
             annotation (extent=[-38,-12; -18,8]);
   Components.Sources.FixedAmbient_pTX ambient4(
                                    redeclare package Medium=Medium,
     p=2e5,
     T=360)                                                          annotation (extent=[-88,-40;
         -68,-20]);
-  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe4(
+  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe4(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
-    redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heatTransfer(alpha0=2000),
     length=1,
     use_eta_nominal=true,
     use_T_start=true,
@@ -165,9 +147,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     kineticTerm=false,
     use_d_nominal=false,
     n=5,
-    singleState_hydraulic=false, 
-    static=false, 
-    singleState_thermal=false) 
+    static=false) 
             annotation (extent=[-38,-40; -18,-20]);
   inner Modelica_Fluid.Components.Ambient ambient 
     annotation (extent=[62,-78; 82,-58]);
