@@ -12,7 +12,7 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     use_T_start_2=true,
     di_1=0.024,
     da_1=0.03,
-    di_2=0.054,
+    da_2=0.054,
     T_start_2=300,
     n=20,
     length=2,
@@ -22,10 +22,8 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
         Medium,
     mflow_start_1=0.2,
     static=false,
-    initType_1=Modelica_Fluid.Types.Init.InitialValues,
-    initType_2=Modelica_Fluid.Types.Init.InitialValues,
     mflow_start_2=0.2,
-    T_start_wall=300,
+    Twall_start=300,
     redeclare model HeatTransfer_1 = 
         Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha (
          alpha0=1000),
@@ -36,8 +34,10 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     redeclare model HeatTransfer_2 = 
         Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha,
     use_eta_nominal=true,
-    lumped_dp=false,
-    kineticTerm=false)         annotation (extent=[-26,-14; 34,46]);
+    singleState_hydraulic=false,
+    kineticTerm=false, 
+    initType=Modelica_Fluid.Types.Init.SteadyState) 
+                               annotation (extent=[-26,-14; 34,46]);
   
   Components.Sources.FixedAmbient_pTX ambient2(
     redeclare package Medium = Medium,
@@ -65,7 +65,7 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     offset=0.5)   annotation (extent=[-100,24; -80,44]);
   inner Components.Ambient ambient annotation (extent=[60,70; 80,90]);
 equation 
-  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34;
+  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34; 
         -40,34; -40,29.8; -29,29.8],     style(
       color=69,
       rgbcolor={0,127,255},
@@ -86,7 +86,7 @@ equation
       fillColor=70,
       rgbfillColor={0,63,125},
       fillPattern=1));
-  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2;
+  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2; 
         49.5,2.2; 49.5,-18; 62,-18], style(
       color=69,
       rgbcolor={0,127,255},

@@ -1,4 +1,4 @@
-package Components "Components for fluid models"
+package Components "Ready-to-use component models"
   extends Modelica.Icons.Library;
 
   annotation (preferedView="info",

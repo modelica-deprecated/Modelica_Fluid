@@ -2,39 +2,33 @@ model TestDistributedPipe
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
   
-replaceable package Medium=Modelica.Media.Air.DryAirNasa;
-  
-  Modelica_Fluid.Components.Pipes.DistributedPipeFV pipe2(
+//replaceable package Medium=Modelica.Media.Air.DryAirNasa;
+replaceable package Medium=Modelica.Media.Air.MoistAir;
+  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe2(
     redeclare package Medium = Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
     redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heat(alpha0=2000),
+      heatTransfer(alpha0=2000),
     length=1,
     use_eta_nominal=true,
     use_T_start=true,
-    dynamicTerm=false,
     from_dp=true,
-    lumped_dp=false,
     p_b_start=1.5e5,
     T_start=280,
-    n=10,
     mflow_start=0,
     redeclare package WallFriction = 
         Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
-    d_inner=0.01,
-    redeclare model Wall = 
-        Modelica_Fluid.Components.Thermal.WallConstProps (
-        d_wall=1000,
-        c_wall=800,
-        T_start=350,
-        initOption=Modelica_Fluid.Types.Init.InitialValues),
-    use_wall=false,
+    diameter=0.01,
     p_a_start=1.2e5,
+    initType=Modelica_Fluid.Types.Init.InitialValues,
     kineticTerm=false,
-    static=false,
-    initType=Modelica_Fluid.Types.Init.SteadyState) 
-            annotation (extent=[-40,42; -20,62]);
+    use_d_nominal=false,
+    n=5,
+    singleState_hydraulic=false, 
+    static=false, 
+    singleState_thermal=false) 
+            annotation (extent=[-38,42; -18,62]);
   
   annotation (Diagram, experiment(StopTime=20, Tolerance=1e-005),
     experimentSetupOutput);
@@ -43,79 +37,67 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;
     p=1e5,
     T=300)                                                          annotation (extent=[70,20;
         50,40]);
-  Modelica_Fluid.Components.Pipes.DistributedPipeFV pipe5(
+  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe5(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
     redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heat(alpha0=2000),
+      heatTransfer(alpha0=2000),
     T_start=340,
     length=1,
     use_eta_nominal=true,
     use_T_start=true,
-    dynamicTerm=false,
     from_dp=true,
-    lumped_dp=false,
     p_a_start=1.5e5,
     p_b_start=1e5,
-    n=10,
     mflow_start=0,
     redeclare package WallFriction = 
         Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
-    d_inner=0.01,
-    redeclare model Wall = 
-        Modelica_Fluid.Components.Thermal.WallConstProps (
-        d_wall=1000,
-        c_wall=800,
-        T_start=350,
-        initOption=Modelica_Fluid.Types.Init.InitialValues),
-    use_wall=false,
+    diameter=0.01,
+    initType=Modelica_Fluid.Types.Init.InitialValues,
     kineticTerm=false,
-    static=false,
-    initType=Modelica_Fluid.Types.Init.SteadyState) 
-            annotation (extent=[10,22; 30,42]);
+    use_d_nominal=false,
+    n=5,
+    singleState_hydraulic=false, 
+    static=false, 
+    singleState_thermal=false) 
+            annotation (extent=[12,22; 32,42]);
   
   Components.Sources.FixedAmbient_pTX ambient1(
                                    redeclare package Medium=Medium,
     p=2e5,
     T=300)                                                          annotation (extent=[-88,16;
         -68,36]);
-  Modelica_Fluid.Components.Pipes.DistributedPipeFV pipe1(
+  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe1(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
     redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heat(alpha0=2000),
+      heatTransfer(alpha0=2000),
     length=1,
     use_eta_nominal=true,
     use_T_start=true,
-    dynamicTerm=false,
     from_dp=true,
-    lumped_dp=false,
     p_a_start=2e5,
     p_b_start=1.5e5,
     T_start=300,
-    n=10,
     mflow_start=0,
     redeclare package WallFriction = 
         Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
-    d_inner=0.01,
-    redeclare model Wall = 
-        Modelica_Fluid.Components.Thermal.WallConstProps (
-        d_wall=1000,
-        c_wall=800,
-        T_start=350,
-        initOption=Modelica_Fluid.Types.Init.InitialValues),
-    use_wall=false,
+    diameter=0.01,
+    initType=Modelica_Fluid.Types.Init.InitialValues,
     kineticTerm=false,
-    static=false,
-    initType=Modelica_Fluid.Types.Init.SteadyState) 
-            annotation (extent=[-40,16; -20,36]);
+    use_d_nominal=false,
+    n=5,
+    singleState_hydraulic=false, 
+    static=false, 
+    singleState_thermal=false) 
+            annotation (extent=[-38,16; -18,36]);
   
   Components.Sources.FixedAmbient_pTX ambient2(
                                    redeclare package Medium=Medium,
     T=280,
-    p=1.2e5)                                                        annotation (extent=[-88,42;
+    p=2e5)                                                          annotation (extent=[-88,42;
         -68,62]);
   
     annotation (extent=[-90,-86; -70,-66]);
@@ -125,105 +107,91 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;
   Modelica.Blocks.Sources.Ramp ramp(
     offset=1e5,
     duration=1,
-    height=2e5,
-      startTime=10) 
-                annotation (extent=[102,62; 82,82], rotation=0);
+      startTime=10,
+    height=2e5) annotation (extent=[102,62; 82,82], rotation=0);
   Components.Sources.FixedAmbient_pTX ambient3(
                                    redeclare package Medium=Medium,
     p=2e5,
     T=330)                                                          annotation (extent=[-88,-12;
         -68,8]);
-  Modelica_Fluid.Components.Pipes.DistributedPipeFV pipe3(
+  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe3(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
     redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heat(alpha0=2000),
+      heatTransfer(alpha0=2000),
     length=1,
     use_eta_nominal=true,
     use_T_start=true,
-    dynamicTerm=false,
     from_dp=true,
-    lumped_dp=false,
     p_a_start=2e5,
     p_b_start=1.5e5,
     T_start=340,
-    n=10,
     mflow_start=0,
     redeclare package WallFriction = 
         Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
-    d_inner=0.01,
-    redeclare model Wall = 
-        Modelica_Fluid.Components.Thermal.WallConstProps (
-        d_wall=1000,
-        c_wall=800,
-        T_start=350,
-        initOption=Modelica_Fluid.Types.Init.InitialValues),
-    use_wall=false,
+    diameter=0.01,
+    initType=Modelica_Fluid.Types.Init.InitialValues,
     kineticTerm=false,
-    static=false,
-    initType=Modelica_Fluid.Types.Init.SteadyState) 
-            annotation (extent=[-40,-12; -20,8]);
+    use_d_nominal=false,
+    n=5,
+    singleState_hydraulic=false, 
+    static=false, 
+    singleState_thermal=false) 
+            annotation (extent=[-38,-12; -18,8]);
   Components.Sources.FixedAmbient_pTX ambient4(
                                    redeclare package Medium=Medium,
     p=2e5,
     T=360)                                                          annotation (extent=[-88,-40;
         -68,-20]);
-  Modelica_Fluid.Components.Pipes.DistributedPipeFV pipe4(
+  Modelica_Fluid.Components.Pipes.DistributedPipe_thermal pipe4(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
     redeclare Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-      heat(alpha0=2000),
+      heatTransfer(alpha0=2000),
     length=1,
     use_eta_nominal=true,
     use_T_start=true,
-    dynamicTerm=false,
     from_dp=true,
-    lumped_dp=false,
     p_a_start=2e5,
     p_b_start=1.5e5,
-    n=10,
     mflow_start=0,
     redeclare package WallFriction = 
         Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
-    d_inner=0.01,
-    redeclare model Wall = 
-        Modelica_Fluid.Components.Thermal.WallConstProps (
-        d_wall=1000,
-        c_wall=800,
-        T_start=350,
-        initOption=Modelica_Fluid.Types.Init.InitialValues),
-    use_wall=false,
-    kineticTerm=false,
+    diameter=0.01,
     T_start=360,
-    static=false,
-    initType=Modelica_Fluid.Types.Init.SteadyState) 
-            annotation (extent=[-40,-40; -20,-20]);
+    initType=Modelica_Fluid.Types.Init.InitialValues,
+    kineticTerm=false,
+    use_d_nominal=false,
+    n=5,
+    singleState_hydraulic=false, 
+    static=false, 
+    singleState_thermal=false) 
+            annotation (extent=[-38,-40; -18,-20]);
   inner Modelica_Fluid.Components.Ambient ambient 
     annotation (extent=[62,-78; 82,-58]);
 equation 
-  connect(ambient2.port,pipe2. port_a) annotation (points=[-68,52; -40.2,52],
+  connect(ambient2.port,pipe2. port_a) annotation (points=[-68,52; -38,52],
                        style(color=69, rgbcolor={0,127,255}));
-  connect(ambient1.port, pipe1.port_a) annotation (points=[-68,26; -40.2,26],
+  connect(ambient1.port, pipe1.port_a) annotation (points=[-68,26; -38,26],
                        style(color=69, rgbcolor={0,127,255}));
-  connect(pipe2.port_b,pipe5. port_a) annotation (points=[-20,52; -10,52; -10,
-        32; 9.8,32], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe1.port_b,pipe5. port_a) annotation (points=[-20,26; -4,26; -4,
-        32; 9.8,32], style(color=69, rgbcolor={0,127,255}));
+  connect(pipe2.port_b,pipe5. port_a) annotation (points=[-18,52; -10,52; -10,
+        32; 12,32],  style(color=69, rgbcolor={0,127,255}));
+  connect(pipe1.port_b,pipe5. port_a) annotation (points=[-18,26; -6,26; -6,32;
+        12,32],      style(color=69, rgbcolor={0,127,255}));
   connect(pipe5.port_b, ambient6.port) 
-                                      annotation (points=[30,32; 40,32; 40,30;
+                                      annotation (points=[32,32; 40,32; 40,30;
         50,30], style(color=69, rgbcolor={0,127,255}));
   connect(ramp.y, ambient6.p_in) 
                                 annotation (points=[81,72; 76,72; 76,36; 72,36],
       style(color=74, rgbcolor={0,0,127}));
-  connect(ambient3.port, pipe3.port_a) annotation (points=[-68,-2; -40.2,-2],
+  connect(ambient3.port, pipe3.port_a) annotation (points=[-68,-2; -38,-2],
                    style(color=69, rgbcolor={0,127,255}));
-  connect(pipe5.port_a, pipe3.port_b) annotation (points=[9.8,32; -4,32; -4,
-        -2; -20,-2],
-                 style(color=69, rgbcolor={0,127,255}));
-  connect(ambient4.port, pipe4.port_a) annotation (points=[-68,-30; -40.2,-30],
+  connect(pipe5.port_a, pipe3.port_b) annotation (points=[12,32; 0,32; 0,-2;
+        -18,-2], style(color=69, rgbcolor={0,127,255}));
+  connect(ambient4.port, pipe4.port_a) annotation (points=[-68,-30; -38,-30],
       style(color=69, rgbcolor={0,127,255}));
-  connect(pipe5.port_a, pipe4.port_b) annotation (points=[9.8,32; 6,32; 6,-30;
-        -20,-30], style(color=69, rgbcolor={0,127,255}));
+  connect(pipe5.port_a, pipe4.port_b) annotation (points=[12,32; 6,32; 6,-30;
+        -18,-30], style(color=69, rgbcolor={0,127,255}));
 end TestDistributedPipe;

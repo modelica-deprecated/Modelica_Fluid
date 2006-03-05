@@ -1,10 +1,10 @@
 package Thermal 
 model WallConstProps 
-    "Pipe wall, assuming ideal 1D-conduction and constant material properties" 
-  parameter Integer n(min=1) "Pipe segmentation" annotation(Dialog(tab="No Input", enable=false));
-  parameter SI.Diameter a_inner "Inner cross section area" annotation(Dialog(tab="No Input", enable=false));
-  parameter SI.Length a_outer "Outer cross section area" annotation(Dialog(tab="No Input", enable=false));
-  parameter SI.Length length "Pipe length" annotation(Dialog(tab="No Input", enable=false));
+    "Pipe wall with capacitance, assuming ideal 1D-conduction and constant material properties" 
+  parameter Integer n(min=1)=1 "Pipe segmentation";
+  parameter SI.Diameter a_inner "Inner cross section area";
+  parameter SI.Length a_outer "Outer cross section area";
+  parameter SI.Length length "Pipe length";
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_a 
       "Thermal port" 
     annotation (extent=[-20,40; 20,60]);
@@ -16,14 +16,15 @@ model WallConstProps
       "Specific heat capacity of wall material";
   parameter SI.Temperature T_start "Start value for wall temperature";
   parameter SI.Mass[n] m=ones(n)*(a_outer-a_inner)*length*d_wall/n "Wall mass";
-  parameter Modelica_Fluid.Types.Init.Temp initOption;
+  parameter Boolean initWall_steadyState=false 
+      " = true, wall is initialized in steady state";
   SI.Temperature[n] T(start=ones(n)*T_start, stateSelect=StateSelect.prefer) 
       "Wall temperature";
 initial equation 
-  if initOption==3 then
+  if initWall_steadyState then
     der(T)=zeros(n);
   else
-    T=ones(n)*T_start;
+   T=ones(n)*T_start;
   end if;
 equation 
     
@@ -47,7 +48,15 @@ equation
           rgbcolor={0,0,0},
           fillColor=0,
           rgbfillColor={0,0,0},
-          fillPattern=7))));
+          fillPattern=7))), Documentation(revisions="<html>
+<ul>
+<li><i>04 Mar 2006</i>
+    by Katrin Pr&ouml;l&szlig;:<br>
+       Model added to the Fluid library</li>
+</ul>
+</html>", info="<html>
+Simple model of circular (or any other closed shape) wall to be used for pipe (or duct) models. Ideal radial heat conductance is assumed, conductance in other directions is neglected.
+</html>"));
 end WallConstProps;
   
 end Thermal;

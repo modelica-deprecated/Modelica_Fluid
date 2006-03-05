@@ -1,112 +1,4 @@
 package Pipes 
-  model DistributedPipeFV_mitWand "Distributed pipe model with optional wall" 
-    
-  extends BaseClasses.Pipes.PartialFlow1D_FV(
-    Qs_flow=heat.Q_flow,
-    ms_flow=zeros(n),
-    msXi_flow=zeros(n, Medium.nXi));
-    
-  parameter SI.Area area_h = P_inner*length "Heat transfer area" annotation(Dialog(tab="General", group="Heat transfer"));
-    
-  parameter Boolean use_wall=false 
-      "= true, use wall component between fluid and thermalPort" 
-                                                                annotation(Dialog(tab="General", group="Wall - optional"),Evaluate=true);
-  parameter SI.Diameter d_outer "Outer diameter of circular pipe" annotation(Dialog(tab="General", group="Wall - optional", enable=(crossSectionType==1 and use_wall)));
-  parameter SI.Length h_outer "Outer height of rectangular pipe"  annotation(Dialog(tab="General", group="Wall - optional", enable=(crossSectionType==2 and use_wall)));
-  parameter SI.Length w_outer "Outer width of rectangular pipe"  annotation(Dialog(tab="General", group="Wall - optional", enable=(crossSectionType==2 and use_wall)));
-  parameter SI.Length A_outer = if crossSectionType == 1 then Modelica.Constants.pi*d_outer*d_outer/4 else if crossSectionType == 2 then h_outer*w_outer else 1 
-      "Outer cross section area" 
-                               annotation(Dialog(tab="General", group="Wall - optional", enable=(use_wall and crossSectionType==3)));
-  inner Medium.ThermodynamicState[n] state = medium.state;
-    
-  replaceable BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha heat(
-    redeclare final package Medium = Medium,
-    final n=n,
-    final d_h=d_h,
-    final A_h=area_h,
-    T=medium.T) extends BaseClasses.Pipes.HeatTransfer.PartialPipeHeatTransfer(
-    redeclare final package Medium = Medium,
-    final n=n,
-    final d_h=d_h,
-    final A_h=area_h,
-    T=medium.T) "Convective heat transfer" 
-                annotation (Dialog(tab="General", group="Heat transfer"),choicesAllMatching, extent=[-20,-20;
-        20,20]);
-    
-  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort 
-      "Thermal port" 
-    annotation (extent=[-20,60; 20,80]);
-  replaceable model Wall = 
-        Components.Thermal.WallConstProps  extends 
-      Components.Thermal.PartialPipeWall "Wall model"              annotation(choicesAllMatching, Dialog(enable=use_wall, tab="General", group="Wall - optional"));
-  Wall wall(final n=n, final a_inner=A_inner, final a_outer=A_outer, final 
-        length=length) if use_wall 
-                           annotation (extent=[10,20; 50,60]);
-  annotation (Icon(Rectangle(extent=[-100,60; 100,40], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=10,
-          rgbfillColor={95,95,95},
-          fillPattern=7)), Rectangle(extent=[-100,-40; 100,-60], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=10,
-          rgbfillColor={95,95,95},
-          fillPattern=7)),
-      Text(
-        extent=[-100,-60; 100,-100],
-        string="%name",
-        style(color=3, rgbcolor={0,0,255}))),
-                            Diagram,
-      Documentation(info="<html>
-<p>
-From Katrins email, Nov. 28, 2005:
-</p>
- 
-<p>
-extends Interfaces.1DFlow. Pressure drop and heat transfer are added in terms of replaceable components. The main problem here is to make all required variables and parameters available to the respective component (medium state, pipe geometry, Medium functions, empirical parameters). Only those shared by all future replaceable models (the simple one parameter model and the highly sophisticated (fictitious) two phase Nusselt correlation) can be set by modifiers (which is not straightforward in Dymola at the moment if a contsraining clause is used).  Those not required by all models as i.e. viscosity and conductivitiy must be computed inside the component from medium properties made available via inner and outer. I always try to avoid this as it it as bit like free climbing, but in this case I see no better solution.
-</p>
- 
-<p>
-Martin, I have not tested your latest pressure drop implementation with this model, but will do so as soon as possible. However, it is used in a completely different way, that means as an array of components, not as a  base class, in order to be able to handle distributed flow. I will check if another implementation would be more practical.
-</p>
- 
-<p>
-The pipe model contains a Boolean flag useWall which determines if a wall component is added. Unfortunately the icon does not represent the difference. In this way a heat exchanger can be created using two instances of the pipe model, one with a wall and one without. If interested in transients it could also make sense to include a wall in an insulated pipe. 
-</p>
- 
-</html>"));
-  equation 
-    
-    if use_wall then
-  connect(wall.thermalPort_a, thermalPort) annotation (points=[30,50; 30,60; 0,
-          60; 0,70],
-      style(
-      color=10,
-      rgbcolor={95,95,95},
-      fillColor=0,
-      rgbfillColor={0,0,0},
-      fillPattern=7));
-  connect(wall.thermalPort_b, heat.thermalPort) 
-                                              annotation (points=[30,30; 30,22;
-          0,22; 0,14],
-      style(
-      color=10,
-      rgbcolor={95,95,95},
-      fillColor=0,
-      rgbfillColor={0,0,0},
-      fillPattern=7));
-    else
-  connect(thermalPort, heat.thermalPort) 
-                                       annotation (points=[0,70; 0,14],
-      style(
-      color=10,
-      rgbcolor={95,95,95},
-      fillColor=0,
-      rgbfillColor={0,0,0},
-      fillPattern=7));
-    end if;
-  end DistributedPipeFV_mitWand;
   
 model LumpedPipe "Short pipe with one volume, wall friction and gravity effect" 
     import SI = Modelica.SIunits;
@@ -173,7 +65,7 @@ wall friction (with different friction correlations)
 and gravity effect. This model is mostly used to demonstrate how
 to build up more detailed models from the basic components.
 Note, if the \"thermalPort\" is not connected, then the pipe
-is totally isolated (= no thermal flow from the fluid to the
+is totally insulated (= no thermal flow from the fluid to the
 pipe wall/environment).
 </p>
 </html>"),
@@ -231,15 +123,17 @@ equation
   connect(volume.thermalPort, thermalPort) 
     annotation (points=[0,10; 0,54], style(color=42, rgbcolor={191,0,0}));
 end LumpedPipe;
-
-  model DistributedPipeFV "Distributed pipe model" 
+  
+  model DistributedPipe_thermal "Distributed pipe model" 
     
-  extends BaseClasses.Pipes.PartialFlow1D_FV(
+  extends BaseClasses.Pipes.PartialDistributedFlow(
     Qs_flow=heatTransfer.Q_flow,
     ms_flow=zeros(n),
-    msXi_flow=zeros(n, Medium.nXi));
+    msXi_flow=zeros(n, Medium.nXi),
+    final singleState_thermal=false);
     
-  parameter SI.Area area_h = P_inner*length "Heat transfer area" annotation(Dialog(tab="General", group="Heat transfer"));
+  parameter SI.Area area_h = perimeter*length "Heat transfer area" 
+                                                                 annotation(Dialog(tab="General", group="Heat transfer"));
   inner Medium.ThermodynamicState[n] state = medium.state;
     
   replaceable BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha heatTransfer(
@@ -261,14 +155,14 @@ end LumpedPipe;
       "Thermal port" 
     annotation (extent=[-10,44; 10,64]);
   annotation (Icon(Rectangle(extent=[-100,44; 100,40], style(
-            color=0, 
-            rgbcolor={0,0,0}, 
-            fillColor=10, 
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=10,
             rgbfillColor={95,95,95})),
                            Rectangle(extent=[-100,-40; 100,-44], style(
-            color=0, 
-            rgbcolor={0,0,0}, 
-            fillColor=10, 
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=10,
             rgbfillColor={95,95,95})),
         Ellipse(extent=[-72,10; -52,-10], style(
               color=0,
@@ -296,26 +190,71 @@ end LumpedPipe;
           style(gradient=2, fillColor=69))),
                             Diagram,
       Documentation(info="<html>
-<p>
-From Katrins email, Nov. 28, 2005:
-</p>
- 
-<p>
-extends Interfaces.1DFlow. Pressure drop and heat transfer are added in terms of replaceable components. The main problem here is to make all required variables and parameters available to the respective component (medium state, pipe geometry, Medium functions, empirical parameters). Only those shared by all future replaceable models (the simple one parameter model and the highly sophisticated (fictitious) two phase Nusselt correlation) can be set by modifiers (which is not straightforward in Dymola at the moment if a contsraining clause is used).  Those not required by all models as i.e. viscosity and conductivitiy must be computed inside the component from medium properties made available via inner and outer. I always try to avoid this as it it as bit like free climbing, but in this case I see no better solution.
-</p>
- 
-<p>
-Martin, I have not tested your latest pressure drop implementation with this model, but will do so as soon as possible. However, it is used in a completely different way, that means as an array of components, not as a  base class, in order to be able to handle distributed flow. I will check if another implementation would be more practical.
-</p>
- 
-<p>
-The pipe model contains a Boolean flag useWall which determines if a wall component is added. Unfortunately the icon does not represent the difference. In this way a heat exchanger can be created using two instances of the pipe model, one with a wall and one without. If interested in transients it could also make sense to include a wall in an insulated pipe. 
-</p>
- 
+Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pipes.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero, and the option of reducing the thermal states to one is removed. All other model options remain. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. <b>DistributedPipe_thermal</b> is mainly designed for <b>thermal applications</b>, such as heat exchangers, where the transients of the internal energy may play an important role.
+</html>", revisions="<html>
+<ul>
+<li><i>04 Mar 2006</i>
+    by Katrin Pr&ouml;l&szlig;:<br>
+       Model added to the Fluid library</li>
+</ul>
 </html>"));
   equation 
     
-    connect(thermalPort, heatTransfer.thermalPort)
+    connect(thermalPort, heatTransfer.thermalPort) 
       annotation (points=[0,54; 0,14], style(color=42, rgbcolor={191,0,0}));
-  end DistributedPipeFV;
+  end DistributedPipe_thermal;
+
+  model DistributedPipe_hydraulic "Distributed pipe model" 
+    
+  extends BaseClasses.Pipes.PartialDistributedFlow(
+    Qs_flow=zeros(n),
+    ms_flow=zeros(n),
+    msXi_flow=zeros(n, Medium.nXi),
+    final singleState_hydraulic=false);
+    
+  annotation (Icon(Rectangle(extent=[-100,44; 100,40], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=10,
+            rgbfillColor={95,95,95})),
+                           Rectangle(extent=[-100,-40; 100,-44], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=10,
+            rgbfillColor={95,95,95})),
+        Ellipse(extent=[-72,10; -52,-10], style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Ellipse(extent=[-30,10; -10,-10], style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Ellipse(extent=[10,10; 30,-10],   style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Ellipse(extent=[50,10; 70,-10],   style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Text(
+          extent=[-143,-42; 157,-92],
+          string="%name",
+          style(gradient=2, fillColor=69))),
+                            Diagram,
+      Documentation(info="<html>
+Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pipes.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in mass and energy balances are set to zero, and the option of reducing the pressure states to one is removed. All other model options remain. <b>DistributedPipe_hydraulic</b> is mainly designed for <b>hydraulic applications</b>, such a long insulated pipes, where the transients of the pressure may play an important role but not thermal behaviour.
+</html>", revisions="<html>
+<ul>
+<li><i>04 Mar 2006</i>
+    by Katrin Pr&ouml;l&szlig;:<br>
+       Model added to the Fluid library</li>
+</ul>
+</html>"));
+  end DistributedPipe_hydraulic;
 end Pipes;

@@ -1,27 +1,35 @@
 package Pipes 
-partial model PartialFlow1D_FV 
-  import Modelica_Fluid.Types;
-  import Modelica.Constants.*;
+partial model PartialDistributedFlow 
+    import Modelica_Fluid.Types;
+    import Modelica.Constants.*;
   replaceable package Medium = PackageMedium 
     extends Modelica.Media.Interfaces.PartialMedium "Fluid medium model" 
    annotation (choicesAllMatching=true);
     
 //Discretization
-  parameter Integer n(min=1) "Number of pipe segments";
-  final parameter Integer np=if lumped_dp then 2 else n + 1 
+  parameter Integer n(min=1)=1 "Number of pipe segments";
+  final parameter Integer np=if singleState_hydraulic then 2 else n + 1 
       "Number of momentum balances"                                                     annotation(Dialog(tab="Advanced"),Evaluate=true);
+  final parameter Integer nl=integer(n/2)+1 
+      "Number of control volume that contains single state"                 annotation(Evaluate=true);
     
 //Advanced model options
   parameter Boolean allowFlowReversal=true 
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
                                                                      annotation(Dialog(tab="Advanced", group="Mass and energy balances", enable=not static));
-  parameter Boolean static=true "= true, no mass or energy is stored" 
+  parameter Boolean static=true 
+      "= true, static balances, no mass or energy is stored" 
                                 annotation(Dialog(tab="Advanced", group="Mass and energy balances"),Evaluate=true);
-  parameter Boolean lumped_dp=true 
+  parameter Boolean singleState_hydraulic=true 
       " = true, lumped pressure drop, reduces number of pressure states to one"
                                                                               annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
   parameter Boolean kineticTerm=false " = true, include kinetic term" 
-                                              annotation(Dialog(tab="Advanced", group="Momentum balance", enable=not lumped_dp),Evaluate=true);
+                                              annotation(Dialog(tab="Advanced", group="Momentum balance", enable=not singleState_hydraulic),Evaluate=true);
+  parameter Boolean singleState_thermal=false 
+      " = true, number of temperature or enthalpy states is reduced to one" 
+                                                                           annotation(Evaluate=true,Dialog(tab="Advanced", group="Mass and energy balances", enable=not static));
+//  parameter Boolean fixedComposition=true 
+//    " = true, medium composition is constant along pipe flow" annotation 8;
     
 //Initialization
     parameter Types.Init.Temp initType=Types.
@@ -64,17 +72,15 @@ partial model PartialFlow1D_FV
       "Type of cross section of pipe" 
     annotation (Dialog(tab="General", group="Pipe geometry"));
   parameter SI.Length length "Length"   annotation(Dialog(tab="General", group="Pipe geometry"));
-  parameter SI.Diameter d_inner "Inner diameter of circular pipe" annotation(Dialog(group="Pipe geometry", enable=crossSectionType==1));
-  parameter SI.Length h_inner "Inner height of rectangular pipe"    annotation(Dialog(group="Pipe geometry", enable=crossSectionType==2));
-  parameter SI.Length w_inner "Inner width of rectangular pipe"    annotation(Dialog(group="Pipe geometry", enable=crossSectionType==2));
-  parameter SI.Length P_inner=if crossSectionType == 1 then Modelica.Constants.pi*d_inner else if crossSectionType == 2 then 2*h_inner + 2*
-      w_inner else 1 "Inner perimeter" 
-                                      annotation(Dialog(tab="General", group="Pipe geometry", enable=crossSectionType==3));
-  inner parameter SI.Area A_inner=if crossSectionType == 1 then Modelica.Constants.pi*d_inner*d_inner/4 else if crossSectionType
-       == 2 then h_inner*w_inner else 1 "Inner cross section area" 
+  parameter SI.Diameter diameter "Diameter of circular pipe"      annotation(Dialog(group="Pipe geometry", enable=crossSectionType==1));
+  parameter SI.Length height "Height of rectangular pipe"           annotation(Dialog(group="Pipe geometry", enable=crossSectionType==2));
+  parameter SI.Length width "Width of rectangular pipe"            annotation(Dialog(group="Pipe geometry", enable=crossSectionType==2));
+  parameter SI.Length perimeter=if crossSectionType == 1 then Modelica.Constants.pi*diameter else if crossSectionType == 2 then 2*height + 2*
+      width else 1 "Inner perimeter"  annotation(Dialog(tab="General", group="Pipe geometry", enable=crossSectionType==3));
+  inner parameter SI.Area area=if crossSectionType == 1 then Modelica.Constants.pi*diameter*diameter/4 else if crossSectionType
+       == 2 then height*width else 1 "Inner cross section area" 
                                           annotation(Dialog(tab="General", group="Pipe geometry", enable=crossSectionType==3));
-  final parameter SI.Volume V=A_inner*length "Volume" 
-                                                     annotation(Dialog(tab="General", group="Pipe geometry"));
+  final parameter SI.Volume V=area*length "Volume"   annotation(Dialog(tab="General", group="Pipe geometry"));
     
 //Pressure Drop
   replaceable package WallFriction = 
@@ -82,7 +88,7 @@ partial model PartialFlow1D_FV
     extends BaseClasses.PressureLosses.WallFriction.PartialWallFriction 
       "Characteristic of wall friction" 
                                        annotation(Dialog(tab="General", group="Pressure loss"),choicesAllMatching=true);
-  parameter SI.Diameter d_h=4*A_inner/P_inner "Hydraulic diameter" annotation(Dialog(tab="General", group="Pressure loss"));
+  parameter SI.Diameter d_h=4*area/perimeter "Hydraulic diameter"  annotation(Dialog(tab="General", group="Pressure loss"));
   parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
                                                                      annotation(Evaluate=true);
   parameter SI.Length roughness(min=0) = 2.5e-5 
@@ -130,11 +136,10 @@ partial model PartialFlow1D_FV
       "Independent mass flow rates across segment boundaries";
   Medium.EnthalpyFlowRate[n + 1] H_flow 
       "Enthalpy flow rates of fluid across segment boundaries";
-  Real[n+1] I_flow;
   SI.Pressure[np] dp(start=dp0) 
       "Pressure drop due to friction loss and gravity";
     
-//Source terms
+//Source terms, have to be set in inheriting class
   Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
   Medium.MassFlowRate[n,Medium.nXi] msXi_flow 
       "Independent mass flow rates, source or sink";
@@ -160,10 +165,42 @@ partial model PartialFlow1D_FV
           gradient=2,
           fillColor=69))),
       Documentation(info="<html>
+<p>The model <b>PartialDistributedFlow</b> is used as a base class for pipe flows with spatial discretization according to the finite volume method, such as <a href=\"Modelica:Modelica_Fluid.Components.Pipes.DistributedPipe_thermal\">DistributedPipe_thermal</a> and <a href=\"Modelica:Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic\">DistributedPipe_hydraulic</a>. The flow path is divided into <tt><b>n</b></tt> segments of equal volume.</p>
+
+<p><b>Mass and energy balances</b></p>
+<p>One total mass and one energy balance is formed across each segment. If the medium contains more than one component, substance mass balances are added. Changes in potential and kinetic energy are neglected in the energy balance. The following source (or sink) terms are used in the balances and must be specified in extending models to complete this partial class:</p>
+<ul>
+<li>Energy balance: <tt><b>Qs_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary</li>
+<li>Total mass balance: <tt><b>ms_flow</b></tt>, e.g. condensing mass flow of negligible volume such as water in air</li>
+<li>Substance mass balance: <tt><b>msXi_flow</b></tt>, as above</li>
+</ul>
+
+<p><b>Momentum balance</b></p>
+<p>The momentum balances are formed across the segment boundaries (staggered grid). Half a momentum balance is used on each end of the flow model resulting in a total of n-1 full and 2 half momentum balances. Connecting two pipes therefore results in an algebraic pressure at the ports, that must be solved through index reduction. Specifying a good start value for the port pressure is essential in order to solve large systems. The momentum balance is always static, i.e. no dynamic momentum term is used. Changes in kinetic energy across a segment boundary due to changes in density are taken into account, if <tt><b>kineticTerm = true</b></tt> (under <b>Advanced</b>). Changes in pressure due to friction losses and gravity effects are always considered. Wall friction correlations can be selected from a menu. When connecting two components, e.g. two pipes, the momentum balance across the connection point reduces to</p> 
+<pre>pipe1.port_b.p = pipe2.port_a.p</pre>
+<p>This is only true if the flow velocity remains the same on each side of the connection. For any significant change in diameter (and if the resulting effects, such as change in kinetic energy, cannot be neglected) an adapter component should be used. This also allows to take into account friction losses with respect to the actual geometry of the connection point.</p>
+
+<p><b>Reducing the number of numerical states</b></p>
+<p>The default settings of this model result in <tt>n*(2 + nX - 1)</tt> numerical states with <tt>nX</tt> as the number of substances: <tt>n</tt> pressure states, <tt>n</tt> enthalpy or temperature states and <tt>n*nX-1</tt> mass fraction states. Depending on the simulation task the model efficiency may be increased if the number of numerical states is reduced. The following model options exist:</p>
+<ul>
+<li><tt><b>static</b></tt> - if true, no numerical states are present, static mass and energy balances</li>
+<li><tt><b>singleState_hydraulic</b></tt> - if true, only one pressure state is present, just two momentum balances, algebraic constraints for remaining pressures</li>
+<li><tt><b>singleState_thermal</b></tt> - if true, only one enthalpy or temperature state is present, just one dynamic energy balance, algebraic constraints for remaining properties</li>
+</ul>
+Selecting a fixed medium composition along the entire flow path is currently not possible but planned to be added.
+<p>
+
+</html>", revisions="<html>
+<ul>
+<li><i>04 Mar 2006</i>
+    by Katrin Pr&ouml;l&szlig;:<br>
+       Model added to the Fluid library</li>
+</ul>
 </html>"));
     
 outer Components.Ambient ambient "Ambient conditions";
     
+//Medium properties used in momentum balance
   protected 
   SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else eta[1]);//approximation
   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else eta[n]);//approximation
@@ -171,67 +208,20 @@ outer Components.Ambient ambient "Ambient conditions";
             (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium));
   SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
-  SI.Density d_a=if use_d_nominal then d_nominal else medium[1].d;//approximation
-  SI.Density d_b=if use_d_nominal then d_nominal else medium[n].d;//approximation
-  parameter SI.Pressure[np] dp0={if lumped_dp then dp_start else dp_start/(if i
-       > 1 and i < np then n else 2*n) for i in 1:np};
+  /*SI.Density d_a=if use_d_nominal then d_nominal else Medium.density_ph(port_a.p, port_a.h);
+  SI.Density d_b=if use_d_nominal then d_nominal else Medium.density_ph(port_b.p, port_b.h);
+  Above equations currently produce nonlinear systems and numerical Jacobians*/
+  SI.Density d_a=if use_d_nominal then d_nominal else d[1];//approximation
+  SI.Density d_b=if use_d_nominal then d_nominal else d[n];//approximation
     
 //Momentum balance terms
-  //SI.Force[np] DI_flow "Delta momentum flow across flow grid boundaries";
+  SI.Force[np] DI_flow "Delta momentum flow across flow grid boundaries";
   SI.Force[np] F_f "Friction force";
   SI.Force[np] F_p "Pressure forces";
-    
-initial equation 
-  // Initial conditions
-  if not static then
-    if initType == Types.Init.NoInit then
-    // no initial equations
-    elseif initType == Types.Init.SteadyState then
-    //steady state initialization
-      if use_T_start then
-        der(medium.T) = zeros(n);
-      else
-        der(medium.h) = zeros(n);
-      end if;
-      if not (lumped_dp or Medium.singleState) then
-        der(medium.p) = zeros(n);
-      elseif lumped_dp then
-       der(medium[integer(n/2)+1].p) = 0;
-      end if;
-      for i in 1:n loop
-        der(medium[i].Xi) = zeros(Medium.nXi);
-      end for;
-    elseif initType == Types.Init.InitialValues then
-    //Initialization with initial values
-      if use_T_start then
-        medium.T = ones(n)*T_start;
-      else
-        medium.h = ones(n)*h_start;
-      end if;
-      if not (lumped_dp or Medium.singleState) then
-         medium.p=p_start;
-      elseif lumped_dp then
-       medium[integer(n/2)+1].p=p_start[integer(n/2)+1];
-      end if;
-    elseif initType == Types.Init.SteadyStateHydraulic then
-    //Steady state initialization for hydraulic states (p)
-      if use_T_start then
-        medium.T = ones(n)*T_start;
-      else
-        medium.h = ones(n)*h_start;
-      end if;
-      if not (lumped_dp or Medium.singleState) then
-        der(medium.p) = zeros(n);
-      elseif lumped_dp then
-        der(medium[integer(n/2)+1].p) = 0;
-      end if;
-    else
-      assert(false, "Unsupported initialization option");
-    end if;
-  end if;
+  parameter SI.Pressure[np] dp0={if singleState_hydraulic then dp_start else dp_start/(if i
+       > 1 and i < np then n else 2*n) for i in 1:np};
     
 equation 
-    
   // Boundary conditions
   port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium[1].h);
   port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium[n].h);
@@ -244,29 +234,14 @@ equation
   for i in 2:n loop
     H_flow[i] = semiLinear(m_flow[i], medium[i - 1].h, medium[i].h);
     mXi_flow[i, :] = semiLinear(m_flow[i], medium[i - 1].Xi, medium[i].Xi);
-    v[i] = m_flow[i]/(medium[i - 1].d + medium[i].d)*2/A_inner;
-    if kineticTerm then
-      I_flow[i] = Modelica_Fluid.Utilities.regSquare(m_flow[i], delta=max(0.0001,
-      0.01*mflow_start))/A_inner/noEvent(if m_flow[i]>=0 then d[i-1] else d[i]);
-    else
-      I_flow[i] = 0;
-    end if;
+    v[i] = m_flow[i]/(medium[i - 1].d + medium[i].d)*2/area;
   end for;
   H_flow[1] = port_a.H_flow;
   H_flow[n + 1] = -port_b.H_flow;
   mXi_flow[1, :] = port_a.mXi_flow;
   mXi_flow[n + 1, :] = -port_b.mXi_flow;
-  v[1] = m_flow[1]/d_a/A_inner;
-  v[n + 1] = m_flow[n + 1]/d_b/A_inner;
-  if kineticTerm then
-    I_flow[1] = Modelica_Fluid.Utilities.regSquare(m_flow[1], delta=max(0.0001,
-      0.01*mflow_start))/A_inner/d_a;
-    I_flow[n + 1] = Modelica_Fluid.Utilities.regSquare(m_flow[n + 1], max(
-      0.0001, 0.01*mflow_start))/d_b/A_inner;
-  else
-    I_flow[1] = 0;
-    I_flow[n + 1] = 0;
-  end if;
+  v[1] = m_flow[1]/d_a/area;
+  v[n + 1] = m_flow[n + 1]/d_b/area;
     
   // Total quantities
   for i in 1:n loop
@@ -275,25 +250,42 @@ equation
     U[i] = m[i]*medium[i].u;
   end for;
     
-  //Mass and energy balance
-  for i in 1:n loop
-    if static then
+  //Mass and energy balances
+  if static then
+  //steady state mass and energy balances, no numerical states, no flow reversal possible
+    for i in 1:n loop
       0 = m_flow[i] - m_flow[i + 1] + ms_flow[i];
       zeros(Medium.nXi) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
       0 = H_flow[i] - H_flow[i + 1] + Qs_flow[i];
-    else
+    end for;
+  elseif singleState_thermal then
+  //dynamic mass balances, one dynamic energy balance, n pressure states (if not singleState_hydraulic), 1 "thermal" (h or T) state
+    for i in 1:n loop
+      der(m[i]) = m_flow[i] - m_flow[i + 1] + ms_flow[i];
+      der(mXi[i, :]) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
+    end for;
+    der(U[nl]) = H_flow[nl] - H_flow[nl + 1] + Qs_flow[nl];
+    for i in 1:nl - 1 loop
+      medium[i].h = medium[nl].h;
+    end for;
+    for i in nl + 1:n loop
+      medium[i].h = medium[nl].h;
+    end for;
+  else
+  //dynamic mass and energy balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
+    for i in 1:n loop
       der(m[i]) = m_flow[i] - m_flow[i + 1] + ms_flow[i];
       der(mXi[i, :]) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
       der(U[i]) = H_flow[i] - H_flow[i + 1] + Qs_flow[i];
-    end if;
-  end for;
+    end for;
+  end if;
   for i in 1:n loop
-  assert(allowFlowReversal or (m_flow[i]>=0),"Flow reversal not allowed");
+    assert((allowFlowReversal and not static) or (m_flow[i] >= 0), "Flow reversal not allowed in distributed pipe");
   end for;
     
 //Pressure drop and gravity
  if from_dp and not WallFriction.dp_is_zero then
-    if lumped_dp then
+    if singleState_hydraulic then
       m_flow[1] = WallFriction.massFlowRate_dp(dp[1] - ((integer(n/2)+1)*2-1)/(2*n)*height_ab*ambient.g*(
         d_a + d_b)/2, d_a, d_b, eta_a, eta_b, ((integer(n/2)+1)*2-1)/(2*n)*length, d_h, roughness,
         dp_small);
@@ -315,7 +307,7 @@ equation
         length/n/2, d_h, roughness, dp_small);
     end if;
   else
-    if lumped_dp then
+    if singleState_hydraulic then
       dp[1] = (WallFriction.pressureLoss_m_flow(m_flow[1], d_a, d_b, eta_a,
         eta_b, ((integer(n/2)+1)*2-1)/(2*n)*length, d_h, roughness, m_flow_small) + ((integer(n/2)+1)*2-1)/(2*n)*height_ab*
         ambient.g*(d_a + d_b)/2);
@@ -338,37 +330,120 @@ equation
   end if;
     
 //Momentum Balance
-if lumped_dp then
-    F_p[1] = (port_a.p - medium[integer(n/2)+1].p)*A_inner;
-    F_p[2] = (medium[integer(n/2)+1].p - port_b.p)*A_inner;
-    F_f[1] = -dp[1]*A_inner;
-    F_f[2] = -dp[2]*A_inner;
+if singleState_hydraulic then //two momentum balances, one on each side of pressure state
+    F_p[1] = (port_a.p - medium[nl].p)*area;
+    F_p[2] = (medium[nl].p - port_b.p)*area;
+    F_f[1] = -dp[1]*area;
+    F_f[2] = -dp[2]*area;
     zeros(np) = F_p + F_f;
     if n==2 then
       medium[2].p=medium[1].p;
     elseif n>2 then
-      medium[1:integer(n/2)].p=ones(integer(n/2))*medium[integer(n/2)+1].p;
-      medium[integer(n/2)+2:n].p=ones(n-integer(n/2)-1)*medium[integer(n/2)+1].p;
+      medium[1:nl-1].p=ones(nl-1)*medium[nl].p;
+      medium[nl+1:n].p=ones(n-nl)*medium[nl].p;
     end if;
+    DI_flow=zeros(np);
   else
-    F_p[1] = (port_a.p-medium[1].p)*A_inner;
-    F_f[1] = -dp[1]*A_inner;
-    0 = F_p[1] + F_f[1] + (I_flow[1]-I_flow[2])/2;
+    if kineticTerm then
+      DI_flow[1] = Modelica_Fluid.Utilities.regSquare(m_flow[1], delta=max(0.0001,
+      0.01*mflow_start))/area*(1/d_a-1/d[1]);
+    else
+      DI_flow[1] = 0;
+    end if;
+    F_p[1] = (port_a.p-medium[1].p)*area;
+    F_f[1] = -dp[1]*area;
+    0 = F_p[1] + F_f[1] + DI_flow[1];
     for i in 2:n loop
-      F_p[i] = (medium[i-1].p-medium[i].p)*A_inner;
-      F_f[i] = -dp[i]*A_inner;
-      0 = F_p[i] + F_f[i] + (I_flow[i-1]-I_flow[i+1])/2;
+    if kineticTerm then
+      DI_flow[i] = Modelica_Fluid.Utilities.regSquare(m_flow[i], delta=max(0.0001,
+      0.01*mflow_start))/area*(1/d[i-1]-1/d[i]);
+    else
+      DI_flow[i] = 0;
+    end if;
+      F_p[i] = (medium[i-1].p-medium[i].p)*area;
+      F_f[i] = -dp[i]*area;
+      0 = F_p[i] + F_f[i] + DI_flow[i];
     end for;
-    F_p[np] = (medium[n].p-port_b.p)*A_inner;
-    F_f[np] = -dp[np]*A_inner;
-    0 = F_p[np] + F_f[np] + (I_flow[n]-I_flow[n+1])/2;
+     if kineticTerm then
+      DI_flow[np] = Modelica_Fluid.Utilities.regSquare(m_flow[np], delta=max(0.0001,
+      0.01*mflow_start))/area*(1/d[n]-1/d_b);
+    else
+      DI_flow[np] = 0;
+    end if;
+    F_p[np] = (medium[n].p-port_b.p)*area;
+    F_f[np] = -dp[np]*area;
+    0 = F_p[np] + F_f[np] + DI_flow[np];
   end if;
     
-end PartialFlow1D_FV;
+initial equation 
+  // Initial conditions
+  if not static then
+    if initType == Types.Init.NoInit then
+    // no initial equations
+    elseif initType == Types.Init.SteadyState then
+    //steady state initialization
+      if singleState_thermal then
+        if use_T_start then
+        der(medium[nl].T) = 0;
+      else
+        der(medium[nl].h) = 0;
+      end if;
+      else
+      if use_T_start then
+        der(medium.T) = zeros(n);
+      else
+        der(medium.h) = zeros(n);
+      end if;
+      end if;
+      if not (singleState_hydraulic or Medium.singleState) then
+        der(medium.p) = zeros(n);
+      elseif singleState_hydraulic then
+       der(medium[nl].p) = 0;
+      end if;
+      for i in 1:n loop
+        der(medium[i].Xi) = zeros(Medium.nXi);
+      end for;
+    elseif initType == Types.Init.InitialValues then
+    //Initialization with initial values
+      if singleState_thermal then
+        if use_T_start then
+        medium[nl].T = T_start;
+      else
+        medium[nl].h = h_start;
+      end if;
+      else
+      if use_T_start then
+        medium.T = ones(n)*T_start;
+      else
+        medium.h = ones(n)*h_start;
+      end if;
+      end if;
+      if not (singleState_hydraulic or Medium.singleState) then
+         medium.p=p_start;
+      elseif singleState_hydraulic then
+       medium[nl].p=p_start[nl];
+      end if;
+    elseif initType == Types.Init.SteadyStateHydraulic then
+    //Steady state initialization for hydraulic states (p)
+      if use_T_start then
+        medium.T = ones(n)*T_start;
+      else
+        medium.h = ones(n)*h_start;
+      end if;
+      if not (singleState_hydraulic or Medium.singleState) then
+        der(medium.p) = zeros(n);
+      elseif singleState_hydraulic then
+        der(medium[nl].p) = 0;
+      end if;
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
+  end if;
+end PartialDistributedFlow;
   
 model PortVolume 
     "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
-  import Modelica_Fluid.Types;
+    import Modelica_Fluid.Types;
   extends BaseClasses.Common.PartialInitializationParameters;
     
   replaceable package Medium = PackageMedium extends 
@@ -495,7 +570,7 @@ package HeatTransfer
             rgbfillColor={232,0,0},
             fillPattern=7),
           string="%name")), Documentation(info="<html>
-Base class for heat transfer models that can be used in model <b>Pipe</b>.
+Base class for heat transfer models that can be used in model <a href=\"Modelica:Modelica_Fluid.Components.Pipes.DistributedPipe_thermal\">DistributedPipe_thermal</a>.
 </html>"));
   end PartialPipeHeatTransfer;
     
@@ -503,7 +578,7 @@ Base class for heat transfer models that can be used in model <b>Pipe</b>.
     extends PartialPipeHeatTransfer;
     parameter SI.CoefficientOfHeatTransfer alpha0=200;
     annotation(structurallyIncomplete=true, Documentation(info="<html>
-Simple heat transfer correlation with constant heat transfer coefficient
+Simple heat transfer correlation with constant heat transfer coefficient, used as default component in <a href=\"Modelica:Modelica_Fluid.Components.Pipes.DistributedPipe_thermal\">DistributedPipe_thermal</a>.
 </html>"));
   equation 
     for i in 1:n loop
