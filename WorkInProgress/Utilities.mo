@@ -1,9 +1,9 @@
 package Utilities 
 model TankAttachment "Equations to attach pipe at tank" 
   import SI = Modelica.SIunits;
-    replaceable package Medium = PackageMedium extends 
+     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-    annotation (choicesAllMatching=true);
+     annotation (choicesAllMatching=true);
     
     Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
     annotation (extent=[-10,-112; 10,-92],    rotation=90);
