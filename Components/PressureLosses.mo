@@ -3,7 +3,7 @@ package PressureLosses
 model StaticHead 
     "Models the static head between two ports at different heights" 
   extends BaseClasses.Common.PartialTwoPortTransport;
-  parameter SI.Height height_ab "Height(port_b) - Height(port_a)";
+  parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
   Medium.Density d "Fluid density";
   outer Components.Ambient ambient "Ambient conditions";
   annotation (Icon(
