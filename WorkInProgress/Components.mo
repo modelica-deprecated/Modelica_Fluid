@@ -282,7 +282,7 @@ to build up more detailed models from the basic components.
     port_2.mXi_flow = semiLinear(port_2.m_flow, port_2.Xi, Xi);
     port_3.mXi_flow = semiLinear(port_3.m_flow, port_3.Xi, Xi);
   end Splitter;
-
+  
 model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
     import SI = Modelica.SIunits;
     import Modelica_Fluid.Types;
@@ -588,7 +588,7 @@ is visualized, as well as the value of level.
     uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")),
     Coordsys(grid=[1,1], scale=0.2));
 end OpenTank;
-
+  
 model Tank "Obsolet component (use instead Components.OpenTank)" 
     import Modelica_Fluid.Types;
     import Modelica_Fluid;
@@ -622,8 +622,8 @@ model Tank "Obsolet component (use instead Components.OpenTank)"
     annotation(Dialog(tab="Initialization"));
     
   Modelica_Fluid.Interfaces.FluidPort_b port(
-      redeclare package Medium = Medium, 
-      m_flow(start=0), 
+      redeclare package Medium = Medium,
+      m_flow(start=0),
       mXi_flow(each start=0)) 
     annotation (extent=[-10, -120; 10, -100], rotation=90);
   Medium.BaseProperties medium(
@@ -745,79 +745,5 @@ Full steady state initialization is not supported, because the corresponding int
 </html>"),
     Diagram);
 end Tank;
-
-  model Splitter_kinetic "Component for splitting/joining of flows" 
-    import Modelica_Fluid;
-    parameter Boolean use_dynamic_pressure=true 
-                                              annotation(Evaluate=true);
-    parameter SI.Diameter d_1;
-    parameter SI.Diameter d_2;
-    parameter SI.Diameter d_3;
-    replaceable package Medium = PackageMedium extends 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-        annotation (choicesAllMatching = true);
-    
-    Modelica_Fluid.Interfaces.FluidPort_b port_1(redeclare package Medium = 
-          Medium) annotation (extent=[-120,-10; -100,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
-          Medium) annotation (extent=[100,-10; 120,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_3(redeclare package Medium = 
-          Medium) annotation (extent=[-10,100; 10,120]);
-    
-    Medium.AbsolutePressure p "Pressure";
-    Medium.SpecificEnthalpy hMix "Mixing enthalpy";
-    Medium.MassFraction Xi[Medium.nXi] 
-      "Independent mixture mass fractions m_i/m";
-    Medium.BaseProperties medium(p=p,h=hMix,Xi=Xi);
-    annotation (Icon(Polygon(points=[-100,60; -60,60; -60,100; 60,100; 60,60; 100,
-              60; 100,-60; -100,-60; -100,60], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=9,
-            rgbfillColor={175,175,175},
-            fillPattern=1)), Polygon(points=[-100,40; -40,40; -40,100; 40,100; 40,
-              40; 100,40; 100,-40; -100,-40; -100,40], style(
-            color=0,
-            rgbcolor={0,0,0},
-            gradient=2,
-            fillColor=69,
-            rgbfillColor={0,128,255}))));
-  protected 
-    SI.Density d[3];
-    parameter SI.Area A[3]=Modelica.Constants.pi/4*{d_1*d_1,d_2*d_2,d_3*d_3} annotation(Evaluate=true);
-  equation 
-   /* d[1]=Medium.density_phX(port_1.p,port_1.h,port_1.Xi);
-  d[2]=Medium.density_phX(port_2.p,port_2.h,port_2.Xi);
-  d[3]=Medium.density_phX(port_3.p,port_3.h,port_3.Xi);*/
-    d[1] = medium.d;
-    d[2] = medium.d;
-    d[3] = medium.d;
-    port_1.m_flow + port_2.m_flow + port_3.m_flow = 0 "Mass balance";
-    port_1.mXi_flow + port_2.mXi_flow + port_3.mXi_flow = zeros(Medium.nXi) 
-      "Component mass balances";
-    
-    port_1.H_flow + port_2.H_flow + port_3.H_flow = 0 "Energy balance";
-    
-    // Momentum balances
-    if use_dynamic_pressure then
-        p=port_1.p + Modelica_Fluid.Utilities.regSquare(
-        x=port_1.m_flow)/(medium.d*2*A[1]*A[1]);
-         p=port_2.p + Modelica_Fluid.Utilities.regSquare(
-        x=port_2.m_flow)/(medium.d*2*A[2]*A[2]);
-         p=port_3.p + Modelica_Fluid.Utilities.regSquare(
-        x=port_3.m_flow)/(medium.d*2*A[3]*A[3]);
-    else
-      port_1.p = p;
-      port_2.p = p;
-      port_3.p = p;
-    end if;
-    
-    port_1.H_flow = semiLinear(port_1.m_flow, port_1.h, hMix);
-    port_2.H_flow = semiLinear(port_2.m_flow, port_2.h, hMix);
-    port_3.H_flow = semiLinear(port_3.m_flow, port_3.h, hMix);
-    
-    port_1.mXi_flow = semiLinear(port_1.m_flow, port_1.Xi, Xi);
-    port_2.mXi_flow = semiLinear(port_2.m_flow, port_2.Xi, Xi);
-    port_3.mXi_flow = semiLinear(port_3.m_flow, port_3.Xi, Xi);
-  end Splitter_kinetic;
+  
 end Components;
