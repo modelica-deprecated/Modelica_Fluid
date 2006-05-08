@@ -101,8 +101,6 @@ package FluidStorage
     end if;
     end MixingVolume;
   
-  
-  
 model OpenTank "Open tank with inlet/outlet ports at the bottom" 
   import SI = Modelica.SIunits;
   replaceable package Medium = PackageMedium extends 
@@ -114,11 +112,11 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
       "=true, kinetic energy and dissipation is accounted for in port pressure"
                                                                                                         annotation(Evaluate=true, Dialog(tab="Advanced"));
     parameter Real[n_ports] zeta_in=fill(0, n_ports) 
+      "Hydraulic resistance into tank, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
+                                                                                                          annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
+    parameter Real[n_ports] zeta_out=fill(1, n_ports) 
       "Hydraulic resistance out of tank, 0 for ideal smooth outlet" 
                                                                   annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
-    parameter Real[n_ports] zeta_out=fill(1, n_ports) 
-      "Hydraulic resistance into tank, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-                                                                                                    annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
     
 //Tank geometry  
     parameter SI.Height height "Height of tank";
@@ -219,10 +217,10 @@ equation
       if p_static_at_port then
         port[i].p = p_static;
       else
-        port[i].p = p_static - smooth(2, noEvent(port[i].m_flow^2/(2*medium.d*
+       port[i].p = p_static - smooth(2, noEvent(port[i].m_flow^2/(2*medium.d*
           pipeArea[i]^2)*(if port[i].m_flow < 0 then (1 + zeta_out[i]) else (1
            - zeta_in[i]))));
-      end if;
+       end if;
     end for;
     
 initial equation 
@@ -275,8 +273,8 @@ initial equation
           Line(points=[-100,100; 100,100], style(
               color=0,
               rgbcolor={0,0,0},
-              pattern=3)), 
-          string="start = %level_start m"),
+              pattern=3)),
+        string="start = %level_start m"),
         Text(
           extent=[-95,30; 95,5],
           style(color=0),
