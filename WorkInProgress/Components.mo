@@ -231,4 +231,55 @@ to build up more detailed models from the basic components.
       annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
   end ShortPipe2;
   
+  model Splitter "Component for splitting/joining of flows" 
+    import Modelica_Fluid;
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
+    
+    Modelica_Fluid.Interfaces.FluidPort_b port_1(redeclare package Medium = 
+          Medium) annotation (extent=[-120,-10; -100,10]);
+    Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
+          Medium) annotation (extent=[100,-10; 120,10]);
+    Modelica_Fluid.Interfaces.FluidPort_b port_3(redeclare package Medium = 
+          Medium) annotation (extent=[-10,100; 10,120]);
+    
+    Medium.AbsolutePressure p "Pressure";
+    Medium.SpecificEnthalpy hMix "Mixing enthalpy";
+    Medium.MassFraction Xi[Medium.nXi] 
+      "Independent mixture mass fractions m_i/m";
+    
+    annotation (Icon(Polygon(points=[-100,60; -60,60; -60,100; 60,100; 60,60; 100,
+              60; 100,-60; -100,-60; -100,60], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=9,
+            rgbfillColor={175,175,175},
+            fillPattern=1)), Polygon(points=[-100,40; -40,40; -40,100; 40,100; 40,
+              40; 100,40; 100,-40; -100,-40; -100,40], style(
+            color=0,
+            rgbcolor={0,0,0},
+            gradient=2,
+            fillColor=69,
+            rgbfillColor={0,128,255}))));
+  equation 
+    port_1.m_flow + port_2.m_flow + port_3.m_flow = 0 "Mass balance";
+    port_1.mXi_flow + port_2.mXi_flow + port_3.mXi_flow = zeros(Medium.nXi) 
+      "Component mass balances";
+    
+    port_1.H_flow + port_2.H_flow + port_3.H_flow = 0 "Energy balance";
+    
+    // Momentum balances
+    port_1.p = p;
+    port_2.p = p;
+    port_3.p = p;
+    
+    port_1.H_flow = semiLinear(port_1.m_flow, port_1.h, hMix);
+    port_2.H_flow = semiLinear(port_2.m_flow, port_2.h, hMix);
+    port_3.H_flow = semiLinear(port_3.m_flow, port_3.h, hMix);
+    
+    port_1.mXi_flow = semiLinear(port_1.m_flow, port_1.Xi, Xi);
+    port_2.mXi_flow = semiLinear(port_2.m_flow, port_2.Xi, Xi);
+    port_3.mXi_flow = semiLinear(port_3.m_flow, port_3.Xi, Xi);
+  end Splitter;
 end Components;
