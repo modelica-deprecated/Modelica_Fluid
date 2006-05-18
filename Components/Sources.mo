@@ -29,7 +29,7 @@ package Sources
       "Ambient mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow", enable=Medium.nXi > 0));
     
-    annotation (defaultComponentName = "ambient",
+    annotation (defaultComponentName = "ambient_fixed",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -87,7 +87,7 @@ with exception of ambient pressure, do not have an effect.
       "Ambient mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow",
                   enable=Medium.nXi > 0));
-    annotation (defaultComponentName = "ambient",
+    annotation (defaultComponentName = "ambient_fixed",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -134,7 +134,7 @@ with exception of ambient pressure, do not have an effect.
       Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
       "Ambient mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nXi > 0));
-    annotation (defaultComponentName = "ambient",
+    annotation (defaultComponentName = "ambient_fixed",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -200,8 +200,8 @@ to define fixed or prescribed ambient conditions.
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](redeclare type 
         SignalType = SI.MassFraction) "Prescribed ambient composition" 
       annotation (extent=[-140,-80; -100,-40]);
-    annotation (defaultComponentName = "ambient",
-      Coordsys(
+    annotation (defaultComponentName = "ambient_prescribed",
+  Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
         component=[20, 20]),
@@ -299,8 +299,8 @@ with exception of ambient pressure, do not have an effect.
       redeclare type SignalType = SI.MassFraction) 
       "Prescribed ambient composition" 
       annotation (extent=[-140,-80; -100,-40]);
-    annotation (defaultComponentName = "ambient",
-      Coordsys(
+    annotation (defaultComponentName = "ambient_prescribed",
+  Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
         component=[20, 20]),
