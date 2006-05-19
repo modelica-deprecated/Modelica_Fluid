@@ -19,9 +19,10 @@ package Subsystems
     parameter SI.SpecificHeatCapacity c_wall 
       "Specific heat capacity of wall material"                                        annotation(Dialog(tab="General", group="Constant material properties"));
     final parameter SI.Mass m_wall=sum(wall.m) "Wall mass";
-    final parameter Boolean initWall_steadyState=initType==Types.Init.SteadyState 
-      "= true, Wall initialization in steady state"                                      annotation(Dialog(tab="Initialization", group="Wall"));
-    parameter SI.Temperature Twall_start "Start value of wall temperature"  annotation(Dialog(tab="Initialization", group="Wall"));
+   parameter Types.Init.Temp initType_wall=Types.Init.NoInit 
+      "Initialization option" 
+     annotation(Evaluate=true, Dialog(tab = "Initialization"));
+  parameter SI.Temperature Twall_start "Start value of wall temperature"  annotation(Dialog(tab="Initialization", group="Wall"));
     
     //Initialization pipe 1
     parameter Types.Init.Temp initType=Types.Init.InitialValues 
@@ -221,10 +222,18 @@ package Subsystems
       d_wall=d_wall,
       c_wall=c_wall,
       T_start=Twall_start,
-      initWall_steadyState=initWall_steadyState,
       a_inner=Modelica.Constants.pi/4*di_1*di_1,
-      a_outer=Modelica.Constants.pi/4*da_1*da_1) 
+      a_outer=Modelica.Constants.pi/4*da_1*da_1,
+      k_wall=k_wall,
+      area_h=Modelica.Constants.pi*(di_1 + da_1)*length,
+      dT=dT,
+      initType=initType_wall) 
       annotation (extent=[-28,-14; 10,44]);
+    parameter SI.ThermalConductivity k_wall 
+      "Thermal conductivity of wall material" 
+      annotation (Dialog(group="Constant material properties"));
+    parameter SI.Temperature dT "Start value for port_b.T - port_a.T" 
+      annotation (Dialog(tab="Initialization", group="Wall"));
   equation 
     Q_flow_1=sum(pipe_1.Qs_flow);
     Q_flow_2=sum(pipe_2.Qs_flow);
