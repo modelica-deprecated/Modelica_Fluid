@@ -8,7 +8,6 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     d_wall=200,
     c_wall=500,
     use_T_start_1=true,
-    T_start_1=300,
     use_T_start_2=true,
     di_1=0.024,
     da_1=0.03,
@@ -17,8 +16,6 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     n=20,
     length=2,
     redeclare package Medium_1 = 
-        Medium,
-    redeclare package Medium_2 = 
         Medium,
     mflow_start_1=0.2,
     static=false,
@@ -31,12 +28,15 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     K2=20,
     redeclare package WallFriction = 
         Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Detailed,
-    redeclare model HeatTransfer_2 = 
-        Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha,
     use_eta_nominal=true,
     singleState_hydraulic=false,
-    kineticTerm=false, 
-    initType=Modelica_Fluid.Types.Init.SteadyState) 
+    kineticTerm=false,
+    redeclare package Medium_2 = Medium,
+    k_wall=100,
+    T_start_1=304, 
+    dT=10, 
+    initType_wall=Modelica_Fluid.Types.Init.InitialValues, 
+    initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic) 
                                annotation (extent=[-26,-14; 34,46]);
   
   Components.Sources.FixedAmbient_pTX ambient2(
