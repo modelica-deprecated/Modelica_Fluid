@@ -23,18 +23,9 @@ partial model PartialDistributedFlow
   parameter Boolean singleState_hydraulic=false 
       " = true, lumped pressure drop, reduces number of pressure states to one"
                                                                               annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
-  parameter Boolean kineticTerm=false " = true, include kinetic term" 
-                                              annotation(Dialog(tab="Advanced", group="Momentum balance", enable=not singleState_hydraulic),Evaluate=true);
   parameter Boolean singleState_thermal=false 
       " = true, number of temperature or enthalpy states is reduced to one" 
                                                                            annotation(Evaluate=true,Dialog(tab="Advanced", group="Mass and energy balances", enable=not static));
-//  parameter Boolean fixedComposition=true 
-//    " = true, medium composition is constant along pipe flow" not implemented yet;
-  parameter Boolean use_d_nominal=false 
-      "= true, if d_nominal is used, otherwise computed from medium"                              annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
- parameter SI.Density d_nominal=0.01 
-      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
-                                                             annotation(Dialog(tab="Advanced", group="Momentum balance",enable=use_nominal));
     
 //Initialization
     parameter Types.Init.Temp initType=Types.
@@ -42,7 +33,6 @@ partial model PartialDistributedFlow
     annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
     annotation(Evaluate=true, Dialog(tab = "Initialization"));
-    
     parameter Medium.AbsolutePressure p_a_start=Medium.p_default 
       "Start value of pressure at port a" 
     annotation(Dialog(tab = "Initialization"));
@@ -102,14 +92,18 @@ partial model PartialDistributedFlow
       "Independent mass flow rates across segment boundaries";
   Medium.EnthalpyFlowRate[n + 1] H_flow 
       "Enthalpy flow rates of fluid across segment boundaries";
+ parameter Boolean use_d_nominal=false 
+      "= true, if d_nominal is used, otherwise computed from medium"                              annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
+ parameter SI.Density d_nominal=0.01 
+      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+                                                             annotation(Dialog(tab="Advanced", group="Momentum balance",enable=use_nominal));
     
 //Source terms, have to be set in inheriting class
   Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
   Medium.MassFlowRate[n,Medium.nXi] msXi_flow 
       "Independent mass flow rates, source or sink";
   SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
-  SI.Pressure[np] dp(start=dp0) 
-      "Pressure drop due to friction loss and gravity";
+  SI.Pressure[np] dp(start=dp0) "pressure difference across staggered grid";
     
 //Fluid ports
   Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
@@ -141,12 +135,20 @@ partial model PartialDistributedFlow
 <li>Total mass balance: <tt><b>ms_flow</b></tt>, e.g. condensing mass flow of negligible volume such as water in air</li>
 <li>Substance mass balance: <tt><b>msXi_flow</b></tt>, as above</li>
 </ul>
-<p>In addition the volume vector <tt><b>Vi</b></tt>, which specifies the volume of each segment and the pressure drop due to friction in each segment <tt><b>dp</b></tt> must be provided in the extending class.
+<p>In addition the volume vector <tt><b>Vi</b></tt>, which specifies the volume of each segment and the pressure drop (or rise) in each segment <tt><b>dp</b></tt> must be provided in the extending class.
  
 <p><b>Momentum balance</b></p>
-<p>The momentum balances are formed across the segment boundaries (staggered grid). Half a momentum balance is used on each end of the flow model resulting in a total of n-1 full and 2 half momentum balances. Connecting two pipes therefore results in an algebraic pressure at the ports, that must be solved through index reduction. Specifying a good start value for the port pressure is essential in order to solve large systems. The momentum balance is always static, i.e. no dynamic momentum term is used. Changes in kinetic energy across a segment boundary due to changes in density are taken into account, if <tt><b>kineticTerm = true</b></tt> (under <b>Advanced</b>). Changes in pressure due to friction losses and gravity effects (<tt>dp</tt>) are always considered, but must be specified in the extending class. When connecting two components, e.g. two pipes, the momentum balance across the connection point reduces to</p> 
+<p>The momentum balance is always static, i.e. no dynamic momentum term is used. The momentum balances are formed across the segment boundaries (staggered grid). Half a momentum balance is used on each end of the flow model resulting in a total of n-1 full and 2 half momentum balances. Connecting two pipes therefore results in an algebraic pressure at the ports. Specifying a good start value for the port pressure is essential in order to solve large systems. The term <tt>dp</tt> is unspecified in this partial class. When extending from this model it may contain
+<ul>
+<li>pressure drop due to friction and other dissipative losses</li>
+<li>changes in pressure resulting from significant variation of flow velocity along the flow path (with the assumption of a constant cross sectional area it must result from fluid density changes, such as in two-phase flow)</li>
+<li>gravity effects for non-horizontal pipes</li>
+</ul>
+At least one relationship between pressure difference and massflow rate (dp=dp(m_flow)) is required in the extending class for this term to receive a fully determined model.
+ 
+When connecting two components, e.g. two pipes, the momentum balance across the connection point reduces to</p> 
 <pre>pipe1.port_b.p = pipe2.port_a.p</pre>
-<p>This is only true if the flow velocity remains the same on each side of the connection. For any significant change in diameter (and if the resulting effects, such as change in kinetic energy, cannot be neglected) an adapter component should be used. This also allows to take into account friction losses with respect to the actual geometry of the connection point.</p>
+<p>This is only true if the flow velocity remains the same on each side of the connection. For any significant change in diameter (and if the resulting effects, such as change in kinetic energy, cannot be neglected) an adapter component should be used. This also allows taking into account friction losses with respect to the actual geometry of the connection point.</p>
  
 <p><b>Reducing the number of numerical states</b></p>
 <p>The default settings of this model result in <tt>n*(2 + nX - 1)</tt> numerical states with <tt>nX</tt> as the number of substances: <tt>n</tt> pressure states, <tt>n</tt> enthalpy or temperature states and <tt>n*nX-1</tt> mass fraction states. Depending on the simulation task the model efficiency may be increased if the number of numerical states is reduced. The following model options exist:</p>
@@ -165,24 +167,15 @@ Selecting a fixed medium composition along the entire flow path is currently not
        Model added to the Fluid library</li>
 </ul>
 </html>"));
-outer Components.Ambient ambient "Ambient conditions";
-    
-//Medium properties used in momentum balance
-    
   protected 
+  final parameter SI.Pressure[np] dp0={if singleState_hydraulic then dp_start else dp_start/(if i
+       > 1 and i < np then n else 2*n) for i in 1:np};
   SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
   /*SI.Density d_a=if use_d_nominal then d_nominal else Medium.density_ph(port_a.p, port_a.h);
   SI.Density d_b=if use_d_nominal then d_nominal else Medium.density_ph(port_b.p, port_b.h);
   Above equations currently produce nonlinear systems and numerical Jacobians*/
   SI.Density d_a=if use_d_nominal then d_nominal else d[1];//approximation
   SI.Density d_b=if use_d_nominal then d_nominal else d[n];//approximation
-    
-//Momentum balance terms
-  SI.Force[np] DI_flow "Delta momentum flow across flow grid boundaries";
-  SI.Force[np] F_f "Friction force";
-  SI.Force[np] F_p "Pressure forces";
-  final parameter SI.Pressure[np] dp0={if singleState_hydraulic then dp_start else dp_start/(if i
-       > 1 and i < np then n else 2*n) for i in 1:np};
     
 equation 
   // Boundary conditions
@@ -246,50 +239,22 @@ equation
     assert((allowFlowReversal and not static) or (m_flow[i] >= 0), "Flow reversal not allowed in distributed pipe");
   end for;
     
-//Momentum Balance
+//Momentum Balance, dp contains contributions from acceleration, gravitational and friction effects
 if singleState_hydraulic then //two momentum balances, one on each side of pressure state
-    F_p[1] = (port_a.p - medium[nl].p)*area;
-    F_p[2] = (medium[nl].p - port_b.p)*area;
-    F_f[1] = -dp[1]*area;
-    F_f[2] = -dp[2]*area;
-    zeros(np) = F_p + F_f;
-    if n==2 then
-      medium[2].p=medium[1].p;
-    elseif n>2 then
-      medium[1:nl-1].p=ones(nl-1)*medium[nl].p;
-      medium[nl+1:n].p=ones(n-nl)*medium[nl].p;
+    dp[1] = port_a.p - medium[nl].p;
+    dp[2] = medium[nl].p - port_b.p;
+    if n == 2 then
+      medium[2].p = medium[1].p;
+    elseif n > 2 then
+      medium[1:nl - 1].p = ones(nl - 1)*medium[nl].p;
+      medium[nl + 1:n].p = ones(n - nl)*medium[nl].p;
     end if;
-    DI_flow=zeros(np);
   else
-    if kineticTerm then
-      DI_flow[1] = Modelica_Fluid.Utilities.regSquare(m_flow[1], delta=max(0.0001,
-      0.01*mflow_start))/area*(1/d_a-1/d[1]);
-    else
-      DI_flow[1] = 0;
-    end if;
-    F_p[1] = (port_a.p-medium[1].p)*area;
-    F_f[1] = -dp[1]*area;
-    0 = F_p[1] + F_f[1] + DI_flow[1];
+    dp[1]=port_a.p-medium[1].p;
     for i in 2:n loop
-    if kineticTerm then
-      DI_flow[i] = Modelica_Fluid.Utilities.regSquare(m_flow[i], delta=max(0.0001,
-      0.01*mflow_start))/area*(1/d[i-1]-1/d[i]);
-    else
-      DI_flow[i] = 0;
-    end if;
-      F_p[i] = (medium[i-1].p-medium[i].p)*area;
-      F_f[i] = -dp[i]*area;
-      0 = F_p[i] + F_f[i] + DI_flow[i];
+      dp[i]=medium[i-1].p-medium[i].p;
     end for;
-     if kineticTerm then
-      DI_flow[np] = Modelica_Fluid.Utilities.regSquare(m_flow[np], delta=max(0.0001,
-      0.01*mflow_start))/area*(1/d[n]-1/d_b);
-    else
-      DI_flow[np] = 0;
-    end if;
-    F_p[np] = (medium[n].p-port_b.p)*area;
-    F_f[np] = -dp[np]*area;
-    0 = F_p[np] + F_f[np] + DI_flow[np];
+    dp[np]=medium[n].p-port_b.p;
   end if;
     
 initial equation 
@@ -466,6 +431,7 @@ package HeatTransfer
     SI.HeatFlowRate[n] Q_flow "Heat flow rates";
     parameter SI.Area A_h "Total heat transfer area" annotation(Dialog(tab="No input", enable=false));
     parameter SI.Length d_h "Hydraulic diameter" annotation(Dialog(tab="No input", enable=false));
+    parameter SI.Area A_cross "Cross flow area" annotation(Dialog(tab="No input", enable=false));
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort 
         "Thermal port" 
       annotation (extent=[-20,60; 20,80]);
