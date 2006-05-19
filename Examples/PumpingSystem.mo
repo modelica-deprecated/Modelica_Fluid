@@ -19,13 +19,13 @@ model PumpingSystem "Model of a pumping system for drinking water"
     use_nominal=true) 
     annotation (extent=[-40,-40; -22,-20]);
   
-  Components.Turbomachinery.Pump pumps(
+  Modelica_Fluid.Components.Flowmachines.Pump pumps(
     checkValve=true,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     N_nom=1200,
     redeclare function flowCharacteristic = 
-        Modelica_Fluid.BaseClasses.Turbomachinery.PumpCharacteristics.quadraticFlow
+        Modelica_Fluid.BaseClasses.Flowmachines.PumpCharacteristics.quadraticFlow
         (                                                                             q_nom={0,
             0.25,0.5}, head_nom={100,60,0}),
     Np_nom=4,
@@ -105,7 +105,7 @@ equation
     annotation (points=[-19,70; -2,70], style(color=5, rgbcolor={255,0,255}));
   connect(reservoirPressure.p_rel, controller.u) annotation (points=[20,-13; 20,
         50; -52,50; -52,64; -42,64], style(color=74, rgbcolor={0,0,127}));
-  connect(reservoirPressure.port_b, sink.port)    annotation (points=[31,-22; 
+  connect(reservoirPressure.port_b, sink.port)    annotation (points=[31,-22;
         44,-22; 44,-48; 80,-48; 80,-30],
                                       style(
       color=69,
@@ -121,9 +121,9 @@ equation
         -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
   connect(userValve.port_a, reservoir.port[1]) annotation (points=[58,-30; -4.2,
         -30; -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
-  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,
-        -22; -2,-22; -2,-15.9; -4.2,-15.9], style(
-      color=69, 
-      rgbcolor={0,127,255}, 
+  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22; 
+        -2,-22; -2,-15.9; -4.2,-15.9],      style(
+      color=69,
+      rgbcolor={0,127,255},
       pattern=3));
 end PumpingSystem;
