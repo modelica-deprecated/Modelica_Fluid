@@ -46,7 +46,7 @@ model TestSharpEdgedOrifice
     D_min=0.02,
     L=0.005) annotation (extent=[0,10; 20,30]);
   
-  inner Modelica_Fluid.Components.Ambient ambient
+  inner Modelica_Fluid.Components.Ambient ambient 
     annotation (extent=[60,-68; 80,-48]);
 equation 
   connect(p_table.y, ambient_p.p_in) 

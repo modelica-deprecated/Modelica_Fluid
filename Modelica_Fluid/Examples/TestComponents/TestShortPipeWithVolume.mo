@@ -14,7 +14,7 @@ model TestShortPipeWithVolume "Test ShortPipe with PortVolume"
     T=1.2*T_start,
     X=X_start,
     redeclare package Medium = Medium) annotation (extent=[-80,0; -60,20]);
-  BaseClasses.Pipes.PortVolume volume(
+  Modelica_Fluid.SubClasses.ControlVolumes.PortVolume volume(
     redeclare package Medium = Medium,
     V=0.1,
     initType=Init.InitialValues,

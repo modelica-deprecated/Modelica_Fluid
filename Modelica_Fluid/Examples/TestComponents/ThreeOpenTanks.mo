@@ -63,7 +63,7 @@ model ThreeOpenTanks "Demonstrating the usage of OpenTank"
 equation 
   connect(tank1.port[1], pipe1.port_b) annotation (points=[-60.4,20.2; -60.4,
         10.1; -60,10.1; -60,0], style(color=69, rgbcolor={0,127,255}));
-  connect(tank2.port[1], pipe2.port_b) annotation (points=[-0.4,20.2; -0.4,10.1; 
+  connect(tank2.port[1], pipe2.port_b) annotation (points=[-0.4,20.2; -0.4,10.1;
         6.12303e-016,10.1; 6.12303e-016,0], style(color=69, rgbcolor={0,127,255}));
   connect(tank3.port[1], pipe3.port_b) annotation (points=[59.6,20.2; 59.6,9.1;
         60,9.1; 60,0], style(color=69, rgbcolor={0,127,255}));

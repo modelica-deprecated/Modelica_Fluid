@@ -1021,8 +1021,8 @@ Laminar region:
     model BaseModel 
       "Generic pressure drop component with constant turbulent loss factor data and without an icon" 
       
-      extends BaseClasses.Common.PartialGuessValueParameters;
-      extends BaseClasses.Common.PartialTwoPortTransport(
+      extends Modelica_Fluid.Interfaces.Records.PartialGuessValueParameters;
+      extends Modelica_Fluid.Interfaces.ControlVolumes.PartialTwoPortTransport(
                     medium_a(p(start=p_start), h(start=h_start),
                              T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
                     medium_b(p(start=p_start), h(start=h_start),

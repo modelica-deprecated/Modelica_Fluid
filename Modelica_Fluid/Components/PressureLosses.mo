@@ -2,7 +2,7 @@ package PressureLosses
   "Models and functions providing pressure loss correlations " 
 model StaticHead 
     "Models the static head between two ports at different heights" 
-  extends BaseClasses.Common.PartialTwoPortTransport;
+  extends Modelica_Fluid.Interfaces.ControlVolumes.PartialTwoPortTransport;
   parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
   Medium.Density d "Fluid density";
   outer Components.Ambient ambient "Ambient conditions";
@@ -38,8 +38,8 @@ end StaticHead;
 model SimpleGenericOrifice 
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
     import SI = Modelica.SIunits;
-    extends BaseClasses.Common.PartialGuessValueParameters;
-    extends BaseClasses.Common.PartialTwoPortTransport(
+    extends Modelica_Fluid.Interfaces.Records.PartialGuessValueParameters;
+    extends Modelica_Fluid.Interfaces.ControlVolumes.PartialTwoPortTransport(
                 medium_a(p(start=p_start), h(start=h_start),
                          T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
                 medium_b(p(start=p_start), h(start=h_start),
@@ -120,9 +120,11 @@ can appear, this component should not be used.
       Coordsys(grid=[1,1], scale=0));
 equation 
   if from_dp then
-     m_flow = BaseClasses.PressureLosses.SimpleGenericOrifice.massFlowRate_dp(dp, medium_a.d, medium_b.d, diameter, zeta);
+     m_flow = Modelica_Fluid.SubClasses.PressureLosses.SimpleGenericOrifice.massFlowRate_dp(
+                                                                              dp, medium_a.d, medium_b.d, diameter, zeta);
   else
-     dp = BaseClasses.PressureLosses.SimpleGenericOrifice.pressureLoss_m_flow(m_flow, medium_a.d, medium_b.d, diameter, zeta);
+     dp = Modelica_Fluid.SubClasses.PressureLosses.SimpleGenericOrifice.pressureLoss_m_flow(
+                                                                              m_flow, medium_a.d, medium_b.d, diameter, zeta);
   end if;
 end SimpleGenericOrifice;
   
@@ -130,16 +132,16 @@ end SimpleGenericOrifice;
     "Pressure drop in pipe due to wall friction and gravity (for both flow directions)" 
     import SI = Modelica.SIunits;
     
-    extends BaseClasses.Common.PartialGuessValueParameters;
-    extends BaseClasses.Common.PartialTwoPortTransport(
+    extends Modelica_Fluid.Interfaces.Records.PartialGuessValueParameters;
+    extends Modelica_Fluid.Interfaces.ControlVolumes.PartialTwoPortTransport(
                   medium_a(p(start=p_start), h(start=h_start),
                            T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
                   medium_b(p(start=p_start), h(start=h_start),
                            T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
     
     replaceable package WallFriction = 
-      BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent 
-      extends BaseClasses.PressureLosses.WallFriction.PartialWallFriction 
+      Modelica_Fluid.SubClasses.PressureLosses.WallFriction.QuadraticTurbulent 
+      extends Modelica_Fluid.Interfaces.PressureLosses.PartialWallFriction 
       "Characteristic of wall friction"  annotation(choicesAllMatching=true);
     
     parameter SI.Length length "Length of pipe";
@@ -291,8 +293,9 @@ simulation and/or might give a more robust simulation.
 model SuddenExpansion 
     "Pressure drop in pipe due to suddenly expanding area (for both flow directions)" 
     import SI = Modelica.SIunits;
-  extends BaseClasses.PressureLosses.QuadraticTurbulent.BaseModel(
-     final data = BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.suddenExpansion(D_a, D_b));
+  extends Modelica_Fluid.Interfaces.PressureLosses.PartialHydraulicResistance(
+     final data = Modelica_Fluid.SubClasses.PressureLosses.QuadraticTurbulent.LossFactorData.suddenExpansion(
+                                                                                               D_a, D_b));
   parameter SI.Diameter D_a "Inner diameter of pipe at port_a";
   parameter SI.Diameter D_b "Inner diameter of pipe at port_b";
     
@@ -382,8 +385,9 @@ model SharpEdgedOrifice
     "Pressure drop due to sharp edged orifice (for both flow directions)" 
     import SI = Modelica.SIunits;
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
-  extends BaseClasses.PressureLosses.QuadraticTurbulent.BaseModel(
-     final data = BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(D_pipe, D_min, L, alpha));
+  extends Modelica_Fluid.Interfaces.PressureLosses.PartialHydraulicResistance(
+     final data = Modelica_Fluid.SubClasses.PressureLosses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(
+                                                                                                 D_pipe, D_min, L, alpha));
   parameter SI.Diameter D_pipe 
       "Inner diameter of pipe (= same at port_a and port_b)";
   parameter SI.Diameter D_min "Smallest diameter of orifice";
@@ -553,8 +557,8 @@ polynomials. The monotonicity is guaranteed using results from:
   
 model PressureDropPipe 
     "Obsolet component (use instead PressureLosses.WallFrictionAndGravity)" 
-  extends Modelica_Fluid.BaseClasses.Common.PartialTwoPortTransport;
-  extends Modelica_Fluid.BaseClasses.PressureLosses.PipeFriction;
+  extends Modelica_Fluid.Interfaces.ControlVolumes.PartialTwoPortTransport;
+  extends Modelica_Fluid.SubClasses.PressureLosses.PipeFriction;
   annotation (Icon(
       Rectangle(extent=[-100,60; 100,-60],   style(
           color=0,

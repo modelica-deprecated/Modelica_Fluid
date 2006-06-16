@@ -1,6 +1,6 @@
 package ControlValves 
     model ValveIncompressible "Valve for (almost) incompressible fluids" 
-    extends BaseClasses.ControlValves.PartialValve;
+    extends Modelica_Fluid.Interfaces.Valves.PartialValve;
     import Modelica_Fluid.Types.CvTypes;
     annotation (
     Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
@@ -36,14 +36,13 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
   model ValveVaporizing 
     "Valve for possibly vaporizing (almost) incompressible fluids, accounts for choked flow conditions" 
     import Modelica_Fluid.Types.CvTypes;
-    extends BaseClasses.ControlValves.PartialValve(
+    extends Modelica_Fluid.Interfaces.Valves.PartialValve(
       redeclare replaceable package Medium = 
       Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     parameter Real Fl_nom=0.9 "Liquid pressure recovery factor";
     replaceable function FlCharacteristic = 
-        Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.one 
-      extends 
-      Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.baseFun 
+        Modelica_Fluid.SubClasses.Valves.ValveCharacteristics.one 
+      extends Modelica_Fluid.Interfaces.Valves.ValveCharacteristics.baseFun 
       "Pressure recovery characteristic";
     Real Ff "Ff coefficient (see IEC/ISA standard)";
     Real Fl "Pressure recovery coefficient Fl (see IEC/ISA standard)";
@@ -92,13 +91,12 @@ The model operating range includes choked flow operation, which takes place for 
   
   model ValveCompressible 
     "Valve for compressible fluids, accounts for choked flow conditions" 
-    extends BaseClasses.ControlValves.PartialValve;
+    extends Modelica_Fluid.Interfaces.Valves.PartialValve;
     import Modelica_Fluid.Types.CvTypes;
     parameter Real Fxt_full=0.5 "Fk*xt critical ratio at full opening";
     replaceable function xtCharacteristic = 
-        Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.one 
-      extends 
-      Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.baseFun 
+        Modelica_Fluid.SubClasses.Valves.ValveCharacteristics.one 
+      extends Modelica_Fluid.Interfaces.Valves.ValveCharacteristics.baseFun 
       "Critical ratio characteristic";
     Real Fxt;
     Real x "Pressure drop ratio";
@@ -157,7 +155,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
   end ValveCompressible;
   
   model ValveLinear "Valve for water/steam flows with linear pressure drop" 
-    extends BaseClasses.Common.PartialTwoPortTransport;
+    extends Modelica_Fluid.Interfaces.ControlVolumes.PartialTwoPortTransport;
     parameter Types.HydraulicConductance Kv 
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening 
@@ -200,7 +198,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
   end ValveLinear;
   
   model ValveDiscrete "Valve for water/steam flows with linear pressure drop" 
-    extends Modelica_Fluid.BaseClasses.Common.PartialTwoPortTransport;
+    extends Modelica_Fluid.Interfaces.ControlVolumes.PartialTwoPortTransport;
     parameter Modelica_Fluid.Types.HydraulicConductance Kv 
       "Hydraulic conductance for open valve (m_flow = Kv*dp)";
     parameter Real Kv_small_rel = 0 

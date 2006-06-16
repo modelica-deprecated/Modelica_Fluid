@@ -13,7 +13,7 @@ model TestEmptyOpenTank "Test whether an empty tank is properly handeled"
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.LaminarAndQuadraticTurbulent,
+        Modelica_Fluid.SubClasses.PressureLosses.WallFriction.LaminarAndQuadraticTurbulent,
     length=1,
     diameter=0.1,
     height_ab=1) annotation (extent=[-10,0; 10,-20], rotation=-90);
@@ -32,8 +32,8 @@ model TestEmptyOpenTank "Test whether an empty tank is properly handeled"
     annotation (extent=[-20,-80; 20,-40]);
   inner Components.Ambient ambient annotation (extent=[56,58; 76,78]);
 equation 
-  connect(pipe.port_b, tank1.bottomPorts[1]) annotation (points=[6.12303e-016,0; 
+  connect(pipe.port_b, tank1.bottomPorts[1]) annotation (points=[6.12303e-016,0;
         0,0; 0,19.2], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe.port_a, tank2.topPorts[1]) annotation (points=[-6.12303e-016,-20; 
+  connect(pipe.port_a, tank2.topPorts[1]) annotation (points=[-6.12303e-016,-20;
         0,-20; 0,-39.2], style(color=69, rgbcolor={0,127,255}));
 end TestEmptyOpenTank;

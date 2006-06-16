@@ -326,7 +326,7 @@ end PartialDistributedFlow;
 model PortVolume 
     "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
     import Modelica_Fluid.Types;
-  extends BaseClasses.Common.PartialInitializationParameters;
+  extends Modelica_Fluid.Interfaces.Records.PartialInitializationParameters;
     
   replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 

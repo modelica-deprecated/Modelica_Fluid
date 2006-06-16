@@ -11,7 +11,7 @@ connector FluidPort_ArrayIcon
             fillColor=69)), Rectangle(extent=[-100, 100; 100, -100], style(color=16,
             fillColor=69))));
 end FluidPort_ArrayIcon;
-
+  
 model TankAttachment "Equations to attach pipe at tank" 
     import SI = Modelica.SIunits;
     replaceable package Medium = PackageMedium extends 

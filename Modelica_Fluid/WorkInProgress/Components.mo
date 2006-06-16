@@ -40,9 +40,11 @@ model IsolatedPipe
   parameter Real viscosityFactor1=0 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
   parameter Real viscosityFactor2=1 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
     
-  Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
+  Modelica_Fluid.Interfaces.Ports.FluidPort_a port_a(
+                                               redeclare model Medium = Medium) 
               annotation (extent=[-120, -10; -100, 10]);
-  Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium = Medium) 
+  Modelica_Fluid.Interfaces.Ports.FluidPort_b port_b(
+                                               redeclare model Medium = Medium) 
               annotation (extent=[120, -10; 100, 10]);
   Modelica_Fluid.WorkInProgress.Utilities.PipeSegment pipeSegment[nVolumes](
       redeclare package Medium = Medium,
@@ -237,11 +239,14 @@ to build up more detailed models from the basic components.
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
     
-    Modelica_Fluid.Interfaces.FluidPort_b port_1(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_b port_1(
+                                                 redeclare package Medium = 
           Medium) annotation (extent=[-120,-10; -100,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_b port_2(
+                                                 redeclare package Medium = 
           Medium) annotation (extent=[100,-10; 120,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_3(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_b port_3(
+                                                 redeclare package Medium = 
           Medium) annotation (extent=[-10,100; 10,120]);
     
     Medium.AbsolutePressure p "Pressure";
@@ -343,13 +348,16 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
               annotation(Evaluate=true, Dialog(tab="Advanced"));
 */
     
-  Modelica_Fluid.BaseClasses.FluidStorage.FluidPort_ArrayIcon topPorts[n_topPorts](redeclare 
+  Modelica_Fluid.WorkInProgress.Interfaces.FluidStorage.FluidPort_ArrayIcon 
+      topPorts[                                                        n_topPorts](redeclare 
         package Medium=Medium, m_flow(each start=0), mXi_flow(each start=0)) 
     annotation (extent=[-30,100; 30,108]);
-  Modelica_Fluid.BaseClasses.FluidStorage.FluidPort_ArrayIcon bottomPorts[n_bottomPorts](redeclare 
+  Modelica_Fluid.WorkInProgress.Interfaces.FluidStorage.FluidPort_ArrayIcon 
+      bottomPorts[                                                        n_bottomPorts](redeclare 
         package Medium=Medium, m_flow(each start=0), mXi_flow(each start=0)) 
     annotation (extent=[-30,-108; 30,-100],   rotation=90);
-  Modelica_Fluid.BaseClasses.FluidStorage.FluidPort_ArrayIcon sidePorts[n_sidePorts](redeclare 
+  Modelica_Fluid.WorkInProgress.Interfaces.FluidStorage.FluidPort_ArrayIcon 
+      sidePorts[                                                        n_sidePorts](redeclare 
         package Medium=Medium, m_flow(each start=0), mXi_flow(each start=0)) 
     annotation (extent=[100,30; 108,-30]);
     
@@ -386,7 +394,8 @@ Modelica_Fluid.Components.Ambient ambient;
   Medium.MassFlowRate mXi_flow_sidePorts[n_sidePorts,Medium.nXi];
     
   protected 
-  Modelica_Fluid.BaseClasses.FluidStorage.TankAttachment tankAttachmentTop[n_topPorts](
+  Modelica_Fluid.WorkInProgress.Interfaces.FluidStorage.TankAttachment 
+      tankAttachmentTop[                                                   n_topPorts](
     each h=medium.h,
     each d=medium.d,
     each Xi=medium.Xi,
@@ -402,7 +411,8 @@ Modelica_Fluid.Components.Ambient ambient;
     pipeHeight=top_heights,
     redeclare package Medium = Medium) 
       annotation (extent=[-20,80; 20,40]);
-  Modelica_Fluid.BaseClasses.FluidStorage.TankAttachment tankAttachmentBottom[n_bottomPorts](
+  Modelica_Fluid.WorkInProgress.Interfaces.FluidStorage.TankAttachment 
+      tankAttachmentBottom[                                                   n_bottomPorts](
     each h=medium.h,
     each d=medium.d,
     each Xi=medium.Xi,
@@ -419,7 +429,8 @@ Modelica_Fluid.Components.Ambient ambient;
     pipeDiameter=bottom_diameters,
     redeclare package Medium = Medium) 
       annotation (extent=[-20,-80; 20,-40]);
-  Modelica_Fluid.BaseClasses.FluidStorage.TankAttachment tankAttachmentSide[n_sidePorts](
+  Modelica_Fluid.WorkInProgress.Interfaces.FluidStorage.TankAttachment 
+      tankAttachmentSide[                                                   n_sidePorts](
     each h=medium.h,
     each d=medium.d,
     each Xi=medium.Xi,
@@ -621,7 +632,7 @@ model Tank "Obsolet component (use instead Components.OpenTank)"
   parameter SI.Height level_start(min=0) "Initial tank level" 
     annotation(Dialog(tab="Initialization"));
     
-  Modelica_Fluid.Interfaces.FluidPort_b port(
+  Modelica_Fluid.Interfaces.Ports.FluidPort_b port(
       redeclare package Medium = Medium,
       m_flow(start=0),
       mXi_flow(each start=0)) 

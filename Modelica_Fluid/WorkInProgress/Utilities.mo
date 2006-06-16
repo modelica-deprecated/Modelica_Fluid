@@ -5,7 +5,8 @@ model TankAttachment "Equations to attach pipe at tank"
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
      annotation (choicesAllMatching=true);
     
-    Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_a port(
+                                               redeclare package Medium = Medium) 
     annotation (extent=[-10,-112; 10,-92],    rotation=90);
    // Real mXi_flow;
     parameter Boolean onlyInFlow = false 
@@ -749,9 +750,11 @@ Loss factor for mass flow rate from port_b to port_a
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
           annotation (choicesAllMatching = true);
     
-      Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
+      Modelica_Fluid.Interfaces.Ports.FluidPort_a port_a(
+                                                   redeclare model Medium = Medium) 
         annotation(extent=[-120, -10; -100, 10]);
-      Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium =  Medium) 
+      Modelica_Fluid.Interfaces.Ports.FluidPort_b port_b(
+                                                   redeclare model Medium =  Medium) 
         annotation(extent=[120, -10; 100, 10]);
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
         annotation(extent=[-10, 60; 10, 80], rotation=-90);

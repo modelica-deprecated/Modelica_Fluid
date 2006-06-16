@@ -90,8 +90,9 @@ package Subsystems
     
     //Pressure drop and heat transfer    
     replaceable package WallFriction = 
-        BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent extends 
-      Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.PartialWallFriction
+        Modelica_Fluid.SubClasses.PressureLosses.WallFriction.QuadraticTurbulent
+                                                                   extends 
+      Modelica_Fluid.Interfaces.PressureLosses.PartialWallFriction 
       "Characteristic of wall friction"                                                            annotation(choicesAllMatching, Dialog(tab="General", group="Pressure drop"));
     parameter SI.Length roughness_1=2.5e-5 
       "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Pressure drop"));
@@ -106,14 +107,12 @@ package Subsystems
     parameter Boolean use_eta_nominal=false 
       "= true, if eta_nominal is used, otherwise computed from medium" annotation(Evaluate=true, Dialog(tab="General", group="Pressure drop"));
     replaceable model HeatTransfer_1 = 
-        Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-        extends 
-      Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PartialPipeHeatTransfer 
+        Modelica_Fluid.SubClasses.HeatTransfer.PipeHT_constAlpha 
+        extends Modelica_Fluid.Interfaces.HeatTransfer.PartialPipeHeatTransfer 
       "Heat transfer model"                                                                         annotation(choicesAllMatching, Dialog(tab="General", group="Heat transfer"));
     replaceable model HeatTransfer_2 = 
-        Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
-        extends 
-      Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PartialPipeHeatTransfer 
+        Modelica_Fluid.SubClasses.HeatTransfer.PipeHT_constAlpha 
+        extends Modelica_Fluid.Interfaces.HeatTransfer.PartialPipeHeatTransfer 
       "Heat transfer model"                                                                         annotation(choicesAllMatching, Dialog(tab="General", group="Heat transfer"));
     //Display variables
     SI.HeatFlowRate Q_flow_1 "Total heat flow rate of inner pipe";
@@ -208,13 +207,17 @@ package Subsystems
           extent=[-100,-60; 100,-100],
           string="%name",
           style(color=3, rgbcolor={0,0,255}))));
-    Modelica_Fluid.Interfaces.FluidPort_b port_b1(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_b port_b1(
+                                                  redeclare package Medium = 
           Medium_1) annotation (extent=[100,-12; 120,8]);
-    Modelica_Fluid.Interfaces.FluidPort_a port_a1(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_a port_a1(
+                                                  redeclare package Medium = 
           Medium_1) annotation (extent=[-120,-12; -100,8]);
-    Modelica_Fluid.Interfaces.FluidPort_a port_a2(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_a port_a2(
+                                                  redeclare package Medium = 
           Medium_2) annotation (extent=[-120,36; -100,56]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_b2(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_b port_b2(
+                                                  redeclare package Medium = 
           Medium_2) annotation (extent=[100,-56; 120,-36]);
     
     Components.Thermal.WallConstProps wall(n=n,
@@ -269,10 +272,10 @@ package Subsystems
         gradient=2,
         fillColor=42,
         rgbfillColor={213,0,0}));
-    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8; 
+    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8;
           -10,29.5; -9,29.5],                  style(color=42, rgbcolor={191,0,
             0}));
-    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5; 
+    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5;
           -9,-7.75; -10,-7.75; -10,-13.8], style(color=42, rgbcolor={191,0,0}));
   end HeatExchanger;
 end Subsystems;

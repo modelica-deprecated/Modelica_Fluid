@@ -26,7 +26,7 @@ model TestMixingVolumes
     annotation (extent=[-60,-40; -40,-20]);
   Components.Sensors.Temperature Tmix_out(redeclare package Medium = Medium) 
     annotation (extent=[40,-40; 60,-20]);
-  BaseClasses.Pipes.PortVolume PortVolume1(
+  Modelica_Fluid.SubClasses.ControlVolumes.PortVolume PortVolume1(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
@@ -38,7 +38,7 @@ model TestMixingVolumes
     h=2e5,
     redeclare package Medium = Medium) 
                    annotation (extent=[-100,10; -80,30]);
-  BaseClasses.Pipes.PortVolume PortVolume2(
+  Modelica_Fluid.SubClasses.ControlVolumes.PortVolume PortVolume2(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
@@ -58,7 +58,7 @@ model TestMixingVolumes
   inner Components.Ambient ambient 
     annotation (extent=[-100,-100; -80,-80]);
 equation 
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-30; 
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-30;
         9.8,-30],                                     style(color=69, rgbcolor=
           {0,127,255}));
   connect(PortVolume1.port,PortVolume2. port) 
@@ -77,7 +77,7 @@ equation
   connect(FlowSource2.port, Tmix_in.port_a) annotation (points=[-80,-30;
         -60,-30],
               style(color=69, rgbcolor={0,127,255}));
-  connect(Tmix_in.port_b, MixingVolume1.port_a) annotation (points=[-40,-30; 
+  connect(Tmix_in.port_b, MixingVolume1.port_a) annotation (points=[-40,-30;
         -30.2,-30], style(color=69, rgbcolor={0,127,255}));
   connect(MixingVolume2.port_b, Tmix_out.port_a) annotation (points=[30,-30;
         40,-30],

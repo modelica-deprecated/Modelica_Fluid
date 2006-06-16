@@ -6,7 +6,7 @@ package ControlValves
       "Start value of inlet pressure" 
     annotation(Dialog(tab = "Initialization"));
     
-  extends BaseClasses.Common.PartialTwoPortTransport(
+  extends Modelica_Fluid.Interfaces.ControlVolumes.PartialTwoPortTransport(
     medium_a(p(start=pin_start), T(start=T_start),
              h(start=h_start),   Xi(start=X_start[1:Medium.nXi])),
     medium_b(p(start=pout_start), T(start=T_start),

@@ -1,6 +1,6 @@
 package Flowmachines 
   model Pump "Centrifugal pump with ideally controlled speed" 
-    extends Modelica_Fluid.BaseClasses.Flowmachines.PartialPump;
+    extends Modelica_Fluid.Interfaces.FlowMachines.PartialPump;
    // import Modelica.SIunits.Conversions.NonSIunits.*;
     parameter Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm 
       N_const =                                                                     N_nom 
@@ -33,7 +33,7 @@ package Flowmachines
   end Pump;
   
   model PumpShaft "Centrifugal pump with mechanical connector for the shaft" 
-    extends Modelica_Fluid.BaseClasses.Flowmachines.PartialPump;
+    extends Modelica_Fluid.Interfaces.FlowMachines.PartialPump;
     SI.Angle phi "Shaft angle";
     SI.AngularVelocity omega "Shaft angular velocity";
     Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft 

@@ -29,10 +29,12 @@ package Boilers
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
     
-  Interfaces.FluidPort_a feedwater(redeclare package Medium = Medium,
+  Modelica_Fluid.Interfaces.Ports.FluidPort_a feedwater(
+                                   redeclare package Medium = Medium,
                      m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
     annotation (extent=[-110,-10; -90,10]);
-  Interfaces.FluidPort_b steam(redeclare package Medium = Medium,
+  Modelica_Fluid.Interfaces.Ports.FluidPort_b steam(
+                               redeclare package Medium = Medium,
                      m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
     annotation (extent=[110,-10; 90,10]);
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 

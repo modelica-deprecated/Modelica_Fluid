@@ -22,20 +22,20 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     mflow_start_2=0.2,
     Twall_start=300,
     redeclare model HeatTransfer_1 = 
-        Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha (
+        Modelica_Fluid.SubClasses.HeatTransfer.PipeHT_constAlpha (
          alpha0=1000),
     K1=20,
     K2=20,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Detailed,
+        Modelica_Fluid.SubClasses.PressureLosses.WallFriction.Detailed,
     use_eta_nominal=true,
     singleState_hydraulic=false,
     kineticTerm=false,
     redeclare package Medium_2 = Medium,
     k_wall=100,
-    T_start_1=304, 
-    dT=10, 
-    initType_wall=Modelica_Fluid.Types.Init.InitialValues, 
+    T_start_1=304,
+    dT=10,
+    initType_wall=Modelica_Fluid.Types.Init.InitialValues,
     initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic) 
                                annotation (extent=[-26,-14; 34,46]);
   
@@ -65,7 +65,7 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     offset=0.5)   annotation (extent=[-100,24; -80,44]);
   inner Components.Ambient ambient annotation (extent=[60,70; 80,90]);
 equation 
-  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34; 
+  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34;
         -40,34; -40,29.8; -29,29.8],     style(
       color=69,
       rgbcolor={0,127,255},
@@ -86,7 +86,7 @@ equation
       fillColor=70,
       rgbfillColor={0,63,125},
       fillPattern=1));
-  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2; 
+  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2;
         49.5,2.2; 49.5,-18; 62,-18], style(
       color=69,
       rgbcolor={0,127,255},

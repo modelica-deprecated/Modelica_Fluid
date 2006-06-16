@@ -3,10 +3,10 @@ package Pipes
 model LumpedPipe "Short pipe with one volume, wall friction and gravity effect" 
     import SI = Modelica.SIunits;
     
-  extends BaseClasses.Common.PartialInitializationParameters;
+  extends Modelica_Fluid.Interfaces.Records.PartialInitializationParameters;
   replaceable package WallFriction = 
-    BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent 
-    extends BaseClasses.PressureLosses.WallFriction.PartialWallFriction 
+    Modelica_Fluid.SubClasses.PressureLosses.WallFriction.QuadraticTurbulent 
+    extends Modelica_Fluid.Interfaces.PressureLosses.PartialWallFriction 
       "Characteristic of wall friction" 
                                        annotation(choicesAllMatching=true);
     
@@ -34,10 +34,12 @@ model LumpedPipe "Short pipe with one volume, wall friction and gravity effect"
       "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
     annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
     
-    Interfaces.FluidPort_a port_a(redeclare package Medium = Medium) 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_a port_a(
+                                  redeclare package Medium = Medium) 
       "Fluid connector a (positive design flow direction is from port_a to port_b)"
       annotation (extent=[-110,-10; -90,10]);
-    Interfaces.FluidPort_b port_b(redeclare package Medium = Medium) 
+    Modelica_Fluid.Interfaces.Ports.FluidPort_b port_b(
+                                  redeclare package Medium = Medium) 
       "Fluid connector b (positive design flow direction is from port_a to port_b)"
       annotation (extent=[110,-10; 90,10]);
     
@@ -85,7 +87,7 @@ pipe wall/environment).
     from_dp=true,
     dp_small=dp_small,
     show_Re=false)     annotation (extent=[-60,-10; -40,10]);
-  BaseClasses.Pipes.PortVolume volume(
+  Modelica_Fluid.SubClasses.ControlVolumes.PortVolume volume(
     redeclare package Medium = Medium,
     V=Modelica.Constants.pi*(diameter/2)^2*length,
     initType=initType,
@@ -126,7 +128,7 @@ end LumpedPipe;
   
   model DistributedPipe_thermal "Distributed pipe model" 
     
-    extends BaseClasses.Pipes.PartialDistributedFlow(
+    extends Modelica_Fluid.Interfaces.ControlVolumes.PartialDistributedFlow(
       Qs_flow=heatTransfer.Q_flow,
       ms_flow=zeros(n),
       msXi_flow=zeros(n, Medium.nXi),
@@ -141,8 +143,9 @@ end LumpedPipe;
     parameter Boolean kineticTerm=false 
       " = true, include kinetic term in momentum balance"                                                                                 annotation(Evaluate=true);
     replaceable package WallFriction = 
-        BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent extends 
-      BaseClasses.PressureLosses.WallFriction.PartialWallFriction 
+        Modelica_Fluid.SubClasses.PressureLosses.WallFriction.QuadraticTurbulent
+                                                                   extends 
+      Modelica_Fluid.Interfaces.PressureLosses.PartialWallFriction 
       "Characteristic of wall friction"  annotation(Dialog(tab="General", group="Pressure loss"),choicesAllMatching=true);
     parameter Boolean use_d_nominal=false 
       "= true, if d_nominal is used, otherwise computed from medium"                                annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
@@ -179,14 +182,15 @@ end LumpedPipe;
     SI.Pressure[np] dp_stat;
     inner Medium.ThermodynamicState[n] state=medium.state 
       "may be used in heat transfer correlation";
-    replaceable BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha heatTransfer(
+    replaceable Modelica_Fluid.SubClasses.HeatTransfer.PipeHT_constAlpha 
+      heatTransfer(
       redeclare final package Medium = Medium,
       final n=n,
       final d_h=d_h,
       final A_h=area_h,
       final A_cross=area,
       T=medium.T) extends 
-      BaseClasses.Pipes.HeatTransfer.PartialPipeHeatTransfer(
+      Modelica_Fluid.Interfaces.HeatTransfer.PartialPipeHeatTransfer(
       redeclare final package Medium = Medium,
       final n=n,
       final d_h=d_h,
@@ -398,7 +402,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
   
  model DistributedPipe_hydraulic "Distributed pipe model" 
     
-   extends BaseClasses.Pipes.PartialDistributedFlow(
+   extends Modelica_Fluid.Interfaces.ControlVolumes.PartialDistributedFlow(
      Qs_flow=zeros(n),
      ms_flow=zeros(n),
      msXi_flow=zeros(n, Medium.nXi),
@@ -411,8 +415,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
   parameter Boolean kineticTerm=false 
       " = true, include kinetic term in momentum balance"            annotation(Evaluate=true);
   replaceable package WallFriction = 
-      BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent 
-    extends BaseClasses.PressureLosses.WallFriction.PartialWallFriction 
+      Modelica_Fluid.SubClasses.PressureLosses.WallFriction.QuadraticTurbulent 
+    extends Modelica_Fluid.Interfaces.PressureLosses.PartialWallFriction 
       "Characteristic of wall friction" 
                                        annotation(Dialog(tab="General", group="Pressure loss"),choicesAllMatching=true);
   parameter SI.Diameter d_h=4*area/perimeter "Hydraulic diameter" annotation(Dialog(tab="General", group="Pressure loss"));
