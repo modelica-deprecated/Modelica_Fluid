@@ -130,4 +130,97 @@ end PartialTwoPortTransport;
       annotation (Dialog(tab="Guess Value Initialization", enable=Medium.nXi > 0));
   end PartialGuessValueParameters;
   
+    partial model PartialLumpedVolume 
+    "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
+      import Modelica.Constants;
+    extends BaseClasses.Common.PartialInitializationParameters;
+    replaceable package Medium = PackageMedium extends 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
+    
+    parameter Types.FlowDirection.Temp flowDirection=
+              Types.FlowDirection.Unidirectional 
+      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
+    Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,
+                       m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+      "Fluid inlet port" annotation (extent=[-112,-10; -92,10]);
+    Interfaces.FluidPort_b port_b(redeclare package Medium = Medium,
+                       m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
+      "Fluid outlet port" annotation (extent=[90,-10; 110,10]);
+    Medium.BaseProperties medium(preferredMediumStates=true,
+                 p(start=p_start), h(start=h_start),
+                 T(start=T_start), Xi(start=X_start[1:Medium.nXi]));
+    SI.Energy U "Internal energy of fluid";
+    SI.Mass m "Mass of fluid";
+    SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
+    SI.Volume V_lumped "Volume";
+    SI.HeatFlowRate Qs_flow "Heat flow across boundaries or energy source/sink";
+    SI.Power Ws_flow "Work flow across boundaries or source term";
+    annotation (
+     Icon(
+        Text(extent=[-144, 178; 146, 116], string="%name"),
+        Text(
+          extent=[-130, -108; 144, -150],
+          style(color=0),
+          string="V=%V")), Documentation(info="<html>
+</html>"),
+      Diagram);
+    parameter Boolean allowFlowReversal=
+       flowDirection == Types.FlowDirection.Bidirectional 
+      "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+       annotation(Evaluate=true, Hide=true);
+    equation 
+    // boundary conditions
+    port_a.p = medium.p;
+    port_b.p = medium.p;
+    port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium.h);
+    port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium.h);
+    port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, medium.Xi);
+    port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.Xi, medium.Xi);
+    
+    // Total quantities
+    m    = V_lumped*medium.d;
+    mXi = m*medium.Xi;
+    U    = m*medium.u;
+    
+    // Mass and energy balance
+    der(m)   = port_a.m_flow + port_b.m_flow;
+    der(mXi) = port_a.mXi_flow + port_b.mXi_flow;
+    der(U)   = port_a.H_flow + port_b.H_flow + Qs_flow +Ws_flow;
+    
+    initial equation 
+    // Initial conditions
+    if initType == Types.Init.NoInit then
+      // no initial equations
+    elseif initType == Types.Init.InitialValues then
+      if not Medium.singleState then
+        medium.p = p_start;
+      end if;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    elseif initType == Types.Init.SteadyState then
+      if not Medium.singleState then
+         der(medium.p) = 0;
+      end if;
+      der(medium.h) = 0;
+      der(medium.Xi) = zeros(Medium.nXi);
+    elseif initType == Types.Init.SteadyStateHydraulic then
+      if not Medium.singleState then
+         der(medium.p) = 0;
+      end if;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
+    end PartialLumpedVolume;
 end Common;
