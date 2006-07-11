@@ -278,7 +278,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
   if from_dp and not WallFriction.dp_is_zero then
     if singleState_hydraulic then
       m_flow[1] = WallFriction.massFlowRate_dp(
-        dp[1] - ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*ambient.g*(d_a + d_b)
+        dp_stat[1] - ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*ambient.g*(d_a + d_b)
           /2,
         d_a,
         d_b,
@@ -289,7 +289,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
         roughness,
         dp_small);
       m_flow[n + 1] = WallFriction.massFlowRate_dp(
-        dp[2] - (2*n - (integer(n/2) + 1)*2 + 1)/(2*n)*height_ab*ambient.g*(d_a
+        dp_stat[2] - (2*n - (integer(n/2) + 1)*2 + 1)/(2*n)*height_ab*ambient.g*(d_a
            + d_b)/2,
         d_a,
         d_b,
@@ -301,7 +301,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
         dp_small);
     else
       m_flow[1] = WallFriction.massFlowRate_dp(
-        dp[1] - height_ab/2/n*ambient.g*(d_a + d[1])/2,
+        dp_stat[1] - height_ab/2/n*ambient.g*(d_a + d[1])/2,
         d_a,
         d[1],
         eta_a,
@@ -312,7 +312,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
         dp_small);
       for i in 2:n loop
         m_flow[i] = WallFriction.massFlowRate_dp(
-          dp[i] - height_ab/n*ambient.g*(d[i - 1] + d[i])/2,
+          dp_stat[i] - height_ab/n*ambient.g*(d[i - 1] + d[i])/2,
           d[i - 1],
           d[i],
           eta[i - 1],
@@ -323,7 +323,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
           dp_small);
       end for;
       m_flow[n + 1] = WallFriction.massFlowRate_dp(
-        dp[np] - height_ab/n/2*ambient.g*(d[n] + d_b)/2,
+        dp_stat[np] - height_ab/n/2*ambient.g*(d[n] + d_b)/2,
         d[n],
         d_b,
         eta[n],
@@ -335,7 +335,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
     end if;
   else
     if singleState_hydraulic then
-      dp[1] = (WallFriction.pressureLoss_m_flow(
+      dp_stat[1] = (WallFriction.pressureLoss_m_flow(
         m_flow[1],
         d_a,
         d_b,
@@ -346,7 +346,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
         roughness,
         m_flow_small) + ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*ambient.g*(
         d_a + d_b)/2);
-      dp[2] = (WallFriction.pressureLoss_m_flow(
+      dp_stat[2] = (WallFriction.pressureLoss_m_flow(
         m_flow[1],
         d_a,
         d_b,
@@ -358,7 +358,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
         m_flow_small) + (2*n - (integer(n/2) + 1)*2 + 1)/(2*n)*height_ab*
         ambient.g*(d_a + d_b)/2);
     else
-      dp[1] = WallFriction.pressureLoss_m_flow(
+      dp_stat[1] = WallFriction.pressureLoss_m_flow(
         m_flow[1],
         d_a,
         d[1],
@@ -369,7 +369,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
         roughness,
         m_flow_small) + height_ab/2/n*ambient.g*(d_a + d[1])/2;
       for i in 2:n loop
-        dp[i] = WallFriction.pressureLoss_m_flow(
+        dp_stat[i] = WallFriction.pressureLoss_m_flow(
           m_flow[i],
           d[i - 1],
           d[i],
@@ -380,7 +380,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
           roughness,
           m_flow_small) + height_ab/n*ambient.g*(d[i - 1] + d[i])/2;
       end for;
-      dp[np] = WallFriction.pressureLoss_m_flow(
+      dp_stat[np] = WallFriction.pressureLoss_m_flow(
         m_flow[np],
         d[n],
         d_b,
