@@ -18,9 +18,9 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.y, drumBoiler.q_F)       annotation (points=[-59,10; -40,10; 
+    connect(q_F_Tab.y, drumBoiler.q_F)       annotation (points=[-59,10; -40,10;
           -40,-31; -21.35,-31],       style(rgbcolor={0,0,127}));
-    connect(Y_Valve_Tab.y, drumBoiler.Y_Valve)       annotation (points=[-59,-30; 
+    connect(Y_Valve_Tab.y, drumBoiler.Y_Valve)       annotation (points=[-59,-30;
           -44,-30; -44,-37; -21.35,-37],         style(
         rgbcolor={0,0,127},
         fillColor=7,
@@ -33,7 +33,7 @@ Simulate for 7200 seconds.
     
     import Modelica.SIunits.Conversions.*;
     
-    Modelica_Fluid.Components.Boilers.EquilibriumDrumBoiler evaporator(
+    Modelica_Fluid.Boilers.EquilibriumDrumBoiler evaporator(
       m_D=300e3,
       cp_D=500,
       V_t=100,
@@ -77,25 +77,25 @@ Simulate for 7200 seconds.
     Modelica.Blocks.Interfaces.RealInput Y_Valve(redeclare type SignalType = 
           Real (unit="1")) 
       annotation (extent=[-109,-95; -100,-85]);
-    Modelica_Fluid.Components.Sources.FixedAmbient sink(p=from_bar(0.5), redeclare 
+    Modelica_Fluid.Sources.FixedAmbient sink(           p=from_bar(0.5), redeclare 
         package Medium = 
                  Modelica.Media.Water.StandardWater) 
       annotation (extent=[80,-30; 100,-10], rotation=180);
-    Modelica_Fluid.Components.Sensors.MassFlowRate massFlowRate(redeclare 
+    Modelica_Fluid.Sensors.MassFlowRate massFlowRate(           redeclare 
         package Medium = 
           Modelica.Media.Water.StandardWater) 
       annotation (extent=[40,-30; 20,-10], rotation=180);
-    Modelica_Fluid.Components.Sensors.Temperature temperature(redeclare package
+    Modelica_Fluid.Sensors.Temperature temperature(           redeclare package
         Medium = 
           Modelica.Media.Water.StandardWater) 
       annotation (extent=[-10,-10; 10,-30]);
-    Modelica_Fluid.Components.Sensors.Pressure pressure(redeclare package 
+    Modelica_Fluid.Sensors.Pressure pressure(           redeclare package 
         Medium = 
           Modelica.Media.Water.StandardWater) 
       annotation (extent=[10,14; 30,34]);
     Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
       annotation (extent=[-51,23; -65,37]);
-    Modelica_Fluid.Components.Sources.PrescribedMassFlowRate_hX pump(
+    Modelica_Fluid.Sources.PrescribedMassFlowRate_hX pump(
                                              h=5e5, redeclare package Medium = 
           Modelica.Media.Water.StandardWater) 
       annotation (extent=[-80,-30; -60,-10]);
@@ -123,7 +123,7 @@ Simulate for 7200 seconds.
       annotation (extent=[38,55; 48,65]);
     Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=500) 
       annotation (extent=[-85,23; -71,37], rotation=180);
-    Modelica_Fluid.Components.ControlValves.ValveLinear SteamValve(redeclare 
+    Modelica_Fluid.ControlValves.ValveLinear SteamValve(           redeclare 
         package Medium = 
           Modelica.Media.Water.StandardWater, Kv=2e-5) 
       annotation (extent=[50,-10; 70,-30]);

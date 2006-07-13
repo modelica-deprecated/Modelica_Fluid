@@ -11,7 +11,7 @@ connector FluidPort_ArrayIcon
             fillColor=69)), Rectangle(extent=[-100, 100; 100, -100], style(color=16,
             fillColor=69))));
 end FluidPort_ArrayIcon;
-
+  
 model TankAttachment "Equations to attach pipe at tank" 
     import SI = Modelica.SIunits;
     replaceable package Medium = PackageMedium extends 
@@ -78,7 +78,7 @@ it would not be possible to set, e.g., n_topPorts to zero.
           rgbfillColor={255,255,255},
           fillPattern=1),
         string="%name")));
-  Components.Ambient ambient;
+  Modelica_Fluid.Ambient ambient;
   protected 
   parameter SI.Area pipeArea = Modelica.Constants.pi*(pipeDiameter/2)^2;
   parameter Medium.MassFlowRate m_flow_nominal = 1 

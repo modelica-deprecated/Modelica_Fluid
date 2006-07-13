@@ -1816,10 +1816,10 @@ solving a non-linear equation.
 model PipeFriction 
     "Computes different types of pressure losses in pipes due to friction (is only used in PressureDropPipe, will be removed)" 
     
-  import SI = Modelica.SIunits;
-  import FT = Modelica_Fluid.Types.FrictionTypes;
-  import CT = Modelica_Fluid.Types.CrossSectionTypes;
-  import Modelica.Math;
+    import SI = Modelica.SIunits;
+    import FT = Modelica_Fluid.Types.FrictionTypes;
+    import CT = Modelica_Fluid.Types.CrossSectionTypes;
+    import Modelica.Math;
     
 /* This model requires eta and d as input and provides
    an equation m_flow = f1 (dp) or dp = f2(m_flow)

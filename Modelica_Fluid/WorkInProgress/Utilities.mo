@@ -1,6 +1,6 @@
 package Utilities 
 model TankAttachment "Equations to attach pipe at tank" 
-  import SI = Modelica.SIunits;
+    import SI = Modelica.SIunits;
      replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
      annotation (choicesAllMatching=true);
@@ -1004,10 +1004,10 @@ end PipeSegment;
 model PipeFriction 
     "Computes different types of pressure losses in pipes due to friction" 
     
-  import SI = Modelica.SIunits;
-  import FT = Modelica_Fluid.Types.FrictionTypes;
-  import CT = Modelica_Fluid.Types.CrossSectionTypes;
-  import Modelica.Math;
+    import SI = Modelica.SIunits;
+    import FT = Modelica_Fluid.Types.FrictionTypes;
+    import CT = Modelica_Fluid.Types.CrossSectionTypes;
+    import Modelica.Math;
     
 /* This model requires eta and d as input and provides
    an equation m_flow = f1 (dp) or dp = f2(m_flow)

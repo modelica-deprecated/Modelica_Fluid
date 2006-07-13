@@ -367,7 +367,7 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
   SI.Mass m "Mass of fluid in tank";
   SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
     
-Modelica_Fluid.Components.Ambient ambient;
+Modelica_Fluid.Ambient ambient;
   protected 
   Real Q_lost = 0 "Wärmeverlust (currently dummy)";
   parameter Medium.SpecificEnthalpy h_start = Medium.specificEnthalpy_pTX(p_ambient, T_start, X_start);
@@ -631,7 +631,7 @@ model Tank "Obsolet component (use instead Components.OpenTank)"
     p(start=p_ambient),
     T(start=T_start),
     Xi(start=X_start[1:Medium.nXi]));
-    outer Modelica_Fluid.Components.Ambient ambient "Ambient conditions";
+    outer Modelica_Fluid.Ambient ambient "Ambient conditions";
     
   SI.Height level(start=level_start,stateSelect=StateSelect.prefer) 
       "Height of tank level over the zero reference";

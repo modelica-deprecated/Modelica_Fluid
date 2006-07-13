@@ -12,36 +12,38 @@ model TestSuddenExpansion
     Coordsys(extent=[-100,-100; 100,100]),
     Documentation(info="<html>
 </html>"));
-  Components.Sources.PrescribedAmbient_pTX ambient_a(redeclare package Medium 
+  Modelica_Fluid.Sources.PrescribedAmbient_pTX ambient_a(
+                                                     redeclare package Medium 
       = Medium) 
     annotation (extent=[-40,40; -20,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 
     annotation (extent=[-80,40; -60,60]);
   
-  Components.Sources.FixedAmbient_pTX ambient_p1(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p1(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,40; 40,60]);
-  Components.Sources.FixedAmbient_pTX ambient_p2(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p2(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,10; 40,30]);
-  Modelica_Fluid.Components.PressureLosses.SuddenExpansion expansion1(
+  Modelica_Fluid.PressureLosses.SuddenExpansion expansion1(
     redeclare package Medium = Medium,
     D_a=0.1,
     D_b=0.2,
     use_Re=false) 
              annotation (extent=[0,40; 20,60]);
-  Modelica_Fluid.Components.PressureLosses.SuddenExpansion expansion2(
+  Modelica_Fluid.PressureLosses.SuddenExpansion expansion2(
     redeclare package Medium = Medium,
     D_a=0.1,
     D_b=0.2,
     from_dp=false,
     use_Re=false) annotation (extent=[0,10; 20,30]);
   
-  inner Components.Ambient ambient annotation (extent=[66,-42; 86,-22]);
+  inner Modelica_Fluid.Ambient ambient 
+                                   annotation (extent=[66,-42; 86,-22]);
 equation 
   connect(p_table.y, ambient_a.p_in) 
                                     annotation (points=[-59,50; -52,50; -52,56;

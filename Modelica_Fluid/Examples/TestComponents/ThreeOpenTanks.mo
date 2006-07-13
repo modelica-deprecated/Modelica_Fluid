@@ -9,7 +9,7 @@ model ThreeOpenTanks "Demonstrating the usage of OpenTank"
     Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
   
-  Modelica_Fluid.Components.FluidStorage.OpenTank tank1(
+  Modelica_Fluid.Volumes.OpenTank tank1(
     area=1,
     redeclare package Medium = Medium,
     p_static_at_port=false,
@@ -19,7 +19,7 @@ model ThreeOpenTanks "Demonstrating the usage of OpenTank"
     n_ports=1,
     pipe_diameters={0.1}) 
                    annotation (extent=[-80,20; -40,60]);
-  Modelica_Fluid.Components.FluidStorage.OpenTank tank2(
+  Modelica_Fluid.Volumes.OpenTank tank2(
     area=1,
     redeclare package Medium = Medium,
     p_static_at_port=false,
@@ -36,9 +36,9 @@ model ThreeOpenTanks "Demonstrating the usage of OpenTank"
   
 </html>"));
   
-  inner Modelica_Fluid.Components.Ambient ambient 
+  inner Modelica_Fluid.Ambient ambient 
                                    annotation (extent=[76,-96; 96,-76]);
-  Modelica_Fluid.Components.FluidStorage.OpenTank tank3(
+  Modelica_Fluid.Volumes.OpenTank tank3(
     area=1,
     redeclare package Medium = Medium,
     p_static_at_port=false,
@@ -48,22 +48,22 @@ model ThreeOpenTanks "Demonstrating the usage of OpenTank"
     n_ports=1,
     pipe_diameters={0.1}) 
                    annotation (extent=[40,20; 80,60]);
-  Modelica_Fluid.Components.PressureLosses.StaticHead pipe1(redeclare package 
+  Modelica_Fluid.PressureLosses.StaticHead pipe1(           redeclare package 
       Medium =                                                                       Medium,
     flowDirection=Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional,
     height_ab=2) annotation (extent=[-70,-20; -50,0], rotation=90);
-  Modelica_Fluid.Components.PressureLosses.StaticHead pipe2(redeclare package 
+  Modelica_Fluid.PressureLosses.StaticHead pipe2(           redeclare package 
       Medium =                                                                       Medium,
     flowDirection=Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional,
     height_ab=2) annotation (extent=[-10,-20; 10,0], rotation=90);
-  Modelica_Fluid.Components.PressureLosses.StaticHead pipe3(redeclare package 
+  Modelica_Fluid.PressureLosses.StaticHead pipe3(           redeclare package 
       Medium =                                                                       Medium,
     flowDirection=Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional,
     height_ab=-1) annotation (extent=[50,-20; 70,0], rotation=90);
 equation 
   connect(tank1.port[1], pipe1.port_b) annotation (points=[-60.4,20.2; -60.4,
         10.1; -60,10.1; -60,0], style(color=69, rgbcolor={0,127,255}));
-  connect(tank2.port[1], pipe2.port_b) annotation (points=[-0.4,20.2; -0.4,10.1; 
+  connect(tank2.port[1], pipe2.port_b) annotation (points=[-0.4,20.2; -0.4,10.1;
         6.12303e-016,10.1; 6.12303e-016,0], style(color=69, rgbcolor={0,127,255}));
   connect(tank3.port[1], pipe3.port_b) annotation (points=[59.6,20.2; 59.6,9.1;
         60,9.1; 60,0], style(color=69, rgbcolor={0,127,255}));

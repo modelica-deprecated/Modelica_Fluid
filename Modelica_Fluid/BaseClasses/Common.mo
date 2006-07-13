@@ -1,8 +1,8 @@
 package Common "Base classes common to more than one Component package" 
 partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
-  import SI = Modelica.SIunits;
-  import Modelica.Constants;
+    import SI = Modelica.SIunits;
+    import Modelica.Constants;
   replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
                                                                        annotation (
@@ -132,7 +132,7 @@ end PartialTwoPortTransport;
   
     partial model PartialLumpedVolume 
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
-      import Modelica.Constants;
+    import Modelica.Constants;
     extends BaseClasses.Common.PartialInitializationParameters;
     replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 

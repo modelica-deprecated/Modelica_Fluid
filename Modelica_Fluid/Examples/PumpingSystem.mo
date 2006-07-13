@@ -1,13 +1,13 @@
 model PumpingSystem "Model of a pumping system for drinking water" 
   extends Modelica.Icons.Example;
-  Components.Sources.FixedAmbient source(
+  Modelica_Fluid.Sources.FixedAmbient source(
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     use_T=true,
     T=Modelica.SIunits.Conversions.from_degC(20)) 
     annotation (extent=[-100,-90; -80,-70]);
   
-  Components.PressureLosses.WallFrictionAndGravity pipe(
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(
     redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater,
     flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
     height_ab=50,
@@ -19,7 +19,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     use_nominal=true) 
     annotation (extent=[-40,-40; -22,-20]);
   
-  Modelica_Fluid.Components.Flowmachines.Pump pumps(
+  Modelica_Fluid.Flowmachines.Pump pumps(
     checkValve=true,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
@@ -33,7 +33,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     T_start=Modelica.SIunits.Conversions.from_degC(20)) 
     annotation (extent=[-74,-88; -48,-62]);
   
-  Components.FluidStorage.OpenTank reservoir(
+  Modelica_Fluid.Volumes.OpenTank reservoir(
     initType=Modelica_Fluid.Types.Init.InitialValues,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
@@ -45,11 +45,13 @@ model PumpingSystem "Model of a pumping system for drinking water"
     pipe_diameters={1}) 
     annotation (extent=[-14,-16; 6,4]);
   
-  Components.ControlValves.ValveLinear userValve(redeclare package Medium = 
+  Modelica_Fluid.ControlValves.ValveLinear userValve(
+                                                 redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater, Kv=200/2e5,
     flowDirection= Modelica_Fluid.Types.FlowDirection.Unidirectional) 
     annotation (extent=[58,-38; 74,-22]);
-  Components.Sources.FixedAmbient sink(redeclare package Medium = 
+  Modelica_Fluid.Sources.FixedAmbient sink(
+                                       redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[100,-40; 80,-20]);
   Modelica.Blocks.Sources.Step valveOpening(          offset=1) 
@@ -63,7 +65,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     falling=3,
     amplitude=1200,
     offset=0.001) annotation (extent=[0,60; 20,80]);
-  Components.Sensors.RelativePressure reservoirPressure(redeclare package 
+  Modelica_Fluid.Sensors.RelativePressure reservoirPressure(
+                                                        redeclare package 
       Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[10,-12; 30,-32]);
@@ -89,7 +92,8 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
 </html>"),
     experiment(StopTime=2000, NumberOfIntervals=5000),
     experimentSetupOutput(equdistant=false));
-  inner Components.Ambient ambient annotation (extent=[60,-96; 80,-76]);
+  inner Modelica_Fluid.Ambient ambient 
+                                   annotation (extent=[60,-96; 80,-76]);
 equation 
   connect(userValve.port_b, sink.port)     annotation (points=[74,-30; 80,
         -30],
@@ -117,11 +121,11 @@ equation
         -64.38,-69.28], style(color=74, rgbcolor={0,0,127}));
   connect(pipe.port_a, pumps.outlet)         annotation (points=[-40,-30; -53.2,
         -30; -53.2,-70.84], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe.port_b, reservoir.port[1]) annotation (points=[-22,-30; -4.2,-30; 
+  connect(pipe.port_b, reservoir.port[1]) annotation (points=[-22,-30; -4.2,-30;
         -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
   connect(userValve.port_a, reservoir.port[1]) annotation (points=[58,-30; -4.2,
         -30; -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
-  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22; 
+  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22;
         -2,-22; -2,-15.9; -4.2,-15.9],      style(
       color=69,
       rgbcolor={0,127,255},

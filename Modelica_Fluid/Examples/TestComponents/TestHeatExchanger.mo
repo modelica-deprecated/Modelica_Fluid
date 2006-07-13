@@ -33,27 +33,29 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     kineticTerm=false,
     redeclare package Medium_2 = Medium,
     k_wall=100,
-    T_start_1=304, 
-    dT=10, 
-    initType_wall=Modelica_Fluid.Types.Init.InitialValues, 
+    T_start_1=304,
+    dT=10,
+    initType_wall=Modelica_Fluid.Types.Init.InitialValues,
     initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic) 
                                annotation (extent=[-26,-14; 34,46]);
   
-  Components.Sources.FixedAmbient_pTX ambient2(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient2(
     redeclare package Medium = Medium,
     p=1e5,
     T=280)                                                          annotation (extent=[82,-28;
         62,-8]);
-  Components.Sources.FixedAmbient_pTX ambient1(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient1(
                                    redeclare package Medium=Medium,
     p=1e5,
     T=300)                                                          annotation (extent=[82,24;
         62,44]);
-  Components.Sources.PrescribedMassFlowRate_TX massFlowRate2(redeclare package 
+  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate2(
+                                                             redeclare package 
       Medium =                                                                          Medium,
     m_flow=0.2,
     T=360)      annotation (extent=[-66,24; -46,44]);
-  Components.Sources.PrescribedMassFlowRate_TX massFlowRate1(redeclare package 
+  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate1(
+                                                             redeclare package 
       Medium =                                                                          Medium,
     T=300,
     m_flow=0.5)  annotation (extent=[-66,-10; -46,10]);
@@ -63,9 +65,10 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     duration=5,
     height=-1,
     offset=0.5)   annotation (extent=[-100,24; -80,44]);
-  inner Components.Ambient ambient annotation (extent=[60,70; 80,90]);
+  inner Modelica_Fluid.Ambient ambient 
+                                   annotation (extent=[60,70; 80,90]);
 equation 
-  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34; 
+  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34;
         -40,34; -40,29.8; -29,29.8],     style(
       color=69,
       rgbcolor={0,127,255},
@@ -86,7 +89,7 @@ equation
       fillColor=70,
       rgbfillColor={0,63,125},
       fillPattern=1));
-  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2; 
+  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2;
         49.5,2.2; 49.5,-18; 62,-18], style(
       color=69,
       rgbcolor={0,127,255},

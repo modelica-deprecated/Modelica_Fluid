@@ -6,7 +6,7 @@ model TestShortPipe "Test ShortPipe component"
     Diagram,
     experiment(StopTime=3),
     Coordsys(grid=[1, 1], component=[20, 20]));
-  Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe(
+  Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe(
     dp_nominal=from_bar(0.1),
     roughness=2e-5,
     from_dp=true,
@@ -16,11 +16,11 @@ model TestShortPipe "Test ShortPipe component"
     diameter=0.02) 
     annotation (extent=[-10,0; 10,20]);
   
-  Modelica_Fluid.Components.Sources.PrescribedMassFlowRate_TX m_flow_source(T=from_degC(30),
+  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX m_flow_source(           T=from_degC(30),
       redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[-50,0; -30,20]);
-  Modelica_Fluid.Components.Sources.FixedAmbient_pTX ambient_p(T=from_degC(15), 
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p(           T=from_degC(15),
       redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[50,0; 30,20]);
@@ -29,7 +29,8 @@ model TestShortPipe "Test ShortPipe component"
     height=6,
     offset=-3)   annotation (extent=[-90,0; -70,20]);
   
-  inner Components.Ambient ambient annotation (extent=[27,67; 47,87]);
+  inner Modelica_Fluid.Ambient ambient 
+                                   annotation (extent=[27,67; 47,87]);
 equation 
   connect(m_flow_source.port, shortPipe.port_a) 
     annotation (points=[-30,10; -10,10],  style(color=69));

@@ -1,6 +1,6 @@
 package ControlValves 
   partial model PartialValve "Base model for valves" 
-  import Modelica_Fluid.Types.CvTypes;
+    import Modelica_Fluid.Types.CvTypes;
     
   parameter Medium.AbsolutePressure pin_start = p_nom 
       "Start value of inlet pressure" 

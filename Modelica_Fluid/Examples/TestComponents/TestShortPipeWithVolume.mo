@@ -9,7 +9,7 @@ model TestShortPipeWithVolume "Test ShortPipe with PortVolume"
   parameter SI.Temperature T_start = 300 "Initial value of temperature";
   parameter Real X_start[Medium.nX] = Medium.X_default 
     "Initial value of mass fractions";
-  Components.Sources.PrescribedMassFlowRate_TX pump(
+  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX pump(
     m_flow=1,
     T=1.2*T_start,
     X=X_start,
@@ -21,18 +21,19 @@ model TestShortPipeWithVolume "Test ShortPipe with PortVolume"
     p_start=p_start,
     T_start=T_start,
     X_start=X_start) annotation (extent=[-40,0; -20,20]);
-  Components.PressureLosses.PressureDropPipe pipe(
+  Modelica_Fluid.PressureLosses.PressureDropPipe pipe(
     redeclare package Medium = Medium,
     frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar,
     dp_nominal=0.1e5,
     m_flow_nominal=1) annotation (extent=[0,0; 20,20]);
-  Components.Sources.FixedAmbient_pTX ambient_p(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p(
     redeclare package Medium = Medium,
     p=p_start,
     T=T_start,
     X=X_start) annotation (extent=[60,0; 40,20]);
   
-  inner Components.Ambient ambient annotation (extent=[38,60; 58,80]);
+  inner Modelica_Fluid.Ambient ambient 
+                                   annotation (extent=[38,60; 58,80]);
 equation 
   connect(pump.port, volume.port) annotation (points=[-60,10; -30,10], style(
         color=69, rgbcolor={0,127,255}));

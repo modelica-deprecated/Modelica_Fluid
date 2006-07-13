@@ -4,7 +4,7 @@ extends Modelica.Icons.Example;
   
 //replaceable package Medium=Modelica.Media.Air.DryAirNasa;
 replaceable package Medium=Modelica.Media.Air.MoistAir;
-  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe2(
+  Modelica_Fluid.Pipes.DistributedPipe_hydraulic pipe2(
     redeclare package Medium = Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
@@ -28,12 +28,12 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
   
   annotation (Diagram, experiment(StopTime=20, Tolerance=1e-005),
     experimentSetupOutput);
-  Modelica_Fluid.Components.Sources.PrescribedAmbient_pTX ambient6(
+  Modelica_Fluid.Sources.PrescribedAmbient_pTX ambient6(
     redeclare package Medium = Medium,
     p=1e5,
     T=300)                                                          annotation (extent=[70,20;
         50,40]);
-  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe5(
+  Modelica_Fluid.Pipes.DistributedPipe_hydraulic pipe5(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
@@ -55,12 +55,12 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     static=false) 
             annotation (extent=[12,22; 32,42]);
   
-  Components.Sources.FixedAmbient_pTX ambient1(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient1(
                                    redeclare package Medium=Medium,
     p=2e5,
     T=300)                                                          annotation (extent=[-88,16;
         -68,36]);
-  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe1(
+  Modelica_Fluid.Pipes.DistributedPipe_hydraulic pipe1(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
@@ -82,7 +82,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     static=false) 
             annotation (extent=[-38,16; -18,36]);
   
-  Components.Sources.FixedAmbient_pTX ambient2(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient2(
                                    redeclare package Medium=Medium,
     T=280,
     p=2e5)                                                          annotation (extent=[-88,42;
@@ -97,12 +97,12 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     duration=1,
       startTime=10,
     height=2e5) annotation (extent=[102,62; 82,82], rotation=0);
-  Components.Sources.FixedAmbient_pTX ambient3(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient3(
                                    redeclare package Medium=Medium,
     p=2e5,
     T=330)                                                          annotation (extent=[-88,-12;
         -68,8]);
-  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe3(
+  Modelica_Fluid.Pipes.DistributedPipe_hydraulic pipe3(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
@@ -123,12 +123,12 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     n=5,
     static=false) 
             annotation (extent=[-38,-12; -18,8]);
-  Components.Sources.FixedAmbient_pTX ambient4(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient4(
                                    redeclare package Medium=Medium,
     p=2e5,
     T=360)                                                          annotation (extent=[-88,-40;
         -68,-20]);
-  Modelica_Fluid.Components.Pipes.DistributedPipe_hydraulic pipe4(
+  Modelica_Fluid.Pipes.DistributedPipe_hydraulic pipe4(
     redeclare package Medium=Medium,
     crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
     allowFlowReversal=true,
@@ -149,7 +149,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     n=5,
     static=false) 
             annotation (extent=[-38,-40; -18,-20]);
-  inner Modelica_Fluid.Components.Ambient ambient 
+  inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[62,-78; 82,-58]);
 equation 
   connect(ambient2.port,pipe2. port_a) annotation (points=[-68,52; -38,52],

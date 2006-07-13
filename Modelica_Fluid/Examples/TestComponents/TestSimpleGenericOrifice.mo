@@ -17,56 +17,58 @@ model TestSimpleGenericOrifice
     Coordsys(extent=[-100,-100; 100,100]),
     Documentation(info="<html>
 </html>"));
-  Components.Sources.PrescribedAmbient_pTX ambient_a(redeclare package Medium 
+  Modelica_Fluid.Sources.PrescribedAmbient_pTX ambient_a(
+                                                     redeclare package Medium 
       = Medium) 
     annotation (extent=[-40,40; -20,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 
     annotation (extent=[-80,40; -60,60]);
   
-  Components.Sources.FixedAmbient_pTX ambient_p1(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p1(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,40; 40,60]);
-  Components.Sources.FixedAmbient_pTX ambient_p2(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p2(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,10; 40,30]);
-  Modelica_Fluid.Components.PressureLosses.SimpleGenericOrifice expansion1(
+  Modelica_Fluid.PressureLosses.SimpleGenericOrifice expansion1(
     redeclare package Medium = Medium,
     zeta=zeta,
     diameter=D_a) 
              annotation (extent=[0,40; 20,60]);
-  Modelica_Fluid.Components.PressureLosses.SimpleGenericOrifice expansion2(
+  Modelica_Fluid.PressureLosses.SimpleGenericOrifice expansion2(
     redeclare package Medium = Medium,
     from_dp=false,
     zeta=zeta,
     diameter=D_a) annotation (extent=[0,10; 20,30]);
   
-  Modelica_Fluid.Components.PressureLosses.SuddenExpansion expansion3(
+  Modelica_Fluid.PressureLosses.SuddenExpansion expansion3(
     redeclare package Medium = Medium,
     use_Re=false,
     D_a=D_a,
     D_b=D_b) annotation (extent=[0,-20; 20,0]);
-  Components.Sources.FixedAmbient_pTX ambient_p3(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p3(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,-20; 40,0]);
-  Modelica_Fluid.Components.PressureLosses.SuddenExpansion expansion4(
+  Modelica_Fluid.PressureLosses.SuddenExpansion expansion4(
     redeclare package Medium = Medium,
     use_Re=false,
     D_a=D_a,
     D_b=D_b,
     from_dp=false) 
              annotation (extent=[0,-60; 20,-40]);
-  Components.Sources.FixedAmbient_pTX ambient_p4(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p4(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,-60; 40,-40]);
-  inner Components.Ambient ambient annotation (extent=[-82,-90; -62,-70]);
+  inner Modelica_Fluid.Ambient ambient 
+                                   annotation (extent=[-82,-90; -62,-70]);
 equation 
   connect(p_table.y, ambient_a.p_in) 
                                     annotation (points=[-59,50; -52,50; -52,56;

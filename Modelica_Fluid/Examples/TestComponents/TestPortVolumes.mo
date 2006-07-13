@@ -7,12 +7,12 @@ model TestPortVolumes
     h_start=1e5,
     redeclare package Medium = Medium) 
                  annotation (extent=[-30,-10; -10,10]);
-  Modelica_Fluid.Components.Sources.PrescribedMassFlowRate_hX FlowSource1(
+  Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource1(
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium) 
                    annotation (extent=[-100,-10; -80,10]);
-  Modelica_Fluid.Components.Sources.FixedAmbient_phX Sink1(
+  Modelica_Fluid.Sources.FixedAmbient_phX Sink1(
                                          p=101325, redeclare package Medium = 
                Medium) 
     annotation (extent=[100,-10; 80,10]);
@@ -22,11 +22,13 @@ model TestPortVolumes
     h_start=1e5,
     redeclare package Medium = Medium) 
                  annotation (extent=[10,-10; 30,10]);
-  Components.Sensors.Temperature Tin(redeclare package Medium = Medium) 
+  Modelica_Fluid.Sensors.Temperature Tin(
+                                     redeclare package Medium = Medium) 
     annotation (extent=[-60,-10; -40,10]);
-  Components.Sensors.Temperature Tout(redeclare package Medium = Medium) 
+  Modelica_Fluid.Sensors.Temperature Tout(
+                                      redeclare package Medium = Medium) 
     annotation (extent=[40,-10; 60,10]);
-  inner Components.Ambient ambient 
+  inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[-100,-100; -80,-80]);
 equation 
   connect(PortVolume1.port, PortVolume2.port) 

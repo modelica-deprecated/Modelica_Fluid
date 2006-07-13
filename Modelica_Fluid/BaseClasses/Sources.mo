@@ -1,6 +1,6 @@
 package Sources 
 partial model PartialSource "Partial component source with one fluid connector" 
-  import Modelica.Constants;
+    import Modelica.Constants;
   replaceable package Medium = PackageMedium extends 
       Modelica.Media.Interfaces.PartialMedium "Medium model within the source" 
      annotation (choicesAllMatching=true);

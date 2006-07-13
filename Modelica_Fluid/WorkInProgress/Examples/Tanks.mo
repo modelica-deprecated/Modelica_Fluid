@@ -40,7 +40,7 @@ changes until water from tank1 is flowing into tank2.
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[10,20; 30,40]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe1(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -48,7 +48,7 @@ changes until water from tank1 is flowing into tank2.
       frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[-29,0; -9,20]);
     
-    inner Modelica_Fluid.Components.Ambient ambient 
+    inner Modelica_Fluid.Ambient ambient 
                                      annotation (extent=[46,64; 66,84]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
@@ -97,7 +97,7 @@ is provided in ThreeTanksIF97.
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[-10, 20; 10, 40]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe1(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -114,14 +114,14 @@ is provided in ThreeTanksIF97.
       V0=0.1,
       pipeArea=0.01) 
       annotation (extent=[70,20; 90,40]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe3(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar) 
       annotation (extent=[30, -30; 50, -10]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe2(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe2(
       m_flow_nominal=1000,
       dp_nominal=from_bar(0.1),
       redeclare package Medium = 
@@ -131,7 +131,7 @@ is provided in ThreeTanksIF97.
       medium_a(T(stateSelect=StateSelect.avoid))) 
       annotation (extent=[-10, -10; 10, 10], rotation=-90);
     
-    inner Modelica_Fluid.Components.Ambient ambient 
+    inner Modelica_Fluid.Ambient ambient 
                                      annotation (extent=[49,65; 69,85]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
@@ -178,7 +178,7 @@ compressible medium model WaterIF97 is used.
       T_start=from_degC(90),
       pipeArea=0.01) 
       annotation (extent=[-10,20; 10,40]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe1(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar,
@@ -192,20 +192,20 @@ compressible medium model WaterIF97 is used.
       initType=Modelica_Fluid.Types.Init.InitialValues,
       pipeArea=0.01) 
       annotation (extent=[70, 20; 90, 40]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe3(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[30, -30; 50, -10]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe2(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe2(
       m_flow_nominal=1000,
       dp_nominal=from_bar(0.1),
       frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[-10,-10; 10,10],   rotation=-90);
     
-    inner Modelica_Fluid.Components.Ambient ambient 
+    inner Modelica_Fluid.Ambient ambient 
                                      annotation (extent=[50,61; 70,81]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
@@ -250,7 +250,7 @@ is that the system starts in steady state, i.e., with constant
       T_start=from_degC(90),
       pipeArea=0.01) 
       annotation (extent=[-10,20; 10,40]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe1(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe1(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar,
@@ -263,19 +263,19 @@ is that the system starts in steady state, i.e., with constant
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph,
       pipeArea=0.01) 
       annotation (extent=[70, 20; 90, 40]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe3(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe3(
       m_flow_nominal=2000,
       dp_nominal=from_bar(0.1),
       frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[30, -30; 50, -10]);
-    Modelica_Fluid.Components.PressureLosses.PressureDropPipe shortPipe2(
+    Modelica_Fluid.PressureLosses.PressureDropPipe shortPipe2(
       m_flow_nominal=1000,
       dp_nominal=from_bar(0.1),
       frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar,
       redeclare package Medium = Modelica.Media.Water.WaterIF97_ph) 
       annotation (extent=[-10, -10; 10, 10], rotation=-90);
-    inner Modelica_Fluid.Components.Ambient ambient 
+    inner Modelica_Fluid.Ambient ambient 
                                      annotation (extent=[60,65; 80,85]);
   equation 
     connect(Tank1.port, shortPipe1.port_a) 
@@ -317,7 +317,7 @@ is that the system starts in steady state, i.e., with constant
       level_start=3,
       redeclare package Medium = Medium) 
                      annotation (extent=[20,20; 60,60]);
-    Modelica_Fluid.Components.PressureLosses.WallFrictionAndGravity pipe1(
+    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
       length=1,
       p_start=ambient.default_p_ambient,
       T_start=ambient.default_T_ambient,
@@ -334,7 +334,7 @@ is that the system starts in steady state, i.e., with constant
   
 </html>"));
     
-    inner Modelica_Fluid.Components.Ambient ambient 
+    inner Modelica_Fluid.Ambient ambient 
                                      annotation (extent=[60,-34; 80,-14]);
   equation 
     connect(pipe1.port_a, tank1.bottomPorts[1]) 
@@ -407,7 +407,7 @@ is that the system starts in steady state, i.e., with constant
       height=20)                                            annotation (extent=[-40,-90;
           0,-50]);
     
-    Modelica_Fluid.Components.PressureLosses.WallFrictionAndGravity pipe1(
+    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
       redeclare package Medium = Medium,
       length=1,
       height_ab=2,
@@ -418,7 +418,7 @@ is that the system starts in steady state, i.e., with constant
           Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.NoFriction) 
             annotation (extent=[-30,-40; -10,-20],
                                                  rotation=90);
-    Modelica_Fluid.Components.PressureLosses.WallFrictionAndGravity pipe2(
+    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
       redeclare package Medium = Medium,
       length=1,
       diameter=0.1,
@@ -428,9 +428,9 @@ is that the system starts in steady state, i.e., with constant
       redeclare package WallFriction = 
           Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.NoFriction) 
             annotation (extent=[40,30; 60,50],   rotation=90);
-    inner Modelica_Fluid.Components.Ambient ambient 
+    inner Modelica_Fluid.Ambient ambient 
       annotation (extent=[-90,-90; -70,-70]);
-    Modelica_Fluid.Components.PressureLosses.WallFrictionAndGravity pipe3(
+    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe3(
       redeclare package Medium = Medium,
       length=1,
       height_ab=2,

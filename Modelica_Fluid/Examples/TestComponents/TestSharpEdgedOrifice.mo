@@ -14,23 +14,24 @@ model TestSharpEdgedOrifice
     Coordsys(extent=[-100,-100; 100,100]),
     Documentation(info="<html>
 </html>"));
-  Components.Sources.PrescribedAmbient_pTX ambient_p(redeclare package Medium 
+  Modelica_Fluid.Sources.PrescribedAmbient_pTX ambient_p(
+                                                     redeclare package Medium 
       = Medium) 
     annotation (extent=[-40,40; -20,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.1e5; 10,2e5]) 
     annotation (extent=[-80,40; -60,60]);
   
-  Components.Sources.FixedAmbient_pTX ambient_p1(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p1(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,40; 40,60]);
-  Components.Sources.FixedAmbient_pTX ambient_p2(
+  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p2(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,10; 40,30]);
-  Modelica_Fluid.Components.PressureLosses.SharpEdgedOrifice orifice1(
+  Modelica_Fluid.PressureLosses.SharpEdgedOrifice orifice1(
     redeclare package Medium = Medium,
     D_pipe=0.1,
     alpha=50,
@@ -38,7 +39,7 @@ model TestSharpEdgedOrifice
     L=0.005,
     show_Re=true) 
              annotation (extent=[0,40; 20,60]);
-  Modelica_Fluid.Components.PressureLosses.SharpEdgedOrifice orifice2(
+  Modelica_Fluid.PressureLosses.SharpEdgedOrifice orifice2(
     redeclare package Medium = Medium,
     D_pipe=0.1,
     alpha=50,
@@ -46,7 +47,7 @@ model TestSharpEdgedOrifice
     D_min=0.02,
     L=0.005) annotation (extent=[0,10; 20,30]);
   
-  inner Modelica_Fluid.Components.Ambient ambient
+  inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[60,-68; 80,-48]);
 equation 
   connect(p_table.y, ambient_p.p_in) 
