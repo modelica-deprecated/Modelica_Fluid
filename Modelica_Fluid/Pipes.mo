@@ -127,7 +127,7 @@ end LumpedPipe;
   
   model DistributedPipe_thermal "Distributed pipe model" 
     
-    extends BaseClasses.Pipes.PartialDistributedFlow(
+    extends Pipes.BaseClasses.PartialDistributedFlow(
       Qs_flow=heatTransfer.Q_flow,
       ms_flow=zeros(n),
       msXi_flow=zeros(n, Medium.nXi),
@@ -399,7 +399,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.BaseClasses.Pi
   
  model DistributedPipe_hydraulic "Distributed pipe model" 
     
-   extends BaseClasses.Pipes.PartialDistributedFlow(
+   extends Pipes.BaseClasses.PartialDistributedFlow(
      Qs_flow=zeros(n),
      ms_flow=zeros(n),
      msXi_flow=zeros(n, Medium.nXi),

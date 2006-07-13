@@ -6,7 +6,7 @@ annotation (
   Settings(NewStateSelection=true),
   uses( Modelica(version="2.2.1"), UserInteraction(version="0.52")),
   classOrder={"UsersGuide","Examples","Ambient", "Boilers","ControlValves","Flowmachines",
-      "Volumes", "Pipes", "PressureLosses", "Sensors", "Sources", "Thermal", "*"},
+      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
 <p>
 Note, the current version of Modelica_Fluid does <b>not</b> work with
