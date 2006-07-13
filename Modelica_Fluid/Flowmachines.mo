@@ -1,4 +1,5 @@
 package Flowmachines 
+  extends Modelica_Fluid.Icons.VariantLibrary;
   model Pump "Centrifugal pump with ideally controlled speed" 
     extends Modelica_Fluid.BaseClasses.Flowmachines.PartialPump;
    // import Modelica.SIunits.Conversions.NonSIunits.*;
