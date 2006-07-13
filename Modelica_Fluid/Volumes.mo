@@ -3,7 +3,8 @@ package Volumes
   
     model MixingVolume 
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
-    extends BaseClasses.Common.PartialLumpedVolume(V_lumped=V, Ws_flow=0);
+    extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
+                                                   V_lumped=V, Ws_flow=0);
     parameter SI.Volume V "Volume";
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
       "Thermal port" 
@@ -31,7 +32,7 @@ package Volumes
   
 model OpenTank "Open tank with inlet/outlet ports at the bottom" 
     import SI = Modelica.SIunits;
-  replaceable package Medium = PackageMedium extends 
+  replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
     

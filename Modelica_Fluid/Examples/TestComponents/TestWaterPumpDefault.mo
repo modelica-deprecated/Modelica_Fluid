@@ -1,6 +1,6 @@
 model TestWaterPumpDefault "Test case for WaterPump" 
   extends Modelica.Icons.Example;
-  import PC = Modelica_Fluid.BaseClasses.Flowmachines.PumpCharacteristics;
+  import PC = Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics;
   replaceable function pumpFlowChar = PC.quadraticFlow(q_nom={0,0.001,0.0015}, head_nom={100,50,0});
 annotation (
   Diagram,
@@ -14,7 +14,7 @@ annotation (
                                                   redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=5e5) 
   annotation (extent=[36,26; 16,46]);
-  Modelica_Fluid.Flowmachines.Pump Pump1(
+  Modelica_Fluid.Pumps.Pump Pump1(
     pin_start=1e5,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     redeclare package SatMedium = Modelica.Media.Water.StandardWater,

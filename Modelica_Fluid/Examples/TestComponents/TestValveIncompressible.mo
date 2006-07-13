@@ -42,7 +42,7 @@ annotation (
     Cv=10,
     p_nom=10e5,
     redeclare function flowCharacteristic = 
-        Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.equalPercentage)
+        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.equalPercentage)
             annotation (extent=[-50,-10; -30,10]);
   Modelica_Fluid.Sources.FixedAmbient_pTX SinkP1(
                                              p=1e5,
@@ -61,7 +61,7 @@ annotation (
     Cv=10,
     p_nom=10e5,
     redeclare function flowCharacteristic = 
-        Modelica_Fluid.BaseClasses.ControlValves.ValveCharacteristics.equalPercentage
+        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.equalPercentage
         (                                                                              rangeability=10)) 
             annotation (extent=[-50,-50; -30,-30]);
   Modelica_Fluid.Sources.FixedAmbient_pTX SinkP3(

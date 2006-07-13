@@ -8,25 +8,25 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (extent=[-100,-90; -80,-70]);
   
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(
-    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater,
+    redeclare package Medium = 
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
     height_ab=50,
     diameter=1,
     p_start=ambient.default_p_ambient,
     length=100,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent,
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
     use_nominal=true) 
     annotation (extent=[-40,-40; -22,-20]);
   
-  Modelica_Fluid.Flowmachines.Pump pumps(
+  Modelica_Fluid.Pumps.Pump pumps(
     checkValve=true,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     N_nom=1200,
     redeclare function flowCharacteristic = 
-        Modelica_Fluid.BaseClasses.Flowmachines.PumpCharacteristics.quadraticFlow
-        (                                                                             q_nom={0,
+        Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (          q_nom={0,
             0.25,0.5}, head_nom={100,60,0}),
     Np_nom=4,
     M=50,

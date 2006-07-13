@@ -1,7 +1,7 @@
 model TestPortVolumes 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
-  Modelica_Fluid.BaseClasses.Pipes.PortVolume PortVolume1(
+  Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume1(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
@@ -16,7 +16,7 @@ model TestPortVolumes
                                          p=101325, redeclare package Medium = 
                Medium) 
     annotation (extent=[100,-10; 80,10]);
-  Modelica_Fluid.BaseClasses.Pipes.PortVolume PortVolume2(
+  Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume2(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,

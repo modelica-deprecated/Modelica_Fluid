@@ -4,10 +4,9 @@ annotation (
   versionDate="2006-01-12",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses( Modelica(version="2.2.1")),
+  uses( Modelica(version="2.2.1"), UserInteraction(version="0.52")),
   classOrder={"UsersGuide","Examples","Ambient", "Boilers","ControlValves","Flowmachines",
-      "Volumes", "Pipes", "PressureLosses", "Sensors", "Sources", "Thermal",
-      "*", "PackageMedium"},
+      "Volumes", "Pipes", "PressureLosses", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
 <p>
 Note, the current version of Modelica_Fluid does <b>not</b> work with
@@ -439,7 +438,7 @@ with the following code fragment
 (from Interfaces.PartialTwoPortTransport,
 simplified for a single substance fluid):
 </p>
-<pre>    <b>replaceable package</b> Medium = PackageMedium <b>extends</b> 
+<pre>    <b>replaceable package</b> Medium =  
                    Modelica.Media.Interfaces.PartialMedium 
                    <b>annotation</b>(choicesAllMatching = <b>true</b>);
   
@@ -1302,8 +1301,4 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
-replaceable package PackageMedium = Modelica.Media.Interfaces.PartialMedium 
-  "To allow change of default medium for all components" annotation (
-    choicesAllMatching=true);
 end Modelica_Fluid;

@@ -28,7 +28,7 @@ model TestMixingVolumes
   Modelica_Fluid.Sensors.Temperature Tmix_out(
                                           redeclare package Medium = Medium) 
     annotation (extent=[40,-40; 60,-20]);
-  BaseClasses.Pipes.PortVolume PortVolume1(
+  Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume1(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
@@ -40,7 +40,7 @@ model TestMixingVolumes
     h=2e5,
     redeclare package Medium = Medium) 
                    annotation (extent=[-100,10; -80,30]);
-  BaseClasses.Pipes.PortVolume PortVolume2(
+  Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume2(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,

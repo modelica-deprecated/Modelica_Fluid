@@ -16,7 +16,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     T_start=280,
     mflow_start=0,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
     diameter=0.01,
     p_a_start=1.2e5,
     initType=Modelica_Fluid.Types.Init.InitialValues,
@@ -46,7 +46,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     p_b_start=1e5,
     mflow_start=0,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
     diameter=0.01,
     initType=Modelica_Fluid.Types.Init.InitialValues,
     kineticTerm=false,
@@ -73,7 +73,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     T_start=300,
     mflow_start=0,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
     diameter=0.01,
     initType=Modelica_Fluid.Types.Init.InitialValues,
     kineticTerm=false,
@@ -115,7 +115,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     T_start=340,
     mflow_start=0,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
     diameter=0.01,
     initType=Modelica_Fluid.Types.Init.InitialValues,
     kineticTerm=false,
@@ -140,7 +140,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     p_b_start=1.5e5,
     mflow_start=0,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Laminar,
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
     diameter=0.01,
     T_start=360,
     initType=Modelica_Fluid.Types.Init.InitialValues,

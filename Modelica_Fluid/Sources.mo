@@ -2,7 +2,7 @@ package Sources
   extends Modelica_Fluid.Icons.VariantLibrary;
   import SI = Modelica.SIunits;
   model FixedAmbient "Ambient source component" 
-    extends BaseClasses.Sources.PartialSource;
+    extends Sources.BaseClasses.PartialSource;
     parameter Boolean use_p=true "select p or d" 
       annotation (Evaluate = true,
                   Dialog(group = "Ambient pressure or ambient density"));
@@ -77,7 +77,7 @@ with exception of ambient pressure, do not have an effect.
   
   model FixedAmbient_pTX 
     "Ambient pressure, temperature and mass fraction source" 
-    extends BaseClasses.Sources.PartialSource;
+    extends Sources.BaseClasses.PartialSource;
     parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p=
         ambient.default_p_ambient "Ambient pressure";
     parameter Modelica.Media.Interfaces.PartialMedium.Temperature T=
@@ -125,7 +125,7 @@ with exception of ambient pressure, do not have an effect.
   
   model FixedAmbient_phX 
     "Ambient pressure, specific enthalpy and mass fraction source" 
-    extends BaseClasses.Sources.PartialSource;
+    extends Sources.BaseClasses.PartialSource;
     parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p=
         ambient.default_p_ambient "Ambient pressure";
     parameter Modelica.Media.Interfaces.PartialMedium.SpecificEnthalpy h=Medium.h_default 
@@ -177,7 +177,7 @@ to define fixed or prescribed ambient conditions.
 </html>"));
   model PrescribedAmbient_pTX 
     "Ambient with prescribed pressure, temperature and composition" 
-    extends BaseClasses.Sources.PartialSource;
+    extends Sources.BaseClasses.PartialSource;
     parameter SI.Pressure p = ambient.default_p_ambient 
       "Fixed value of pressure" 
       annotation (Evaluate = true,
@@ -275,7 +275,7 @@ with exception of ambient pressure, do not have an effect.
   
   model PrescribedAmbient_phX 
     "Ambient with prescribed pressure, specific enthalpy and composition" 
-    extends BaseClasses.Sources.PartialSource;
+    extends Sources.BaseClasses.PartialSource;
     parameter SI.Pressure p = ambient.default_p_ambient 
       "Fixed value of pressure" 
       annotation (Evaluate = true,
@@ -365,7 +365,7 @@ with exception of ambient pressure, do not have an effect.
   
   model PrescribedMassFlowRate_TX 
     "Ideal pump that produces a prescribed mass flow with prescribed temperature and mass fraction" 
-    extends BaseClasses.Sources.PartialSource;
+    extends Sources.BaseClasses.PartialSource;
     parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port";
     parameter Modelica.Media.Interfaces.PartialMedium.Temperature T=
@@ -477,7 +477,7 @@ with exception of ambient pressure, do not have an effect.
   
   model PrescribedMassFlowRate_hX 
     "Ideal pump that produces a prescribed mass flow with prescribed specific enthalpy and mass fraction" 
-    extends BaseClasses.Sources.PartialSource;
+    extends Sources.BaseClasses.PartialSource;
     parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port";
     parameter Medium.SpecificEnthalpy h = Medium.h_default 
@@ -586,4 +586,46 @@ with exception of ambient pressure, do not have an effect.
     medium.Xi = X_in[1:Medium.nXi];
   end PrescribedMassFlowRate_hX;
   
+  package BaseClasses 
+  partial model PartialSource 
+      "Partial component source with one fluid connector" 
+      import Modelica.Constants;
+    replaceable package Medium = 
+        Modelica.Media.Interfaces.PartialMedium 
+        "Medium model within the source" 
+       annotation (choicesAllMatching=true);
+    Interfaces.FluidPort_b port(redeclare package Medium = Medium,
+                     m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+      annotation (extent=[90,-10; 110,10],    rotation=0);
+    Medium.BaseProperties medium "Medium in the source";
+    parameter Types.FlowDirection.Temp flowDirection=
+                     Types.FlowDirection.Unidirectional 
+        "Unidirectional (out of port_b) or bidirectional flow component" 
+                                                                annotation(Dialog(tab="Advanced"));
+    protected 
+      parameter Boolean allowFlowReversal=
+       flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
+        "= false, if flow only out of port_b, otherwise reversing flow allowed"
+       annotation(Evaluate=true, Hide=true);
+  equation 
+    port.p = medium.p;
+    port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
+    port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.Xi);
+    annotation (Documentation(info="<html>
+<p>
+Partial component to model the <b>volume interface</b> of a <b>source</b>
+component, such as a mass flow source. The essential
+features are:
+</p>
+<ul>
+<li> The pressure in the connection port (= port.p) is identical to the
+     pressure in the volume (= medium.p).</li>
+<li> The enthalpy flow rate (= port.H_flow) and the mass flow rates of the
+     substances (= port.mX_flow) depend on the direction of the mass flow rate.</li>
+</ul>
+</html>"),
+      Diagram,
+      Coordsys(grid=[1,1], scale=0));
+  end PartialSource;
+  end BaseClasses;
 end Sources;

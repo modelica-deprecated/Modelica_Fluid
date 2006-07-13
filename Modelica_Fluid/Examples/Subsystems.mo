@@ -90,8 +90,9 @@ package Subsystems
     
     //Pressure drop and heat transfer    
     replaceable package WallFriction = 
-        BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent extends 
-      Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.PartialWallFriction
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
+                                                                   extends 
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
       "Characteristic of wall friction"                                                            annotation(choicesAllMatching, Dialog(tab="General", group="Pressure drop"));
     parameter SI.Length roughness_1=2.5e-5 
       "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Pressure drop"));
@@ -106,14 +107,14 @@ package Subsystems
     parameter Boolean use_eta_nominal=false 
       "= true, if eta_nominal is used, otherwise computed from medium" annotation(Evaluate=true, Dialog(tab="General", group="Pressure drop"));
     replaceable model HeatTransfer_1 = 
-        Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
         extends 
-      Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PartialPipeHeatTransfer 
+      Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer 
       "Heat transfer model"                                                                         annotation(choicesAllMatching, Dialog(tab="General", group="Heat transfer"));
     replaceable model HeatTransfer_2 = 
-        Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
         extends 
-      Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PartialPipeHeatTransfer 
+      Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer 
       "Heat transfer model"                                                                         annotation(choicesAllMatching, Dialog(tab="General", group="Heat transfer"));
     //Display variables
     SI.HeatFlowRate Q_flow_1 "Total heat flow rate of inner pipe";

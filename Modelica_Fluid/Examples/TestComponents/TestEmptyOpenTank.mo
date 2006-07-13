@@ -13,7 +13,7 @@ model TestEmptyOpenTank "Test whether an empty tank is properly handeled"
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.LaminarAndQuadraticTurbulent,
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.LaminarAndQuadraticTurbulent,
     length=1,
     diameter=0.1,
     height_ab=1) annotation (extent=[-10,0; 10,-20], rotation=-90);

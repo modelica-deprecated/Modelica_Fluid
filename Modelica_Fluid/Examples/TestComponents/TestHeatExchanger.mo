@@ -22,12 +22,12 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
     mflow_start_2=0.2,
     Twall_start=300,
     redeclare model HeatTransfer_1 = 
-        Modelica_Fluid.BaseClasses.Pipes.HeatTransfer.PipeHT_constAlpha (
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha (
          alpha0=1000),
     K1=20,
     K2=20,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Detailed,
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     use_eta_nominal=true,
     singleState_hydraulic=false,
     kineticTerm=false,

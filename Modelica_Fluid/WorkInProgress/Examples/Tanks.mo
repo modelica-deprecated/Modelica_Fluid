@@ -325,7 +325,7 @@ is that the system starts in steady state, i.e., with constant
       height_ab=0,
       redeclare package Medium = Medium,
       redeclare package WallFriction = 
-          Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Detailed) 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed) 
             annotation (extent=[-20,-10; 0,10],  rotation=0);
     annotation (Diagram,
       experiment(StopTime=40),
@@ -415,7 +415,7 @@ is that the system starts in steady state, i.e., with constant
       p_start=ambient.default_p_ambient,
       T_start=ambient.default_T_ambient,
       redeclare package WallFriction = 
-          Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.NoFriction) 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
             annotation (extent=[-30,-40; -10,-20],
                                                  rotation=90);
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
@@ -426,7 +426,7 @@ is that the system starts in steady state, i.e., with constant
       p_start=ambient.default_p_ambient,
       T_start=ambient.default_T_ambient,
       redeclare package WallFriction = 
-          Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.NoFriction) 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
             annotation (extent=[40,30; 60,50],   rotation=90);
     inner Modelica_Fluid.Ambient ambient 
       annotation (extent=[-90,-90; -70,-70]);
@@ -438,7 +438,7 @@ is that the system starts in steady state, i.e., with constant
       p_start=ambient.default_p_ambient,
       T_start=ambient.default_T_ambient,
       redeclare package WallFriction = 
-          Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.NoFriction) 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
             annotation (extent=[20,-40; 40,-20], rotation=90);
   equation 
     connect(tank2.bottomPorts[1], pipe2.port_b) 

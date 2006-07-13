@@ -54,7 +54,7 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     dp_small=0.1,
     show_Re=true,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Detailed) 
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed) 
                       annotation (extent=[0,40; 20,60]);
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
     length=1,
@@ -63,7 +63,7 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     redeclare package Medium = Medium,
     roughness=roughness,
     redeclare package WallFriction = 
-        Modelica_Fluid.BaseClasses.PressureLosses.WallFriction.Detailed,
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     port_a(m_flow(start=-0.6)),
     show_Re=true)     annotation (extent=[0,10; 20,30]);
   Modelica_Fluid.PressureLosses.PressureDropPipe pressureDropPipe(
@@ -89,14 +89,14 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,-50; 40,-30]);
-  Modelica_Fluid.BaseClasses.PressureLosses.QuadraticTurbulent.TestWallFriction
+  Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.TestWallFriction
     pipe3(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium,
     roughness=roughness,
     dp_small=0.1)        annotation (extent=[0,-20; 20,0]);
-  Modelica_Fluid.BaseClasses.PressureLosses.QuadraticTurbulent.TestWallFriction
+  Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.TestWallFriction
     pipe4(
     length=1,
     diameter=0.1,
