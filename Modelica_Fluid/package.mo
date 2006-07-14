@@ -5,7 +5,7 @@ annotation (
   preferedView="info",
   Settings(NewStateSelection=true),
   uses( Modelica(version="2.2.1"), UserInteraction(version="0.52")),
-  classOrder={"UsersGuide","Examples","Ambient", "Boilers","ControlValves","Flowmachines",
+  classOrder={"UsersGuide","Examples","Ambient", "Boilers","ControlValves","Flowmachines","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
 <p>
