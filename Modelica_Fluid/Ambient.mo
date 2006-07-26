@@ -74,7 +74,9 @@ then accessed via a corresponding outer declaration:
 </HTML>
 "));
   
+/*
     Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape dummyShape 
     "Just temporarily, to force Dymola to open an animation window (only then animation setup is available for diagram animation)"
       annotation (extent=[-60,20; -40,40]);
+*/
 end Ambient;

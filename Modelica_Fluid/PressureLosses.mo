@@ -140,8 +140,9 @@ end SimpleGenericOrifice;
                            T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
     
     replaceable package WallFriction = 
-      BaseClasses.PressureLosses.WallFriction.QuadraticTurbulent 
-      extends BaseClasses.PressureLosses.WallFriction.PartialWallFriction 
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
+      extends 
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
       "Characteristic of wall friction"  annotation(choicesAllMatching=true);
     
     parameter SI.Length length "Length of pipe";
@@ -594,6 +595,8 @@ equation
 end PressureDropPipe;
   
   package BaseClasses 
+    extends Modelica_Fluid.Icons.BaseClassLibrary;
+    
     package SimpleGenericOrifice 
       "Simple pressure loss component defined by two constants (diameter, zeta) for the quadratic turbulent regime" 
       
@@ -1296,7 +1299,7 @@ Loss factor for mass flow rate from port_b to port_a
       function massFlowRate_dp 
         "Return mass flow rate from constant loss factor data and pressure drop (m_flow = f(dp))" 
         import SI = Modelica.SIunits;
-        //import Modelica_Fluid.BaseClasses.PressureLosses.lossConstant_D_zeta;
+        //import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
         extends Modelica.Icons.Function;
         
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";

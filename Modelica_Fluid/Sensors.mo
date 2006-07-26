@@ -492,6 +492,8 @@ the two ports of this component and is provided as output signal.
   end RelSpecificInternalEnergy;
 */
   package BaseClasses 
+    extends Modelica_Fluid.Icons.BaseClassLibrary;
+    
     partial model PartialAbsoluteSensor 
       "Partial component to model a sensor that measures a potential variable" 
       

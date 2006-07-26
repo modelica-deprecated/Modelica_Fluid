@@ -28,7 +28,7 @@ model TestSplitter
   Pipes.LumpedPipe pipe1(redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa) annotation (extent=[50,-30; 70,-10]);
   Pipes.LumpedPipe pipe2(redeclare package Medium = 
-        Modelica.Media.Air.DryAirNasa)
+        Modelica.Media.Air.DryAirNasa) 
     annotation (extent=[20,14; 40,34], rotation=90);
 equation 
   connect(ramp.y, source1.p_in) annotation (points=[-69,-14; -42,-14], style(
@@ -37,16 +37,16 @@ equation
       gradient=2,
       fillColor=69,
       rgbfillColor={0,128,255}));
-  connect(source1.port, pipe.port_a) annotation (points=[-20,-20; -12,-20], 
+  connect(source1.port, pipe.port_a) annotation (points=[-20,-20; -12,-20],
       style(color=69, rgbcolor={0,127,255}));
-  connect(pipe.port_b, splitter.port_1)
+  connect(pipe.port_b, splitter.port_1) 
     annotation (points=[8,-20; 19,-20], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe1.port_b, source2.port) annotation (points=[70,-20; 80,-20], 
+  connect(pipe1.port_b, source2.port) annotation (points=[70,-20; 80,-20],
       style(color=69, rgbcolor={0,127,255}));
-  connect(splitter.port_2, pipe1.port_a) annotation (points=[41,-20; 50,-20], 
+  connect(splitter.port_2, pipe1.port_a) annotation (points=[41,-20; 50,-20],
       style(color=69, rgbcolor={0,127,255}));
   connect(pipe2.port_b, source3.port) annotation (points=[30,34; 30,47; 30,60; 
         30,60], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe2.port_a, splitter.port_3)
+  connect(pipe2.port_a, splitter.port_3) 
     annotation (points=[30,14; 30,-9], style(color=69, rgbcolor={0,127,255}));
 end TestSplitter;

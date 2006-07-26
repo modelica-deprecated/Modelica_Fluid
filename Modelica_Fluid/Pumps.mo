@@ -66,6 +66,8 @@ package Pumps
   end PumpShaft;
   
   package BaseClasses "Base classes for Turbomachinery components" 
+    extends Modelica_Fluid.Icons.BaseClassLibrary;
+    
   partial model PartialPump "Base model for centrifugal pumps" 
       import Modelica.SIunits.Conversions.NonSIunits.*;
       import Modelica.Constants;
@@ -83,7 +85,7 @@ package Pumps
       annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
     parameter Boolean usePowerCharacteristic = false 
         "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
-       annotation(Dialog(group="Characteristics"));
+       annotation(Evaluate=true,Dialog(group="Characteristics"));
     replaceable function powerCharacteristic = 
       PumpCharacteristics.basePower 
         "Power consumption vs. q_flow at nominal speed and density" 

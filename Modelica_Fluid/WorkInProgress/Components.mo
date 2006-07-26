@@ -231,7 +231,6 @@ to build up more detailed models from the basic components.
       annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
   end ShortPipe2;
   
-  
 model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
     import SI = Modelica.SIunits;
     import Modelica_Fluid.Types;

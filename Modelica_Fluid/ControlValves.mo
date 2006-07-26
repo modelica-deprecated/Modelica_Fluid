@@ -252,6 +252,7 @@ it is open.
   end ValveDiscrete;
   
   package BaseClasses 
+    extends Modelica_Fluid.Icons.BaseClassLibrary;
     partial model PartialValve "Base model for valves" 
       import Modelica_Fluid.Types.CvTypes;
       import Modelica_Fluid;
