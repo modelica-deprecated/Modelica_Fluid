@@ -291,7 +291,7 @@ Integer type that can have the following values
   
 </html>"));
   end FlowDirectionWithGlobalDefault;
-
+  
   package SourceFlowDirection 
     "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available" 
     

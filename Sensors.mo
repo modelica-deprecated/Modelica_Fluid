@@ -537,7 +537,7 @@ as signal.
         annotation (extent=[110,-10; 90,10]);
       
       parameter Modelica_Fluid.Types.FlowDirection.Temp flowDirection=
-                Modelica_Fluid.Types.FlowDirection.Unidirectional 
+                Modelica_Fluid.Types.FlowDirection.Bidirectional 
         "Unidirectional (port_a -> port_b) or bidirectional flow component" 
          annotation(Dialog(tab="Advanced"));
       

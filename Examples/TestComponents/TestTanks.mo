@@ -1,6 +1,7 @@
 package TestTanks "Test tank components" 
   extends Modelica.Icons.Library;
-  model TestOneTank 
+  model OneTank 
+    "Demonstrates a tank with one constant top inlet mass flow rate and a bottom outlet into the ambient" 
     import Modelica.SIunits.Conversions.from_bar;
     extends Modelica.Icons.Example;
     
@@ -11,30 +12,83 @@ package TestTanks "Test tank components"
       levelMax=1,
       bottomPortData={Modelica_Fluid.Volumes.BaseClasses.TankBottomPortData(
           diameter=0.1, portLevel=0)},
-      topPortDiameter={0.1}, 
-      level_start=0.9) 
+      topPortDiameter={0.1},
+      level_start=0.9,
+      V0=0.1) 
       annotation (extent=[-40,20; 0,60]);
     
     Sources.PrescribedMassFlowRate_TX flowSource(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      m_flow=1,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort) 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort, 
+      m_flow=50) 
       annotation (extent=[-60,70; -40,90]);
-    annotation (Diagram, 
-      experiment(StopTime=30), 
+    annotation (Diagram,
+      experiment(StopTime=19.3),
       experimentSetupOutput);
     inner Ambient ambient annotation (extent=[40,60; 60,80]);
     Sources.FixedAmbient_pTX ambient_fixed(redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort) 
-      annotation (extent=[-60,-10; -40,10]);
+      annotation (extent=[-60,-40; -40,-20]);
+    PressureLosses.WallFrictionAndGravity pipe(
+      redeclare package Medium = 
+          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+      redeclare package WallFriction = 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed, 
+      length=1, 
+      diameter=0.1, 
+      height_ab=1) annotation (extent=[-30,-20; -10,0], rotation=90);
   equation 
     connect(flowSource.port, tank.topPort[1])   annotation (points=[-40,80; -20,
           80; -20,60], style(color=69, rgbcolor={0,127,255}));
-    connect(tank.bottomPort[1], ambient_fixed.port) annotation (points=[-20,20; 
-          -20,0; -40,0],     style(color=69, rgbcolor={0,127,255}));
-  end TestOneTank;
+    connect(ambient_fixed.port, pipe.port_a) annotation (points=[-40,-30; -20,
+          -30; -20,-20], style(color=69, rgbcolor={0,127,255}));
+    connect(pipe.port_b, tank.bottomPort[1]) annotation (points=[-20,0; -20,20], 
+        style(color=69, rgbcolor={0,127,255}));
+  end OneTank;
+  
+  model TwoTanks 
+    import Modelica.SIunits.Conversions.from_bar;
+    extends Modelica.Icons.Example;
+    
+    annotation (Diagram,
+      experiment(StopTime=50),
+      experimentSetupOutput);
+    inner Ambient ambient annotation (extent=[40,62; 60,82]);
+    Volumes.OpenTank1 tank1(
+      redeclare package Medium = 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      area=1,
+      levelMax=4,
+      level_start=3,
+      T_start=Modelica.SIunits.Conversions.from_degC(50),
+      bottomPortData={Modelica_Fluid.Volumes.BaseClasses.TankBottomPortData(
+          diameter=0.1, portLevel=0)}) 
+      annotation (extent=[-80,0; -40,40]);
+    Volumes.OpenTank1 tank2(
+      redeclare package Medium = 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      area=1,
+      levelMax=4,
+      level_start=1,
+      T_start=Modelica.SIunits.Conversions.from_degC(100),
+      bottomPortData={Modelica_Fluid.Volumes.BaseClasses.TankBottomPortData(
+          diameter=0.1, portLevel=0)}) 
+      annotation (extent=[0,0; 40,40]);
+    PressureLosses.WallFrictionAndGravity pipe(
+      redeclare package Medium = 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      redeclare package WallFriction = 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+      length=1,
+      diameter=0.1)  annotation (extent=[-30,-30; -10,-10]);
+  equation 
+    connect(tank1.bottomPort[1], pipe.port_a) annotation (points=[-60,0; -60,
+          -20; -30,-20], style(color=69, rgbcolor={0,127,255}));
+    connect(pipe.port_b, tank2.bottomPort[1]) annotation (points=[-10,-20; 20,
+          -20; 20,0], style(color=69, rgbcolor={0,127,255}));
+  end TwoTanks;
   
   model ThreeOpenTanks "Demonstrating the usage of OpenTank" 
     import Modelica_Fluid;
@@ -88,15 +142,15 @@ package TestTanks "Test tank components"
                      annotation (extent=[40,20; 80,60]);
     Modelica_Fluid.PressureLosses.StaticHead pipe1(           redeclare package
         Medium =                                                                       Medium,
-      flowDirection=Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional,
+      flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
       height_ab=2) annotation (extent=[-70,-20; -50,0], rotation=90);
     Modelica_Fluid.PressureLosses.StaticHead pipe2(           redeclare package
         Medium =                                                                       Medium,
-      flowDirection=Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional,
+      flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
       height_ab=2) annotation (extent=[-10,-20; 10,0], rotation=90);
     Modelica_Fluid.PressureLosses.StaticHead pipe3(           redeclare package
         Medium =                                                                       Medium,
-      flowDirection=Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Bidirectional,
+      flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
       height_ab=-1) annotation (extent=[50,-20; 70,0], rotation=90);
   equation 
     connect(tank1.port[1], pipe1.port_b) annotation (points=[-60.4,20.2; -60.4,
@@ -106,15 +160,15 @@ package TestTanks "Test tank components"
                                               style(color=69, rgbcolor={0,127,255}));
     connect(tank3.port[1], pipe3.port_b) annotation (points=[59.6,20.2; 59.6,9.1;
           60,9.1; 60,0], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -62,-20; 
+    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -62,-20;
           -62,-42; -6.12303e-016,-42; -6.12303e-016,-20],
                                                       style(color=69, rgbcolor={0,
             127,255}));
-    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12303e-016,-20; 
+    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12303e-016,-20;
           0,-20; 0,-42; 60,-42; 60,-20],
                                        style(color=69, rgbcolor={0,127,255}));
   end ThreeOpenTanks;
-
+  
   model TestEmptyOpenTank "Test whether an empty tank is properly handeled" 
     extends Modelica.Icons.Example;
     Modelica_Fluid.Volumes.OpenTank tank1(
