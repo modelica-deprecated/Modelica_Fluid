@@ -42,7 +42,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
                                                                                                         annotation(Evaluate=true, Dialog(tab="Advanced"));
     parameter Real[n_ports] zeta_in=fill(0, n_ports) 
       "Hydraulic resistance into tank, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-                                                                                                          annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
+                                                                                                        annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
     parameter Real[n_ports] zeta_out=fill(1, n_ports) 
       "Hydraulic resistance out of tank, 0 for ideal smooth outlet" 
                                                                   annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
@@ -380,24 +380,46 @@ equation
                                          "This indicates a wrong model");
     end for;
     
-  // Properties at bottom ports  
+  /* Properties at bottom ports. Unsteady Bernoulli equation
+     (assumption that density is either constant or changes only slowely):
+ 
+        dl = level - portLevel;
+        der(port.m_flow)*(-dl/area) + rho*port.v^2/2 + rho*(-dl)*g + port.p - p_ambient = 0
+ 
+        port.m_flow = port.A*port.v*rho
+    ->  port.v      = port.m_flow/(rho*port.A)
+ 
+    ->  port.p = p_ambient + rho*dl*g - rho*port.v^2/2 + der(port.m_flow)*dl/area
+               = p_ambient + rho*dl*g - port.m_flow^2/(rho*port.A^2*2) + der(port.m_flow)*dl/area;
+ 
+        Additionally, a pressure loss of the outlet/inlet is present:
+        - flow out of tank: -rho*zeta_out*port.v^2/2 (without dissipation, zeta_out = 0)
+        - flow in to tank :
+ 
+ 
+      port[i].p = p_static - port[i].m_flow^2/(2*medium.d*pipeArea[i]^2)*
+                            (if port[i].m_flow < 0 then (1 + zeta_out[i])
+                                                   else (1 - zeta_in[i]))));
+       end if;
+ 
+  */
     for i in 1:nBottom loop
        bottomPort[i].H_flow = semiLinear(bottomPort[i].m_flow, bottomPort[i].h, medium.h);
        bottomPort[i].mXi_flow = semiLinear(bottomPort[i].m_flow, bottomPort[i].Xi, medium.Xi);
-       levelAbovePort[i] = level - bottomPortData[i].portLevel;
-       aboveLevel[i] = levelAbovePort[i] >= 0;
+       aboveLevel[i] = level >= bottomPortData[i].portLevel;
+       levelAbovePort[i] = if aboveLevel[i] then level - bottomPortData[i].portLevel else 0.0;
+       p_static[i] = p_ambient + levelAbovePort[i]*ambient.g*medium.d;
       
        if p_static_at_port then
           assert(aboveLevel[i], "Level (= " + String(level) + ") is below bottomPort[" + String(i) + "].portLevel.\n" +
                                 "This is not allowed if p_static_at_port = true");
-          p_static[i] = p_ambient + levelAbovePort[i]*ambient.g*medium.d;
           bottomPort_m_flow_out[i] = bottomPort[i].m_flow < 0;
           bottomPort[i].p = p_static[i];
           bottomPort_s[i] = 0;
        else
-          p_static[i] = p_ambient + (if aboveLevel[i] then levelAbovePort[i]*ambient.g*medium.d else 0);
           bottomPort_m_flow_out[i] = bottomPort[i].m_flow < 0;
-          bottomPort[i].p = 0;
+          bottomPort[i].p = p_static[i] - bottomPort[i].m_flow^2/(2*medium.d*bottomArea[i]^2)
+                                        + der(bottomPort[i].m_flow)*levelAbovePort[i]/area;
 /*
           bottomPort[i].p = p_static - smooth(2, noEvent(bottomPort[i].m_flow^2/(2*medium.d*bottomArea[i]^2)*
                                        (if  bottomPort_m_flow_out[i] then bottomPortData[i].zeta_out else 
@@ -448,12 +470,15 @@ initial equation
       level = level_start;
       medium.T = T_start;
       medium.Xi = X_start[1:Medium.nXi];
+      bottomPort.m_flow = zeros(nBottom);
     elseif initType == Types.Init.SteadyState then
       der(level) = 0;
+      der(bottomPort.m_flow) = zeros(nBottom);
       der(medium.T) = 0;
       der(medium.Xi) = zeros(Medium.nXi);
     elseif initType == Types.Init.SteadyStateHydraulic then
       der(level) = 0;
+      der(bottomPort.m_flow) = zeros(nBottom);
       medium.T = T_start;
       medium.Xi = X_start[1:Medium.nXi];
     else
@@ -464,7 +489,7 @@ initial equation
       Icon(
         Rectangle(extent=[-100,100; 100,0], style(color=7, fillColor=7)),
         Rectangle(extent=DynamicSelect([-100,-100; 100,10], [-100,-100; 100,(-100
-               + 200*level/height)]), style(
+               + 200*level/levelMax)]), style(
             color=69,
             rgbcolor={0,127,255},
             fillColor=71,
@@ -486,13 +511,9 @@ initial equation
             rgbfillColor={0,127,255},
             fillPattern=1)),
         Text(
-          extent=[-129,47; 130,33],
+          extent=[-96,41; 95,10],
           style(color=0),
-          Line(points=[-100,100; 100,100], style(
-              color=0,
-              rgbcolor={0,0,0},
-              pattern=3)),
-          string="start = %level_start m"),
+        string=DynamicSelect(" ", realString(level, 1, 3))),
         Line(points=[-100,100; 100,100], style(
             color=0,
             rgbcolor={0,0,0},
