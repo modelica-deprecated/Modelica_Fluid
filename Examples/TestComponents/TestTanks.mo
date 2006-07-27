@@ -9,33 +9,32 @@ package TestTanks "Test tank components"
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       area=1,
       levelMax=1,
-      topPortData={Modelica_Fluid.Volumes.BaseClasses.TankTopPortData(diameter=
-          0.1, level=11)},
       bottomPortData={Modelica_Fluid.Volumes.BaseClasses.TankBottomPortData(
-          diameter=0.1, level=0)},
+          diameter=0.1, portLevel=0)},
       level_start=0.5,
       p_static_at_port=true,
+      topPortDiameter={0.1}, 
       initType=Modelica_Fluid.Types.Init.NoInit) 
       annotation (extent=[-40,20; 0,60]);
     
-    Sources.PrescribedMassFlowRate_TX massFlowRate(redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, m_flow=1) 
+    Sources.PrescribedMassFlowRate_TX flowSource(
+      redeclare package Medium = 
+          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+      m_flow=1, 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort) 
       annotation (extent=[-60,70; -40,90]);
     annotation (Diagram);
     inner Ambient ambient annotation (extent=[40,60; 60,80]);
     Sources.FixedAmbient_pTX ambient_fixed(redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater) 
-      annotation (extent=[-60,-60; -40,-40]);
-    PressureLosses.StaticHead staticHead(redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, height_ab=1) 
-      annotation (extent=[-30,-20; -10,0], rotation=90);
+          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+      p=1.01*ambient.default_p_ambient, 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort) 
+      annotation (extent=[-60,-20; -40,0]);
   equation 
-    connect(massFlowRate.port, tank.topPort[1]) annotation (points=[-40,80; -20,
+    connect(flowSource.port, tank.topPort[1])   annotation (points=[-40,80; -20,
           80; -20,60], style(color=69, rgbcolor={0,127,255}));
-    connect(staticHead.port_b, tank.bottomPort[1]) annotation (points=[-20,0;
-          -20,20], style(color=69, rgbcolor={0,127,255}));
-    connect(ambient_fixed.port, staticHead.port_a) annotation (points=[-40,-50;
-          -20,-50; -20,-20], style(color=69, rgbcolor={0,127,255}));
+    connect(tank.bottomPort[1], ambient_fixed.port) annotation (points=[-20,20; 
+          -20,-10; -40,-10], style(color=69, rgbcolor={0,127,255}));
   end TestOneTank;
   
   model TestEmptyOpenTank "Test whether an empty tank is properly handeled" 

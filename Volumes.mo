@@ -257,6 +257,9 @@ model OpenTank2
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
     
+  SI.Height level(stateSelect=StateSelect.prefer, start=level_start) 
+      "Fluid level over the tank base";
+    
 //Tank geometry  
     parameter SI.Area area "Area of tank";
     parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
@@ -268,16 +271,16 @@ model OpenTank2
  
            {Modelica_Fluid.Volumes.BaseClasses.TankBottomPortData()} 
  */
-    parameter Modelica_Fluid.Volumes.BaseClasses.TankTopPortData topPortData[:] 
-      "Data of inlet ports at top of tank";
+    parameter SI.Diameter topPortDiameter[:] 
+      "Diameters of inlet ports at top of tank (ports have to be above levelMax)";
     parameter Modelica_Fluid.Volumes.BaseClasses.TankBottomPortData 
       bottomPortData[
                    :] "Data of inlet/outlet ports at side and bottom of tank";
     
-    Modelica_Fluid.Interfaces.FluidPort_a topPort[size(topPortData,1)](
+    Modelica_Fluid.Interfaces.FluidPort_a topPort[size(topPortDiameter,1)](
       redeclare package Medium = Medium,
-      m_flow(each start=0),
-      mXi_flow(each start=0)) 
+      m_flow(each start=0, each min=0),
+      mXi_flow(each start=0, each min=0)) 
     annotation (extent=[-10,90; 10,110]);
     
     Modelica_Fluid.Interfaces.FluidPort_b bottomPort[size(bottomPortData,1)](
@@ -313,7 +316,7 @@ model OpenTank2
                                                                                    annotation(Evaluate=true, Dialog(tab="Advanced"));
     
 //Tank properties  
-    final parameter Integer nTop = size(topPortData,1);
+    final parameter Integer nTop = size(topPortDiameter,1);
     final parameter Integer nBottom = size(bottomPortData,1);
     
     final parameter Medium.SpecificEnthalpy h_start=Medium.specificEnthalpy_pTX(
@@ -326,31 +329,25 @@ model OpenTank2
       T(start=T_start),
       h(start=h_start),
       Xi(start=X_start[1:Medium.nXi]));
-    SI.Height level(stateSelect=StateSelect.prefer, start=level_start) 
-      "Level height of tank";
     SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
     SI.Energy U(stateSelect=StateSelect.never) "Internal energy of tank volume";
     SI.Mass m(stateSelect=StateSelect.never) "Mass of fluid in tank";
     SI.Mass mXi[Medium.nXi](each stateSelect=StateSelect.never) 
       "Masses of independent components in the fluid";
     SI.Length levelAbovePort[nBottom] "Height of fluid over bottom ports";
-    Medium.MassFlowRate overflow_m_flow 
-      "Mass flow rate that overflows thank if level >= levelMax";
-    Medium.MassFlowRate overflow_mXi_flow[Medium.nXi] 
-      "Substance mass flow rate that overflows";
-    Medium.EnthalpyFlowRate overflow_H_flow 
-      "Enthalpy flow rate of overflowing fluid";
     Boolean bottomPort_m_flow_out[nBottom];
     Medium.AbsolutePressure p_static[nBottom];
-    Boolean aboveLevel[nBottom] "= true, if level >= bottomPort[i].level";
+    Boolean aboveLevel[nBottom] "= true, if level >= bottomPort[i].portLevel";
     Real bottomPort_s[nBottom];
   protected 
-    parameter SI.Area topArea[nTop]=Constants.pi*{(topPortData[i].diameter/2)^2 for i in 1:nTop};
-    parameter SI.Area bottomArea[nTop]=Constants.pi*{(bottomPortData[i].diameter/2)^2 for i in 1:nBottom};
+    parameter SI.Area topArea[nTop]=Constants.pi*{(topPortDiameter[i]/2)^2 for i in 1:nTop};
+    parameter SI.Area bottomArea[nBottom]=Constants.pi*{(bottomPortData[i].diameter/2)^2 for i in 1:nBottom};
     parameter Real k_small(min=0) = 1e-5 
       "Small regularization range if tank level is below bottom_height or side_height; k_small = 0 gives ideal switch";
     
 equation 
+  assert(level <= levelMax, "Tank starts to overflow (level = levelMax = " + String(level) + ")");
+    
   //Total quantities
     medium.p = p_ambient;
     V = area*level + V0 "Volume of fluid";
@@ -358,22 +355,18 @@ equation
     mXi = m*medium.Xi "Mass of fluid components";
     U = m*medium.u "Internal energy of fluid";
     
-    overflow_m_flow = 0;
-    overflow_mXi_flow = zeros(Medium.nXi);
-    overflow_H_flow = 0;
-    
   // Mass balances
-    der(m) = sum(topPort.m_flow) + sum(bottomPort.m_flow) + overflow_m_flow;
+    der(m) = sum(topPort.m_flow) + sum(bottomPort.m_flow);
     for i in 1:Medium.nXi loop
-      der(mXi[i]) = sum(topPort.mXi_flow[i]) + sum(bottomPort.mXi_flow[i]) + overflow_mXi_flow[i];
+      der(mXi[i]) = sum(topPort.mXi_flow[i]) + sum(bottomPort.mXi_flow[i]);
     end for;
     
   // Energy balance
     if Medium.singleState then
-      der(U) = sum(topPort.H_flow) + sum(bottomPort.H_flow) + overflow_H_flow;
+      der(U) = sum(topPort.H_flow) + sum(bottomPort.H_flow);
                                //Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)
     else
-      der(U) = sum(topPort.H_flow) + sum(bottomPort.H_flow) + overflow_H_flow - p_ambient*der(V);
+      der(U) = sum(topPort.H_flow) + sum(bottomPort.H_flow) - p_ambient*der(V);
     end if;
     
   // Properties at top ports
@@ -391,11 +384,11 @@ equation
     for i in 1:nBottom loop
        bottomPort[i].H_flow = semiLinear(bottomPort[i].m_flow, bottomPort[i].h, medium.h);
        bottomPort[i].mXi_flow = semiLinear(bottomPort[i].m_flow, bottomPort[i].Xi, medium.Xi);
-       levelAbovePort[i] = level - bottomPortData[i].level;
+       levelAbovePort[i] = level - bottomPortData[i].portLevel;
        aboveLevel[i] = levelAbovePort[i] >= 0;
       
        if p_static_at_port then
-          assert(aboveLevel[i], "Level (= " + String(level) + ") is below bottomPort[" + String(i) + "].level.\n" +
+          assert(aboveLevel[i], "Level (= " + String(level) + ") is below bottomPort[" + String(i) + "].portLevel.\n" +
                                 "This is not allowed if p_static_at_port = true");
           p_static[i] = p_ambient + levelAbovePort[i]*ambient.g*medium.d;
           bottomPort_m_flow_out[i] = bottomPort[i].m_flow < 0;
@@ -540,14 +533,6 @@ end OpenTank2;
   
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
-    record TankTopPortData "Data to describe inlet pipe at top of tank" 
-      import SI = Modelica.SIunits;
-      extends Modelica.Icons.Record;
-      
-      parameter SI.Diameter diameter "Inner (hydraulic) diameter of inlet port";
-      parameter SI.Height level 
-        "Level of inlet port (height over the tank base; not yet used)";
-    end TankTopPortData;
     
     record TankBottomPortData 
       "Data to describe inlet/outlet pipe of tank side or tank bottom" 
@@ -556,7 +541,7 @@ end OpenTank2;
       
       parameter SI.Diameter diameter 
         "Inner (hydraulic) diameter of inlet/outlet port";
-      parameter SI.Height level 
+      parameter SI.Height portLevel 
         "level of inlet/outlet port (height over the tank base)";
       parameter Real zeta_in=1 
         "<html>Hydraulic pressure loss factor zeta if fluid flows <b>in to</b> tank<br>(= 1 for total dissipation of kinetic energy and uniform flow distribution in pipe)</html>";

@@ -291,6 +291,60 @@ Integer type that can have the following values
   
 </html>"));
   end FlowDirectionWithGlobalDefault;
+
+  package SourceFlowDirection 
+    "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available" 
+    
+    annotation (Documentation(info="<html>
+  
+</html>"));
+    extends Modelica.Icons.Enumeration;
+    constant Integer OutOfPort = 1 "Fluid flows only out of the port";
+    constant Integer InToPort = 2 "Fluid flows only in to the port";
+    constant Integer Bidirectional = 3 
+      "No restrictions on fluid flow (flow reversal possible)";
+    
+    type Temp 
+      "Temporary type with choices for menus (until enumerations are available)" 
+      extends Modelica.Icons.TypeInteger(min=1, max=3);
+      annotation (Evaluate=true, choices(
+          choice=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort 
+            "OutOfPort (fluid flows only out of port_b)",
+          choice=Modelica_Fluid.Types.SourceFlowDirection.InToPort 
+            "InToPort (fluid flows only in to port_b)",
+          choice=Modelica_Fluid.Types.FlowDirection.Bidirectional 
+            "Bidirectional (flow reversal possible)"),
+        Documentation(info="<html>
+<p>
+Integer type that can have the following values
+(to be selected via choices menu):
+</p>
+ 
+<table border=1 cellspacing=0 cellpadding=2>
+<tr><th><b>Types.FlowDirection.</b></th><th><b>Meaning</b></th></tr>
+<tr><td>OutOfPort (=1)</td>
+    <td>Fluid flows only out of the port.
+        By this option, max=0 is set for
+        port_b.m_flow. This allows a
+        Modelica translator to remove if-clauses of 
+        the semiLinear(..) operator reducing the
+        size of non-linear equation systems.</td></tr>
+ 
+ <tr><td>InTofPort (=2)</td>
+    <td>Fluid flows only in to the port.
+        By this option, min=0 is set for
+        port_b.m_flow. This allows a
+        Modelica translator to remove if-clauses of 
+        the semiLinear(..) operator reducing the
+        size of non-linear equation systems.</td></tr>
+ 
+<tr><td>Bidirectional (=3)</td>
+    <td>No restrictions on fluid flow (flow reversal possible)</td></tr>
+ 
+</table>
+</html>"));
+    end Temp;
+  end SourceFlowDirection;
   
   model CvTypes 
     "Type, constants and menu choices to define the choice of valve flow coefficient" 
