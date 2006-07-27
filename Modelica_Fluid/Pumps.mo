@@ -106,7 +106,7 @@ package Pumps
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
     parameter Boolean checkValve=true "Reverse flow stopped";
     parameter Types.FlowDirection.Temp flowDirection=
-                     Types.FlowDirection.Unidirectional 
+                     Types.FlowDirection.Bidirectional 
         "Unidirectional (inlet -> outlet) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
   //  parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";

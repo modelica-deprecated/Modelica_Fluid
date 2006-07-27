@@ -93,8 +93,8 @@ partial model PartialTwoPortTransport
                                                                        annotation (
       choicesAllMatching =                                                                            true);
     
- parameter Types.FlowDirectionWithGlobalDefault.Temp flowDirection=
-                   Modelica_Fluid.Types.FlowDirection.Unidirectional 
+ parameter Types.FlowDirection.Temp flowDirection=
+                   Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
     
@@ -224,7 +224,7 @@ end PartialTwoPortTransport;
         annotation (choicesAllMatching = true);
     
     parameter Types.FlowDirection.Temp flowDirection=
-              Types.FlowDirection.Unidirectional 
+              Types.FlowDirection.Bidirectional 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
     Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,

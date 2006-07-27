@@ -6,7 +6,6 @@ package Boilers
     import Modelica.Constants;
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.FlowDirection;
-    import Modelica_Fluid.Types.FlowDirectionWithGlobalDefault;
   replaceable package Medium = 
       Modelica.Media.Interfaces.PartialTwoPhaseMedium 
     extends Modelica.Media.Interfaces.PartialTwoPhaseMedium "Medium model" 
@@ -25,8 +24,8 @@ package Boilers
       "Start value of liquid volumeStart value of volume" 
     annotation(Dialog(tab = "Initialization"));
     
-  parameter FlowDirectionWithGlobalDefault.Temp flowDirection=
-            FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+  parameter FlowDirection.Temp flowDirection=
+            FlowDirection.Bidirectional 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
     

@@ -29,7 +29,7 @@ model LumpedPipe "Short pipe with one volume, wall friction and gravity effect"
       "Nominal density (for wall friction computation)" 
                                                       annotation(Dialog(enable=use_nominal));
   parameter Types.FlowDirection.Temp flowDirection=
-                  Types.FlowDirection.Unidirectional 
+                  Types.FlowDirection.Bidirectional 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
   parameter SI.AbsolutePressure dp_small = 1 
