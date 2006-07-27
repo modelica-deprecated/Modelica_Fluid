@@ -87,7 +87,8 @@ package Pumps
         "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
        annotation(Evaluate=true,Dialog(group="Characteristics"));
     replaceable function powerCharacteristic = 
-      PumpCharacteristics.basePower 
+          PumpCharacteristics.quadraticPower (
+         q_nom={0,0,0},W_nom={0,0,0}) 
         "Power consumption vs. q_flow at nominal speed and density" 
       annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
                  choicesAllMatching=true);
@@ -108,7 +109,7 @@ package Pumps
                      Types.FlowDirection.Unidirectional 
         "Unidirectional (inlet -> outlet) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
-    parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";
+  //  parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";
     parameter Medium.AbsolutePressure pin_start 
         "Guess value for inlet pressure" 
       annotation(Dialog(tab="Initialization"));
@@ -118,6 +119,7 @@ package Pumps
     parameter Boolean use_T_start = true 
         "Use T_start if true, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate = true);
+      
     parameter Medium.Temperature T_start=
       if use_T_start then Medium.T_default else Medium.temperature_phX(pin_start,h_start,X_start) 
         "Guess value for temperature" 
@@ -163,8 +165,8 @@ package Pumps
     constant SI.Power W_eps=1e-8 
         "Small coefficient to avoid numerical singularities in efficiency computations";
     Real eta "Global Efficiency";
-    SI.Length NPSHa "Net Positive Suction Head available";
-    Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
+    // SI.Length NPSHa "Net Positive Suction Head available";
+    // Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
     Real s(start = m_flow_start) 
         "Curvilinear abscissa for the flow curve in parametric form";
     Modelica.Blocks.Interfaces.IntegerInput in_Np 
@@ -176,6 +178,7 @@ package Pumps
        flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
+      
   equation 
     // Number of pumps in parallel
     Np = in_Np;
@@ -227,13 +230,17 @@ package Pumps
     end if;
       
     // NPSH computations
-    if computeNPSHa then
-      pv=SatMedium.saturationPressure(fluid.T);
-      NPSHa=(inlet.p-pv)/(d*Modelica.Constants.g_n);
-    else
-      pv=0;
-      NPSHa=0;
-    end if;
+      
+  /*
+  if computeNPSHa then
+    pv=SatMedium.saturationPressure(fluid.T);
+    NPSHa=(inlet.p-pv)/(d*Modelica.Constants.g_n);
+  else
+    pv=0;
+    NPSHa=0;
+  end if;
+*/
+      
   /*
 initial equation 
   if initOpt == Choices.Init.Options.noInit then
@@ -246,6 +253,7 @@ initial equation
     assert(false, "Unsupported initialisation option");
   end if;
 */
+      
     annotation (
       Icon(
         Polygon(points=[-40,-64; -60,-100; 60,-100; 40,-64; -40,-64],
@@ -311,8 +319,9 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     function linearFlow "Linear flow characteristic" 
       extends baseFlow;
       input SI.VolumeFlowRate q_nom[2] 
-          "Volume flow rate for two operating points (single pump)";
-      input SI.Height head_nom[2] "Pump head for two operating points";
+          "Volume flow rate for two operating points (single pump)" 
+                                                                  annotation(Dialog);
+      input SI.Height head_nom[2] "Pump head for two operating points" annotation(Dialog);
       protected 
       constant Real g = Modelica.Constants.g_n;
       /* Linear system to determine the coefficients:
@@ -329,8 +338,9 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     function quadraticFlow "Quadratic flow characteristic" 
       extends baseFlow;
       input SI.VolumeFlowRate q_nom[3] 
-          "Volume flow rate for three operating points (single pump)";
-      input SI.Height head_nom[3] "Pump head for three operating points";
+          "Volume flow rate for three operating points (single pump)" 
+                                                                    annotation(Dialog);
+      input SI.Height head_nom[3] "Pump head for three operating points" annotation(Dialog);
       protected 
       constant Real g = Modelica.Constants.g_n;
       Real q_nom2[3] = {q_nom[1]^2,q_nom[2]^2, q_nom[3]^2} 
@@ -350,8 +360,9 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     function polynomialFlow "Polynomial flow characteristic" 
       extends baseFlow;
       input SI.VolumeFlowRate q_nom[:] 
-          "Volume flow rate for N operating points (single pump)";
-      input SI.Height head_nom[:] "Pump head for N operating points";
+          "Volume flow rate for N operating points (single pump)" 
+                                                                annotation(Dialog);
+      input SI.Height head_nom[:] "Pump head for N operating points" annotation(Dialog);
       protected 
       constant Real g = Modelica.Constants.g_n;
       Integer N = size(q_nom,1) "Number of nominal operating points";
@@ -372,7 +383,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       
     function constantEfficiency "Constant efficiency characteristic" 
        extends baseEfficiency;
-       input Real eta_nom "Nominal efficiency";
+       input Real eta_nom "Nominal efficiency" annotation(Dialog);
     algorithm 
       eta := eta_nom;
     end constantEfficiency;
@@ -380,8 +391,9 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     function quadraticPower "Quadratic power consumption characteristic" 
       extends basePower;
       input SI.VolumeFlowRate q_nom[3] 
-          "Volume flow rate for three operating points (single pump)";
-      input SI.Power W_nom[3] "Power consumption for three operating points";
+          "Volume flow rate for three operating points (single pump)" 
+                                                                    annotation(Dialog);
+      input SI.Power W_nom[3] "Power consumption for three operating points" annotation(Dialog);
       protected 
       Real q_nom2[3] = {q_nom[1]^2,q_nom[2]^2, q_nom[3]^2} 
           "Squared nominal flow rates";
