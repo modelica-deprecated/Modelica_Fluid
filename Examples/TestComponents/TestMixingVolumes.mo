@@ -62,7 +62,7 @@ model TestMixingVolumes
   inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[-100,-100; -80,-80]);
 equation 
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-30; 
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-30;
         9.8,-30],                                     style(color=69, rgbcolor=
           {0,127,255}));
   connect(PortVolume1.port,PortVolume2. port) 
@@ -81,7 +81,7 @@ equation
   connect(FlowSource2.port, Tmix_in.port_a) annotation (points=[-80,-30;
         -60,-30],
               style(color=69, rgbcolor={0,127,255}));
-  connect(Tmix_in.port_b, MixingVolume1.port_a) annotation (points=[-40,-30; 
+  connect(Tmix_in.port_b, MixingVolume1.port_a) annotation (points=[-40,-30;
         -30.2,-30], style(color=69, rgbcolor={0,127,255}));
   connect(MixingVolume2.port_b, Tmix_out.port_a) annotation (points=[30,-30;
         40,-30],

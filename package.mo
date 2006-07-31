@@ -4,7 +4,8 @@ annotation (
   versionDate="2006-07-26",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses( Modelica(version="2.2.1"), UserInteraction(version="0.52")),
+  uses( Modelica(version="2.2.1"), UserInteraction(version="0.52"), 
+    Aufgabe5_Fluid_StateGraph(version="1")),
   classOrder={"UsersGuide","Examples","Ambient", "Boilers","ControlValves","Flowmachines","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
@@ -68,8 +69,10 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
+
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
+
 
 package UsersGuide "Users Guide" 
   
