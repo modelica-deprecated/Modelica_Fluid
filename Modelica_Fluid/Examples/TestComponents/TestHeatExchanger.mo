@@ -4,7 +4,7 @@ extends Modelica.Icons.Example;
   
 replaceable package Medium = Modelica.Media.Water.StandardWater;
   
-  Subsystems.HeatExchanger HEX(
+  Modelica_Fluid.Examples.TestComponents.Utilities.HeatExchanger HEX(
     d_wall=200,
     c_wall=500,
     use_T_start_1=true,
@@ -68,7 +68,7 @@ replaceable package Medium = Modelica.Media.Water.StandardWater;
   inner Modelica_Fluid.Ambient ambient 
                                    annotation (extent=[60,70; 80,90]);
 equation 
-  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34; 
+  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34;
         -40,34; -40,29.8; -29,29.8],     style(
       color=69,
       rgbcolor={0,127,255},
@@ -89,7 +89,7 @@ equation
       fillColor=70,
       rgbfillColor={0,63,125},
       fillPattern=1));
-  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2; 
+  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2;
         49.5,2.2; 49.5,-18; 62,-18], style(
       color=69,
       rgbcolor={0,127,255},
