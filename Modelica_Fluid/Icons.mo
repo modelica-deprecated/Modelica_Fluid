@@ -1,4 +1,4 @@
-package Icons 
+package Icons "Library of resuable icons" 
   extends Modelica.Icons.Library;
   partial class VariantLibrary 
     "Icon for a library that contains several variants of one component" 
@@ -30,6 +30,7 @@ package Icons
   end VariantLibrary;
   
   partial package BaseClassLibrary "Icon for library" 
+    
     annotation (Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[1, 1],
@@ -65,4 +66,7 @@ package Icons
           style(color=3),
           string="Base classes")));
   end BaseClassLibrary;
+  annotation (Documentation(info="<html>
+ 
+</html>"));
 end Icons;

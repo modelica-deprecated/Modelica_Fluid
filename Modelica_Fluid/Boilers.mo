@@ -1,4 +1,4 @@
-package Boilers 
+package Boilers "Evaporators and condensor components" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   model EquilibriumDrumBoiler 
     "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378" 
@@ -159,4 +159,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
   equation 
     
   end EquilibriumDrumBoiler;
+  annotation (Documentation(info="<html>
+ 
+</html>"));
 end Boilers;

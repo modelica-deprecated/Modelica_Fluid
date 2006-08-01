@@ -1,4 +1,4 @@
-package Pipes 
+package Pipes "Lumped, distributed and thermal pipe components" 
     extends Modelica_Fluid.Icons.VariantLibrary;
   
 model LumpedPipe "Short pipe with one volume, wall friction and gravity effect" 
@@ -1034,4 +1034,7 @@ Heat transfer correlations for pipe models
 </html>"));
   end HeatTransfer;
   end BaseClasses;
+  annotation (Documentation(info="<html>
+ 
+</html>"));
 end Pipes;

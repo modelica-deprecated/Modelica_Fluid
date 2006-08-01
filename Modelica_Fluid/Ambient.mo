@@ -52,27 +52,9 @@ model Ambient "Ambient field component"
           style(color=0, rgbcolor={0,0,0}),
           string="defaults")),
     Diagram,
-    Documentation(info="<HTML>
-<p>
-This models defines <b>default ambient conditions</b> (such as ambient pressure) 
-for all components that are on the same 
-or on a lower level as this component, as well as the constant 
-<b>gravity acceleration</b> (on earth). Dragging this component in a model results
-in the following declaration:
-</p>
-<pre>
-   <b>inner</b> Modelica_Fluid.Components.Ambient ambient;
-</pre>
-<p>
-The parameters of this instance can be 
-then accessed via a corresponding outer declaration:
-</p>
-<pre>
-   <b>outer</b> Modelica_Fluid.Components.Ambient ambient;
-</pre>
+    Documentation(info="<html>
  
-</HTML>
-"));
+</html>"));
   
 /*
     Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape dummyShape 

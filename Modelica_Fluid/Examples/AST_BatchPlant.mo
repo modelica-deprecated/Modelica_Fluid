@@ -1,4 +1,5 @@
 package AST_BatchPlant 
+  "Model of the experimental batch plant at Process Control Laboratory at University of Dortmund (Prof. Engell)" 
   model BatchPlant_StandardWater 
     parameter Real riseTime = 0.001;
     
@@ -406,11 +407,11 @@ package AST_BatchPlant
     
     connect(PortVolume2.port, V3.port_b) annotation (points=[-180,220; -134,220],
                 style(color=69, rgbcolor={0,127,255}));
-    connect(V2.port_b, PortVolume2.port) annotation (points=[-50,240; -180,240; 
+    connect(V2.port_b, PortVolume2.port) annotation (points=[-50,240; -180,240;
           -180,220],      style(color=69, rgbcolor={0,127,255}));
     connect(V6.port_b, PortVolume8.port) annotation (points=[132,220; 160,220],
         style(color=69, rgbcolor={0,127,255}));
-    connect(V4.port_a, PortVolume8.port) annotation (points=[50,240; 160,240; 
+    connect(V4.port_a, PortVolume8.port) annotation (points=[50,240; 160,240;
           160,220],                 style(color=69, rgbcolor={0,127,255}));
     connect(PortVolume1.port, V1.port_a) annotation (points=[-180,70; -180,100],
         style(color=69, rgbcolor={0,127,255}));
@@ -426,7 +427,7 @@ package AST_BatchPlant
         style(color=69, rgbcolor={0,127,255}));
     connect(V5.port_b, PortVolume8.port) annotation (points=[160,120; 160,220],
         style(color=69, rgbcolor={0,127,255}));
-    connect(V19.port_a, PortVolume4.port) annotation (points=[-8,-210; -8,-250; 
+    connect(V19.port_a, PortVolume4.port) annotation (points=[-8,-210; -8,-250;
           -28,-250], style(color=69, rgbcolor={0,127,255}));
     connect(V23.port_a, PortVolume4.port) annotation (points=[-96,-250; -28,
           -250],     style(color=69, rgbcolor={0,127,255}));
@@ -440,7 +441,7 @@ package AST_BatchPlant
           -250],            style(color=69, rgbcolor={0,127,255}));
     connect(P1.outlet, PortVolume3.port) annotation (points=[-144,-246.8; -144,
           -250; -180,-250],      style(color=69, rgbcolor={0,127,255}));
-    connect(P1.inlet, V23.port_b) annotation (points=[-130,-252; -114,-252; 
+    connect(P1.inlet, V23.port_b) annotation (points=[-130,-252; -114,-252;
           -114,-250; -116,-250],
         style(color=69, rgbcolor={0,127,255}));
     connect(V24.port_b, P2.inlet) annotation (points=[104,-250; 106,-250; 106,
@@ -450,11 +451,11 @@ package AST_BatchPlant
           -248; 160,-248],     style(color=69, rgbcolor={0,127,255}));
     connect(V15.port_a, B5.BottomFluidPort[1]) annotation (points=[-80,-72; -80,
           -60.4],          style(color=69, rgbcolor={0,127,255}));
-    connect(V3.port_a, B1.topPorts[1]) annotation (points=[-114,220; -106,220; 
+    connect(V3.port_a, B1.topPorts[1]) annotation (points=[-114,220; -106,220;
           -106,230; -80,230; -80,220],   style(color=69, rgbcolor={0,127,255}));
     connect(B1.ports[1], V8.port_b) annotation (points=[-80,180; -80,172],
         style(color=69, rgbcolor={0,127,255}));
-    connect(P1_on.y, P1.N_in) annotation (points=[-137,-224; -135.4,-224; 
+    connect(P1_on.y, P1.N_in) annotation (points=[-137,-224; -135.4,-224;
           -135.4,-245.6],
                    style(color=74, rgbcolor={0,0,127}));
     connect(P2_on.y, P2.N_in) annotation (points=[111,-218; 119.4,-218; 119.4,
@@ -477,11 +478,11 @@ package AST_BatchPlant
         style(color=69, rgbcolor={0,127,255}));
     connect(PipeB1B2.port_a, V4.port_b) annotation (points=[10,240; 30,240],
         style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB1B3.port_b, V8.port_a) annotation (points=[-62,144; -80,144; 
+    connect(PipeB1B3.port_b, V8.port_a) annotation (points=[-62,144; -80,144;
           -80,152],  style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB1B3.port_a, B3.topPorts[1]) annotation (points=[-42,144; 0,144; 
+    connect(PipeB1B3.port_a, B3.topPorts[1]) annotation (points=[-42,144; 0,144;
           0,139],   style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB2B3.port_a, B3.topPorts[2]) annotation (points=[36,144; 0,144; 
+    connect(PipeB2B3.port_a, B3.topPorts[2]) annotation (points=[36,144; 0,144;
           0,141],   style(color=69, rgbcolor={0,127,255}));
     connect(PipeB2B3.port_b, V9.port_a) annotation (points=[56,144; 80,144; 80,
           152], style(color=69, rgbcolor={0,127,255}));
@@ -501,28 +502,28 @@ package AST_BatchPlant
           -222], style(color=69, rgbcolor={0,127,255}));
     connect(PipePump1B1.port_a, V22.port_b) annotation (points=[-180,-14; -180,
           -46],  style(color=69, rgbcolor={0,127,255}));
-    connect(PipePump1B1.port_b, PortVolume1.port) annotation (points=[-180,6; 
+    connect(PipePump1B1.port_b, PortVolume1.port) annotation (points=[-180,6;
           -180,70],  style(color=69, rgbcolor={0,127,255}));
-    connect(PipePump2B2.port_b, PortVolume7.port) annotation (points=[160,20; 
+    connect(PipePump2B2.port_b, PortVolume7.port) annotation (points=[160,20;
           160,60],  style(color=69, rgbcolor={0,127,255}));
     connect(V25.port_b, PipePump2B2.port_a) annotation (points=[160,-10; 160,0],
                            style(color=69, rgbcolor={0,127,255}));
     connect(B6.ports[1], PipeB6Pump.port_b) annotation (points=[60,-80; 60,-96],
         style(color=69, rgbcolor={0,127,255}));
-    connect(B6.topPorts[1], B5.Condensed) annotation (points=[60,-40; 60,-28; 
+    connect(B6.topPorts[1], B5.Condensed) annotation (points=[60,-40; 60,-28;
           -19.6,-28],            style(color=69, rgbcolor={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (points=[92,-60; 80,-60],
                         style(color=42, rgbcolor={191,0,0}));
-    connect(V19.port_b, PipeB6Pump.port_a) annotation (points=[-8,-190; -8,-140; 
+    connect(V19.port_b, PipeB6Pump.port_a) annotation (points=[-8,-190; -8,-140;
           60,-140; 60,-116],       style(color=69, rgbcolor={0,127,255}));
     connect(V20.port_b, PipeB6Pump.port_a) annotation (points=[60,-190; 60,-116],
         style(color=69, rgbcolor={0,127,255}));
-    connect(HeatB5.port, B5.HeatPort) annotation (points=[-114,-40; -102,-40], 
+    connect(HeatB5.port, B5.HeatPort) annotation (points=[-114,-40; -102,-40],
         style(
-        color=42, 
-        rgbcolor={191,0,0}, 
-        fillColor=30, 
-        rgbfillColor={215,215,215}, 
+        color=42,
+        rgbcolor={191,0,0},
+        fillColor=30,
+        rgbfillColor={215,215,215},
         fillPattern=10));
   end BatchPlant_StandardWater;
   
@@ -1443,16 +1444,16 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ControllerUtilities.Port_Sensors
         sensors 
         annotation (extent=[-280,-40; -200,40]);
-      annotation (Diagram, Coordsys(extent=[-200,-200; 200,200]), 
+      annotation (Diagram, Coordsys(extent=[-200,-200; 200,200]),
         Icon(
           Rectangle(extent=[-200,200; 200,-200], style(
-              color=3, 
-              rgbcolor={0,0,255}, 
-              fillColor=7, 
-              rgbfillColor={255,255,255})), 
+              color=3,
+              rgbcolor={0,0,255},
+              fillColor=7,
+              rgbfillColor={255,255,255})),
           Text(
-            extent=[-288,286; 262,208], 
-            style(color=3, rgbcolor={0,0,255}), 
+            extent=[-288,286; 262,208],
+            style(color=3, rgbcolor={0,0,255}),
             string="%name"),
           Line(points=[-48,0; 0,0],         style(
               color=0,
@@ -1623,7 +1624,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
             rgbcolor={0,0,0}));
       connect(Step6.outPort[1], Transition7.inPort) 
         annotation (points=[-99.5,40; -84,40],   style(color=0, rgbcolor={0,0,0}));
-      connect(Step12.inPort[1], Parallel1.split[1]) annotation (points=[-63,-30; 
+      connect(Step12.inPort[1], Parallel1.split[1]) annotation (points=[-63,-30;
             -134.375,-30; -134.375,-25],
                                   style(color=0, rgbcolor={0,0,0}));
       connect(Step12.outPort[1], Transition12.inPort) 
@@ -1637,10 +1638,10 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       connect(Transition13.outPort, Step14.inPort[1]) 
         annotation (points=[39.5,-30; 57,-30],
                                              style(color=0, rgbcolor={0,0,0}));
-      connect(Step14.outPort[1], Parallel1.join[1]) annotation (points=[78.5,-30; 
+      connect(Step14.outPort[1], Parallel1.join[1]) annotation (points=[78.5,-30;
             152.375,-30; 152.375,-25],
                                 style(color=0, rgbcolor={0,0,0}));
-      connect(Step7.inPort[1], Parallel1.split[2]) annotation (points=[-123,-70; 
+      connect(Step7.inPort[1], Parallel1.split[2]) annotation (points=[-123,-70;
             -138,-70; -138,-75; -134.375,-75],style(color=0, rgbcolor={0,0,0}));
       connect(Step7.outPort[1], Transition8.inPort) annotation (points=[-101.5,
             -70; -86,-70],
@@ -1662,11 +1663,11 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       connect(Step11.outPort[1], Parallel1.join[2]) annotation (points=[138.5,
             -70; 154,-70; 154,-75; 152.375,-75],
                                            style(color=0, rgbcolor={0,0,0}));
-      connect(Transition7.outPort, Parallel1.inPort) annotation (points=[-78.5,40; 
+      connect(Transition7.outPort, Parallel1.inPort) annotation (points=[-78.5,40;
             -40,40; -40,20; -190,20; -190,-50; -181.55,-50],
                                                            style(color=0, rgbcolor=
               {0,0,0}));
-      connect(TransitionWithSignal1.inPort, Parallel1.outPort) annotation (points=[2,-150; 
+      connect(TransitionWithSignal1.inPort, Parallel1.outPort) annotation (points=[2,-150;
             208,-150; 208,-50; 197.7,-50],       style(color=0, rgbcolor={0,0,0}));
       connect(TransitionWithSignal1.outPort, InitialStep1.inPort[1]) annotation (
           points=[-3.5,-150; -194,-150; -194,100; -181,100], style(color=0,
@@ -1788,16 +1789,16 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
         
         annotation (Icon(
              Polygon(points=[-100,100; 100,0; -100,-100; -100,100], style(
-                color=0, 
-                rgbcolor={0,0,0}, 
-                thickness=2, 
-                fillColor=7, 
+                color=0,
+                rgbcolor={0,0,0},
+                thickness=2,
+                fillColor=7,
                 rgbfillColor={255,255,255}))), Diagram(
                 Polygon(points=[0,50; 100,0; 0,-50; 0,50], style(
-                color=0, 
-                rgbcolor={0,0,0}, 
-                thickness=2, 
-                fillColor=7, 
+                color=0,
+                rgbcolor={0,0,0},
+                thickness=2,
+                fillColor=7,
                 rgbfillColor={255,255,255}))));
       end Port_Actuators;
       
@@ -1816,18 +1817,18 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
         Real TIS_602;
         Real LIS_701;
         Real TIS_702;
-        annotation (Icon(Polygon(points=[-100,100; -100,-100; 100,0; -100,100], 
+        annotation (Icon(Polygon(points=[-100,100; -100,-100; 100,0; -100,100],
                 style(
-                color=0, 
-                rgbcolor={0,0,0}, 
-                thickness=2, 
-                fillColor=30, 
+                color=0,
+                rgbcolor={0,0,0},
+                thickness=2,
+                fillColor=30,
                 rgbfillColor={215,215,215}))), Diagram(Polygon(points=[0,50; 0,
                   -50; 100,0; 0,50], style(
-                color=0, 
-                rgbcolor={0,0,0}, 
-                thickness=2, 
-                fillColor=30, 
+                color=0,
+                rgbcolor={0,0,0},
+                thickness=2,
+                fillColor=30,
                 rgbfillColor={215,215,215}))));
       end Port_Sensors;
     end ControllerUtilities;
@@ -2142,4 +2143,20 @@ of the diagram animation in Dymola can be set via command
         Coordsys(grid=[1,1], scale=0.2));
   end CoolingTank;
   end BaseClasses;
+  annotation (Documentation(info="<html>
+<p>
+The process under consideration is an evaporation plant for a 
+student lab at the Process Control Laboratory (AST) of the 
+University of Dortmund that evaporates a water sodium chloride 
+mixture so that a higher concentrated solution is produced. 
+The task of the students is to learn how to program the process 
+control system. A picture of the batch plant is shown in the figure
+below.
+</p>
+
+<p>
+The flow sheet diagram is shown in figure 2.
+</p>
+
+</html>"));
 end AST_BatchPlant;

@@ -20,7 +20,7 @@ package TestTanks "Test tank components"
     Sources.PrescribedMassFlowRate_TX flowSource(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort, 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort,
       m_flow=50) 
       annotation (extent=[-60,70; -40,90]);
     annotation (Diagram,
@@ -33,18 +33,18 @@ package TestTanks "Test tank components"
       annotation (extent=[-60,-40; -40,-20]);
     PressureLosses.WallFrictionAndGravity pipe(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed, 
-      length=1, 
-      diameter=0.1, 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+      length=1,
+      diameter=0.1,
       height_ab=1) annotation (extent=[-30,-20; -10,0], rotation=90);
   equation 
     connect(flowSource.port, tank.topPort[1])   annotation (points=[-40,80; -20,
           80; -20,60], style(color=69, rgbcolor={0,127,255}));
     connect(ambient_fixed.port, pipe.port_a) annotation (points=[-40,-30; -20,
           -30; -20,-20], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe.port_b, tank.bottomPort[1]) annotation (points=[-20,0; -20,20], 
+    connect(pipe.port_b, tank.bottomPort[1]) annotation (points=[-20,0; -20,20],
         style(color=69, rgbcolor={0,127,255}));
   end OneTank;
   

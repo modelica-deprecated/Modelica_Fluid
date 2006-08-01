@@ -1,4 +1,5 @@
 package Sources 
+  "Generic sources for fluid connectors to define fixed or prescribed ambient conditions" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   import SI = Modelica.SIunits;
   model FixedAmbient "Ambient source component" 

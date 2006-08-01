@@ -2,10 +2,7 @@ package Types "Common types for fluid models"
   
   annotation (preferedView="info",
               Documentation(info="<html>
-<p>
-Package <b>Types</b> contains common type definitions of the Modelica_Fluid
-library.
-</p>
+ 
 </html>"));
   
   type HydraulicConductance =Real (

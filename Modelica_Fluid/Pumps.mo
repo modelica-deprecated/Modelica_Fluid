@@ -1,4 +1,4 @@
-package Pumps 
+package Pumps "Pump components" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   model Pump "Centrifugal pump with ideally controlled speed" 
     extends Modelica_Fluid.Pumps.BaseClasses.PartialPump;
@@ -410,4 +410,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       
   end PumpCharacteristics;
   end BaseClasses;
+  annotation (Documentation(info="<html>
+ 
+</html>"));
 end Pumps;

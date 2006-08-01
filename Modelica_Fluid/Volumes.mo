@@ -1,4 +1,4 @@
-package Volumes 
+package Volumes "Generic volume, tank and other volume type components" 
    extends Modelica_Fluid.Icons.VariantLibrary;
   
     model MixingVolume 
@@ -31,7 +31,7 @@ package Volumes
     end MixingVolume;
   
 model OpenTank "Open tank with inlet/outlet ports at the bottom" 
-  import SI = Modelica.SIunits;
+    import SI = Modelica.SIunits;
   replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
@@ -251,11 +251,11 @@ end OpenTank;
 model Tank 
     "Open tank with top and bottom inlet/outlet ports at a defineable height" 
     
-  import SI = Modelica.SIunits;
-  import Modelica.Constants;
-  import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
-  import Modelica_Fluid.Utilities.regRoot2;
-  import Modelica_Fluid.Volumes.BaseClasses.TankPortData;
+    import SI = Modelica.SIunits;
+    import Modelica.Constants;
+    import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
+    import Modelica_Fluid.Utilities.regRoot2;
+    import Modelica_Fluid.Volumes.BaseClasses.TankPortData;
     
   replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -563,4 +563,7 @@ end Tank;
     end TankPortData;
     
   end BaseClasses;
+  annotation (Documentation(info="<html>
+ 
+</html>"));
 end Volumes;

@@ -1,4 +1,4 @@
-package Junctions 
+package Junctions "Junction components" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   
   model Splitter 
@@ -65,4 +65,7 @@ package Junctions
     port_1.H_flow + port_2.H_flow + port_3.H_flow = 0 "Energy balance";
   end Splitter;
   
+  annotation (Documentation(info="<html>
+ 
+</html>"));
 end Junctions;
