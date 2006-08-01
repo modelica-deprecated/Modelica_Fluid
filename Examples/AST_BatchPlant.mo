@@ -1,5 +1,43 @@
 package AST_BatchPlant 
   "Model of the experimental batch plant at Process Control Laboratory at University of Dortmund (Prof. Engell)" 
+  annotation (preferedView="info",Documentation(info="<html>
+<p>
+The process under consideration is an evaporation plant for a 
+student lab at the Process Control Laboratory (AST) of the 
+University of Dortmund that evaporates a water sodium chloride 
+mixture so that a higher concentrated solution is produced. 
+The task of the students is to learn how to program the process 
+control system. A picture of the batch plant is shown in the figure
+below.
+</p>
+ 
+<p align=\"center\">
+<img src=\"../Images/Examples/AST_BatchPlant1.jpg\">
+</p>
+
+<p>
+The flow sheet diagram is shown in the next figure.
+</p>
+ 
+<p align=\"center\">
+<img src=\"../Images/Examples/AST_BatchPlant2.png\">
+</p>
+
+<p>
+Pure water from tank B1 and concentrated sodium chloride 
+solution from tank B2 are mixed in a mixing tank B3. 
+After buffering in tank B4 the mixture flows to the 
+evaporator B5. Here the water sodium chloride mixture 
+is evaporated until the desired con-centration is reached. 
+The steam is condensed in the condenser K1 and cooled 
+afterwards in the cooling tank B6. The concentrated
+ solution is also led to a cooling tank B7. The cooled 
+fluids are pumped back to the charging vessels by the 
+pumps P1 and P2. Be-tween the tanks several valves are 
+present that are regulated by a central control system.
+</p>
+</html>"));
+  
   model BatchPlant_StandardWater 
     parameter Real riseTime = 0.001;
     
@@ -2143,20 +2181,5 @@ of the diagram animation in Dymola can be set via command
         Coordsys(grid=[1,1], scale=0.2));
   end CoolingTank;
   end BaseClasses;
-  annotation (Documentation(info="<html>
-<p>
-The process under consideration is an evaporation plant for a 
-student lab at the Process Control Laboratory (AST) of the 
-University of Dortmund that evaporates a water sodium chloride 
-mixture so that a higher concentrated solution is produced. 
-The task of the students is to learn how to program the process 
-control system. A picture of the batch plant is shown in the figure
-below.
-</p>
-
-<p>
-The flow sheet diagram is shown in figure 2.
-</p>
-
-</html>"));
+  
 end AST_BatchPlant;

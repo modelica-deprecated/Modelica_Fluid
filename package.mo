@@ -1153,6 +1153,14 @@ ambiguity is removed by rule 2.</i></p>
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
+<h3><font color=\"#008000\">Version 1.0 Beta 1, 2006-08-01</font></h3>
+ 
+<p>
+Package considerably restructured and some new components added.
+New examples (ControlledTankSystem, AST_BatchPlant).
+</p>
+
+
 <h3><font color=\"#008000\">Version 0.96, 2006-01-08</font></h3>
  
 <ul>
