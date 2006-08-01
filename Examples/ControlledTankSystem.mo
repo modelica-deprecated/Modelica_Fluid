@@ -1,4 +1,5 @@
 package ControlledTankSystem 
+  "Tank system with controller, start/stop/shut operation and diagram animation" 
   model ControlledTanks 
     "Demonstrating the controller of a tank filling/emptying system" 
     extends Modelica.Icons.Example;
@@ -140,7 +141,6 @@ This example is based on
         style(color=5, rgbcolor={255,0,255}));
     connect(start.on, tankController.start) annotation (points=[-79,30; -70,30;
           -70,12; -62,12],       style(color=5, rgbcolor={255,0,255}));
-    
     connect(tankController.valve1, valve1.open) annotation (points=[-19,12; -10,
           12; -10,50; 12,50], style(color=5, rgbcolor={255,0,255}));
     connect(level1.y, tankController.level1) annotation (points=[-53.25,-50;
@@ -156,7 +156,6 @@ This example is based on
                     style(color=74, rgbcolor={0,0,127}));
     connect(source.port, valve1.port_b) 
       annotation (points=[20,70; 20,60], style(color=69, rgbcolor={0,127,255}));
-    
     connect(valve1.port_a, tank1.topPorts[1]) 
       annotation (points=[20,40; 20,30], style(color=69, rgbcolor={0,127,255}));
     connect(tank1.ports[1], valve2.port_b) annotation (points=[20,-10; 20,-20],
@@ -167,6 +166,7 @@ This example is based on
           color=69, rgbcolor={0,127,255}));
     connect(valve3.port_a, ambient1.port) annotation (points=[80,-80; 80,-90;
           30,-90], style(color=69, rgbcolor={0,127,255}));
+    
   end ControlledTanks;
   
   package Utilities 

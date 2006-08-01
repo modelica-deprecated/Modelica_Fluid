@@ -1,4 +1,4 @@
-package ControlValves 
+package ControlValves "Various variants of valve components" 
     extends Modelica_Fluid.Icons.VariantLibrary;
   
     model ValveIncompressible "Valve for (almost) incompressible fluids" 
@@ -427,4 +427,7 @@ This characteristic is such that the relative change of the flow coefficient is 
       
   end ValveCharacteristics;
   end BaseClasses;
+  annotation (Documentation(info="<html>
+ 
+</html>"));
 end ControlValves;

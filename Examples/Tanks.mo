@@ -191,7 +191,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.1,
           portLevel=1)},
-      level_start=2, 
+      level_start=2,
       stiffCharacteristicForEmptyPort=true) 
       annotation (extent=[-40,-20; 0,20]);
     PressureLosses.WallFrictionAndGravity pipe1(
@@ -255,7 +255,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.1,
           portLevel=1)},
-      level_start=2, 
+      level_start=2,
       stiffCharacteristicForEmptyPort=true) 
       annotation (extent=[-80,0; -40,40]);
     PressureLosses.WallFrictionAndGravity pipe1(
@@ -291,7 +291,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.1,
           portLevel=0.5)},
-      level_start=0.1, 
+      level_start=0.1,
       stiffCharacteristicForEmptyPort=true) 
       annotation (extent=[20,0; 60,40]);
     PressureLosses.WallFrictionAndGravity pipe3(
@@ -392,14 +392,14 @@ package Tanks "Library demonstrating the usage of the tank model"
           -92; -60,-92; -60,-88], style(color=69, rgbcolor={0,127,255}));
     connect(open.y, valveDiscrete.open) annotation (points=[-77,-78; -68,-78],
         style(color=5, rgbcolor={255,0,255}));
-    connect(valveDiscrete.port_b,tank3. ports[1]) annotation (points=[-60,-68; 
+    connect(valveDiscrete.port_b,tank3. ports[1]) annotation (points=[-60,-68;
           -60,-50],      style(color=69, rgbcolor={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (points=[70,40; 70,50],
         style(color=69, rgbcolor={0,127,255}));
-    connect(pipe2.port_b, tank2.ports[2]) annotation (points=[6.12303e-016,-14; 
+    connect(pipe2.port_b, tank2.ports[2]) annotation (points=[6.12303e-016,-14;
           6.12303e-016,-10; 0,-10; 0,10],
                              style(color=69, rgbcolor={0,127,255}));
-    connect(pipe2.port_a, tank3.ports[2]) annotation (points=[-6.12303e-016,-34; 
+    connect(pipe2.port_a, tank3.ports[2]) annotation (points=[-6.12303e-016,-34;
           -6.12303e-016,-48; 0,-60; -58,-60; -58,-50; -60,-50],
                                   style(color=69, rgbcolor={0,127,255}));
     connect(pipe3.port_a, tank3.topPorts[1]) 

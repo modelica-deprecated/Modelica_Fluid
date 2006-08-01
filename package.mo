@@ -1,26 +1,14 @@
-package Modelica_Fluid "Fluid package that shall be included into package Modelica (requires package Modelica 2.2.1)"
+package Modelica_Fluid "1-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 2.2.1)"
 annotation (
   version="1.0 Beta 1",
-  versionDate="2006-07-26",
+  versionDate="2006-08-01",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses( Modelica(version="2.2.1"), UserInteraction(version="0.52"), 
+  uses( Modelica(version="2.2.1"), UserInteraction(version="0.52"),
     Aufgabe5_Fluid_StateGraph(version="1")),
   classOrder={"UsersGuide","Examples","Ambient", "Boilers","ControlValves","Flowmachines","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
-<p>
-Note, the current version of Modelica_Fluid does <b>not</b> work with
-the current version 2.2 of the Modelica standard library shipped with
-the Modelica tools. The reason is that some additional functions have been
-added to Modelica.Media that are called in Modelica_Fluid.
-In order to run Modelica_Fluid, the current version of the Modelica 
-standard library from the Modelica cvs server has to be used.
-It has the version number 2.2.1 and will be officially released
-and made available for Modelica tools in mid or end of January 2006.
-</p>
- 
-</p>
 <p>
 Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
 components describing
@@ -33,20 +21,29 @@ substance medium with one or more phases might be used.
 The goal is to include 
 the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
+ 
 <p>
-This is a first reasonable beta release of the Modelica_Fluid library.
-Component interfaces may be changed without providing automatic conversion to
-the first release version. A typical example is shown in the next
-figure (drum boiler):
+This is version <b>1.0 Beta 1</b> of the Modelica_Fluid library.
+We expect that the structure and the components of the library do 
+not change or only marginally change for the 1.0 release version.
+For the 1.0 version the documentation will be improved and
+a few components might be slightly changed.
+</p>
+ 
+<p>
+A typical example model of the Modelica_Fluid library
+is shown in the next figure (drum boiler):
 </p>
 <p align=\"center\">
 <img src=\"../Images/UsersGuide/DrumBoiler.png\">
 </p>
 <p>
-A typical example with three tanks is shown in the next figure:
+An example of a tank system that is controlled by a control system
+and where some of the components have built-in diagram animation
+is shown in the next figure:
 </p>
 <p align=\"center\">
-<img src=\"../Images/UsersGuide/ThreeTanks.png\">
+<img src=\"../Images/Examples/ControlledTanks1.png\">
 </p>
 <p>
 The following parts are useful, when newly starting with this library:
@@ -58,13 +55,23 @@ The following parts are useful, when newly starting with this library:
 <li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
      contains examples that demonstrate the usage of this library.</li>
 </ul>
-<p><b>Copyright &copy; 2002-2005, Modelica Association.</b></p>
+ 
+<p>
+Note, Modelica_Fluid does <b>not</b> work with
+version 2.2 of the Modelica standard library. 
+The reason is that some additional functions have been
+added to Modelica.Media in 2.2.1 that are accessed in Modelica_Fluid.
+</p>
+ 
+<p><b>Copyright &copy; 2002-2006, Modelica Association.</b></p>
 <p><i>
 This Modelica package is <b>free</b> software; it can be redistributed and/or modified
 under the terms of the <b>Modelica license</b>, see the license conditions
 and the accompanying <b>disclaimer</b> in the documentation of package
 Modelica in file \"Modelica/package.mo\".
 </i></p>
+
+ 
 </html>"),
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));

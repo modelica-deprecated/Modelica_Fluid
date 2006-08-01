@@ -1,4 +1,4 @@
-package Thermal 
+package Thermal "Components to model the thermal behavior of pipe walls" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   
 model WallConstProps 
@@ -74,4 +74,7 @@ Simple model of circular (or any other closed shape) wall to be used for pipe (o
 </html>"));
 end WallConstProps;
   
+  annotation (Documentation(info="<html>
+ 
+</html>"));
 end Thermal;
