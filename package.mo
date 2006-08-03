@@ -6,7 +6,7 @@ annotation (
   Settings(NewStateSelection=true),
   uses( Modelica(version="2.2.1"), UserInteraction(version="0.52"),
     Aufgabe5_Fluid_StateGraph(version="1")),
-  classOrder={"UsersGuide","Examples","Ambient", "Boilers","ControlValves","Flowmachines","Junctions",
+  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
 <p>
@@ -70,16 +70,14 @@ under the terms of the <b>Modelica license</b>, see the license conditions
 and the accompanying <b>disclaimer</b> in the documentation of package
 Modelica in file \"Modelica/package.mo\".
 </i></p>
-
+ 
  
 </html>"),
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
-
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
-
 
 package UsersGuide "Users Guide" 
   
