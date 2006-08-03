@@ -33,7 +33,7 @@ Simulate for 7200 seconds.
     
     import Modelica.SIunits.Conversions.*;
     
-    Modelica_Fluid.Boilers.EquilibriumDrumBoiler evaporator(
+    Modelica_Fluid.HeatExchangers.EquilibriumDrumBoiler evaporator(
       m_D=300e3,
       cp_D=500,
       V_t=100,
