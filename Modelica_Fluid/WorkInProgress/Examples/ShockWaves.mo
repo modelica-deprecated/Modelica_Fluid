@@ -41,7 +41,7 @@ annotation (
     T_start=320,
     A_a=1,
     includeViscosity=true,
-    initOption=Modelica_Fluid.Types.Init.InitialValues) 
+    initType=Modelica_Fluid.Types.Init.InitialValues) 
            annotation (extent=[20,50; 40,70]);
   Modelica_Fluid.Sources.PrescribedAmbient_pTX prescribedAmbient(redeclare 
         package Medium=Modelica.Media.Air.DryAirNasa) 
@@ -121,7 +121,7 @@ annotation (
     nVolumes=25,
       h_start=1e4,
       T_start=293.15,
-      initOption=Modelica_Fluid.Types.Init.InitialValues) 
+      initType=Modelica_Fluid.Types.Init.InitialValues) 
            annotation (extent=[12,70; 32,90]);
   Modelica_Fluid.Sources.PrescribedAmbient_pTX prescribedAmbient(
       redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
@@ -157,7 +157,7 @@ annotation (
     includeViscosity=true,
     nVolumes=25,
       T_start=293.15,
-      initOption=Modelica_Fluid.Types.Init.InitialValues) 
+      initType=Modelica_Fluid.Types.Init.InitialValues) 
            annotation (extent=[48,70; 68,90]);
   UserInteraction.Outputs.SpatialPlot SpatialPlot1(
     maxY=1.1e5,
@@ -188,7 +188,7 @@ annotation (
     includeViscosity=true,
     nVolumes=20,
       T_start=293.15,
-      initOption=Modelica_Fluid.Types.Init.InitialValues) 
+      initType=Modelica_Fluid.Types.Init.InitialValues) 
            annotation (extent=[48,30; 68,50]);
   UserInteraction.Outputs.SpatialPlot SpatialPlot3(
     maxY=1.1e5,

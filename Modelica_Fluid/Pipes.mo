@@ -995,7 +995,7 @@ transport. This splitting is only possible under certain assumptions.
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort 
           "Thermal port" 
         annotation (extent=[-20,60; 20,80]);
-      SI.Temperature[n] T;
+      input SI.Temperature[n] T;
     equation 
         
       annotation (Icon(Ellipse(extent=[-60,64; 60,-56], style(

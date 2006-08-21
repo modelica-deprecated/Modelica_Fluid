@@ -9,12 +9,12 @@ model ThreeTanksIF97WithShortPipe2
       annotation (choicesAllMatching = true);
   // replaceable package Medium = Modelica.Media.Water.WaterIF97_ph 
   replaceable package WallFriction = 
-      PressureLosses.Utilities.WallFriction.QuadraticTurbulent;
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent;
   
   parameter Real D=0.1 "pipe diameters";
   final parameter Real A = Modelica.Constants.pi*(D/2)^2 "pipe area (for tank)";
   
-  annotation (
+  annotation (structurallyIncomplete,
     Diagram,
     Coordsys(grid=[1, 1], component=[20, 20]),
     experiment(StopTime=50),
@@ -34,22 +34,22 @@ Results when using Modelica.Media.Water.WaterIF97_ph:
  
 </html>"),
     experimentSetupOutput);
-  Modelica_Fluid.Components.Tank Tank1(
+  Modelica_Fluid.WorkInProgress.Components.Tank Tank1(
     area=1,
     T_start=Conversions.from_degC(50),
     level_start=3,
     redeclare package Medium = Medium,
     pipeArea=A) 
     annotation (extent=[-90, 20; -70, 40]);
-  Modelica_Fluid.Components.Tank Tank2(
+  Modelica_Fluid.WorkInProgress.Components.Tank Tank2(
     area=1,
     level_start=1,
-    initOption=Modelica_Fluid.Types.Init.InitialValues,
+    initType=Modelica_Fluid.Types.Init.InitialValues,
     T_start=Conversions.from_degC(90),
     redeclare package Medium = Medium,
     pipeArea=A) 
     annotation (extent=[-10,20; 10,40]);
-  Modelica_Fluid.Components.Tank Tank3(
+  Modelica_Fluid.WorkInProgress.Components.Tank Tank3(
     area=1,
     T_start=Conversions.from_degC(20),
     level_start=2,
@@ -82,9 +82,7 @@ Results when using Modelica.Media.Water.WaterIF97_ph:
     diameter=D,
     redeclare package WallFriction = WallFriction) 
     annotation (extent=[30, -30; 50, -10]);
-  inner Modelica_Fluid.Components.FluidOptions fluidOptions(default_initOption=
-        Modelica_Fluid.Types.Init.InitialValues) 
-    annotation (extent=[-100,-100; -80,-80]);
+  inner Modelica_Fluid.Ambient ambient annotation (extent=[-70,70; -50,90]);
 equation 
   connect(Tank1.port, shortPipe1.port_a) 
     annotation (points=[-80,19; -80,-20; -50,-20],    style(color=69));

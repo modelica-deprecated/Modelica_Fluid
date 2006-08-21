@@ -121,11 +121,11 @@ equation
         -64.38,-69.28], style(color=74, rgbcolor={0,0,127}));
   connect(pipe.port_a, pumps.outlet)         annotation (points=[-40,-30; -53.2,
         -30; -53.2,-70.84], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe.port_b, reservoir.port[1]) annotation (points=[-22,-30; -4.2,-30; 
+  connect(pipe.port_b, reservoir.port[1]) annotation (points=[-22,-30; -4.2,-30;
         -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
   connect(userValve.port_a, reservoir.port[1]) annotation (points=[58,-30; -4.2,
         -30; -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
-  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22; 
+  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22;
         -2,-22; -2,-15.9; -4.2,-15.9],      style(
       color=69,
       rgbcolor={0,127,255},

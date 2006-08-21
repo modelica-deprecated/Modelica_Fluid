@@ -4,7 +4,7 @@ package Interfaces
     import Modelica.SIunits.*;
     import Modelica.Constants.*;
     import Modelica_Fluid;
-    replaceable package Medium = PackageMedium extends 
+    replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component"  annotation (
         choicesAllMatching =                                                                            true);
     parameter Boolean allowFlowReversal = true 
