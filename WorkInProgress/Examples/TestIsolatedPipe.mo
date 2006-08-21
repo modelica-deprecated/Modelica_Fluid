@@ -21,7 +21,7 @@ model TestIsolatedPipe "Test ShortPipe component"
     m_flow_nominal=0.1,
     nVolumes=10,
     redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-    initOption=Modelica_Fluid.Types.Init.InitialValues) 
+    initType=Modelica_Fluid.Types.Init.InitialValues) 
     annotation (extent=[-9,0; 11,20]);
   
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowSource_1(T=
@@ -44,7 +44,7 @@ model TestIsolatedPipe "Test ShortPipe component"
     m_flow_nominal=0.1,
     nVolumes=10,
     redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-    initOption=Modelica_Fluid.Types.Init.InitialValues) 
+    initType=Modelica_Fluid.Types.Init.InitialValues) 
     annotation (extent=[-9,-40; 11,-20]);
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowSource_2(T=
         from_degC(30), redeclare package Medium = 

@@ -4,8 +4,8 @@ model IsolatedPipe
     "Model of an isolated pipe consisting of n pipe segments/FiniteVolumes" 
     import SI = Modelica.SIunits;
     
-  replaceable package Medium = PackageMedium extends 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+  replaceable package Medium = 
+    Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
     
   extends Modelica_Fluid.Interfaces.PartialInitializationParameters;
@@ -46,7 +46,7 @@ model IsolatedPipe
               annotation (extent=[120, -10; 100, 10]);
   Modelica_Fluid.WorkInProgress.Utilities.PipeSegment pipeSegment[nVolumes](
       redeclare package Medium = Medium,
-      each initOption = initOption,
+      each initType = initType,
       each p_start = p_start,
       each use_T_start = use_T_start,
       each T_start = T_start,
@@ -94,13 +94,12 @@ end IsolatedPipe;
   model ShortPipe2 
     "Short pipe with two volumes, wall friction and gravity effect" 
     import SI = Modelica.SIunits;
-    import Modelica_Fluid;
     
-    extends Modelica_Fluid.Interfaces.PartialTwoPort;
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     replaceable package WallFriction = 
-      Modelica_Fluid.PressureLosses.Utilities.WallFriction.QuadraticTurbulent 
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
       extends 
-      Modelica_Fluid.PressureLosses.Utilities.WallFriction.PartialWallFriction 
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
       "Characteristic of wall friction"  annotation(choicesAllMatching=true);
     
     parameter SI.Length length "Length of pipe";
@@ -116,23 +115,25 @@ end IsolatedPipe;
       "Nominal dynamic viscosity (for wall friction computation)" annotation(Dialog(enable=use_nominal));
     parameter SI.Density d_nominal = 0.01 
       "Nominal density (for wall friction computation)" annotation(Dialog(enable=use_nominal));
-    parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
-      flowDirection=
-              Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
-      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
-       annotation(Dialog(tab="Advanced"));
+  /*
+  parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
+    flowDirection=
+            Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
+    "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+     annotation(Dialog(tab="Advanced"));
+*/
     parameter SI.AbsolutePressure dp_small = 1 
       "Turbulent flow for wall friction if |dp| >= dp_small" 
       annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
     final parameter SI.Volume V = Modelica.Constants.pi*(diameter/2)^2*length;
     
-    parameter Modelica_Fluid.Types.InitWithGlobalDefault.Temp initVolume1=
-              Modelica_Fluid.Types.InitWithGlobalDefault.UseGlobalFluidOption 
+    parameter Modelica_Fluid.Types.Init.Temp initVolume1=
+               Modelica_Fluid.Types.Init.NoInit 
       "Initialization option for volume 1" 
       annotation(Dialog(tab = "Initialization"));
     
-    parameter Modelica_Fluid.Types.InitWithGlobalDefault.Temp initVolume2=
-              Modelica_Fluid.Types.InitWithGlobalDefault.UseGlobalFluidOption 
+    parameter Modelica_Fluid.Types.Init.Temp initVolume2=
+              Modelica_Fluid.Types.Init.NoInit 
       "Initialization option for volume 2" 
       annotation(Dialog(tab = "Initialization"));
     
@@ -200,7 +201,7 @@ to build up more detailed models from the basic components.
       length=length,
       height_ab=height_ab) 
                          annotation (extent=[-10,-10; 10,10]);
-    Modelica_Fluid.Utilities.PortVolume volume1(
+    Modelica_Fluid.Pipes.BaseClasses.PortVolume volume1(
       redeclare package Medium = Medium,
       p_start=p_start,
       use_T_start=use_T_start,
@@ -208,9 +209,9 @@ to build up more detailed models from the basic components.
       h_start=h_start,
       X_start=X_start,
       V=V/2,
-      initOption=initVolume1) 
+      initType=initVolume1) 
       annotation (extent=[-70,-10; -50,10]);
-    Modelica_Fluid.Utilities.PortVolume volume2(
+    Modelica_Fluid.Pipes.BaseClasses.PortVolume volume2(
       redeclare package Medium = Medium,
       p_start=p_start,
       use_T_start=use_T_start,
@@ -218,7 +219,7 @@ to build up more detailed models from the basic components.
       h_start=h_start,
       X_start=X_start,
       V=V/2,
-      initOption=initVolume2) 
+      initType=initVolume2) 
       annotation (extent=[50,-10; 70,10]);
   equation 
     connect(volume1.port, port_a) 
@@ -235,8 +236,8 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
     import SI = Modelica.SIunits;
     import Modelica_Fluid.Types;
     import Modelica_Fluid;
-  replaceable package Medium = PackageMedium 
-    extends Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+  replaceable package Medium = 
+    Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
     
   parameter SI.Height height "Height of tank";
@@ -274,8 +275,8 @@ model OpenTank "Tank with three inlet/outlet-arrays at variable heights"
       "Tank surface Temperature" 
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
     
-  parameter Types.InitWithGlobalDefault.Temp initType=
-            Types.InitWithGlobalDefault.InitialValues "Initialization option" 
+  parameter Types.Init.Temp initType=
+            Types.Init.InitialValues "Initialization option" 
     annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
   parameter SI.Height level_start "Start value of tank level" 
     annotation(Dialog(tab="Ambient and Initialization", group = "Initialization"));
@@ -546,7 +547,7 @@ end OpenTank;
 model Tank "Obsolet component (use instead Components.OpenTank)" 
     import Modelica_Fluid.Types;
     import Modelica_Fluid;
-  replaceable package Medium = PackageMedium extends 
+  replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
   parameter SI.Area area "Tank area";

@@ -1,7 +1,7 @@
 package Utilities 
 model TankAttachment "Equations to attach pipe at tank" 
     import SI = Modelica.SIunits;
-     replaceable package Medium = PackageMedium extends 
+     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
      annotation (choicesAllMatching=true);
     
@@ -66,8 +66,7 @@ it would not be possible to set, e.g., n_topPorts to zero.
           fillPattern=1),
         string="%name")));
   protected 
-  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
-      "Global default options";
+  outer Modelica_Fluid.Ambient ambient "Global default options";
   parameter SI.Area pipeArea = Modelica.Constants.pi*(pipeDiameter/2)^2;
   parameter Medium.MassFlowRate m_flow_nominal = 1 
       "Nominal mass flow rate used for scaling (has only an effect if k_small > 0)";
@@ -103,7 +102,7 @@ equation
      m_flow_out = (pre(m_flow_out) and not port.p>p_ambient) or (port.m_flow < -1e-6);
       
      if (aboveLevel > 0) then
-       port.p = aboveLevel*fluidOptions.g*d + p_ambient - smooth(2,noEvent(if m_flow < 0 then m_flow^2/(2*d*pipeArea^2) else 0));
+       port.p = aboveLevel*ambient.g*d + p_ambient - smooth(2,noEvent(if m_flow < 0 then m_flow^2/(2*d*pipeArea^2) else 0));
      else
        if pre(m_flow_out) then
           m_flow = 0;
@@ -140,7 +139,7 @@ in the port:
      m_flow_out = s <= 0;
      if aboveLevel >= 0 then
         m_flow = m_flow_nominal*s "equation to compute s, which is a dummy in this branch";
-        port.p - p_ambient = aboveLevel*fluidOptions.g*d  -
+        port.p - p_ambient = aboveLevel*ambient.g*d  -
                              smooth(2,if m_flow_out then s*abs(s)*m_flow_nominal^2/(2*d*pipeArea^2) else k_small*m_flow_nominal*s);
      else
         m_flow = (if m_flow_out then k_small*p_nominal else m_flow_nominal)*s;
@@ -745,8 +744,8 @@ Loss factor for mass flow rate from port_b to port_a
     import SI = Modelica.SIunits;
     import Modelica.Math;
     
-      replaceable package Medium = PackageMedium extends 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+      replaceable package Medium = 
+        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
           annotation (choicesAllMatching = true);
     
       Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
@@ -953,9 +952,9 @@ It consists of the following parts:
 </html>"));
 initial equation 
   // Initial conditions
-  if initOption2 == NoInit then
+  if initType == NoInit then
     // no initial equations
-  elseif initOption2 == InitialValues then
+  elseif initType == InitialValues then
     if not Medium.singleState then
       medium.p = p_start;
     end if;
@@ -965,13 +964,13 @@ initial equation
       medium.h = h_start;
     end if;
     medium.Xi = X_start[1:Medium.nXi];
-  elseif initOption2 == SteadyState then
+  elseif initType == SteadyState then
     if not Medium.singleState then
        der(medium.p) = 0;
     end if;
     der(medium.h) = 0;
     der(medium.Xi) = zeros(Medium.nXi);
-  elseif initOption2 == SteadyStateHydraulic then
+  elseif initType == SteadyStateHydraulic then
     if not Medium.singleState then
        der(medium.p) = 0;
     end if;

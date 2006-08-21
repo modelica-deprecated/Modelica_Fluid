@@ -1,7 +1,8 @@
 model TestSplitter 
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  Components.Splitter splitter(redeclare package Medium = 
+  Modelica_Fluid.Junctions.Splitter splitter(
+                               redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (extent=[20,-30; 40,-10]);
   Modelica_Fluid.Pipes.LumpedPipe pipe1(
     length=1,
@@ -39,8 +40,8 @@ model TestSplitter
     height=-6.5e5,
     offset=7e5) annotation (extent=[-90,-24; -70,-4]);
 equation 
-  connect(source3.port, pipe3.port_a) annotation (points=[30,60; 30,53; 30,53;
-        30,46; 30,46; 30,32], style(
+  connect(source3.port, pipe3.port_a) annotation (points=[30,60; 30,53; 30,53; 
+        30,46; 30,32; 30,32], style(
       color=69,
       rgbcolor={0,127,255},
       gradient=2,

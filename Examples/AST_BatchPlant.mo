@@ -881,7 +881,7 @@ handled properly.</p>
       parameter Real top_heights[n_TopPorts]=fill(height, n_TopPorts);
       parameter SI.Height level_start(min=0) "Initial tank level" 
         annotation(Dialog(tab="Initialization"));
-      parameter Modelica_Fluid.Types.InitTypes.Temp initType=NoInit 
+      parameter Modelica_Fluid.Types.Init.Temp initType=NoInit 
         "Initialization option" 
         annotation(Dialog(tab = "Initialization"));
       parameter Boolean use_T_start=true 
@@ -1288,11 +1288,12 @@ Full steady state initialization is not supported, because the corresponding int
         "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
          annotation(Dialog(group="Characteristics"));
         replaceable function powerCharacteristic = 
-            Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticPower
-          (q_nom={0,0,0},W_nom={0,0,0}) 
+          Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticPower (
+           q_nom={0,0,0},W_nom={0,0,0}) 
         "Power consumption vs. q_flow at nominal speed and density" 
           annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
                      choicesAllMatching=true);
+      
       replaceable function efficiencyCharacteristic = 
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.constantEfficiency
           ( eta_nom=0.8) extends 

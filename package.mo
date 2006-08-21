@@ -4,8 +4,7 @@ annotation (
   versionDate="2006-08-01",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses( Modelica(version="2.2.1"), UserInteraction(version="0.52"),
-    Aufgabe5_Fluid_StateGraph(version="1")),
+  uses(Modelica(version="2.2.1"), UserInteraction(version="0.52")),
   classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
