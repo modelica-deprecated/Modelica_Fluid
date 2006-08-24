@@ -162,173 +162,168 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
   annotation (Documentation(info="<html>
  
 </html>"));
-  model HeatExchanger "Double pipe heat exchanger with outer wall neglected" 
+  model BasicHX "Simple heat exchanger model" 
     
     //General
-    parameter Integer n(min=1)=1 "Spatial segmentation";
+    parameter Integer n(min=1) = 1 "Spatial segmentation";
     replaceable package Medium_1 = Modelica.Media.Water.StandardWater extends 
-      Modelica.Media.Interfaces.PartialMedium "Inner pipe medium" 
-                                                      annotation(choicesAllMatching);
+      Modelica.Media.Interfaces.PartialMedium "Fluid 1" 
+                                                      annotation(choicesAllMatching, Dialog(tab="General",group="Fluid 1"));
     replaceable package Medium_2 = Modelica.Media.Water.StandardWater extends 
-      Modelica.Media.Interfaces.PartialMedium "Outer pipe medium" 
-                                                      annotation(choicesAllMatching);
-    parameter SI.Length di_1(min=0) "Inner diameter of inner pipe"     annotation(Dialog(tab="General", group="Dimensions"));
-    parameter SI.Length da_1(min=0) "Inner diameter of outer pipe"     annotation(Dialog(tab="General", group="Dimensions"));
-    parameter SI.Length da_2(min=0) "Outer diameter of outer pipe"     annotation(Dialog(tab="General", group="Dimensions"));
-    parameter SI.Length length(min=0) "Length of both pipes" annotation(Dialog(tab="General", group="Dimensions"));
-    
+      Modelica.Media.Interfaces.PartialMedium "Fluid 2" 
+                                                      annotation(choicesAllMatching,Dialog(tab="General", group="Fluid 2"));
+    parameter SI.Area Ah_1 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 1"));
+    parameter SI.Area Ah_2 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 2"));
+    parameter SI.Area Ac_1 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 1"));
+    parameter SI.Area Ac_2 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 2"));
+    parameter SI.Length P_1 "Flow channel perimeter" annotation(Dialog(tab="General",group="Fluid 1"));
+    parameter SI.Length P_2 "Flow channel perimeter" annotation(Dialog(tab="General",group="Fluid 2"));
+    parameter SI.Length length(min=0) "Length of flow path for both fluids";
+    parameter SI.Length s_wall(min=0) "Wall thickness";
     //Wall
-    parameter SI.Density d_wall "Density of wall material" annotation(Dialog(tab="General", group="Constant material properties"));
+    parameter SI.Density d_wall "Density of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
     parameter SI.SpecificHeatCapacity c_wall 
-      "Specific heat capacity of wall material"                                        annotation(Dialog(tab="General", group="Constant material properties"));
+      "Specific heat capacity of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
     final parameter SI.Mass m_wall=sum(wall.m) "Wall mass";
-   parameter Types.Init.Temp initType_wall=Types.Init.NoInit 
-      "Initialization option" 
-     annotation(Evaluate=true, Dialog(tab = "Initialization"));
-  parameter SI.Temperature Twall_start "Start value of wall temperature"  annotation(Dialog(tab="Initialization", group="Wall"));
+    parameter SI.ThermalConductivity k_wall 
+      "Thermal conductivity of wall material" 
+      annotation (Dialog(group="Solid material properties"));
     
     //Initialization pipe 1
     parameter Types.Init.Temp initType=Types.Init.InitialValues 
       "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-    parameter Boolean use_T_start_1=true 
-      "Use T_start if true, otherwise h_start" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe"));
+    parameter SI.Temperature Twall_start "Start value of wall temperature" 
+                                                                          annotation(Dialog(tab="Initialization", group="Wall"));
+    parameter SI.Temperature dT "Start value for port_b.T - port_a.T" 
+      annotation (Dialog(tab="Initialization", group="Wall"));
+    parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
+      annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter Medium_1.AbsolutePressure p_a_start1=Medium_1.p_default 
       "Start value of pressure" 
-      annotation(Dialog(tab = "Initialization", group = "Inner pipe"));
+      annotation(Dialog(tab = "Initialization", group = "Fluid 1"));
     parameter Medium_1.AbsolutePressure p_b_start1=Medium_1.p_default 
       "Start value of pressure" 
-      annotation(Dialog(tab = "Initialization", group = "Inner pipe"));
-    parameter Medium_1.Temperature T_start_1=if use_T_start_1 then Medium_1.T_default else 
-        Medium_1.temperature_phX((p_a_start1+p_b_start1)/2, h_start_1, X_start_1) 
-      "Start value of temperature" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe", enable = use_T_start_1));
-    parameter Medium_1.SpecificEnthalpy h_start_1=if use_T_start_1 then 
-        Medium_1.specificEnthalpy_pTX((p_a_start1+p_b_start1)/2, T_start_1, X_start_1[1:Medium_1.nXi]) else Medium_1.h_default 
+      annotation(Dialog(tab = "Initialization", group = "Fluid 1"));
+    parameter Medium_1.Temperature T_start_1=if use_T_start then Medium_1.
+        T_default else Medium_1.temperature_phX(
+          (p_a_start1 + p_b_start1)/2,
+          h_start_1,
+          X_start_1) "Start value of temperature" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 1", enable = use_T_start));
+    parameter Medium_1.SpecificEnthalpy h_start_1=if use_T_start then Medium_1.specificEnthalpy_pTX(
+          (p_a_start1 + p_b_start1)/2,
+          T_start_1,
+          X_start_1[1:Medium_1.nXi]) else Medium_1.h_default 
       "Start value of specific enthalpy" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe", enable = not use_T_start_1));
+      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 1", enable = not use_T_start));
     parameter Medium_1.MassFraction X_start_1[Medium_1.nX]=Medium_1.X_default 
       "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", group = "Inner pipe", enable=(Medium_1.nXi > 0)));
+      annotation (Dialog(tab="Initialization", group = "Fluid 1", enable=(Medium_1.nXi > 0)));
     parameter Medium_1.MassFlowRate mflow_start_1 
-      "Start value of mass flow rate" annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Inner pipe"));
+      "Start value of mass flow rate" annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 1"));
     //Initialization pipe 2
-    parameter Boolean use_T_start_2=true 
-      "Use T_start if true, otherwise h_start" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe"));
+    
     parameter Medium_2.AbsolutePressure p_a_start2=Medium_2.p_default 
       "Start value of pressure" 
-      annotation(Dialog(tab = "Initialization", group = "Outer pipe"));
+      annotation(Dialog(tab = "Initialization", group = "Fluid 2"));
     parameter Medium_2.AbsolutePressure p_b_start2=Medium_2.p_default 
       "Start value of pressure" 
-      annotation(Dialog(tab = "Initialization", group = "Outer pipe"));
-    parameter Medium_2.Temperature T_start_2=if use_T_start_2 then Medium_2.T_default else 
-        Medium_2.temperature_phX((p_a_start2+p_b_start2)/2, h_start_2, X_start_2) 
-      "Start value of temperature" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe", enable = use_T_start_2));
-    parameter Medium_2.SpecificEnthalpy h_start_2=if use_T_start_2 then 
-        Medium_2.specificEnthalpy_pTX((p_a_start2+p_b_start2)/2, T_start_2, X_start_2[1:Medium_2.nXi]) else Medium_2.h_default 
+      annotation(Dialog(tab = "Initialization", group = "Fluid 2"));
+    parameter Medium_2.Temperature T_start_2=if use_T_start then Medium_2.
+        T_default else Medium_2.temperature_phX(
+          (p_a_start2 + p_b_start2)/2,
+          h_start_2,
+          X_start_2) "Start value of temperature" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 2", enable = use_T_start));
+    parameter Medium_2.SpecificEnthalpy h_start_2=if use_T_start then Medium_2.specificEnthalpy_pTX(
+          (p_a_start2 + p_b_start2)/2,
+          T_start_2,
+          X_start_2[1:Medium_2.nXi]) else Medium_2.h_default 
       "Start value of specific enthalpy" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe", enable = not use_T_start_2));
+      annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 2", enable = not use_T_start));
     parameter Medium_2.MassFraction X_start_2[Medium_2.nX]=Medium_2.X_default 
       "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", group = "Outer pipe", enable=Medium_2.nXi>0));
+      annotation (Dialog(tab="Initialization", group = "Fluid 2", enable=Medium_2.nXi>0));
     parameter Medium_2.MassFlowRate mflow_start_2 
-      "Start value of mass flow rate"    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Outer pipe"));
+      "Start value of mass flow rate"    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 2"));
     //Advanced
-    parameter Boolean singleState_hydraulic = false 
-      " = true, lumped pressure drop, reduces number of pressure states to one"
-                                annotation(Evaluate=true, Dialog(tab="Advanced", group="Conservation of mass, energy, momentum"));
     parameter Boolean static=false 
       "= true, use quasistatic mass and energy balances" 
-                             annotation(Evaluate=true, Dialog(tab="Advanced", group="Conservation of mass, energy, momentum"));
-    parameter Boolean kineticTerm=false 
-      " = true, include kinetic term in momentum balance" 
-                                  annotation(Evaluate=true, Dialog(tab="Advanced", group="Conservation of mass, energy, momentum"));
-    parameter Real K1=1 
-      "Enhancement factor for heat transfer area pipe 1(=>parallel tubes)"  annotation(Dialog(tab="General", group="Heat transfer"));
-    parameter Real K2=1 
-      "Enhancement factor for heat transfer area pipe 2(=>parallel tubes)"  annotation(Dialog(tab="General", group="Heat transfer"));
+                             annotation(Evaluate=true, Dialog(tab="General", group="Model options"));
     
     //Pressure drop and heat transfer    
     replaceable package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
-                                                                   extends 
+      extends 
       Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
       "Characteristic of wall friction"                                                            annotation(choicesAllMatching, Dialog(tab="General", group="Pressure drop"));
     parameter SI.Length roughness_1=2.5e-5 
-      "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Pressure drop"));
+      "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Fluid 1"));
     parameter SI.Length roughness_2=2.5e-5 
-      "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Pressure drop"));
+      "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Fluid 2"));
     parameter SI.DynamicViscosity eta_nominal_M1=0.01 
-      "Nominal dynamic viscosity of medium 1(e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
-                                                                                             annotation(Dialog(tab="General", group="Pressure drop"));
+      "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
+                                                                                             annotation(Dialog(tab="General", group="Fluid 1"));
     parameter SI.DynamicViscosity eta_nominal_M2=0.01 
-      "Nominal dynamic viscosity of medium 1(e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
-                                                                                         annotation(Dialog(tab="General", group="Pressure drop"));
+      "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
+                                                                                         annotation(Dialog(tab="General", group="Fluid 2"));
     parameter Boolean use_eta_nominal=false 
       "= true, if eta_nominal is used, otherwise computed from medium" annotation(Evaluate=true, Dialog(tab="General", group="Pressure drop"));
     replaceable model HeatTransfer_1 = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
-        extends 
+      extends 
       Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer 
-      "Heat transfer model"                                                                         annotation(choicesAllMatching, Dialog(tab="General", group="Heat transfer"));
+      "Heat transfer model" annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
     replaceable model HeatTransfer_2 = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
-        extends 
+      extends 
       Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer 
-      "Heat transfer model"                                                                         annotation(choicesAllMatching, Dialog(tab="General", group="Heat transfer"));
+      "Heat transfer model" annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
     //Display variables
-    SI.HeatFlowRate Q_flow_1 "Total heat flow rate of inner pipe";
-    SI.HeatFlowRate Q_flow_2 "Total heat flow rate of outer pipe";
+    SI.HeatFlowRate Q_flow_1 "Total heat flow rate of pipe 1";
+    SI.HeatFlowRate Q_flow_2 "Total heat flow rate of pipe 2";
     
-    Modelica_Fluid.Pipes.DistributedPipe_thermal pipe_1(
+    Modelica_Fluid.Pipes.DistributedPipe pipe_1(
       redeclare package Medium = Medium_1,
+      isCircular=false,
+      diameter=0,
       n=n,
       static=static,
-      singleState_hydraulic=singleState_hydraulic,
-      kineticTerm=kineticTerm,
-      crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.Circular,
       length=length,
-      area_h=Modelica.Constants.pi*di_1*length*K1,
+      area_h=Ah_1,
       redeclare HeatTransfer_1 heatTransfer,
       initType=initType,
-      use_T_start=use_T_start_1,
+      use_T_start=use_T_start,
       T_start=T_start_1,
       h_start=h_start_1,
       X_start=X_start_1,
       mflow_start=mflow_start_1,
-      diameter=di_1,
-      width=0,
-      height=0,
+      perimeter=P_1,
+      area=Ac_1,
       redeclare package WallFriction = WallFriction,
       roughness=roughness_1,
       use_eta_nominal=use_eta_nominal,
       eta_nominal=eta_nominal_M1) 
                                annotation (extent=[-40,-60; 20,0]);
     
-    Modelica_Fluid.Pipes.DistributedPipe_thermal pipe_2(
+    Modelica_Fluid.Pipes.DistributedPipe pipe_2(
       redeclare package Medium = Medium_2,
       n=n,
       static=static,
-      singleState_hydraulic=singleState_hydraulic,
-      kineticTerm=kineticTerm,
-      crossSectionType=Modelica_Fluid.Types.CrossSectionTypes.General,
       length=length,
-      height=0,
-      width=0,
+      isCircular=false,
       diameter=0,
       redeclare HeatTransfer_2 heatTransfer,
-      use_T_start=use_T_start_2,
+      use_T_start=use_T_start,
       T_start=T_start_2,
       h_start=h_start_2,
       X_start=X_start_2,
       initType=initType,
       mflow_start=mflow_start_2,
-      perimeter=Modelica.Constants.pi*(da_1 + da_2),
-      area=Modelica.Constants.pi/4*(da_2*da_2 - da_1*da_1),
-      area_h=Modelica.Constants.pi*da_1*length*K2,
+      perimeter=P_2,
+      area=Ac_2,
+      area_h=Ah_2,
       p_a_start=p_a_start1,
       p_b_start=p_b_start2,
       redeclare package WallFriction = WallFriction,
@@ -337,7 +332,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       eta_nominal=eta_nominal_M2,
       show_Re=false) 
                 annotation (extent=[-40,88; 20,28]);
-    annotation (Diagram,    Icon(
+    annotation (Diagram, Icon(
         Rectangle(extent=[-100,-26; 100,-30], style(
             color=0,
             rgbcolor={0,0,0},
@@ -371,7 +366,10 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
         Text(
           extent=[-100,-60; 100,-100],
           string="%name",
-          style(color=3, rgbcolor={0,0,255}))));
+          style(color=3, rgbcolor={0,0,255}))), 
+      Documentation(info="<html>
+Simple model of a heat exchanger consisting of two pipes and one wall in between. For both fluids geometry parameters, such as heat transfer area and cross section as well as heat transfer and pressure drop correlations may be chosen. The flow scheme be cocurrent or counterflow, defined by the respective flow directions of the fluids entering the component.
+</html>"));
     Modelica_Fluid.Interfaces.FluidPort_b port_b1(redeclare package Medium = 
           Medium_1) annotation (extent=[100,-12; 120,8]);
     Modelica_Fluid.Interfaces.FluidPort_a port_a1(redeclare package Medium = 
@@ -382,26 +380,20 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
           Medium_2) annotation (extent=[100,-56; 120,-36]);
     
     Modelica_Fluid.Thermal.WallConstProps wall(
-                                           n=n,
-      length=length,
+      n=n,
       d_wall=d_wall,
       c_wall=c_wall,
       T_start=Twall_start,
-      a_inner=Modelica.Constants.pi/4*di_1*di_1,
-      a_outer=Modelica.Constants.pi/4*da_1*da_1,
       k_wall=k_wall,
-      area_h=Modelica.Constants.pi*(di_1 + da_1)*length,
       dT=dT,
-      initType=initType_wall) 
+      s=s_wall,
+      area_h=(Ah_1 + Ah_2)/2,
+      initType=initType) 
       annotation (extent=[-28,-14; 10,44]);
-    parameter SI.ThermalConductivity k_wall 
-      "Thermal conductivity of wall material" 
-      annotation (Dialog(group="Constant material properties"));
-    parameter SI.Temperature dT "Start value for port_b.T - port_a.T" 
-      annotation (Dialog(tab="Initialization", group="Wall"));
+    
   equation 
-    Q_flow_1=sum(pipe_1.Qs_flow);
-    Q_flow_2=sum(pipe_2.Qs_flow);
+    Q_flow_1 = sum(pipe_1.heatTransfer.Q_flow);
+    Q_flow_2 = sum(pipe_2.heatTransfer.Q_flow);
     connect(pipe_2.port_b, port_b2) annotation (points=[20,58; 60,58; 60,-46; 110,
           -46], style(
         color=69,
@@ -434,10 +426,10 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
         gradient=2,
         fillColor=42,
         rgbfillColor={213,0,0}));
-    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8;
+    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8; 
           -10,29.5; -9,29.5],                  style(color=42, rgbcolor={191,0,
             0}));
-    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5;
+    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5; 
           -9,-7.75; -10,-7.75; -10,-13.8], style(color=42, rgbcolor={191,0,0}));
-  end HeatExchanger;
+  end BasicHX;
 end HeatExchangers;
