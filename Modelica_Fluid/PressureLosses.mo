@@ -573,7 +573,7 @@ model PressureDropPipe
 <p>
 This model describes pressure losses due to friction in a pipe. It is assumed that no mass or energy is stored in the pipe. 
 The details of the pipe friction model are described
-<a href=\"Modelica://Modelica_Fluid.Utilities.PipeFriction\">here</a>.
+<a href=\"Modelica://Modelica_Fluid.PressureLosses.BaseClasses.PipeFriction\">here</a>.
 </p>
 </html>"));
 equation 
@@ -2481,7 +2481,7 @@ due to friction under the assumption of quasi steady state flow (i.e., the
 mass flow rate varies only slowly). This model is not complete
 but may be used in a pipe model to provide an equation to compute
 the friction pressure loss from the mass flow rate through
-the pipe (see, e.g., <a href=\"Modelica://Modelica_Fluid.Components.ShortPipe\">Modelica_Fluid.Components.ShortPipe</a>).
+the pipe.
 </p>
 <p>
 Three loss models can be selected via

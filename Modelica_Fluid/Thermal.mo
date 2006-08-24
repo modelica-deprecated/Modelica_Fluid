@@ -3,43 +3,40 @@ package Thermal "Components to model the thermal behavior of pipe walls"
   
 model WallConstProps 
     "Pipe wall with capacitance, assuming 1D heat conduction and constant material properties" 
-  constant Real pi=Modelica.Constants.pi;
   parameter Integer n(min=1)=1 "Segmentation perpendicular to heat conduction";
-  parameter SI.Diameter a_inner "Inner cross section area";
-  parameter SI.Length a_outer "Outer cross section area";
-  parameter SI.Length length "Pipe length";
+//Geometry
+  parameter SI.Length s "Wall thickness";
   parameter SI.Length area_h "Heat transfer area";
-  parameter SI.Length s=sqrt(a_outer/pi)-sqrt(a_inner/pi) 
-      "Wall thickness, default expression for circular pipe";
+//Material properties
+  parameter SI.Density d_wall "Density of wall material";
+  parameter SI.SpecificHeatCapacity c_wall 
+      "Specific heat capacity of wall material";
+  parameter SI.ThermalConductivity k_wall 
+      "Thermal conductivity of wall material";
+  parameter SI.Mass[n] m=fill(d_wall*area_h*s/n,n) "Distribution of wall mass";
+//Initialization
+  parameter Types.Init.Temp initType=Types.
+        Init.NoInit "Initialization option" 
+    annotation(Evaluate=true);
+  parameter SI.Temperature T_start "Wall temperature start value";
+  parameter SI.Temperature dT "Start value for port_b.T - port_a.T";
+//Temperatures
   SI.Temperature[n] Tb(each start=T_start+0.5*dT);
   SI.Temperature[n] Ta(each start=T_start-0.5*dT);
+  SI.Temperature[n] T(start=ones(n)*T_start, stateSelect=StateSelect.prefer) 
+      "Wall temperature";
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_a 
       "Thermal port" 
     annotation (extent=[-20,40; 20,60]);
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_b 
       "Thermal port" 
     annotation (extent=[-20,-40; 20,-60]);
-  parameter SI.Density d_wall "Density of wall material";
-  parameter SI.SpecificHeatCapacity c_wall 
-      "Specific heat capacity of wall material";
-  parameter SI.ThermalConductivity k_wall 
-      "Thermal conductivity of wall material";
-  parameter SI.Temperature T_start "Start value for wall temperature";
-  parameter SI.Mass[n] m=ones(n)*(a_outer-a_inner)*length*d_wall/n 
-      "Distribution of wall mass";
-  parameter Types.Init.Temp initType=Types.
-       Init.NoInit "Initialization option" 
-   annotation(Evaluate=true, Dialog(tab = "Initialization"));
-  parameter Boolean initWall_steadyState=false 
-      " = true, wall is initialized in steady state";
-  SI.Temperature[n] T(start=ones(n)*T_start, stateSelect=StateSelect.prefer) 
-      "Wall temperature";
-  parameter SI.Temperature dT "Start value for port_b.T - port_a.T";
+    
 initial equation 
-  if initWall_steadyState then
-    der(T)=zeros(n);
-  else
-   T=ones(n)*T_start;
+  if initType == Types.Init.SteadyState or initType == Types.Init.SteadyStateHydraulic then
+    der(T) = zeros(n);
+  elseif initType == Types.Init.InitialValues then
+    T = ones(n)*T_start;
   end if;
 equation 
   for i in 1:n loop

@@ -3,8 +3,7 @@ package Volumes "Generic volume, tank and other volume type components"
   
     model MixingVolume 
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
-    extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
-                                                   V_lumped=V, Ws_flow=0);
+    extends Modelica_Fluid.Interfaces.PartialLumpedVolume(V_lumped=V, Ws_flow=0);
     parameter SI.Volume V "Volume";
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
       "Thermal port" 
@@ -23,6 +22,7 @@ package Volumes "Generic volume, tank and other volume type components"
           style(color=0),
           string="V=%V")),
       Documentation(info="<html>
+Ideally mixed volume of constant size with two fluid ports and one medium model. The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. The thermal port temperature is equal to the medium temperature.
 </html>"),
       Diagram);
     equation 
