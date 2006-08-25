@@ -1,10 +1,10 @@
 package Modelica_Fluid "1-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 2.2.1)"
 annotation (
-  version="1.0 Beta 1",
-  versionDate="2006-08-01",
+  version="1.0 Beta 2",
+  versionDate="2006-08-28",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(Modelica(version="2.2.1"), UserInteraction(version="0.52")),
+  uses(Modelica(version="2.2.1")),
   classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
@@ -22,7 +22,7 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
  
 <p>
-This is version <b>1.0 Beta 1</b> of the Modelica_Fluid library.
+This is version <b>1.0 Beta 2</b> of the Modelica_Fluid library.
 We expect that the structure and the components of the library do 
 not change or only marginally change for the 1.0 release version.
 For the 1.0 version the documentation will be improved and
@@ -75,8 +75,10 @@ Modelica in file \"Modelica/package.mo\".
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
 
+
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
+
 
 package UsersGuide "Users Guide" 
   
@@ -1150,7 +1152,7 @@ ambiguity is removed by rule 2.</i></p>
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Beta 1, 2006-08-01</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Beta 2, 2006-08-28</font></h3>
  
 <p>
 Package considerably restructured and some new components added.
