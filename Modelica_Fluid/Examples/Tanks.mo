@@ -22,7 +22,8 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort,
-      m_flow=20) 
+      m_flow=20, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[-52,70; -32,90]);
     annotation (Diagram,
       experiment(StopTime=100),
@@ -32,9 +33,12 @@ package Tanks "Library demonstrating the usage of the tank model"
             "../Scripts/Examples/OneTank/plot level, port.p and port.m_flow.mos" 
           "plot level, port.p and port.m_flow"));
     inner Ambient ambient annotation (extent=[-10,72; 10,92]);
-    Sources.FixedAmbient_pTX ambient_fixed(redeclare package Medium = 
+    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
+                                           redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort) 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
+      p=ambient.default_p_ambient, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[-54,-20; -34,0]);
     PressureLosses.WallFrictionAndGravity pipe(
       redeclare package Medium = 
@@ -109,7 +113,8 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort,
-      m_flow=50) 
+      m_flow=50, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[-20,40; 0,60]);
     annotation (Diagram,
       experiment(StopTime=35),
@@ -120,9 +125,12 @@ package Tanks "Library demonstrating the usage of the tank model"
             "../Scripts/Examples/TankWithEmptyingPipe1/plot level, port.p and port.m_flow.mos" 
           "plot level, port.p and port.m_flow"));
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
-    Sources.FixedAmbient_pTX ambient_fixed(redeclare package Medium = 
+    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
+                                           redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort) 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
+      p=ambient.default_p_ambient, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[-60,-100; -40,-80]);
     ControlValves.ValveDiscrete valveDiscrete(redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater, Kv=100) 
@@ -177,9 +185,12 @@ package Tanks "Library demonstrating the usage of the tank model"
             "../Scripts/Examples/TankWithEmptyingPipe2/plot level and port.p.mos" 
           "plot level and port.p"));
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
-    Sources.FixedAmbient_pTX ambient_fixed(redeclare package Medium = 
+    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
+                                           redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort) 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
+      p=ambient.default_p_ambient, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[-60,-100; -40,-80]);
     Modelica_Fluid.Volumes.Tank tank1(
       redeclare package Medium = 
@@ -212,10 +223,12 @@ package Tanks "Library demonstrating the usage of the tank model"
       length=1,
       diameter=0.1,
       height_ab=1) annotation (extent=[20,-70; 40,-50], rotation=90);
-    Sources.FixedAmbient_pTX ambient_fixed1(
+    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort) 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
+      p=ambient.default_p_ambient, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[0,-100; 20,-80]);
   equation 
     connect(tank1.ports[1], pipe1.port_b) annotation (points=[-20,-20; -20,
@@ -241,9 +254,12 @@ package Tanks "Library demonstrating the usage of the tank model"
             "../Scripts/Examples/TanksWithEmptyingPipe1/plot level, port.p and port.m_flow.mos" 
           "plot level, port.p and port.m_flow"));
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
-    Sources.FixedAmbient_pTX ambient_fixed1(redeclare package Medium = 
+    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
+                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater, flowDirection=
-          Modelica_Fluid.Types.SourceFlowDirection.InToPort) 
+          Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
+      p=ambient.default_p_ambient, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[-100,-80; -80,-60]);
     Modelica_Fluid.Volumes.Tank tank1(
       redeclare package Medium = 
@@ -276,10 +292,12 @@ package Tanks "Library demonstrating the usage of the tank model"
       length=1,
       diameter=0.1,
       height_ab=1) annotation (extent=[30,-50; 50,-30], rotation=90);
-    Sources.FixedAmbient_pTX ambient_fixed2(
+    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed2(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort) 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
+      p=ambient.default_p_ambient, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[0,-80; 20,-60]);
     Modelica_Fluid.Volumes.Tank tank2(
       redeclare package Medium = 
@@ -336,9 +354,12 @@ package Tanks "Library demonstrating the usage of the tank model"
             "../Scripts/Examples/TanksWithEmptyingPipe2/plot level and port.m_flow.mos" 
           "plot level and port.m_flow"));
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
-    Sources.FixedAmbient_pTX ambient_fixed(redeclare package Medium = 
+    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
+                                           redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort) 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
+      p=ambient.default_p_ambient, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[-16,-102; -36,-82]);
     ControlValves.ValveDiscrete valveDiscrete(redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater, Kv=100) 
@@ -482,11 +503,11 @@ package Tanks "Library demonstrating the usage of the tank model"
                                               style(color=69, rgbcolor={0,127,255}));
     connect(tank3.port[1], pipe3.port_b) annotation (points=[59.6,20.2; 59.6,9.1;
           60,9.1; 60,0], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -62,-20; 
+    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -62,-20;
           -62,-42; -6.12303e-016,-42; -6.12303e-016,-20],
                                                       style(color=69, rgbcolor={0,
             127,255}));
-    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12303e-016,-20; 
+    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12303e-016,-20;
           0,-20; 0,-42; 60,-42; 60,-20],
                                        style(color=69, rgbcolor={0,127,255}));
   end ThreeOpenTanks;

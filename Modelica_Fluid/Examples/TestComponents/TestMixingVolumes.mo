@@ -53,16 +53,18 @@ model TestMixingVolumes
   Modelica_Fluid.Sensors.Temperature Tport_out(
                                            redeclare package Medium = Medium) 
     annotation (extent=[40,10; 60,30]);
-  Modelica_Fluid.Sources.FixedAmbient_phX Sink1(    p=101325, redeclare package
-      Medium = Medium) 
+  Modelica_Fluid.Sources.FixedBoundary_phX Sink1(   p=101325, redeclare package
+      Medium = Medium, 
+    h=Medium.h_default) 
     annotation (extent=[100,10; 80,30]);
-  Modelica_Fluid.Sources.FixedAmbient_phX Sink2(    p=101325, redeclare package
-      Medium = Medium) 
+  Modelica_Fluid.Sources.FixedBoundary_phX Sink2(   p=101325, redeclare package
+      Medium = Medium, 
+    h=Medium.h_default) 
     annotation (extent=[100,-40; 80,-20]);
   inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[-100,-100; -80,-80]);
 equation 
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-30;
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-30; 
         9.8,-30],                                     style(color=69, rgbcolor=
           {0,127,255}));
   connect(PortVolume1.port,PortVolume2. port) 
@@ -81,7 +83,7 @@ equation
   connect(FlowSource2.port, Tmix_in.port_a) annotation (points=[-80,-30;
         -60,-30],
               style(color=69, rgbcolor={0,127,255}));
-  connect(Tmix_in.port_b, MixingVolume1.port_a) annotation (points=[-40,-30;
+  connect(Tmix_in.port_b, MixingVolume1.port_a) annotation (points=[-40,-30; 
         -30.2,-30], style(color=69, rgbcolor={0,127,255}));
   connect(MixingVolume2.port_b, Tmix_out.port_a) annotation (points=[30,-30;
         40,-30],

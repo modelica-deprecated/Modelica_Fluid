@@ -6,13 +6,15 @@ annotation (
   Diagram,
   experiment(StopTime=10, Tolerance=1e-006),
   Documentation(info=""));
-  Modelica_Fluid.Sources.FixedAmbient_pTX Source(
+  Modelica_Fluid.Sources.FixedBoundary_pTX Source(
                                              redeclare package Medium = 
-        Modelica.Media.Water.StandardWater, p=1e5) 
+        Modelica.Media.Water.StandardWater, p=1e5, 
+    T=ambient.default_T_ambient) 
   annotation (extent=[-100,20; -80,40]);
-  Modelica_Fluid.Sources.PrescribedAmbient_pTX SinkP1(
+  Modelica_Fluid.Sources.PrescribedBoundary_pTX SinkP1(
                                                   redeclare package Medium = 
-        Modelica.Media.Water.StandardWater, p=5e5) 
+        Modelica.Media.Water.StandardWater, p=5e5, 
+    T=ambient.default_T_ambient) 
   annotation (extent=[36,26; 16,46]);
   Modelica_Fluid.Pumps.Pump Pump1(
     pin_start=1e5,

@@ -4,20 +4,21 @@ model TestSplitter
   Modelica_Fluid.Junctions.Splitter splitter(redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa)      annotation (extent=[20,-30; 40,-10]);
   annotation (Diagram);
-  Modelica_Fluid.Sources.FixedAmbient_pTX source2(
+  Modelica_Fluid.Sources.FixedBoundary_pTX source2(
     T=278.15,
     p=5e5,
     redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
     annotation (extent=[80,-30; 100,-10], rotation=180);
-  Modelica_Fluid.Sources.FixedAmbient_pTX source3(
+  Modelica_Fluid.Sources.FixedBoundary_pTX source3(
     T=283.15,
     p=2e5,
     redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
     annotation (extent=[20,60; 40,80], rotation=270);
   inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[-100,80; -80,100]);
-  Modelica_Fluid.Sources.PrescribedAmbient_pTX source1(           p=5e5,
-      redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+  Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(          p=5e5,
+      redeclare package Medium = Modelica.Media.Air.DryAirNasa, 
+    T=ambient.default_T_ambient) 
     annotation (extent=[-40,-30; -20,-10]);
   Modelica.Blocks.Sources.Ramp ramp(
     duration=1,

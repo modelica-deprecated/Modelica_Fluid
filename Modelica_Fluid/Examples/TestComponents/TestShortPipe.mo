@@ -20,9 +20,10 @@ model TestShortPipe "Test ShortPipe component"
       redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (extent=[-50,0; -30,20]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p(           T=from_degC(15),
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p(          T=from_degC(15),
       redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater) 
+        Modelica.Media.Water.ConstantPropertyLiquidWater, 
+    p=ambient.default_p_ambient) 
     annotation (extent=[50,0; 30,20]);
   Modelica.Blocks.Sources.Ramp ramp(
     duration=3,

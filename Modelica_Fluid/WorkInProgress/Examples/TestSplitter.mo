@@ -20,19 +20,19 @@ model TestSplitter
     diameter=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater) 
     annotation (extent=[20,12; 40,32], rotation=270);
-  Modelica_Fluid.Sources.FixedAmbient_pTX source2(
+  Modelica_Fluid.Sources.FixedBoundary_pTX source2(
     T=278.15,
     p=5e5,
     redeclare package Medium = Modelica.Media.Water.StandardWater) 
     annotation (extent=[80,-30; 100,-10], rotation=180);
-  Modelica_Fluid.Sources.FixedAmbient_pTX source3(
+  Modelica_Fluid.Sources.FixedBoundary_pTX source3(
     T=283.15,
     p=2e5,
     redeclare package Medium = Modelica.Media.Water.StandardWater) 
     annotation (extent=[20,60; 40,80], rotation=270);
   inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[-100,80; -80,100]);
-  Modelica_Fluid.Sources.PrescribedAmbient_pTX source1(           p=5e5,
+  Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(          p=5e5,
       redeclare package Medium = Modelica.Media.Water.StandardWater) 
     annotation (extent=[-40,-30; -20,-10]);
   Modelica.Blocks.Sources.Ramp ramp(
@@ -40,7 +40,7 @@ model TestSplitter
     height=-6.5e5,
     offset=7e5) annotation (extent=[-90,-24; -70,-4]);
 equation 
-  connect(source3.port, pipe3.port_a) annotation (points=[30,60; 30,53; 30,53; 
+  connect(source3.port, pipe3.port_a) annotation (points=[30,60; 30,53; 30,53;
         30,46; 30,32; 30,32], style(
       color=69,
       rgbcolor={0,127,255},

@@ -28,19 +28,21 @@ pipe1 and pipe2 should be identical to pressureDropPipe for
 pipe1.WallFriction = WallFriction.Detailed (since the same equations).
 </p>
 </html>"));
-  Modelica_Fluid.Sources.PrescribedAmbient_pTX ambient_a(
+  Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient_a(
                                                      redeclare package Medium 
-      = Medium) 
+      = Medium, 
+    p=ambient.default_p_ambient, 
+    T=ambient.default_T_ambient) 
     annotation (extent=[-40,40; -20,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.99999e5; 10,1.00001e5]) 
     annotation (extent=[-80,40; -60,60]);
   
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p1(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p1(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[62,40; 42,60]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p2(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p2(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -74,17 +76,17 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     roughness=roughness,
     port_a(m_flow(start=-0.6))) 
                          annotation (extent=[0,-80; 20,-60]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p5(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p5(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,-80; 40,-60]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p3(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p3(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[60,-20; 40,0]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p4(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p4(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 

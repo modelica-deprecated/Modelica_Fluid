@@ -12,9 +12,10 @@ model TestPortVolumes
     h=2e5,
     redeclare package Medium = Medium) 
                    annotation (extent=[-100,-10; -80,10]);
-  Modelica_Fluid.Sources.FixedAmbient_phX Sink1(
+  Modelica_Fluid.Sources.FixedBoundary_phX Sink1(
                                          p=101325, redeclare package Medium = 
-               Medium) 
+               Medium, 
+    h=Medium.h_default) 
     annotation (extent=[100,-10; 80,10]);
   Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume2(
     V=1e-3,

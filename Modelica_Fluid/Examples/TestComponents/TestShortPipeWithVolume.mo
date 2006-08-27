@@ -26,7 +26,7 @@ model TestShortPipeWithVolume "Test ShortPipe with PortVolume"
     frictionType=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar,
     dp_nominal=0.1e5,
     m_flow_nominal=1) annotation (extent=[0,0; 20,20]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_p(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p(
     redeclare package Medium = Medium,
     p=p_start,
     T=T_start,
