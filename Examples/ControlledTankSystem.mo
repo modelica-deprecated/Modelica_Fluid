@@ -125,13 +125,18 @@ This example is based on
       nTopPorts=1,
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.2,
           portLevel=0)})      annotation (extent=[60,-50; 100,-10]);
-    Modelica_Fluid.Sources.FixedAmbient_pTX ambient1(redeclare package Medium 
-        = Medium) 
+    Modelica_Fluid.Sources.FixedBoundary_pTX ambient1(
+                                                     redeclare package Medium 
+        = Medium, 
+      p=ambient.default_p_ambient, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[10,-100; 30,-80], rotation=0);
     Modelica.Blocks.Sources.RealExpression level2(y=tank2.level) 
       annotation (extent=[-70,-80; -33,-60]);
-    Modelica_Fluid.Sources.FixedAmbient_pTX source(redeclare package Medium = 
-          Medium, p=2.5e6) 
+    Modelica_Fluid.Sources.FixedBoundary_pTX source(
+                                                   redeclare package Medium = 
+          Medium, p=2.5e6, 
+      T=ambient.default_T_ambient) 
       annotation (extent=[10,70; 30,90],    rotation=-90);
     inner Ambient ambient annotation (extent=[-90,70; -70,90]);
   equation 
@@ -297,13 +302,13 @@ This example is based on
           color=0,
           fillColor=0,
           fillPattern=1));
-      connect(T1.outPort, normal.inPort)      annotation (points=[-38.5,40; 
+      connect(T1.outPort, normal.inPort)      annotation (points=[-38.5,40;
             -21.3333,40],
                   style(
           color=0,
           fillColor=0,
           fillPattern=1));
-      connect(normal.outPort, T2.inPort)      annotation (points=[20.6667,40; 
+      connect(normal.outPort, T2.inPort)      annotation (points=[20.6667,40;
             33,40],
                   style(
           color=0,
@@ -327,12 +332,12 @@ This example is based on
         annotation (points=[86,-74.5; 90,-74.5; 90,0; 105,0], style(color=5));
       connect(setValve3.y, valve3) annotation (points=[86,-93; 95,-93; 95,-60;
             105,-60],   style(color=5));
-      connect(normal.suspend[1], T3.inPort)   annotation (points=[-10,19.3333; 
+      connect(normal.suspend[1], T3.inPort)   annotation (points=[-10,19.3333;
             -10,12; -23,12; -23,3],  style(color=0, rgbcolor={0,0,0}));
       connect(T3.outPort, s2.inPort[1]) 
                                      annotation (points=[-23,-2.5; -23,-20; -60,
             -20; -60,-50; -51,-50],        style(color=0, rgbcolor={0,0,0}));
-      connect(level1, normal.level1)      annotation(points=[-60,-110; -60,-80; 
+      connect(level1, normal.level1)      annotation(points=[-60,-110; -60,-80;
             -80,-80; -80,20; -30,20; -30,24; -22.6667,24],
                                                       style(color=3, rgbcolor={
               0,0,255}));

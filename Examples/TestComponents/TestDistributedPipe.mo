@@ -27,11 +27,11 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
   
   annotation (Diagram, experiment(StopTime=20, Tolerance=1e-005),
     experimentSetupOutput);
-  Modelica_Fluid.Sources.PrescribedAmbient_pTX ambient6(
+  Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient6(
     redeclare package Medium = Medium,
     p=1e5,
-    T=300)                                                          annotation (extent=[70,20;
-        50,40]);
+    T=300)                                                          annotation (extent=[68,20; 
+        48,40]);
   Modelica_Fluid.Pipes.DistributedPipe pipe5(
     redeclare package Medium=Medium,
     allowFlowReversal=true,
@@ -53,7 +53,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     p_a_start=1.1e5) 
             annotation (extent=[12,22; 32,42]);
   
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient1(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient1(
                                    redeclare package Medium=Medium,
     T=300,
     p=1.2e5)                                                        annotation (extent=[-88,16;
@@ -79,7 +79,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     p_b_start=1.1e5) 
             annotation (extent=[-38,16; -18,36]);
   
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient2(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient2(
     T=280,
     redeclare package Medium = Medium,
     p=1.2e5)                                                        annotation (extent=[-88,42;
@@ -95,7 +95,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     startTime=5,
     height=0.4e5) 
                 annotation (extent=[102,62; 82,82], rotation=0);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient3(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient3(
                                    redeclare package Medium=Medium,
     T=330,
     p=1.2e5)                                                        annotation (extent=[-88,-12;
@@ -120,7 +120,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     static=false,
     p_b_start=1.1e5) 
             annotation (extent=[-38,-12; -18,8]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient4(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient4(
                                    redeclare package Medium=Medium,
     T=360,
     p=1.2e5)                                                        annotation (extent=[-88,-40;
@@ -153,10 +153,10 @@ equation
   connect(ambient1.port, pipe1.port_a) annotation (points=[-68,26; -38,26],
                        style(color=69, rgbcolor={0,127,255}));
   connect(pipe5.port_b, ambient6.port) 
-                                      annotation (points=[32,32; 40,32; 40,30;
-        50,30], style(color=69, rgbcolor={0,127,255}));
+                                      annotation (points=[32,32; 40,32; 40,30; 
+        48,30], style(color=69, rgbcolor={0,127,255}));
   connect(ramp.y, ambient6.p_in) 
-                                annotation (points=[81,72; 76,72; 76,36; 72,36],
+                                annotation (points=[81,72; 76,72; 76,36; 70,36],
       style(color=74, rgbcolor={0,0,127}));
   connect(ambient3.port, pipe3.port_a) annotation (points=[-68,-2; -38,-2],
                    style(color=69, rgbcolor={0,127,255}));

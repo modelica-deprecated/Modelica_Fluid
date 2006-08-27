@@ -2,35 +2,32 @@ package Sources
   "Generic sources for fluid connectors to define fixed or prescribed ambient conditions" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   import SI = Modelica.SIunits;
-  model FixedAmbient "Ambient source component" 
+  model FixedBoundary "Boundary source component" 
     extends Sources.BaseClasses.PartialSource;
     parameter Boolean use_p=true "select p or d" 
       annotation (Evaluate = true,
-                  Dialog(group = "Ambient pressure or ambient density"));
-    parameter Medium.AbsolutePressure p = ambient.default_p_ambient 
-      "Ambient pressure" 
-      annotation (Dialog(group = "Ambient pressure or ambient density",
+                  Dialog(group = "Boundary pressure or Boundary density"));
+    parameter Medium.AbsolutePressure p "Boundary pressure" 
+      annotation (Dialog(group = "Boundary pressure or Boundary density",
                          enable = use_p));
-    parameter Medium.Density d=1000 "Ambient density" 
-      annotation (Dialog(group = "Ambient pressure or ambient density",
+    parameter Medium.Density d=1000 "Boundary density" 
+      annotation (Dialog(group = "Boundary pressure or Boundary density",
                          enable=not use_p));
     parameter Boolean use_T=true "select T or h" 
       annotation (Evaluate = true,
-                  Dialog(group = "Ambient temperature or ambient specific enthalpy"));
-    parameter Medium.Temperature T = ambient.default_T_ambient 
-      "Ambient temperature" 
-      annotation (Dialog(group = "Ambient temperature or ambient specific enthalpy",
+                  Dialog(group = "Boundary temperature or Boundary specific enthalpy"));
+    parameter Medium.Temperature T "Boundary temperature" 
+      annotation (Dialog(group = "Boundary temperature or Boundary specific enthalpy",
                          enable = use_T));
-    parameter Medium.SpecificEnthalpy h = Medium.h_default 
-      "Ambient specific enthalpy" 
-      annotation (Dialog(group="Ambient temperature or ambient specific enthalpy",
+    parameter Medium.SpecificEnthalpy h "Boundary specific enthalpy" 
+      annotation (Dialog(group="Boundary temperature or Boundary specific enthalpy",
                   enable = not use_T));
     parameter Medium.MassFraction X[Medium.nX](
          quantity=Medium.substanceNames)=Medium.X_default 
-      "Ambient mass fractions m_i/m" 
+      "Boundary mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow", enable=Medium.nXi > 0));
     
-    annotation (defaultComponentName = "ambient_fixed",
+    annotation (defaultComponentName = "Boundary_fixed",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -41,27 +38,26 @@ package Sources
             fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
       Documentation(info="<html>
 <p>
-Model <b>FixedAmbient</b> defines constant values for ambient conditions:
+Model <b>FixedBoundary</b> defines constant values for boundary conditions:
 </p>
 <ul>
-<li> Ambient pressure or ambient density.</li>
-<li> Ambient temperature or ambient specific enthalpy.</li>
-<li> Ambient mass fractions (only for multi-substance flow).</li>
+<li> Boundary pressure or boundary density.</li>
+<li> Boundary temperature or boundary specific enthalpy.</li>
+<li> Boundary mass fractions (only for multi-substance flow).</li>
 </ul>
 <p>
-Note, that ambient temperature, density, specific enthalpy
+Note, that boundary temperature, density, specific enthalpy
 and mass fractions have only an effect if the mass flow
-is from the ambient into the port. If mass is flowing from
-the port into the ambient, the ambient definitions,
-with exception of ambient pressure, do not have an effect.
+is from the Boundary into the port. If mass is flowing from
+the port into the boundary, the boundary definitions,
+with exception of boundary pressure, do not have an effect.
 </p>
 </html>"));
     
-    outer Modelica_Fluid.Ambient ambient "Ambient conditions";
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+    Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
                                           Medium.singleState, use_p, X,
-                                          "FixedAmbient");
+                                          "FixedBoundary");
     if use_p or Medium.singleState then
       medium.p = p;
     else
@@ -74,21 +70,21 @@ with exception of ambient pressure, do not have an effect.
     end if;
     
     medium.Xi = X[1:Medium.nXi];
-  end FixedAmbient;
+  end FixedBoundary;
   
-  model FixedAmbient_pTX 
-    "Ambient pressure, temperature and mass fraction source" 
+  model FixedBoundary_pTX 
+    "Boundary pressure, temperature and mass fraction source" 
     extends Sources.BaseClasses.PartialSource;
-    parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p=
-        ambient.default_p_ambient "Ambient pressure";
-    parameter Modelica.Media.Interfaces.PartialMedium.Temperature T=
-        ambient.default_T_ambient "Ambient temperature";
+    parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p 
+      "Boundary pressure";
+    parameter Modelica.Media.Interfaces.PartialMedium.Temperature T 
+      "Boundary temperature";
     parameter Modelica.Media.Interfaces.PartialMedium.MassFraction X[Medium.nX](
          quantity=Medium.substanceNames) = Medium.X_default 
-      "Ambient mass fractions m_i/m" 
+      "Boundary mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow",
                   enable=Medium.nXi > 0));
-    annotation (defaultComponentName = "ambient_fixed",
+    annotation (defaultComponentName = "boundary_fixed",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -99,43 +95,41 @@ with exception of ambient pressure, do not have an effect.
             fillColor=69)), Text(extent=[-150,150; 150,100],   string="%name")),
       Documentation(info="<html>
 <p>
-Defines constant values for ambient conditions:
+Defines constant values for boundary conditions:
 </p>
 <ul>
-<li> Ambient pressure.</li>
-<li> Ambient temperature.</li>
-<li> Ambient mass fractions (only for multi-substance flow).</li>
+<li> Boundary pressure.</li>
+<li> Boundary temperature.</li>
+<li> Boundary mass fractions (only for multi-substance flow).</li>
 </ul>
 <p>
-Note, that ambient temperature
+Note, that boundary temperature
 and mass fractions have only an effect if the mass flow
-is from the ambient into the port. If mass is flowing from
-the port into the ambient, the ambient definitions,
-with exception of ambient pressure, do not have an effect.
+is from the boundary into the port. If mass is flowing from
+the port into the boundary, the boundary definitions,
+with exception of boundary pressure, do not have an effect.
 </p>
 </html>"));
-    
-   outer Modelica_Fluid.Ambient ambient "Ambient conditions";
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
-                                          Medium.singleState, true, X, "FixedAmbient_pTX");
+    Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
+                                          Medium.singleState, true, X, "FixedBoundary_pTX");
     medium.p   = p;
     medium.T   = T;
     medium.Xi = X[1:Medium.nXi];
-  end FixedAmbient_pTX;
+  end FixedBoundary_pTX;
   
-  model FixedAmbient_phX 
-    "Ambient pressure, specific enthalpy and mass fraction source" 
+  model FixedBoundary_phX 
+    "Boundary pressure, specific enthalpy and mass fraction source" 
     extends Sources.BaseClasses.PartialSource;
-    parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p=
-        ambient.default_p_ambient "Ambient pressure";
-    parameter Modelica.Media.Interfaces.PartialMedium.SpecificEnthalpy h=Medium.h_default 
-      "Ambient specific enthalpy";
+    parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p 
+      "Boundary pressure";
+    parameter Modelica.Media.Interfaces.PartialMedium.SpecificEnthalpy h 
+      "Boundary specific enthalpy";
     parameter Modelica.Media.Interfaces.PartialMedium.MassFraction X[
       Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
-      "Ambient mass fractions m_i/m"  annotation (Dialog(group=
+      "Boundary mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nXi > 0));
-    annotation (defaultComponentName = "ambient_fixed",
+    annotation (defaultComponentName = "boundary_fixed",
       Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -146,29 +140,28 @@ with exception of ambient pressure, do not have an effect.
             fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
       Documentation(info="<html>
 <p>
-Defines constant values for ambient conditions:
+Defines constant values for boundary conditions:
 </p>
 <ul>
-<li> Ambient pressure.</li>
-<li> Ambient specific enthalpy.</li>
-<li> Ambient mass fractions (only for multi-substance flow).</li>
+<li> Boundary pressure.</li>
+<li> Boundary specific enthalpy.</li>
+<li> Boundary mass fractions (only for multi-substance flow).</li>
 </ul>
 <p>
-Note, that ambient specific enthalpy
+Note, that boundary specific enthalpy
 and mass fractions have only an effect if the mass flow
-is from the ambient into the port. If mass is flowing from
-the port into the ambient, the ambient definitions,
-with exception of ambient pressure, do not have an effect.
+is from the boundary into the port. If mass is flowing from
+the port into the boundary, the boundary definitions,
+with exception of boundary pressure, do not have an effect.
 </p>
 </html>"));
-    outer Modelica_Fluid.Ambient ambient "Ambient conditions";
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
-                                          Medium.singleState, true, X, "FixedAmbient_phX");
+    Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
+                                          Medium.singleState, true, X, "FixedBoundary_phX");
     medium.p = p;
     medium.h = h;
     medium.Xi = X[1:Medium.nXi];
-  end FixedAmbient_phX;
+  end FixedBoundary_phX;
   
   annotation (Documentation(info="<html>
 <p>
@@ -176,15 +169,13 @@ Package <b>Sources</b> contains generic sources for fluid connectors
 to define fixed or prescribed ambient conditions.
 </p>
 </html>"));
-  model PrescribedAmbient_pTX 
-    "Ambient with prescribed pressure, temperature and composition" 
+  model PrescribedBoundary_pTX 
+    "Boundary with prescribed pressure, temperature and composition" 
     extends Sources.BaseClasses.PartialSource;
-    parameter SI.Pressure p = ambient.default_p_ambient 
-      "Fixed value of pressure" 
+    parameter SI.Pressure p "Fixed value of pressure" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(p_in)==0)));
-    parameter SI.Temperature T = ambient.default_T_ambient 
-      "Fixed value of temperature" 
+    parameter SI.Temperature T "Fixed value of temperature" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(T_in)==0)));
     parameter SI.MassFraction X[Medium.nX] = Medium.X_default 
@@ -192,16 +183,16 @@ to define fixed or prescribed ambient conditions.
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(X_in)==0) or Medium.nXi > 0));
     Modelica.Blocks.Interfaces.RealInput p_in(redeclare type SignalType = 
-          SI.Pressure) "Prescribed ambient pressure" 
+          SI.Pressure) "Prescribed boundary pressure" 
       annotation (extent=[-140,40; -100,80]);
     Modelica.Blocks.Interfaces.RealInput T_in(
       redeclare type SignalType = SI.Temperature) 
-      "Prescribed ambient temperature" 
+      "Prescribed boundary temperature" 
       annotation (extent=[-140,-20; -100,20]);
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](redeclare type 
-        SignalType = SI.MassFraction) "Prescribed ambient composition" 
+        SignalType = SI.MassFraction) "Prescribed boundary composition" 
       annotation (extent=[-140,-80; -100,-40]);
-    annotation (defaultComponentName = "ambient_prescribed",
+    annotation (defaultComponentName = "boundary_prescribed",
   Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -238,28 +229,27 @@ to define fixed or prescribed ambient conditions.
           string="T")),
       Documentation(info="<html>
 <p>
-Defines prescribed values for ambient conditions:
+Defines prescribed values for boundary conditions:
 </p>
 <ul>
-<li> Prescribed ambient pressure via input signal <tt>p_in</tt>.</li>
-<li> Prescribed ambient temperature via input signal <tt>T_in</tt>.</li>
-<li> Prescribed ambient mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow).</li>
+<li> Prescribed boundary pressure via input signal <tt>p_in</tt>.</li>
+<li> Prescribed boundary temperature via input signal <tt>T_in</tt>.</li>
+<li> Prescribed boundary mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow).</li>
 </ul>
 <p>If the connector are left unconnected, the corresponding prescribed values
 are set by the parameters <tt>p</tt>, <tt>T</tt>, and <tt>X</tt>, respectively.
 <p>
-Note, that ambient temperature
+Note, that boundary temperature
 and mass fractions have only an effect if the mass flow
-is from the ambient into the port. If mass is flowing from
-the port into the ambient, the ambient definitions,
-with exception of ambient pressure, do not have an effect.
+is from the boundary into the port. If mass is flowing from
+the port into the boundary, the boundary definitions,
+with exception of boundary pressure, do not have an effect.
 </p>
 </html>"),
       Diagram);
-  outer Modelica_Fluid.Ambient ambient "Ambient conditions";
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
-                                          Medium.singleState, true, X_in, "PrescribedAmbient_pTX");
+    Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
+                                          Medium.singleState, true, X_in, "PrescribedBoundary_pTX");
     if cardinality(p_in)==0 then
       p_in = p;
     end if;
@@ -272,17 +262,15 @@ with exception of ambient pressure, do not have an effect.
     medium.p = p_in;
     medium.T = T_in;
     medium.Xi = X_in[1:Medium.nXi];
-  end PrescribedAmbient_pTX;
+  end PrescribedBoundary_pTX;
   
-  model PrescribedAmbient_phX 
-    "Ambient with prescribed pressure, specific enthalpy and composition" 
+  model PrescribedBoundary_phX 
+    "Boundary with prescribed pressure, specific enthalpy and composition" 
     extends Sources.BaseClasses.PartialSource;
-    parameter SI.Pressure p = ambient.default_p_ambient 
-      "Fixed value of pressure" 
+    parameter SI.Pressure p "Fixed value of pressure" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(p_in)==0)));
-    parameter SI.SpecificEnthalpy h = Medium.h_default 
-      "Fixed value of specific enthalpy" 
+    parameter SI.SpecificEnthalpy h "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(h_in)==0)));
     parameter SI.MassFraction X[Medium.nX] = Medium.X_default 
@@ -290,17 +278,17 @@ with exception of ambient pressure, do not have an effect.
       annotation (Evaluate = true,
                   Dialog(enable = (cardinality(X_in)==0) or Medium.nXi > 0));
     Modelica.Blocks.Interfaces.RealInput p_in(
-      redeclare type SignalType = SI.Pressure) "Prescribed ambient pressure" 
+      redeclare type SignalType = SI.Pressure) "Prescribed boundary pressure" 
       annotation (extent=[-140,40; -100,80]);
     Modelica.Blocks.Interfaces.RealInput h_in(
       redeclare type SignalType = SI.SpecificEnthalpy) 
-      "Prescribed ambient specific enthalpy" 
+      "Prescribed boundary specific enthalpy" 
       annotation (extent=[-140,-20; -100,20]);
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
       redeclare type SignalType = SI.MassFraction) 
-      "Prescribed ambient composition" 
+      "Prescribed boundary composition" 
       annotation (extent=[-140,-80; -100,-40]);
-    annotation (defaultComponentName = "ambient_prescribed",
+    annotation (defaultComponentName = "boundary_prescribed",
   Coordsys(
         extent=[-100, -100; 100, 100],
         grid=[2, 2],
@@ -329,27 +317,26 @@ with exception of ambient pressure, do not have an effect.
           string="h")),
       Documentation(info="<html>
 <p>
-Defines values for ambient conditions:
+Defines values for boundary conditions:
 </p>
 <ul>
-<li> Prescribed ambient pressure via input signal <tt>p_in</tt>.</li>
-<li> Prescribed ambient specific enthalpy via input signal <tt>h_in</tt>.</li>
-<li> Prescribed ambient mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow).</li>
+<li> Prescribed boundary pressure via input signal <tt>p_in</tt>.</li>
+<li> Prescribed boundary specific enthalpy via input signal <tt>h_in</tt>.</li>
+<li> Prescribed boundary mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow).</li>
 </ul>
 <p>If the connector are left unconnected, the corresponding prescribed values
 are set by the parameters <tt>p</tt>, <tt>h</tt>, and <tt>X</tt>, respectively.
 <p>
-Note, that ambient specific enthalpy
+Note, that boundary specific enthalpy
 and mass fractions have only an effect if the mass flow
-is from the ambient into the port. If mass is flowing from
-the port into the ambient, the ambient definitions,
-with exception of ambient pressure, do not have an effect.
+is from the boundary into the port. If mass is flowing from
+the port into the boundary, the boundary definitions,
+with exception of boundary pressure, do not have an effect.
 </p>
 </html>"));
-  outer Modelica_Fluid.Ambient ambient "Ambient conditions";
   equation 
-    Modelica_Fluid.Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
-                                          Medium.singleState, true, X_in, "PrescribedAmbient_phX");
+    Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
+                                          Medium.singleState, true, X_in, "PrescribedBoundary_phX");
     if cardinality(p_in)==0 then
       p_in = p;
     end if;
@@ -362,15 +349,15 @@ with exception of ambient pressure, do not have an effect.
     medium.p = p_in;
     medium.h = h_in;
     medium.Xi = X_in[1:Medium.nXi];
-  end PrescribedAmbient_phX;
+  end PrescribedBoundary_phX;
   
   model PrescribedMassFlowRate_TX 
     "Ideal pump that produces a prescribed mass flow with prescribed temperature and mass fraction" 
     extends Sources.BaseClasses.PartialSource;
     parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port";
-    parameter Modelica.Media.Interfaces.PartialMedium.Temperature T=
-        ambient.default_T_ambient "Fixed value of the fluid temperature";
+    parameter Modelica.Media.Interfaces.PartialMedium.Temperature T 
+      "Fixed value of the fluid temperature";
     parameter Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
       "Fixed value of the fluid composition" 
       annotation (Dialog(enable = Medium.nXi > 0));
@@ -460,7 +447,7 @@ with exception of ambient pressure, do not have an effect.
 </html>"));
   outer Modelica_Fluid.Ambient ambient "Ambient conditions";
   equation 
-    Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+    Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
                            Medium.singleState, true, X, "PrescribedMassFlowRate_TX");
     if cardinality(m_flow_in)==0 then
       m_flow_in = m_flow;
@@ -481,7 +468,7 @@ with exception of ambient pressure, do not have an effect.
     extends Sources.BaseClasses.PartialSource;
     parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port";
-    parameter Medium.SpecificEnthalpy h = Medium.h_default 
+    parameter Medium.SpecificEnthalpy h 
       "Fixed value of the fluid specific enthalpy";
     parameter Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
       "Fixed value of the fluid composition" 
@@ -571,7 +558,7 @@ with exception of ambient pressure, do not have an effect.
 </p>
 </html>"));
   equation 
-    Utilities.checkAmbient(Medium.mediumName, Medium.substanceNames,
+    Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
                            Medium.singleState, true, X, "PrescribedMassFlowRate_hX");
     if cardinality(m_flow_in)==0 then
       m_flow_in = m_flow;

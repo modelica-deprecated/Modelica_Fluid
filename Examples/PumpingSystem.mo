@@ -1,11 +1,12 @@
 model PumpingSystem "Model of a pumping system for drinking water" 
   extends Modelica.Icons.Example;
-  Modelica_Fluid.Sources.FixedAmbient source(
+  Modelica_Fluid.Sources.FixedBoundary source(
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     use_T=true,
-    T=Modelica.SIunits.Conversions.from_degC(20)) 
-    annotation (extent=[-100,-90; -80,-70]);
+    T=Modelica.SIunits.Conversions.from_degC(20), 
+    p=ambient.default_p_ambient) 
+    annotation (extent=[-98,-90; -78,-70]);
   
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(
     redeclare package Medium = 
@@ -50,9 +51,11 @@ model PumpingSystem "Model of a pumping system for drinking water"
         Modelica.Media.Water.ConstantPropertyLiquidWater, Kv=200/2e5,
     flowDirection= Modelica_Fluid.Types.FlowDirection.Unidirectional) 
     annotation (extent=[58,-38; 74,-22]);
-  Modelica_Fluid.Sources.FixedAmbient sink(
+  Modelica_Fluid.Sources.FixedBoundary sink(
                                        redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater) 
+        Modelica.Media.Water.ConstantPropertyLiquidWater, 
+    p=ambient.default_p_ambient, 
+    T=ambient.default_T_ambient) 
     annotation (extent=[100,-40; 80,-20]);
   Modelica.Blocks.Sources.Step valveOpening(          offset=1) 
     annotation (extent=[64,0; 84,20]);
@@ -98,7 +101,7 @@ equation
   connect(userValve.port_b, sink.port)     annotation (points=[74,-30; 80,
         -30],
       style(color=69, rgbcolor={0,127,255}));
-  connect(source.port, pumps.inlet) annotation (points=[-80,-80; -73.2,-80;
+  connect(source.port, pumps.inlet) annotation (points=[-78,-80; -73.2,-80; 
         -73.2,-77.6; -71.4,-77.6], style(color=69, rgbcolor={0,127,255}));
   connect(valveOpening.y, userValve.opening) annotation (points=[85,10; 98,
         10; 98,-12; 66,-12; 66,-22.8],
@@ -121,11 +124,11 @@ equation
         -64.38,-69.28], style(color=74, rgbcolor={0,0,127}));
   connect(pipe.port_a, pumps.outlet)         annotation (points=[-40,-30; -53.2,
         -30; -53.2,-70.84], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe.port_b, reservoir.port[1]) annotation (points=[-22,-30; -4.2,-30;
+  connect(pipe.port_b, reservoir.port[1]) annotation (points=[-22,-30; -4.2,-30; 
         -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
   connect(userValve.port_a, reservoir.port[1]) annotation (points=[58,-30; -4.2,
         -30; -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
-  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22;
+  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22; 
         -2,-22; -2,-15.9; -4.2,-15.9],      style(
       color=69,
       rgbcolor={0,127,255},

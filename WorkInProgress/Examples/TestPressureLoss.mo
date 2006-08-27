@@ -27,7 +27,7 @@ model TestPressureLoss
       D_Re=0.1,
     zeta2=1) "Same as lossFactors1 but with data for laminar region" annotation (extent=[-100,-82; -80,-62]);
   
-  Sources.FixedAmbient_pTX ambientSource_p1(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_p1(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -49,11 +49,12 @@ gives the same results for an orifice where the laminar
 region is defined and where it is not defined.
 </p>
 </html>"));
-  Sources.PrescribedAmbient_pTX ambientSource(redeclare package Medium = Medium) 
+  Modelica_Fluid.Sources.PrescribedBoundary_pTX ambientSource(
+                                              redeclare package Medium = Medium) 
     annotation (extent=[-60,60; -40,80]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.999e5; 10,1.001e5]) 
     annotation (extent=[-100,60; -80,80]);
-  Sources.FixedAmbient_pTX ambientSource_p2(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_p2(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -67,7 +68,7 @@ region is defined and where it is not defined.
     redeclare package Medium = Medium,
     data=lossFactors1) 
     annotation (extent=[140,60; 160,80]);
-  Sources.FixedAmbient_pTX ambientSource_m1(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_m1(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -79,7 +80,7 @@ region is defined and where it is not defined.
     from_dp=false) 
     annotation (extent=[-20,30; 0,50]);
   
-  Sources.FixedAmbient_pTX ambientSource_p3(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_p3(
                                      redeclare package Medium = Medium, p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[40,0; 20,20]);
@@ -89,7 +90,7 @@ region is defined and where it is not defined.
     data=lossFactors1,
     use_Re=false) 
     annotation (extent=[-20,0; 0,20]);
-  Sources.FixedAmbient_pTX ambientSource_p4(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_p4(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -101,7 +102,7 @@ region is defined and where it is not defined.
     from_dp=false,
     use_Re=false) 
     annotation (extent=[-20,-30; 0,-10]);
-  Sources.FixedAmbient_pTX ambientSource_p5(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_p5(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -111,7 +112,7 @@ region is defined and where it is not defined.
     redeclare package Medium = Medium,
     data=lossFactors2) 
     annotation (extent=[-20,-60; 0,-40]);
-  Sources.FixedAmbient_pTX ambientSource_p6(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_p6(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -122,7 +123,7 @@ region is defined and where it is not defined.
     from_dp=false,
     data=lossFactors2) 
     annotation (extent=[-20,-90; 0,-70]);
-  Sources.FixedAmbient_pTX ambientSource_p7(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_p7(
                                      redeclare package Medium = Medium, p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (extent=[40,-120; 20,-100]);
@@ -132,7 +133,7 @@ region is defined and where it is not defined.
     use_Re=false,
     data=lossFactors2) 
     annotation (extent=[-20,-120; 0,-100]);
-  Sources.FixedAmbient_pTX ambientSource_p8(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_p8(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -152,7 +153,7 @@ region is defined and where it is not defined.
     data=lossFactors1,
     from_dp=false) 
     annotation (extent=[140,30; 160,50]);
-  Sources.FixedAmbient_pTX ambientSource_m2(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_m2(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -165,7 +166,7 @@ region is defined and where it is not defined.
     data=lossFactors1,
     use_Re=false) 
     annotation (extent=[140,0; 160,20]);
-  Sources.FixedAmbient_pTX ambientSource_m3(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_m3(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -179,7 +180,7 @@ region is defined and where it is not defined.
     from_dp=false,
     use_Re=false) 
     annotation (extent=[140,-30; 160,-10]);
-  Sources.FixedAmbient_pTX ambientSource_m4(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_m4(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -191,7 +192,7 @@ region is defined and where it is not defined.
     redeclare package Medium = Medium,
     data=lossFactors2) 
     annotation (extent=[140,-60; 160,-40]);
-  Sources.FixedAmbient_pTX ambientSource_m5(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_m5(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -204,7 +205,7 @@ region is defined and where it is not defined.
     from_dp=false,
     data=lossFactors2) 
     annotation (extent=[140,-90; 160,-70]);
-  Sources.FixedAmbient_pTX ambientSource_m6(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_m6(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -217,7 +218,7 @@ region is defined and where it is not defined.
     use_Re=false,
     data=lossFactors2) 
     annotation (extent=[140,-120; 160,-100]);
-  Sources.FixedAmbient_pTX ambientSource_m7(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_m7(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -231,7 +232,7 @@ region is defined and where it is not defined.
     use_Re=false,
     data=lossFactors2) 
     annotation (extent=[140,-150; 160,-130]);
-  Sources.FixedAmbient_pTX ambientSource_m8(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambientSource_m8(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 

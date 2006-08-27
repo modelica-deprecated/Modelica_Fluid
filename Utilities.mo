@@ -2,48 +2,48 @@ package Utilities
   "Utility models to construct fluid components (should not be used directly) " 
   extends Modelica.Icons.Library;
   
-  function checkAmbient "Check whether ambient definition is correct" 
-    
+  function checkBoundary "Check whether boundary definition is correct" 
     extends Modelica.Icons.Function;
     input String mediumName;
     input String substanceNames[:] "Names of substances";
     input Boolean singleState;
     input Boolean define_p;
-    input Real X_ambient[:];
-    input String modelName = "??? ambient ???";
+    input Real X_boundary[:];
+    input String modelName = "??? boundary ???";
   protected 
-    Integer nX = size(X_ambient,1);
+    Integer nX = size(X_boundary,1);
     String X_str;
   algorithm 
     assert(not singleState or singleState and define_p, "
 Wrong value of parameter define_p (= false) in model \""   + modelName + "\":
 The selected medium \"" + mediumName + "\" has Medium.singleState=true.
-Therefore, an ambient density cannot be defined and
+Therefore, an boundary density cannot be defined and
 define_p = true is required.
 ");
     
     for i in 1:nX loop
-      assert(X_ambient[i] >= 0.0, "
-Wrong ambient mass fractions in medium \""
+      assert(X_boundary[i] >= 0.0, "
+Wrong boundary mass fractions in medium \""
   + mediumName + "\" in model \"" + modelName + "\":
-The ambient value X_ambient(" + String(i) + ") = " + String(
-        X_ambient[i]) + "
+The boundary value X_boundary("
+                              + String(i) + ") = " + String(
+        X_boundary[i]) + "
 is negative. It must be positive.
 ");
     end for;
     
-    if nX > 0 and abs(sum(X_ambient) - 1.0) > 1.e-10 then
+    if nX > 0 and abs(sum(X_boundary) - 1.0) > 1.e-10 then
        X_str :="";
        for i in 1:nX loop
-          X_str :=X_str + "   X_ambient[" + String(i) + "] = " + String(X_ambient[
+          X_str :=X_str + "   X_boundary[" + String(i) + "] = " + String(X_boundary[
           i]) + " \"" + substanceNames[i] + "\"\n";
        end for;
        Modelica.Utilities.Streams.error(
-          "The ambient mass fractions in medium \"" + mediumName + "\" in model \"" + modelName + "\"\n" +
-          "do not sum up to 1. Instead, sum(X_ambient) = " + String(sum(X_ambient)) + ":\n"
+          "The boundary mass fractions in medium \"" + mediumName + "\" in model \"" + modelName + "\"\n" +
+          "do not sum up to 1. Instead, sum(X_boundary) = " + String(sum(X_boundary)) + ":\n"
           + X_str);
     end if;
-  end checkAmbient;
+  end checkBoundary;
   
   function regRoot 
     "Anti-symmetric square root approximation with finite derivative in the origin" 

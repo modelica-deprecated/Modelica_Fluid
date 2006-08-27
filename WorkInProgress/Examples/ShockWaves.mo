@@ -12,7 +12,7 @@ model TestSimpleIsolatedPipePressure "Test IsolatedPipe component"
   parameter Real pressurePulseStart=0.1E-3;
   parameter Real pressurePulseBase=2E5;
     
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient(
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient(
     port(h(start=10000)),
       p=pressurePulseBase,
       T=320,
@@ -43,7 +43,8 @@ annotation (
     includeViscosity=true,
     initType=Modelica_Fluid.Types.Init.InitialValues) 
            annotation (extent=[20,50; 40,70]);
-  Modelica_Fluid.Sources.PrescribedAmbient_pTX prescribedAmbient(redeclare 
+  Modelica_Fluid.Sources.PrescribedBoundary_pTX prescribedAmbient(
+                                                                 redeclare 
         package Medium=Modelica.Media.Air.DryAirNasa) 
                   annotation (extent=[-22,50; -2,70]);
   Modelica.Blocks.Math.Add Add1 
@@ -123,7 +124,7 @@ annotation (
       T_start=293.15,
       initType=Modelica_Fluid.Types.Init.InitialValues) 
            annotation (extent=[12,70; 32,90]);
-  Modelica_Fluid.Sources.PrescribedAmbient_pTX prescribedAmbient(
+  Modelica_Fluid.Sources.PrescribedBoundary_pTX prescribedAmbient(
       redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
                   annotation (extent=[-22,70; -2,90]);
   Modelica.Blocks.Sources.Ramp Ramp1(
@@ -140,7 +141,7 @@ annotation (
                   annotation (extent=[-100,106; -80,86]);
   Modelica.Blocks.Math.Add Add1 
                               annotation (extent=[-60,76; -40,96]);
-  Modelica_Fluid.Sources.FixedAmbient ambient1(
+  Modelica_Fluid.Sources.FixedBoundary ambient1(
     p=1E5,
     port(h(start=10000)),
     T=T_ambient,
@@ -171,7 +172,7 @@ annotation (
       x=linspace(0, 1, IsolatedPipe2.nVolumes),
     y=IsolatedPipe2.pipeSegment.medium.p) 
                         annotation(extent=[0,-40; 100,20]);
-  Modelica_Fluid.Sources.FixedAmbient ambient2(
+  Modelica_Fluid.Sources.FixedBoundary ambient2(
     p=1E5,
     port(h(start=10000)),
     T=T_ambient,

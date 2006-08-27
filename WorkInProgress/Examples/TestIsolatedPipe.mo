@@ -28,7 +28,8 @@ model TestIsolatedPipe "Test ShortPipe component"
         from_degC(30), redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa) 
     annotation (extent=[-50,0; -30,20]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_1(T=from_degC(15),
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_1(
+                                                    T=from_degC(15),
       redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
     annotation (extent=[50,0; 30,20]);
   Modelica.Blocks.Sources.Ramp massFlowSignal(
@@ -50,7 +51,8 @@ model TestIsolatedPipe "Test ShortPipe component"
         from_degC(30), redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa) 
     annotation (extent=[-50,-40; -30,-20]);
-  Modelica_Fluid.Sources.FixedAmbient_pTX ambient_2(T=from_degC(15),
+  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_2(
+                                                    T=from_degC(15),
       redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
     annotation (extent=[50,-40; 30,-20]);
 equation 

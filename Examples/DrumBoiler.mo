@@ -18,9 +18,9 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.y, drumBoiler.q_F)       annotation (points=[-59,10; -40,10;
+    connect(q_F_Tab.y, drumBoiler.q_F)       annotation (points=[-59,10; -40,10; 
           -40,-31; -21.35,-31],       style(rgbcolor={0,0,127}));
-    connect(Y_Valve_Tab.y, drumBoiler.Y_Valve)       annotation (points=[-59,-30;
+    connect(Y_Valve_Tab.y, drumBoiler.Y_Valve)       annotation (points=[-59,-30; 
           -44,-30; -44,-37; -21.35,-37],         style(
         rgbcolor={0,0,127},
         fillColor=7,
@@ -77,10 +77,11 @@ Simulate for 7200 seconds.
     Modelica.Blocks.Interfaces.RealInput Y_Valve(redeclare type SignalType = 
           Real (unit="1")) 
       annotation (extent=[-109,-95; -100,-85]);
-    Modelica_Fluid.Sources.FixedAmbient sink(           p=from_bar(0.5), redeclare 
+    Modelica_Fluid.Sources.FixedBoundary sink(          p=from_bar(0.5), redeclare 
         package Medium = 
-                 Modelica.Media.Water.StandardWater) 
-      annotation (extent=[80,-30; 100,-10], rotation=180);
+                 Modelica.Media.Water.StandardWater, 
+      T=500) 
+      annotation (extent=[80,-31; 100,-11], rotation=180);
     Modelica_Fluid.Sensors.MassFlowRate massFlowRate(           redeclare 
         package Medium = 
           Modelica.Media.Water.StandardWater) 
@@ -171,8 +172,8 @@ Simulate for 7200 seconds.
           -20], style(color=69, rgbcolor={0,127,255}));
     connect(massFlowRate.port_b, SteamValve.port_a) annotation (points=[40,-20;
           50,-20],                    style(color=69, rgbcolor={0,127,255}));
-    connect(SteamValve.port_b, sink.port) annotation (points=[70,-20; 80,-20],
-                           style(color=69, rgbcolor={0,127,255}));
+    connect(SteamValve.port_b, sink.port) annotation (points=[70,-20; 75,-20; 
+          75,-21; 80,-21], style(color=69, rgbcolor={0,127,255}));
     connect(SteamValve.opening, Y_Valve) annotation (points=[60,-29; 60,-90;
           -104.5,-90],      style(color=74, rgbcolor={0,0,127}));
   end DrumBoiler;
