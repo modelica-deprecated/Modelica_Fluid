@@ -25,8 +25,11 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 This is version <b>1.0 Beta 2</b> of the Modelica_Fluid library.
 We expect that the structure and the components of the library do 
 not change or only marginally change for the 1.0 release version.
-For the 1.0 version the documentation will be improved and
-a few components might be slightly changed.
+For the 1.0 version the documentation will be improved,
+a few components might be slightly changed and the simulation
+willbe made more stable. Please, read the section
+<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
+in the Users Guide before using this library.
 </p>
  
 <p>
@@ -98,6 +101,64 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
 </HTML>"));
   
+class KnownLimitations "Known limitations" 
+    
+    annotation (Documentation(info="<html>
+<h3><font color=\"#008000\" size=5>Known limitations</font></h3>
+
+<p>
+This first public release of the Modelica_Fluid library is
+still a Beta-Version. The goal is to improve it and we are
+interested in your feedback, i.e., bug reports and
+improvement suggestions. Please, send your emails to
+the fluid development group at <b>Modelica-design@Modelica.org</b>.
+</p>
+
+<p>
+The Modelica_Fluid library has quite ambitious goals, especially,
+that every component can be connected in an arbitrary way,
+e.g., pipes can be flipped, without influencing the generated
+code, and that medium descriptions with different independent
+variables can be used (e.g., \"p,T\" or \"p,h\" as medium variables).
+This is a new approach in the fluid modeling area and as with
+every new approach, it takes some time that everything works
+as expected. We are aware of the following limitations of the current
+version:
+</p>
+
+<ul>
+<li> The medium has to be defined in <b>every</b> component
+     separately. The user would like to define the medium
+     at one location and then, the definition should propagate
+     through the connections automatically. With our current
+     general approach, this is <b>not</b> possible to formulate it
+     in Modelica. There are discussions in the Modelica development
+     group to extend Modelica with new featurres so that this
+     becomes possible.<br>
+     In Dymola, there is some type of tool support, to make this
+     a bit better: Select all fluid components, right click with the
+     mouse and select \"parameters\". Then select the desired medium
+     and this medium will be used in all selected components.
+    </li>
+
+<li> When clicking on the <b>Medium</b> parameter, a very long list
+     of media is displayed. We would like to have better control for
+     the end user what is shown or at least display it hierarchically.
+     It is not yet clear how this should be improved, but we work on it.
+     </li>
+
+<li> It might be that when connecting components together you get quickly
+     large non-linear systems of equations and initialization might fail
+     due to inappopriate start values. This will be improved.
+     You can reduce the number of non-linear systems of equations (and thereby
+     make the simulation more stable), by placing an instance of model
+     \"Modelica_Fluid.Pipes.BaseClasses.PortVolume\" in every connection
+     node (this means that a volume is present in every connection node).
+     </li>
+</ul>
+</html>"));
+end KnownLimitations;
+
   class Overview "Overview" 
     
     annotation (Documentation(info="<HTML>
@@ -1279,6 +1340,8 @@ standard library.
 class Contact "Contact" 
     
     annotation (Documentation(info="<html>
+<h3><font color=\"#008000\" size=5>Contact</font></h3>
+
 <dl>
 <dt><b>Development leader:</b>
 <dd>Francesco Casella<br>
