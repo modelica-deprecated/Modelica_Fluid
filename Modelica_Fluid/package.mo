@@ -27,7 +27,7 @@ We expect that the structure and the components of the library do
 not change or only marginally change for the 1.0 release version.
 For the 1.0 version the documentation will be improved,
 a few components might be slightly changed and the simulation
-willbe made more stable. Please, read the section
+will be made more stable. Please, read the section
 <a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
 in the Users Guide before using this library.
 </p>
