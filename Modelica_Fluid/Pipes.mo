@@ -692,7 +692,7 @@ Base class for heat transfer models that can be used in distributed pipe models.
       outer input SI.MassFlowRate[n+1] m_flow;
       SI.CoefficientOfHeatTransfer[n] alpha(each start=alpha0) 
           "CoefficientOfHeatTransfer";
-      Real[n] Re(each start=3000);
+      Real[n] Re "Reynolds number";
       Real[n] Pr "Prandtl number";
       Real[n] Nu "Nusselt number";
       SI.DynamicViscosity[n] eta "Dynamic viscosity";
@@ -727,43 +727,6 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
     annotation (Documentation(info="<html>
 Heat transfer correlations for pipe models
 </html>"));
-    model PipeHT_LamTurb_av 
-        "laminar and turbulent forced convection in pipes, average coeff." 
-      extends PipeHT_Nu;
-      protected 
-      Real[n] Nu_turb "Nusselt number for turbulent flow";
-      Real[n] Nu_lam "Nusselt number for laminar flow";
-      Real Nu_1;
-      Real[n] Nu_2;
-      Real[n] xi;
-    equation 
-     Nu_1=3.66;
-    for i in 1:n loop
-       Nu_turb[i]=(xi[i]/8)*Re[i]*Pr[i]/(1+12.7*(xi[i]/8)^0.5*(Pr[i]^(2/3)-1))*(1+(d_h/L)^(2/3));
-       xi[i]=(1.8*Modelica.Math.log10(max(1e-10,abs(Re[i])))-1.5)^(-2);
-       Nu_lam[i]=(Nu_1^3+0.7^3+(Nu_2[i]-0.7)^3)^(1/3);
-       Nu_2[i]=1.615*(Re[i]*Pr[i]*d_h/L)^(1/3);
-       Nu[i]=spliceFunction(Nu_turb[i], Nu_lam[i], Re[i]-6150, 3850);
-    end for;
-      annotation (Documentation(info="<html>
-Heat transfer model for laminar and turbulent flow in pipes. Range of validity:
-<ul>
-<li>fully developed pipe flow</li>
-<li>forced convection</li>
-<li>one phase Newtonian fluid</li>
-<li>(spatial) constant wall temperature in the laminar region</li>
-<li>0 &le; Re &le; 1e6, 0.6 &le; Pr &le; 100, d/L &le; 1</li>
-<li>The correlation holds for non-circular pipes only in the turbulent region. Use d_h=4*A/P as characteristic length.</li>
-</ul>
-Note that the correlation gives an average transfer coefficient for the entire pipe length. The model applies the correlation in each segment to obtain individual heat transfer coefficients for changing properties, but uses the total pipe length each time. 
-<h4><font color=\"#008000\">References</font></h4>
- 
-<dl><dt>Verein Deutscher Ingenieure (1997):</dt>
-    <dd><b>VDI W&auml;rmeatlas</b>.
-         Springer Verlag, Ed. 8, 1997.</dd>
-</dl>
-</html>"));
-    end PipeHT_LamTurb_av;
       
     model PipeHT_LamTurb_local 
         "laminar and turbulent forced convection in pipes, local coeff." 
