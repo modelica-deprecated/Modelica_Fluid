@@ -600,6 +600,7 @@ with exception of ambient pressure, do not have an effect.
     port.p = medium.p;
     port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
     port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.Xi);
+      
     annotation (Documentation(info="<html>
 <p>
 Partial component to model the <b>volume interface</b> of a <b>source</b>

@@ -147,11 +147,13 @@ equation
   /* Handle reverse and zero flow */
   port_a.H_flow   = semiLinear(port_a.m_flow, port_a.h,  port_b.h);
   port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, port_b.Xi);
+  port_a.mC_flow = semiLinear(port_a.m_flow, port_a.C, port_b.C);
     
   /* Energy, mass and substance mass balance */
   port_a.H_flow + port_b.H_flow = 0;
   port_a.m_flow + port_b.m_flow = 0;
   port_a.mXi_flow + port_b.mXi_flow = zeros(Medium.nXi);
+  port_a.mC_flow + port_b.mC_flow = zeros(Medium.nC);
     
   // Design direction of mass flow rate
   m_flow = port_a.m_flow;
@@ -283,6 +285,10 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         port_a.m_flow,
         port_a.Xi,
         medium.Xi);
+      port_a.mC_flow = semiLinear(
+        port_a.m_flow,
+        port_a.C,
+        port_b.C);
       port_b.mXi_flow = semiLinear(
         port_b.m_flow,
         port_b.Xi,
@@ -297,6 +303,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       der(m) = port_a.m_flow + port_b.m_flow;
       der(mXi) = port_a.mXi_flow + port_b.mXi_flow;
       der(U) = port_a.H_flow + port_b.H_flow + Qs_flow + Ws_flow;
+      zeros(Medium.nC) = port_a.mC_flow+port_b.mC_flow;
     
     initial equation 
     // Initial conditions
