@@ -516,6 +516,7 @@ as signal.
       port.m_flow = 0;
       port.H_flow = 0;
       port.mXi_flow = zeros(Medium.nXi);
+      port.mC_flow = zeros(Medium.nC);
     end PartialAbsoluteSensor;
     
     partial model PartialFlowSensor 
@@ -526,8 +527,9 @@ as signal.
       replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
           choicesAllMatching = true);
-      Medium.SpecificEnthalpy h "enthalpy in flow";
-      Medium.MassFraction[Medium.nXi] Xi "flow composition";
+      Medium.SpecificEnthalpy h "Enthalpy in flow";
+      Medium.MassFraction[Medium.nXi] Xi "Flow composition";
+      Medium.ExtraProperty[Medium.nC] C "Extra properties";
       
       Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,
                          m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
@@ -565,10 +567,14 @@ this partial class should add a medium instance to calculate the measured proper
       port_b.H_flow = semiLinear(port_b.m_flow,port_b.h,h);
       port_a.mXi_flow = semiLinear(port_a.m_flow,port_a.Xi,Xi);
       port_b.mXi_flow = semiLinear(port_b.m_flow,port_b.Xi,Xi);
+      port_a.mC_flow = semiLinear(port_a.m_flow, port_a.C, C);
+      port_b.mC_flow = semiLinear(port_b.m_flow, port_b.C, C);
+      
       // Static balances
       0 = port_a.m_flow + port_b.m_flow;
       0 = port_a.H_flow + port_b.H_flow;
       zeros(Medium.nXi) = port_a.mXi_flow + port_b.mXi_flow;
+      zeros(Medium.nC) = port_a.mC_flow + port_b.mC_flow;
     end PartialFlowSensor;
     
   protected 

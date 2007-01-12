@@ -190,6 +190,7 @@ end LumpedPipe;
       final d_h=d_h,
       final A_h=area_h,
       final A_cross=area,
+      final L=length,
       T=medium.T) extends 
       Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer(
       redeclare final package Medium = Medium,
@@ -197,6 +198,7 @@ end LumpedPipe;
       final d_h=d_h,
       final A_h=area_h,
       final A_cross=area,
+      final L=length,
       T=medium.T) "Convective heat transfer" 
               annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching, extent=[-20,-20;
       20,20]);
@@ -414,6 +416,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
      final d_h=d_h,
      final A_h=area_h,
      final A_cross=area,
+     final L=length,
      T=medium.T) extends 
       Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer(
      redeclare final package Medium = Medium,
@@ -421,6 +424,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
      final d_h=d_h,
      final A_h=area_h,
      final A_cross=area,
+     final L=length,
      T=medium.T) "Convective heat transfer" 
              annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching, extent=[-20,-20;
      20,20]);
@@ -608,6 +612,7 @@ transport. This splitting is only possible under certain assumptions.
        der(m)    = port.m_flow "Total mass balance";
        der(mXi)  = port.mXi_flow "Independent component mass balance";
        der(U)    = port.H_flow + thermalPort.Q_flow "Energy balance";
+       zeros(Medium.nC) = port.mC_flow "Trace substances";
       
   initial equation 
     // Initial conditions
@@ -646,12 +651,14 @@ transport. This splitting is only possible under certain assumptions.
     
   package HeatTransfer 
     partial model PartialPipeHeatTransfer 
+        "base class for any pipe heat transfer correlation" 
       replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(Dialog(tab="No input", enable=false));
       parameter Integer n(min=1)=1 "Number of pipe segments" annotation(Dialog(tab="No input", enable=false));
       SI.HeatFlowRate[n] Q_flow "Heat flow rates";
       parameter SI.Area A_h "Total heat transfer area" annotation(Dialog(tab="No input", enable=false));
       parameter SI.Length d_h "Hydraulic diameter" annotation(Dialog(tab="No input", enable=false));
       parameter SI.Area A_cross "Cross flow area" annotation(Dialog(tab="No input", enable=false));
+      parameter SI.Length L "Total pipe length" annotation(Dialog(tab="No input", enable=false));
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort 
           "Thermal port" 
         annotation (extent=[-20,60; 20,80]);
@@ -677,6 +684,34 @@ Base class for heat transfer models that can be used in distributed pipe models.
 </html>"));
     end PartialPipeHeatTransfer;
       
+    partial model PipeHT_Nu 
+        "base class for pipe heat transfer correlation in terms of Nusselt numberheat transfer in a circular pipe for laminar and turbulent one-phase flow" 
+      extends PartialPipeHeatTransfer;
+      parameter SI.CoefficientOfHeatTransfer alpha0=100;
+      outer input Medium.ThermodynamicState[n] state;
+      outer input SI.MassFlowRate[n+1] m_flow;
+      SI.CoefficientOfHeatTransfer[n] alpha(each start=alpha0) 
+          "CoefficientOfHeatTransfer";
+      Real[n] Re(each start=3000);
+      Real[n] Pr "Prandtl number";
+      Real[n] Nu "Nusselt number";
+      SI.DynamicViscosity[n] eta "Dynamic viscosity";
+      SI.ThermalConductivity[n] lambda "Thermal conductivity";
+    equation 
+      eta=Medium.dynamicViscosity(state);
+      lambda=Medium.thermalConductivity(state);
+      Pr = Medium.prandtlNumber(state);
+      Re = CharacteristicNumbers.ReynoldsNumber(m_flow[1:n], fill(d_h,n), fill(A_cross, n), eta);
+      Nu = CharacteristicNumbers.NusseltNumber(alpha, fill(d_h,n), lambda);
+      thermalPort.Q_flow=Q_flow;
+      for i in 1:n loop
+        thermalPort[i].Q_flow=alpha[i]*A_h/n*(thermalPort[i].T-T[i]);
+      end for;
+        annotation (Documentation(info="<html>
+Base class for heat transfer models that are expressed in terms of the Nusselt number and which can be used in distributed pipe models.
+</html>"));
+    end PipeHT_Nu;
+      
     model PipeHT_constAlpha 
       extends PartialPipeHeatTransfer;
       parameter SI.CoefficientOfHeatTransfer alpha0=200;
@@ -692,6 +727,82 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
     annotation (Documentation(info="<html>
 Heat transfer correlations for pipe models
 </html>"));
+    model PipeHT_LamTurb_av 
+        "laminar and turbulent forced convection in pipes, average coeff." 
+      extends PipeHT_Nu;
+      protected 
+      Real[n] Nu_turb "Nusselt number for turbulent flow";
+      Real[n] Nu_lam "Nusselt number for laminar flow";
+      Real Nu_1;
+      Real[n] Nu_2;
+      Real[n] xi;
+    equation 
+     Nu_1=3.66;
+    for i in 1:n loop
+       Nu_turb[i]=(xi[i]/8)*Re[i]*Pr[i]/(1+12.7*(xi[i]/8)^0.5*(Pr[i]^(2/3)-1))*(1+(d_h/L)^(2/3));
+       xi[i]=(1.8*Modelica.Math.log10(max(1e-10,abs(Re[i])))-1.5)^(-2);
+       Nu_lam[i]=(Nu_1^3+0.7^3+(Nu_2[i]-0.7)^3)^(1/3);
+       Nu_2[i]=1.615*(Re[i]*Pr[i]*d_h/L)^(1/3);
+       Nu[i]=spliceFunction(Nu_turb[i], Nu_lam[i], Re[i]-6150, 3850);
+    end for;
+      annotation (Documentation(info="<html>
+Heat transfer model for laminar and turbulent flow in pipes. Range of validity:
+<ul>
+<li>fully developed pipe flow</li>
+<li>forced convection</li>
+<li>one phase Newtonian fluid</li>
+<li>(spatial) constant wall temperature in the laminar region</li>
+<li>0 &le; Re &le; 1e6, 0.6 &le; Pr &le; 100, d/L &le; 1</li>
+<li>The correlation holds for non-circular pipes only in the turbulent region. Use d_h=4*A/P as characteristic length.</li>
+</ul>
+Note that the correlation gives an average transfer coefficient for the entire pipe length. The model applies the correlation in each segment to obtain individual heat transfer coefficients for changing properties, but uses the total pipe length each time. 
+<h4><font color=\"#008000\">References</font></h4>
+ 
+<dl><dt>Verein Deutscher Ingenieure (1997):</dt>
+    <dd><b>VDI W&auml;rmeatlas</b>.
+         Springer Verlag, Ed. 8, 1997.</dd>
+</dl>
+</html>"));
+    end PipeHT_LamTurb_av;
+      
+    model PipeHT_LamTurb_local 
+        "laminar and turbulent forced convection in pipes, local coeff." 
+      extends PipeHT_Nu;
+      protected 
+      Real[n] Nu_turb "Nusselt number for turbulent flow";
+      Real[n] Nu_lam "Nusselt number for laminar flow";
+      Real Nu_1;
+      Real[n] Nu_2;
+      Real[n] Xi;
+      parameter SI.Length dx=L/n;
+    equation 
+      Nu_1=3.66;
+      for i in 1:n loop
+       Nu_turb[i]=smooth(0,(Xi[i]/8)*abs(Re[i])*Pr[i]/(1+12.7*(Xi[i]/8)^0.5*(Pr[i]^(2/3)-1))*(1+1/3*(d_h/dx/(if m_flow[i]>=0 then (i-0.5) else (n-i+0.5)))^(2/3)));
+       Xi[i]=(1.8*Modelica.Math.log10(max(1e-10,Re[i]))-1.5)^(-2);
+       Nu_lam[i]=(Nu_1^3+0.7^3+(Nu_2[i]-0.7)^3)^(1/3);
+       Nu_2[i]=smooth(0,1.077*(abs(Re[i])*Pr[i]*d_h/dx/(if m_flow[i]>=0 then (i-0.5) else (n-i+0.5)))^(1/3));
+       Nu[i]=spliceFunction(Nu_turb[i], Nu_lam[i], Re[i]-6150, 3850);
+    end for;
+      annotation (Documentation(info="<html>
+Heat transfer model for laminar and turbulent flow in pipes. Range of validity:
+<ul>
+<li>fully developed pipe flow</li>
+<li>forced convection</li>
+<li>one phase Newtonian fluid</li>
+<li>(spatial) constant wall temperature in the laminar region</li>
+<li>0 &le; Re &le; 1e6, 0.6 &le; Pr &le; 100, d/L &le; 1</li>
+<li>The correlation holds for non-circular pipes only in the turbulent region. Use d_h=4*A/P as characteristic length.</li>
+</ul>
+The correlation takes into account the spatial position along the pipe flow, which changes discontinuously at flow reversal. However, the heat transfer coefficient itself is continuous around zero flow rate, but not its derivative.
+<h4><font color=\"#008000\">References</font></h4>
+ 
+<dl><dt>Verein Deutscher Ingenieure (1997):</dt>
+    <dd><b>VDI W&auml;rmeatlas</b>.
+         Springer Verlag, Ed. 8, 1997.</dd>
+</dl>
+</html>"));
+    end PipeHT_LamTurb_local;
   end HeatTransfer;
     
   partial model PartialDistributedFlow 
@@ -861,6 +972,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium[n].h);
     port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, medium[1].Xi);
     port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.Xi, medium[n].Xi);
+    port_a.mC_flow = semiLinear(port_a.m_flow, port_a.C, port_b.C);
     port_a.m_flow = m_flow[1];
     port_b.m_flow = -m_flow[n + 1];
       
@@ -900,6 +1012,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         der(U[i]) = H_flow[i] - H_flow[i + 1] + Qs_flow[i];
       end for;
     end if;
+    zeros(Medium.nC)=port_a.mC_flow + port_b.mC_flow;
     for i in 1:n loop
       assert((allowFlowReversal and not static) or (m_flow[i] >= 0), "Flow reversal not allowed in distributed pipe");
     end for;
@@ -1127,6 +1240,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium[n].h);
     port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, medium[1].Xi);
     port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.Xi, medium[n].Xi);
+    port_a.mC_flow = semiLinear(port_a.m_flow, port_a.C, port_b.C);
     port_a.m_flow = m_flow[1];
     port_b.m_flow = -m_flow[n + 1];
       
@@ -1165,10 +1279,12 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         der(mXi[i, :]) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
         der(U[i]) = H_flow[i] - H_flow[i + 1] + Qs_flow[i] + Ws_flow[i];
       end for;
-    end if;
-   for i in 1:n loop
-      assert((allowFlowReversal and not static) or (m_flow[i] >= 0), "Flow reversal not allowed in distributed pipe");
-    end for;
+      end if;
+      zeros(Medium.nC) = port_a.mC_flow + port_b.mC_flow;
+      for i in 1:n loop
+        assert((allowFlowReversal and not static) or (m_flow[i] >= 0),
+          "Flow reversal not allowed in distributed pipe");
+      end for;
       
   //Momentum Balance, dp contains contributions from acceleration, gravitational and friction effects
   //two momentum balances, one on each side of pressure state, dp must be supplied in extending class
@@ -1224,6 +1340,30 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       end if;
     end if;
   end PartialDistributedFlow_pLumped;
+    
+    package CharacteristicNumbers 
+      function ReynoldsNumber 
+        input SI.MassFlowRate m_flow "Mass flow rate";
+        input SI.Length d_ch "Characteristic length (hyd. diam. in pipes)";
+        input SI.Area A "Cross sectional area";
+        input SI.DynamicViscosity eta "Dynamic viscosity";
+        output SI.ReynoldsNumber Re "Reynolds number";
+        annotation (Documentation(info="Calculate Re-Number; Re = mdot*Dhyd/A/eta"),
+             Icon);
+      algorithm 
+        Re := abs(m_flow)*d_ch/A/eta;
+      end ReynoldsNumber;
+      
+      function NusseltNumber 
+        input SI.CoefficientOfHeatTransfer alpha "Coefficient of heat transfer";
+        input SI.Length d_ch "Characteristic length";
+        input SI.ThermalConductivity lambda "Thermal conductivity";
+        output SI.NusseltNumber Nu "Nusselt number";
+        annotation (Documentation(info="Nusselt number Nu = alpha*d_ch/lambda"));
+      algorithm 
+        Nu := alpha*d_ch/lambda;
+      end NusseltNumber;
+    end CharacteristicNumbers;
   end BaseClasses;
   annotation (Documentation(info="<html>
  

@@ -218,6 +218,8 @@ package Pumps "Pump components"
     inlet.m_flow + outlet.m_flow = 0 "Mass balance";
     inlet.mXi_flow + outlet.mXi_flow = zeros(Medium.nXi) 
         "Substance mass balance";
+    inlet.mC_flow + outlet.mC_flow = zeros(Medium.nC) 
+        "Trace substance mass balances";
     inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,h_out) 
         "Enthalpy flow at the inlet";
     outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,h_out) 
