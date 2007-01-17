@@ -45,7 +45,7 @@ package Interfaces
       "Mass flow rate from the connection point into the component";
     
     Medium.SpecificEnthalpy h 
-      "Specific mixture enthalpy in the connection point";
+      "Specific mixing enthalpy in the connection point";
     flow Medium.EnthalpyFlowRate H_flow 
       "Enthalpy flow rate into the component (if m_flow > 0, H_flow = m_flow*h)";
     
@@ -109,11 +109,11 @@ partial model PartialTwoPortTransport
     annotation (extent=[110,-10; 90,10]);
   Medium.BaseProperties medium_a "Medium properties in port_a";
   Medium.BaseProperties medium_b "Medium properties in port_b";
-  Medium.MassFlowRate m_flow(start=0) 
+  Medium.MassFlowRate m_flow 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
   SI.VolumeFlowRate V_flow_a = port_a.m_flow/medium_a.d 
       "Volume flow rate near port_a";
-  SI.Pressure dp(start=0) "Pressure difference between port_a and port_b";
+  SI.Pressure dp "Pressure difference between port_a and port_b";
     
   annotation (
     Coordsys(grid=[1, 1], component=[20, 20]),
