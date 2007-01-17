@@ -5,12 +5,13 @@ package ControlValves "Various variants of valve components"
     extends BaseClasses.PartialValve;
     import Modelica_Fluid.Types.CvTypes;
     annotation (
-    Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
+    Icon,
     Diagram,
     Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluids. <p>
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
-<p>This model can be used with any low compressibility fluids, such as liquids or gases at very low pressure drops.
+<p>This model can be used with any low compressibility fluids, such as liquids or gases at very low pressure drops.</p>
+<p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
 </html>",
       revisions="<html>
 <ul>
@@ -54,14 +55,16 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     Medium.AbsolutePressure pin "Inlet pressure";
     Medium.AbsolutePressure pout "Outlet pressure";
     annotation (
-      Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
+      Icon,
       Diagram,
       Documentation(info="<HTML>
-<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid, with possible choked flow conditions. <p>
+<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid at the inlet, and possibly two-phase fluid at the outlet, with resulting choked flow conditions. <p>
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).<p>
 The model operating range includes choked flow operation, which takes place for low outlet pressures due to flashing in the vena contracta; otherwise, non-choking conditions are assumed.
-<p>This model can be used with two-phase medium models, to describe the liquid and (possible) two-phase conditions.
+<p>This model must be used with two-phase medium models, to describe the liquid and (possible) two-phase conditions.
 <p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Fl_nom</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by replacing the <tt>FlCharacteristic</tt> function.
+<p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
+
 </HTML>",
         revisions="<html>
 <ul>
@@ -78,7 +81,7 @@ The model operating range includes choked flow operation, which takes place for 
   equation 
     pin = port_a.p;
     pout = port_b.p;
-    pv = Medium.saturationPressure(T);
+    pv = Medium.saturationPressure_sat(medium_a.sat);
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
     Fl = Fl_nom*FlCharacteristic(stemPosition);
     dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 
@@ -114,12 +117,16 @@ The model operating range includes choked flow operation, which takes place for 
     parameter Real Y_nom(fixed=false) "Nominal compressibility factor";
     
     annotation (
-    Icon(Text(extent=[-100, -40; 100, -80], string="%name")),
+    Icon,
     Diagram,
     Documentation(info="<HTML>
-<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid. <p>
+<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid, no phase change, including choked conditions. <p>
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
+<p>This model can be used with gases at moderate to high pressure ratios.</p>
+
 <p>The product Fk*xt is given by the parameter <tt>Fxt_full</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by replacing the <tt>xtCharacteristic</tt> function.
+<p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
+
 </HTML>",
       revisions="<html>
 <ul>
@@ -269,7 +276,8 @@ it is open.
           p(start=pout_start),
           T(start=T_start),
           h(start=h_start),
-          Xi(start=X_start[1:Medium.nXi])));
+          Xi(start=X_start[1:Medium.nXi])),
+          m_flow(start = m_flow_start));
       
     parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
@@ -306,6 +314,9 @@ it is open.
     parameter Medium.AbsolutePressure pout_start = p_nom-dp_nom 
         "Start value of outlet pressure" 
       annotation(Dialog(tab = "Initialization"));
+    parameter Medium.MassFlowRate m_flow_start = m_flow_nom 
+        "Start value of mass flow rate" 
+      annotation(Dialog(tab = "Initialization"));
     parameter Boolean use_T_start = true 
         "Use T_start if true, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate = true);
@@ -331,6 +342,7 @@ it is open.
     Medium.Temperature T "Temperature at port a";
     protected 
     function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
+      
     annotation (
       Icon(Text(extent=[-143,-66; 148,-106],  string="%name"),
         Line(points=[0,60; 0,0],   style(
