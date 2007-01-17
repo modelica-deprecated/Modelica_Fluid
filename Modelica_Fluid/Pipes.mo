@@ -86,7 +86,9 @@ pipe wall/environment).
       d_nominal=d_nominal,
       from_dp=true,
       dp_small=dp_small,
-      show_Re=false)   annotation (extent=[-60,-10; -40,10]);
+      show_Re=false, 
+      p_start=p_start, 
+      T_start=T_start) annotation (extent=[-60,-10; -40,10]);
   Modelica_Fluid.Pipes.BaseClasses.PortVolume volume(
     redeclare package Medium = Medium,
     V=Modelica.Constants.pi*(diameter/2)^2*length,
@@ -110,7 +112,10 @@ pipe wall/environment).
       d_nominal=d_nominal,
       from_dp=true,
       dp_small=dp_small,
-      show_Re=false)   annotation (extent=[40,-10; 60,10]);
+      show_Re=false, 
+      p_start=p_start, 
+      use_T_start=true, 
+      T_start=T_start) annotation (extent=[40,-10; 60,10]);
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
     annotation (extent=[-10,44; 10,64]);
 equation 
