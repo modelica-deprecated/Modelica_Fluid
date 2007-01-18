@@ -22,7 +22,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort,
-      m_flow=20, 
+      m_flow=20,
       T=ambient.default_T_ambient) 
       annotation (extent=[-52,70; -32,90]);
     annotation (Diagram,
@@ -36,8 +36,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
-      p=ambient.default_p_ambient, 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
+      p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-54,-20; -34,0]);
     PressureLosses.WallFrictionAndGravity pipe(
@@ -50,10 +50,10 @@ package Tanks "Library demonstrating the usage of the tank model"
       height_ab=1) annotation (extent=[-30,0; -10,20],  rotation=90);
   equation 
     connect(flowSource.port, tank.topPorts[1])  annotation (points=[-32,80; -20,
-          80; -20,68], style(color=69, rgbcolor={0,127,255}));
+          80; -20,69], style(color=69, rgbcolor={0,127,255}));
     connect(ambient_fixed.port, pipe.port_a) annotation (points=[-34,-10; -20,
           -10; -20,0],   style(color=69, rgbcolor={0,127,255}));
-    connect(pipe.port_b, tank.ports[1]) annotation (points=[-20,20; -20,28],
+    connect(pipe.port_b, tank.ports[1]) annotation (points=[-20,20; -20,27],
         style(color=69, rgbcolor={0,127,255}));
   end OneTank;
   
@@ -98,10 +98,10 @@ package Tanks "Library demonstrating the usage of the tank model"
       length=1,
       diameter=0.1)  annotation (extent=[-30,-30; -10,-10]);
   equation 
-    connect(tank1.ports[1], pipe.port_a) annotation (points=[-60,0; -60,
-          -20; -30,-20], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe.port_b, tank2.ports[1]) annotation (points=[-10,-20; 20,
-          -20; 20,0], style(color=69, rgbcolor={0,127,255}));
+    connect(tank1.ports[1], pipe.port_a) annotation (points=[-60,-1; -60,-20; 
+          -30,-20],      style(color=69, rgbcolor={0,127,255}));
+    connect(pipe.port_b, tank2.ports[1]) annotation (points=[-10,-20; 20,-20; 
+          20,-1],     style(color=69, rgbcolor={0,127,255}));
   end TwoTanks;
   
   model TankWithEmptyingPipe1 
@@ -113,7 +113,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort,
-      m_flow=50, 
+      m_flow=50,
       T=ambient.default_T_ambient) 
       annotation (extent=[-20,40; 0,60]);
     annotation (Diagram,
@@ -128,8 +128,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
-      p=ambient.default_p_ambient, 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
+      p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-60,-100; -40,-80]);
     ControlValves.ValveDiscrete valveDiscrete(redeclare package Medium = 
@@ -160,17 +160,26 @@ package Tanks "Library demonstrating the usage of the tank model"
       diameter=0.1,
       height_ab=1) annotation (extent=[30,0; 50,20],    rotation=90);
   equation 
-    connect(ambient_fixed.port, valveDiscrete.port_a) annotation (points=[-40,
-          -90; -20,-90; -20,-60], style(color=69, rgbcolor={0,127,255}));
+    connect(ambient_fixed.port, valveDiscrete.port_a) annotation (points=[-40,-90; 
+          -20,-90; -20,-60],      style(color=69, rgbcolor={0,127,255}));
     connect(open.y, valveDiscrete.open) annotation (points=[-39,-50; -28,-50],
         style(color=5, rgbcolor={255,0,255}));
-    connect(valveDiscrete.port_b, tank1.ports[1]) annotation (points=[-20,-40;
-          -20,-29.1; -20,-20; -20,-20],
-                         style(color=69, rgbcolor={0,127,255}));
     connect(flowSource.port, pipe.port_b) annotation (points=[0,50; 40,50; 40,
           20], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe.port_a, tank1.ports[2]) annotation (points=[40,0; 40,-30; -20,
-          -30; -20,-20],     style(color=69, rgbcolor={0,127,255}));
+    connect(valveDiscrete.port_b, tank1.ports[1]) annotation (points=[-20,-40; 
+          -20,-21], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        fillColor=7, 
+        rgbfillColor={255,255,255}, 
+        fillPattern=1));
+    connect(pipe.port_a, tank1.ports[2]) annotation (points=[40,0; 40,-28; -18,
+          -28; -18,-20; -20,-20; -20,-21], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        fillColor=7, 
+        rgbfillColor={255,255,255}, 
+        fillPattern=1));
   end TankWithEmptyingPipe1;
   
   model TankWithEmptyingPipe2 
@@ -188,8 +197,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
-      p=ambient.default_p_ambient, 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
+      p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-60,-100; -40,-80]);
     Modelica_Fluid.Volumes.Tank tank1(
@@ -226,17 +235,17 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
-      p=ambient.default_p_ambient, 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
+      p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[0,-100; 20,-80]);
   equation 
-    connect(tank1.ports[1], pipe1.port_b) annotation (points=[-20,-20; -20,
-          -50], style(color=69, rgbcolor={0,127,255}));
+    connect(tank1.ports[1], pipe1.port_b) annotation (points=[-20,-21; -20,-50],
+                style(color=69, rgbcolor={0,127,255}));
     connect(ambient_fixed.port, pipe1.port_a) annotation (points=[-40,-90; -20,
           -90; -20,-70], style(color=69, rgbcolor={0,127,255}));
-    connect(tank1.ports[2], pipe2.port_b) annotation (points=[-20,-20; -18,
-          -20; -18,-40; 30,-40; 30,-50], style(color=69, rgbcolor={0,127,255}));
+    connect(tank1.ports[2], pipe2.port_b) annotation (points=[-20,-21; -18,-21; 
+          -18,-40; 30,-40; 30,-50],      style(color=69, rgbcolor={0,127,255}));
     connect(ambient_fixed1.port, pipe2.port_a) annotation (points=[20,-90; 30,-90;
           30,-70], style(color=69, rgbcolor={0,127,255}));
   end TankWithEmptyingPipe2;
@@ -257,8 +266,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
                                             redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater, flowDirection=
-          Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
-      p=ambient.default_p_ambient, 
+          Modelica_Fluid.Types.SourceFlowDirection.InToPort,
+      p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-100,-80; -80,-60]);
     Modelica_Fluid.Volumes.Tank tank1(
@@ -295,8 +304,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed2(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
-      p=ambient.default_p_ambient, 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
+      p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[0,-80; 20,-60]);
     Modelica_Fluid.Volumes.Tank tank2(
@@ -322,7 +331,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       height_ab=-0.5) 
                    annotation (extent=[-20,10; 0,30],   rotation=0);
   equation 
-    connect(tank1.ports[1], pipe1.port_b) annotation (points=[-60,0; -60,-30],
+    connect(tank1.ports[1], pipe1.port_b) annotation (points=[-60,-1; -60,-30],
                 style(color=69, rgbcolor={0,127,255}));
     connect(ambient_fixed1.port, pipe1.port_a) 
                                               annotation (points=[-80,-70; -60,
@@ -330,11 +339,13 @@ package Tanks "Library demonstrating the usage of the tank model"
     connect(ambient_fixed2.port, pipe2.port_a) annotation (points=[20,-70; 40,-70;
           40,-50], style(color=69, rgbcolor={0,127,255}));
     connect(tank2.ports[1], pipe2.port_b) 
-      annotation (points=[40,0; 40,-30], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe3.port_a, tank1.ports[2]) annotation (points=[-20,20; -30,20;
-          -30,-8; -60,-8; -60,0], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe3.port_b, tank2.ports[2]) annotation (points=[0,20; 10,20;
-          10,-8; 40,-8; 40,0], style(color=69, rgbcolor={0,127,255}));
+      annotation (points=[40,-1; 40,-30],style(color=69, rgbcolor={0,127,255}));
+    connect(pipe3.port_a, tank1.ports[2]) annotation (points=[-20,20; -30,20; 
+          -30,-10; -58,-10; -58,0; -60,0; -60,-1],
+                                  style(color=69, rgbcolor={0,127,255}));
+    connect(pipe3.port_b, tank2.ports[2]) annotation (points=[0,20; 10,20; 10,
+          -8; 38,-8; 38,0; 40,0; 40,-1],
+                               style(color=69, rgbcolor={0,127,255}));
   end TanksWithEmptyingPipe1;
   
   model TanksWithEmptyingPipe2 
@@ -357,8 +368,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort, 
-      p=ambient.default_p_ambient, 
+      flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
+      p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-16,-102; -36,-82]);
     ControlValves.ValveDiscrete valveDiscrete(redeclare package Medium = 
@@ -413,24 +424,25 @@ package Tanks "Library demonstrating the usage of the tank model"
           -92; -60,-92; -60,-88], style(color=69, rgbcolor={0,127,255}));
     connect(open.y, valveDiscrete.open) annotation (points=[-77,-78; -68,-78],
         style(color=5, rgbcolor={255,0,255}));
-    connect(valveDiscrete.port_b,tank3. ports[1]) annotation (points=[-60,-68;
-          -60,-50],      style(color=69, rgbcolor={0,127,255}));
-    connect(pipe1.port_b, tank1.ports[1]) annotation (points=[70,40; 70,50],
+    connect(valveDiscrete.port_b,tank3. ports[1]) annotation (points=[-60,-68; 
+          -60,-51],      style(color=69, rgbcolor={0,127,255}));
+    connect(pipe1.port_b, tank1.ports[1]) annotation (points=[70,40; 70,49],
         style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_b, tank2.ports[2]) annotation (points=[6.12303e-016,-14; 
-          6.12303e-016,-10; 0,-10; 0,10],
+          6.12303e-016,-10; 0,-10; 0,9],
                              style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, tank3.ports[2]) annotation (points=[-6.12303e-016,-34; 
-          -6.12303e-016,-48; 0,-60; -58,-60; -58,-50; -60,-50],
+          -6.12303e-016,-48; 0,-60; -58,-60; -58,-51; -60,-51],
                                   style(color=69, rgbcolor={0,127,255}));
     connect(pipe3.port_a, tank3.topPorts[1]) 
-                                            annotation (points=[-60,0; -60,-10],
+                                            annotation (points=[-60,0; -60,-9],
         style(color=69, rgbcolor={0,127,255}));
-    connect(pipe3.port_b, tank2.ports[1]) annotation (points=[-60,20; -60,26;
-          -30,26; -30,0; -2,0; -2,10; 0,10],
+    connect(pipe3.port_b, tank2.ports[1]) annotation (points=[-60,20; -60,26; 
+          -30,26; -30,0; -2,0; -2,9; 0,9],
                                          style(color=69, rgbcolor={0,127,255}));
-    connect(pipe1.port_a, tank2.ports[3]) annotation (points=[70,20; 70,0; 2,0; 2,10;
-          0,10], style(color=69, rgbcolor={0,127,255}));
+    connect(pipe1.port_a, tank2.ports[3]) annotation (points=[70,20; 70,0; 2,0; 
+          2,9; 0,9],
+                 style(color=69, rgbcolor={0,127,255}));
   end TanksWithEmptyingPipe2;
   
   model ThreeOpenTanks "Demonstrating the usage of OpenTank" 
@@ -503,12 +515,11 @@ package Tanks "Library demonstrating the usage of the tank model"
                                               style(color=69, rgbcolor={0,127,255}));
     connect(tank3.port[1], pipe3.port_b) annotation (points=[59.6,20.2; 59.6,9.1;
           60,9.1; 60,0], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -62,-20;
-          -62,-42; -6.12303e-016,-42; -6.12303e-016,-20],
-                                                      style(color=69, rgbcolor={0,
+    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -60,-40; 
+          -6.12303e-016,-40; -6.12303e-016,-20],      style(color=69, rgbcolor={0,
             127,255}));
-    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12303e-016,-20;
-          0,-20; 0,-42; 60,-42; 60,-20],
+    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12303e-016,-20; 
+          0,-20; 0,-40; 60,-40; 60,-20],
                                        style(color=69, rgbcolor={0,127,255}));
   end ThreeOpenTanks;
   
@@ -550,10 +561,10 @@ package Tanks "Library demonstrating the usage of the tank model"
                                      annotation (extent=[56,58; 76,78]);
   equation 
     connect(pipe.port_b, tank1.ports[1]) annotation (points=[6.12303e-016,0; 0,
-          0; 0,20],      style(color=69, rgbcolor={0,127,255}));
+          0; 0,19],      style(color=69, rgbcolor={0,127,255}));
     connect(pipe.port_a, tank2.topPorts[1]) 
                                            annotation (points=[-6.12303e-016,
-          -20; -6.12303e-016,-30; 0,-30; 0,-40], style(color=69, rgbcolor={0,
+          -20; -6.12303e-016,-30; 0,-30; 0,-39], style(color=69, rgbcolor={0,
             127,255}));
   end TestEmptyOpenTank;
   
