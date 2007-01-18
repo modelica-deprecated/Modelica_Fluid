@@ -251,11 +251,11 @@ end OpenTank;
 model Tank 
     "Open tank with top and bottom inlet/outlet ports at a defineable height" 
     
-    import SI = Modelica.SIunits;
-    import Modelica.Constants;
-    import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
-    import Modelica_Fluid.Utilities.regRoot2;
-    import Modelica_Fluid.Volumes.BaseClasses.TankPortData;
+  import SI = Modelica.SIunits;
+  import Modelica.Constants;
+  import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
+  import Modelica_Fluid.Utilities.regRoot2;
+  import Modelica_Fluid.Volumes.BaseClasses.TankPortData;
     
   replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -273,22 +273,22 @@ model Tank
     parameter Integer nTopPorts(min=1) = 1 
       "Number of inlet ports above levelMax (>= 1)";
     
-    Modelica_Fluid.Interfaces.FluidPort_a topPorts[nTopPorts](
+    Modelica_Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0, each min=0),
     mXi_flow(each start=0, each min=0)) 
       "Inlet ports over levelMax at top of tank (fluid flows only from the port in to the tank)"
-    annotation (extent=[-10,90; 10,110]);
+    annotation (extent=[-5,85; 5,125],  rotation=90);
     
     parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0)} 
       "Data of inlet/outlet ports at side and bottom of tank";
     
-    Modelica_Fluid.Interfaces.FluidPort_b ports[size(portsData,1)](
+    Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
     redeclare package Medium = Medium,
     m_flow(each start=0),
     mXi_flow(each start=0)) 
       "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
-    annotation (extent=[-10,-110; 10,-90]);
+    annotation (extent=[-5,-125; 5,-85],  rotation=90);
     
 //Ambient  
    outer Modelica_Fluid.Ambient ambient "Ambient conditions";

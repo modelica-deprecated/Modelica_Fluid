@@ -64,9 +64,12 @@ package Interfaces
   connector FluidPort_a "Fluid connector with filled icon" 
     extends FluidPort;
     annotation (defaultComponentName="port_a",
-                Diagram(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
-               fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
-               fillColor=69)), Text(extent=[-88, 206; 112, 112], string="%name")),
+                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=69,
+            rgbfillColor={0,127,255})),
+                               Text(extent=[-150,110; 150,50],   string="%name")),
          Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
               fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
               fillColor=69))));
@@ -75,16 +78,83 @@ package Interfaces
   connector FluidPort_b "Fluid connector with outlined icon" 
     extends FluidPort;
     annotation (defaultComponentName="port_b",
-                Diagram(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
-               fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
-               fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
-               fillColor=7)), Text(extent=[-88, 192; 112, 98], string="%name")),
+                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=69,
+            rgbfillColor={0,127,255})),
+                               Ellipse(extent=[-30,30; 30,-30],   style(color=69,
+               fillColor=7)), Text(extent=[-150,110; 150,50],   string="%name")),
          Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
               fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
               fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
                fillColor=7))));
   end FluidPort_b;
   
+  connector FluidPorts_a 
+    "Fluid connector with filled, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)" 
+    extends FluidPort;
+    annotation (defaultComponentName="ports_a",
+                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
+        Rectangle(extent=[-25,100; 25,-100], style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255})),
+        Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
+        Ellipse(extent=[-25,25; 25,-25],style(color=16,fillColor=69)),
+        Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69))),
+         Icon(
+        Rectangle(extent=[-50,200; 50,-200], style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255})),
+                              Ellipse(extent=[-50,180; 50,80],       style(color=16,
+              fillColor=69)), Ellipse(extent=[-50,50; 50,-50],       style(color=16,
+              fillColor=69)), Ellipse(extent=[-50,-80; 50,-180],     style(color=16,
+              fillColor=69))),
+      Coordsys(
+        extent=[-50,-200; 50,200],
+        grid=[1,1],
+        scale=0.2));
+  end FluidPorts_a;
+
+  connector FluidPorts_b 
+    "Fluid connector with outlined, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)" 
+    extends FluidPort;
+    annotation (defaultComponentName="ports_b",
+                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
+        Rectangle(extent=[-25,100; 25,-100], style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255})),
+        Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
+        Ellipse(extent=[-25,25; 25,-25],style(color=16,fillColor=69)),
+        Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69)),
+        Ellipse(extent=[-15,-50; 15,-80], style(color=69, fillColor=7)),
+        Ellipse(extent=[-15,15; 15,-15], style(color=69, fillColor=7)),
+        Ellipse(extent=[-15,50; 15,80], style(color=69, fillColor=7))),
+         Icon(
+        Rectangle(extent=[-50,200; 50,-200], style(
+            color=3,
+            rgbcolor={0,0,255},
+            fillColor=7,
+            rgbfillColor={255,255,255})),
+                              Ellipse(extent=[-50,180; 50,80],       style(color=16,
+              fillColor=69)), Ellipse(extent=[-50,50; 50,-50],       style(color=16,
+              fillColor=69)), Ellipse(extent=[-50,-80; 50,-180],     style(color=16,
+              fillColor=69)),
+            Ellipse(extent=[-30,30; 30,-30], style(color=69, fillColor=7)),
+            Ellipse(extent=[-30,100; 30,160], style(color=69, fillColor=7)),
+            Ellipse(extent=[-30,-100; 30,-160], style(color=69, fillColor=7))),
+      Coordsys(
+        extent=[-50,-200; 50,200],
+        grid=[1,1],
+        scale=0.2));
+  end FluidPorts_b;
+
 partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
     import SI = Modelica.SIunits;
