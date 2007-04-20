@@ -19,11 +19,11 @@ package Junctions "Junction components"
       "Fluid medium model" 
         annotation (choicesAllMatching=true);
     
-    Modelica_Fluid.Interfaces.FluidPort_b port_1(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_1(redeclare package Medium = 
           Medium) annotation (extent=[-120,-10; -100,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
           Medium) annotation (extent=[100,-10; 120,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_3(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_3(redeclare package Medium = 
           Medium) annotation (extent=[-10,100; 10,120]);
     
     Medium.AbsolutePressure p "Pressure";
@@ -84,11 +84,11 @@ package Junctions "Junction components"
     SI.InternalEnergy U;
     SI.Mass m;
     SI.Mass[Medium.nXi] mXi;
-    Modelica_Fluid.Interfaces.FluidPort_b port_1(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_1(redeclare package Medium = 
           Medium) annotation (extent=[-120,-10; -100,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
           Medium) annotation (extent=[100,-10; 120,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_3(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_3(redeclare package Medium = 
           Medium) annotation (extent=[-10,100; 10,120]);
     
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
@@ -141,9 +141,11 @@ package Junctions "Junction components"
   model MassFlowRatio "simple flow multiplier" 
     replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(choicesAllMatching);
     parameter Real ratio=1 "flow multiplier from port a to port b";
-    Interfaces.FluidPort_a port_a(redeclare package Medium=Medium)
+    Modelica.Fluid.Interfaces.FluidPort_a port_a(
+                                  redeclare package Medium=Medium) 
       annotation (extent=[-110,-10; -90,10]);
-    Interfaces.FluidPort_b port_b(redeclare package Medium = Medium)
+    Modelica.Fluid.Interfaces.FluidPort_b port_b(
+                                  redeclare package Medium = Medium) 
       annotation (extent=[90,-10; 110,10]);
   equation 
     port_b.m_flow = ratio*port_a.m_flow;
@@ -166,57 +168,57 @@ package Junctions "Junction components"
       port_b.C);
     annotation (Icon(
         Line(points=[-80,0; 80,80], style(
-            color=69, 
-            rgbcolor={0,128,255}, 
-            thickness=4)), 
+            color=69,
+            rgbcolor={0,128,255},
+            thickness=4)),
         Line(points=[-80,0; 80,0], style(
-            color=69, 
-            rgbcolor={0,128,255}, 
-            thickness=4)), 
+            color=69,
+            rgbcolor={0,128,255},
+            thickness=4)),
         Line(points=[-80,0; 80,-80], style(
-            color=69, 
-            rgbcolor={0,128,255}, 
-            thickness=4)), 
+            color=69,
+            rgbcolor={0,128,255},
+            thickness=4)),
         Line(points=[-80,0; 80,40], style(
-            color=69, 
-            rgbcolor={0,128,255}, 
-            thickness=4)), 
+            color=69,
+            rgbcolor={0,128,255},
+            thickness=4)),
         Line(points=[-80,0; 80,-40], style(
-            color=69, 
-            rgbcolor={0,128,255}, 
+            color=69,
+            rgbcolor={0,128,255},
             thickness=4))), Documentation(info="<html>
 This model reflects a simple flow multiplication, which is very helpful in cases where the flow is evenly distributed to several parallel flow paths which are identical in their dimensions and boundary conditions, as e.g. in heat exchangers. Only one of the parallel pipes needs to be simulated then. All flow variables in <b>port_b</b> are achieved by multiplying those in <b>port_a</b> with parameter <b>ratio</b>.
 </html>"));
   end MassFlowRatio;
-
+  
   model HeatFlowRatio "simple heat flow multiplier" 
     parameter Real ratio=1 "heat flow ratio from port_a to port_b";
     annotation (Icon(
         Line(points=[-80,0; 80,80], style(
-            color=1, 
-            rgbcolor={255,0,0}, 
-            thickness=4)), 
+            color=1,
+            rgbcolor={255,0,0},
+            thickness=4)),
         Line(points=[-80,0; 80,40], style(
-            color=1, 
-            rgbcolor={255,0,0}, 
-            thickness=4)), 
+            color=1,
+            rgbcolor={255,0,0},
+            thickness=4)),
         Line(points=[-80,0; 80,0], style(
-            color=1, 
-            rgbcolor={255,0,0}, 
-            thickness=4)), 
+            color=1,
+            rgbcolor={255,0,0},
+            thickness=4)),
         Line(points=[-80,0; 80,-40], style(
-            color=1, 
-            rgbcolor={255,0,0}, 
-            thickness=4)), 
+            color=1,
+            rgbcolor={255,0,0},
+            thickness=4)),
         Line(points=[-80,0; 80,-80], style(
-            color=1, 
-            rgbcolor={255,0,0}, 
+            color=1,
+            rgbcolor={255,0,0},
             thickness=4))), Documentation(info="<html>
 Simple model for heat flow multiplication between the two ports. The heat flow rate in port_a is multiplied by parameter <b>ratio</b> to achieve the rate at port_b. Both temperatures are equal, the model may be used e.g. for parallel pipes in heat exchangers.
 </html>"));
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a port_a
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a port_a 
       annotation (extent=[-100,-10; -80,10]);
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b port_b
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b port_b 
       annotation (extent=[80,-10; 100,10]);
   equation 
     port_b.Q_flow=ratio*port_a.Q_flow;

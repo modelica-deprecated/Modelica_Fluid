@@ -36,10 +36,12 @@ model LumpedPipe "Short pipe with one volume, wall friction and gravity effect"
       "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
     annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
     
-    Interfaces.FluidPort_a port_a(redeclare package Medium = Medium) 
+    Modelica.Fluid.Interfaces.FluidPort_a port_a(
+                                  redeclare package Medium = Medium) 
       "Fluid connector a (positive design flow direction is from port_a to port_b)"
       annotation (extent=[-110,-10; -90,10]);
-    Interfaces.FluidPort_b port_b(redeclare package Medium = Medium) 
+    Modelica.Fluid.Interfaces.FluidPort_b port_b(
+                                  redeclare package Medium = Medium) 
       "Fluid connector b (positive design flow direction is from port_a to port_b)"
       annotation (extent=[110,-10; 90,10]);
     
@@ -86,8 +88,8 @@ pipe wall/environment).
       d_nominal=d_nominal,
       from_dp=true,
       dp_small=dp_small,
-      show_Re=false, 
-      p_start=p_start, 
+      show_Re=false,
+      p_start=p_start,
       T_start=T_start) annotation (extent=[-60,-10; -40,10]);
   Modelica_Fluid.Pipes.BaseClasses.PortVolume volume(
     redeclare package Medium = Medium,
@@ -112,9 +114,9 @@ pipe wall/environment).
       d_nominal=d_nominal,
       from_dp=true,
       dp_small=dp_small,
-      show_Re=false, 
-      p_start=p_start, 
-      use_T_start=true, 
+      show_Re=false,
+      p_start=p_start,
+      use_T_start=true,
       T_start=T_start) annotation (extent=[40,-10; 60,10]);
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
     annotation (extent=[-10,44; 10,64]);
@@ -563,7 +565,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       
     parameter SI.Volume V "Volume";
       
-    Interfaces.FluidPort_a port(
+    Modelica.Fluid.Interfaces.FluidPort_a port(
       redeclare package Medium = Medium) "Fluid port" 
       annotation (extent=[-10, -10; 10, 10], rotation=0);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
@@ -861,11 +863,11 @@ The correlation takes into account the spatial position along the pipe flow, whi
    SI.Pressure[n+1] dp(start=dp0) "pressure difference across staggered grid";
       
   //Fluid ports
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
           Medium, m_flow(min=if allowFlowReversal and not static then -inf else 0)) 
         "Fluid inlet port" 
                          annotation (extent=[-110,-10; -90,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
           Medium, m_flow(max=if allowFlowReversal and not static then +inf else 0)) 
         "Fluid outlet port" 
                           annotation (extent=[90,-10; 110,10]);
@@ -1130,11 +1132,11 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     SI.Pressure[np] dp(start=dp0) "Pressure difference across staggered grid";
       
   //Fluid ports
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
           Medium, m_flow(min=if allowFlowReversal and not static then -inf else 0)) 
         "Fluid inlet port" 
                          annotation (extent=[-110,-10; -90,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
           Medium, m_flow(max=if allowFlowReversal and not static then +inf else 0)) 
         "Fluid outlet port" 
                           annotation (extent=[90,-10; 110,10]);
