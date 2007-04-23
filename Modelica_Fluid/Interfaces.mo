@@ -34,11 +34,6 @@ package Interfaces
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
   
-  
-  
-  
-  
-  
 partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
     import SI = Modelica.SIunits;
@@ -48,6 +43,24 @@ partial model PartialTwoPortTransport
                                                                        annotation (
       choicesAllMatching =                                                                            true);
     
+  //Initialization
+  parameter Medium.AbsolutePressure p_a_start "Guess value of pressure" 
+    annotation(Dialog(tab = "Guess Value Initialization"));
+  parameter Medium.AbsolutePressure p_b_start "Guess value of pressure" 
+    annotation(Dialog(tab = "Guess Value Initialization"));
+  parameter Boolean use_T_start = true "= true, use T_start, otherwise h_start"
+    annotation(Dialog(tab = "Guess Value Initialization"), Evaluate=true);
+  parameter Medium.Temperature T_start=
+    if use_T_start then Medium.T_default else Medium.temperature_phX(p_a_start,h_start,X_start) 
+      "Guess value of temperature" 
+    annotation(Dialog(tab = "Guess Value Initialization", enable = use_T_start));
+  parameter Medium.SpecificEnthalpy h_start=
+    if use_T_start then Medium.specificEnthalpy_pTX(p_a_start, T_start, X_start) else Medium.h_default 
+      "Guess value of specific enthalpy" 
+    annotation(Dialog(tab = "Guess Value Initialization", enable = not use_T_start));
+  parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Guess value of mass fractions m_i/m" 
+    annotation (Dialog(tab="Guess Value Initialization", enable=Medium.nXi > 0));
  parameter Types.FlowDirection.Temp flowDirection=
                    Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
@@ -63,13 +76,16 @@ partial model PartialTwoPortTransport
                      m_flow(start=0,max=if allowFlowReversal then +Constants.inf else 0)) 
       "Fluid connector b (positive design flow direction is from port_a to port_b)"
     annotation (extent=[110,-10; 90,10]);
-  Medium.BaseProperties medium_a "Medium properties in port_a";
-  Medium.BaseProperties medium_b "Medium properties in port_b";
+  Medium.BaseProperties medium_a(p(start=p_a_start), h(start=h_start), X(start=X_start)) 
+      "Medium properties in port_a";
+  Medium.BaseProperties medium_b(p(start=p_b_start), h(start=h_start), X(start=X_start)) 
+      "Medium properties in port_b";
   Medium.MassFlowRate m_flow 
       "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
   SI.VolumeFlowRate V_flow_a = port_a.m_flow/medium_a.d 
       "Volume flow rate near port_a";
-  SI.Pressure dp "Pressure difference between port_a and port_b";
+  SI.Pressure dp(start=p_a_start-p_b_start) 
+      "Pressure difference between port_a and port_b";
     
   annotation (
     Coordsys(grid=[1, 1], component=[20, 20]),

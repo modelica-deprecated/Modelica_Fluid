@@ -2,9 +2,29 @@ package Pipes "Lumped, distributed and thermal pipe components"
     extends Modelica_Fluid.Icons.VariantLibrary;
   
 model LumpedPipe "Short pipe with one volume, wall friction and gravity effect" 
-    import SI = Modelica.SIunits;
-    
-  extends Modelica_Fluid.Interfaces.PartialInitializationParameters;
+  replaceable package Medium = 
+    Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+    annotation (choicesAllMatching = true);
+  parameter Types.Init.Temp initType=
+            Types.Init.NoInit "Initialization option" 
+    annotation(Evaluate=true, Dialog(tab = "Initialization"));
+  parameter Medium.AbsolutePressure p_a_start "Start value of pressure" 
+    annotation(Dialog(tab = "Initialization"));
+  parameter Medium.AbsolutePressure p_b_start "Start value of pressure" 
+    annotation(Dialog(tab = "Initialization"));
+  parameter Boolean use_T_start = true "= true, use T_start, otherwise h_start"
+    annotation(Dialog(tab = "Initialization"), Evaluate=true);
+  parameter Medium.Temperature T_start=
+    if use_T_start then Medium.T_default else Medium.temperature_phX(p_a_start,h_start,X_start) 
+      "Start value of temperature" 
+    annotation(Dialog(tab = "Initialization", enable = use_T_start));
+  parameter Medium.SpecificEnthalpy h_start=
+    if use_T_start then Medium.specificEnthalpy_pTX(p_a_start, T_start, X_start) else Medium.h_default 
+      "Start value of specific enthalpy" 
+    annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+  parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+    annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
   replaceable package WallFriction = 
     Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent 
     extends 
@@ -89,13 +109,16 @@ pipe wall/environment).
       from_dp=true,
       dp_small=dp_small,
       show_Re=false,
-      p_start=p_start,
-      T_start=T_start) annotation (extent=[-60,-10; -40,10]);
+      p_a_start=p_a_start,
+      p_b_start=(p_a_start+p_b_start)/2,
+      T_start=T_start,
+      h_start=h_start,
+      X_start=X_start) annotation (extent=[-60,-10; -40,10]);
   Modelica_Fluid.Pipes.BaseClasses.PortVolume volume(
     redeclare package Medium = Medium,
     V=Modelica.Constants.pi*(diameter/2)^2*length,
     initType=initType,
-    p_start=p_start,
+    p_start=(p_a_start+p_b_start)/2,
     use_T_start=use_T_start,
     T_start=T_start,
     h_start=h_start,
@@ -115,9 +138,13 @@ pipe wall/environment).
       from_dp=true,
       dp_small=dp_small,
       show_Re=false,
-      p_start=p_start,
-      use_T_start=true,
-      T_start=T_start) annotation (extent=[40,-10; 60,10]);
+      p_a_start=(p_a_start+p_b_start)/2,
+      p_b_start=p_b_start,
+      T_start=T_start,
+      h_start=h_start,
+      X_start=X_start,
+      use_T_start=true) 
+                       annotation (extent=[40,-10; 60,10]);
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
     annotation (extent=[-10,44; 10,64]);
 equation 
@@ -363,9 +390,10 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
     annotation (points=[0,54; 0,14], style(color=42, rgbcolor={191,0,0}));
   end DistributedPipe;
   
- model DistributedPipe_pLumped "Distributed pipe model" 
+ model DistributedPipeLumpedPressure "Distributed pipe model" 
     
-   extends Pipes.BaseClasses.PartialDistributedFlow_pLumped(
+   extends 
+      Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlowLumpedPressure(
      Qs_flow=heatTransfer.Q_flow,
      Ws_flow=zeros(n),
      ms_flow=zeros(n),
@@ -549,7 +577,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
     
    connect(thermalPort, heatTransfer.thermalPort) 
      annotation (points=[0,54; 0,14], style(color=42, rgbcolor={191,0,0}));
- end DistributedPipe_pLumped;
+ end DistributedPipeLumpedPressure;
   
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
@@ -1039,8 +1067,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     end if;
   end PartialDistributedFlow;
     
-  partial model PartialDistributedFlow_pLumped 
-      "base class for 1D fluid flow with the number of momentum balances reduced to 2" 
+  partial model PartialDistributedFlowLumpedPressure 
+      "Base class for 1D fluid flow with the number of momentum balances reduced to 2" 
     import Modelica_Fluid.Types;
     import Modelica.Constants.*;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
@@ -1309,7 +1337,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         assert(false, "Unsupported initialization option");
       end if;
     end if;
-  end PartialDistributedFlow_pLumped;
+  end PartialDistributedFlowLumpedPressure;
     
     package CharacteristicNumbers 
       function ReynoldsNumber 
