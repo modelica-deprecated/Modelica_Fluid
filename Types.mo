@@ -56,7 +56,6 @@ package Types "Common types for fluid models"
     end Temp;
   end CrossSectionTypes;
   
-  
   package Init 
     "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available" 
     
@@ -111,10 +110,6 @@ Integer type that can have the following values
   
   package FlowDirection 
     "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available" 
-    
-    annotation (Documentation(info="<html>
-  
-</html>"));
     extends Modelica.Icons.Enumeration;
     constant Integer Unidirectional = 1 
       "Fluid flows only from port_a to port_b";
@@ -228,4 +223,24 @@ Integer type that can have the following values
     
   end CvTypes;
   
+  package PortFlowDirection 
+    "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available" 
+    extends Modelica.Icons.Enumeration;
+    constant Integer Entering=1 "Fluid flow is only entering";
+    constant Integer Leaving=2 "Fluid flow is only leaving";
+    constant Integer Bidirectional=3 
+      "No restrictions on fluid flow (flow reversal possible)";
+    
+    type Temp 
+      "Temporary type with choices for menus (until enumerations are available)" 
+      extends Modelica.Icons.TypeInteger(min=1, max=3);
+      annotation (Evaluate=true, choices(
+          choice=Modelica_Fluid.Types.PortFlowDirection.Entering 
+            "Entering (fluid flow is only entering)",
+          choice=Modelica_Fluid.Types.PortFlowDirection.Leaving 
+            "Leaving (fluid flow is only entering)",
+          choice=Modelica_Fluid.Types.PortFlowDirection.Bidirectional 
+            "Bidirectional (flow reversal possible)"));
+    end Temp;
+  end PortFlowDirection;
 end Types;
