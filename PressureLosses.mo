@@ -40,11 +40,10 @@ end StaticHead;
 model SimpleGenericOrifice 
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
     import SI = Modelica.SIunits;
-    extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
-                medium_a(p(start=p_start), h(start=h_start),
+                medium_a(p(start=p_a_start), h(start=h_start),
                          T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
-                medium_b(p(start=p_start), h(start=h_start),
+                medium_b(p(start=p_b_start), h(start=h_start),
                          T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
     
   parameter Real zeta "Loss factor for flow of port_a -> port_b";
@@ -130,13 +129,10 @@ end SimpleGenericOrifice;
   
   model WallFrictionAndGravity 
     "Pressure drop in pipe due to wall friction and gravity (for both flow directions)" 
-    import SI = Modelica.SIunits;
-    
-    extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
-                  medium_a(p(start=p_start), h(start=h_start),
+                  medium_a(p(start=p_a_start), h(start=h_start),
                            T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
-                  medium_b(p(start=p_start), h(start=h_start),
+                  medium_b(p(start=p_b_start), h(start=h_start),
                            T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
     
     replaceable package WallFriction = 
@@ -292,7 +288,6 @@ simulation and/or might give a more robust simulation.
   
 model SuddenExpansion 
     "Pressure drop in pipe due to suddenly expanding area (for both flow directions)" 
-    import SI = Modelica.SIunits;
   extends PressureLosses.BaseClasses.QuadraticTurbulent.BaseModel(
      final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.suddenExpansion(D_a, D_b));
   parameter SI.Diameter D_a "Inner diameter of pipe at port_a";
@@ -382,7 +377,6 @@ end SuddenExpansion;
   
 model SharpEdgedOrifice 
     "Pressure drop due to sharp edged orifice (for both flow directions)" 
-    import SI = Modelica.SIunits;
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
   extends PressureLosses.BaseClasses.QuadraticTurbulent.BaseModel(
      final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(D_pipe, D_min, L, alpha));
@@ -602,9 +596,7 @@ end PressureDropPipe;
       
       function massFlowRate_dp 
         "Return mass flow rate from pressure drop (m_flow = f(dp))" 
-        import SI = Modelica.SIunits;
         extends Modelica.Icons.Function;
-        
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
         input SI.Density d_a "Density at port_a";
         input SI.Density d_b "Density at port_b";
@@ -1617,11 +1609,10 @@ Laminar region:
       model BaseModel 
         "Generic pressure drop component with constant turbulent loss factor data and without an icon" 
         
-        extends Modelica_Fluid.Interfaces.PartialGuessValueParameters;
         extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
-                      medium_a(p(start=p_start), h(start=h_start),
+                      medium_a(p(start=p_a_start), h(start=h_start),
                                T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
-                      medium_b(p(start=p_start), h(start=h_start),
+                      medium_b(p(start=p_b_start), h(start=h_start),
                                T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
         
         SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(
@@ -2424,8 +2415,8 @@ solving a non-linear equation.
         "Dummy or upstream dynamic viscosity for detailed friction model used for pressure loss calculation";
     input SI.Density d 
         "Dummy or upstream density for detailed friction model used for pressure loss calculation";
-    SI.Pressure dp(start=0) "Pressure loss due to pipe friction";
-    SI.MassFlowRate m_flow(start=0) "Mass flow rate from port_a to port_b";
+    SI.Pressure dp "Pressure loss due to pipe friction";
+    SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
       
     parameter Modelica_Fluid.Types.FrictionTypes.Temp frictionType=Modelica_Fluid.Types.
         FrictionTypes.ConstantTurbulent 
