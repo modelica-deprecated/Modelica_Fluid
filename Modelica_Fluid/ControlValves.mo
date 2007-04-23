@@ -261,23 +261,11 @@ it is open.
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
     partial model PartialValve "Base model for valves" 
-      import Modelica_Fluid.Types.CvTypes;
-      import Modelica_Fluid;
-      
     parameter Medium.AbsolutePressure pin_start = p_nom 
         "Start value of inlet pressure" 
       annotation(Dialog(tab = "Initialization"));
-      
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(medium_a(
-          p(start=pin_start),
-          T(start=T_start),
-          h(start=h_start),
-          Xi(start=X_start[1:Medium.nXi])), medium_b(
-          p(start=pout_start),
-          T(start=T_start),
-          h(start=h_start),
-          Xi(start=X_start[1:Medium.nXi])),
-          m_flow(start = m_flow_start));
+    import Modelica_Fluid.Types.CvTypes;
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(m_flow(start = m_flow_start), p_a_start=pin_start, p_b_start=pout_start);
       
     parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
@@ -317,21 +305,6 @@ it is open.
     parameter Medium.MassFlowRate m_flow_start = m_flow_nom 
         "Start value of mass flow rate" 
       annotation(Dialog(tab = "Initialization"));
-    parameter Boolean use_T_start = true 
-        "Use T_start if true, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"), Evaluate = true);
-    parameter Medium.Temperature T_start=
-      if use_T_start then Medium.T_default else Medium.temperature_phX(pin_start,h_start,X_start) 
-        "Start value of inlet temperature" 
-      annotation(Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.specificEnthalpy_pTX(pin_start, T_start, X_start[1:Medium.nXi]) else Medium.h_default 
-        "Start value of specific enthalpy" 
-      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
-        "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-      
     parameter Real delta=0.01 "Regularisation factor" annotation(Dialog(tab="Advanced"));
       
     Modelica.Blocks.Interfaces.RealInput stemPosition 
