@@ -1,10 +1,10 @@
-package Modelica_Fluid "1-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 2.2.1)"
+package Modelica_Fluid "1-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 2.2.2 development)"
 annotation (
   version="1.0 Beta 2",
   versionDate="2006-08-28",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(Modelica(version="2.2.1")),
+  uses(Modelica(version="2.2.2 development")),
   classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>

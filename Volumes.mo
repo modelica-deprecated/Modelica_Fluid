@@ -58,7 +58,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     parameter SI.Diameter pipe_diameters[n_ports] 
       "Inner (hydraulic) diameters of bottom ports (array)" 
      annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)", enable=n_bottomPorts > 0));
-    Modelica_Fluid.Interfaces.FluidPort_a port[n_ports](
+    Modelica.Fluid.Interfaces.FluidPort_a port[n_ports](
       redeclare package Medium = Medium,
       m_flow(each start=0),
       mXi_flow(each start=0)) 
@@ -273,7 +273,7 @@ model Tank
     parameter Integer nTopPorts(min=1) = 1 
       "Number of inlet ports above levelMax (>= 1)";
     
-    Modelica_Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
+    Modelica.Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0, each min=0),
     mXi_flow(each start=0, each min=0)) 
@@ -283,7 +283,7 @@ model Tank
     parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0)} 
       "Data of inlet/outlet ports at side and bottom of tank";
     
-    Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
+    Modelica.Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
     redeclare package Medium = Medium,
     m_flow(each start=0),
     mXi_flow(each start=0)) 

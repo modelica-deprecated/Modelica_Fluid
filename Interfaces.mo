@@ -34,127 +34,11 @@ package Interfaces
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
   
-  connector FluidPort 
-    "Interface for quasi one-dimensional fluid flow in a piping network (incompressible or compressible, one or more phases, one or more substances)" 
-    
-    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
-      "Medium model" annotation (choicesAllMatching=true);
-    
-    Medium.AbsolutePressure p "Pressure in the connection point";
-    flow Medium.MassFlowRate m_flow 
-      "Mass flow rate from the connection point into the component";
-    
-    Medium.SpecificEnthalpy h 
-      "Specific mixing enthalpy in the connection point";
-    flow Medium.EnthalpyFlowRate H_flow 
-      "Enthalpy flow rate into the component (if m_flow > 0, H_flow = m_flow*h)";
-    
-    Medium.MassFraction Xi[Medium.nXi] 
-      "Independent mixture mass fractions m_i/m in the connection point";
-    flow Medium.MassFlowRate mXi_flow[Medium.nXi] 
-      "Mass flow rates of the independent substances from the connection point into the component (if m_flow > 0, mXi_flow = m_flow*Xi)";
-    
-    Medium.ExtraProperty C[Medium.nC] 
-      "properties c_i/m in the connection point";
-    flow Medium.ExtraPropertyFlowRate mC_flow[Medium.nC] 
-      "Flow rates of auxiliary properties from the connection point into the component (if m_flow > 0, mC_flow = m_flow*C)";
-    
-  end FluidPort;
   
-  connector FluidPort_a "Fluid connector with filled icon" 
-    extends FluidPort;
-    annotation (defaultComponentName="port_a",
-                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=69,
-            rgbfillColor={0,127,255})),
-                               Text(extent=[-150,110; 150,50],   string="%name")),
-         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
-              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
-              fillColor=69))));
-  end FluidPort_a;
   
-  connector FluidPort_b "Fluid connector with outlined icon" 
-    extends FluidPort;
-    annotation (defaultComponentName="port_b",
-                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=69,
-            rgbfillColor={0,127,255})),
-                               Ellipse(extent=[-30,30; 30,-30],   style(color=69,
-               fillColor=7)), Text(extent=[-150,110; 150,50],   string="%name")),
-         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
-              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
-              fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
-               fillColor=7))));
-  end FluidPort_b;
   
-  connector FluidPorts_a 
-    "Fluid connector with filled, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)" 
-    extends FluidPort;
-    annotation (defaultComponentName="ports_a",
-                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
-        Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-        Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,25; 25,-25],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69))),
-         Icon(
-        Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-                              Ellipse(extent=[-50,180; 50,80],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,50; 50,-50],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,-80; 50,-180],     style(color=16,
-              fillColor=69))),
-      Coordsys(
-        extent=[-50,-200; 50,200],
-        grid=[1,1],
-        scale=0.2));
-  end FluidPorts_a;
-
-  connector FluidPorts_b 
-    "Fluid connector with outlined, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)" 
-    extends FluidPort;
-    annotation (defaultComponentName="ports_b",
-                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
-        Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-        Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,25; 25,-25],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69)),
-        Ellipse(extent=[-15,-50; 15,-80], style(color=69, fillColor=7)),
-        Ellipse(extent=[-15,15; 15,-15], style(color=69, fillColor=7)),
-        Ellipse(extent=[-15,50; 15,80], style(color=69, fillColor=7))),
-         Icon(
-        Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-                              Ellipse(extent=[-50,180; 50,80],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,50; 50,-50],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,-80; 50,-180],     style(color=16,
-              fillColor=69)),
-            Ellipse(extent=[-30,30; 30,-30], style(color=69, fillColor=7)),
-            Ellipse(extent=[-30,100; 30,160], style(color=69, fillColor=7)),
-            Ellipse(extent=[-30,-100; 30,-160], style(color=69, fillColor=7))),
-      Coordsys(
-        extent=[-50,-200; 50,200],
-        grid=[1,1],
-        scale=0.2));
-  end FluidPorts_b;
-
+  
+  
 partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
     import SI = Modelica.SIunits;
@@ -169,11 +53,13 @@ partial model PartialTwoPortTransport
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
     
-  Interfaces.FluidPort_a port_a(redeclare package Medium = Medium,
+  Modelica.Fluid.Interfaces.FluidPort_a port_a(
+                                redeclare package Medium = Medium,
                      m_flow(start=0,min=if allowFlowReversal then -Constants.inf else 0)) 
       "Fluid connector a (positive design flow direction is from port_a to port_b)"
     annotation (extent=[-110,-10; -90,10]);
-  Interfaces.FluidPort_b port_b(redeclare package Medium = Medium,
+  Modelica.Fluid.Interfaces.FluidPort_b port_b(
+                                redeclare package Medium = Medium,
                      m_flow(start=0,max=if allowFlowReversal then +Constants.inf else 0)) 
       "Fluid connector b (positive design flow direction is from port_a to port_b)"
     annotation (extent=[110,-10; 90,10]);
@@ -304,10 +190,12 @@ end PartialTwoPortTransport;
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
     
-      Interfaces.FluidPort_a port_a(redeclare package Medium = Medium, m_flow(min=
+      Modelica.Fluid.Interfaces.FluidPort_a port_a(
+                                    redeclare package Medium = Medium, m_flow(min=
               if allowFlowReversal then -Modelica.Constants.inf else 0)) 
       "Fluid inlet port" annotation (extent=[-112,-10; -92,10]);
-      Interfaces.FluidPort_b port_b(redeclare package Medium = Medium, m_flow(max=
+      Modelica.Fluid.Interfaces.FluidPort_b port_b(
+                                    redeclare package Medium = Medium, m_flow(max=
               if allowFlowReversal then +Modelica.Constants.inf else 0)) 
       "Fluid outlet port" annotation (extent=[90,-10; 110,10]);
       Medium.BaseProperties medium(

@@ -10,10 +10,10 @@ package Interfaces
     parameter Boolean allowFlowReversal = true 
       "Flow reversal at the ports is allowed by the equations"  annotation(Dialog(tab="Advanced"));
     
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
           Medium, m_flow(min=if allowFlowReversal then -inf else 0)) 
       annotation (extent=[-120, -10; -100, 10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
           Medium, m_flow(max=if allowFlowReversal then +inf else 0)) 
       annotation (extent=[120, -10; 100, 10]);
     Medium.BaseProperties medium_a "Medium properties in port_a";
@@ -291,10 +291,10 @@ The used sufficient criteria for monotonicity follows from:
     parameter Boolean allowFlowReversal = true 
       "Flow reversal at the ports is allowed by the equations";
     
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
           Medium, m_flow(min=if allowFlowReversal then -inf else 0)) 
       annotation (extent=[-120, -10; -100, 10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
+    Modelica.Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
           Medium, m_flow(max=if allowFlowReversal then +inf else 0)) 
       annotation (extent=[120, -10; 100, 10]);
     Medium.BaseProperties medium_a "Medium properties in port_a";
