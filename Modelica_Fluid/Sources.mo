@@ -589,7 +589,8 @@ with exception of ambient pressure, do not have an effect.
                                              annotation(Evaluate=true, Dialog(tab="Advanced"));
       
     Medium.BaseProperties medium "Medium in the source";
-    Interfaces.FluidPort_b port(redeclare package Medium = Medium,
+    Modelica.Fluid.Interfaces.FluidPort_b port(
+                                redeclare package Medium = Medium,
                      m_flow(max=if flowDirection==Types.SourceFlowDirection.OutOfPort then 0 else 
                                      +Constants.inf,
                             min=if flowDirection==Types.SourceFlowDirection.InToPort then 0 else 
