@@ -8,9 +8,11 @@ model LumpedPipe "Short pipe with one volume, wall friction and gravity effect"
   parameter Types.Init.Temp initType=
             Types.Init.NoInit "Initialization option" 
     annotation(Evaluate=true, Dialog(tab = "Initialization"));
-  parameter Medium.AbsolutePressure p_a_start "Start value of pressure" 
+  parameter Medium.AbsolutePressure p_a_start 
+      "Start value of pressure at port_a" 
     annotation(Dialog(tab = "Initialization"));
-  parameter Medium.AbsolutePressure p_b_start "Start value of pressure" 
+  parameter Medium.AbsolutePressure p_b_start 
+      "Start value of pressure at port_b" 
     annotation(Dialog(tab = "Initialization"));
   parameter Boolean use_T_start = true "= true, use T_start, otherwise h_start"
     annotation(Dialog(tab = "Initialization"), Evaluate=true);
