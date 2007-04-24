@@ -39,8 +39,7 @@ end StaticHead;
   
 model SimpleGenericOrifice 
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
-    import SI = Modelica.SIunits;
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+      extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
                 medium_a(p(start=p_a_start), h(start=h_start),
                          T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
                 medium_b(p(start=p_b_start), h(start=h_start),
@@ -633,8 +632,7 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
       
       function pressureLoss_m_flow 
         "Return pressure drop from mass flow rate (dp = f(m_flow))" 
-        import SI = Modelica.SIunits;
-        extends Modelica.Icons.Function;
+              extends Modelica.Icons.Function;
         
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         input SI.Density d_a "Density at port_a";
@@ -714,8 +712,7 @@ can appear, this component should not be used.
      record LossFactorData 
         "Data structure defining constant loss factor data for dp = zeta*rho*v*|v|/2 and functions providing the data for some loss types" 
         
-        import SI = Modelica.SIunits;
-      extends Modelica.Icons.Record;
+            extends Modelica.Icons.Record;
         
       SI.Diameter D_a "Diameter at port_a" annotation(Dialog);
       SI.Diameter D_b "Diameter at port_b" annotation(Dialog);
@@ -844,8 +841,7 @@ The used sufficient criteria for monotonicity follows from:
         
        encapsulated function wallFriction 
           "Return pressure loss data due to friction in a straight pipe with walls of nonuniform roughness (not useful for smooth pipes, since zeta is no function of Re)" 
-          import SI = Modelica.SIunits;
-          import 
+                  import 
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           import lg = Modelica.Math.log10;
           
@@ -999,8 +995,7 @@ As a short summary:
         
        encapsulated function suddenExpansion 
           "Return pressure loss data for sudden expansion or contraction in a pipe (for both flow directions)" 
-          import SI = Modelica.SIunits;
-          import 
+                  import 
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           
          input SI.Diameter D_a "Inner diameter of pipe at port_a" annotation(Dialog);
@@ -1128,8 +1123,7 @@ port_a to port_b as:
         
        encapsulated function sharpEdgedOrifice 
           "Return pressure loss data for sharp edged orifice (for both flow directions)" 
-          import SI = Modelica.SIunits;
-          import NonSI = Modelica.SIunits.Conversions.NonSIunits;
+                  import NonSI = Modelica.SIunits.Conversions.NonSIunits;
           import 
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           
@@ -1290,8 +1284,7 @@ Loss factor for mass flow rate from port_b to port_a
       
       function massFlowRate_dp 
         "Return mass flow rate from constant loss factor data and pressure drop (m_flow = f(dp))" 
-        import SI = Modelica.SIunits;
-        //import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
+              //import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
         extends Modelica.Icons.Function;
         
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
@@ -1365,8 +1358,7 @@ where
       
       function massFlowRate_dp_and_Re 
         "Return mass flow rate from constant loss factor data, pressure drop and Re (m_flow = f(dp))" 
-        import SI = Modelica.SIunits;
-        extends Modelica.Icons.Function;
+              extends Modelica.Icons.Function;
         
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
         input SI.Density d_a "Density at port_a";
@@ -1467,8 +1459,7 @@ Laminar region:
       
       function pressureLoss_m_flow 
         "Return pressure drop from constant loss factor and mass flow rate (dp = f(m_flow))" 
-        import SI = Modelica.SIunits;
-        extends Modelica.Icons.Function;
+              extends Modelica.Icons.Function;
         
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         input SI.Density d_a "Density at port_a";
@@ -1508,8 +1499,7 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
       
       function pressureLoss_m_flow_and_Re 
         "Return pressure drop from constant loss factor, mass flow rate and Re (dp = f(m_flow))" 
-        import SI = Modelica.SIunits;
-        extends Modelica.Icons.Function;
+              extends Modelica.Icons.Function;
         
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         input SI.Density d_a "Density at port_a";
@@ -1766,8 +1756,7 @@ The used sufficient criteria for monotonicity follows from:
       
     model TestWallFriction 
         "Pressure drop in pipe due to wall friction (only for test purposes; if needed use instead Utilities.WallFriction)" 
-        import SI = Modelica.SIunits;
-      extends BaseModel(final data=
+            extends BaseModel(final data=
               LossFactorData.wallFriction(
               length,
               diameter,
@@ -1825,8 +1814,7 @@ The used sufficient criteria for monotonicity follows from:
       // pressure loss characteristic functions
         replaceable partial function massFlowRate_dp 
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction" 
-          import SI = Modelica.SIunits;
-          extends Modelica.Icons.Function;
+                  extends Modelica.Icons.Function;
           
           input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
           input SI.Density d_a "Density at port_a";
@@ -1850,8 +1838,7 @@ The used sufficient criteria for monotonicity follows from:
         
         replaceable partial function pressureLoss_m_flow 
           "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction" 
-          import SI = Modelica.SIunits;
-          extends Modelica.Icons.Function;
+                  extends Modelica.Icons.Function;
           
           input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
           input SI.Density d_a "Density at port_a";
@@ -2243,8 +2230,7 @@ solving a non-linear equation.
         redeclare function extends massFlowRate_dp 
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction" 
           import Modelica.Math;
-          import SI = Modelica.SIunits;
-          annotation (smoothOrder=1, Documentation(info="<html>
+                  annotation (smoothOrder=1, Documentation(info="<html>
  
 </html>"));
         protected 
@@ -2319,8 +2305,7 @@ solving a non-linear equation.
         redeclare function extends pressureLoss_m_flow 
           "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction" 
           import Modelica.Math;
-          import SI = Modelica.SIunits;
-          annotation (smoothOrder=1, Documentation(info="<html>
+                  annotation (smoothOrder=1, Documentation(info="<html>
  
 </html>"));
         protected 
@@ -2385,8 +2370,7 @@ solving a non-linear equation.
     end WallFriction;
     
     function lossConstant_D_zeta "Return the loss constant 8*zeta/(pi^2*D^4)" 
-      import SI = Modelica.SIunits;
-      extends Modelica.Icons.Function;
+          extends Modelica.Icons.Function;
       
       input SI.Diameter D "Diameter at port_a or port_b";
       input Real zeta 
@@ -2403,8 +2387,7 @@ solving a non-linear equation.
   model PipeFriction 
       "Computes different types of pressure losses in pipes due to friction (is only used in PressureDropPipe, will be removed)" 
       
-      import SI = Modelica.SIunits;
-      import FT = Modelica_Fluid.Types.FrictionTypes;
+          import FT = Modelica_Fluid.Types.FrictionTypes;
       import CT = Modelica_Fluid.Types.CrossSectionTypes;
       import Modelica.Math;
       

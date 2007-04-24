@@ -1,7 +1,6 @@
 package Sources 
   "Generic sources for fluid connectors to define fixed or prescribed ambient conditions" 
   extends Modelica_Fluid.Icons.VariantLibrary;
-  import SI = Modelica.SIunits;
   model FixedBoundary "Boundary source component" 
     extends Sources.BaseClasses.PartialSource;
     parameter Boolean use_p=true "select p or d" 

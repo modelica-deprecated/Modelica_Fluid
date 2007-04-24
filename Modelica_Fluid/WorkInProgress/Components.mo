@@ -2,8 +2,7 @@ package Components
   
 model IsolatedPipe 
     "Model of an isolated pipe consisting of n pipe segments/FiniteVolumes" 
-    import SI = Modelica.SIunits;
-    
+      
   replaceable package Medium = 
     Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
@@ -93,8 +92,7 @@ end IsolatedPipe;
   
   model ShortPipe2 
     "Short pipe with two volumes, wall friction and gravity effect" 
-    import SI = Modelica.SIunits;
-    
+      
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     replaceable package WallFriction = 
       Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
@@ -233,8 +231,7 @@ to build up more detailed models from the basic components.
   end ShortPipe2;
   
 model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
-    import SI = Modelica.SIunits;
-    import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types;
     import Modelica_Fluid;
   replaceable package Medium = 
     Modelica.Media.Interfaces.PartialMedium "Medium in the component" 

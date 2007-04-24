@@ -1,6 +1,5 @@
 model TestShortPipeWithVolume "Test ShortPipe with PortVolume" 
   import Modelica_Fluid.Types.Init;
-  import SI = Modelica.SIunits;
   extends Modelica.Icons.Example;
   replaceable package Medium = Modelica.Media.Air.SimpleAir 
                        extends Modelica.Media.Interfaces.PartialMedium 

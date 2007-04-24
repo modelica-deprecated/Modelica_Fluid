@@ -1874,8 +1874,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     
   model CoolingTank 
       "Open tank with top and bottom inlet/outlet ports at a defineable height, heat transfer through the walls and a cooling unit via heatPort connector" 
-      import SI = Modelica.SIunits;
-      import Modelica.Constants;
+          import Modelica.Constants;
       import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
       import Modelica_Fluid.Utilities.regRoot2;
       import Modelica_Fluid.Volumes.BaseClasses.TankPortData;

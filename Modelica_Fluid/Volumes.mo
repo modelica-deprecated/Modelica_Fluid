@@ -31,8 +31,7 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     end MixingVolume;
   
 model OpenTank "Open tank with inlet/outlet ports at the bottom" 
-    import SI = Modelica.SIunits;
-  replaceable package Medium = 
+    replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
     
@@ -251,7 +250,6 @@ end OpenTank;
 model Tank 
     "Open tank with top and bottom inlet/outlet ports at a defineable height" 
     
-  import SI = Modelica.SIunits;
   import Modelica.Constants;
   import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
   import Modelica_Fluid.Utilities.regRoot2;
@@ -553,8 +551,7 @@ end Tank;
     
     record TankPortData 
       "Data to describe inlet/outlet pipes at the bottom or side of the tank" 
-      import SI = Modelica.SIunits;
-      extends Modelica.Icons.Record;
+          extends Modelica.Icons.Record;
       
       parameter SI.Diameter diameter 
         "Inner (hydraulic) diameter of inlet/outlet port";

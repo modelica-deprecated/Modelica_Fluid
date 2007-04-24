@@ -1,7 +1,6 @@
 package Utilities 
 model TankAttachment "Equations to attach pipe at tank" 
-    import SI = Modelica.SIunits;
-     replaceable package Medium = 
+       replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
      annotation (choicesAllMatching=true);
     
@@ -178,8 +177,7 @@ end TankAttachment;
   
  record PressureLossFactors 
     "Data structure defining constant loss factors zeta for dp = zeta*rho*v*|v|/2 and functions providing the data for some loss types" 
-    import SI = Modelica.SIunits;
-  extends Modelica.Icons.Record;
+    extends Modelica.Icons.Record;
     
   parameter SI.Diameter D_a "Diameter at port_a";
   parameter SI.Diameter D_b = D_a "Diameter at port_b";
@@ -305,8 +303,7 @@ The used sufficient criteria for monotonicity follows from:
     
    encapsulated function wallFriction 
       "Compute pressure loss factors due to friction in a straight pipe with walls of nonuniform roughness (commercial pipes)" 
-      import SI = Modelica.SIunits;
-      import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
+          import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
       import lg = Modelica.Math.log10;
       
      input SI.Length length "Length of pipe";
@@ -442,8 +439,7 @@ As a short summary:
     
    encapsulated function suddenExpansion 
       "Compute pressure loss factors for sudden expansion or contraction in a pipe (for both flow directions)" 
-      import SI = Modelica.SIunits;
-      import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
+          import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
       
      input SI.Diameter D_a "Inner diameter of pipe at port_a";
      input SI.Diameter D_b "Inner diameter of pipe at port_b";
@@ -570,8 +566,7 @@ port_a to port_b as:
     
    encapsulated function sharpEdgedOrifice 
       "Compute pressure loss factors for sharp edged orifice (for both flow directions)" 
-      import SI = Modelica.SIunits;
-      import NonSI = Modelica.SIunits.Conversions.NonSIunits;
+          import NonSI = Modelica.SIunits.Conversions.NonSIunits;
       import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
       
      input SI.Diameter D_pipe 
@@ -729,8 +724,7 @@ Loss factor for mass flow rate from port_b to port_a
   
   function diameter_of_squarePipe 
     "Determine hydraulic diameter of pipe with square cross sectional area" 
-    import SI = Modelica.SIunits;
-    extends Modelica.Icons.Function;
+      extends Modelica.Icons.Function;
     input SI.Length width "Inner width of pipe";
     input SI.Length height " Inner height of pipe";
     output SI.Diameter D "Inner (hydraulic) diameter of pipe";
@@ -741,8 +735,7 @@ Loss factor for mass flow rate from port_b to port_a
     model FiniteVolume 
     "One dimensional volume according to the finite volume method with 1 mass, 1 energy and 2 momentum balances" 
     
-    import SI = Modelica.SIunits;
-    import Modelica.Math;
+      import Modelica.Math;
     
       replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -924,8 +917,7 @@ in piping networks which has the following properties:
 model PipeSegment 
     "One segment of a pipe with 1 mass, 1 energy, 2 momementum balances and pipe friction" 
     
-    import SI = Modelica.SIunits;
-    import Modelica_Fluid.Types.Init.*;
+      import Modelica_Fluid.Types.Init.*;
   extends FiniteVolume(medium(
              p(start=p_start),
              T(start=T_start), h(start=h_start), Xi(start=X_start[1:Medium.nXi])));
@@ -1003,8 +995,7 @@ end PipeSegment;
 model PipeFriction 
     "Computes different types of pressure losses in pipes due to friction" 
     
-    import SI = Modelica.SIunits;
-    import FT = Modelica_Fluid.Types.FrictionTypes;
+      import FT = Modelica_Fluid.Types.FrictionTypes;
     import CT = Modelica_Fluid.Types.CrossSectionTypes;
     import Modelica.Math;
     
