@@ -14,8 +14,7 @@ connector FluidPort_ArrayIcon
 end FluidPort_ArrayIcon;
   
 model TankAttachment "Equations to attach pipe at tank" 
-    import SI = Modelica.SIunits;
-    replaceable package Medium = 
+      replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
     

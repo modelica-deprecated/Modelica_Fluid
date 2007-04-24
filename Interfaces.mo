@@ -32,12 +32,10 @@ package Interfaces
 </html>"));
   
   extends Modelica.Icons.Library;
-  import SI = Modelica.SIunits;
   
 partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
-    import SI = Modelica.SIunits;
-    import Modelica.Constants;
+      import Modelica.Constants;
   replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
                                                                        annotation (

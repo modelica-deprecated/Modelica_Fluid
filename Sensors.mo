@@ -1,7 +1,6 @@
 package Sensors 
   "Ideal sensor components (provide the variables in a fluid connector as signals)" 
   extends Modelica_Fluid.Icons.VariantLibrary;
-  import SI = Modelica.SIunits;
   
   annotation (preferedView="info", Documentation(info="<html>
 <p>
@@ -16,8 +15,7 @@ model the time constant of the sensor).
 </html>"));
   
   model Pressure "Ideal pressure sensor" 
-    import SI = Modelica.SIunits;
-    extends Sensors.BaseClasses.PartialAbsoluteSensor;
+      extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput p(unit = "Pa") "Pressure at port" 
       annotation (extent=[100,-10; 120,10]);
@@ -83,8 +81,7 @@ ideal, i.e., it does not influence the fluid.
   end Density;
   
   model Temperature "Ideal temperature sensor" 
-    import SI = Modelica.SIunits;
-    extends Sensors.BaseClasses.PartialFlowSensor;
+      extends Sensors.BaseClasses.PartialFlowSensor;
     Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput T(unit = "K") 
       "Temperature in port medium" 

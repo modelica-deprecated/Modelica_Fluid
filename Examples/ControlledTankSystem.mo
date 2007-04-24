@@ -176,8 +176,7 @@ This example is based on
   
   package Utilities 
     model TankController "Controller for tank system" 
-      import SI = Modelica.SIunits;
-      extends Modelica.StateGraph.Interfaces.PartialStateGraphIcon;
+          extends Modelica.StateGraph.Interfaces.PartialStateGraphIcon;
       parameter SI.Height maxLevel "Fill level of tank 1";
       parameter SI.Height minLevel "Lowest level of tank 1 and 2";
       parameter SI.Time waitTime "Wait time, between operations";
@@ -357,8 +356,7 @@ This example is based on
     
     model NormalOperation 
       "Normal operation of tank system (button start pressed)" 
-      import SI = Modelica.SIunits;
-      extends Modelica.StateGraph.PartialCompositeStep;
+          extends Modelica.StateGraph.PartialCompositeStep;
       parameter SI.Height maxLevel "Fill level of tank 1";
       parameter SI.Height minLevel "Lowest level of tank 1 and 2";
       parameter SI.Time waitTime "Wait time between operations";

@@ -556,8 +556,7 @@ k1=1, k2=3 is shown in the next figure:
   function ReynoldsNumber_m_flow 
     "Return Reynolds number as a function of mass flow rate m_flow" 
     extends Modelica.Icons.Function;
-    import SI = Modelica.SIunits;
-    input SI.MassFlowRate m_flow "Mass flow rate";
+      input SI.MassFlowRate m_flow "Mass flow rate";
     input SI.DynamicViscosity eta "Dynamic viscosity of medium";
     input SI.Diameter diameter "Diameter of pipe/orifice";
     output SI.ReynoldsNumber Re "Reynolds number";

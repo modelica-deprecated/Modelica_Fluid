@@ -53,8 +53,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
   
   partial model PartialPressureLoss 
     "Generic pressure loss with constant turbulent loss factors" 
-    import SI = Modelica.SIunits;
-    import Modelica_Fluid.Utilities.regRoot2;
+      import Modelica_Fluid.Utilities.regRoot2;
     import Modelica_Fluid.Utilities.regSquare2;
     
     parameter Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors 

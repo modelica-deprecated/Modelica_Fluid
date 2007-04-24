@@ -168,8 +168,7 @@ when the flow is laminar.
     end turbulentLossFactor;
     
     model suddenExpansion "Suddenly expanding area" 
-      import SI = Modelica.SIunits;
-      parameter SI.Area A_a "Area at port_a";
+          parameter SI.Area A_a "Area at port_a";
       parameter SI.Area A_b "Area at port_b (A_b > A_a required)";
       extends turbulentLossFactor(
               final k_a = (1 - A_a/A_b)^2/A_a^2,
