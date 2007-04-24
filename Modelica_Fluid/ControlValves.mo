@@ -261,12 +261,16 @@ it is open.
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
     partial model PartialValve "Base model for valves" 
+      
+    import Modelica_Fluid.Types.CvTypes;
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(m_flow(start = m_flow_start),
+          final p_a_start = pin_start, final p_b_start = pout_start);
     parameter Medium.AbsolutePressure pin_start = p_nom 
         "Start value of inlet pressure" 
       annotation(Dialog(tab = "Initialization"));
-    import Modelica_Fluid.Types.CvTypes;
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(m_flow(start = m_flow_start), p_a_start=pin_start, p_b_start=pout_start);
-      
+    parameter Medium.AbsolutePressure pout_start = p_nom-dp_nom 
+        "Start value of outlet pressure" 
+      annotation(Dialog(tab = "Initialization"));
     parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
     parameter SI.Area Av(fixed = if CvData==CvTypes.Av then true else false,
@@ -299,9 +303,7 @@ it is open.
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun 
         "Inherent flow characteristic" 
       annotation(choicesAllMatching=true);
-    parameter Medium.AbsolutePressure pout_start = p_nom-dp_nom 
-        "Start value of outlet pressure" 
-      annotation(Dialog(tab = "Initialization"));
+      
     parameter Medium.MassFlowRate m_flow_start = m_flow_nom 
         "Start value of mass flow rate" 
       annotation(Dialog(tab = "Initialization"));
