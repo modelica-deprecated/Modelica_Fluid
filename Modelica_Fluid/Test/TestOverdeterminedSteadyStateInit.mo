@@ -87,12 +87,12 @@ package TestOverdeterminedSteadyStateInit
         SignalType = Modelica.SIunits.Temperature) 
       annotation (extent=[88,-78; 108,-58]);
     Sensors.Temperature sensor_T_1(redeclare package Medium = Medium) 
-      annotation (extent=[56,-76; 36,-56]);
+      annotation (extent=[56,-56; 36,-36]);
     Sensors.Temperature sensor_T_2(redeclare package Medium = Medium) 
-      annotation (extent=[-2,-76; -22,-56]);
+      annotation (extent=[-16,-56; -36,-36]);
     Modelica.Blocks.Interfaces.RealOutput tankLevel(redeclare type SignalType 
         = Modelica.SIunits.Height) annotation (extent=[90,60; 110,80]);
-    Modelica.Blocks.Sources.RealExpression realExpression
+    Modelica.Blocks.Sources.RealExpression realExpression 
       annotation (extent=[-74,22; -54,42]);
   equation 
   tankLevel = tank.level;
@@ -113,20 +113,20 @@ package TestOverdeterminedSteadyStateInit
           18,-60.6],                  style(color=42, rgbcolor={191,0,0}));
     connect(burner.port, pipe.thermalPort) annotation (points=[18,22; 22,22; 22,
           1.4],   style(color=42, rgbcolor={191,0,0}));
-    connect(valve.port_b, sensor_T_1.port_a) annotation (points=[58,-4; 68,-4;
-          68,-66; 56,-66], style(color=69, rgbcolor={0,127,255}));
-    connect(sensor_T_1.port_b, radiator.port_a) annotation (points=[36,-66; 28,
-          -66], style(color=69, rgbcolor={0,127,255}));
     connect(ambientTemperature.port, thermalConductor1.port_a) annotation (
         points=[2,-33; 18,-33; 18,-40], style(color=42, rgbcolor={191,0,0}));
-    connect(radiator.port_b, sensor_T_2.port_a) annotation (points=[8,-66; -2,
-          -66], style(color=69, rgbcolor={0,127,255}));
-    connect(sensor_T_2.port_b, pump.inlet) annotation (points=[-22,-66; -56,-66;
-          -56,-8], style(color=69, rgbcolor={0,127,255}));
-    connect(sensor_T_1.T, hotWaterTemperature) annotation (points=[46,-77; 46,
+    connect(sensor_T_1.T, hotWaterTemperature) annotation (points=[39,-46; 39,
           -80; 72,-80; 72,-18; 98,-18], style(color=74, rgbcolor={0,0,127}));
-    connect(sensor_T_2.T, coldWaterTemperature) annotation (points=[-12,-77;
-          -12,-88; 76,-88; 76,-68; 98,-68], style(color=74, rgbcolor={0,0,127}));
+    connect(sensor_T_2.T, coldWaterTemperature) annotation (points=[-33,-46; 
+          -33,-88; 76,-88; 76,-68; 98,-68], style(color=74, rgbcolor={0,0,127}));
+    connect(radiator.port_a, valve.port_b) annotation (points=[28,-66; 68,-66; 68,-4; 
+          58,-4], style(color=69, rgbcolor={0,127,255}));
+    connect(pump.inlet, radiator.port_b) annotation (points=[-56,-8; -56,-66; 8,
+          -66], style(color=69, rgbcolor={0,127,255}));
+    connect(sensor_T_2.port, radiator.port_b) annotation (points=[-26,-56; -26,
+          -66; 8,-66], style(color=69, rgbcolor={0,127,255}));
+    connect(radiator.port_a, sensor_T_1.port) annotation (points=[28,-66; 46,
+          -66; 46,-56], style(color=69, rgbcolor={0,127,255}));
   end HeatingSystem;
   
   model Test1 "Prescribed inputs, initial values" 
@@ -147,7 +147,7 @@ Initial equations with initial values for the states close to the steady state a
 The simulation initializes and runs for 6000 seconds without problems.
 </html>"));
   equation 
-    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10; 
+    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10;
           -0.8,10], style(color=74, rgbcolor={0,0,127}));
   end Test1;
   
