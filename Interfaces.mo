@@ -43,22 +43,22 @@ partial model PartialTwoPortTransport
     
   //Initialization
   parameter Medium.AbsolutePressure p_a_start "Guess value of pressure" 
-    annotation(Dialog(tab = "Guess Value Initialization"));
+    annotation(Dialog(tab = "Initialization"));
   parameter Medium.AbsolutePressure p_b_start "Guess value of pressure" 
-    annotation(Dialog(tab = "Guess Value Initialization"));
+    annotation(Dialog(tab = "Initialization"));
   parameter Boolean use_T_start = true "= true, use T_start, otherwise h_start"
-    annotation(Dialog(tab = "Guess Value Initialization"), Evaluate=true);
+    annotation(Dialog(tab = "Initialization"), Evaluate=true);
   parameter Medium.Temperature T_start=
     if use_T_start then Medium.T_default else Medium.temperature_phX(p_a_start,h_start,X_start) 
       "Guess value of temperature" 
-    annotation(Dialog(tab = "Guess Value Initialization", enable = use_T_start));
+    annotation(Dialog(tab = "Initialization", enable = use_T_start));
   parameter Medium.SpecificEnthalpy h_start=
     if use_T_start then Medium.specificEnthalpy_pTX(p_a_start, T_start, X_start) else Medium.h_default 
       "Guess value of specific enthalpy" 
-    annotation(Dialog(tab = "Guess Value Initialization", enable = not use_T_start));
+    annotation(Dialog(tab = "Initialization", enable = not use_T_start));
   parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
       "Guess value of mass fractions m_i/m" 
-    annotation (Dialog(tab="Guess Value Initialization", enable=Medium.nXi > 0));
+    annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
  parameter Types.FlowDirection.Temp flowDirection=
                    Modelica_Fluid.Types.FlowDirection.Bidirectional 
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
