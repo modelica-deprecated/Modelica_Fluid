@@ -43,7 +43,7 @@ Model <b>FixedBoundary</b> defines constant values for boundary conditions:
 <ul>
 <li> Boundary pressure or boundary density.</li>
 <li> Boundary temperature or boundary specific enthalpy.</li>
-<li> Boundary mass fractions (only for multi-substance flow).</li>
+<li> Boundary composition (only for multi-substance flow).</li>
 </ul>
 <p>
 Note, that boundary temperature, density, specific enthalpy
@@ -75,11 +75,9 @@ with exception of boundary pressure, do not have an effect.
   model FixedBoundary_pTX 
     "Boundary pressure, temperature and mass fraction source" 
     extends Sources.BaseClasses.PartialSource;
-    parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p 
-      "Boundary pressure";
-    parameter Modelica.Media.Interfaces.PartialMedium.Temperature T 
-      "Boundary temperature";
-    parameter Modelica.Media.Interfaces.PartialMedium.MassFraction X[Medium.nX](
+    parameter Medium.AbsolutePressure p "Boundary pressure";
+    parameter Medium.Temperature T "Boundary temperature";
+    parameter Medium.MassFraction X[Medium.nX](
          quantity=Medium.substanceNames) = Medium.X_default 
       "Boundary mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow",
@@ -100,7 +98,7 @@ Defines constant values for boundary conditions:
 <ul>
 <li> Boundary pressure.</li>
 <li> Boundary temperature.</li>
-<li> Boundary mass fractions (only for multi-substance flow).</li>
+<li> Boundary composition (only for multi-substance flow).</li>
 </ul>
 <p>
 Note, that boundary temperature
@@ -121,11 +119,9 @@ with exception of boundary pressure, do not have an effect.
   model FixedBoundary_phX 
     "Boundary pressure, specific enthalpy and mass fraction source" 
     extends Sources.BaseClasses.PartialSource;
-    parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p 
-      "Boundary pressure";
-    parameter Modelica.Media.Interfaces.PartialMedium.SpecificEnthalpy h 
-      "Boundary specific enthalpy";
-    parameter Modelica.Media.Interfaces.PartialMedium.MassFraction X[
+    parameter Medium.AbsolutePressure p "Boundary pressure";
+    parameter Medium.SpecificEnthalpy h "Boundary specific enthalpy";
+    parameter Medium.MassFraction X[
       Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
       "Boundary mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nXi > 0));
@@ -145,7 +141,7 @@ Defines constant values for boundary conditions:
 <ul>
 <li> Boundary pressure.</li>
 <li> Boundary specific enthalpy.</li>
-<li> Boundary mass fractions (only for multi-substance flow).</li>
+<li> Boundary composition (only for multi-substance flow).</li>
 </ul>
 <p>
 Note, that boundary specific enthalpy
@@ -172,26 +168,46 @@ to define fixed or prescribed ambient conditions.
   model PrescribedBoundary_pTX 
     "Boundary with prescribed pressure, temperature and composition" 
     extends Sources.BaseClasses.PartialSource;
-    parameter SI.Pressure p "Fixed value of pressure" 
+    parameter Boolean usePressureInput = false 
+      "Get the pressure from the input connector";
+    parameter Boolean useTemperatureInput= false 
+      "Get the temperature from the input connector";
+    parameter Boolean useCompositionInput = false 
+      "Get the composition from the input connector";
+    parameter Medium.AbsolutePressure p = Medium.reference_p 
+      "Fixed value of pressure" 
       annotation (Evaluate = true,
-                  Dialog(enable = (cardinality(p_in)==0)));
-    parameter SI.Temperature T "Fixed value of temperature" 
+                  Dialog(enable = not usePressureInput));
+    parameter Medium.Temperature T = Medium.reference_T 
+      "Fixed value of temperature" 
       annotation (Evaluate = true,
-                  Dialog(enable = (cardinality(T_in)==0)));
-    parameter SI.MassFraction X[Medium.nX] = Medium.X_default 
+                  Dialog(enable = not useTemperatureInput));
+    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default 
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (cardinality(X_in)==0) or Medium.nXi > 0));
-    Modelica.Blocks.Interfaces.RealInput p_in(redeclare type SignalType = 
-          SI.Pressure) "Prescribed boundary pressure" 
+                  Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
+    Modelica.Blocks.Interfaces.RealInput p_in(
+      redeclare type SignalType = Medium.AbsolutePressure) if usePressureInput 
+      "Prescribed boundary pressure" 
       annotation (extent=[-140,40; -100,80]);
     Modelica.Blocks.Interfaces.RealInput T_in(
-      redeclare type SignalType = SI.Temperature) 
+      redeclare type SignalType = Medium.Temperature) if useTemperatureInput 
       "Prescribed boundary temperature" 
       annotation (extent=[-140,-20; -100,20]);
-    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](redeclare type 
-        SignalType = SI.MassFraction) "Prescribed boundary composition" 
+    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
+      redeclare type SignalType = Medium.MassFraction) if useCompositionInput 
+      "Prescribed boundary composition" 
       annotation (extent=[-140,-80; -100,-40]);
+  protected 
+    Modelica.Blocks.Interfaces.RealInput p_in_internal(
+      redeclare type SignalType = Medium.AbsolutePressure) 
+      "Needed to connect to conditional connector";
+    Modelica.Blocks.Interfaces.RealInput T_in_internal(
+      redeclare type SignalType = Medium.Temperature) 
+      "Needed to connect to conditional connector";
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
+     redeclare type SignalType = Medium.MassFraction) 
+      "Needed to connect to conditional connector";
     annotation (defaultComponentName = "boundary_prescribed",
   Coordsys(
         extent=[-100, -100; 100, 100],
@@ -232,12 +248,13 @@ to define fixed or prescribed ambient conditions.
 Defines prescribed values for boundary conditions:
 </p>
 <ul>
-<li> Prescribed boundary pressure via input signal <tt>p_in</tt>.</li>
-<li> Prescribed boundary temperature via input signal <tt>T_in</tt>.</li>
-<li> Prescribed boundary mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow).</li>
+<li> Prescribed boundary pressure.</li>
+<li> Prescribed boundary temperature.</li>
+<li> Prescribed boundary composition (only for multi-substance flow).</li>
 </ul>
-<p>If the connector are left unconnected, the corresponding prescribed values
-are set by the parameters <tt>p</tt>, <tt>T</tt>, and <tt>X</tt>, respectively.
+<p>If <tt>usePressureInput</tt> is false (default option), the <tt>p</tt> parameter
+is used as boundary pressure, and the <tt>p_in</tt> input connector is disabled; if <tt>usePressureInput</tt> is true, then the <tt>p</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
+<p>The same thing goes for the temperature and composition</p>
 <p>
 Note, that boundary temperature
 and mass fractions have only an effect if the mass flow
@@ -249,43 +266,55 @@ with exception of boundary pressure, do not have an effect.
       Diagram);
   equation 
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-                                          Medium.singleState, true, X_in, "PrescribedBoundary_pTX");
-    if cardinality(p_in)==0 then
-      p_in = p;
+      Medium.singleState, true, X_in_internal, "PrescribedBoundary_pTX");
+    connect(p_in, p_in_internal);
+    connect(T_in, T_in_internal);
+    connect(X_in, X_in_internal);
+    if not usePressureInput then
+      p_in_internal = p;
     end if;
-    if cardinality(T_in)==0 then
-      T_in = T;
+    if not useTemperatureInput then
+      T_in_internal = T;
     end if;
-    if cardinality(X_in)==0 then
-      X_in = X;
+    if not useCompositionInput then
+      X_in_internal = X;
     end if;
-    medium.p = p_in;
-    medium.T = T_in;
-    medium.Xi = X_in[1:Medium.nXi];
+    medium.p = p_in_internal;
+    medium.T = T_in_internal;
+    medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedBoundary_pTX;
   
   model PrescribedBoundary_phX 
     "Boundary with prescribed pressure, specific enthalpy and composition" 
     extends Sources.BaseClasses.PartialSource;
-    parameter SI.Pressure p "Fixed value of pressure" 
+    parameter Boolean usePressureInput = false 
+      "Get the pressure from the input connector";
+    parameter Boolean useEnthalpyInput= false 
+      "Get the specific enthalpy from the input connector";
+    parameter Boolean useCompositionInput = false 
+      "Get the composition from the input connector";
+    parameter Medium.AbsolutePressure p = Medium.reference_p 
+      "Fixed value of pressure" 
       annotation (Evaluate = true,
-                  Dialog(enable = (cardinality(p_in)==0)));
-    parameter SI.SpecificEnthalpy h "Fixed value of specific enthalpy" 
+                  Dialog(enable = not usePressureInput));
+    parameter Medium.SpecificEnthalpy h = Medium.h_default 
+      "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
-                  Dialog(enable = (cardinality(h_in)==0)));
-    parameter SI.MassFraction X[Medium.nX] = Medium.X_default 
+                  Dialog(enable = not useEnthalpyInput));
+    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default 
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (cardinality(X_in)==0) or Medium.nXi > 0));
+                  Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
     Modelica.Blocks.Interfaces.RealInput p_in(
-      redeclare type SignalType = SI.Pressure) "Prescribed boundary pressure" 
+      redeclare type SignalType = Medium.AbsolutePressure) if usePressureInput 
+      "Prescribed boundary pressure" 
       annotation (extent=[-140,40; -100,80]);
     Modelica.Blocks.Interfaces.RealInput h_in(
-      redeclare type SignalType = SI.SpecificEnthalpy) 
+      redeclare type SignalType = Medium.SpecificEnthalpy) if useEnthalpyInput 
       "Prescribed boundary specific enthalpy" 
       annotation (extent=[-140,-20; -100,20]);
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
-      redeclare type SignalType = SI.MassFraction) 
+      redeclare type SignalType = Medium.MassFraction) if useCompositionInput 
       "Prescribed boundary composition" 
       annotation (extent=[-140,-80; -100,-40]);
     annotation (defaultComponentName = "boundary_prescribed",
@@ -317,61 +346,97 @@ with exception of boundary pressure, do not have an effect.
           string="h")),
       Documentation(info="<html>
 <p>
-Defines values for boundary conditions:
+Defines prescribed values for boundary conditions:
 </p>
 <ul>
-<li> Prescribed boundary pressure via input signal <tt>p_in</tt>.</li>
-<li> Prescribed boundary specific enthalpy via input signal <tt>h_in</tt>.</li>
-<li> Prescribed boundary mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow).</li>
+<li> Prescribed boundary pressure.</li>
+<li> Prescribed boundary temperature.</li>
+<li> Prescribed boundary composition (only for multi-substance flow).</li>
 </ul>
-<p>If the connector are left unconnected, the corresponding prescribed values
-are set by the parameters <tt>p</tt>, <tt>h</tt>, and <tt>X</tt>, respectively.
+<p>If <tt>usePressureInput</tt> is false (default option), the <tt>p</tt> parameter
+is used as boundary pressure, and the <tt>p_in</tt> input connector is disabled; if <tt>usePressureInput</tt> is true, then the <tt>p</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
+<p>The same thing goes for the specific enthalpy and composition</p>
 <p>
-Note, that boundary specific enthalpy
+Note, that boundary temperature
 and mass fractions have only an effect if the mass flow
 is from the boundary into the port. If mass is flowing from
 the port into the boundary, the boundary definitions,
 with exception of boundary pressure, do not have an effect.
 </p>
 </html>"));
+  protected 
+    Modelica.Blocks.Interfaces.RealInput p_in_internal(
+      redeclare type SignalType = Medium.AbsolutePressure) 
+      "Needed to connect to conditional connector";
+    Modelica.Blocks.Interfaces.RealInput h_in_internal(
+      redeclare type SignalType = Medium.SpecificEnthalpy) 
+      "Needed to connect to conditional connector";
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
+      redeclare type SignalType = Medium.MassFraction) 
+      "Needed to connect to conditional connector";
   equation 
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-                                          Medium.singleState, true, X_in, "PrescribedBoundary_phX");
-    if cardinality(p_in)==0 then
-      p_in = p;
+      Medium.singleState, true, X_in_internal, "PrescribedBoundary_phX");
+    connect(p_in, p_in_internal);
+    connect(h_in, h_in_internal);
+    connect(X_in, X_in_internal);
+    if not usePressureInput then
+      p_in_internal = p;
     end if;
-    if cardinality(h_in)==0 then
-      h_in = h;
+    if not useEnthalpyInput then
+      h_in_internal = h;
     end if;
-    if cardinality(X_in)==0 then
-      X_in = X;
+    if not useCompositionInput then
+      X_in_internal = X;
     end if;
-    medium.p = p_in;
-    medium.h = h_in;
-    medium.Xi = X_in[1:Medium.nXi];
+    medium.p = p_in_internal;
+    medium.h = h_in_internal;
+    medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedBoundary_phX;
   
   model PrescribedMassFlowRate_TX 
-    "Ideal pump that produces a prescribed mass flow with prescribed temperature and mass fraction" 
+    "Ideal flow source that produces a prescribed mass flow with prescribed temperature and mass fraction" 
     extends Sources.BaseClasses.PartialSource;
+    parameter Boolean useFlowRateInput = false 
+      "Get the mass flow rate from the input connector";
+    parameter Boolean useTemperatureInput= false 
+      "Get the temperature from the input connector";
+    parameter Boolean useCompositionInput = false 
+      "Get the composition from the input connector";
     parameter Medium.MassFlowRate m_flow = 0 
-      "Fixed mass flow rate going out of the fluid port";
-    parameter Modelica.Media.Interfaces.PartialMedium.Temperature T 
-      "Fixed value of the fluid temperature";
-    parameter Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
-      "Fixed value of the fluid composition" 
-      annotation (Dialog(enable = Medium.nXi > 0));
+      "Fixed mass flow rate going out of the fluid port" 
+      annotation (Evaluate = true,
+                  Dialog(enable = not useFlowRateInput));
+    parameter Medium.Temperature T = Medium.reference_T 
+      "Fixed value of temperature" 
+      annotation (Evaluate = true,
+                  Dialog(enable = not useTemperatureInput));
+    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default 
+      "Fixed value of composition" 
+      annotation (Evaluate = true,
+                  Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in(
-      redeclare type SignalType = SI.MassFlowRate) "Prescribed mass flow rate" 
+      redeclare type SignalType = Medium.MassFlowRate) 
+      "Prescribed mass flow rate" 
       annotation (extent=[-113,40; -73,80]);
     Modelica.Blocks.Interfaces.RealInput T_in(
-      redeclare type SignalType = SI.Temperature) 
+      redeclare type SignalType = Medium.Temperature) 
       "Prescribed fluid temperature" 
       annotation (extent=[-140,-20; -100,20]);
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
-      redeclare type SignalType = SI.MassFraction) 
+      redeclare type SignalType = Medium.MassFraction) 
       "Prescribed fluid composition" 
       annotation (extent=[-112,-81; -72,-41]);
+  protected 
+    Modelica.Blocks.Interfaces.RealInput m_flow_in_internal(
+      redeclare type SignalType = Medium.MassFlowRate) 
+      "Needed to connect to conditional connector";
+    Modelica.Blocks.Interfaces.RealInput T_in_internal(
+      redeclare type SignalType = Medium.Temperature) 
+      "Needed to connect to conditional connector";
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
+      redeclare type SignalType = Medium.MassFraction) 
+      "Needed to connect to conditional connector";
     annotation (defaultComponentName = "massFlowRate",
       Coordsys(
         extent=[-100, -100; 100, 100],
@@ -431,59 +496,84 @@ with exception of boundary pressure, do not have an effect.
 Models an ideal flow source, with prescribed values of flow rate, temperature and composition:
 </p>
 <ul>
-<li> Prescribed mass flow rate via input signal <tt>m_flow_in</tt>.</li>
-<li> Prescribed temperature via input signal <tt>T_in</tt>.</li>
-<li> Prescribed mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow) .</li>
+<li> Prescribed mass flow rate.</li>
+<li> Prescribed temperature.</li>
+<li> Prescribed composition (only for multi-substance flow) .</li>
 </ul>
-<p>If the connector are left unconnected, the corresponding prescribed values
-are set by the parameters <tt>m_flow</tt>, <tt>T</tt>, and <tt>X</tt>, respectively.
+<p>If <tt>useFlowRateInput</tt> is false (default option), the <tt>m_flow</tt> parameter
+is used as boundary pressure, and the <tt>m_flow_in</tt> input connector is disabled; if <tt>useFlowRateInput</tt> is true, then the <tt>m_flow</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
+<p>The same thing goes for the temperature and composition</p>
 <p>
-Note, that temperature
+Note, that boundary temperature
 and mass fractions have only an effect if the mass flow
-is from the ambient into the port. If mass is flowing from
-the port into the ambient, the ambient definitions,
-with exception of ambient pressure, do not have an effect.
+is from the boundary into the port. If mass is flowing from
+the port into the boundary, the boundary definitions,
+with exception of boundary flow rate, do not have an effect.
 </p>
 </html>"));
-  outer Modelica_Fluid.Ambient ambient "Ambient conditions";
   equation 
     Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-                           Medium.singleState, true, X, "PrescribedMassFlowRate_TX");
-    if cardinality(m_flow_in)==0 then
-      m_flow_in = m_flow;
+      Medium.singleState, true, X_in_internal, "PrescribedMassFlowRate_TX");
+    connect(m_flow_in, m_flow_in_internal);
+    connect(T_in, T_in_internal);
+    connect(X_in, X_in_internal);
+    if not useFlowRateInput then
+      m_flow_in_internal = m_flow;
     end if;
-    if cardinality(T_in)==0 then
-      T_in = T;
+    if not useTemperatureInput then
+      T_in_internal = T;
     end if;
-    if cardinality(X_in)==0 then
-      X_in = X;
+    if not useCompositionInput then
+      X_in_internal = X;
     end if;
-    port.m_flow = -m_flow_in;
-    medium.T = T_in;
-    medium.Xi = X_in[1:Medium.nXi];
+    port.m_flow = -m_flow_in_internal;
+    medium.T = T_in_internal;
+    medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedMassFlowRate_TX;
   
   model PrescribedMassFlowRate_hX 
-    "Ideal pump that produces a prescribed mass flow with prescribed specific enthalpy and mass fraction" 
+    "Ideal flow source that produces a prescribed mass flow with prescribed specific enthalpy and mass fraction" 
     extends Sources.BaseClasses.PartialSource;
+    parameter Boolean useFlowRateInput = false 
+      "Get the mass flow rate from the input connector";
+    parameter Boolean useEnthalpyInput= false 
+      "Get the specific enthalpy from the input connector";
+    parameter Boolean useCompositionInput = false 
+      "Get the composition from the input connector";
     parameter Medium.MassFlowRate m_flow = 0 
-      "Fixed mass flow rate going out of the fluid port";
-    parameter Medium.SpecificEnthalpy h 
-      "Fixed value of the fluid specific enthalpy";
-    parameter Medium.MassFraction X[Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
-      "Fixed value of the fluid composition" 
-      annotation (Dialog(enable=Medium.nXi>0));
+      "Fixed mass flow rate going out of the fluid port" 
+      annotation (Evaluate = true,
+                  Dialog(enable = not useFlowRateInput));
+    parameter Medium.SpecificEnthalpy h = Medium.h_default 
+      "Fixed value of specific enthalpy" 
+      annotation (Evaluate = true,
+                  Dialog(enable = not useEnthalpyInput));
+    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default 
+      "Fixed value of composition" 
+      annotation (Evaluate = true,
+                  Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in(
-      redeclare type SignalType = SI.MassFlowRate) "Prescribed mass flow rate" 
+      redeclare type SignalType = Medium.MassFlowRate) 
+      "Prescribed mass flow rate" 
       annotation (extent=[-113,40; -73,80]);
     Modelica.Blocks.Interfaces.RealInput h_in(
-      redeclare type SignalType = SI.SpecificEnthalpy) 
+      redeclare type SignalType = Medium.SpecificEnthalpy) 
       "Prescribed fluid specific enthalpy" 
       annotation (extent=[-140,-20; -100,20]);
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
-      redeclare type SignalType = SI.MassFraction) 
+      redeclare type SignalType = Medium.MassFraction) 
       "Prescribed fluid composition" 
       annotation (extent=[-113,-80; -73,-40]);
+  protected 
+    Modelica.Blocks.Interfaces.RealInput m_flow_in_internal(
+      redeclare type SignalType = Medium.MassFlowRate) 
+      "Needed to connect to conditional connector";
+    Modelica.Blocks.Interfaces.RealInput h_in_internal(
+      redeclare type SignalType = Medium.SpecificEnthalpy) 
+      "Needed to connect to conditional connector";
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
+      redeclare type SignalType = Medium.MassFraction) 
+      "Needed to connect to conditional connector";
     annotation (defaultComponentName = "massFlowRate",
       Coordsys(
         extent=[-100, -100; 100, 100],
@@ -543,31 +633,35 @@ with exception of ambient pressure, do not have an effect.
 Models an ideal flow source, with prescribed values of flow rate, temperature and composition:
 </p>
 <ul>
-<li> Prescribed mass flow rate via input signal <tt>m_flow_in</tt>.</li>
-<li> Prescribed specific enthalpy via input signal <tt>h_in</tt>.</li>
-<li> Prescribed mass fractions via input signal <tt>X_in</tt> (only for multi-substance flow) .</li>
+<li> Prescribed mass flow rate.</li>
+<li> Prescribed specific enthalpy.</li>
+<li> Prescribed composition (only for multi-substance flow) .</li>
 </ul>
-<p>If the connector are left unconnected, the corresponding prescribed values
-are set by the parameters <tt>m_flow</tt>, <tt>h</tt>, and <tt>X</tt>, respectively.
+<p>If <tt>useFlowRateInput</tt> is false (default option), the <tt>m_flow</tt> parameter
+is used as boundary pressure, and the <tt>m_flow_in</tt> input connector is disabled; if <tt>useFlowRateInput</tt> is true, then the <tt>m_flow</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
+<p>The same thing goes for the temperature and composition</p>
 <p>
-Note, that specific enthalpy
+Note, that boundary temperature
 and mass fractions have only an effect if the mass flow
-is from the ambient into the port. If mass is flowing from
-the port into the ambient, the ambient definitions,
-with exception of ambient pressure, do not have an effect.
+is from the boundary into the port. If mass is flowing from
+the port into the boundary, the boundary definitions,
+with exception of boundary flow rate, do not have an effect.
 </p>
 </html>"));
   equation 
     Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-                           Medium.singleState, true, X, "PrescribedMassFlowRate_hX");
-    if cardinality(m_flow_in)==0 then
-      m_flow_in = m_flow;
+      Medium.singleState, true, X_in_internal, "PrescribedMassFlowRate_hX");
+    connect(m_flow_in, m_flow_in_internal);
+    connect(h_in, h_in_internal);
+    connect(X_in, X_in_internal);
+    if not useFlowRateInput then
+      m_flow_in_internal = m_flow;
     end if;
-    if cardinality(h_in)==0 then
-      h_in = h;
+    if not useEnthalpyInput then
+      h_in_internal = h;
     end if;
-    if cardinality(X_in)==0 then
-      X_in = X;
+    if not useCompositionInput then
+      X_in_internal = X;
     end if;
     port.m_flow = -m_flow_in;
     medium.h = h_in;
@@ -585,8 +679,7 @@ with exception of ambient pressure, do not have an effect.
        annotation (choicesAllMatching=true);
     parameter Types.SourceFlowDirection.Temp flowDirection=
                      Types.SourceFlowDirection.Bidirectional 
-        "Uni- or bidirectional flow component" 
-                                             annotation(Evaluate=true, Dialog(tab="Advanced"));
+        "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
       
     Medium.BaseProperties medium "Medium in the source";
     Modelica.Fluid.Interfaces.FluidPort_b port(
