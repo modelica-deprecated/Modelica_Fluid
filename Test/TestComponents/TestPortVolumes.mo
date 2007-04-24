@@ -14,7 +14,7 @@ model TestPortVolumes
                    annotation (extent=[-100,-10; -80,10]);
   Modelica_Fluid.Sources.FixedBoundary_phX Sink1(
                                          p=101325, redeclare package Medium = 
-               Medium, 
+               Medium,
     h=Medium.h_default) 
     annotation (extent=[100,-10; 80,10]);
   Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume2(
@@ -25,22 +25,22 @@ model TestPortVolumes
                  annotation (extent=[10,-10; 30,10]);
   Modelica_Fluid.Sensors.Temperature Tin(
                                      redeclare package Medium = Medium) 
-    annotation (extent=[-60,-10; -40,10]);
+    annotation (extent=[-60,10; -40,30]);
   Modelica_Fluid.Sensors.Temperature Tout(
                                       redeclare package Medium = Medium) 
-    annotation (extent=[40,-10; 60,10]);
+    annotation (extent=[40,10; 60,30]);
   inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[-100,-100; -80,-80]);
 equation 
   connect(PortVolume1.port, PortVolume2.port) 
     annotation (points=[-20,0; 20,0],style(color=69, rgbcolor={0,127,255}));
   annotation (Diagram);
-  connect(FlowSource1.port, Tin.port_a) 
-    annotation (points=[-80,0; -60,0], style(color=69, rgbcolor={0,127,255}));
-  connect(Tin.port_b, PortVolume1.port) 
-    annotation (points=[-40,0; -20,0], style(color=69, rgbcolor={0,127,255}));
-  connect(PortVolume2.port, Tout.port_a) 
-    annotation (points=[20,0; 40,0], style(color=69, rgbcolor={0,127,255}));
-  connect(Tout.port_b, Sink1.port) 
-    annotation (points=[60,0; 80,0], style(color=69, rgbcolor={0,127,255}));
+  connect(PortVolume2.port, Sink1.port)
+    annotation (points=[20,0; 80,0], style(color=69, rgbcolor={0,127,255}));
+  connect(PortVolume2.port, Tout.port) annotation (points=[20,0; 50,0; 50,10], 
+      style(color=69, rgbcolor={0,127,255}));
+  connect(FlowSource1.port, PortVolume1.port)
+    annotation (points=[-80,0; -20,0], style(color=69, rgbcolor={0,127,255}));
+  connect(FlowSource1.port, Tin.port) annotation (points=[-80,0; -50,0; -50,10], 
+      style(color=69, rgbcolor={0,127,255}));
 end TestPortVolumes;

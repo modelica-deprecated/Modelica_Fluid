@@ -44,7 +44,7 @@ ideal, i.e., it does not influence the fluid.
   end Pressure;
   
   model Density "Ideal density sensor" 
-    extends Sensors.BaseClasses.PartialFlowSensor;
+    extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput d(unit = "kg/m3") 
@@ -74,18 +74,18 @@ ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port_a.p = medium.p;
-    h  = medium.h;
-    Xi = medium.Xi;
+    port.p = medium.p;
+    port.h = medium.h;
+    port.Xi = medium.Xi;
     d  = medium.d;
   end Density;
   
   model Temperature "Ideal temperature sensor" 
-      extends Sensors.BaseClasses.PartialFlowSensor;
+      extends Sensors.BaseClasses.PartialAbsoluteSensor;
     Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput T(unit = "K") 
       "Temperature in port medium" 
-      annotation (extent=[-10,-120; 10,-100], rotation=-90);
+      annotation (extent=[60,-10; 80,10],     rotation=0);
     
   annotation (
     Diagram(
@@ -108,7 +108,6 @@ ideal, i.e., it does not influence the fluid.
             thickness=2,
             fillColor=42)),
         Rectangle(extent=[-12,50; 12,-58],   style(color=42, fillColor=42)),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
         Polygon(points=[-12,50; -12,90; -10,96; -6,98; 0,100; 6,98; 10,96; 12,
               90; 12,50; -12,50],        style(color=0, thickness=2)),
         Line(points=[-12,50; -12,-54],   style(color=0, thickness=2)),
@@ -121,8 +120,7 @@ ideal, i.e., it does not influence the fluid.
           style(color=0),
           string="T"),
         Text(extent=[-126,160; 138,98],   string="%name"),
-        Line(points=[-100,0; -14,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[14,0; 100,0],   style(color=69, rgbcolor={0,128,255}))),
+        Line(points=[12,0; 60,0],  style(rgbcolor={0,0,127}))),
       Documentation(info="<HTML>
 <p>
 This component monitors the temperature of the medium in the flow
@@ -132,9 +130,9 @@ ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port_a.p = medium.p;
-    h  = medium.h;
-    Xi = medium.Xi;
+    port.p = medium.p;
+    port.h  = medium.h;
+    port.Xi = medium.Xi;
     T  = medium.T;
   end Temperature;
   
@@ -207,7 +205,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
   end VolumeFlowRate;
   
   model SpecificEnthalpy "Ideal specific enthalphy sensor" 
-    extends Sensors.BaseClasses.PartialFlowSensor;
+    extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput h_out(unit="J/kg") 
       "Specific enthalpy in port medium" 
@@ -235,7 +233,7 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation 
-    h_out = h;
+    h_out = port.h;
   end SpecificEnthalpy;
   
   model RelativePressure "Ideal relative pressure sensor" 
@@ -496,12 +494,13 @@ the two ports of this component and is provided as output signal.
     partial model PartialAbsoluteSensor 
       "Partial component to model a sensor that measures a potential variable" 
       
-      replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium "Medium in the sensor" annotation (
-          choicesAllMatching =                                                                        true);
+      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
+        "Medium in the sensor" 
+        annotation(choicesAllMatching=true);
+      
       Modelica.Fluid.Interfaces.FluidPort_a port(
-                                  redeclare package Medium = Medium) 
-        annotation (extent=[-10,-110; 10,-90],    rotation=90);
+        redeclare package Medium=Medium) 
+        annotation (extent=[-10,-110; 10,-90],rotation=90);
       
       annotation (Documentation(info="<html>
 <p>
@@ -511,7 +510,8 @@ as signal.
 </p>
 </html>"),
         Diagram,
-        Coordsys(grid=[1,1], scale=0));
+        Coordsys(grid=[1,1], scale=0), 
+        Icon);
     equation 
       port.m_flow = 0;
       port.H_flow = 0;
@@ -521,27 +521,27 @@ as signal.
     
     partial model PartialFlowSensor 
       "Partial component to model sensors that measure flow properties" 
-      
       import Modelica.Constants;
+      import Modelica_Fluid.Types.FlowDirection;
       
-      replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
-          choicesAllMatching = true);
+      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
+        "Medium in the sensor" 
+        annotation(choicesAllMatching=true);
+      
       Medium.SpecificEnthalpy h "Enthalpy in flow";
       Medium.MassFraction[Medium.nXi] Xi "Flow composition";
       Medium.ExtraProperty[Medium.nC] C "Extra properties";
       
       Modelica.Fluid.Interfaces.FluidPort_a port_a(
-                                    redeclare package Medium = Medium,
-                         m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+        redeclare package Medium=Medium,
+        m_flow(min=if allowFlowReversal then -Constants.inf else 0.0)) 
         annotation (extent=[-110,-10; -90,10]);
       Modelica.Fluid.Interfaces.FluidPort_b port_b(
-                                    redeclare package Medium = Medium,
-                         m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
+        redeclare package Medium=Medium,
+        m_flow(max=if allowFlowReversal then +Constants.inf else 0.0)) 
         annotation (extent=[110,-10; 90,10]);
       
-      parameter Modelica_Fluid.Types.FlowDirection.Temp flowDirection=
-                Modelica_Fluid.Types.FlowDirection.Bidirectional 
+      parameter FlowDirection.Temp flowDirection=FlowDirection.Bidirectional 
         "Unidirectional (port_a -> port_b) or bidirectional flow component" 
          annotation(Dialog(tab="Advanced"));
       
