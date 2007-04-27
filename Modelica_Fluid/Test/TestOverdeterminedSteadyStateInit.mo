@@ -56,7 +56,8 @@ package TestOverdeterminedSteadyStateInit
     inner Ambient ambient annotation (extent=[-100,80; -80,100]);
     Pipes.LumpedPipe pipe(
       redeclare package Medium = Medium,
-      p_start=4.0e5,
+      p_a_start=4.0e5,
+      p_b_start=3.9e5,
       use_T_start=true,
       diameter=0.03,
       T_start=Modelica.SIunits.Conversions.from_degC(80),
@@ -68,7 +69,8 @@ package TestOverdeterminedSteadyStateInit
       annotation (extent=[12,-14; 32,6]);
     
     Pipes.LumpedPipe radiator(
-      p_start=1.1e5,
+      p_a_start=1.1e5,
+      p_b_start=1.05e5,
       use_T_start=true,
       redeclare package Medium = Medium,
       length=10,
@@ -117,9 +119,9 @@ package TestOverdeterminedSteadyStateInit
         points=[2,-33; 18,-33; 18,-40], style(color=42, rgbcolor={191,0,0}));
     connect(sensor_T_1.T, hotWaterTemperature) annotation (points=[39,-46; 39,
           -80; 72,-80; 72,-18; 98,-18], style(color=74, rgbcolor={0,0,127}));
-    connect(sensor_T_2.T, coldWaterTemperature) annotation (points=[-33,-46; 
+    connect(sensor_T_2.T, coldWaterTemperature) annotation (points=[-33,-46;
           -33,-88; 76,-88; 76,-68; 98,-68], style(color=74, rgbcolor={0,0,127}));
-    connect(radiator.port_a, valve.port_b) annotation (points=[28,-66; 68,-66; 68,-4; 
+    connect(radiator.port_a, valve.port_b) annotation (points=[28,-66; 68,-66; 68,-4;
           58,-4], style(color=69, rgbcolor={0,127,255}));
     connect(pump.inlet, radiator.port_b) annotation (points=[-56,-8; -56,-66; 8,
           -66], style(color=69, rgbcolor={0,127,255}));
@@ -131,8 +133,8 @@ package TestOverdeterminedSteadyStateInit
   
   model Test1 "Prescribed inputs, initial values" 
     
-    Modelica_Fluid.Examples.TestOverdeterminedSteadyStateInit.HeatingSystem 
-      plant     annotation (extent=[0,0; 20,20]);
+    Modelica_Fluid.Test.TestOverdeterminedSteadyStateInit.HeatingSystem plant 
+                annotation (extent=[0,0; 20,20]);
     Modelica.Blocks.Sources.Step valveOpening(
       height=0.1,
       offset=1,
@@ -147,7 +149,7 @@ Initial equations with initial values for the states close to the steady state a
 The simulation initializes and runs for 6000 seconds without problems.
 </html>"));
   equation 
-    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10;
+    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10; 
           -0.8,10], style(color=74, rgbcolor={0,0,127}));
   end Test1;
   
