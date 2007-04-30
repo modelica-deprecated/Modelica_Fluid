@@ -14,6 +14,9 @@ model LumpedPipe "Short pipe with one volume, wall friction and gravity effect"
   parameter Medium.AbsolutePressure p_b_start 
       "Start value of pressure at port_b" 
     annotation(Dialog(tab = "Initialization"));
+  parameter Medium.AbsolutePressure p_start=0.5*(p_a_start+p_b_start) 
+      "Start value of pressure in the volume" 
+    annotation(Dialog(tab = "Initialization"));
   parameter Boolean use_T_start = true "= true, use T_start, otherwise h_start"
     annotation(Dialog(tab = "Initialization"), Evaluate=true);
   parameter Medium.Temperature T_start=
@@ -120,7 +123,7 @@ pipe wall/environment).
     redeclare package Medium = Medium,
     V=Modelica.Constants.pi*(diameter/2)^2*length,
     initType=initType,
-    p_start=(p_a_start+p_b_start)/2,
+    p_start=p_start,
     use_T_start=use_T_start,
     T_start=T_start,
     h_start=h_start,

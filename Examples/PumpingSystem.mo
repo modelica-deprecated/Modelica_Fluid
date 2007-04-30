@@ -4,9 +4,9 @@ model PumpingSystem "Model of a pumping system for drinking water"
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     use_T=true,
-    T=Modelica.SIunits.Conversions.from_degC(20), 
+    T=Modelica.SIunits.Conversions.from_degC(20),
     p=ambient.default_p_ambient) 
-    annotation (extent=[-98,-90; -78,-70]);
+    annotation (extent=[-96,-90; -76,-70]);
   
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(
     redeclare package Medium = 
@@ -14,7 +14,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
     height_ab=50,
     diameter=1,
-    p_start=ambient.default_p_ambient,
+    p_a_start=ambient.default_p_ambient+0.1e5,
+    p_b_start=ambient.default_p_ambient,
     length=100,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -53,8 +54,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (extent=[58,-38; 74,-22]);
   Modelica_Fluid.Sources.FixedBoundary sink(
                                        redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater, 
-    p=ambient.default_p_ambient, 
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
+    p=ambient.default_p_ambient,
     T=ambient.default_T_ambient) 
     annotation (extent=[100,-40; 80,-20]);
   Modelica.Blocks.Sources.Step valveOpening(          offset=1) 
@@ -101,7 +102,7 @@ equation
   connect(userValve.port_b, sink.port)     annotation (points=[74,-30; 80,
         -30],
       style(color=69, rgbcolor={0,127,255}));
-  connect(source.port, pumps.inlet) annotation (points=[-78,-80; -73.2,-80; 
+  connect(source.port, pumps.inlet) annotation (points=[-76,-80; -73.2,-80; 
         -73.2,-77.6; -71.4,-77.6], style(color=69, rgbcolor={0,127,255}));
   connect(valveOpening.y, userValve.opening) annotation (points=[85,10; 98,
         10; 98,-12; 66,-12; 66,-22.8],

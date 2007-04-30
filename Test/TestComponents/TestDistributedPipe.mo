@@ -30,7 +30,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
   Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient6(
     redeclare package Medium = Medium,
     p=1e5,
-    T=300)                                                          annotation (extent=[68,20; 
+    T=300)                                                          annotation (extent=[68,20;
         48,40]);
   Modelica_Fluid.Pipes.DistributedPipe pipe5(
     redeclare package Medium=Medium,
@@ -153,7 +153,7 @@ equation
   connect(ambient1.port, pipe1.port_a) annotation (points=[-68,26; -38,26],
                        style(color=69, rgbcolor={0,127,255}));
   connect(pipe5.port_b, ambient6.port) 
-                                      annotation (points=[32,32; 40,32; 40,30; 
+                                      annotation (points=[32,32; 40,32; 40,30;
         48,30], style(color=69, rgbcolor={0,127,255}));
   connect(ramp.y, ambient6.p_in) 
                                 annotation (points=[81,72; 76,72; 76,36; 70,36],

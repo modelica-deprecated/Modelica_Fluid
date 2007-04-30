@@ -50,7 +50,10 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate2(
     m_flow=0.2,
     T=360,
-    redeclare package Medium = Medium) 
+    redeclare package Medium = Medium, 
+    useFlowRateInput=true, 
+    useTemperatureInput=false, 
+    useCompositionInput=false) 
                 annotation (extent=[-66,24; -46,44]);
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate1(
     T=300,
@@ -66,7 +69,7 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
   inner Modelica_Fluid.Ambient ambient 
                                    annotation (extent=[60,70; 80,90]);
 equation 
-  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34;
+  connect(massFlowRate2.port, HEX.port_a2)            annotation (points=[-46,34; 
         -40,34; -40,29.8; -29,29.8],     style(
       color=69,
       rgbcolor={0,127,255},
@@ -87,7 +90,7 @@ equation
       fillColor=70,
       rgbfillColor={0,63,125},
       fillPattern=1));
-  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2;
+  connect(HEX.port_b2, ambient2.port)            annotation (points=[37,2.2; 
         49.5,2.2; 49.5,-18; 62,-18], style(
       color=69,
       rgbcolor={0,127,255},

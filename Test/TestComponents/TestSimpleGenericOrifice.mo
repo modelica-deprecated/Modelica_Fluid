@@ -19,8 +19,8 @@ model TestSimpleGenericOrifice
 </html>"));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient_a(
                                                      redeclare package Medium 
-      = Medium, 
-    p=ambient.default_p_ambient, 
+      = Medium,
+    p=ambient.default_p_ambient,
     T=ambient.default_T_ambient) 
     annotation (extent=[-40,40; -20,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 

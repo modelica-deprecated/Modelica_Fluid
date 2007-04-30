@@ -3,17 +3,17 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
   package Medium = Modelica.Media.Water.StandardWater;
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP1(
                                                p=10e5,
-  redeclare package Medium = Medium, 
+  redeclare package Medium = Medium,
     T=ambient.default_T_ambient) 
   annotation (extent=[-100,26; -80,46]);
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP2(
                                                p=8e5,
-  redeclare package Medium = Medium, 
+  redeclare package Medium = Medium,
     T=ambient.default_T_ambient) 
   annotation (extent=[-100, -50; -80, -30]);
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP1(
                                              p=1e5,
-  redeclare package Medium = Medium, 
+  redeclare package Medium = Medium,
     T=ambient.default_T_ambient) 
   annotation (extent=[82,-4; 62,16]);
   Modelica_Fluid.ControlValves.ValveIncompressible V1(
@@ -58,11 +58,11 @@ annotation (
   Documentation(info=""));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP2(
                                              p=1e5,
-  redeclare package Medium = Medium, 
+  redeclare package Medium = Medium,
     T=ambient.default_T_ambient) 
   annotation (extent=[4,58; -16,78]);
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP3(
-                                             p=1e5, redeclare package Medium = Medium, 
+                                             p=1e5, redeclare package Medium = Medium,
     T=ambient.default_T_ambient) 
   annotation (extent=[26,-78; 6,-58]);
   Modelica.Blocks.Sources.Ramp CloseLoad(
@@ -89,7 +89,7 @@ equation
   connect(V1.port_b, SinkP2.port) annotation (points=[-30,68; -16,68]);
   connect(V4.port_b, SinkP3.port) annotation (points=[-20,-68; 6,-68]);
   connect(SourceP1.port, V1.port_a) 
-                                   annotation (points=[-80,36; -68,36; -68,68; 
+                                   annotation (points=[-80,36; -68,36; -68,68;
         -50,68],
                style(color=69, rgbcolor={0,127,255}));
   connect(SourceP1.port, V2.port_a) 

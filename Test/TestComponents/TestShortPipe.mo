@@ -18,11 +18,12 @@ model TestShortPipe "Test ShortPipe component"
   
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX m_flow_source(           T=from_degC(30),
       redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater) 
+        Modelica.Media.Water.ConstantPropertyLiquidWater, 
+    useFlowRateInput=true) 
     annotation (extent=[-50,0; -30,20]);
   Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p(          T=from_degC(15),
       redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater, 
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     p=ambient.default_p_ambient) 
     annotation (extent=[50,0; 30,20]);
   Modelica.Blocks.Sources.Ramp ramp(

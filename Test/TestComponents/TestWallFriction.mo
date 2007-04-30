@@ -30,8 +30,8 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
 </html>"));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient_a(
                                                      redeclare package Medium 
-      = Medium, 
-    p=ambient.default_p_ambient, 
+      = Medium,
+    p=ambient.default_p_ambient,
     T=ambient.default_T_ambient) 
     annotation (extent=[-40,40; -20,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.99999e5; 10,1.00001e5]) 

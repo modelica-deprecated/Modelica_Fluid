@@ -173,7 +173,7 @@ Simulate for 7200 seconds.
           75,-21; 80,-21], style(color=69, rgbcolor={0,127,255}));
     connect(SteamValve.opening, Y_Valve) annotation (points=[60,-29; 60,-90;
           -104.5,-90],      style(color=74, rgbcolor={0,0,127}));
-    connect(evaporator.steam, massFlowRate.port_a) annotation (points=[-26,-20; 
+    connect(evaporator.steam, massFlowRate.port_a) annotation (points=[-26,-20;
           20,-20], style(color=69, rgbcolor={0,127,255}));
     connect(evaporator.steam, temperature.port) annotation (points=[-26,-20; -3,
           -20; -3,-11], style(color=69, rgbcolor={0,127,255}));

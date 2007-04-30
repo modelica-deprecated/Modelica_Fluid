@@ -844,6 +844,7 @@ The used sufficient criteria for monotonicity follows from:
                   import 
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           import lg = Modelica.Math.log10;
+          import SI = Modelica.SIunits;
           
          input SI.Length length "Length of pipe" annotation(Dialog);
          input SI.Diameter diameter "Inner diameter of pipe" annotation(Dialog);
@@ -997,7 +998,7 @@ As a short summary:
           "Return pressure loss data for sudden expansion or contraction in a pipe (for both flow directions)" 
                   import 
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
-          
+          import SI = Modelica.SIunits;
          input SI.Diameter D_a "Inner diameter of pipe at port_a" annotation(Dialog);
          input SI.Diameter D_b "Inner diameter of pipe at port_b" annotation(Dialog);
          output LossFactorData data 
@@ -1123,122 +1124,127 @@ port_a to port_b as:
         
        encapsulated function sharpEdgedOrifice 
           "Return pressure loss data for sharp edged orifice (for both flow directions)" 
-                  import NonSI = Modelica.SIunits.Conversions.NonSIunits;
+          import NonSI = Modelica.SIunits.Conversions.NonSIunits;
           import 
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
-          
-         input SI.Diameter D_pipe 
+          import SI = Modelica.SIunits;
+          input SI.Diameter D_pipe 
             "Inner diameter of pipe (= same at port_a and port_b)" 
                                                                   annotation(Dialog);
-         input SI.Diameter D_min "Smallest diameter of orifice" annotation(Dialog);
-         input SI.Diameter L "Length of orifice" annotation(Dialog);
-         input NonSI.Angle_deg alpha "Angle of orifice" annotation(Dialog);
-         output LossFactorData data 
+          input SI.Diameter D_min "Smallest diameter of orifice" 
+                                                                annotation(Dialog);
+          input SI.Diameter L "Length of orifice" 
+                                                 annotation(Dialog);
+          input NonSI.Angle_deg alpha "Angle of orifice" 
+                                                        annotation(Dialog);
+          output LossFactorData data 
             "Pressure loss factors for both flow directions";
-         annotation (Icon(Rectangle(extent=[-100,60; 100,-60], style(
-                   color=0,
-                   rgbcolor={0,0,0},
-                   fillColor=7,
-                   rgbfillColor={255,255,255})),
-               Polygon(points=[-30,60; -30,12; 30,50; 30,60; -30,60], style(
-                   color=0,
-                   rgbcolor={0,0,0},
-                   fillColor=7,
-                   rgbfillColor={255,255,255},
-                   fillPattern=8)),
-               Polygon(points=[-30,-10; -30,-60; 30,-60; 30,-50; -30,-10], style(
-                   color=0,
-                   rgbcolor={0,0,0},
-                   fillColor=7,
-                   rgbfillColor={255,255,255},
-                   fillPattern=8))),
-                                   Diagram(
-                          Rectangle(extent=[-100,60; 100,-60], style(
-                   color=0,
-                   rgbcolor={0,0,0},
-                   fillColor=7,
-                   rgbfillColor={255,255,255})),
-               Polygon(points=[-30,60; -30,12; 30,50; 30,60; -30,60], style(
-                   color=0,
-                   rgbcolor={0,0,0},
-                   fillColor=7,
-                   rgbfillColor={255,255,255},
-                   fillPattern=8)),
-               Polygon(points=[-30,-10; -30,-60; 30,-60; 30,-50; -30,-10], style(
-                   color=0,
-                   rgbcolor={0,0,0},
-                   fillColor=7,
-                   rgbfillColor={255,255,255},
-                   fillPattern=8)),
-             Line(points=[-82,-60; -82,60], style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1)),
-             Text(
-               extent=[-78,16; -44,-8],
-               style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1),
-                 string="D_pipe"),
-             Line(points=[-30,-10; -30,12], style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1)),
-             Text(
-               extent=[-24,14; 8,-10],
-               style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1),
-                 string="D_min"),
-             Text(
-               extent=[-20,84; 18,70],
-               style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1),
-                 string="L"),
-             Line(points=[30,68; -30,68],   style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1)),
-               Line(points=[16,40; 32,18; 36,-2; 34,-20; 20,-42], style(
-                   color=3,
-                   rgbcolor={0,0,255},
-                   arrow=3,
-                   fillColor=3,
-                   rgbfillColor={0,0,255},
-                   fillPattern=8)),
-               Text(
-                 extent=[38,8; 92,-6],
-                 style(
-                   color=3,
-                   rgbcolor={0,0,255},
-                   arrow=3,
-                   fillColor=3,
-                   rgbfillColor={0,0,255},
-                   fillPattern=8),
-                 string="alpha")),
-           Documentation(info="<html>
+          annotation (
+            Icon(
+              Rectangle(extent=[-100,60; 100,-60], style(
+                  color=0, 
+                  rgbcolor={0,0,0}, 
+                  fillColor=7, 
+                  rgbfillColor={255,255,255})), 
+              Polygon(points=[-30,60; -30,12; 30,50; 30,60; -30,60], style(
+                  color=0, 
+                  rgbcolor={0,0,0}, 
+                  fillColor=7, 
+                  rgbfillColor={255,255,255}, 
+                  fillPattern=8)), 
+              Polygon(points=[-30,-10; -30,-60; 30,-60; 30,-50; -30,-10], style(
+                  color=0, 
+                  rgbcolor={0,0,0}, 
+                  fillColor=7, 
+                  rgbfillColor={255,255,255}, 
+                  fillPattern=8))), 
+            Diagram(
+              Rectangle(extent=[-100,60; 100,-60], style(
+                  color=0, 
+                  rgbcolor={0,0,0}, 
+                  fillColor=7, 
+                  rgbfillColor={255,255,255})), 
+              Polygon(points=[-30,60; -30,12; 30,50; 30,60; -30,60], style(
+                  color=0, 
+                  rgbcolor={0,0,0}, 
+                  fillColor=7, 
+                  rgbfillColor={255,255,255}, 
+                  fillPattern=8)), 
+              Polygon(points=[-30,-10; -30,-60; 30,-60; 30,-50; -30,-10], style(
+                  color=0, 
+                  rgbcolor={0,0,0}, 
+                  fillColor=7, 
+                  rgbfillColor={255,255,255}, 
+                  fillPattern=8)), 
+              Line(points=[-82,-60; -82,60], style(
+                  color=3, 
+                  rgbcolor={0,0,255}, 
+                  arrow=3, 
+                  fillColor=3, 
+                  rgbfillColor={0,0,255}, 
+                  fillPattern=1)), 
+              Text(
+                extent=[-78,16; -44,-8], 
+                style(
+                  color=3, 
+                  rgbcolor={0,0,255}, 
+                  arrow=3, 
+                  fillColor=3, 
+                  rgbfillColor={0,0,255}, 
+                  fillPattern=1), 
+                string="D_pipe"), 
+              Line(points=[-30,-10; -30,12], style(
+                  color=3, 
+                  rgbcolor={0,0,255}, 
+                  arrow=3, 
+                  fillColor=3, 
+                  rgbfillColor={0,0,255}, 
+                  fillPattern=1)), 
+              Text(
+                extent=[-24,14; 8,-10], 
+                style(
+                  color=3, 
+                  rgbcolor={0,0,255}, 
+                  arrow=3, 
+                  fillColor=3, 
+                  rgbfillColor={0,0,255}, 
+                  fillPattern=1), 
+                string="D_min"), 
+              Text(
+                extent=[-20,84; 18,70], 
+                style(
+                  color=3, 
+                  rgbcolor={0,0,255}, 
+                  arrow=3, 
+                  fillColor=3, 
+                  rgbfillColor={0,0,255}, 
+                  fillPattern=1), 
+                string="L"), 
+              Line(points=[30,68; -30,68], style(
+                  color=3, 
+                  rgbcolor={0,0,255}, 
+                  arrow=3, 
+                  fillColor=3, 
+                  rgbfillColor={0,0,255}, 
+                  fillPattern=1)), 
+              Line(points=[16,40; 32,18; 36,-2; 34,-20; 20,-42], style(
+                  color=3, 
+                  rgbcolor={0,0,255}, 
+                  arrow=3, 
+                  fillColor=3, 
+                  rgbfillColor={0,0,255}, 
+                  fillPattern=8)), 
+              Text(
+                extent=[38,8; 92,-6], 
+                style(
+                  color=3, 
+                  rgbcolor={0,0,255}, 
+                  arrow=3, 
+                  fillColor=3, 
+                  rgbfillColor={0,0,255}, 
+                  fillPattern=8), 
+                string="alpha")), 
+            Documentation(info="<html>
 <p>
 Loss factor for mass flow rate from port_a to port_b
 (Idelchik 1994, diagram 4-14, p. 221):
@@ -1263,21 +1269,21 @@ Loss factor for mass flow rate from port_b to port_a
 </pre
 </html>"));
         protected 
-         Real D_rel = D_min/D_pipe;
-         Real LD = L/D_min;
-         Real k = 0.13 + 0.34*10^(-(3.4*LD+88.4*LD^2.3));
+          Real D_rel=D_min/D_pipe;
+          Real LD=L/D_min;
+          Real k=0.13 + 0.34*10^(-(3.4*LD + 88.4*LD^2.3));
        algorithm 
-         data.D_a          := D_pipe;
-         data.D_b          := D_pipe;
-         data.zeta1        := ((1-D_rel) + 0.707*(1-D_rel)^0.375)^2*(1/D_rel)^2;
-         data.zeta2        := k*(1 - D_rel)^0.75 + (1 - D_rel)^2 +
-                              2*sqrt(k*(1-D_rel)^0.375) + (1- D_rel);
-         data.Re_turbulent := 1e4;
-         data.D_Re         := D_min;
-         data.zeta1_at_a   := true;
-         data.zeta2_at_a   := false;
-         data.zetaLaminarKnown := false;
-         data.c0               := 0;
+          data.D_a := D_pipe;
+          data.D_b := D_pipe;
+          data.zeta1 := ((1 - D_rel) + 0.707*(1 - D_rel)^0.375)^2*(1/D_rel)^2;
+          data.zeta2 := k*(1 - D_rel)^0.75 + (1 - D_rel)^2 + 2*sqrt(k*(1 - 
+            D_rel)^0.375) + (1 - D_rel);
+          data.Re_turbulent := 1e4;
+          data.D_Re := D_min;
+          data.zeta1_at_a := true;
+          data.zeta2_at_a := false;
+          data.zetaLaminarKnown := false;
+          data.c0 := 0;
        end sharpEdgedOrifice;
         
      end LossFactorData;
