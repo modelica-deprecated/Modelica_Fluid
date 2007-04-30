@@ -14,7 +14,7 @@ model TestNewMixingVolume
     h=3e6) annotation (extent=[-82,0; -62,20]);
   Modelica_Fluid.Sources.FixedBoundary_pTX Sink(
                                            redeclare package Medium = 
-        Modelica.Media.Water.StandardWater, p=101325, 
+        Modelica.Media.Water.StandardWater, p=101325,
     T=ambient.default_T_ambient) 
     annotation (extent=[60,0; 40,20]);
   Modelica_Fluid.ControlValves.ValveLinear Valve(

@@ -35,12 +35,12 @@ equation
   connect(PortVolume1.port, PortVolume2.port) 
     annotation (points=[-20,0; 20,0],style(color=69, rgbcolor={0,127,255}));
   annotation (Diagram);
-  connect(PortVolume2.port, Sink1.port)
+  connect(PortVolume2.port, Sink1.port) 
     annotation (points=[20,0; 80,0], style(color=69, rgbcolor={0,127,255}));
-  connect(PortVolume2.port, Tout.port) annotation (points=[20,0; 50,0; 50,10], 
+  connect(PortVolume2.port, Tout.port) annotation (points=[20,0; 50,0; 50,10],
       style(color=69, rgbcolor={0,127,255}));
-  connect(FlowSource1.port, PortVolume1.port)
+  connect(FlowSource1.port, PortVolume1.port) 
     annotation (points=[-80,0; -20,0], style(color=69, rgbcolor={0,127,255}));
-  connect(FlowSource1.port, Tin.port) annotation (points=[-80,0; -50,0; -50,10], 
+  connect(FlowSource1.port, Tin.port) annotation (points=[-80,0; -50,0; -50,10],
       style(color=69, rgbcolor={0,127,255}));
 end TestPortVolumes;

@@ -239,7 +239,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1;
           2,0; 100,0]) annotation (extent=[-20,-10; 0,10]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
-    Junctions.Splitter splitter(redeclare package Medium = Medium) 
+    Junctions.JunctionIdeal splitter(redeclare package Medium = Medium) 
       annotation (extent=[-50,0; -36,12], rotation=90);
   equation 
     connect(source.port, pipe1.port_a) annotation (points=[-88,6; -80,6], style(
@@ -818,7 +818,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[1,80; 20,80; 20,55], style(color=74, rgbcolor={0,0,127}));
     connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
           -53.5,6; -53.5,6; -49,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -1163,7 +1163,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5, 
+      d_nom=5,
       dp(start=10)) 
                   annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valve2(
@@ -1340,7 +1340,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[3,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
           -53.5,6; -53.5,6; -49,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -1354,7 +1354,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valve1.port_b, junctionVolume.port_2) annotation (points=[30,46; 56,
           46; 56,-1], style(color=69, rgbcolor={0,127,255}));
   end BranchingPipes18;
-
+  
   model BranchingPipes131 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     replaceable package Medium = Modelica.Media.Water.StandardWater;
@@ -1371,8 +1371,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.54e-2,
-      p_b_start=4.95e5, 
-      frictionAndGravity2(dp(start=1000)), 
+      p_b_start=4.95e5,
+      frictionAndGravity2(dp(start=1000)),
       frictionAndGravity1(dp(start=1000))) 
                         annotation (extent=[-78,-4; -58,16]);
     
@@ -1382,7 +1382,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5, 
+      d_nom=5,
       dp(start=4.0e5)) 
                   annotation (extent=[8,-50; 28,-30]);
     annotation (
@@ -1405,14 +1405,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5, 
-      frictionAndGravity1(dp(start=1000)), 
+      p_b_start=4.90e5,
+      frictionAndGravity1(dp(start=1000)),
       frictionAndGravity2(dp(start=1000))) 
                         annotation (extent=[-30,-50; -10,-30]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
           1,0; 100,0]) annotation (extent=[-20,70; 0,90]);
-    Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1; 
+    Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1;
           2.01,1e-6; 100,0]) 
                        annotation (extent=[-20,-8; 0,12]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);

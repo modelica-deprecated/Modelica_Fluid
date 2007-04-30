@@ -127,15 +127,15 @@ This example is based on
           portLevel=0)})      annotation (extent=[60,-50; 100,-10]);
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient1(
                                                      redeclare package Medium 
-        = Medium, 
-      p=ambient.default_p_ambient, 
+        = Medium,
+      p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[10,-100; 30,-80], rotation=0);
     Modelica.Blocks.Sources.RealExpression level2(y=tank2.level) 
       annotation (extent=[-70,-80; -33,-60]);
     Modelica_Fluid.Sources.FixedBoundary_pTX source(
                                                    redeclare package Medium = 
-          Medium, p=2.5e6, 
+          Medium, p=2.5e6,
       T=ambient.default_T_ambient) 
       annotation (extent=[10,70; 30,90],    rotation=-90);
     inner Ambient ambient annotation (extent=[-90,70; -70,90]);
