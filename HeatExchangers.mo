@@ -29,11 +29,11 @@ package HeatExchangers "Evaporators and condensor components"
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
     
-  Modelica.Fluid.Interfaces.FluidPort_a feedwater(
+  Modelica_Fluid.Interfaces.FluidPort_a feedwater(
                                    redeclare package Medium = Medium,
                      m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
     annotation (extent=[-110,-10; -90,10]);
-  Modelica.Fluid.Interfaces.FluidPort_b steam(
+  Modelica_Fluid.Interfaces.FluidPort_b steam(
                                redeclare package Medium = Medium,
                      m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
     annotation (extent=[110,-10; 90,10]);
@@ -372,13 +372,13 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       Documentation(info="<html>
 Simple model of a heat exchanger consisting of two pipes and one wall in between. For both fluids geometry parameters, such as heat transfer area and cross section as well as heat transfer and pressure drop correlations may be chosen. The flow scheme be cocurrent or counterflow, defined by the respective flow directions of the fluids entering the component.
 </html>"));
-    Modelica.Fluid.Interfaces.FluidPort_b port_b1(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_b port_b1(redeclare package Medium = 
           Medium_1) annotation (extent=[100,-12; 120,8]);
-    Modelica.Fluid.Interfaces.FluidPort_a port_a1(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_a port_a1(redeclare package Medium = 
           Medium_1) annotation (extent=[-120,-12; -100,8]);
-    Modelica.Fluid.Interfaces.FluidPort_a port_a2(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_a port_a2(redeclare package Medium = 
           Medium_2) annotation (extent=[-120,36; -100,56]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_b2(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_b port_b2(redeclare package Medium = 
           Medium_2) annotation (extent=[100,-56; 120,-36]);
     
     Modelica_Fluid.Thermal.WallConstProps wall(

@@ -10,17 +10,17 @@ package Junctions "Junction components"
       "Fluid medium model" 
       annotation (choicesAllMatching=true);
     
-    Modelica.Fluid.Interfaces.FluidPort_b port_1(
+    Modelica_Fluid.Interfaces.FluidPort_b port_1(
       redeclare package Medium=Medium,
       m_flow(min=if (portFlowDirection_1==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
       max=if (portFlowDirection_1==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
       annotation (extent=[-120,-10; -100,10]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_2(
+    Modelica_Fluid.Interfaces.FluidPort_b port_2(
       redeclare package Medium=Medium,
       m_flow(min=if (portFlowDirection_2==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
       max=if (portFlowDirection_2==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
       annotation (extent=[100,-10; 120,10]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_3(
+    Modelica_Fluid.Interfaces.FluidPort_b port_3(
       redeclare package Medium=Medium,
       m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
       max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
@@ -153,17 +153,17 @@ package Junctions "Junction components"
     SI.Mass m "Total mass";
     SI.Mass[Medium.nXi] mXi "Independent masses";
     
-    Modelica.Fluid.Interfaces.FluidPort_b port_1(
+    Modelica_Fluid.Interfaces.FluidPort_b port_1(
       redeclare package Medium=Medium,
       m_flow(min=if (portFlowDirection_1==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
       max=if (portFlowDirection_1==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
       annotation (extent=[-120,-10; -100,10]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_2(
+    Modelica_Fluid.Interfaces.FluidPort_b port_2(
       redeclare package Medium=Medium,
       m_flow(min=if (portFlowDirection_2==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
       max=if (portFlowDirection_2==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
       annotation (extent=[100,-10; 120,10]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_3(
+    Modelica_Fluid.Interfaces.FluidPort_b port_3(
       redeclare package Medium=Medium,
       m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
       max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
@@ -281,10 +281,10 @@ package Junctions "Junction components"
   model MassFlowRatio "simple flow multiplier" 
     replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(choicesAllMatching);
     parameter Real ratio=1 "flow multiplier from port a to port b";
-    Modelica.Fluid.Interfaces.FluidPort_a port_a(
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(
                                   redeclare package Medium=Medium) 
       annotation (extent=[-110,-10; -90,10]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_b(
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(
                                   redeclare package Medium = Medium) 
       annotation (extent=[90,-10; 110,10]);
   equation 

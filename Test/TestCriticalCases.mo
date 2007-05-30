@@ -328,7 +328,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1;
           2,0; 100,0]) annotation (extent=[-20,-10; 0,10]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
-    Junctions.Junction_dynamic splitter(redeclare package Medium = Medium) 
+    Junctions.JunctionVolume splitter(redeclare package Medium = Medium) 
       annotation (extent=[-50,0; -36,12], rotation=90);
   equation 
     connect(source.port, pipe1.port_a) annotation (points=[-88,6; -80,6], style(
@@ -1232,7 +1232,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[3,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
           -54.5,6; -54.5,6; -51,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -40,

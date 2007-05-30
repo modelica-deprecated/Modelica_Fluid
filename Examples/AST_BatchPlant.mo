@@ -934,17 +934,17 @@ handled properly.</p>
       Medium.MassFlowRate mXi_flow_sidePorts[n_SidePorts,Medium.nXi];
       
     // Connectors and InnerTanks
-      Modelica.Fluid.Interfaces.FluidPort_b BottomFluidPort[n_BottomPorts](
+      Modelica_Fluid.Interfaces.FluidPort_b BottomFluidPort[n_BottomPorts](
         redeclare package Medium = Medium,
         m_flow(each start=0),
         mXi_flow(each start=0)) 
         annotation (extent=[-110,-112; -90,-92],  rotation=90);
-      Modelica.Fluid.Interfaces.FluidPort_a TopFluidPort[n_TopPorts](
+      Modelica_Fluid.Interfaces.FluidPort_a TopFluidPort[n_TopPorts](
         redeclare package Medium = Medium,
         m_flow(each start=0),
         mXi_flow(each start=0)) 
         annotation (extent=[-110,92; -90,112]);
-      Modelica.Fluid.Interfaces.FluidPort_b SideFluidPort[n_SidePorts](
+      Modelica_Fluid.Interfaces.FluidPort_b SideFluidPort[n_SidePorts](
         redeclare package Medium = Medium,
         m_flow(each start=0),
         mXi_flow(each start=0)) 
@@ -989,7 +989,7 @@ handled properly.</p>
           annotation (extent=[-80,-80; -60,-60]);
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a HeatPort 
         annotation (extent=[-220,-10; -200,10]);
-      Modelica.Fluid.Interfaces.FluidPort_b Condensed(redeclare package Medium 
+      Modelica_Fluid.Interfaces.FluidPort_b Condensed(redeclare package Medium 
           =        Medium) 
         annotation (extent=[192,50; 212,70]);
     // parameter for Evaporator
@@ -1195,7 +1195,7 @@ Full steady state initialization is not supported, because the corresponding int
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching=true);
       
-        Modelica.Fluid.Interfaces.FluidPort_a port(redeclare package Medium = 
+        Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = 
             Medium) 
         annotation (extent=[-10, -120; 10, -100], rotation=90);
        // Real mXi_flow;
@@ -1334,13 +1334,13 @@ Full steady state initialization is not supported, because the corresponding int
       constant SI.Acceleration g=Modelica.Constants.g_n;
     //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
     //    "Initialisation option";
-      Modelica.Fluid.Interfaces.FluidPort_a inlet(
+      Modelica_Fluid.Interfaces.FluidPort_a inlet(
         redeclare package Medium = Medium,
         p(start=pin_start),
         m_flow(start=m_flow_start, min=if allowFlowReversal and not checkValve then 
                     -inf else 0)) 
       annotation (extent=[-100,-40; -60,0]);
-      Modelica.Fluid.Interfaces.FluidPort_b outlet(
+      Modelica_Fluid.Interfaces.FluidPort_b outlet(
         redeclare package Medium = Medium,
         p(start=pout_start),
         m_flow(start=-m_flow_start, max=if allowFlowReversal and not checkValve then 
@@ -1895,7 +1895,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       parameter Integer nTopPorts(min=1) = 1 
         "Number of inlet ports above levelMax (>= 1)";
       
-      Modelica.Fluid.Interfaces.FluidPort_a topPorts[nTopPorts](
+      Modelica_Fluid.Interfaces.FluidPort_a topPorts[nTopPorts](
       redeclare package Medium = Medium,
       m_flow(each start=0, each min=0),
       mXi_flow(each start=0, each min=0)) if   nTopPorts > 0 
@@ -1905,7 +1905,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0)} 
         "Data of inlet/outlet ports at side and bottom of tank";
       
-      Modelica.Fluid.Interfaces.FluidPort_b ports[size(portsData,1)](
+      Modelica_Fluid.Interfaces.FluidPort_b ports[size(portsData,1)](
       redeclare package Medium = Medium,
       m_flow(each start=0),
       mXi_flow(each start=0)) 

@@ -681,7 +681,7 @@ with exception of boundary flow rate, do not have an effect.
         "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
       
     Medium.BaseProperties medium "Medium in the source";
-    Modelica.Fluid.Interfaces.FluidPort_b port(
+    Modelica_Fluid.Interfaces.FluidPort_b port(
                                 redeclare package Medium = Medium,
                      m_flow(max=if flowDirection==Types.SourceFlowDirection.OutOfPort then 0 else 
                                      +Constants.inf,
