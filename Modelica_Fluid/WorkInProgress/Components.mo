@@ -39,9 +39,9 @@ model IsolatedPipe
   parameter Real viscosityFactor1=0 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
   parameter Real viscosityFactor2=1 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
     
-  Modelica.Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
+  Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
               annotation (extent=[-120, -10; -100, 10]);
-  Modelica.Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium = Medium) 
+  Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium = Medium) 
               annotation (extent=[120, -10; 100, 10]);
   Modelica_Fluid.WorkInProgress.Utilities.PipeSegment pipeSegment[nVolumes](
       redeclare package Medium = Medium,
@@ -573,7 +573,7 @@ model Tank "Obsolet component (use instead Components.OpenTank)"
   parameter SI.Height level_start(min=0) "Initial tank level" 
     annotation(Dialog(tab="Initialization"));
     
-  Modelica.Fluid.Interfaces.FluidPort_b port(
+  Modelica_Fluid.Interfaces.FluidPort_b port(
       redeclare package Medium = Medium,
       m_flow(start=0),
       mXi_flow(each start=0)) 

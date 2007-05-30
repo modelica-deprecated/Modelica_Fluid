@@ -242,10 +242,10 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
     
-    Modelica.Fluid.Interfaces.FluidPort_a port_a(
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(
                                   redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_b(
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(
                                   redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
     
@@ -498,7 +498,7 @@ the two ports of this component and is provided as output signal.
         "Medium in the sensor" 
         annotation(choicesAllMatching=true);
       
-      Modelica.Fluid.Interfaces.FluidPort_a port(
+      Modelica_Fluid.Interfaces.FluidPort_a port(
         redeclare package Medium=Medium) 
         annotation (extent=[-10,-110; 10,-90],rotation=90);
       
@@ -532,11 +532,11 @@ as signal.
       Medium.MassFraction[Medium.nXi] Xi "Flow composition";
       Medium.ExtraProperty[Medium.nC] C "Extra properties";
       
-      Modelica.Fluid.Interfaces.FluidPort_a port_a(
+      Modelica_Fluid.Interfaces.FluidPort_a port_a(
         redeclare package Medium=Medium,
         m_flow(min=if allowFlowReversal then -Constants.inf else 0.0)) 
         annotation (extent=[-110,-10; -90,10]);
-      Modelica.Fluid.Interfaces.FluidPort_b port_b(
+      Modelica_Fluid.Interfaces.FluidPort_b port_b(
         redeclare package Medium=Medium,
         m_flow(max=if allowFlowReversal then +Constants.inf else 0.0)) 
         annotation (extent=[110,-10; 90,10]);
@@ -587,10 +587,10 @@ this partial class should add a medium instance to calculate the measured proper
         Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
           choicesAllMatching =                                                                         true);
       
-      Modelica.Fluid.Interfaces.FluidPort_a port_a(
+      Modelica_Fluid.Interfaces.FluidPort_a port_a(
                                     redeclare package Medium = Medium) 
         annotation (extent=[-120, -10; -100, 10]);
-      Modelica.Fluid.Interfaces.FluidPort_b port_b(
+      Modelica_Fluid.Interfaces.FluidPort_b port_b(
                                     redeclare package Medium = Medium) 
         annotation (extent=[120, -10; 100, 10]);
       

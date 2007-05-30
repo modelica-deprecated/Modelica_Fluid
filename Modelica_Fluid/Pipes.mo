@@ -61,11 +61,11 @@ model LumpedPipe "Short pipe with one volume, wall friction and gravity effect"
       "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
     annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
     
-    Modelica.Fluid.Interfaces.FluidPort_a port_a(
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(
                                   redeclare package Medium = Medium) 
       "Fluid connector a (positive design flow direction is from port_a to port_b)"
       annotation (extent=[-110,-10; -90,10]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_b(
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(
                                   redeclare package Medium = Medium) 
       "Fluid connector b (positive design flow direction is from port_a to port_b)"
       annotation (extent=[110,-10; 90,10]);
@@ -598,7 +598,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       
     parameter SI.Volume V "Volume";
       
-    Modelica.Fluid.Interfaces.FluidPort_a port(
+    Modelica_Fluid.Interfaces.FluidPort_a port(
       redeclare package Medium = Medium) "Fluid port" 
       annotation (extent=[-10, -10; 10, 10], rotation=0);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
@@ -896,11 +896,11 @@ The correlation takes into account the spatial position along the pipe flow, whi
    SI.Pressure[n+1] dp(start=dp0) "pressure difference across staggered grid";
       
   //Fluid ports
-    Modelica.Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
           Medium, m_flow(min=if allowFlowReversal and not static then -inf else 0)) 
         "Fluid inlet port" 
                          annotation (extent=[-110,-10; -90,10]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
           Medium, m_flow(max=if allowFlowReversal and not static then +inf else 0)) 
         "Fluid outlet port" 
                           annotation (extent=[90,-10; 110,10]);
@@ -1165,11 +1165,11 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     SI.Pressure[np] dp(start=dp0) "Pressure difference across staggered grid";
       
   //Fluid ports
-    Modelica.Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
           Medium, m_flow(min=if allowFlowReversal and not static then -inf else 0)) 
         "Fluid inlet port" 
                          annotation (extent=[-110,-10; -90,10]);
-    Modelica.Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
           Medium, m_flow(max=if allowFlowReversal and not static then +inf else 0)) 
         "Fluid outlet port" 
                           annotation (extent=[90,-10; 110,10]);

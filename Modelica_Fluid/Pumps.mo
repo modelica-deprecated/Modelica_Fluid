@@ -137,13 +137,13 @@ package Pumps "Pump components"
     constant SI.Acceleration g=Modelica.Constants.g_n;
   //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
   //    "Initialisation option";
-    Modelica.Fluid.Interfaces.FluidPort_a inlet(
+    Modelica_Fluid.Interfaces.FluidPort_a inlet(
                                  redeclare package Medium = Medium,
         p(start=pin_start),
         m_flow(start = m_flow_start,
                min = if allowFlowReversal and not checkValve then -Constants.inf else 0)) 
     annotation (extent=[-100,-40; -60,0]);
-    Modelica.Fluid.Interfaces.FluidPort_b outlet(
+    Modelica_Fluid.Interfaces.FluidPort_b outlet(
                                   redeclare package Medium = Medium,
         p(start=pout_start),
         m_flow(start = -m_flow_start,

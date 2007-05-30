@@ -3,7 +3,7 @@ package FluidStorage
 connector FluidPort_ArrayIcon 
     "Fluid connector with icon suited for an array of FluidPorts" 
     import Modelica_Fluid;
-  extends Modelica.Fluid.Interfaces.FluidPort;
+  extends Modelica_Fluid.Interfaces.FluidPort;
   annotation (defaultComponentName="ports",
               Diagram(Rectangle(extent=[-100, 100; 100, -100], style(color=69,
              fillColor=69)), Rectangle(extent=[-100, 100; 100, -100], style(color=16,
@@ -18,7 +18,7 @@ model TankAttachment "Equations to attach pipe at tank"
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
     
-    Modelica.Fluid.Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
+    Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
     annotation (extent=[-10,-112; 10,-92],    rotation=90);
    // Real mXi_flow;
     parameter Boolean onlyInFlow = false 
