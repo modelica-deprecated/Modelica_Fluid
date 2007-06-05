@@ -81,7 +81,7 @@ The model operating range includes choked flow operation, which takes place for 
   equation 
     pin = port_a.p;
     pout = port_b.p;
-    pv = Medium.saturationPressure_sat(medium_a.sat);
+    pv = Medium.saturationPressure(medium_a.T);
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
     Fl = Fl_nom*FlCharacteristic(stemPosition);
     dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 

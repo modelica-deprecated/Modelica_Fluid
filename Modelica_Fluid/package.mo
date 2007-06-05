@@ -4,7 +4,7 @@ annotation (
   versionDate="2006-08-28",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(Modelica(version="2.2.2 development")),
+  uses(Modelica(version="2.2.1"), UserInteraction(version="0.52")),
   classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
@@ -158,7 +158,7 @@ version:
 </ul>
 </html>"));
 end KnownLimitations;
-
+  
   class Overview "Overview" 
     
     annotation (Documentation(info="<HTML>

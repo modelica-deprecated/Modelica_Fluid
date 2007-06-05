@@ -1,8 +1,7 @@
 package Utilities 
 model TankAttachment "Equations to attach pipe at tank" 
-       replaceable package Medium = 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-     annotation (choicesAllMatching=true);
+       replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+      "Medium in the component" annotation (choicesAllMatching=true);
     
     Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = Medium) 
     annotation (extent=[-10,-112; 10,-92],    rotation=90);
@@ -305,6 +304,7 @@ The used sufficient criteria for monotonicity follows from:
       "Compute pressure loss factors due to friction in a straight pipe with walls of nonuniform roughness (commercial pipes)" 
           import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
       import lg = Modelica.Math.log10;
+      import SI = Modelica.SIunits;
       
      input SI.Length length "Length of pipe";
      input SI.Diameter diameter "Inner diameter of pipe";
@@ -440,6 +440,7 @@ As a short summary:
    encapsulated function suddenExpansion 
       "Compute pressure loss factors for sudden expansion or contraction in a pipe (for both flow directions)" 
           import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
+      import SI = Modelica.SIunits;
       
      input SI.Diameter D_a "Inner diameter of pipe at port_a";
      input SI.Diameter D_b "Inner diameter of pipe at port_b";
@@ -568,6 +569,7 @@ port_a to port_b as:
       "Compute pressure loss factors for sharp edged orifice (for both flow directions)" 
           import NonSI = Modelica.SIunits.Conversions.NonSIunits;
       import Modelica_Fluid.WorkInProgress.Utilities.PressureLossFactors;
+      import SI = Modelica.SIunits;
       
      input SI.Diameter D_pipe 
         "Inner diameter of pipe (= same at port_a and port_b)";

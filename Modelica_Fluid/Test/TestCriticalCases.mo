@@ -99,12 +99,13 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       T=300) annotation (extent=[-100,0; -88,12]);
     Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
-      p_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2) annotation (extent=[-72,-4; -52,16]);
+      diameter=2.54e-2, 
+      p_a_start=5.0e5, 
+      p_b_start=5.0e5)  annotation (extent=[-72,-4; -52,16]);
     
     ControlValves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
@@ -133,21 +134,23 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
     Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
-      p_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2) annotation (extent=[-40,36; -20,56]);
+      diameter=2.54e-2, 
+      p_a_start=5.0e5, 
+      p_b_start=5.0e5)  annotation (extent=[-40,36; -20,56]);
     
     Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
-      p_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2) annotation (extent=[-40,-50; -20,-30]);
+      diameter=2.54e-2, 
+      p_a_start=5.0e5, 
+      p_b_start=5.0e5)  annotation (extent=[-40,-50; -20,-30]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,0; 1,0;
           1,1; 100,1]) annotation (extent=[-20,70; 0,90]);
@@ -273,12 +276,13 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       T=300) annotation (extent=[-100,0; -88,12]);
     Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
-      p_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2) annotation (extent=[-80,-4; -60,16]);
+      diameter=2.54e-2, 
+      p_a_start=5.0e5, 
+      p_b_start=5.0e5)  annotation (extent=[-80,-4; -60,16]);
     
     ControlValves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
@@ -307,28 +311,32 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
     Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
-      p_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2) annotation (extent=[-40,36; -20,56]);
+      diameter=2.54e-2, 
+      p_a_start=5.0e5, 
+      p_b_start=5.0e5)  annotation (extent=[-40,36; -20,56]);
     
     Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
-      p_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2) annotation (extent=[-40,-50; -20,-30]);
+      diameter=2.54e-2, 
+      p_a_start=5.0e5, 
+      p_b_start=5.0e5)  annotation (extent=[-40,-50; -20,-30]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
           1,0; 100,0]) annotation (extent=[-20,70; 0,90]);
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1;
           2,0; 100,0]) annotation (extent=[-20,-10; 0,10]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
-    Junctions.JunctionVolume splitter(redeclare package Medium = Medium) 
+    Junctions.JunctionVolume splitter(redeclare package Medium = Medium, 
+      p_start=5.0e5, 
+      initType=Modelica_Fluid.Types.Init.InitialValues) 
       annotation (extent=[-50,0; -36,12], rotation=90);
   equation 
     connect(source.port, pipe1.port_a) annotation (points=[-88,6; -80,6], style(

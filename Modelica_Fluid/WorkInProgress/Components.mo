@@ -2,7 +2,7 @@ package Components
   
 model IsolatedPipe 
     "Model of an isolated pipe consisting of n pipe segments/FiniteVolumes" 
-      
+    
   replaceable package Medium = 
     Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
@@ -92,7 +92,7 @@ end IsolatedPipe;
   
   model ShortPipe2 
     "Short pipe with two volumes, wall friction and gravity effect" 
-      
+    
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     replaceable package WallFriction = 
       Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
@@ -135,23 +135,25 @@ end IsolatedPipe;
       "Initialization option for volume 2" 
       annotation(Dialog(tab = "Initialization"));
     
-    parameter Medium.AbsolutePressure p_start = Medium.p_default 
-      "Start value of pressure" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Boolean use_T_start = true 
-      "Use T_start if true, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"), Evaluate=true);
-    parameter Medium.Temperature T_start=
-      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
-      "Start value of temperature" 
-      annotation(Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
-      "Start value of specific enthalpy" 
-      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
-      "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+  /*
+  parameter Medium.AbsolutePressure p_start = Medium.p_default 
+    "Start value of pressure" 
+    annotation(Dialog(tab = "Initialization"));
+  parameter Boolean use_T_start = true "Use T_start if true, otherwise h_start"
+    annotation(Dialog(tab = "Initialization"), Evaluate=true);
+  parameter Medium.Temperature T_start=
+    if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
+    "Start value of temperature" 
+    annotation(Dialog(tab = "Initialization", enable = use_T_start));
+  parameter Medium.SpecificEnthalpy h_start=
+    if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
+    "Start value of specific enthalpy" 
+    annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+  parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+    "Start value of mass fractions m_i/m" 
+    annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+*/
+    
     annotation (defaultComponentName="pipe",Icon(
         Rectangle(extent=[-100,60; 100,-60],   style(
             color=0,
@@ -201,7 +203,7 @@ to build up more detailed models from the basic components.
                          annotation (extent=[-10,-10; 10,10]);
     Modelica_Fluid.Pipes.BaseClasses.PortVolume volume1(
       redeclare package Medium = Medium,
-      p_start=p_start,
+      p_start=p_a_start,
       use_T_start=use_T_start,
       T_start=T_start,
       h_start=h_start,
@@ -211,7 +213,7 @@ to build up more detailed models from the basic components.
       annotation (extent=[-70,-10; -50,10]);
     Modelica_Fluid.Pipes.BaseClasses.PortVolume volume2(
       redeclare package Medium = Medium,
-      p_start=p_start,
+      p_start=p_b_start,
       use_T_start=use_T_start,
       T_start=T_start,
       h_start=h_start,

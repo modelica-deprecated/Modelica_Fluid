@@ -415,15 +415,15 @@ with exception of boundary pressure, do not have an effect.
       annotation (Evaluate = true,
                   Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in(
-      redeclare type SignalType = Medium.MassFlowRate) 
+      redeclare type SignalType = Medium.MassFlowRate) if useFlowRateInput 
       "Prescribed mass flow rate" 
       annotation (extent=[-113,40; -73,80]);
     Modelica.Blocks.Interfaces.RealInput T_in(
-      redeclare type SignalType = Medium.Temperature) 
+      redeclare type SignalType = Medium.Temperature) if useTemperatureInput 
       "Prescribed fluid temperature" 
       annotation (extent=[-140,-20; -100,20]);
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
-      redeclare type SignalType = Medium.MassFraction) 
+      redeclare type SignalType = Medium.MassFraction) if useCompositionInput 
       "Prescribed fluid composition" 
       annotation (extent=[-112,-81; -72,-41]);
   protected 
@@ -552,15 +552,15 @@ with exception of boundary flow rate, do not have an effect.
       annotation (Evaluate = true,
                   Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in(
-      redeclare type SignalType = Medium.MassFlowRate) 
+      redeclare type SignalType = Medium.MassFlowRate) if useFlowRateInput 
       "Prescribed mass flow rate" 
       annotation (extent=[-113,40; -73,80]);
     Modelica.Blocks.Interfaces.RealInput h_in(
-      redeclare type SignalType = Medium.SpecificEnthalpy) 
+      redeclare type SignalType = Medium.SpecificEnthalpy) if useEnthalpyInput 
       "Prescribed fluid specific enthalpy" 
       annotation (extent=[-140,-20; -100,20]);
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
-      redeclare type SignalType = Medium.MassFraction) 
+      redeclare type SignalType = Medium.MassFraction) if useCompositionInput 
       "Prescribed fluid composition" 
       annotation (extent=[-113,-80; -73,-40]);
   protected 
@@ -662,9 +662,9 @@ with exception of boundary flow rate, do not have an effect.
     if not useCompositionInput then
       X_in_internal = X;
     end if;
-    port.m_flow = -m_flow_in;
-    medium.h = h_in;
-    medium.Xi = X_in[1:Medium.nXi];
+    port.m_flow = -m_flow_in_internal;
+    medium.h = h_in_internal;
+    medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedMassFlowRate_hX;
   
   package BaseClasses 
