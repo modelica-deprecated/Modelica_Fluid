@@ -102,7 +102,7 @@ equation
   connect(userValve.port_b, sink.port)     annotation (points=[74,-30; 80,
         -30],
       style(color=69, rgbcolor={0,127,255}));
-  connect(source.port, pumps.inlet) annotation (points=[-76,-80; -73.2,-80; 
+  connect(source.port, pumps.inlet) annotation (points=[-76,-80; -73.2,-80;
         -73.2,-77.6; -71.4,-77.6], style(color=69, rgbcolor={0,127,255}));
   connect(valveOpening.y, userValve.opening) annotation (points=[85,10; 98,
         10; 98,-12; 66,-12; 66,-22.8],
@@ -125,11 +125,11 @@ equation
         -64.38,-69.28], style(color=74, rgbcolor={0,0,127}));
   connect(pipe.port_a, pumps.outlet)         annotation (points=[-40,-30; -53.2,
         -30; -53.2,-70.84], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe.port_b, reservoir.port[1]) annotation (points=[-22,-30; -4.2,-30; 
+  connect(pipe.port_b, reservoir.port[1]) annotation (points=[-22,-30; -4.2,-30;
         -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
   connect(userValve.port_a, reservoir.port[1]) annotation (points=[58,-30; -4.2,
         -30; -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
-  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22; 
+  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22;
         -2,-22; -2,-15.9; -4.2,-15.9],      style(
       color=69,
       rgbcolor={0,127,255},

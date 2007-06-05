@@ -52,7 +52,7 @@ equation
       style(color=69, rgbcolor={0,127,255}));
   connect(junction.port_2, pipe1.port_a) annotation (points=[41,-20; 50,-20],
       style(color=69, rgbcolor={0,127,255}));
-  connect(pipe2.port_b, source3.port) annotation (points=[30,34; 30,47; 30,60; 
+  connect(pipe2.port_b, source3.port) annotation (points=[30,34; 30,47; 30,60;
         30,60], style(color=69, rgbcolor={0,127,255}));
   connect(pipe2.port_a, junction.port_3) 
     annotation (points=[30,14; 30,-9], style(color=69, rgbcolor={0,127,255}));

@@ -510,7 +510,7 @@ as signal.
 </p>
 </html>"),
         Diagram,
-        Coordsys(grid=[1,1], scale=0), 
+        Coordsys(grid=[1,1], scale=0),
         Icon);
     equation 
       port.m_flow = 0;

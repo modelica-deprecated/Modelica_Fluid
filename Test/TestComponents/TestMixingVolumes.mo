@@ -6,8 +6,7 @@ model TestMixingVolumes
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
-    redeclare package Medium = Medium,
-    initType=Modelica_Fluid.Types.Init.InitialValues) 
+    redeclare package Medium = Medium) 
                  annotation (extent=[-30,-40; -10,-20]);
   
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
@@ -19,8 +18,7 @@ model TestMixingVolumes
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
-    redeclare package Medium = Medium,
-    initType=Modelica_Fluid.Types.Init.InitialValues) 
+    redeclare package Medium = Medium) 
                  annotation (extent=[10,-40; 30,-20]);
   Modelica_Fluid.Sensors.Temperature Tmix_in(
                                          redeclare package Medium = Medium) 
@@ -32,8 +30,7 @@ model TestMixingVolumes
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
-    redeclare package Medium = Medium,
-    initType=Modelica_Fluid.Types.Init.InitialValues) 
+    redeclare package Medium = Medium) 
                  annotation (extent=[-30,10; -10,30]);
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource1(
     m_flow=1,
@@ -44,8 +41,7 @@ model TestMixingVolumes
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
-    redeclare package Medium = Medium,
-    initType=Modelica_Fluid.Types.Init.InitialValues) 
+    redeclare package Medium = Medium) 
                  annotation (extent=[10,10; 30,30]);
   Modelica_Fluid.Sensors.Temperature Tport_in(
                                           redeclare package Medium = Medium) 
@@ -64,7 +60,7 @@ model TestMixingVolumes
   inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[-100,-100; -80,-80]);
 equation 
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-30;
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,-30; 
         9.8,-30],                                     style(color=69, rgbcolor=
           {0,127,255}));
   connect(PortVolume1.port,PortVolume2. port) 
@@ -78,7 +74,7 @@ equation
         20], style(color=69, rgbcolor={0,127,255}));
   connect(FlowSource1.port, Tport_in.port) annotation (points=[-80,20; -50,20;
         -50,30], style(color=69, rgbcolor={0,127,255}));
-  connect(FlowSource2.port, MixingVolume1.port_a) annotation (points=[-80,-30;
+  connect(FlowSource2.port, MixingVolume1.port_a) annotation (points=[-80,-30; 
         -30.2,-30], style(color=69, rgbcolor={0,127,255}));
   connect(FlowSource2.port, Tmix_in.port) annotation (points=[-80,-30; -50,-30;
         -50,-20], style(color=69, rgbcolor={0,127,255}));
