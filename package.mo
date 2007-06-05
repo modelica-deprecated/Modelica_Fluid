@@ -22,7 +22,7 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
  
 <p>
-This is version <b>1.0 Beta 2</b> of the Modelica_Fluid library.
+This is version <b>1.0 Beta 3</b> of the Modelica_Fluid library.
 We expect that the structure and the components of the library do 
 not change or only marginally change for the 1.0 release version.
 For the 1.0 version the documentation will be improved,
@@ -1213,6 +1213,18 @@ ambiguity is removed by rule 2.</i></p>
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
+<h3><font color=\"#008000\">Version 1.0 Beta 3, 2007-06-05</font></h3>
+ 
+<p>
+Changes according to the Modelica Design Meetings since the
+Modelica'2006 conference, especially, improved initialization,
+changed Source components (input connectors must be enabled),
+improved tank component, moved test models from Examples to
+new package Test, many more test models, etc.
+This version is slightly non-backward compatible to version 1.0 Beta 2.
+</p>
+
+
 <h3><font color=\"#008000\">Version 1.0 Beta 2, 2006-08-28</font></h3>
  
 <p>
