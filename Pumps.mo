@@ -2,19 +2,28 @@ package Pumps "Pump components"
   extends Modelica_Fluid.Icons.VariantLibrary;
   model Pump "Centrifugal pump with ideally controlled speed" 
     extends Modelica_Fluid.Pumps.BaseClasses.PartialPump;
-   // import Modelica.SIunits.Conversions.NonSIunits.*;
     parameter Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm 
       N_const =                                                                     N_nom 
-      "Constant rotational speed";
+      "Constant rotational speed" annotation(Dialog(enable = not use_N_input));
+    parameter Boolean use_N_input = false 
+      "Get the rotational speed from the input connector";
     Modelica.Blocks.Interfaces.RealInput N_in(redeclare type SignalType = 
-          Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm) 
+          Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm) if use_N_input 
       "Prescribed rotational speed" 
       annotation (extent=[-36,34; -16,54],   rotation=-90);
+  protected 
+    Modelica.Blocks.Interfaces.RealInput N_in_internal(
+      redeclare type SignalType = 
+          Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm) 
+      "Needed to connect to conditional connector";
   equation 
-    N = N_in "Rotational speed";
-    if cardinality(N_in)==0 then
-      N_in = N_const "Rotational speed provided by parameter";
+    // Connect statement active only if usePressureInput = true
+    connect(N_in, N_in_internal);
+    // Internal connector value when usePressureInput = false
+    if not use_N_input then
+      N_in_internal = N_const;
     end if;
+    N = N_in_internal "Rotational speed";
     annotation (
       Icon(
         Text(extent=[-58,58; -30,38], string="n")),
@@ -64,6 +73,28 @@ package Pumps "Pump components"
 </ul>
 </html>"));
   end PumpShaft;
+
+  model PumpNPSH 
+    "Centrifugal pump with ideally controlled speed and NPSHa computation" 
+    extends Pump(redeclare replaceable package Medium = 
+      Modelica.Media.Interfaces.PartialTwoPhaseMedium);
+    SI.Length NPSHa "Net Positive Suction Head available";
+    Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
+    
+  equation 
+    // NPSHa computation
+    pv = Medium.saturationPressure(fluid.T);
+    NPSHa = (inlet.p-pv)/(d*Modelica.Constants.g_n);
+    annotation (Documentation(info="<html>Same as the Pump model, with added computation of Net Positive Suction Head available. Requires a two-phase medium model.
+</html>", revisions="<html>
+<ul>
+<li><i>30 Jul 2007</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Model added to the Fluid library</li>
+</ul>
+
+</html>"));
+  end PumpNPSH;
   
   package BaseClasses "Base classes for Turbomachinery components" 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
@@ -76,9 +107,6 @@ package Pumps "Pump components"
                      annotation(choicesAllMatching=true);
     Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
         "Fluid properties at the inlet";
-    replaceable package SatMedium = 
-        Modelica.Media.Interfaces.PartialTwoPhaseMedium 
-        "Saturated medium model (required only for NPSH computation)";
     replaceable function flowCharacteristic = 
         PumpCharacteristics.baseFlow 
         "Head vs. q_flow characteristic at nominal speed and density" 
@@ -102,14 +130,13 @@ package Pumps "Pump components"
       annotation(Dialog(group="Characteristics"));
     parameter Medium.Density d_nom = 1000 "Nominal fluid density" 
       annotation(Dialog(group="Characteristics"));
-    parameter Integer Np_nom(min=1) = 1 "Nominal number of pumps in parallel";
+    parameter Integer Np(min=1) = 1 "Number of pumps in parallel";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
-    parameter Boolean checkValve=true "Reverse flow stopped";
+    parameter Boolean checkValve=false "Reverse flow stopped";
     parameter Types.FlowDirection.Temp flowDirection=
                      Types.FlowDirection.Bidirectional 
         "Unidirectional (inlet -> outlet) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
-  //  parameter Boolean computeNPSHa=false "Compute NPSH Available at the inlet";
     parameter Medium.AbsolutePressure pin_start 
         "Guess value for inlet pressure" 
       annotation(Dialog(tab="Initialization"));
@@ -134,7 +161,8 @@ package Pumps "Pump components"
     parameter SI.MassFlowRate m_flow_start = 0 
         "Guess value for mass flow rate (total)" 
       annotation(Dialog(tab="Initialization"));
-    constant SI.Acceleration g=Modelica.Constants.g_n;
+    outer Modelica_Fluid.Ambient ambient "Ambient conditions";
+    parameter SI.Acceleration g=ambient.g;
   //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
   //    "Initialisation option";
     Modelica_Fluid.Interfaces.FluidPort_a inlet(
@@ -161,18 +189,13 @@ package Pumps "Pump components"
     SI.VolumeFlowRate q_flow_single = q_flow/Np 
         "Volume flow rate (single pump)";
     AngularVelocity_rpm N "Shaft rotational speed";
-    Integer Np(min=1) "Number of pumps in parallel";
     SI.Power W_single "Power Consumption (single pump)";
     SI.Power W_tot = W_single*Np "Power Consumption (total)";
     constant SI.Power W_eps=1e-8 
         "Small coefficient to avoid numerical singularities in efficiency computations";
     Real eta "Global Efficiency";
-    // SI.Length NPSHa "Net Positive Suction Head available";
-    // Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
     Real s(start = m_flow_start) 
         "Curvilinear abscissa for the flow curve in parametric form";
-    Modelica.Blocks.Interfaces.IntegerInput in_Np 
-      annotation (extent=[16,34; 36,54], rotation=-90);
   //  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
   //    "Global default options";
     protected 
@@ -182,12 +205,6 @@ package Pumps "Pump components"
        annotation(Evaluate=true, Hide=true);
       
   equation 
-    // Number of pumps in parallel
-    Np = in_Np;
-    if cardinality(in_Np)==0 then
-      in_Np = Np_nom "Number of pumps selected by parameter";
-    end if;
-      
     // Flow equations
     if noEvent(s > 0 or (not checkValve)) then
       // Flow characteristics when check valve is open
@@ -232,18 +249,6 @@ package Pumps "Pump components"
     else
       inlet.H_flow + outlet.H_flow + W_single*Np = 0 "Static energy balance";
     end if;
-      
-    // NPSH computations
-      
-  /*
-  if computeNPSHa then
-    pv=SatMedium.saturationPressure(fluid.T);
-    NPSHa=(inlet.p-pv)/(d*Modelica.Constants.g_n);
-  else
-    pv=0;
-    NPSHa=0;
-  end if;
-*/
       
   /*
 initial equation 
@@ -326,17 +331,16 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
           "Volume flow rate for two operating points (single pump)" 
                                                                   annotation(Dialog);
       input SI.Height head_nom[2] "Pump head for two operating points" annotation(Dialog);
-      protected 
-      constant Real g = Modelica.Constants.g_n;
       /* Linear system to determine the coefficients:
-  head_nom[1]*g = c[1] + q_nom[1]*c[2];
-  head_nom[2]*g = c[1] + q_nom[2]*c[2];
+  head_nom[1] = c[1] + q_nom[1]*c[2];
+  head_nom[2] = c[1] + q_nom[2]*c[2];
   */
-      Real c[2] = Modelica.Math.Matrices.solve([ones(2),q_nom],head_nom*g) 
+      protected 
+      Real c[2] = Modelica.Math.Matrices.solve([ones(2),q_nom],head_nom) 
           "Coefficients of linear head curve";
     algorithm 
-      // Flow equation: head * g = q*c[1] + c[2];
-      head := 1/g * (c[1] + q_flow*c[2]);
+      // Flow equation: head = q*c[1] + c[2];
+      head := c[1] + q_flow*c[2];
     end linearFlow;
       
     function quadraticFlow "Quadratic flow characteristic" 
@@ -346,19 +350,18 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
                                                                     annotation(Dialog);
       input SI.Height head_nom[3] "Pump head for three operating points" annotation(Dialog);
       protected 
-      constant Real g = Modelica.Constants.g_n;
       Real q_nom2[3] = {q_nom[1]^2,q_nom[2]^2, q_nom[3]^2} 
           "Squared nominal flow rates";
       /* Linear system to determine the coefficients:
-  head_nom[1]*g = c[1] + q_nom[1]*c[2] + q_nom[1]^2*c[3];
-  head_nom[2]*g = c[1] + q_nom[2]*c[2] + q_nom[2]^2*c[3];
-  head_nom[3]*g = c[1] + q_nom[3]*c[2] + q_nom[3]^2*c[3];
+  head_nom[1] = c[1] + q_nom[1]*c[2] + q_nom[1]^2*c[3];
+  head_nom[2] = c[1] + q_nom[2]*c[2] + q_nom[2]^2*c[3];
+  head_nom[3] = c[1] + q_nom[3]*c[2] + q_nom[3]^2*c[3];
   */
-      Real c[3] = Modelica.Math.Matrices.solve([ones(3), q_nom, q_nom2],head_nom*g) 
+      Real c[3] = Modelica.Math.Matrices.solve([ones(3), q_nom, q_nom2],head_nom) 
           "Coefficients of quadratic head curve";
     algorithm 
-      // Flow equation: head * g = c[1] + q_flow*c[2] + q_flow^2*c[3];
-      head := 1/g * (c[1] + q_flow*c[2] + q_flow^2*c[3]);
+      // Flow equation: head  = c[1] + q_flow*c[2] + q_flow^2*c[3];
+      head := c[1] + q_flow*c[2] + q_flow^2*c[3];
     end quadraticFlow;
       
     function polynomialFlow "Polynomial flow characteristic" 
@@ -368,21 +371,20 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
                                                                 annotation(Dialog);
       input SI.Height head_nom[:] "Pump head for N operating points" annotation(Dialog);
       protected 
-      constant Real g = Modelica.Constants.g_n;
       Integer N = size(q_nom,1) "Number of nominal operating points";
       Real q_nom_pow[N,N] = {{q_nom[j]^(i-1) for j in 1:N} for i in 1:N} 
           "Rows: different operating points; columns: increasing powers";
       /* Linear system to determine the coefficients (example N=3):
-  head_nom[1]*g = c[1] + q_nom[1]*c[2] + q_nom[1]^2*c[3];
-  head_nom[2]*g = c[1] + q_nom[2]*c[2] + q_nom[2]^2*c[3];
-  head_nom[3]*g = c[1] + q_nom[3]*c[2] + q_nom[3]^2*c[3];
+  head_nom[1] = c[1] + q_nom[1]*c[2] + q_nom[1]^2*c[3];
+  head_nom[2] = c[1] + q_nom[2]*c[2] + q_nom[2]^2*c[3];
+  head_nom[3] = c[1] + q_nom[3]*c[2] + q_nom[3]^2*c[3];
   */
-      Real c[N] = Modelica.Math.Matrices.solve(q_nom_pow,head_nom*g) 
+      Real c[N] = Modelica.Math.Matrices.solve(q_nom_pow,head_nom) 
           "Coefficients of polynomial head curve";
     algorithm 
-      // Flow equation (example N=3): head * g = c[1] + q_flow*c[2] + q_flow^2*c[3];
+      // Flow equation (example N=3): head  = c[1] + q_flow*c[2] + q_flow^2*c[3];
       // Note: the implementation is numerically efficient only for low values of Na
-      head := 1/g * sum(q_flow^(i-1)*c[i] for i in 1:N);
+      head := sum(q_flow^(i-1)*c[i] for i in 1:N);
     end polynomialFlow;
       
     function constantEfficiency "Constant efficiency characteristic" 
@@ -392,6 +394,22 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       eta := eta_nom;
     end constantEfficiency;
       
+    function linearPower "Linear power consumption characteristic" 
+      extends basePower;
+      input SI.VolumeFlowRate q_nom[2] 
+          "Volume flow rate for two operating points (single pump)" annotation(Dialog);
+      input SI.Power W_nom[2] "Power consumption for two operating points"   annotation(Dialog);
+      /* Linear system to determine the coefficients:
+  W_nom[1] = c[1] + q_nom[1]*c[2];
+  W_nom[2] = c[1] + q_nom[2]*c[2];
+  */
+      protected 
+      Real c[2] = Modelica.Math.Matrices.solve([ones(3),q_nom],W_nom) 
+          "Coefficients of linear power consumption curve";
+    algorithm 
+      consumption := c[1] + q_flow*c[2];
+    end linearPower;
+
     function quadraticPower "Quadratic power consumption characteristic" 
       extends basePower;
       input SI.VolumeFlowRate q_nom[3] 
@@ -402,9 +420,9 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       Real q_nom2[3] = {q_nom[1]^2,q_nom[2]^2, q_nom[3]^2} 
           "Squared nominal flow rates";
       /* Linear system to determine the coefficients:
-  W_nom[1]*g = c[1] + q_nom[1]*c[2] + q_nom[1]^2*c[3];
-  W_nom[2]*g = c[1] + q_nom[2]*c[2] + q_nom[2]^2*c[3];
-  W_nom[3]*g = c[1] + q_nom[3]*c[2] + q_nom[3]^2*c[3];
+  W_nom[1] = c[1] + q_nom[1]*c[2] + q_nom[1]^2*c[3];
+  W_nom[2] = c[1] + q_nom[2]*c[2] + q_nom[2]^2*c[3];
+  W_nom[3] = c[1] + q_nom[3]*c[2] + q_nom[3]^2*c[3];
   */
       Real c[3] = Modelica.Math.Matrices.solve([ones(3),q_nom,q_nom2],W_nom) 
           "Coefficients of quadratic power consumption curve";

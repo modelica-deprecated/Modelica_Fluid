@@ -1,4 +1,4 @@
-model TestWaterPumpDefault "Test case for WaterPump" 
+model TestWaterPumpNPSH "Test case for WaterPump" 
   extends Modelica.Icons.Example;
   import PC = Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics;
   replaceable function pumpFlowChar = PC.quadraticFlow(q_nom={0,0.001,0.0015}, head_nom={100,50,0});
@@ -17,12 +17,12 @@ annotation (
     T=ambient.default_T_ambient, 
     usePressureInput=true) 
   annotation (extent=[34,26; 14,46]);
-  Pumps.Pump Pump1(
+  Pumps.PumpNPSH Pump1(
     pin_start=1e5,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     redeclare function flowCharacteristic = pumpFlowChar,
     m_flow_start=1,
-    pout_start=7e5)        annotation (extent=[-66,20; -34,50]);
+    pout_start=7e5)        annotation (extent=[-66,18; -34,48]);
   Modelica.Blocks.Sources.Constant Constant1 
   annotation (extent=[-60,60; -40,80]);
   Modelica_Fluid.ControlValves.ValveLinear Valve(
@@ -42,10 +42,10 @@ equation
         -7,45],     style(color=74, rgbcolor={0,0,127}));
   connect(Valve.port_b, Sink.port)       annotation (points=[2,36; 14,36],
                        style(color=69, rgbcolor={0,127,255}));
-  connect(Valve.port_a, Pump1.outlet)     annotation (points=[-16,36; -26,36;
-        -26,39.8; -40.4,39.8],   style(color=69, rgbcolor={0,127,255}));
-  connect(Pump1.inlet, Source.port) annotation (points=[-62.8,32; -70,32; -70,
-        30; -80,30],           style(color=69, rgbcolor={0,127,255}));
+  connect(Valve.port_a, Pump1.outlet)     annotation (points=[-16,36; -26,36; 
+        -26,37.8; -40.4,37.8],   style(color=69, rgbcolor={0,127,255}));
+  connect(Pump1.inlet, Source.port) annotation (points=[-62.8,30; -80,30],
+                               style(color=69, rgbcolor={0,127,255}));
   connect(Ramp1.y, Sink.p_in)   annotation (points=[25,84; 58,84; 58,42; 36,42],
       style(color=74, rgbcolor={0,0,127}));
-end TestWaterPumpDefault;
+end TestWaterPumpNPSH;
