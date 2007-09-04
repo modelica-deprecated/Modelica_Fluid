@@ -1,7 +1,8 @@
 model TestJunctionVolume 
   extends Modelica.Icons.Example;
   
-  Junctions.JunctionVolume junction(              redeclare package Medium = 
+  Modelica_Fluid.Junctions.JunctionVolume junction(              redeclare 
+      package Medium = 
         Modelica.Media.Air.DryAirNasa, V=20e-6) 
                                             annotation (extent=[20,-30; 40,-10]);
   annotation (Diagram);
@@ -25,15 +26,15 @@ model TestJunctionVolume
     duration=1,
     height=-6.5e5,
     offset=7e5) annotation (extent=[-90,-24; -70,-4]);
-  Pipes.LumpedPipe pipe(redeclare package Medium = 
+  Modelica_Fluid.Pipes.LumpedPipe pipe(redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1)                      annotation (extent=[-12,-30; 8,-10]);
-  Pipes.LumpedPipe pipe1(redeclare package Medium = 
+  Modelica_Fluid.Pipes.LumpedPipe pipe1(redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1)                      annotation (extent=[50,-30; 70,-10]);
-  Pipes.LumpedPipe pipe2(redeclare package Medium = 
+  Modelica_Fluid.Pipes.LumpedPipe pipe2(redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1) 
@@ -53,7 +54,7 @@ equation
       style(color=69, rgbcolor={0,127,255}));
   connect(junction.port_2, pipe1.port_a) annotation (points=[41,-20; 50,-20],
       style(color=69, rgbcolor={0,127,255}));
-  connect(pipe2.port_b, source3.port) annotation (points=[30,34; 30,47; 30,60;
+  connect(pipe2.port_b, source3.port) annotation (points=[30,34; 30,47; 30,60; 
         30,60], style(color=69, rgbcolor={0,127,255}));
   connect(pipe2.port_a, junction.port_3) 
     annotation (points=[30,14; 30,-9], style(color=69, rgbcolor={0,127,255}));

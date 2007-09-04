@@ -12,12 +12,12 @@ annotation (
     T=ambient.default_T_ambient) 
   annotation (extent=[-100,20; -80,40]);
   Modelica_Fluid.Sources.PrescribedBoundary_pTX Sink(
-    redeclare package Medium = Modelica.Media.Water.StandardWater, 
-    p=5e5, 
-    T=ambient.default_T_ambient, 
+    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    p=5e5,
+    T=ambient.default_T_ambient,
     usePressureInput=true) 
   annotation (extent=[34,26; 14,46]);
-  Pumps.PumpNPSH Pump1(
+  Modelica_Fluid.Pumps.PumpNPSH Pump1(
     pin_start=1e5,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     redeclare function flowCharacteristic = pumpFlowChar,
@@ -32,7 +32,7 @@ annotation (
   Modelica.Blocks.Sources.Ramp Ramp1(
     offset=5e5,
     startTime=1,
-    duration=5, 
+    duration=5,
     height=6e5) annotation (extent=[4,74; 24,94]);
   
   inner Modelica_Fluid.Ambient ambient 
@@ -42,7 +42,7 @@ equation
         -7,45],     style(color=74, rgbcolor={0,0,127}));
   connect(Valve.port_b, Sink.port)       annotation (points=[2,36; 14,36],
                        style(color=69, rgbcolor={0,127,255}));
-  connect(Valve.port_a, Pump1.outlet)     annotation (points=[-16,36; -26,36; 
+  connect(Valve.port_a, Pump1.outlet)     annotation (points=[-16,36; -26,36;
         -26,37.8; -40.4,37.8],   style(color=69, rgbcolor={0,127,255}));
   connect(Pump1.inlet, Source.port) annotation (points=[-62.8,30; -80,30],
                                style(color=69, rgbcolor={0,127,255}));
