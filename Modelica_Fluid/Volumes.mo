@@ -3,7 +3,8 @@ package Volumes "Generic volume, tank and other volume type components"
   
     model MixingVolume 
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
-    extends Modelica_Fluid.Interfaces.PartialLumpedVolume(V_lumped=V, Ws_flow=0);
+    extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolume(
+                                                          V_lumped=V, Ws_flow=0);
     parameter SI.Volume V "Volume";
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
       "Thermal port" 
@@ -559,6 +560,148 @@ end Tank;
         "level of inlet/outlet port (height over the tank base)";
     end TankPortData;
     
+      partial model PartialLumpedVolume 
+      "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
+      import Modelica_Fluid.Types;
+        replaceable package Medium = 
+          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+            annotation (choicesAllMatching = true);
+        parameter Types.Init.Temp initType=
+                  Types.Init.NoInit "Initialization option" 
+          annotation(Evaluate=true, Dialog(tab = "Initialization"));
+        parameter Medium.AbsolutePressure p_start = Medium.p_default 
+        "Start value of pressure" 
+          annotation(Dialog(tab = "Initialization"));
+        parameter Boolean use_T_start = true 
+        "= true, use T_start, otherwise h_start" 
+          annotation(Dialog(tab = "Initialization"), Evaluate=true);
+        parameter Medium.Temperature T_start=
+          if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
+        "Start value of temperature" 
+          annotation(Dialog(tab = "Initialization", enable = use_T_start));
+        parameter Medium.SpecificEnthalpy h_start=
+          if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
+        "Start value of specific enthalpy" 
+          annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+        parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+        "Start value of mass fractions m_i/m" 
+          annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+      
+        parameter Types.FlowDirection.Temp flowDirection=Types.FlowDirection.
+            Bidirectional 
+        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+         annotation(Dialog(tab="Advanced"));
+         parameter Boolean allowFlowReversal=flowDirection == Types.FlowDirection.
+            Bidirectional 
+        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+         annotation(Evaluate=true, Hide=true);
+      
+        Modelica_Fluid.Interfaces.FluidPort_a port_a(
+                                      redeclare package Medium = Medium, m_flow(min=
+                if allowFlowReversal then -Modelica.Constants.inf else 0)) 
+        "Fluid inlet port" annotation (extent=[-112,-10; -92,10]);
+        Modelica_Fluid.Interfaces.FluidPort_b port_b(
+                                      redeclare package Medium = Medium, m_flow(max=
+                if allowFlowReversal then +Modelica.Constants.inf else 0)) 
+        "Fluid outlet port" annotation (extent=[90,-10; 110,10]);
+        Medium.BaseProperties medium(
+          preferredMediumStates=true,
+          p(start=p_start),
+          h(start=h_start),
+          T(start=T_start),
+          Xi(start=X_start[1:Medium.nXi]));
+        SI.Energy U "Internal energy of fluid";
+        SI.Mass m "Mass of fluid";
+        SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
+        SI.Volume V_lumped "Volume";
+      
+    protected 
+        SI.HeatFlowRate Qs_flow 
+        "Heat flow across boundaries or energy source/sink";
+        SI.Power Ws_flow "Work flow across boundaries or source term";
+        annotation (
+          Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
+              extent=[-130,-108; 144,-150],
+              style(color=0),
+              string="V=%V")),
+          Documentation(info="<html>
+Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
+<ul>
+<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
+</ul>
+The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
+</html>"),Diagram);
+      
+      equation 
+      // boundary conditions
+        port_a.p = medium.p;
+        port_b.p = medium.p;
+        port_a.H_flow = semiLinear(
+          port_a.m_flow,
+          port_a.h,
+          medium.h);
+        port_b.H_flow = semiLinear(
+          port_b.m_flow,
+          port_b.h,
+          medium.h);
+        port_a.mXi_flow = semiLinear(
+          port_a.m_flow,
+          port_a.Xi,
+          medium.Xi);
+        port_a.mC_flow = semiLinear(
+          port_a.m_flow,
+          port_a.C,
+          port_b.C);
+        port_b.mXi_flow = semiLinear(
+          port_b.m_flow,
+          port_b.Xi,
+          medium.Xi);
+      
+      // Total quantities
+        m = V_lumped*medium.d;
+        mXi = m*medium.Xi;
+        U = m*medium.u;
+      
+      // Mass and energy balance
+        der(m) = port_a.m_flow + port_b.m_flow;
+        der(mXi) = port_a.mXi_flow + port_b.mXi_flow;
+        der(U) = port_a.H_flow + port_b.H_flow + Qs_flow + Ws_flow;
+        zeros(Medium.nC) = port_a.mC_flow+port_b.mC_flow;
+      
+      initial equation 
+      // Initial conditions
+        if initType == Types.Init.NoInit then
+        // no initial equations
+        elseif initType == Types.Init.InitialValues then
+          if not Medium.singleState then
+            medium.p = p_start;
+          end if;
+          if use_T_start then
+            medium.T = T_start;
+          else
+            medium.h = h_start;
+          end if;
+          medium.Xi = X_start[1:Medium.nXi];
+        elseif initType == Types.Init.SteadyState then
+          if not Medium.singleState then
+            der(medium.p) = 0;
+          end if;
+          der(medium.h) = 0;
+          der(medium.Xi) = zeros(Medium.nXi);
+        elseif initType == Types.Init.SteadyStateHydraulic then
+          if not Medium.singleState then
+            der(medium.p) = 0;
+          end if;
+          if use_T_start then
+            medium.T = T_start;
+          else
+            medium.h = h_start;
+          end if;
+          medium.Xi = X_start[1:Medium.nXi];
+        else
+          assert(false, "Unsupported initialization option");
+        end if;
+      end PartialLumpedVolume;
   end BaseClasses;
   annotation (Documentation(info="<html>
  
