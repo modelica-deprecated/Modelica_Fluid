@@ -4,7 +4,7 @@ package PressureLosses
   
 model StaticHead 
     "Models the static head between two ports at different heights" 
-  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+  extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
   parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
   Medium.Density d "Fluid density";
   outer Modelica_Fluid.Ambient ambient "Ambient conditions";
@@ -39,7 +39,7 @@ end StaticHead;
   
 model SimpleGenericOrifice 
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
-      extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+      extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
                 medium_a(p(start=p_a_start), h(start=h_start),
                          T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
                 medium_b(p(start=p_b_start), h(start=h_start),
@@ -128,7 +128,7 @@ end SimpleGenericOrifice;
   
   model WallFrictionAndGravity 
     "Pressure drop in pipe due to wall friction and gravity (for both flow directions)" 
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
                   medium_a(p(start=p_a_start), h(start=h_start),
                            T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
                   medium_b(p(start=p_b_start), h(start=h_start),
@@ -548,7 +548,7 @@ polynomials. The monotonicity is guaranteed using results from:
   
 model PressureDropPipe 
     "Obsolet component (use instead PressureLosses.WallFrictionAndGravity)" 
-  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+  extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
   extends Modelica_Fluid.PressureLosses.BaseClasses.PipeFriction;
   annotation (Icon(
       Rectangle(extent=[-100,60; 100,-60],   style(
@@ -1605,7 +1605,8 @@ Laminar region:
       model BaseModel 
         "Generic pressure drop component with constant turbulent loss factor data and without an icon" 
         
-        extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+        extends 
+          Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
                       medium_a(p(start=p_a_start), h(start=h_start),
                                T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
                       medium_b(p(start=p_b_start), h(start=h_start),
@@ -2808,5 +2809,106 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
       end if;
     end if;
   end PipeFriction;
+
+  partial model PartialTwoPortTransport 
+      "Partial element transporting fluid between two ports without storing mass or energy" 
+      import Modelica.Constants;
+    replaceable package Medium = 
+        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+                                                                         annotation (
+        choicesAllMatching =                                                                            true);
+      
+    //Initialization
+    parameter Medium.AbsolutePressure p_a_start "Guess value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_b_start "Guess value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+        "= true, use T_start, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate=true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then Medium.T_default else Medium.temperature_phX(p_a_start,h_start,X_start) 
+        "Guess value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.specificEnthalpy_pTX(p_a_start, T_start, X_start) else Medium.h_default 
+        "Guess value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+        "Guess value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+   parameter Types.FlowDirection.Temp flowDirection=
+                     Modelica_Fluid.Types.FlowDirection.Bidirectional 
+        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
+      
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(
+                                  redeclare package Medium = Medium,
+                       m_flow(start=0,min=if allowFlowReversal then -Constants.inf else 0)) 
+        "Fluid connector a (positive design flow direction is from port_a to port_b)"
+      annotation (extent=[-110,-10; -90,10]);
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(
+                                  redeclare package Medium = Medium,
+                       m_flow(start=0,max=if allowFlowReversal then +Constants.inf else 0)) 
+        "Fluid connector b (positive design flow direction is from port_a to port_b)"
+      annotation (extent=[110,-10; 90,10]);
+    Medium.BaseProperties medium_a(p(start=p_a_start), h(start=h_start), X(start=X_start)) 
+        "Medium properties in port_a";
+    Medium.BaseProperties medium_b(p(start=p_b_start), h(start=h_start), X(start=X_start)) 
+        "Medium properties in port_b";
+    Medium.MassFlowRate m_flow 
+        "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
+    SI.VolumeFlowRate V_flow_a = port_a.m_flow/medium_a.d 
+        "Volume flow rate near port_a";
+    SI.Pressure dp(start=p_a_start-p_b_start) 
+        "Pressure difference between port_a and port_b";
+      
+    annotation (
+      Coordsys(grid=[1, 1], component=[20, 20]),
+      Diagram,
+      Documentation(info="<html>
+<p>
+This component transports fluid between its two ports, without
+storing mass or energy. Reversal and zero mass flow rate is taken
+care of, for details see definition of built-in operator semiLinear().
+<p>
+When using this partial component, an equation for the momentum
+balance has to be added by specifying a relationship
+between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
+</p>
+</html>"),
+      Icon);
+    protected 
+      parameter Boolean allowFlowReversal=
+       flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
+        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+       annotation(Evaluate=true, Hide=true);
+  equation 
+    // Properties in the ports
+    port_a.p   = medium_a.p;
+    port_a.h   = medium_a.h;
+    port_a.Xi = medium_a.Xi;
+    port_b.p   = medium_b.p;
+    port_b.h   = medium_b.h;
+    port_b.Xi = medium_b.Xi;
+      
+    /* Handle reverse and zero flow */
+    port_a.H_flow   = semiLinear(port_a.m_flow, port_a.h,  port_b.h);
+    port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, port_b.Xi);
+    port_a.mC_flow = semiLinear(port_a.m_flow, port_a.C, port_b.C);
+      
+    /* Energy, mass and substance mass balance */
+    port_a.H_flow + port_b.H_flow = 0;
+    port_a.m_flow + port_b.m_flow = 0;
+    port_a.mXi_flow + port_b.mXi_flow = zeros(Medium.nXi);
+    port_a.mC_flow + port_b.mC_flow = zeros(Medium.nC);
+      
+    // Design direction of mass flow rate
+    m_flow = port_a.m_flow;
+      
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
+      
+  end PartialTwoPortTransport;
   end BaseClasses;
 end PressureLosses;

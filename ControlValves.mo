@@ -64,7 +64,7 @@ The model operating range includes choked flow operation, which takes place for 
 <p>This model must be used with two-phase medium models, to describe the liquid and (possible) two-phase conditions.
 <p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Fl_nom</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by replacing the <tt>FlCharacteristic</tt> function.
 <p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
-
+ 
 </HTML>",
         revisions="<html>
 <ul>
@@ -123,10 +123,10 @@ The model operating range includes choked flow operation, which takes place for 
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid, no phase change, including choked conditions. <p>
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
 <p>This model can be used with gases at moderate to high pressure ratios.</p>
-
+ 
 <p>The product Fk*xt is given by the parameter <tt>Fxt_full</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by replacing the <tt>xtCharacteristic</tt> function.
 <p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
-
+ 
 </HTML>",
       revisions="<html>
 <ul>
@@ -166,7 +166,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
   end ValveCompressible;
   
   model ValveLinear "Valve for water/steam flows with linear pressure drop" 
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
     parameter Types.HydraulicConductance Kv 
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening 
@@ -209,7 +209,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
   end ValveLinear;
   
   model ValveDiscrete "Valve for water/steam flows with linear pressure drop" 
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
     parameter Modelica_Fluid.Types.HydraulicConductance Kv 
       "Hydraulic conductance for open valve (m_flow = Kv*dp)";
     parameter Real Kv_small_rel = 0 
@@ -257,13 +257,14 @@ it is open.
 </html>"),
       Coordsys(grid=[1,1], scale=0));
   end ValveDiscrete;
-  
+
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
     partial model PartialValve "Base model for valves" 
       
-    import Modelica_Fluid.Types.CvTypes;
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(m_flow(start = m_flow_start),
+      import Modelica_Fluid.Types.CvTypes;
+    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
+                                                              m_flow(start = m_flow_start),
           final p_a_start = pin_start, final p_b_start = pout_start);
     parameter Medium.AbsolutePressure pin_start = p_nom 
         "Start value of inlet pressure" 
