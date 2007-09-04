@@ -175,7 +175,7 @@ end SimpleGenericOrifice;
     
     outer Modelica_Fluid.Ambient ambient "Ambient conditions";
     
-    annotation (defaultComponentName="pipe",Icon(
+    annotation (defaultComponentName="pipeFriction",Icon(
         Rectangle(extent=[-100,60; 100,-60],   style(
             color=0,
             gradient=2,
