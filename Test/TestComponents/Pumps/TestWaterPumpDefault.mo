@@ -12,12 +12,12 @@ annotation (
     T=ambient.default_T_ambient) 
   annotation (extent=[-100,20; -80,40]);
   Modelica_Fluid.Sources.PrescribedBoundary_pTX Sink(
-    redeclare package Medium = Modelica.Media.Water.StandardWater, 
-    p=5e5, 
-    T=ambient.default_T_ambient, 
+    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    p=5e5,
+    T=ambient.default_T_ambient,
     usePressureInput=true) 
   annotation (extent=[34,26; 14,46]);
-  Pumps.Pump Pump1(
+  Modelica_Fluid.Pumps.Pump Pump1(
     pin_start=1e5,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     redeclare function flowCharacteristic = pumpFlowChar,
@@ -32,7 +32,7 @@ annotation (
   Modelica.Blocks.Sources.Ramp Ramp1(
     offset=5e5,
     startTime=1,
-    duration=5, 
+    duration=5,
     height=6e5) annotation (extent=[4,74; 24,94]);
   
   inner Modelica_Fluid.Ambient ambient 
