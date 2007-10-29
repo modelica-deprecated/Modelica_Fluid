@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Volumes "Generic volume, tank and other volume type components" 
    extends Modelica_Fluid.Icons.VariantLibrary;
   
@@ -31,6 +32,101 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     Qs_flow = thermalPort.Q_flow;
     end MixingVolume;
   
+  model SweptVolume 
+    "varying cylindric volume depending on the postition of the piston" 
+    extends BaseClasses.PartialLumpedVolume;
+    parameter SI.Area pistonCrossArea "cross sectional area of pistion";
+    parameter SI.Volume clearance "remaining volume at zero piston stroke";
+    annotation (Diagram, Icon(
+        Rectangle(extent=[-44,62; 44,-30], style(
+            pattern=0,
+            thickness=4,
+            fillColor=31,
+            rgbfillColor={170,213,255},
+            fillPattern=1)),
+        Polygon(points=[-40,60; -40,44; -44,44; -44,64; 44,64; 44,44; 40,44; 40,
+              60; -40,60], style(
+            color=10,
+            rgbcolor={95,95,95},
+            smooth=0,
+            fillColor=9,
+            rgbfillColor={135,135,135},
+            fillPattern=8)),
+        Polygon(points=[-44,34; -40,34; -40,-60; -44,-60; -44,34], style(
+            color=10,
+            rgbcolor={95,95,95},
+            smooth=0,
+            fillColor=9,
+            rgbfillColor={135,135,135},
+            fillPattern=8)),
+        Polygon(points=[40,34; 44,34; 44,-60; 40,-60; 40,34], style(
+            color=10,
+            rgbcolor={95,95,95},
+            smooth=0,
+            fillColor=9,
+            rgbfillColor={135,135,135},
+            fillPattern=8)),
+        Rectangle(extent=[-40,-30; 40,-40], style(
+            color=10,
+            rgbcolor={95,95,95},
+            fillColor=9,
+            rgbfillColor={135,135,135},
+            fillPattern=7)),
+        Rectangle(extent=[-6,-40; 6,-92], style(
+            color=10,
+            rgbcolor={95,95,95},
+            fillColor=9,
+            rgbfillColor={135,135,135},
+            fillPattern=7)),
+        Line(points=[-102,0; -70,0; -70,40; -44,40], style(
+            color=31,
+            rgbcolor={170,213,255},
+            smooth=0)),
+        Line(points=[44,40; 70,40; 70,0; 100,0], style(
+            color=31,
+            rgbcolor={170,213,255},
+            smooth=0))),
+      Documentation(info="<html>
+<p align=justify> Mixing volume with varying size. The size of the volume is given by: </p>
+<ul>
+  <li>cross sectional piston area</li>
+  <li>piston stroke given by the flange position s </li>
+  <li>clearance (volume at flang position = 0)</li>
+</ul> 
+ 
+<p align=justify> The flange position have to be equal or greater then zero. Otherwise simulation stops. The force of the flange results from the pressure difference between medium and ambient pressure and the cross sectional piston area. For using the component a top level instance of the ambient model with the inner attribute is needed.</p>
+<p align=justify> The pressure at both fluid ports equals the medium pressure in the volume. No suction nor discharge valve is included in the model.</p>
+<p align=justify>The thermal port is directly connected to the medium. The temperature of the thermal port equals the medium temperature. The heat capacity of the cylinder and the piston is not includes in the model.</p>
+ 
+</html>",
+        revisions="<html>
+<ul>
+<li><i>29 Oct 2007</i>
+    by Carsten Heinrich:<br>
+       Model added to the Fluid library</li>
+</ul>
+</html>"));
+    Modelica.Mechanics.Translational.Interfaces.Flange_b flange 
+      "translation flange for piston" annotation (extent=[-10,-110; 10,-90]);
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
+      "Thermal port" 
+    annotation (extent=[-20,88; 20,108]);
+    outer Modelica_Fluid.Ambient ambient "Ambient conditions";
+    
+  equation 
+    assert(flange.s >= 0, "Piston stroke (given by flange.s) must not be smaller than zero!");
+    
+    // volume size
+    V_lumped = clearance + flange.s * pistonCrossArea;
+    
+    flange.f = (medium.p - ambient.default_p_ambient) * pistonCrossArea;
+    thermalPort.T = medium.T;
+    
+    // energy balances
+    Ws_flow = medium.p * pistonCrossArea * (-der(flange.s));
+    Qs_flow = thermalPort.Q_flow;
+  end SweptVolume;
+
 model OpenTank "Open tank with inlet/outlet ports at the bottom" 
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -58,11 +154,11 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     parameter SI.Diameter pipe_diameters[n_ports] 
       "Inner (hydraulic) diameters of bottom ports (array)" 
      annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)", enable=n_bottomPorts > 0));
-    Modelica_Fluid.Interfaces.FluidPort_a port[n_ports](
-      redeclare package Medium = Medium,
-      m_flow(each start=0),
-      mXi_flow(each start=0)) 
-    annotation (extent=[-12,-109; 8,-89]);
+    Interfaces.FluidPorts_b ports[n_ports](
+    redeclare package Medium = Medium,
+    m_flow(each start=0),
+    mXi_flow(each start=0)) 
+    annotation (extent=[-5,-125; 5,-85], rotation=90);
     
 //Ambient  
     parameter Medium.AbsolutePressure p_ambient=ambient.default_p_ambient 
@@ -117,17 +213,17 @@ equation
     medium.p = p_ambient;
     
   // Mass balances
-    der(m) = sum(port.m_flow);
+    der(m) = sum(ports.m_flow);
     for i in 1:Medium.nXi loop
-      der(mXi[i]) = sum(port[:].mXi_flow[i]);
+      der(mXi[i]) = sum(ports[:].mXi_flow[i]);
     end for;
     
   // Energy balance
     if Medium.singleState then
-      der(U) = sum(port.H_flow);
+      der(U) = sum(ports.H_flow);
                                //Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)
     else
-      der(U) = sum(port.H_flow) - p_ambient*der(V);
+      der(U) = sum(ports.H_flow) - p_ambient*der(V);
     end if;
     assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
     assert(level > 0, "Tank is empty (level = 0), tank model is not designed to allow air flow through ports");
@@ -135,19 +231,19 @@ equation
 //Determine port properties  
     p_static = level*ambient.g*medium.d + p_ambient;
     for i in 1:n_ports loop
-      port[i].H_flow = semiLinear(
-        port[i].m_flow,
-        port[i].h,
+      ports[i].H_flow = semiLinear(
+        ports[i].m_flow,
+        ports[i].h,
         medium.h);
-      port[i].mXi_flow = semiLinear(
-        port[i].m_flow,
-        port[i].Xi,
+      ports[i].mXi_flow = semiLinear(
+        ports[i].m_flow,
+        ports[i].Xi,
         medium.Xi);
       if p_static_at_port then
-        port[i].p = p_static;
+        ports[i].p = p_static;
       else
-       port[i].p = p_static - smooth(2, noEvent(port[i].m_flow^2/(2*medium.d*
-          pipeArea[i]^2)*(if port[i].m_flow < 0 then (1 + zeta_out[i]) else (1
+       ports[i].p = p_static - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
+          pipeArea[i]^2)*(if ports[i].m_flow < 0 then (1 + zeta_out[i]) else (1
            - zeta_in[i]))));
        end if;
     end for;
@@ -230,6 +326,7 @@ Inlet and outlet connections are situated at the bottom of the tank. The followi
 <li>Heat transfer to the environment is neglected</li>
 <li>Kinetic energy of the fluid in the tank is neglected, the cross sectional area of the tank is larger than the cross sectional area of the inlet/outlet by several orders of magnitude</li>
 <li>No air is leaving the tank through the ports, if the liquid level drops below zero the simulation stops.</li>
+<li>No liquid is leaving the tank through the open top, if the liquid level growth over the height the simulation stops.</li>
 </ul>
 <p>By default the port pressure is the pressure just after the outlet (or just before the inlet) in the attached pipe. The hydraulic resistances <tt>zeta_in</tt> and <tt>zeta_out</tt> determine the dissipative pressure drop between tank and port depending on the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume no dissipation at the tank outlet (ideal smooth opening) and total dissipation of kinetic energy at the tank inlet. Larger values are found for sharp edged openings and non-uniform velocity distributions in the pipe. A large selection of possible cases are listed in <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. If the flag <tt>static_pressure_at_port</tt> in the <tt>Advanced</tt> menu is set to true, the port pressure represents the static head at the bottom of the tank. The relationship between pressure drop and mass flow rate must then be provided by the connected component. </p>  
  
@@ -241,6 +338,11 @@ Inlet and outlet connections are situated at the bottom of the tank. The followi
    Implementation based on former tank model.</li>
 <li><i>Apr. 25, 2006</i> by Katrin Pr&ouml;l&szlig; (TUHH):<br>
 Limitation to bottom ports only, added inlet and outlet loss factors.</li>
+<li><i>Oct. 29, 2007</i> by Carsten Heinrich (ILK Dresden):<br>
+Adapted to the new fluid library interfaces: 
+<ul> <li>FluidPorts_b is used instead of FluidPort_b (due to it is defined as an array of ports)</li>
+    <li>Port name changed from port to ports</li></ul>Updated documentation.</li>
+ 
 </ul>
 </html>"),
       Diagram,
@@ -596,11 +698,11 @@ end Tank;
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
          annotation(Evaluate=true, Hide=true);
       
-        Modelica_Fluid.Interfaces.FluidPort_a port_a(
+        Interfaces.FluidStatePort_a port_a(
                                       redeclare package Medium = Medium, m_flow(min=
                 if allowFlowReversal then -Modelica.Constants.inf else 0)) 
         "Fluid inlet port" annotation (extent=[-112,-10; -92,10]);
-        Modelica_Fluid.Interfaces.FluidPort_b port_b(
+        Interfaces.FluidStatePort_b port_b(
                                       redeclare package Medium = Medium, m_flow(max=
                 if allowFlowReversal then +Modelica.Constants.inf else 0)) 
         "Fluid outlet port" annotation (extent=[90,-10; 110,10]);
