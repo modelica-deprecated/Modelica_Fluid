@@ -286,7 +286,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     SI.HeatFlowRate Q_flow_1 "Total heat flow rate of pipe 1";
     SI.HeatFlowRate Q_flow_2 "Total heat flow rate of pipe 2";
     
-    Modelica_Fluid.Pipes.DistributedPipe pipe_1(
+    Modelica_Fluid.Pipes.DistributedPipe_a_v_b pipe_1(
       redeclare package Medium = Medium_1,
       isCircular=false,
       diameter=0,
@@ -309,7 +309,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       eta_nominal=eta_nominal_M1) 
                                annotation (extent=[-40,-60; 20,0]);
     
-    Modelica_Fluid.Pipes.DistributedPipe pipe_2(
+    Modelica_Fluid.Pipes.DistributedPipe_a_v_b pipe_2(
       redeclare package Medium = Medium_2,
       n=n,
       static=static,
@@ -428,10 +428,10 @@ Simple model of a heat exchanger consisting of two pipes and one wall in between
         gradient=2,
         fillColor=42,
         rgbfillColor={213,0,0}));
-    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8;
+    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8; 
           -10,29.5; -9,29.5],                  style(color=42, rgbcolor={191,0,
             0}));
-    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5;
+    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5; 
           -9,-7.75; -10,-7.75; -10,-13.8], style(color=42, rgbcolor={191,0,0}));
   end BasicHX;
 end HeatExchangers;

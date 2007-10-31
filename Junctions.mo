@@ -10,15 +10,15 @@ package Junctions "Junction components"
       "Fluid medium model" 
       annotation (choicesAllMatching=true);
     
-    Modelica_Fluid.Interfaces.FluidPort_b port_1(
-      redeclare package Medium=Medium,
-      m_flow(min=if (portFlowDirection_1==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      max=if (portFlowDirection_1==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+    Modelica_Fluid.Interfaces.FluidPort_b port_1(redeclare package Medium = 
+          Medium, m_flow(min=if (portFlowDirection_1 == PortFlowDirection.Entering) then 
+                  0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_1
+             == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
       annotation (extent=[-120,-10; -100,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_2(
-      redeclare package Medium=Medium,
-      m_flow(min=if (portFlowDirection_2==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      max=if (portFlowDirection_2==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+    Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
+          Medium, m_flow(min=if (portFlowDirection_2 == PortFlowDirection.Entering) then 
+                  0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_2
+             == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
       annotation (extent=[100,-10; 120,10]);
     Modelica_Fluid.Interfaces.FluidPort_b port_3(
       redeclare package Medium=Medium,
@@ -92,7 +92,8 @@ package Junctions "Junction components"
             rgbcolor={0,127,255},
             gradient=1,
             fillColor=69,
-            rgbfillColor={0,127,255}))));
+            rgbfillColor={0,127,255}))),
+      Diagram);
   initial equation 
     // Initial conditions
     if initType == Types.Init.NoInit then
@@ -366,4 +367,146 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     port_a.Q_flow + ratio*port_b.Q_flow = 0;
     port_b.T=port_a.T;
   end HeatFlowRatio;
+  
+  model GenericJunction 
+    "Splitting/joining component with balances for a dynamic control volume" 
+    import Modelica_Fluid.Types;
+    import Modelica_Fluid.Types.PortFlowDirection;
+    import Modelica_Fluid.Types.ModelStructure;
+    parameter Integer n_a=1;
+    parameter Integer n_b=1;
+    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+      "Fluid medium model" 
+        annotation (choicesAllMatching=true);
+    parameter SI.Volume V "Volume";
+    parameter SI.Pressure dp_nom "nominal (linear) pressure drop";
+    parameter SI.MassFlowRate mflow_nom "nominal mass flow rate";
+    
+    SI.InternalEnergy U "Internal energy";
+    SI.Mass m "Total mass";
+    SI.Mass[Medium.nXi] mXi "Independent masses";
+    
+    Interfaces.FluidStatePorts_a[
+                            n_a] ports_a(
+      redeclare each package Medium=Medium,
+      m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
+      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[-100,40;
+          -80,-40]);
+    Interfaces.FluidStatePorts_b[
+                            n_b] ports_b(
+      redeclare each package Medium=Medium,
+      m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
+      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[80,-40;
+          100,40]);
+    Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
+    Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
+    
+    parameter Types.Init.Temp initType=Types.Init.NoInit 
+      "Initialization option" 
+      annotation(Evaluate=true,Dialog(tab="Initialization"));
+    parameter Medium.AbsolutePressure p_start "Start value of pressure" 
+      annotation(Dialog(tab="Initialization"));
+    parameter Boolean use_T_start=true "=true, use T_start, otherwise h_start" 
+      annotation(Dialog(tab="Initialization"),Evaluate=true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
+      "Start value of temperature" 
+      annotation(Dialog(tab="Initialization",enable=use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.specificEnthalpy_pTX(p_start,T_start,X_start) else Medium.h_default 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab="Initialization",enable=not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
+    
+    parameter PortFlowDirection.Temp portFlowDirection=PortFlowDirection.Bidirectional 
+      "Allowed flow direction for ports" 
+     annotation(Dialog(tab="Advanced"));
+    parameter ModelStructure.Temp modelStructure=ModelStructure.avb annotation(Evaluate=true);
+    
+    annotation (Icon(
+        Ellipse(extent=[-9,10; 11,-10],   style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0})),
+        Ellipse(extent=[-80,80; 80,-80], style(
+            color=10,
+            rgbcolor={135,135,135},
+            gradient=3,
+            fillColor=10,
+            rgbfillColor={135,135,135})),
+        Ellipse(extent=[-73,73; 73,-73], style(
+            color=10,
+            rgbcolor={135,135,135},
+            gradient=3,
+            fillColor=69,
+            rgbfillColor={0,128,255})),
+        Ellipse(extent=[-10,10; 10,-10],  style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0}))),
+      Coordsys(grid=[1,1]),
+      Diagram);
+  initial equation 
+    // Initial conditions
+    if initType == Types.Init.NoInit then
+      // no initial equations
+    elseif initType == Types.Init.InitialValues then
+      medium.p = p_start;
+      medium.h = h_start;
+    elseif initType == Types.Init.SteadyState then
+      der(medium.p) = 0;
+      der(medium.h) = 0;
+    elseif initType == Types.Init.SteadyStateHydraulic then
+      der(medium.p) = 0;
+      medium.h = h_start;
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
+    
+  equation 
+    sum(ports_a.m_flow)+sum(ports_b.m_flow)=der(m) "Mass balance";
+    for i in 1:Medium.nXi loop
+      sum(ports_a.mXi_flow[i])+sum(ports_b.mXi_flow[i]) = der(mXi[i]);
+    end for;
+    for i in 1:Medium.nC loop
+      sum(ports_a.mC_flow[i])+sum(ports_b.mC_flow[i]) = 0;
+    end for;
+    sum(ports_a.H_flow) + sum(ports_b.H_flow) = der(U) "Energy balance";
+    
+  for i in 1:n_a loop
+      ports_a[i].H_flow = semiLinear(ports_a[i].m_flow, ports_a[i].h, medium.h) 
+        "Energy balance";
+      ports_a[i].mXi_flow = semiLinear(ports_a[i].m_flow, ports_a[i].Xi, medium.Xi) 
+        "Component mass balances";
+      ports_a[i].mC_flow = semiLinear(ports_a[i].m_flow, ports_a[i].C, C) 
+        "Trace substance mass balances";
+  end for;
+  for i in 1:n_b loop
+      ports_b[i].H_flow = semiLinear(ports_b[i].m_flow, ports_b[i].h, medium.h) 
+        "Energy balance";
+      ports_b[i].mXi_flow = semiLinear(ports_b[i].m_flow, ports_b[i].Xi, medium.Xi) 
+        "Component mass balances";
+      ports_b[i].mC_flow = semiLinear(ports_b[i].m_flow, ports_b[i].C, C) 
+        "Trace substance mass balances";
+  end for;
+    if modelStructure==ModelStructure.avb or modelStructure == ModelStructure.av_b then
+      ports_a.p=fill(medium.p, n_a);
+    else
+      ports_a.p-fill(medium.p,n_a) = ports_a.m_flow*dp_nom/mflow_nom;
+    end if;
+    if modelStructure==ModelStructure.avb or modelStructure==ModelStructure.a_vb then
+      ports_b.p=fill(medium.p,n_b);
+    else
+      ports_b.p-fill(medium.p,n_b)=ports_b.m_flow*dp_nom/mflow_nom;
+    end if;
+    
+    U=m*medium.u;
+    mXi=m*medium.Xi;
+    m=medium.d*V;
+    
+  end GenericJunction;
 end Junctions;
