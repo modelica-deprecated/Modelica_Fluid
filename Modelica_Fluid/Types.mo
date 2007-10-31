@@ -243,4 +243,27 @@ Integer type that can have the following values
             "Bidirectional (flow reversal possible)"));
     end Temp;
   end PortFlowDirection;
+  
+  package ModelStructure 
+    extends Modelica.Icons.Enumeration;
+    constant Integer a_v_b=1 
+      "port_a - flow model - volume - flow model - port_b";
+    constant Integer av_b=2 "port_a - volume - flow model - port_b";
+    constant Integer a_vb=3 "port_a - flow model - volume - port_b";
+    constant Integer avb=4 "port_a - volume - port_b";
+    
+    type Temp 
+      "Temporary type with choices for menus (until enumerations are available)" 
+      extends Modelica.Icons.TypeInteger(min=1, max=4);
+      annotation (Evaluate=true, choices(
+          choice=Modelica_Fluid.Types.ModelStructure.a_v_b 
+            "port_a - flow model - volume - flow model - port_b",
+          choice=Modelica_Fluid.Types.ModelStructure.av_b 
+            "port_a - volume - flow model - port_b",
+          choice=Modelica_Fluid.Types.ModelStructure.a_vb 
+            "port_a - flow model - volume - port_b",
+          choice=Modelica_Fluid.Types.ModelStructure.avb 
+            "port_a - volume - port_b"));
+    end Temp;
+  end ModelStructure;
 end Types;
