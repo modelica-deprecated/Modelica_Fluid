@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test;
 package TestOverdeterminedSteadyStateInit 
   "Contains test cases to test overdetermined systems of initial equations" 
   model HeatingSystem "Simple model of a heating system" 
@@ -88,9 +89,11 @@ package TestOverdeterminedSteadyStateInit
     Modelica.Blocks.Interfaces.RealOutput coldWaterTemperature(redeclare type 
         SignalType = Modelica.SIunits.Temperature) 
       annotation (extent=[88,-78; 108,-58]);
-    Sensors.Temperature sensor_T_1(redeclare package Medium = Medium) 
+    Modelica_Fluid.Sensors.TemperatureOnePort sensor_T_1(
+                                   redeclare package Medium = Medium) 
       annotation (extent=[56,-56; 36,-36]);
-    Sensors.Temperature sensor_T_2(redeclare package Medium = Medium) 
+    Modelica_Fluid.Sensors.TemperatureOnePort sensor_T_2(
+                                   redeclare package Medium = Medium) 
       annotation (extent=[-16,-56; -36,-36]);
     Modelica.Blocks.Interfaces.RealOutput tankLevel(redeclare type SignalType 
         = Modelica.SIunits.Height) annotation (extent=[90,60; 110,80]);
@@ -149,7 +152,7 @@ Initial equations with initial values for the states close to the steady state a
 The simulation initializes and runs for 6000 seconds without problems.
 </html>"));
   equation 
-    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10;
+    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10; 
           -0.8,10], style(color=74, rgbcolor={0,0,127}));
   end Test1;
   
