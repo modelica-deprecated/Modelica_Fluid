@@ -68,19 +68,6 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     port_a(m_flow(start=-0.6)),
     show_Re=true)     annotation (extent=[0,10; 20,30]);
-  Modelica_Fluid.PressureLosses.PressureDropPipe pressureDropPipe(
-    redeclare package Medium = Medium,
-    frictionType=Modelica_Fluid.Types.FrictionTypes.DetailedFriction,
-    length=1,
-    diameter=0.1,
-    roughness=roughness,
-    port_a(m_flow(start=-0.6))) 
-                         annotation (extent=[0,-80; 20,-60]);
-  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p5(
-    redeclare package Medium = Medium,
-    p=1.0e5,
-    T=Modelica.SIunits.Conversions.from_degC(80)) 
-    annotation (extent=[60,-80; 40,-60]);
   Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p3(
     redeclare package Medium = Medium,
     p=1.0e5,
@@ -122,12 +109,6 @@ equation
   connect(ambient_a.port, pipe2.port_a) 
                                       annotation (points=[-20,50; -12,50; -12,
         20; 0,20],   style(color=69, rgbcolor={0,127,255}));
-  connect(pressureDropPipe.port_b,ambient_p5. port) 
-    annotation (points=[20,-70; 40,-70],
-                                      style(color=69, rgbcolor={0,127,255}));
-  connect(pressureDropPipe.port_a, ambient_a.port) 
-                                                  annotation (points=[0,-70;
-        -12,-70; -12,50; -20,50],style(color=69, rgbcolor={0,127,255}));
   connect(pipe3.port_b,ambient_p3. port) 
     annotation (points=[20,-10; 40,-10],
                                       style(color=69, rgbcolor={0,127,255}));

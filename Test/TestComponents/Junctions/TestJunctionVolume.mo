@@ -3,7 +3,9 @@ model TestJunctionVolume
   
   Modelica_Fluid.Junctions.JunctionVolume junction(              redeclare 
       package Medium = 
-        Modelica.Media.Air.DryAirNasa, V=20e-6) 
+        Modelica.Media.Air.DryAirNasa, V=20e-6, 
+    p_start=1e5, 
+    initType=Modelica_Fluid.Types.Init.InitialValues) 
                                             annotation (extent=[20,-30; 40,-10]);
   annotation (Diagram);
   Modelica_Fluid.Sources.FixedBoundary_pTX source2(
@@ -26,15 +28,18 @@ model TestJunctionVolume
     duration=1,
     height=-6.5e5,
     offset=7e5) annotation (extent=[-90,-24; -70,-4]);
-  Modelica_Fluid.Pipes.LumpedPipe pipe(redeclare package Medium = 
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(redeclare package 
+      Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1)                      annotation (extent=[-12,-30; 8,-10]);
-  Modelica_Fluid.Pipes.LumpedPipe pipe1(redeclare package Medium = 
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(redeclare package 
+      Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1)                      annotation (extent=[50,-30; 70,-10]);
-  Modelica_Fluid.Pipes.LumpedPipe pipe2(redeclare package Medium = 
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(redeclare package 
+      Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1) 

@@ -1,4 +1,3 @@
-within Modelica_Fluid;
 package Volumes "Generic volume, tank and other volume type components" 
    extends Modelica_Fluid.Icons.VariantLibrary;
   
@@ -87,17 +86,16 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
             rgbcolor={170,213,255},
             smooth=0))),
       Documentation(info="<html>
-<p align=justify> Mixing volume with varying size. The size of the volume is given by: </p>
+<p> Mixing volume with varying size. The size of the volume is given by:</p>
 <ul>
   <li>cross sectional piston area</li>
-  <li>piston stroke given by the flange position s </li>
+  <li>piston stroke given by the flange position s</li>
   <li>clearance (volume at flang position = 0)</li>
 </ul> 
  
-<p align=justify> The flange position have to be equal or greater then zero. Otherwise simulation stops. The force of the flange results from the pressure difference between medium and ambient pressure and the cross sectional piston area. For using the component a top level instance of the ambient model with the inner attribute is needed.</p>
-<p align=justify> The pressure at both fluid ports equals the medium pressure in the volume. No suction nor discharge valve is included in the model.</p>
-<p align=justify>The thermal port is directly connected to the medium. The temperature of the thermal port equals the medium temperature. The heat capacity of the cylinder and the piston is not includes in the model.</p>
- 
+<p> The flange position has to be equal or greater than zero. Otherwise the simulation stops. The force of the flange results from the pressure difference between medium and ambient pressure and the cross sectional piston area. For using the component, a top level instance of the ambient model with the inner attribute is needed.</p>
+<p> The pressure at both fluid ports equals the medium pressure in the volume. No suction nor discharge valve is included in the model.</p>
+<p>The thermal port is directly connected to the medium. The temperature of the thermal port equals the medium temperature. The heat capacity of the cylinder and the piston are not includes in the model.</p>
 </html>",
         revisions="<html>
 <ul>
@@ -126,7 +124,7 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     Ws_flow = medium.p * pistonCrossArea * (-der(flange.s));
     Qs_flow = thermalPort.Q_flow;
   end SweptVolume;
-
+  
 model OpenTank "Open tank with inlet/outlet ports at the bottom" 
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
