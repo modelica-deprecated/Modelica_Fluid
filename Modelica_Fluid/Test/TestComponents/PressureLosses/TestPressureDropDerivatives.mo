@@ -7,28 +7,31 @@ model TestPressureDropDerivatives
   parameter QuadraticTurbulent.LossFactorData data=
                   QuadraticTurbulent.LossFactorData.suddenExpansion(D_a, D_b) 
     "Loss factors for both flow directions";
-  parameter Real dp_small = 0.1;
+  parameter SI.Pressure dp_small = 0.1;
   
-  Real d_a;
-  Real d_b;
-  Real eta_a;
-  Real eta_b;
-  Real dp;
-  Real m_flow1;
-  Real m_flow2;
+  SI.Density d_a;
+  SI.Density d_b;
+  SI.DynamicViscosity eta_a;
+  SI.DynamicViscosity eta_b;
+  SI.Pressure dp;
+  SI.MassFlowRate m_flow1;
+  SI.MassFlowRate m_flow2;
   Real der_m_flow1;
-  // Real der_m_flow2;
+protected 
+  constant Real t2p=1 "dummy unit constant";
+  constant Real t2d=1 "dummy unit constant";
+  constant Real d2eta=1 "dummy unit constant";
   
   annotation (experiment(StopTime=3), experimentSetupOutput,
     Documentation(info="<html>
  
 </html>"));
 equation 
-  dp = time - 1;
-  d_a = 0.1 + time;
-  d_b = 0.2 + 0.5*time;
-  eta_a = 0.1*d_a;
-  eta_b = 0.4*d_b;
+  dp = t2p*time - 1;
+  d_a = 0.1 + t2d*time;
+  d_b = 0.2 + 0.5*t2d*time;
+  eta_a = 0.1*d2eta*d_a;
+  eta_b = 0.4*d2eta*d_b;
   
   m_flow1 = QuadraticTurbulent.massFlowRate_dp(dp, d_a, d_b, data, dp_small);
   m_flow2 = QuadraticTurbulent.massFlowRate_dp_and_Re(dp, d_a, d_b, eta_a, eta_b, data);
