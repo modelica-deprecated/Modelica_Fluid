@@ -126,7 +126,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-114,210; -134,230]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume2(
+    Modelica_Fluid.Volumes.PortVolume PortVolume2(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-190,210; -170,230]);
@@ -135,7 +135,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       m_flow_small=0) 
       annotation (extent=[112,210; 132,230]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume8(
+    Modelica_Fluid.Volumes.PortVolume PortVolume8(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,210; 170,230]);
@@ -146,7 +146,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-116,-240; -96,-260], rotation=180);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume3(
+    Modelica_Fluid.Volumes.PortVolume PortVolume3(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-190,-260; -170,-240]);
@@ -164,7 +164,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-170,-66; -190,-46],  rotation=90);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume1(
+    Modelica_Fluid.Volumes.PortVolume PortVolume1(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-190,60; -170,80]);
@@ -187,11 +187,11 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[170,-10; 150,-30],    rotation=270);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume6(
+    Modelica_Fluid.Volumes.PortVolume PortVolume6(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,-258; 170,-238]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume7(
+    Modelica_Fluid.Volumes.PortVolume PortVolume7(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,50; 170,70]);
@@ -209,7 +209,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[2,-210; -18,-190],    rotation=90);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume4(
+    Modelica_Fluid.Volumes.PortVolume PortVolume4(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-38,-260; -18,-240]);
@@ -225,7 +225,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[42,-240; 22,-260],    rotation=180);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume5(
+    Modelica_Fluid.Volumes.PortVolume PortVolume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[50,-260; 70,-240]);

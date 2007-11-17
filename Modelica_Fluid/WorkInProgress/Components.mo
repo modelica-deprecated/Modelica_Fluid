@@ -201,7 +201,7 @@ to build up more detailed models from the basic components.
       length=length,
       height_ab=height_ab) 
                          annotation (extent=[-10,-10; 10,10]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume volume1(
+    Modelica_Fluid.Volumes.PortVolume volume1(
       redeclare package Medium = Medium,
       p_start=p_a_start,
       use_T_start=use_T_start,
@@ -211,7 +211,7 @@ to build up more detailed models from the basic components.
       V=V/2,
       initType=initVolume1) 
       annotation (extent=[-70,-10; -50,10]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume volume2(
+    Modelica_Fluid.Volumes.PortVolume volume2(
       redeclare package Medium = Medium,
       p_start=p_b_start,
       use_T_start=use_T_start,

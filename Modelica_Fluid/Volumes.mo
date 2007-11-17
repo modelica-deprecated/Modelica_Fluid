@@ -1,4 +1,119 @@
 package Volumes "Generic volume, tank and other volume type components" 
+    model PortVolume "Volume in a connection point" 
+    
+    annotation (
+      Icon(
+        Ellipse(extent=[-100,100; 100,-100], style(
+            color=0,
+            rgbcolor={0,0,0},
+            gradient=3,
+            fillColor=68,
+            rgbfillColor={170,213,255})),
+        Text(extent=[-144,178; 146,116], string="%name"),
+        Text(
+          extent=[-130,-108; 144,-150],
+          style(color=0),
+          string="V=%V")),
+      Documentation(info="<html>
+Ideally mixed volume of constant size with two fluid ports and one medium model. The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. The thermal port temperature is equal to the medium temperature.
+</html>"),
+      Diagram);
+    
+      replaceable package Medium = 
+        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+          annotation (choicesAllMatching = true);
+      parameter SI.Volume V "Volume";
+      parameter Types.Init.Temp initType=
+                Types.Init.NoInit "Initialization option" 
+        annotation(Evaluate=true, Dialog(tab = "Initialization"));
+      parameter Medium.AbsolutePressure p_start = Medium.p_default 
+      "Start value of pressure" 
+        annotation(Dialog(tab = "Initialization"));
+      parameter Boolean use_T_start = true 
+      "= true, use T_start, otherwise h_start" 
+        annotation(Dialog(tab = "Initialization"), Evaluate=true);
+      parameter Medium.Temperature T_start=
+        if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
+      "Start value of temperature" 
+        annotation(Dialog(tab = "Initialization", enable = use_T_start));
+      parameter Medium.SpecificEnthalpy h_start=
+        if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
+      "Start value of specific enthalpy" 
+        annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+      parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+        annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    
+      Interfaces.FluidStatePort_a port(redeclare package Medium = Medium) 
+      "Port inside the volume" 
+                         annotation (extent=[-10,-10; 10,10]);
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
+      "Thermal port" 
+      annotation (extent=[-20,88; 20,108]);
+    
+      Medium.BaseProperties medium(
+        preferredMediumStates=true,
+        p(start=p_start),
+        h(start=h_start),
+        T(start=T_start),
+        Xi(start=X_start[1:Medium.nXi]));
+      SI.Energy U "Internal energy of fluid";
+      SI.Mass m "Mass of fluid";
+      SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
+    
+    equation 
+     thermalPort.T = medium.T;
+    
+    // boundary conditions
+      port.p  = medium.p;
+      port.h  = medium.h;
+      port.Xi = medium.Xi;
+    
+    // Total quantities
+      m   = V*medium.d;
+      mXi = m*medium.Xi;
+      U   = m*medium.u;
+    
+    // Mass and energy balance
+      der(m) = port.m_flow;
+      der(mXi) = port.mXi_flow;
+      der(U) = port.H_flow + thermalPort.Q_flow;
+      zeros(Medium.nC) = port.mC_flow;
+    
+    initial equation 
+    // Initial conditions
+      if initType == Types.Init.NoInit then
+      // no initial equations
+      elseif initType == Types.Init.InitialValues then
+        if not Medium.singleState then
+          medium.p = p_start;
+        end if;
+        if use_T_start then
+          medium.T = T_start;
+        else
+          medium.h = h_start;
+        end if;
+        medium.Xi = X_start[1:Medium.nXi];
+      elseif initType == Types.Init.SteadyState then
+        if not Medium.singleState then
+          der(medium.p) = 0;
+        end if;
+        der(medium.h) = 0;
+        der(medium.Xi) = zeros(Medium.nXi);
+      elseif initType == Types.Init.SteadyStateHydraulic then
+        if not Medium.singleState then
+          der(medium.p) = 0;
+        end if;
+        if use_T_start then
+          medium.T = T_start;
+        else
+          medium.h = h_start;
+        end if;
+        medium.Xi = X_start[1:Medium.nXi];
+      else
+        assert(false, "Unsupported initialization option");
+      end if;
+    end PortVolume;
    extends Modelica_Fluid.Icons.VariantLibrary;
   
     model MixingVolume 

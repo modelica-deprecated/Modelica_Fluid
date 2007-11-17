@@ -44,14 +44,15 @@ package Interfaces
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" annotation (choicesAllMatching=true);
     
-    Medium.AbsolutePressure p "Pressure in the connection point";
+    Medium.AbsolutePressure p "Pressure in the connection point" annotation(Hide=true);
     flow Medium.MassFlowRate m_flow 
-      "Mass flow rate from the connection point into the component";
+      "Mass flow rate from the connection point into the component" annotation(Hide=true);
     
     Medium.SpecificEnthalpy h 
-      "Specific mixing enthalpy in the connection point";
+      "Specific mixing enthalpy in the connection point"                         annotation(Hide=true);
     flow Medium.EnthalpyFlowRate H_flow 
-      "Enthalpy flow rate into the component (if m_flow > 0, H_flow = m_flow*h)";
+      "Enthalpy flow rate into the component (if m_flow > 0, H_flow = m_flow*h)"
+                                                                                 annotation(Hide=true);
     
     Medium.MassFraction Xi[Medium.nXi] 
       "Independent mixture mass fractions m_i/m in the connection point";
@@ -98,13 +99,23 @@ package Interfaces
   connector FluidStatePort_a 
     "Fluid connector at design inlet with potential pressure state" 
     extends FluidPort_a;
+    
     annotation (defaultComponentName="port_a",
-                Diagram(       Text(extent=[-150,110; 150,50],   string="%name")),
-         Icon(Ellipse(extent=[-20,20; 20,-20], style(
+                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=69,
+            rgbfillColor={0,127,255})),
+                               Text(extent=[-150,110; 150,50],   string="%name")),
+         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
+              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
+              fillColor=69)),
+             Ellipse(extent=[-20,20; 20,-20], style(
             color=0,
             rgbcolor={0,0,0},
             fillColor=0,
             rgbfillColor={0,0,0}))));
+    
   end FluidStatePort_a;
   
   connector FluidStatePort_b 
@@ -277,7 +288,21 @@ package Interfaces
         scale=0.2));
   end FluidStatePorts_b;
   
-  
-  
-  
+  model MediumProperties 
+    "Properties p,h,Xi,T,d of a medium as function of the port properties" 
+    replaceable package Medium = 
+        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
+    
+    input Medium.AbsolutePressure p "Absolute pressure of medium";
+    Medium.Temperature T "Temperature of medium";
+    Medium.Density d "Density of medium";
+    input Medium.SpecificEnthalpy h "Specific enthalpy of medium";
+    Medium.MassFraction[Medium.nXi] Xi 
+      "Mass fractions (= (component mass)/total mass  m_i/m)";
+    Medium.ThermodynamicState state = Medium.setState_phX(p,h,Xi);
+  equation 
+    T = Medium.temperature(state);
+    d = Medium.density(state);
+  end MediumProperties;
 end Interfaces;

@@ -254,9 +254,14 @@ package Junctions "Junction components"
     port_1.mC_flow + port_2.mC_flow + port_3.mC_flow = zeros(Medium.nC) 
       "Trace substance mass balances";
     
-    port_1.H_flow = semiLinear(port_1.m_flow, port_1.h,medium.h);
-    port_2.H_flow = semiLinear(port_2.m_flow, port_2.h, medium.h);
-    port_3.H_flow = semiLinear(port_3.m_flow, port_3.h, medium.h);
+  /*
+  port_1.H_flow = semiLinear(port_1.m_flow, port_1.h,medium.h);
+  port_2.H_flow = semiLinear(port_2.m_flow, port_2.h, medium.h);
+  port_3.H_flow = semiLinear(port_3.m_flow, port_3.h, medium.h);
+*/
+    port_1.h = medium.h;
+    port_2.h = medium.h;
+    port_3.h = medium.h;
     
     port_1.mXi_flow = semiLinear(port_1.m_flow, port_1.Xi, medium.Xi);
     port_2.mXi_flow = semiLinear(port_2.m_flow, port_2.Xi, medium.Xi);

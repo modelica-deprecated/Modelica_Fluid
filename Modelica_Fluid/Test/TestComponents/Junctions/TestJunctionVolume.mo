@@ -29,22 +29,21 @@ model TestJunctionVolume
     duration=1,
     height=-6.5e5,
     offset=7e5) annotation (extent=[-90,-24; -70,-4]);
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(redeclare package 
-      Medium = 
-        Modelica.Media.Air.DryAirNasa,
-    length=1,
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
+    redeclare package Medium = Modelica.Media.Air.DryAirNasa, 
+    length=1, 
     diameter=0.1)                      annotation (extent=[-12,-30; 8,-10]);
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(redeclare package 
-      Medium = 
-        Modelica.Media.Air.DryAirNasa,
-    length=1,
-    diameter=0.1)                      annotation (extent=[50,-30; 70,-10]);
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(redeclare package 
       Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
+    diameter=0.1)                      annotation (extent=[70,-30; 50,-10]);
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe3(redeclare package 
+      Medium = 
+        Modelica.Media.Air.DryAirNasa,
+    length=1,
     diameter=0.1) 
-    annotation (extent=[20,14; 40,34], rotation=90);
+    annotation (extent=[20,34; 40,14], rotation=90);
 equation 
   connect(ramp.y, source1.p_in) annotation (points=[-69,-14; -42,-14], style(
       color=74,
@@ -52,16 +51,17 @@ equation
       gradient=2,
       fillColor=69,
       rgbfillColor={0,128,255}));
-  connect(source1.port, pipe.port_a) annotation (points=[-20,-20; -12,-20],
+  connect(source1.port, pipe1.port_a) 
+                                     annotation (points=[-20,-20; -12,-20],
       style(color=69, rgbcolor={0,127,255}));
-  connect(pipe.port_b, junction.port_1) 
+  connect(pipe1.port_b, junction.port_1) 
     annotation (points=[8,-20; 19,-20], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe1.port_b, source2.port) annotation (points=[70,-20; 80,-20],
+  connect(pipe3.port_a, source3.port) annotation (points=[30,34; 30,47; 30,60; 30,60], 
       style(color=69, rgbcolor={0,127,255}));
-  connect(junction.port_2, pipe1.port_a) annotation (points=[41,-20; 50,-20],
-      style(color=69, rgbcolor={0,127,255}));
-  connect(pipe2.port_b, source3.port) annotation (points=[30,34; 30,47; 30,60; 
-        30,60], style(color=69, rgbcolor={0,127,255}));
-  connect(pipe2.port_a, junction.port_3) 
+  connect(pipe3.port_b, junction.port_3)
     annotation (points=[30,14; 30,-9], style(color=69, rgbcolor={0,127,255}));
+  connect(pipe2.port_b, junction.port_2) annotation (points=[50,-20; 41,-20], 
+      style(color=69, rgbcolor={0,127,255}));
+  connect(pipe2.port_a, source2.port) annotation (points=[70,-20; 80,-20], 
+      style(color=69, rgbcolor={0,127,255}));
 end TestJunctionVolume;

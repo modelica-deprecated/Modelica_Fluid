@@ -279,7 +279,7 @@ with exception of boundary pressure, do not have an effect.
       X_in_internal = X;
     end if;
     medium.p = p_in_internal;
-    medium.T = T_in_internal;
+    medium.h = Medium.specificEnthalpy(Medium.setState_pTX(p_in_internal, T_in_internal, medium.Xi));
     medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedBoundary_pTX;
   
@@ -680,7 +680,8 @@ with exception of boundary flow rate, do not have an effect.
                      Types.SourceFlowDirection.Bidirectional 
         "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
       
-    Medium.BaseProperties medium "Medium in the source";
+    Modelica_Fluid.Interfaces.MediumProperties medium(redeclare package Medium=Medium) 
+        "Medium in the source";
     Modelica_Fluid.Interfaces.FluidPort_b port(
                                 redeclare package Medium = Medium,
                      m_flow(max=if flowDirection==Types.SourceFlowDirection.OutOfPort then 0 else 
@@ -688,11 +689,13 @@ with exception of boundary flow rate, do not have an effect.
                             min=if flowDirection==Types.SourceFlowDirection.InToPort then 0 else 
                                      -Constants.inf)) 
       annotation (extent=[90,-10; 110,10],    rotation=0);
+    Medium.MassFlowRate m_flow "Mass flow rate from the source to the port";
       
   equation 
     port.p = medium.p;
-    port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
+    port.h = medium.h;
     port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.Xi);
+    m_flow = -port.m_flow;
       
     annotation (Documentation(info="<html>
 <p>

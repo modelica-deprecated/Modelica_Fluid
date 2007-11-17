@@ -1,7 +1,7 @@
 model TestPortVolumes 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
-  Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume1(
+  Modelica_Fluid.Volumes.PortVolume PortVolume1(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
@@ -17,15 +17,12 @@ model TestPortVolumes
                Medium,
     h=Medium.h_default) 
     annotation (extent=[100,-10; 80,10]);
-  Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume2(
+  Modelica_Fluid.Volumes.PortVolume PortVolume2(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium) 
                  annotation (extent=[10,-10; 30,10]);
-  Modelica_Fluid.Sensors.Temperature Tin(
-                                     redeclare package Medium = Medium) 
-    annotation (extent=[-60,10; -40,30]);
   Modelica_Fluid.Sensors.Temperature Tout(
                                       redeclare package Medium = Medium) 
     annotation (extent=[40,10; 60,30]);
@@ -41,6 +38,4 @@ equation
       style(color=69, rgbcolor={0,127,255}));
   connect(FlowSource1.port, PortVolume1.port) 
     annotation (points=[-80,0; -20,0], style(color=69, rgbcolor={0,127,255}));
-  connect(FlowSource1.port, Tin.port) annotation (points=[-80,0; -50,0; -50,10],
-      style(color=69, rgbcolor={0,127,255}));
 end TestPortVolumes;
