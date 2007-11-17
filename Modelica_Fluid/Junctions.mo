@@ -171,7 +171,7 @@ package Junctions "Junction components"
       annotation (extent=[-10,100; 10,120]);
     
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
-    Medium.BaseProperties medium;
+    Medium.BaseProperties medium(preferredMediumStates=true);
     
     parameter Types.Init.Temp initType=Types.Init.NoInit 
       "Initialization option" 

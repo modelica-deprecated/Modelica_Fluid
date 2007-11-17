@@ -3,8 +3,8 @@ model TestJunctionVolume
   
   Modelica_Fluid.Junctions.JunctionVolume junction(              redeclare 
       package Medium = 
-        Modelica.Media.Air.DryAirNasa, V=20e-6, 
-    p_start=1e5, 
+        Modelica.Media.Air.DryAirNasa, V=20e-6,
+    p_start=1e5,
     initType=Modelica_Fluid.Types.Init.InitialValues) 
                                             annotation (extent=[20,-30; 40,-10]);
   annotation (Diagram);
@@ -22,7 +22,8 @@ model TestJunctionVolume
     annotation (extent=[-100,80; -80,100]);
   Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(          p=5e5,
       redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-    T=ambient.default_T_ambient) 
+    T=ambient.default_T_ambient, 
+    usePressureInput=true) 
     annotation (extent=[-40,-30; -20,-10]);
   Modelica.Blocks.Sources.Ramp ramp(
     duration=1,
