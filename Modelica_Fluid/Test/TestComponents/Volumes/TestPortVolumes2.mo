@@ -1,10 +1,10 @@
-model TestMixingVolumesPressureStates 
+model TestPortVolumes2 
   "Test case where in one of the mixing volumes a pressure state appears" 
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
   annotation (Diagram, experiment(StopTime=10));
-  Modelica_Fluid.Volumes.MixingVolume MixingVolume1(
+  Modelica_Fluid.Volumes.PortVolume MixingVolume1(
     V=1e-3,
     redeclare package Medium = Medium,
     initType=Modelica_Fluid.Types.Init.InitialValues,
@@ -14,23 +14,17 @@ model TestMixingVolumesPressureStates
                  annotation (extent=[-30,30; -10,50]);
   
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
-    m_flow=1,
+    m_flow_out=1,
     h=2e5,
     redeclare package Medium = Medium) 
                    annotation (extent=[-100,30; -80,50]);
-  Modelica_Fluid.Volumes.MixingVolume MixingVolume2(
+  Modelica_Fluid.Volumes.PortVolume MixingVolume2(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
     initType=Modelica_Fluid.Types.Init.NoInit) 
                  annotation (extent=[10,30; 30,50]);
-  Modelica_Fluid.Sensors.Temperature Tmix_in(
-                                         redeclare package Medium = Medium) 
-    annotation (extent=[-58,68; -38,88]);
-  Modelica_Fluid.Sensors.Temperature Tmix_out(
-                                          redeclare package Medium = Medium) 
-    annotation (extent=[30,68; 50,88]);
   Modelica_Fluid.Sources.FixedBoundary_phX Sink2(   p=101325, redeclare package
       Medium = Medium,
     h=Medium.h_default) 
@@ -63,34 +57,15 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(MixingVolume2.port_b, simpleGenericOrifice2.port_a) annotation (
-      points=[30,40; 50,40], style(
-      color=0,
-      rgbcolor={0,0,0},
-      smooth=0));
-  connect(MixingVolume2.port_b, Tmix_out.port) annotation (points=[30,40; 50,40;
-        50,68; 40,68], style(
-      color=0,
-      rgbcolor={0,0,0},
-      smooth=0));
   connect(FlowSource2.port,simpleGenericOrifice1. port_a) annotation (points=[
         -80,40; -70,40], style(
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(simpleGenericOrifice1.port_b, MixingVolume1.port_a) annotation (
-      points=[-50,40; -30.2,40], style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
-  connect(Tmix_in.port, MixingVolume1.port_a) annotation (points=[-48,68; -46,
-        68; -46,40; -30.2,40], style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40; 
-        9.8,40],      style(
-      color=0,
-      rgbcolor={0,0,0},
-      smooth=0));
-end TestMixingVolumesPressureStates;
+  connect(simpleGenericOrifice1.port_b, MixingVolume1.port) annotation (points=
+        [-50,40; -20,40], style(color=69, rgbcolor={0,127,255}));
+  connect(MixingVolume1.port, MixingVolume2.port)
+    annotation (points=[-20,40; 20,40], style(color=69, rgbcolor={0,127,255}));
+  connect(MixingVolume2.port, simpleGenericOrifice2.port_a)
+    annotation (points=[20,40; 50,40], style(color=69, rgbcolor={0,127,255}));
+end TestPortVolumes2;

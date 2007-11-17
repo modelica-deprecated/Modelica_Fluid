@@ -1,4 +1,3 @@
-within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestNewMixingVolume 
   extends Modelica.Icons.Example;
   Modelica_Fluid.Volumes.MixingVolume Volume(
@@ -19,9 +18,9 @@ model TestNewMixingVolume
     annotation (extent=[60,0; 40,20]);
   Modelica_Fluid.ControlValves.ValveLinear Valve(
                                              redeclare package Medium = 
-        Modelica.Media.Water.StandardWater, Kv=1, 
-    p_a_start=2e5, 
-    p_b_start=101325, 
+        Modelica.Media.Water.StandardWater, Kv=1,
+    p_a_start=2e5,
+    p_b_start=101325,
     T_start=ambient.default_T_ambient)      annotation (extent=[2,0; 22,20]);
   annotation (Diagram, experiment(StopTime=5));
   Modelica.Blocks.Sources.Step Step1(

@@ -539,7 +539,7 @@ with exception of boundary flow rate, do not have an effect.
       "Get the specific enthalpy from the input connector";
     parameter Boolean useCompositionInput = false 
       "Get the composition from the input connector";
-    parameter Medium.MassFlowRate m_flow = 0 
+    parameter Medium.MassFlowRate m_flow_out = 0 
       "Fixed mass flow rate going out of the fluid port" 
       annotation (Evaluate = true,
                   Dialog(enable = not useFlowRateInput));
@@ -654,7 +654,7 @@ with exception of boundary flow rate, do not have an effect.
     connect(h_in, h_in_internal);
     connect(X_in, X_in_internal);
     if not useFlowRateInput then
-      m_flow_in_internal = m_flow;
+      m_flow_in_internal = m_flow_out;
     end if;
     if not useEnthalpyInput then
       h_in_internal = h;

@@ -1,4 +1,3 @@
-within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestMixingVolumes 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
