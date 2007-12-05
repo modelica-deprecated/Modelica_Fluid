@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestSharpEdgedOrifice 
   import Modelica_Fluid;
   extends Modelica.Icons.Example;

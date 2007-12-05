@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Utilities;
 model TestRegRootDerivative 
   "Demonstrate that regRoot cannot be differentiated in a typical pressure drop equation (model fails during simulation)" 
   extends Modelica.Icons.Example;

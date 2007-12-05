@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Pipes;
 model TestShortPipe "Test ShortPipe component" 
   import Modelica.SIunits.Conversions.*;
   

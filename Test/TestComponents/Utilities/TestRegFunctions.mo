@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Utilities;
 model TestRegFunctions 
   extends Modelica.Icons.Example;
   import Modelica_Fluid.Utilities.*;

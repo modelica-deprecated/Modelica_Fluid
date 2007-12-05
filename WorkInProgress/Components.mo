@@ -1,3 +1,4 @@
+within Modelica_Fluid.WorkInProgress;
 package Components 
   
 model IsolatedPipe 
@@ -700,4 +701,269 @@ Full steady state initialization is not supported, because the corresponding int
     Diagram);
 end Tank;
   
+    model PortVolume 
+    "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
+    import SI = Modelica.SIunits;
+    import Modelica_Fluid.Types;
+      extends 
+      Modelica_Fluid.WorkInProgress.Interfaces.PartialInitializationParameters;
+    
+      replaceable package Medium = 
+          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+          annotation (choicesAllMatching = true);
+    
+      parameter SI.Volume V "Volume";
+    
+      Modelica_Fluid.Interfaces.FluidPort_a port(
+        redeclare package Medium = Medium) "Fluid port" 
+        annotation (extent=[-10, -10; 10, 10], rotation=0);
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
+      "Thermal port" 
+        annotation (extent=[-10,90; 10,110]);
+    
+      Medium.BaseProperties medium(preferredMediumStates=true,
+                  p(start=p_start), T(start=T_start),
+                  h(start=h_start), Xi(start= X_start[1:Medium.nXi]));
+      SI.Energy U "Internal energy of fluid";
+      SI.Mass m "Mass of fluid";
+      SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
+      annotation (
+       Icon(
+          Ellipse(extent=[-100, 100; 100, -100], style(
+              color=0,
+              rgbcolor={0,0,0},
+              gradient=3,
+              fillColor=68,
+              rgbfillColor={170,213,255})),
+          Text(extent=[-150,-100; 150,-150], string="%name")),
+                             Documentation(info="<html>
+<p>
+This component models the <b>volume</b> of <b>fixed size</b> that is
+associated with the <b>fluid port</b> to which it is connected.
+This means that all medium properties inside the volume, are identical
+to the port medium properties. In particular, the specific enthalpy
+inside the volume (= medium.h) is always identical to the specific enthalpy
+in the port (port.h = medium.h). Usually, this model is used when
+discretizing a component according to the finite volume method into
+volumes in internal ports that only store energy and mass and into
+transport elements that just transport energy, mass and momentum
+between the internal ports without storing these quantities during the
+transport. This splitting is only possible under certain assumptions.
+</p>
+</html>"),
+        Diagram);
+    equation 
+      // medium properties set by port values
+        port.p = medium.p;
+        port.h = medium.h;
+        port.Xi = medium.Xi;
+        thermalPort.T = medium.T;
+    
+      // Total quantities
+         m    = V*medium.d "Total Mass";
+         mXi = m*medium.Xi "Independent component masses";
+         U    = m*medium.u "Internal energy";
+    
+      // Mass and energy balance
+         der(m)    = port.m_flow "Total mass balance";
+         der(mXi)  = port.mXi_flow "Independent component mass balance";
+         der(U)    = port.H_flow + thermalPort.Q_flow "Energy balance";
+         zeros(Medium.nC) = port.mC_flow "Trace substances";
+    
+    initial equation 
+      // Initial conditions
+      if initType == Types.Init.NoInit then
+        // no initial equations
+      elseif initType == Types.Init.InitialValues then
+        if not Medium.singleState then
+           medium.p = p_start;
+        end if;
+        if use_T_start then
+          medium.T = T_start;
+        else
+          medium.h = h_start;
+        end if;
+        medium.Xi = X_start[1:Medium.nXi];
+      elseif initType == Types.Init.SteadyState then
+        if not Medium.singleState then
+           der(medium.p) = 0;
+        end if;
+        der(medium.h) = 0;
+        der(medium.Xi) = zeros(Medium.nXi);
+      elseif initType == Types.Init.SteadyStateHydraulic then
+        if not Medium.singleState then
+           der(medium.p) = 0;
+        end if;
+        if use_T_start then
+          medium.T = T_start;
+        else
+          medium.h = h_start;
+        end if;
+        medium.Xi = X_start[1:Medium.nXi];
+      else
+        assert(false, "Unsupported initialization option");
+      end if;
+    end PortVolume;
+
+  model LumpedPipe 
+    "Short pipe with one volume, wall friction and gravity effect" 
+    replaceable package Medium = 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+      annotation (choicesAllMatching = true);
+    parameter Modelica_Fluid.Types.Init.Temp initType=Modelica_Fluid.Types.Init.NoInit 
+      "Initialization option" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_a_start 
+      "Start value of pressure at port_a" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_b_start = p_a_start 
+      "Start value of pressure at port_b" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "= true, use T_start, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate=true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then Medium.T_default else Medium.temperature_phX(p_a_start,h_start,X_start) 
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.specificEnthalpy_pTX(p_a_start, T_start, X_start) else Medium.h_default 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    replaceable package WallFriction = 
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
+      extends 
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
+      "Characteristic of wall friction"  annotation(choicesAllMatching=true);
+    
+    parameter Modelica.SIunits.Length length "Length of pipe";
+    parameter Modelica.SIunits.Diameter diameter 
+      "Inner (hydraulic) diameter of pipe";
+    parameter Modelica.SIunits.Length height_ab=0.0 
+      "Height(port_b) - Height(port_a)"                                annotation(Evaluate=true);
+    parameter Modelica.SIunits.Length roughness(min=0)=2.5e-5 
+      "Absolute roughness of pipe (default = smooth steel pipe)" 
+        annotation(Dialog(enable=WallFriction.use_roughness));
+    parameter Boolean use_nominal = false 
+      "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
+        annotation(Evaluate=true);
+    parameter Modelica.SIunits.DynamicViscosity eta_nominal=0.01 
+      "Nominal dynamic viscosity (for wall friction computation)" annotation(Dialog(enable=use_nominal));
+    parameter Modelica.SIunits.Density d_nominal=0.01 
+      "Nominal density (for wall friction computation)" annotation(Dialog(enable=use_nominal));
+    parameter Modelica_Fluid.Types.FlowDirection.Temp flowDirection=
+        Modelica_Fluid.Types.FlowDirection.Bidirectional 
+      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
+    parameter Modelica.SIunits.AbsolutePressure dp_small=1 
+      "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
+      annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
+    
+      Modelica_Fluid.Interfaces.FluidPort_a port_a(
+                                    redeclare package Medium = Medium) 
+      "Fluid connector a (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[-110,-10; -90,10]);
+      Modelica_Fluid.Interfaces.FluidPort_b port_b(
+                                    redeclare package Medium = Medium) 
+      "Fluid connector b (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[110,-10; 90,10]);
+    
+    annotation (defaultComponentName="pipe",Icon(
+        Rectangle(extent=[-100,44; 100,-44],   style(
+            color=0,
+            gradient=2,
+            fillColor=8)),
+        Rectangle(extent=[-100,40; 100,-40],   style(
+            color=69,
+            gradient=2,
+            fillColor=69)),
+        Text(
+          extent=[-145,-40; 155,-90],
+          string="%name",
+          style(gradient=2, fillColor=69)),
+        Ellipse(extent=[-11,10; 9,-10],   style(
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=0,
+              rgbfillColor={0,0,0}))),       Documentation(info="<html>
+<p>
+Simple pipe model consisting of one volume, 
+wall friction (with different friction correlations)
+and gravity effect. This model is mostly used to demonstrate how
+to build up more detailed models from the basic components.
+Note, if the \"thermalPort\" is not connected, then the pipe
+is totally insulated (= no thermal flow from the fluid to the
+pipe wall/environment).
+</p>
+</html>"),
+      Diagram,
+      Coordsys(grid=[1,1], scale=0),
+      uses(Modelica_Fluid(version="1.0 Beta 2"), Modelica(version="2.2.2")));
+    Modelica_Fluid.PressureLosses.WallFrictionAndGravity frictionAndGravity1(
+        redeclare package Medium = Medium,
+        flowDirection=flowDirection,
+        redeclare package WallFriction = WallFriction,
+        length=length/2,
+        diameter=diameter,
+        height_ab=height_ab/2,
+        roughness=roughness,
+        use_nominal=use_nominal,
+        eta_nominal=eta_nominal,
+        d_nominal=d_nominal,
+        from_dp=true,
+        dp_small=dp_small,
+        show_Re=false,
+        p_a_start=p_a_start,
+        p_b_start=(p_a_start+p_b_start)/2,
+        T_start=T_start,
+        h_start=h_start,
+        X_start=X_start) annotation (extent=[-60,-10; -40,10]);
+    Modelica_Fluid.WorkInProgress.Components.PortVolume volume(
+      redeclare package Medium = Medium,
+      V=Modelica.Constants.pi*(diameter/2)^2*length,
+      initType=initType,
+      p_start=(p_a_start+p_b_start)/2,
+      use_T_start=use_T_start,
+      T_start=T_start,
+      h_start=h_start,
+      X_start=X_start) 
+      annotation (extent=[-10,-10; 10,10]);
+    Modelica_Fluid.PressureLosses.WallFrictionAndGravity frictionAndGravity2(
+        redeclare package Medium = Medium,
+        flowDirection=flowDirection,
+        redeclare package WallFriction = WallFriction,
+        length=length/2,
+        diameter=diameter,
+        height_ab=height_ab/2,
+        roughness=roughness,
+        use_nominal=use_nominal,
+        eta_nominal=eta_nominal,
+        d_nominal=d_nominal,
+        from_dp=true,
+        dp_small=dp_small,
+        show_Re=false,
+        p_a_start=(p_a_start+p_b_start)/2,
+        p_b_start=p_b_start,
+        T_start=T_start,
+        h_start=h_start,
+        X_start=X_start,
+        use_T_start=true) 
+                         annotation (extent=[40,-10; 60,10]);
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
+      annotation (extent=[-10,44; 10,64]);
+  equation 
+    connect(frictionAndGravity1.port_a, port_a) 
+      annotation (points=[-60,0; -100,0], style(color=69, rgbcolor={0,127,255}));
+    connect(frictionAndGravity1.port_b, volume.port) 
+      annotation (points=[-40,0; 0,0], style(color=69, rgbcolor={0,127,255}));
+    connect(frictionAndGravity2.port_a, volume.port) 
+      annotation (points=[40,0; 0,0], style(color=69, rgbcolor={0,127,255}));
+    connect(frictionAndGravity2.port_b, port_b) 
+      annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
+    connect(volume.thermalPort, thermalPort) 
+      annotation (points=[0,10; 0,54], style(color=42, rgbcolor={191,0,0}));
+  end LumpedPipe;
 end Components;

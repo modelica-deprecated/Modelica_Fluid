@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Pipes;
 model TestDistributedPipe_02 
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
@@ -21,7 +22,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     p_a_start=1.0e5,
     p_b_start=1.0e5,
     length=2,
-    use_eta_nominal=false, 
+    use_eta_nominal=false,
     use_approxPortProperties=false) 
             annotation (extent=[-30,42; -2,70]);
   
@@ -51,7 +52,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
     p_a_start=1.0e5,
-    use_eta_nominal=false, 
+    use_eta_nominal=false,
     use_approxPortProperties=false) 
             annotation (extent=[22,6; 48,34]);
   
@@ -72,7 +73,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     p_a_start=1.0e5,
     p_b_start=1.0e5,
     length=0.4,
-    use_eta_nominal=false, 
+    use_eta_nominal=false,
     use_approxPortProperties=false) 
             annotation (extent=[-86,6; -58,34]);
   
@@ -111,7 +112,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     p_a_start=1.0e5,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
-    use_eta_nominal=false, 
+    use_eta_nominal=false,
     use_approxPortProperties=false) 
             annotation (extent=[-32,-20; -4,8]);
   

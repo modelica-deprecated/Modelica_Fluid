@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Junctions;
 model TestJunctionVolume 
   extends Modelica.Icons.Example;
   
@@ -22,7 +23,7 @@ model TestJunctionVolume
     annotation (extent=[-100,80; -80,100]);
   Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(          p=5e5,
       redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-    T=ambient.default_T_ambient, 
+    T=ambient.default_T_ambient,
     usePressureInput=true) 
     annotation (extent=[-40,-30; -20,-10]);
   Modelica.Blocks.Sources.Ramp ramp(

@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Pipes;
 model TestDistributedPipe_01 
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
@@ -138,11 +139,11 @@ equation
         68,28], style(color=69, rgbcolor={0,127,255}));
   connect(pipe1.port_b, genericJunction.ports_a[1]) annotation (points=[-62,20;
         -53,20], style(color=69, rgbcolor={0,127,255}));
-  connect(genericJunction.ports_b[1], pipe2.port_a) annotation (points=[-35,18; 
+  connect(genericJunction.ports_b[1], pipe2.port_a) annotation (points=[-35,18;
         -35,47; -32,47; -32,46], style(color=3, rgbcolor={0,0,255}));
-  connect(genericJunction.ports_b[2], pipe4.port_a) annotation (points=[-35,22; 
+  connect(genericJunction.ports_b[2], pipe4.port_a) annotation (points=[-35,22;
         -36,22; -36,-6; -32,-6], style(color=3, rgbcolor={0,0,255}));
-  connect(pipe2.port_b, genericJunction1.ports_a[1]) annotation (points=[-4,46; 
+  connect(pipe2.port_b, genericJunction1.ports_a[1]) annotation (points=[-4,46;
         -3,46; -3,20], style(color=69, rgbcolor={0,127,255}));
   connect(genericJunction1.ports_a[2], pipe4.port_b) 
     annotation (points=[-3,16; -4,-6], style(color=3, rgbcolor={0,0,255}));

@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestSuddenExpansion 
   extends Modelica.Icons.Example;
   replaceable package Medium = 

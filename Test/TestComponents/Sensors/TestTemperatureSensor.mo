@@ -69,7 +69,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     useFlowRateInput=true,
     T=SI.Conversions.from_degC(50)) annotation (extent=[-60,-90; -40,-70]);
   Modelica_Fluid.Junctions.JunctionIdeal junctionIdeal(redeclare package Medium
-      = Modelica.Media.Water.StandardWater, p_start=ambient.default_p_ambient) 
+      = Modelica.Media.Water.StandardWater, p_a_start=ambient.default_p_ambient) 
     annotation (extent=[20,-90; 40,-70]);
 equation 
   connect(massFlowRate2.port, temperatureTwoPort.port_a) annotation (points=[
@@ -77,7 +77,7 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(temperatureTwoPort.port_b, openTankCold2.port[1]) annotation (points=[0,-10; 
+  connect(temperatureTwoPort.port_b, openTankCold2.port[1]) annotation (points=[0,-10;
         16,-10; 16,0.1; 29.8,0.1],         style(
       color=69,
       rgbcolor={0,127,255},
