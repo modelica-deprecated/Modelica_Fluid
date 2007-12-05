@@ -4,8 +4,8 @@ model TestSweptVolume
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
   Modelica_Fluid.Volumes.SweptVolume sweptVolume(
-    pistonCrossArea=0.05*0.05*Modelica.Constants.pi/4, 
-    clearance=0.05*0.05*Modelica.Constants.pi/4*0.03, 
+    pistonCrossArea=0.05*0.05*Modelica.Constants.pi/4,
+    clearance=0.05*0.05*Modelica.Constants.pi/4*0.03,
     redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
     annotation (extent=[0,-10; 20,10]);
   Modelica.Mechanics.Translational.Position position 
@@ -17,13 +17,13 @@ model TestSweptVolume
   inner Modelica_Fluid.Ambient ambient annotation (extent=[80,-40; 100,-20]);
   
   annotation (Diagram(Text(
-        extent=[-100,80; 100,60], 
-        style(color=0, rgbcolor={0,0,0}), 
+        extent=[-100,80; 100,60],
+        style(color=0, rgbcolor={0,0,0}),
         string=
-            "Enclosed medium with fixed quantity in an adiabatic volume with varying size")), 
-      
-    experiment(StopTime=10, Tolerance=1e-007), 
+            "Enclosed medium with fixed quantity in an adiabatic volume with varying size")),
+    experiment(StopTime=10, Tolerance=1e-007),
     experimentSetupOutput);
+  
 equation 
   connect(position.flange_b, sweptVolume.flange) annotation (points=[0,-30; 10,
         -30; 10,-10],            style(

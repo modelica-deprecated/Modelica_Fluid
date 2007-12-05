@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Pumps;
 model TestWaterPumpNPSH "Test case for WaterPump" 
   extends Modelica.Icons.Example;
   import PC = Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics;

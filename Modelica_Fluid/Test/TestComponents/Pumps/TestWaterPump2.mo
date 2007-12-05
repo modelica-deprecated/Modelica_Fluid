@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Pumps;
 model TestWaterPump2 
   import PC = Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics;
   function pumpConsChar2 = PC.quadraticPower (

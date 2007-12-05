@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Junctions;
 model TestJunctionIdeal 
   extends Modelica.Icons.Example;
   
@@ -18,7 +19,7 @@ model TestJunctionIdeal
     annotation (extent=[-100,80; -80,100]);
   Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(          p=5e5,
       redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-    T=ambient.default_T_ambient, 
+    T=ambient.default_T_ambient,
     usePressureInput=true) 
     annotation (extent=[-40,-30; -20,-10]);
   Modelica.Blocks.Sources.Ramp ramp(
@@ -56,7 +57,7 @@ equation
       style(color=69, rgbcolor={0,127,255}));
   connect(junction.port_2, pipe1.port_a) annotation (points=[41,-20; 50,-20],
       style(color=69, rgbcolor={0,127,255}));
-  connect(pipe2.port_b, source3.port) annotation (points=[30,34; 30,47; 30,60; 
+  connect(pipe2.port_b, source3.port) annotation (points=[30,34; 30,47; 30,60;
         30,60], style(color=69, rgbcolor={0,127,255}));
   connect(pipe2.port_a, junction.port_3) 
     annotation (points=[30,14; 30,-9], style(color=69, rgbcolor={0,127,255}));

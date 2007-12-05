@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.ControlValves;
 model TestValveIncompressible "Test case for valves" 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;

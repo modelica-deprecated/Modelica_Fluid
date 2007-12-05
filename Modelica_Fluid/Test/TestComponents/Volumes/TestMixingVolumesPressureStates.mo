@@ -8,9 +8,9 @@ model TestMixingVolumesPressureStates
   Modelica_Fluid.Volumes.MixingVolume MixingVolume1(
     V=1e-3,
     redeclare package Medium = Medium,
-    initType=Modelica_Fluid.Types.Init.InitialValues, 
-    p_start=ambient.default_p_ambient, 
-    use_T_start=true, 
+    initType=Modelica_Fluid.Types.Init.InitialValues,
+    p_a_start=ambient.default_p_ambient,
+    use_T_start=true,
     T_start=ambient.default_T_ambient) 
                  annotation (extent=[-30,30; -10,50]);
   
@@ -39,13 +39,13 @@ model TestMixingVolumesPressureStates
   inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[-100,-100; -80,-80]);
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity simpleGenericOrifice2(
-    redeclare package Medium = Medium, 
-    diameter=0.2, 
+    redeclare package Medium = Medium,
+    diameter=0.2,
     redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar, 
-    length=1, 
-    p_a_start=ambient.default_p_ambient, 
-    p_b_start=ambient.default_p_ambient, 
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
+    length=1,
+    p_a_start=ambient.default_p_ambient,
+    p_b_start=ambient.default_p_ambient,
     T_start=ambient.default_T_ambient) 
                                 annotation (extent=[50,30; 70,50]);
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity simpleGenericOrifice1(
@@ -53,9 +53,9 @@ model TestMixingVolumesPressureStates
     diameter=0.2,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
-    length=1, 
-    T_start=ambient.default_T_ambient, 
-    p_a_start=ambient.default_p_ambient, 
+    length=1,
+    T_start=ambient.default_T_ambient,
+    p_a_start=ambient.default_p_ambient,
     p_b_start=ambient.default_p_ambient) 
                                 annotation (extent=[-70,30; -50,50]);
 equation 
@@ -89,7 +89,7 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40; 
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40;
         9.8,40],      style(
       color=0,
       rgbcolor={0,0,0},

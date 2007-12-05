@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test;
 package TestCriticalCases 
   "Collection of test cases which might be critical for the solvers" 
   
@@ -8,7 +9,7 @@ package TestCriticalCases
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       p_b_start=5.0e5,
@@ -43,7 +44,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       p_b_start=5.0e5,
@@ -53,7 +54,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       length=10,
       diameter=2.54e-2) annotation (extent=[-40,36; -20,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       p_b_start=5.0e5,
@@ -97,14 +98,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2, 
-      p_a_start=5.0e5, 
+      diameter=2.54e-2,
+      p_a_start=5.0e5,
       p_b_start=5.0e5)  annotation (extent=[-72,-4; -52,16]);
     
     ControlValves.ValveIncompressible valveIncompressible(
@@ -132,24 +133,24 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2, 
-      p_a_start=5.0e5, 
+      diameter=2.54e-2,
+      p_a_start=5.0e5,
       p_b_start=5.0e5)  annotation (extent=[-40,36; -20,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2, 
-      p_a_start=5.0e5, 
+      diameter=2.54e-2,
+      p_a_start=5.0e5,
       p_b_start=5.0e5)  annotation (extent=[-40,-50; -20,-30]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,0; 1,0;
@@ -185,9 +186,10 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
-      p_start=5.0e5,
+      p_a_start=5.0e5,
+      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -219,18 +221,20 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
-      p_start=5.0e5,
+      p_a_start=5.0e5,
+      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.54e-2) annotation (extent=[-40,36; -20,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
-      p_start=5.0e5,
+      p_a_start=5.0e5,
+      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -274,14 +278,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2, 
-      p_a_start=5.0e5, 
+      diameter=2.54e-2,
+      p_a_start=5.0e5,
       p_b_start=5.0e5)  annotation (extent=[-80,-4; -60,16]);
     
     ControlValves.ValveIncompressible valveIncompressible(
@@ -309,24 +313,24 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2, 
-      p_a_start=5.0e5, 
+      diameter=2.54e-2,
+      p_a_start=5.0e5,
       p_b_start=5.0e5)  annotation (extent=[-40,36; -20,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2, 
-      p_a_start=5.0e5, 
+      diameter=2.54e-2,
+      p_a_start=5.0e5,
       p_b_start=5.0e5)  annotation (extent=[-40,-50; -20,-30]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
@@ -334,8 +338,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1;
           2,0; 100,0]) annotation (extent=[-20,-10; 0,10]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
-    Junctions.JunctionVolume splitter(redeclare package Medium = Medium, 
-      p_start=5.0e5, 
+    Junctions.JunctionVolume splitter(redeclare package Medium = Medium,
+      p_start=5.0e5,
       initType=Modelica_Fluid.Types.Init.InitialValues) 
       annotation (extent=[-50,0; -36,12], rotation=90);
   equation 
@@ -368,8 +372,9 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,-6; -88,6]);
-    Pipes.LumpedPipe pipe1(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
+      p_a_start=5.0e5,
+      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -395,8 +400,9 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
       T=300,
       p=1.0e5,
       redeclare package Medium = Medium) annotation (extent=[94,-6; 82,6]);
-    Pipes.LumpedPipe pipe2(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
+      p_a_start=5.0e5,
+      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -411,8 +417,9 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
       zeta=0.4,
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (extent=[-46,-10; -26,10]);
-    Pipes.LumpedPipe pipe3(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
+      p_a_start=5.0e5,
+      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -453,8 +460,8 @@ for pressures. Initialization fails.
   model SeriesPipes13 
     extends SeriesPipes1(
       pipe1(initType=Modelica_Fluid.Types.Init.SteadyState),
-      pipe2(initType=Modelica_Fluid.Types.Init.SteadyState, p_start=4.95e5),
-      pipe3(initType=Modelica_Fluid.Types.Init.SteadyState, p_start=4.9e5));
+      pipe2(initType=Modelica_Fluid.Types.Init.SteadyState, p_a_start=4.95e5, p_b_start=4.95e5),
+      pipe3(initType=Modelica_Fluid.Types.Init.SteadyState, p_a_start=4.9e5, p_b_start=4.9e5));
   equation 
     
     annotation (Documentation(info="<html>
@@ -472,8 +479,8 @@ fails for zero flow rate.
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-98,4; -86,16]);
-    Pipes.LumpedPipe pipe1(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -481,8 +488,8 @@ fails for zero flow rate.
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (extent=[-78,0; -58,20]);
     
-    Pipes.LumpedPipe pipe2(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -491,8 +498,8 @@ fails for zero flow rate.
       length=0.5)                        annotation (extent=[-60,26; -40,46],
         rotation=90);
     
-    Pipes.LumpedPipe pipe3(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -500,8 +507,8 @@ fails for zero flow rate.
       redeclare package Medium = Medium,
       length=0.5)                        annotation (extent=[-60,-26; -40,-6],
         rotation=-90);
-    Pipes.LumpedPipe pipe4(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe4(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -509,8 +516,8 @@ fails for zero flow rate.
       redeclare package Medium = Medium,
       length=2)                          annotation (extent=[-8,-46; 12,-26],
         rotation=0);
-    Pipes.LumpedPipe pipe5(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe5(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -518,8 +525,8 @@ fails for zero flow rate.
       redeclare package Medium = Medium,
       length=20)                         annotation (extent=[26,-60; 46,-40],
         rotation=0);
-    Pipes.LumpedPipe pipe6(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe6(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -541,8 +548,8 @@ fails for zero flow rate.
       dp_nom=3.0e4,
       m_flow_nom=1,
       d_nom=1000) annotation (extent=[-40,-28; -26,-44]);
-    Pipes.LumpedPipe pipe7(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe7(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -575,8 +582,8 @@ fails for zero flow rate.
       height=-0.2,
       offset=1,
       startTime=2) annotation (extent=[8,68; 28,88]);
-    Pipes.LumpedPipe pipe8(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe8(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -584,8 +591,8 @@ fails for zero flow rate.
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (extent=[-2,20; 18,40],
         rotation=-90);
-    Pipes.LumpedPipe pipe9(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe9(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -593,8 +600,8 @@ fails for zero flow rate.
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (extent=[12,46; 32,66],
         rotation=0);
-    Pipes.LumpedPipe pipe10(
-      p_start=5.0e5,
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe10(
+      p_a_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -657,7 +664,7 @@ fails for zero flow rate.
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -692,7 +699,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -702,7 +709,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=4.95e5,
       p_b_start=4.90e5) annotation (extent=[-40,36; -20,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -747,7 +754,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -782,7 +789,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -792,7 +799,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=4.95e5,
       p_b_start=4.90e5) annotation (extent=[-34,36; -14,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -826,7 +833,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[1,80; 20,80; 20,55], style(color=74, rgbcolor={0,0,127}));
     connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -49,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -843,7 +850,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -878,7 +885,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -888,7 +895,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=4.95e5,
       p_b_start=4.90e5) annotation (extent=[-34,36; -14,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -927,7 +934,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[1,82; 20,82; 20,55], style(color=74, rgbcolor={0,0,127}));
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -49,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -945,7 +952,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -981,7 +988,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -992,7 +999,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.90e5,
       dp_small=10)      annotation (extent=[-34,36; -14,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -1032,7 +1039,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[1,82; 20,82; 20,55], style(color=74, rgbcolor={0,0,127}));
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -49,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -1050,7 +1057,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1086,7 +1093,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -1097,7 +1104,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.90e5,
       dp_small=10)      annotation (extent=[-34,36; -14,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -1136,7 +1143,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[1,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -49,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -1154,7 +1161,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1192,7 +1199,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[94,-18; 82,-6]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -1203,7 +1210,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.90e5,
       dp_small=10)      annotation (extent=[-34,36; -14,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -1240,7 +1247,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[3,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -54.5,6; -54.5,6; -51,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -40,
@@ -1264,7 +1271,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1300,7 +1307,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (extent=[94,-18; 82,-6]);
-    Pipes.LumpedPipe pipe2(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -1311,7 +1318,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.90e5,
       dp_small=10)      annotation (extent=[-34,36; -14,56]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 
@@ -1348,7 +1355,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[3,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -49,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -1371,7 +1378,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (extent=[-100,0; -88,12]);
-    Pipes.LumpedPipe pipe1(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1405,7 +1412,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       T=300,
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
     
-    Pipes.LumpedPipe pipe3(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare package WallFriction = 

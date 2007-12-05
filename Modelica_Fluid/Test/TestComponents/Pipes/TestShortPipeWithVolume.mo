@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Pipes;
 model TestShortPipeWithVolume "Test ShortPipe with PortVolume" 
   import Modelica_Fluid.Types.Init;
   extends Modelica.Icons.Example;

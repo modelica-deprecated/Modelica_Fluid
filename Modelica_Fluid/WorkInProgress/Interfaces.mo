@@ -1,3 +1,4 @@
+within Modelica_Fluid.WorkInProgress;
 package Interfaces 
   partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
@@ -391,4 +392,35 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     dp = port_a.p - port_b.p - dz_in*g*(if pre(liquid) then rho_l else rho_v);
     
   end PartialTwoPortTransportWithDz;
+
+  partial model PartialInitializationParameters 
+    "Define parameter menu to initialize medium in component that has one medium model" 
+    import Modelica_Fluid.Types;
+    
+    replaceable package Medium = 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
+    parameter Types.Init.Temp initType=
+              Types.Init.NoInit "Initialization option" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_start = Medium.p_default 
+      "Start value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "= true, use T_start, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate=true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    annotation (uses(Modelica(version="2.2.2"), Modelica_Fluid(version=
+              "1.0 Beta 2")));
+  end PartialInitializationParameters;
 end Interfaces;

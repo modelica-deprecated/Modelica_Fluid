@@ -1,6 +1,6 @@
+within Modelica_Fluid;
 package Pipes "Lumped, distributed and thermal pipe components" 
     extends Modelica_Fluid.Icons.VariantLibrary;
-  
   
   model DistributedPipe_obsolete "Distributed pipe model" 
     
@@ -1042,7 +1042,6 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
   
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
-    
     
   partial model PartialDistributedFlow_obsolete 
       import Modelica_Fluid.Types;

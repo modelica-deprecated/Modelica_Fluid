@@ -55,7 +55,7 @@ package TestOverdeterminedSteadyStateInit
     Modelica.Thermal.HeatTransfer.FixedHeatFlow burner(Q_flow=1.6e3) 
       annotation (extent=[-2,12; 18,32]);
     inner Ambient ambient annotation (extent=[-100,80; -80,100]);
-    Pipes.LumpedPipe pipe(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe(
       redeclare package Medium = Medium,
       p_a_start=4.0e5,
       p_b_start=3.9e5,
@@ -69,7 +69,7 @@ package TestOverdeterminedSteadyStateInit
       length=2) 
       annotation (extent=[12,-14; 32,6]);
     
-    Pipes.LumpedPipe radiator(
+    Modelica_Fluid.WorkInProgress.Components.LumpedPipe radiator(
       p_a_start=1.1e5,
       p_b_start=1.05e5,
       use_T_start=true,

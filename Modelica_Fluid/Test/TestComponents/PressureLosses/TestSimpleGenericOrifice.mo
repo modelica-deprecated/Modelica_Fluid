@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestSimpleGenericOrifice 
   extends Modelica.Icons.Example;
   parameter Real D_a = 0.1;
