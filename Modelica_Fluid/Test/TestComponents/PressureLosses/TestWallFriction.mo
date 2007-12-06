@@ -1,4 +1,3 @@
-within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestWallFriction 
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
@@ -33,8 +32,9 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
                                                      redeclare package Medium 
       = Medium,
     p=ambient.default_p_ambient,
-    T=ambient.default_T_ambient) 
-    annotation (extent=[-40,40; -20,60]);
+    T=ambient.default_T_ambient, 
+    usePressureInput=true) 
+    annotation (extent=[-38,40; -18,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.99999e5; 10,1.00001e5]) 
     annotation (extent=[-80,40; -60,60]);
   
@@ -98,17 +98,17 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     annotation (extent=[68,74; 88,94]);
 equation 
   connect(p_table.y, ambient_a.p_in) 
-                                    annotation (points=[-59,50; -52,50; -52,56;
-        -42,56], style(color=74, rgbcolor={0,0,127}));
+                                    annotation (points=[-59,50; -52,50; -52,56; 
+        -40,56], style(color=74, rgbcolor={0,0,127}));
   connect(ambient_a.port, pipe1.port_a) 
-                                      annotation (points=[-20,50; 0,50],
+                                      annotation (points=[-18,50; 0,50],
       style(color=69, rgbcolor={0,127,255}));
   connect(pipe1.port_b, ambient_p1.port) 
     annotation (points=[20,50; 42,50],style(color=69, rgbcolor={0,127,255}));
   connect(pipe2.port_b, ambient_p2.port) 
     annotation (points=[20,20; 40,20],style(color=69, rgbcolor={0,127,255}));
   connect(ambient_a.port, pipe2.port_a) 
-                                      annotation (points=[-20,50; -12,50; -12,
+                                      annotation (points=[-18,50; -12,50; -12,
         20; 0,20],   style(color=69, rgbcolor={0,127,255}));
   connect(pipe3.port_b,ambient_p3. port) 
     annotation (points=[20,-10; 40,-10],
@@ -117,9 +117,10 @@ equation
     annotation (points=[20,-40; 40,-40],
                                       style(color=69, rgbcolor={0,127,255}));
   connect(ambient_a.port, pipe3.port_a) 
-                                      annotation (points=[-20,50; -12,50; -12,-10;
-        0,-10], style(color=69, rgbcolor={0,127,255}));
+                                      annotation (points=[-18,50; -12,50; -12,
+        -10; 0,-10],
+                style(color=69, rgbcolor={0,127,255}));
   connect(ambient_a.port, pipe4.port_a) 
-                                      annotation (points=[-20,50; -12,50; -12,
+                                      annotation (points=[-18,50; -12,50; -12,
         -40; 0,-40], style(color=69, rgbcolor={0,127,255}));
 end TestWallFriction;

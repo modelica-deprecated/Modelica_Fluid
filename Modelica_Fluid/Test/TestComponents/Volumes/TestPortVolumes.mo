@@ -1,4 +1,3 @@
-within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestPortVolumes 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
@@ -24,10 +23,10 @@ model TestPortVolumes
     h_start=1e5,
     redeclare package Medium = Medium) 
                  annotation (extent=[10,-10; 30,10]);
-  Modelica_Fluid.Sensors.Temperature Tin(
+  Modelica_Fluid.Sensors.TemperatureOnePort Tin(
                                      redeclare package Medium = Medium) 
     annotation (extent=[-60,10; -40,30]);
-  Modelica_Fluid.Sensors.Temperature Tout(
+  Modelica_Fluid.Sensors.TemperatureOnePort Tout(
                                       redeclare package Medium = Medium) 
     annotation (extent=[40,10; 60,30]);
   inner Modelica_Fluid.Ambient ambient 

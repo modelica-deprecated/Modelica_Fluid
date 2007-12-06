@@ -1,4 +1,3 @@
-within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestSuddenExpansion 
   extends Modelica.Icons.Example;
   replaceable package Medium = 
@@ -17,7 +16,8 @@ model TestSuddenExpansion
                                                      redeclare package Medium 
       = Medium,
     p=ambient.default_p_ambient,
-    T=ambient.default_T_ambient) 
+    T=ambient.default_T_ambient, 
+    usePressureInput=true) 
     annotation (extent=[-40,40; -20,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 
     annotation (extent=[-80,40; -60,60]);

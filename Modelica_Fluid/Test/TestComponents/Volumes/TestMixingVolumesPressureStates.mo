@@ -1,4 +1,3 @@
-within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestMixingVolumesPressureStates 
   "Test case where in one of the mixing volumes a pressure state appears" 
   import Modelica_Fluid;
@@ -26,10 +25,10 @@ model TestMixingVolumesPressureStates
     redeclare package Medium = Medium,
     initType=Modelica_Fluid.Types.Init.NoInit) 
                  annotation (extent=[10,30; 30,50]);
-  Modelica_Fluid.Sensors.Temperature Tmix_in(
+  Modelica_Fluid.Sensors.TemperatureOnePort Tmix_in(
                                          redeclare package Medium = Medium) 
     annotation (extent=[-58,68; -38,88]);
-  Modelica_Fluid.Sensors.Temperature Tmix_out(
+  Modelica_Fluid.Sensors.TemperatureOnePort Tmix_out(
                                           redeclare package Medium = Medium) 
     annotation (extent=[30,68; 50,88]);
   Modelica_Fluid.Sources.FixedBoundary_phX Sink2(   p=101325, redeclare package
@@ -89,7 +88,7 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40;
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40; 
         9.8,40],      style(
       color=0,
       rgbcolor={0,0,0},
