@@ -1,4 +1,3 @@
-within Modelica_Fluid.Test.TestComponents.Sensors;
 model TestTemperatureSensor "Test and compare case for the difference between using one port with
    and without explicit junction model and two port sensor for fluid temperature meassuring" 
   import Modelica_Fluid;
@@ -69,7 +68,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     useFlowRateInput=true,
     T=SI.Conversions.from_degC(50)) annotation (extent=[-60,-90; -40,-70]);
   Modelica_Fluid.Junctions.JunctionIdeal junctionIdeal(redeclare package Medium
-      = Modelica.Media.Water.StandardWater, p_a_start=ambient.default_p_ambient) 
+      = Modelica.Media.Water.StandardWater, p_start=ambient.default_p_ambient) 
     annotation (extent=[20,-90; 40,-70]);
 equation 
   connect(massFlowRate2.port, temperatureTwoPort.port_a) annotation (points=[
@@ -77,28 +76,8 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(temperatureTwoPort.port_b, openTankCold2.port[1]) annotation (points=[0,-10;
-        16,-10; 16,0.1; 29.8,0.1],         style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
-  connect(temperatureTwoPort.port_b, openTankHot2.port[1]) annotation (points=[
-        0,-10; 36,-10; 36,-19.9; 69.8,-19.9], style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
   connect(massFlowRate1.port, temperatureOnePort.port) annotation (points=[-40,
         40; -10,40], style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
-  connect(temperatureOnePort.port, openTankHot1.port[1]) annotation (points=[
-        -10,40; 29.9,40; 29.9,40.1; 69.8,40.1], style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
-  connect(temperatureOnePort.port, openTankCold1.port[1]) annotation (points=[
-        -10,40; 10,40; 10,60.1; 29.8,60.1], style(
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
@@ -127,14 +106,19 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(junctionIdeal.port_2, openTankHot3.port[1]) annotation (points=[41,
-        -80; 55.4,-80; 55.4,-79.9; 69.8,-79.9], style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
-  connect(junctionIdeal.port_3, openTankCold3.port[1]) annotation (points=[30,
-        -69; 30,-59.9; 29.8,-59.9], style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
+  connect(temperatureTwoPort.port_b, openTankCold2.ports[1]) annotation (points
+      =[0,-10; 0,-6; 30,-6; 30,-0.5], style(color=69, rgbcolor={0,127,255}));
+  connect(temperatureOnePort.port, openTankCold1.ports[1]) annotation (points=[
+        -10,40; 6,40; 6,56; 30,56; 30,59.5], style(color=69, rgbcolor={0,127,
+          255}));
+  connect(temperatureOnePort.port, openTankHot1.ports[1]) annotation (points=[
+        -10,40; 30,40; 30,39.5; 70,39.5], style(color=69, rgbcolor={0,127,255}));
+  connect(temperatureTwoPort.port_b, openTankHot2.ports[1]) annotation (points=
+        [0,-10; 34,-10; 34,-20.5; 70,-20.5], style(color=69, rgbcolor={0,127,
+          255}));
+  connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (points=[30,
+        -69; 30,-60.5], style(color=69, rgbcolor={0,127,255}));
+  connect(junctionIdeal.port_2, openTankHot3.ports[1]) annotation (points=[41,
+        -80; 55.5,-80; 55.5,-80.5; 70,-80.5], style(color=69, rgbcolor={0,127,
+          255}));
 end TestTemperatureSensor;

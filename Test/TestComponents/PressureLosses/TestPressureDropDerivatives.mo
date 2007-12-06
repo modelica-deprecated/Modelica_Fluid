@@ -1,4 +1,3 @@
-within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestPressureDropDerivatives 
   "Test that PressureDrop components can be differentiated" 
   import Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent;

@@ -126,7 +126,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-114,210; -134,230]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume2(
+    Pipes.BaseClasses.PortVolume portVolume2(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-190,210; -170,230]);
@@ -135,7 +135,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       m_flow_small=0) 
       annotation (extent=[112,210; 132,230]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume8(
+    Pipes.BaseClasses.PortVolume portVolume8(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,210; 170,230]);
@@ -146,7 +146,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-116,-240; -96,-260], rotation=180);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume3(
+    Pipes.BaseClasses.PortVolume portVolume3(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-190,-260; -170,-240]);
@@ -164,7 +164,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-170,-66; -190,-46],  rotation=90);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume1(
+    Pipes.BaseClasses.PortVolume portVolume1(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-190,60; -170,80]);
@@ -187,11 +187,11 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[170,-10; 150,-30],    rotation=270);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume6(
+    Pipes.BaseClasses.PortVolume portVolume6(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,-258; 170,-238]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume7(
+    Pipes.BaseClasses.PortVolume portVolume7(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,50; 170,70]);
@@ -209,7 +209,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[2,-210; -18,-190],    rotation=90);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume4(
+    Pipes.BaseClasses.PortVolume portVolume4(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-38,-260; -18,-240]);
@@ -225,7 +225,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[42,-240; 22,-260],    rotation=180);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume5(
+    Pipes.BaseClasses.PortVolume portVolume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[50,-260; 70,-240]);
@@ -317,12 +317,12 @@ present that are regulated by a central control system.
       area=0.05,
       stiffCharacteristicForEmptyPort=false) 
                          annotation (extent=[-100,-140; -60,-100]);
-    PressureLosses.WallFrictionAndGravity PipeB1B2(
+    PressureLosses.WallFrictionAndGravity pipeB1B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
       height_ab=0) annotation (extent=[10,230; -10,250]);
-    PressureLosses.WallFrictionAndGravity PipeB1B3(
+    PressureLosses.WallFrictionAndGravity pipeB1B3(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -332,7 +332,7 @@ present that are regulated by a central control system.
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
       annotation (extent=[-42,134; -62,154]);
-    PressureLosses.WallFrictionAndGravity PipeB2B3(
+    PressureLosses.WallFrictionAndGravity pipeB2B3(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -342,7 +342,7 @@ present that are regulated by a central control system.
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
       annotation (extent=[36,134; 56,154]);
-    PressureLosses.WallFrictionAndGravity PipeB1B1(
+    PressureLosses.WallFrictionAndGravity pipeB1B1(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -352,7 +352,7 @@ present that are regulated by a central control system.
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
       annotation (extent=[30,20; 10,40],   rotation=90);
-    PressureLosses.WallFrictionAndGravity PipeB6Pump(
+    PressureLosses.WallFrictionAndGravity pipeB6Pump(
       redeclare package Medium = BatchMedium,
       m_flow_small=1,
       roughness=0,
@@ -363,7 +363,7 @@ present that are regulated by a central control system.
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed) 
                    annotation (extent=[70,-116; 50,-96],  rotation=90);
-    PressureLosses.WallFrictionAndGravity PipeB7Pump(
+    PressureLosses.WallFrictionAndGravity pipeB7Pump(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -373,7 +373,7 @@ present that are regulated by a central control system.
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction,
       height_ab=0.1,
       roughness=0) annotation (extent=[-70,-210; -90,-190],   rotation=90);
-    PressureLosses.WallFrictionAndGravity PipePump1B1(
+    PressureLosses.WallFrictionAndGravity pipePump1B1(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -383,7 +383,7 @@ present that are regulated by a central control system.
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction,
       roughness=0,
       height_ab=3) annotation (extent=[-170,-14; -190,6],     rotation=90);
-    PressureLosses.WallFrictionAndGravity PipePump2B2(
+    PressureLosses.WallFrictionAndGravity pipePump2B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -443,41 +443,41 @@ present that are regulated by a central control system.
     CoolingB6.Q_flow = if controller.actuators.T6_Cooling then -2000 else 0;
     CoolingB7.Q_flow = if controller.actuators.T7_Cooling then -2000 else 0;
     
-    connect(PortVolume2.port, V3.port_b) annotation (points=[-180,220; -134,220],
+    connect(portVolume2.port, V3.port_b) annotation (points=[-180,220; -134,220],
                 style(color=69, rgbcolor={0,127,255}));
-    connect(V2.port_b, PortVolume2.port) annotation (points=[-50,240; -180,240;
+    connect(V2.port_b, portVolume2.port) annotation (points=[-50,240; -180,240;
           -180,220],      style(color=69, rgbcolor={0,127,255}));
-    connect(V6.port_b, PortVolume8.port) annotation (points=[132,220; 160,220],
+    connect(V6.port_b, portVolume8.port) annotation (points=[132,220; 160,220],
         style(color=69, rgbcolor={0,127,255}));
-    connect(V4.port_a, PortVolume8.port) annotation (points=[50,240; 160,240;
+    connect(V4.port_a, portVolume8.port) annotation (points=[50,240; 160,240;
           160,220],                 style(color=69, rgbcolor={0,127,255}));
-    connect(PortVolume1.port, V1.port_a) annotation (points=[-180,70; -180,100],
+    connect(portVolume1.port, V1.port_a) annotation (points=[-180,70; -180,100],
         style(color=69, rgbcolor={0,127,255}));
-    connect(PortVolume2.port, V1.port_b) annotation (points=[-180,220; -180,120],
+    connect(portVolume2.port, V1.port_b) annotation (points=[-180,220; -180,120],
         style(color=69, rgbcolor={0,127,255}));
-    connect(V22.port_a, PortVolume3.port) annotation (points=[-180,-66; -180,
+    connect(V22.port_a, portVolume3.port) annotation (points=[-180,-66; -180,
           -250], style(color=69, rgbcolor={0,127,255}));
-    connect(PortVolume5.port, V24.port_a) annotation (points=[60,-250; 84,-250],
+    connect(portVolume5.port, V24.port_a) annotation (points=[60,-250; 84,-250],
         style(color=69, rgbcolor={0,127,255}));
-    connect(V25.port_a, PortVolume6.port) annotation (points=[160,-30; 160,-248],
+    connect(V25.port_a, portVolume6.port) annotation (points=[160,-30; 160,-248],
         style(color=69, rgbcolor={0,127,255}));
-    connect(V5.port_a, PortVolume7.port) annotation (points=[160,100; 160,60],
+    connect(V5.port_a, portVolume7.port) annotation (points=[160,100; 160,60],
         style(color=69, rgbcolor={0,127,255}));
-    connect(V5.port_b, PortVolume8.port) annotation (points=[160,120; 160,220],
+    connect(V5.port_b, portVolume8.port) annotation (points=[160,120; 160,220],
         style(color=69, rgbcolor={0,127,255}));
-    connect(V19.port_a, PortVolume4.port) annotation (points=[-8,-210; -8,-250;
+    connect(V19.port_a, portVolume4.port) annotation (points=[-8,-210; -8,-250; 
           -28,-250], style(color=69, rgbcolor={0,127,255}));
-    connect(V23.port_a, PortVolume4.port) annotation (points=[-96,-250; -28,
+    connect(V23.port_a, portVolume4.port) annotation (points=[-96,-250; -28,
           -250],     style(color=69, rgbcolor={0,127,255}));
-    connect(V21.port_b, PortVolume5.port) annotation (points=[42,-250; 60,-250],
+    connect(V21.port_b, portVolume5.port) annotation (points=[42,-250; 60,-250],
         style(color=69, rgbcolor={0,127,255}));
-    connect(PortVolume4.port, V21.port_a) annotation (points=[-28,-250; 22,-250],
+    connect(portVolume4.port, V21.port_a) annotation (points=[-28,-250; 22,-250],
                  style(color=69, rgbcolor={0,127,255}));
-    connect(V20.port_a, PortVolume5.port) annotation (points=[60,-210; 60,-250],
+    connect(V20.port_a, portVolume5.port) annotation (points=[60,-210; 60,-250],
                  style(color=69, rgbcolor={0,127,255}));
     connect(V18.port_a, V23.port_a) annotation (points=[-80,-242; -80,-250; -96,
           -250],            style(color=69, rgbcolor={0,127,255}));
-    connect(P1.outlet, PortVolume3.port) annotation (points=[-144,-246.8; -144,
+    connect(P1.outlet, portVolume3.port) annotation (points=[-144,-246.8; -144,
           -250; -180,-250],      style(color=69, rgbcolor={0,127,255}));
     connect(P1.inlet, V23.port_b) annotation (points=[-130,-252; -114,-252;
           -114,-250; -116,-250],
@@ -485,76 +485,76 @@ present that are regulated by a central control system.
     connect(V24.port_b, P2.inlet) annotation (points=[104,-250; 106,-250; 106,
           -248; 114,-248],
         style(color=69, rgbcolor={0,127,255}));
-    connect(P2.outlet, PortVolume6.port) annotation (points=[128,-242.8; 128,
+    connect(P2.outlet, portVolume6.port) annotation (points=[128,-242.8; 128,
           -248; 160,-248],     style(color=69, rgbcolor={0,127,255}));
     connect(V15.port_a, B5.BottomFluidPort[1]) annotation (points=[-80,-72; -80,
           -60.4],          style(color=69, rgbcolor={0,127,255}));
     connect(V3.port_a, B1.topPorts[1]) annotation (points=[-114,220; -106,220;
-          -106,230; -80,230; -80,220],   style(color=69, rgbcolor={0,127,255}));
-    connect(B1.ports[1], V8.port_b) annotation (points=[-80,180; -80,172],
+          -106,230; -80,230; -80,221],   style(color=69, rgbcolor={0,127,255}));
+    connect(B1.ports[1], V8.port_b) annotation (points=[-80,179; -80,172],
         style(color=69, rgbcolor={0,127,255}));
     connect(P1_on.y, P1.N_in) annotation (points=[-137,-224; -135.4,-224;
           -135.4,-245.6],
                    style(color=74, rgbcolor={0,0,127}));
     connect(P2_on.y, P2.N_in) annotation (points=[111,-218; 119.4,-218; 119.4,
           -241.6], style(color=74, rgbcolor={0,0,127}));
-    connect(B2.topPorts[1], V6.port_a) annotation (points=[80,220; 80,228; 106,
+    connect(B2.topPorts[1], V6.port_a) annotation (points=[80,221; 80,228; 106,
           228; 106,220; 112,220],
                            style(color=69, rgbcolor={0,127,255}));
-    connect(B2.ports[1], V9.port_b) annotation (points=[80,180; 80,172], style(
+    connect(B2.ports[1], V9.port_b) annotation (points=[80,179; 80,172], style(
           color=69, rgbcolor={0,127,255}));
-    connect(V11.port_b, B3.ports[1]) annotation (points=[-40,88; 0,88; 0,100],
+    connect(V11.port_b, B3.ports[1]) annotation (points=[-40,88; 0,88; 0,99],
                 style(color=69, rgbcolor={0,127,255}));
-    connect(V10.port_b, B3.ports[2]) annotation (points=[20,80; 20,88; 0,88; 0,
-          100],          style(color=69, rgbcolor={0,127,255}));
+    connect(V10.port_b, B3.ports[2]) annotation (points=[20,80; 20,88; 0,88; 0,99],
+                         style(color=69, rgbcolor={0,127,255}));
     connect(B4.ports[1], V12.port_b) annotation (points=[-80,30; -80,12],   style(
           color=69, rgbcolor={0,127,255}));
     connect(CoolingB7.port, B7.heatPort) annotation (points=[-120,-120; -100,
           -120],
         style(color=42, rgbcolor={191,0,0}));
-    connect(V2.port_a, PipeB1B2.port_b) annotation (points=[-30,240; -10,240],
+    connect(V2.port_a, pipeB1B2.port_b) annotation (points=[-30,240; -10,240],
         style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB1B2.port_a, V4.port_b) annotation (points=[10,240; 30,240],
+    connect(pipeB1B2.port_a, V4.port_b) annotation (points=[10,240; 30,240],
         style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB1B3.port_b, V8.port_a) annotation (points=[-62,144; -80,144;
+    connect(pipeB1B3.port_b, V8.port_a) annotation (points=[-62,144; -80,144;
           -80,152],  style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB1B3.port_a, B3.topPorts[1]) annotation (points=[-42,144; 0,144;
+    connect(pipeB1B3.port_a, B3.topPorts[1]) annotation (points=[-42,144; 0,144;
           0,139],   style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB2B3.port_a, B3.topPorts[2]) annotation (points=[36,144; 0,144;
-          0,141],   style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB2B3.port_b, V9.port_a) annotation (points=[56,144; 80,144; 80,
+    connect(pipeB2B3.port_a, B3.topPorts[2]) annotation (points=[36,144; 0,144; 0,
+          143],     style(color=69, rgbcolor={0,127,255}));
+    connect(pipeB2B3.port_b, V9.port_a) annotation (points=[56,144; 80,144; 80,
           152], style(color=69, rgbcolor={0,127,255}));
     connect(V11.port_a, B4.topPorts[1]) annotation (points=[-60,88; -80,88; -80,
           70],       style(color=69, rgbcolor={0,127,255}));
-    connect(V10.port_a, PipeB1B1.port_b) annotation (points=[20,60; 20,40],
+    connect(V10.port_a, pipeB1B1.port_b) annotation (points=[20,60; 20,40],
         style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB1B1.port_a, V21.port_a) annotation (points=[20,20; 20,-250; 22,
+    connect(pipeB1B1.port_a, V21.port_a) annotation (points=[20,20; 20,-250; 22,
           -250],     style(color=69, rgbcolor={0,127,255}));
     connect(B5.TopFluidPort[1], V12.port_a) annotation (points=[-80,-19.6; -80,
           -8],style(color=3, rgbcolor={0,0,255}));
     connect(V15.port_b, B7.topPorts[1]) annotation (points=[-80,-92; -80,-100],
         style(color=69, rgbcolor={0,127,255}));
-    connect(B7.ports[1], PipeB7Pump.port_b) annotation (points=[-80,-140; -80,
+    connect(B7.ports[1], pipeB7Pump.port_b) annotation (points=[-80,-140; -80,
           -190], style(color=69, rgbcolor={0,127,255}));
-    connect(PipeB7Pump.port_a, V18.port_b) annotation (points=[-80,-210; -80,
+    connect(pipeB7Pump.port_a, V18.port_b) annotation (points=[-80,-210; -80,
           -222], style(color=69, rgbcolor={0,127,255}));
-    connect(PipePump1B1.port_a, V22.port_b) annotation (points=[-180,-14; -180,
+    connect(pipePump1B1.port_a, V22.port_b) annotation (points=[-180,-14; -180,
           -46],  style(color=69, rgbcolor={0,127,255}));
-    connect(PipePump1B1.port_b, PortVolume1.port) annotation (points=[-180,6;
+    connect(pipePump1B1.port_b, portVolume1.port) annotation (points=[-180,6;
           -180,70],  style(color=69, rgbcolor={0,127,255}));
-    connect(PipePump2B2.port_b, PortVolume7.port) annotation (points=[160,20;
+    connect(pipePump2B2.port_b, portVolume7.port) annotation (points=[160,20;
           160,60],  style(color=69, rgbcolor={0,127,255}));
-    connect(V25.port_b, PipePump2B2.port_a) annotation (points=[160,-10; 160,0],
+    connect(V25.port_b, pipePump2B2.port_a) annotation (points=[160,-10; 160,0],
                            style(color=69, rgbcolor={0,127,255}));
-    connect(B6.ports[1], PipeB6Pump.port_b) annotation (points=[60,-80; 60,-96],
+    connect(B6.ports[1], pipeB6Pump.port_b) annotation (points=[60,-80; 60,-96],
         style(color=69, rgbcolor={0,127,255}));
-    connect(B6.topPorts[1], B5.Condensed) annotation (points=[60,-40; 60,-28;
+    connect(B6.topPorts[1], B5.Condensed) annotation (points=[60,-40; 60,-28; 
           -19.6,-28],            style(color=69, rgbcolor={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (points=[92,-60; 80,-60],
                         style(color=42, rgbcolor={191,0,0}));
-    connect(V19.port_b, PipeB6Pump.port_a) annotation (points=[-8,-190; -8,-140;
+    connect(V19.port_b, pipeB6Pump.port_a) annotation (points=[-8,-190; -8,-140;
           60,-140; 60,-116],       style(color=69, rgbcolor={0,127,255}));
-    connect(V20.port_b, PipeB6Pump.port_a) annotation (points=[60,-190; 60,-116],
+    connect(V20.port_b, pipeB6Pump.port_a) annotation (points=[60,-190; 60,-116],
         style(color=69, rgbcolor={0,127,255}));
     connect(HeatB5.port, B5.HeatPort) annotation (points=[-114,-40; -102,-40],
         style(
@@ -799,7 +799,7 @@ handled properly.</p>
     end setReal;
     
     model ValveDiscrete "Valve for water/steam flows with linear pressure drop" 
-      extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+      extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
       parameter Modelica_Fluid.Types.HydraulicConductance Kv 
         "Hydraulic conductance at full opening";
       Modelica.Blocks.Interfaces.BooleanInput open annotation (extent=[10,94;
@@ -1874,7 +1874,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     
   model CoolingTank 
       "Open tank with top and bottom inlet/outlet ports at a defineable height, heat transfer through the walls and a cooling unit via heatPort connector" 
-          import Modelica.Constants;
+      import Modelica.Constants;
       import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
       import Modelica_Fluid.Utilities.regRoot2;
       import Modelica_Fluid.Volumes.BaseClasses.TankPortData;

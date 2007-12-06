@@ -369,7 +369,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
   end HeatFlowRatio;
   
   model GenericJunction 
-    "Splitting/joining component with balances for a dynamic control volume" 
+    "Branching component with balances for a dynamic control volume" 
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.PortFlowDirection;
     import Modelica_Fluid.Types.ModelStructure;
@@ -379,25 +379,25 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
       "Fluid medium model" 
         annotation (choicesAllMatching=true);
     parameter SI.Volume V "Volume";
-    parameter SI.Pressure dp_nom "nominal (linear) pressure drop";
-    parameter SI.MassFlowRate mflow_nom "nominal mass flow rate";
+    parameter SI.Pressure dp_nom "nominal (linear) pressure drop" annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
+    parameter SI.MassFlowRate mflow_nom "nominal mass flow rate"  annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
     
     SI.InternalEnergy U "Internal energy";
     SI.Mass m "Total mass";
     SI.Mass[Medium.nXi] mXi "Independent masses";
     
-    Interfaces.FluidStatePorts_a[
+    Interfaces.FluidStatePort_a[
                             n_a] ports_a(
       redeclare each package Medium=Medium,
       m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[-100,40;
-          -80,-40]);
-    Interfaces.FluidStatePorts_b[
+      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[-100,-10;
+          -80,-30]);
+    Interfaces.FluidStatePort_b[
                             n_b] ports_b(
       redeclare each package Medium=Medium,
       m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[80,-40;
-          100,40]);
+      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[80,-30;
+          100,-10]);
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
     
@@ -426,28 +426,25 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     parameter ModelStructure.Temp modelStructure=ModelStructure.avb annotation(Evaluate=true);
     
     annotation (Icon(
-        Ellipse(extent=[-9,10; 11,-10],   style(
+        Ellipse(extent=[-19,0; 1,-20],    style(
               color=0,
               rgbcolor={0,0,0},
               fillColor=0,
               rgbfillColor={0,0,0})),
-        Ellipse(extent=[-80,80; 80,-80], style(
-            color=10,
-            rgbcolor={135,135,135},
-            gradient=3,
-            fillColor=10,
-            rgbfillColor={135,135,135})),
-        Ellipse(extent=[-73,73; 73,-73], style(
+        Ellipse(extent=[-80,60; 80,-100],style(
             color=10,
             rgbcolor={135,135,135},
             gradient=3,
             fillColor=69,
             rgbfillColor={0,128,255})),
-        Ellipse(extent=[-10,10; 10,-10],  style(
+        Ellipse(extent=[-9,-10; 11,-30],  style(
               color=0,
               rgbcolor={0,0,0},
               fillColor=0,
-              rgbfillColor={0,0,0}))),
+              rgbfillColor={0,0,0})),Text(
+        extent=[-152,108; 148,58],
+        string="%name",
+        style(gradient=2, fillColor=69))),
       Coordsys(grid=[1,1]),
       Diagram);
   initial equation 

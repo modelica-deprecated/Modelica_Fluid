@@ -1,4 +1,3 @@
-within Modelica_Fluid.Test;
 package TestOverdeterminedSteadyStateInit 
   "Contains test cases to test overdetermined systems of initial equations" 
   model HeatingSystem "Simple model of a heating system" 
@@ -55,7 +54,7 @@ package TestOverdeterminedSteadyStateInit
     Modelica.Thermal.HeatTransfer.FixedHeatFlow burner(Q_flow=1.6e3) 
       annotation (extent=[-2,12; 18,32]);
     inner Ambient ambient annotation (extent=[-100,80; -80,100]);
-    Modelica_Fluid.WorkInProgress.Components.LumpedPipe pipe(
+    Modelica_Fluid.Pipes.LumpedPipe pipe(
       redeclare package Medium = Medium,
       p_a_start=4.0e5,
       p_b_start=3.9e5,
@@ -69,7 +68,7 @@ package TestOverdeterminedSteadyStateInit
       length=2) 
       annotation (extent=[12,-14; 32,6]);
     
-    Modelica_Fluid.WorkInProgress.Components.LumpedPipe radiator(
+    Modelica_Fluid.Pipes.LumpedPipe radiator(
       p_a_start=1.1e5,
       p_b_start=1.05e5,
       use_T_start=true,
@@ -101,8 +100,6 @@ package TestOverdeterminedSteadyStateInit
       annotation (extent=[-74,22; -54,42]);
   equation 
   tankLevel = tank.level;
-    connect(tank.port[1], pump.inlet) annotation (points=[-65.22,6.11; -65.22,
-          -8; -56,-8],   style(color=69, rgbcolor={0,127,255}));
     connect(valvePosition, valve.stemPosition) annotation (points=[-108,0; -86,
           0; -86,66; 50,66; 50,3.2],   style(color=74, rgbcolor={0,0,127}));
     connect(pump.outlet, massFlowRate.port_a) annotation (points=[-42,-2.8; -42,
@@ -132,6 +129,8 @@ package TestOverdeterminedSteadyStateInit
           -66; 8,-66], style(color=69, rgbcolor={0,127,255}));
     connect(radiator.port_a, sensor_T_1.port) annotation (points=[28,-66; 46,
           -66; 46,-56], style(color=69, rgbcolor={0,127,255}));
+    connect(pump.inlet, tank.ports[1]) annotation (points=[-56,-8; -65,-8; -65,
+          5.45], style(color=69, rgbcolor={0,127,255}));
   end HeatingSystem;
   
   model Test1 "Prescribed inputs, initial values" 

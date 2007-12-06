@@ -17,9 +17,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     p_b_start=ambient.default_p_ambient,
     length=100,
     redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent, 
-      
-    use_nominal=false, 
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+    use_nominal=false,
     height_ab=50) 
     annotation (extent=[-52,-58; -32,-36], rotation=90);
   
@@ -33,7 +32,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
           q_nom={0,0.25,0.5}, head_nom={100,60,0}),
     M=50,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
-    use_N_input=true, 
+    use_N_input=true,
     Np=1) 
     annotation (extent=[-74,-88; -48,-62]);
   
@@ -43,16 +42,16 @@ model PumpingSystem "Model of a pumping system for drinking water"
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     p_static_at_port=false,
-    pipe_diameters={1}, 
-    area=50, 
-    level_start=2.2, 
+    pipe_diameters={1},
+    area=50,
+    level_start=2.2,
     height=3) 
     annotation (extent=[-14,-16; 6,4]);
   
   Modelica_Fluid.ControlValves.ValveLinear userValve(
                                                  redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
-    flowDirection= Modelica_Fluid.Types.FlowDirection.Unidirectional, 
+    flowDirection= Modelica_Fluid.Types.FlowDirection.Unidirectional,
     Kv=400/2e5) 
     annotation (extent=[58,-38; 74,-22]);
   Modelica_Fluid.Sources.FixedBoundary sink(
@@ -65,7 +64,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (extent=[56,0; 76,20]);
   Modelica.Blocks.Sources.Constant RelativePressureSetPoint(k=2e4) 
     annotation (extent=[-100,60; -80,80]);
-  Modelica.Blocks.Logical.OnOffController controller(bandwidth=4000, 
+  Modelica.Blocks.Logical.OnOffController controller(bandwidth=4000,
       pre_y_start=false) 
                         annotation (extent=[-40,60; -20,80]);
   Modelica.Blocks.Logical.TriggeredTrapezoid PumpRPMGenerator(
@@ -80,7 +79,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (extent=[10,-12; 30,-32]);
   Modelica.Blocks.Continuous.FirstOrder PT1(
     T=2,
-    initType=Modelica.Blocks.Types.Init.InitialState, 
+    initType=Modelica.Blocks.Types.Init.InitialState,
     y_start=0) 
     annotation (extent=[40,60; 60,80]);
   
@@ -102,12 +101,12 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
 <li><i>1 Oct 2007</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Parameters updated.</li>
-
+ 
 </ul>
 </html>"),
     experiment(
-      StopTime=2000, 
-      NumberOfIntervals=5000, 
+      StopTime=2000,
+      NumberOfIntervals=5000,
       Tolerance=1e-006),
     experimentSetupOutput(equdistant=false));
   inner Modelica_Fluid.Ambient ambient 
@@ -116,9 +115,9 @@ equation
   connect(userValve.port_b, sink.port)     annotation (points=[74,-30; 80,
         -30],
       style(color=69, rgbcolor={0,127,255}));
-  connect(source.port, pumps.inlet) annotation (points=[-80,-78; -73.2,-78; 
+  connect(source.port, pumps.inlet) annotation (points=[-80,-78; -73.2,-78;
         -73.2,-77.6; -71.4,-77.6], style(color=69, rgbcolor={0,127,255}));
-  connect(valveOpening.y, userValve.opening) annotation (points=[77,10; 98,10; 
+  connect(valveOpening.y, userValve.opening) annotation (points=[77,10; 98,10;
         98,-12; 66,-12; 66,-22.8], style(color=74, rgbcolor={0,0,127}));
   connect(RelativePressureSetPoint.y, controller.reference) 
                                                     annotation (points=[-79,70;
@@ -140,14 +139,13 @@ equation
   connect(pipe.port_a, pumps.outlet)         annotation (points=[-42,-58; -42,
         -70; -54,-70; -53.2,-70.84],
                             style(color=69, rgbcolor={0,127,255}));
-  connect(pipe.port_b, reservoir.port[1]) annotation (points=[-42,-36; -42,-30; 
-        -4,-30; -4,-15.9; -4.2,-15.9],
-                     style(color=69, rgbcolor={0,127,255}));
-  connect(userValve.port_a, reservoir.port[1]) annotation (points=[58,-30; -4.2,
-        -30; -4.2,-15.9], style(color=69, rgbcolor={0,127,255}));
-  connect(reservoirPressure.port_a, reservoir.port[1]) annotation (points=[9,-22; 
-        -2,-22; -2,-15.9; -4.2,-15.9],      style(
-      color=69,
-      rgbcolor={0,127,255},
+  connect(pipe.port_b, reservoir.ports[1]) annotation (points=[-42,-36; -42,
+        -30; -4,-30; -4,-16.5], style(color=69, rgbcolor={0,127,255}));
+  connect(userValve.port_a, reservoir.ports[1]) annotation (points=[58,-30;
+        -4,-30; -4,-16.5], style(color=69, rgbcolor={0,127,255}));
+  connect(reservoir.ports[1], reservoirPressure.port_a) annotation (points=[
+        -4,-16.5; -4,-22; 9,-22], style(
+      color=3,
+      rgbcolor={0,0,255},
       pattern=3));
 end PumpingSystem;

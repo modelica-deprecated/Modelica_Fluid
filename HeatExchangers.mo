@@ -286,7 +286,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     SI.HeatFlowRate Q_flow_1 "Total heat flow rate of pipe 1";
     SI.HeatFlowRate Q_flow_2 "Total heat flow rate of pipe 2";
     
-    Modelica_Fluid.Pipes.DistributedPipe_a_v_b pipe_1(
+    Modelica_Fluid.Pipes.DistributedPipe pipe_1(
       redeclare package Medium = Medium_1,
       isCircular=false,
       diameter=0,
@@ -309,7 +309,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       eta_nominal=eta_nominal_M1) 
                                annotation (extent=[-40,-60; 20,0]);
     
-    Modelica_Fluid.Pipes.DistributedPipe_a_v_b pipe_2(
+    Modelica_Fluid.Pipes.DistributedPipe pipe_2(
       redeclare package Medium = Medium_2,
       n=n,
       static=static,

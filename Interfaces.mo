@@ -97,10 +97,18 @@ package Interfaces
   
   connector FluidStatePort_a 
     "Fluid connector at design inlet with potential pressure state" 
-    extends FluidPort_a;
+    extends FluidPort;
     annotation (defaultComponentName="port_a",
-                Diagram(       Text(extent=[-150,110; 150,50],   string="%name")),
-         Icon(Ellipse(extent=[-20,20; 20,-20], style(
+                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=69,
+            rgbfillColor={0,127,255})),
+                               Text(extent=[-150,110; 150,50],   string="%name")),
+         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
+              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
+              fillColor=69)),
+              Ellipse(extent=[-18,20; 22,-20], style(
             color=0,
             rgbcolor={0,0,0},
             fillColor=0,
@@ -109,10 +117,20 @@ package Interfaces
   
   connector FluidStatePort_b 
     "Fluid connector at design outlet with potential pressure state" 
-    extends FluidPort_b;
+   extends FluidPort;
     annotation (defaultComponentName="port_b",
-                Diagram(       Text(extent=[-150,110; 150,50],   string="%name")),
-         Icon(Ellipse(extent=[-20,20; 20,-20], style(
+                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
+            color=0,
+            rgbcolor={0,0,0},
+            fillColor=69,
+            rgbfillColor={0,127,255})),
+                               Ellipse(extent=[-30,30; 30,-30],   style(color=69,
+               fillColor=7)), Text(extent=[-150,110; 150,50],   string="%name")),
+         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
+              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
+              fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
+               fillColor=7)),
+              Ellipse(extent=[-18,20; 22,-20], style(
             color=0,
             rgbcolor={0,0,0},
             fillColor=0,
@@ -276,8 +294,5 @@ package Interfaces
         grid=[1,1],
         scale=0.2));
   end FluidStatePorts_b;
-  
-  
-  
   
 end Interfaces;
