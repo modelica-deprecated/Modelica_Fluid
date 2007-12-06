@@ -8,7 +8,7 @@ model TestMixingVolumesPressureStates
     V=1e-3,
     redeclare package Medium = Medium,
     initType=Modelica_Fluid.Types.Init.InitialValues,
-    p_a_start=ambient.default_p_ambient,
+    p_start=ambient.default_p_ambient,
     use_T_start=true,
     T_start=ambient.default_T_ambient) 
                  annotation (extent=[-30,30; -10,50]);
@@ -20,6 +20,7 @@ model TestMixingVolumesPressureStates
                    annotation (extent=[-100,30; -80,50]);
   Modelica_Fluid.Volumes.MixingVolume MixingVolume2(
     V=1e-3,
+    p_start=ambient.default_p_ambient,
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
