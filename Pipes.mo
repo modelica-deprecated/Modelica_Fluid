@@ -1,7 +1,6 @@
 package Pipes "Lumped, distributed and thermal pipe components" 
     extends Modelica_Fluid.Icons.VariantLibrary;
   
-  
   model LumpedPipe 
     "Short pipe with one volume, wall friction and gravity effect" 
     replaceable package Medium = 
@@ -163,7 +162,7 @@ pipe wall/environment).
     connect(volume.thermalPort, thermalPort) 
       annotation (points=[0,10; 0,54], style(color=42, rgbcolor={191,0,0}));
   end LumpedPipe;
-
+  
  model DistributedPipeLumpedPressure "Distributed pipe model" 
     
    extends 
@@ -299,7 +298,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
     
  if from_dp and not WallFriction.dp_is_zero then
      m_flow[1] = WallFriction.massFlowRate_dp(
-       dp[1] - ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*ambient.g*(d_a + d_b)
+       dp[1] - ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*ambient.g*(d[1]+d[n])
          /2,
        d_a,
        d_b,
@@ -310,8 +309,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        roughness,
        dp_small);
      m_flow[n + 1] = WallFriction.massFlowRate_dp(
-       dp[2] - (2*n - (integer(n/2) + 1)*2 + 1)/(2*n)*height_ab*ambient.g*(d_a
-          + d_b)/2,
+       dp[2] - (2*n - (integer(n/2) + 1)*2 + 1)/(2*n)*height_ab*ambient.g*(d[1]+d[n])/2,
        d_a,
        d_b,
        eta_a,
@@ -331,9 +329,9 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        d_h,
        roughness,
        m_flow_small) + ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*ambient.g*(
-       d_a + d_b)/2);
+       d[1]+d[n])/2);
      dp[2] = (WallFriction.pressureLoss_m_flow(
-       m_flow[1],
+       m_flow[n+1],
        d_a,
        d_b,
        eta_a,
@@ -342,7 +340,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        d_h,
        roughness,
        m_flow_small) + (2*n - (integer(n/2) + 1)*2 + 1)/(2*n)*height_ab*
-       ambient.g*(d_a + d_b)/2);
+       ambient.g*(d[1]+d[n])/2);
  end if;
     
    connect(thermalPort, heatTransfer.thermalPort) 
@@ -562,7 +560,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       length/n/2,
       d_h,
       roughness,
-      m_flow_small) + height_ab/n/2*ambient.g*d[n]/2;
+      m_flow_small) + height_ab/n/2*ambient.g*d[n];
       
     end if;
     connect(thermalPort, heatTransfer.thermalPort) 
@@ -958,18 +956,14 @@ else
       length/n,
       d_h,
       roughness,
-      m_flow_small) + height_ab/n/2*ambient.g*d[n];
+      m_flow_small) + height_ab/n*ambient.g*d[n];
 end if;
 connect(thermalPort, heatTransfer.thermalPort) 
   annotation (points=[0,54; 0,14], style(color=42, rgbcolor={191,0,0}));
 end DistributedPipeSa;
   
-  
-  
-  
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
-    
     
   partial model PartialDistributedFlowLumpedPressure 
       "Base class for 1D fluid flow with the number of momentum balances reduced to 2" 
