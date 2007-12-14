@@ -1353,7 +1353,7 @@ class Contact "Contact"
     
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Contact</font></h3>
-
+ 
 <dl>
 <dt><b>Development leader:</b>
 <dd>Francesco Casella<br>
@@ -1386,7 +1386,7 @@ and many have contributed.
      Francesco Casella, Jonas Eborn, Hilding Elmqvist, 
      R&uuml;diger Franke, Henning Knigge,
      Sven Erik Mattsson, Chuck Newman, Hans Olsson,
-     Martin Otter, Katrin Pr&ouml;&szlig;,
+     Martin Otter, Katrin Pr&ouml;l&szlig;,
      Christoph Richter, Mike Tiller, Hubertus Tummescheit,
      Allan Watson.</li>
 </ul>
