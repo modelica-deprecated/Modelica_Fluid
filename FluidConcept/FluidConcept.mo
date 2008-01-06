@@ -1,9 +1,9 @@
-import "Modelica_Fluid development/package.mo";
+import "C:/Dokumente und Einstellungen/proelss/Modelica/Subversion/Modelica_Fluid FreshFluid/Modelica_Fluid/package.mo";
 
 
 package FluidConcept 
 import SI = Modelica.SIunits;
-  package Interfaces 
+  package Interfaces "Connectors" 
     connector AlphaFlowPortA 
       SI.Pressure p;
       flow SI.MassFlowRate m_flow;
@@ -24,55 +24,6 @@ import SI = Modelica.SIunits;
               rgbfillColor={0,128,255},
               fillPattern=1))));
     end AlphaFlowPortA;
-    
-    connector BetaFlowPortA 
-      SI.Pressure p;
-      flow SI.MassFlowRate m_flow;
-      input SI.SpecificEnthalpy h_b;
-      output SI.SpecificEnthalpy h_a;
-      annotation (Icon(Ellipse(extent=[-60,80; 60,-40], style(
-              color=3,
-              rgbcolor={0,0,255},
-              fillColor=69,
-              rgbfillColor={0,128,255})), Text(
-            extent=[-100,-20; 100,-100],
-            string="%name",
-            style(
-              color=3,
-              rgbcolor={0,0,255},
-              pattern=0,
-              fillColor=69,
-              rgbfillColor={0,128,255},
-              fillPattern=1))));
-    end BetaFlowPortA;
-    
-    connector BetaFlowPortB 
-      SI.Pressure p;
-      flow SI.MassFlowRate m_flow;
-      input SI.SpecificEnthalpy h_a;
-      output SI.SpecificEnthalpy h_b;
-      annotation (Icon(
-          Ellipse(extent=[-60,80; 60,-40], style(
-              color=3,
-              rgbcolor={0,0,255},
-              fillColor=69,
-              rgbfillColor={0,128,255})),
-          Ellipse(extent=[-40,60; 40,-20], style(
-              color=3,
-              rgbcolor={0,0,255},
-              fillColor=7,
-              rgbfillColor={255,255,255})),
-                                          Text(
-            extent=[-100,-20; 100,-100],
-            string="%name",
-            style(
-              color=3,
-              rgbcolor={0,0,255},
-              pattern=0,
-              fillColor=69,
-              rgbfillColor={0,128,255},
-              fillPattern=1))));
-    end BetaFlowPortB;
     
     connector AlphaFlowPortB 
       SI.Pressure p;
@@ -100,11 +51,106 @@ import SI = Modelica.SIunits;
               rgbfillColor={0,128,255},
               fillPattern=1))));
     end AlphaFlowPortB;
+    
+    connector BetaFlowPortA 
+      extends PartialBetaFlowPort;
+      input SI.SpecificEnthalpy h_ba "Property flow from b to a";
+      output SI.SpecificEnthalpy h_ab "Property flow from a to b";
+      annotation (Icon(Ellipse(extent=[-60,80; 60,-40], style(
+              color=3,
+              rgbcolor={0,0,255},
+              fillColor=69,
+              rgbfillColor={0,128,255})), Text(
+            extent=[-100,-20; 100,-100],
+            string="%name",
+            style(
+              color=3,
+              rgbcolor={0,0,255},
+              pattern=0,
+              fillColor=69,
+              rgbfillColor={0,128,255},
+              fillPattern=1))));
+    end BetaFlowPortA;
+    
+    connector BetaFlowPortB 
+      extends PartialBetaFlowPort;
+      input SI.SpecificEnthalpy h_ab "Property flow from a to b";
+      output SI.SpecificEnthalpy h_ba "Property flow from b to a";
+      annotation (Icon(
+          Ellipse(extent=[-60,80; 60,-40], style(
+              color=3,
+              rgbcolor={0,0,255},
+              fillColor=69,
+              rgbfillColor={0,128,255})),
+          Ellipse(extent=[-40,60; 40,-20], style(
+              color=3,
+              rgbcolor={0,0,255},
+              fillColor=7,
+              rgbfillColor={255,255,255})),
+                                          Text(
+            extent=[-100,-20; 100,-100],
+            string="%name",
+            style(
+              color=3,
+              rgbcolor={0,0,255},
+              pattern=0,
+              fillColor=69,
+              rgbfillColor={0,128,255},
+              fillPattern=1))));
+    end BetaFlowPortB;
+    
+    partial connector PartialBetaFlowPort 
+      SI.Pressure p;
+      flow SI.MassFlowRate m_flow;
+    end PartialBetaFlowPort;
   end Interfaces;
   annotation (uses(Modelica(version="2.2.2"), Modelica_Fluid(version=
-            "1.0 Beta 3")), Icon);
-  package FluidFlow 
-    partial model PartialFlow 
+            "1.0 Beta 3")), Icon, 
+    Documentation(info="<html>
+<p>This package provides basic component models to illustrate different approaches of 1D-fluid modelling which can then be compaired directly. The key issue which leads to the main differences of the approaches in this library is how to pass fluid properties, which are conveyed with the total massflow like specific enthalpy, mass fractions etc, across component boundaries. The different concepts also lead to variations in connector design.<p>
+<p>In order to simplify the problem only specific enthalpy is conveyed with massflow, all other properties are neglected for demonstration puposes. The library is divided into subpackages which each contain a group of basic component models like control volumes, flow models or distributed flows, junctions and boundary conditions. In the Systems package similar system setups using different base concepts are collected.</p>
+<p>
+The following base concepts are featured in this collection:</p>
+<b>Alpha</b>, current Modelica_Fluid approach:<br>
+<ul>
+<li>\"physical\" connector, contains specific enthalpy and enthalpy flow</li>
+<li>\"semiLinear\"-operator handles changes in flow direction and zero mass flow, also allows for advanced optimization procedured on the tool side (common subexpression elimination)</li>
+<li>port enthalpy depends on flow direction (may be undefined at zero flow) and connected components (either mixing enthalpy, if only components using semiLinear are connected or port volume enthalpy, if component with dynamic state at its port is attached) 
+</ul>
+<b>Beta</b>, ThermoPower-like approach:<br>
+<ul>
+<li>specific enthalpies on both sides of the connection set are included in the connector, no enthalpy flow, one-to-one restriction for connections in Modelica 3.0</li>
+<li>change of flow direction is handled in balance equations</li>
+<li>connector properties are always well defined</li>
+</ul>
+<b>Gamma</b>, Thermofluid-like approach:<br>
+<ul>
+<li>\"physical\" connector, contains specific enthalpy and enthalpy flow</li>
+<li>change of flow direction is handled in balance equations</li>
+<li>specific enthalpy is always passed to the \"left\", well defined port properties, efficient, but not very intuitive, restrictions on connections apply</li>
+</ul>
+The main problems all approaches have in common are:
+<ul>
+<li>port properties may not belong to the inside of the component and may easily be used in a wrong way</li>
+<li>dynamic volumes are required to break large non-linear systems, especially in systems with non-linear flow models and lots of branches.</li>
+<li>correct determination of the static head may require downstream properties inside the component boundary (not included yet)</li>
+<li>Is a strict alternation of flow models and control volumes required? Is it possible to connect components in an arbitrary way? Keep pitfalls to a miminum.
+</ul>
+
+
+</html>", revisions="<html>
+<ul>
+<li><i>November 2007</i>
+    by <a href=\"mailto:K.Proelss@tuhh.de\">Katrin Pr&ouml;l&szlig;</a>:<br>
+    Created, based on discussions in the Fluid group</li>
+<li><i>January 2008</i>
+ by Katrin Pr&ouml;l&szlig;:<br>
+    Added control volumes and flow models as well as a little bit of documentation</li>
+</ul>
+</html>"));
+  package DistributedFlow 
+    "Combines control volumes and flow models in a staggered grid" 
+    partial model PartialDistributedFlow 
       replaceable package Medium = Modelica.Media.Air.DryAirNasa extends 
         Modelica.Media.Interfaces.PartialMedium;
       replaceable package PressureDrop = WallFriction.Laminar extends 
@@ -209,10 +255,10 @@ import SI = Modelica.SIunits;
       heatPort[i].Q_flow=alpha0*Ah/n*(heatPort[i].T-medium[i].T);
     end for;
       
-    end PartialFlow;
+    end PartialDistributedFlow;
     
-    model AlphaFlow 
-      extends FluidConcept.FluidFlow.PartialFlow;
+    model AlphaDistributedFlow 
+      extends FluidConcept.DistributedFlow.PartialDistributedFlow;
       FluidConcept.Interfaces.AlphaFlowPortA port_a 
                                       annotation (extent=[-124,-18; -94,12]);
       FluidConcept.Interfaces.AlphaFlowPortB port_b 
@@ -252,10 +298,10 @@ import SI = Modelica.SIunits;
               Medium.dynamicViscosity(Medium.setState_phX(port_b.p, port_b.h));
       // d_up[n] =  medium[n].d;
       // eta_up[n] = Medium.dynamicViscosity(medium[n].state);
-    end AlphaFlow;
+    end AlphaDistributedFlow;
     
-    model BetaFlow 
-      extends FluidConcept.FluidFlow.PartialFlow;
+    model BetaDistributedFlow 
+      extends FluidConcept.DistributedFlow.PartialDistributedFlow;
       FluidConcept.Interfaces.BetaFlowPortA port_a 
                                       annotation (extent=[-124,-18; -94,12]);
       FluidConcept.Interfaces.BetaFlowPortB port_b 
@@ -278,20 +324,20 @@ import SI = Modelica.SIunits;
       port_a.m_flow=m_flow[1];
       port_b.m_flow=-m_flow[n+1];
       
-      port_a.h_a=medium[1].h;
-      port_b.h_b=medium[n].h;
+      port_a.h_ab=medium[1].h;
+      port_b.h_ba=medium[n].h;
       
-      H_flow[1]=smooth(0,if m_flow[1]>=0 then m_flow[1]*port_a.h_b else port_a.m_flow*port_a.h_a);
-      H_flow[n+1]=smooth(0,if m_flow[n+1]<=0 then m_flow[n+1]*port_b.h_a else m_flow[n+1]*port_b.h_b);
+      H_flow[1]=smooth(0,if m_flow[1]>=0 then m_flow[1]*port_a.h_ba else port_a.m_flow*port_a.h_ab);
+      H_flow[n+1]=smooth(0,if m_flow[n+1]<=0 then m_flow[n+1]*port_b.h_ab else m_flow[n+1]*port_b.h_ba);
       d_up[n] = if m_flow[n + 1] >= 0 then medium[n].d else Medium.density_phX(
-        port_b.p, port_b.h_a);
+        port_b.p, port_b.h_ab);
       eta_up[n] = if m_flow[n + 1] >= 0 then Medium.dynamicViscosity(medium[n].state) else 
-              Medium.dynamicViscosity(Medium.setState_phX(port_b.p, port_b.h_a));
+              Medium.dynamicViscosity(Medium.setState_phX(port_b.p, port_b.h_ab));
       
-    end BetaFlow;
+    end BetaDistributedFlow;
     
-    model GammaFlow 
-      extends FluidConcept.FluidFlow.PartialFlow;
+    model GammaDistributedFlow 
+      extends FluidConcept.DistributedFlow.PartialDistributedFlow;
       FluidConcept.Interfaces.AlphaFlowPortA port_a 
                                       annotation (extent=[-124,-18; -94,12]);
       Interfaces.AlphaFlowPortB port_b 
@@ -324,9 +370,9 @@ import SI = Modelica.SIunits;
       eta_up[n] = if m_flow[n + 1] >= 0 then Medium.dynamicViscosity(medium[n].state) else 
               Medium.dynamicViscosity(Medium.setState_phX(port_b.p, port_b.h));
       
-    end GammaFlow;
+    end GammaDistributedFlow;
     
-    model DeltaFlow 
+    model DeltaDistributedFlow 
       replaceable package Medium = Modelica.Media.Air.DryAirNasa extends 
         Modelica.Media.Interfaces.PartialMedium;
       replaceable package PressureDrop = WallFriction.Laminar extends 
@@ -391,7 +437,7 @@ import SI = Modelica.SIunits;
           Medium.setState_pTX(0.5*(p0_a + p0_b), T0))                         annotation(Dialog(tab = "Initialization",enable=not useInitialTemperature));
       
       Interfaces.AlphaFlowPortA port_a(p(start=p0_a),h(start=h0)) 
-                                      annotation (extent=[-124,-18; -94,12]);
+                                      annotation (extent=[-116,-16; -86,14]);
       Interfaces.AlphaFlowPortA port_b(p(start=p0_b),h(start=h0)) 
                                       annotation (extent=[94,-18; 124,12]);
       annotation (Icon);
@@ -498,11 +544,328 @@ import SI = Modelica.SIunits;
       // eta_up[1] = Medium.dynamicViscosity(medium[1].state);
       // d_up[n + 1] = medium[n].d;
       // eta_up[n + 1] = Medium.dynamicViscosity(medium[n].state);
-    end DeltaFlow;
-  end FluidFlow;
+    end DeltaDistributedFlow;
+  end DistributedFlow;
+  
+  package ControlVolumes "Dynamic control volumes" 
+    partial model PartialCV 
+    replaceable package Medium = Modelica.Media.Air.DryAirNasa extends 
+        Modelica.Media.Interfaces.PartialMedium  annotation(choicesAllMatching);
+    parameter SI.Length length;
+    parameter SI.Diameter diameter;
+    parameter SI.Area Ah=Modelica.Constants.pi*diameter*length;
+    parameter SI.Area Ac=Modelica.Constants.pi/4*diameter*diameter;
+    parameter SI.Volume V=Modelica.Constants.pi/4*diameter*diameter*length;
+    parameter SI.CoefficientOfHeatTransfer alpha0=300;
+    Medium.BaseProperties medium(preferredMediumStates=true, p(start=p0),
+                                  h(start = h0), T(start=T0_init));
+    SI.Mass M;
+    SI.InternalEnergy U;
+    SI.EnthalpyFlowRate H_flow;
+    SI.MassFlowRate m_flow;
+      
+    annotation (Icon(
+        Text(
+          extent=[-80,-60; 80,-100],
+          string="%name",
+          style(
+            color=3,
+            rgbcolor={0,0,255},
+            gradient=2,
+            fillColor=71,
+            rgbfillColor={85,170,255})), Ellipse(extent=[-60,60; 60,-60], style(
+              color=3,
+              rgbcolor={0,0,255},
+              gradient=3,
+              fillColor=71,
+              rgbfillColor={85,170,255}))),
+                            Diagram);
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
+      annotation (extent=[-10,60; 10,80]);
+      //Initialization
+     parameter Modelica_Fluid.Types.Init.Temp initType=Modelica_Fluid.Types.
+          Init.NoInit "Initialization option" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Boolean useInitialTemperature = true annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p0 annotation(Dialog(tab = "Initialization"));
+    parameter Medium.Temperature T0 annotation(Dialog(tab = "Initialization",enable=useInitialTemperature));
+    parameter Medium.SpecificEnthalpy h0 = Medium.specificEnthalpy(Medium.setState_pTX(p0,T0)) 
+                                                                            annotation(Dialog(tab = "Initialization",enable=not useInitialTemperature));
+    protected 
+     parameter Medium.Temperature T0_init=if useInitialTemperature then T0 else Medium.temperature(Medium.setState_phX(p0,h0));
+    initial equation 
+    if not Medium.singleState then
+      if initType==Modelica_Fluid.Types.Init.SteadyState then
+        der(medium.p) = 0;
+      elseif initType==Modelica_Fluid.Types.Init.InitialValues then
+        medium.p = p0;
+      end if;
+    end if;
+    if initType==Modelica_Fluid.Types.Init.SteadyState then
+      medium.h = 0;
+    elseif initType==Modelica_Fluid.Types.Init.InitialValues then
+      medium.h =h0;
+    end if;
+    equation 
+      M = medium.d*V;
+      U = medium.u*M;
+        //Energy balance
+      der(U) = H_flow + heatPort.Q_flow;
+        //Mass balance
+      der(M) = m_flow;
+      
+      //HeatTransfer
+      heatPort.Q_flow=alpha0*Ah*(heatPort.T-medium.T);
+      
+    end PartialCV;
+    
+    model AlphaCVPortVolume 
+      extends FluidConcept.ControlVolumes.PartialCV;
+      Interfaces.AlphaFlowPortA port annotation (extent=[-14,-18; 16,12]);
+      annotation (Icon(Text(
+            extent=[-64,34; 64,10],
+            string="alpha",
+            style(
+              color=0,
+              rgbcolor={0,0,0},
+              pattern=0,
+              gradient=3,
+              fillColor=71,
+              rgbfillColor={85,170,255}))));
+    equation 
+      H_flow=port.H_flow;
+      m_flow=port.m_flow;
+      port.h=medium.h;
+      port.p=medium.p;
+    end AlphaCVPortVolume;
+    
+    model AlphaCV 
+      extends FluidConcept.ControlVolumes.PartialCV;
+      Interfaces.AlphaFlowPortB port_a 
+                                     annotation (extent=[-84,-18; -54,12]);
+      annotation (Icon(Text(
+            extent=[-62,14; 66,-10],
+            string="alpha",
+            style(
+              color=0,
+              rgbcolor={0,0,0},
+              pattern=0,
+              gradient=3,
+              fillColor=71,
+              rgbfillColor={85,170,255}))));
+      Interfaces.AlphaFlowPortB port_b annotation (extent=[54,-18; 84,12]);
+    equation 
+      port_a.H_flow=semiLinear(port_a.m_flow,port_a.h,medium.h);
+      port_b.H_flow=semiLinear(port_b.m_flow,port_b.h,medium.h);
+      H_flow=port_a.H_flow+port_b.H_flow;
+      m_flow=port_a.m_flow+port_b.m_flow;
+      port_a.p=medium.p;
+      port_b.p=medium.p;
+    end AlphaCV;
+    
+    model BetaCV 
+      extends FluidConcept.ControlVolumes.PartialCV;
+      parameter Integer na=1 "number of a ports";
+      parameter Integer nb=1 "number of b ports";
+      Interfaces.BetaFlowPortA[na] port_a 
+                                      annotation (extent=[-84,-18; -54,12]);
+      annotation (Icon(Text(
+            extent=[-64,14; 64,-10],
+            style(
+              color=0,
+              rgbcolor={0,0,0},
+              pattern=0,
+              gradient=3,
+              fillColor=71,
+              rgbfillColor={85,170,255}),
+            string="beta")));
+      Interfaces.BetaFlowPortB[nb] port_b 
+                                      annotation (extent=[54,-18; 84,12]);
+    equation 
+      m_flow=sum(port_a.m_flow)+sum(port_b.m_flow);
+      H_flow=sum({if port_a[i].m_flow>=0 then port_a[i].m_flow*port_a[i].h_ba else port_a[i].m_flow*medium.h for i in 1:na})
+            +sum({if port_b[i].m_flow>=0 then port_b[i].m_flow*port_b[i].h_ab else port_b[i].m_flow*medium.h for i in 1:nb});
+      port_a.p=fill(medium.p,na);
+      port_b.p=fill(medium.p,nb);
+      port_a.h_ab=fill(medium.h,na);
+      port_b.h_ba=fill(medium.h,nb);
+    end BetaCV;
+    
+    model GammaCV 
+      extends FluidConcept.ControlVolumes.PartialCV;
+      Interfaces.AlphaFlowPortA port   annotation (extent=[-14,-18; 16,12]);
+    equation 
+      port.h=medium.h;
+      H_flow=port.H_flow;
+      m_flow=port.m_flow;
+      port.p=medium.p;
+      
+      annotation (Icon(Text(
+            extent=[-62,38; 66,14],
+            style(
+              color=0,
+              rgbcolor={0,0,0},
+              pattern=0,
+              gradient=3,
+              fillColor=71,
+              rgbfillColor={85,170,255}),
+            string="gamma")), Diagram);
+    end GammaCV;
+  end ControlVolumes;
+  
+  package FlowModels "Algebraic flow models" 
+    partial model PartialFlowModel 
+      replaceable package Medium = Modelica.Media.Air.DryAirNasa extends 
+        Modelica.Media.Interfaces.PartialMedium annotation(choicesAllMatching);
+      replaceable package PressureDrop = WallFriction.Laminar extends 
+        WallFriction.PartialWallFriction   annotation(choicesAllMatching);
+      parameter SI.Length length;
+      parameter SI.Diameter diameter;
+      parameter Medium.AbsolutePressure p0_a annotation(Dialog(tab = "Initialization"));
+      parameter Medium.AbsolutePressure p0_b annotation(Dialog(tab = "Initialization"));
+      parameter SI.MassFlowRate m_flow0 annotation(Dialog(tab = "Initialization"));
+      SI.Pressure[2] p(start={p0_a,p0_b});
+      SI.MassFlowRate[2] m_flow(each start=m_flow0) "port massflows";
+      SI.Density d_up;
+      SI.DynamicViscosity eta_up;
+    equation 
+    //Mass balance
+      0=m_flow[1]-m_flow[2];
+    //Pressure Drop: mflow=f(dp)
+          m_flow[2]=PressureDrop.massFlowRate_dp(
+          p[1] - p[2],
+          d_up,
+          eta_up,
+          length,
+          diameter,
+          roughness=2.5e-5,
+          dp_small=1);
+      annotation (Icon(Rectangle(extent=[-60,60; 60,-40], style(
+              color=7,
+              rgbcolor={255,255,255},
+              thickness=4,
+              fillColor=7,
+              rgbfillColor={255,255,255})), Line(points=[-60,-40; -60,60; 60,-40;
+                60,60], style(
+              color=3,
+              rgbcolor={0,0,255},
+              thickness=4))));
+    end PartialFlowModel;
+    
+    model AlphaFM 
+      extends PartialFlowModel;
+      annotation (Icon(
+        Text(
+          extent=[-74,-40; 86,-80],
+          string="%name",
+          style(
+            color=3,
+            rgbcolor={0,0,255},
+            gradient=2,
+            fillColor=71,
+            rgbfillColor={85,170,255})),
+                       Text(
+            extent=[-48,64; 80,40],
+            string="alpha",
+            style(
+              color=0,
+              rgbcolor={0,0,0},
+              pattern=0,
+              gradient=3,
+              fillColor=71,
+              rgbfillColor={85,170,255}))));
+      Interfaces.AlphaFlowPortB port_a annotation (extent=[-84,-8; -54,22]);
+      Interfaces.AlphaFlowPortB port_b annotation (extent=[54,-8; 84,22]);
+    equation 
+      port_a.p=p[1];
+      port_b.p=p[2];
+      port_a.m_flow=m_flow[1];
+      port_b.m_flow=-m_flow[2];
+      port_a.H_flow=semiLinear(port_a.m_flow,port_a.h,port_b.h);
+      0=port_a.H_flow+port_b.H_flow;
+      d_up=if port_a.m_flow>=0 then Medium.density(Medium.setState_phX(port_a.p,port_a.h)) else 
+        Medium.density(Medium.setState_phX(port_b.p,port_b.h));
+      eta_up=if port_a.m_flow>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p,port_a.h)) else 
+        Medium.dynamicViscosity(Medium.setState_phX(port_b.p,port_b.h));
+    end AlphaFM;
+    
+    model BetaFM "isenthalpic flow model" 
+      extends PartialFlowModel;
+      annotation (Icon(
+        Text(
+          extent=[-74,-40; 86,-80],
+          string="%name",
+          style(
+            color=3,
+            rgbcolor={0,0,255},
+            gradient=2,
+            fillColor=71,
+            rgbfillColor={85,170,255})),
+                       Text(
+            extent=[-46,52; 82,28],
+            style(
+              color=0,
+              rgbcolor={0,0,0},
+              pattern=0,
+              gradient=3,
+              fillColor=71,
+              rgbfillColor={85,170,255}),
+            string="beta")));
+      Interfaces.BetaFlowPortA port_a annotation (extent=[-84,-8; -54,22]);
+      Interfaces.BetaFlowPortB port_b annotation (extent=[54,-8; 84,22]);
+    equation 
+      port_a.p=p[1];
+      port_b.p=p[2];
+      port_a.m_flow=m_flow[1];
+      port_b.m_flow=-m_flow[2];
+      port_a.h_ab=port_b.h_ab;
+      port_a.h_ba=port_b.h_ba;
+      d_up=if port_a.m_flow>=0 then Medium.density(Medium.setState_phX(port_a.p,port_a.h_ba)) else 
+        Medium.density(Medium.setState_phX(port_b.p,port_b.h_ab));
+      eta_up=if port_a.m_flow>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p,port_a.h_ba)) else 
+        Medium.dynamicViscosity(Medium.setState_phX(port_b.p,port_b.h_ab));
+    end BetaFM;
+    
+    model GammaFM 
+      extends PartialFlowModel;
+      annotation (Icon(
+        Text(
+          extent=[-74,-40; 86,-80],
+          string="%name",
+          style(
+            color=3,
+            rgbcolor={0,0,255},
+            gradient=2,
+            fillColor=71,
+            rgbfillColor={85,170,255})),
+                       Text(
+            extent=[-46,78; 82,54],
+            style(
+              color=0,
+              rgbcolor={0,0,0},
+              pattern=0,
+              gradient=3,
+              fillColor=71,
+              rgbfillColor={85,170,255}),
+            string="gamma")));
+      Interfaces.AlphaFlowPortB port_a annotation (extent=[-84,-8; -54,22]);
+      Interfaces.AlphaFlowPortB port_b annotation (extent=[54,-8; 84,22]);
+    equation 
+      port_a.p=p[1];
+      port_b.p=p[2];
+      port_a.m_flow=m_flow[1];
+      port_b.m_flow=-m_flow[2];
+      port_a.H_flow=if port_a.m_flow>=0 then port_a.m_flow*port_a.h else port_a.m_flow*port_b.h;
+      port_a.H_flow=-port_b.H_flow;
+      d_up=if port_a.m_flow>=0 then Medium.density(Medium.setState_phX(port_a.p,port_a.h)) else 
+        Medium.density(Medium.setState_phX(port_b.p,port_b.h));
+      eta_up=if port_a.m_flow>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p,port_a.h)) else 
+        Medium.dynamicViscosity(Medium.setState_phX(port_b.p,port_b.h));
+    end GammaFM;
+  end FlowModels;
   
   package WallFriction 
-    "Different variants for pressure drops due to pipe wall friction" 
+    "Pressure drop package from Modelica_Fluid, adaptedDifferent variants for pressure drops due to pipe wall friction" 
     partial package PartialWallFriction 
       "Partial wall friction characteristic (base package of all wall friction characteristics)" 
       
@@ -1092,33 +1455,34 @@ solving a non-linear equation.
     end Detailed;
   end WallFriction;
   
-  package Systems 
+  package Systems "Test systems" 
     
     model AlphaSystem_01 
-      FluidConcept.Sources.AlphaFlowSource source(
+      FluidConcept.BoundaryConditions.AlphaFlowSourceB source(
         T=300,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         m_flow=0.1,
-        p=1.2e5, 
+        p=1.2e5,
         useMassFlowRate=false) 
                               annotation (extent=[-100,0; -80,20]);
-      replaceable model PipeModel=FluidFlow.AlphaFlow;
+      replaceable model PipeModel = 
+          FluidConcept.DistributedFlow.AlphaDistributedFlow;
       PipeModel pipe1(
         diameter=0.01,
         T0=400,
         length=1,
         n=2,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-        redeclare package PressureDrop = FluidConcept.WallFriction.Detailed, 
-        p0_a=1.25e5, 
+        redeclare package PressureDrop = FluidConcept.WallFriction.Detailed,
+        p0_a=1.25e5,
         p0_b=1.22e5) 
         annotation (extent=[-72,0; -52,20]);
       annotation (Diagram);
-      FluidConcept.Sources.AlphaFlowSource sink(
+      FluidConcept.BoundaryConditions.AlphaFlowSourceB sink(
         useMassFlowRate=false,
         p=1e5,
-        redeclare package Medium = Modelica.Media.Air.DryAirNasa, 
-        usePressureInput=true, 
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa,
+        usePressureInput=true,
         T=400) 
         annotation (extent=[80,0; 60,20]);
       PipeModel pipe2(
@@ -1127,8 +1491,8 @@ solving a non-linear equation.
         diameter=0.005,
         n=2,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-        redeclare package PressureDrop = FluidConcept.WallFriction.Detailed, 
-        p0_a=1.20e5, 
+        redeclare package PressureDrop = FluidConcept.WallFriction.Detailed,
+        p0_a=1.20e5,
         p0_b=1.16e5) 
         annotation (extent=[-20,14; 0,34]);
       PipeModel pipe3(
@@ -1137,8 +1501,8 @@ solving a non-linear equation.
         length=1,
         n=2,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-        redeclare package PressureDrop = FluidConcept.WallFriction.Detailed, 
-        p0_a=1.20e5, 
+        redeclare package PressureDrop = FluidConcept.WallFriction.Detailed,
+        p0_a=1.20e5,
         p0_b=1.16e5) 
         annotation (extent=[-18,-18; 2,2]);
       PipeModel pipe4(
@@ -1147,13 +1511,13 @@ solving a non-linear equation.
         length=1,
         n=2,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-        redeclare package PressureDrop = FluidConcept.WallFriction.Detailed, 
-        p0_a=1.15e5, 
+        redeclare package PressureDrop = FluidConcept.WallFriction.Detailed,
+        p0_a=1.15e5,
         p0_b=1.01e5) 
         annotation (extent=[26,-2; 46,18]);
-      Junctions.AlphaJunction alphaJunction(n_b=2, 
-        T0=400, 
-        p0=1.21e5, 
+      Junctions.AlphaJunction alphaJunction(n_b=2,
+        T0=400,
+        p0=1.21e5,
         V=0.001) 
         annotation (extent=[-46,-2; -26,18]);
       Modelica.Blocks.Sources.Ramp ramp(
@@ -1211,76 +1575,76 @@ solving a non-linear equation.
           gradient=3,
           fillColor=71,
           rgbfillColor={85,170,255}));
-      connect(ramp.y, sink.p_in) annotation (points=[87,62; 98,62; 98,17.5; 
+      connect(ramp.y, sink.p_in) annotation (points=[87,62; 98,62; 98,17.5;
             76.8,17.5], style(color=74, rgbcolor={0,0,127}));
     end AlphaSystem_01;
     
     model BetaSystem_01 
       
-      Sources.BetaFlowSourceB source(
+      FluidConcept.BoundaryConditions.BetaFlowSourceB source(
         T=300,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         m_flow=0.1,
-        p=1.2e5, 
+        p=1.2e5,
         useMassFlowRate=false) 
                               annotation (extent=[-100,0; -80,20]);
-      model PipeModel=FluidFlow.GammaFlow;
-      FluidFlow.BetaFlow pipe1(
+      model PipeModel=FluidConcept.DistributedFlow.GammaDistributedFlow;
+      FluidConcept.DistributedFlow.BetaDistributedFlow pipe1(
         diameter=0.01,
         T0=400,
         length=1,
         n=2,
         p0_a=1.2e5,
         p0_b=1.16e5,
-        redeclare package Medium = Modelica.Media.Air.DryAirNasa, 
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         redeclare package PressureDrop = FluidConcept.WallFriction.Detailed) 
         annotation (extent=[-72,0; -52,20]);
       annotation (Diagram);
-      Sources.BetaFlowSourceA sink(
+      FluidConcept.BoundaryConditions.BetaFlowSourceA sink(
         useMassFlowRate=false,
         p=1e5,
-        redeclare package Medium = Modelica.Media.Air.DryAirNasa, 
-        usePressureInput=true, 
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa,
+        usePressureInput=true,
         T=400) 
         annotation (extent=[80,0; 60,20]);
-      FluidFlow.BetaFlow pipe2(
+      FluidConcept.DistributedFlow.BetaDistributedFlow pipe2(
         T0=400,
         length=1,
         diameter=0.005,
         n=2,
         p0_b=1.01e5,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-        p0_a=1.15e5, 
+        p0_a=1.15e5,
         redeclare package PressureDrop = FluidConcept.WallFriction.Detailed) 
         annotation (extent=[-20,14; 0,34]);
-      FluidFlow.BetaFlow pipe3(
+      FluidConcept.DistributedFlow.BetaDistributedFlow pipe3(
         diameter=0.01,
         T0=400,
         length=1,
         n=2,
         p0_b=1.01e5,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-        p0_a=1.15e5, 
+        p0_a=1.15e5,
         redeclare package PressureDrop = FluidConcept.WallFriction.Detailed) 
         annotation (extent=[-18,-18; 2,2]);
-      FluidFlow.BetaFlow pipe4(
+      FluidConcept.DistributedFlow.BetaDistributedFlow pipe4(
         diameter=0.01,
         T0=400,
         length=1,
         n=2,
         p0_a=1.2e5,
         p0_b=1.16e5,
-        redeclare package Medium = Modelica.Media.Air.DryAirNasa, 
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         redeclare package PressureDrop = FluidConcept.WallFriction.Detailed) 
         annotation (extent=[32,0; 52,20]);
-      Junctions.BetaJunction junction1(n_b=2, V=0.00001, 
-        p0=1.20e5, 
-        T0=400, 
+      Junctions.BetaJunction junction1(n_b=2, V=0.00001,
+        p0=1.20e5,
+        T0=400,
         initType=Modelica_Fluid.Types.Init.InitialValues) 
         annotation (extent=[-48,0; -28,20]);
       Junctions.BetaJunction junction2(n_a=2, n_b=1,
-        V=0.00001, 
-        T0=400, 
+        V=0.00001,
+        T0=400,
         initType=Modelica_Fluid.Types.Init.InitialValues) 
         annotation (extent=[4,0; 24,20]);
       Modelica.Blocks.Sources.Ramp ramp(
@@ -1345,21 +1709,21 @@ solving a non-linear equation.
           gradient=3,
           fillColor=71,
           rgbfillColor={85,170,255}));
-      connect(ramp.y, sink.p_in) annotation (points=[77,52; 92,52; 92,50; 96,50; 
+      connect(ramp.y, sink.p_in) annotation (points=[77,52; 92,52; 92,50; 96,50;
             96,17.5; 76.8,17.5], style(color=74, rgbcolor={0,0,127}));
     end BetaSystem_01;
     
     model GammaSystem_01 
       
-      Sources.GammaFlowSourceB source(
+      FluidConcept.BoundaryConditions.GammaFlowSourceB source(
         T=300,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         m_flow=0.1,
-        p=1.2e5, 
+        p=1.2e5,
         useMassFlowRate=false) 
                               annotation (extent=[-100,0; -80,20]);
-      model PipeModel=FluidFlow.GammaFlow;
-      FluidFlow.GammaFlow pipe1(
+      model PipeModel=FluidConcept.DistributedFlow.GammaDistributedFlow;
+      FluidConcept.DistributedFlow.GammaDistributedFlow pipe1(
         diameter=0.01,
         T0=400,
         length=1,
@@ -1370,14 +1734,14 @@ solving a non-linear equation.
         n=2) 
         annotation (extent=[-72,0; -52,20]);
       annotation (Diagram);
-      Sources.GammaFlowSourceA sink(
+      FluidConcept.BoundaryConditions.GammaFlowSourceA sink(
         useMassFlowRate=false,
         p=1e5,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-        usePressureInput=true, 
+        usePressureInput=true,
         T=400) 
         annotation (extent=[80,0; 60,20]);
-      FluidFlow.GammaFlow pipe2(
+      FluidConcept.DistributedFlow.GammaDistributedFlow pipe2(
         T0=400,
         length=1,
         diameter=0.005,
@@ -1387,7 +1751,7 @@ solving a non-linear equation.
         p0_a=1.19e5,
         n=2) 
         annotation (extent=[-20,14; 0,34]);
-      FluidFlow.GammaFlow pipe3(
+      FluidConcept.DistributedFlow.GammaDistributedFlow pipe3(
         diameter=0.01,
         T0=400,
         length=1,
@@ -1397,7 +1761,7 @@ solving a non-linear equation.
         p0_a=1.19e5,
         n=2) 
         annotation (extent=[-18,-18; 2,2]);
-      FluidFlow.GammaFlow pipe4(
+      FluidConcept.DistributedFlow.GammaDistributedFlow pipe4(
         diameter=0.01,
         T0=400,
         length=1,
@@ -1410,7 +1774,7 @@ solving a non-linear equation.
       Junctions.GammaJunction junction(
         n_b=2,
         p0=1.20e5,
-        T0=400, 
+        T0=400,
         V=0.001) 
                 annotation (extent=[-50,0; -30,20]);
       Modelica.Blocks.Sources.Ramp ramp(
@@ -1433,17 +1797,17 @@ solving a non-linear equation.
           gradient=3,
           fillColor=71,
           rgbfillColor={85,170,255}));
-      connect(pipe2.port_b, pipe4.port_a) annotation (points=[0.9,23.7; 18,23.7; 
+      connect(pipe2.port_b, pipe4.port_a) annotation (points=[0.9,23.7; 18,23.7;
             18,9.7; 31.1,9.7], style(color=3, rgbcolor={0,0,255}));
-      connect(pipe4.port_a, pipe3.port_b) annotation (points=[31.1,9.7; 18,9.7; 
+      connect(pipe4.port_a, pipe3.port_b) annotation (points=[31.1,9.7; 18,9.7;
             18,-8.3; 2.9,-8.3], style(color=3, rgbcolor={0,0,255}));
-      connect(pipe1.port_b, junction.port_a[1]) annotation (points=[-51.1,9.7; 
+      connect(pipe1.port_b, junction.port_a[1]) annotation (points=[-51.1,9.7;
             -46.1,9.7],                           style(color=3, rgbcolor={0,0,
               255}));
-      connect(junction.port_b[1], pipe2.port_a) annotation (points=[-34.3,8.95; 
+      connect(junction.port_b[1], pipe2.port_a) annotation (points=[-34.3,8.95;
             -34.3,17.85; -20.9,17.85; -20.9,23.7], style(color=3, rgbcolor={0,0,
               255}));
-      connect(junction.port_b[2], pipe3.port_a) annotation (points=[-34.3,10.45; 
+      connect(junction.port_b[2], pipe3.port_a) annotation (points=[-34.3,10.45;
             -34.3,-8.3; -18.9,-8.3], style(color=3, rgbcolor={0,0,255}));
       connect(ramp.y, sink.p_in) annotation (points=[67,42; 88,42; 88,17.5;
             76.8,17.5], style(color=74, rgbcolor={0,0,127}));
@@ -1451,7 +1815,7 @@ solving a non-linear equation.
     
     model DeltaSystem_01 
       
-      Sources.AlphaFlowSource source(
+      FluidConcept.BoundaryConditions.AlphaFlowSourceB source(
         T=300,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         m_flow=0.1,
@@ -1459,52 +1823,52 @@ solving a non-linear equation.
         useMassFlowRate=false) 
                               annotation (extent=[-100,0; -80,20]);
       
-      FluidFlow.DeltaFlow pipe1(
+      FluidConcept.DistributedFlow.DeltaDistributedFlow pipe1(
         diameter=0.01,
         T0=400,
         length=1,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         redeclare package PressureDrop = FluidConcept.WallFriction.Detailed,
         p0_a=1.25e5,
-        p0_b=1.20e5, 
+        p0_b=1.20e5,
         n=2) 
         annotation (extent=[-72,0; -52,20]);
       annotation (Diagram);
-      Sources.AlphaFlowSource sink(
+      FluidConcept.BoundaryConditions.AlphaFlowSourceB sink(
         useMassFlowRate=false,
         p=1e5,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         T=400,
         usePressureInput=true) 
         annotation (extent=[80,0; 60,20]);
-      FluidFlow.DeltaFlow pipe2(
+      FluidConcept.DistributedFlow.DeltaDistributedFlow pipe2(
         T0=400,
         length=1,
         diameter=0.005,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         redeclare package PressureDrop = FluidConcept.WallFriction.Detailed,
         p0_a=1.20e5,
-        p0_b=1.16e5, 
+        p0_b=1.16e5,
         n=2) 
         annotation (extent=[-20,14; 0,34]);
-      FluidFlow.DeltaFlow pipe3(
+      FluidConcept.DistributedFlow.DeltaDistributedFlow pipe3(
         diameter=0.01,
         T0=400,
         length=1,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         redeclare package PressureDrop = FluidConcept.WallFriction.Detailed,
         p0_a=1.20e5,
-        p0_b=1.16e5, 
+        p0_b=1.16e5,
         n=2) 
         annotation (extent=[-18,-18; 2,2]);
-      FluidFlow.DeltaFlow pipe4(
+      FluidConcept.DistributedFlow.DeltaDistributedFlow pipe4(
         diameter=0.01,
         T0=400,
         length=1,
         redeclare package Medium = Modelica.Media.Air.DryAirNasa,
         redeclare package PressureDrop = FluidConcept.WallFriction.Detailed,
         p0_a=1.15e5,
-        p0_b=1.01e5, 
+        p0_b=1.01e5,
         n=2) 
         annotation (extent=[32,0; 52,20]);
       Modelica.Blocks.Sources.Ramp ramp(
@@ -1529,19 +1893,559 @@ solving a non-linear equation.
           rgbfillColor={85,170,255}));
       connect(pipe1.port_b, pipe2.port_a) annotation (points=[-51.1,9.7; -38,
             9.7; -38,23.7; -20.9,23.7], style(color=3, rgbcolor={0,0,255}));
-      connect(pipe2.port_b, pipe4.port_a) annotation (points=[0.9,23.7; 18,23.7; 
+      connect(pipe2.port_b, pipe4.port_a) annotation (points=[0.9,23.7; 18,23.7;
             18,9.7; 31.1,9.7], style(color=3, rgbcolor={0,0,255}));
       connect(pipe1.port_b, pipe3.port_a) annotation (points=[-51.1,9.7; -38,
             9.7; -38,-8.3; -18.9,-8.3], style(color=3, rgbcolor={0,0,255}));
-      connect(pipe4.port_a, pipe3.port_b) annotation (points=[31.1,9.7; 18,9.7; 
+      connect(pipe4.port_a, pipe3.port_b) annotation (points=[31.1,9.7; 18,9.7;
             18,-8.3; 2.9,-8.3], style(color=3, rgbcolor={0,0,255}));
-      connect(ramp.y, sink.p_in) annotation (points=[77,52; 92,52; 92,17.5; 
+      connect(ramp.y, sink.p_in) annotation (points=[77,52; 92,52; 92,17.5;
             76.8,17.5], style(color=74, rgbcolor={0,0,127}));
     end DeltaSystem_01;
     
+    model AlphaSystem_02 
+      FluidConcept.BoundaryConditions.AlphaFlowSourceA source(
+        T=300,
+        m_flow=0.1,
+        p=1.2e5,
+        useMassFlowRate=false,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                              annotation (extent=[-100,0; -80,20]);
+      
+      FluidConcept.BoundaryConditions.AlphaFlowSourceA sink(
+        useMassFlowRate=false,
+        p=1e5,
+        usePressureInput=true,
+        T=400,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+        annotation (extent=[80,0; 60,20]);
+      Modelica.Blocks.Sources.Ramp ramp(
+        height=0.5e5,
+        duration=1,
+        offset=1.0e5,
+        startTime=1) annotation (extent=[66,52; 86,72]);
+      ControlVolumes.AlphaCV alphaCV(
+        length=0.1,
+        diameter=0.02,
+        p0=1.1e5,
+        T0=300,
+        initType=Modelica_Fluid.Types.Init.InitialValues,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                     annotation (extent=[-50,0; -30,20]);
+      FlowModels.AlphaFM alphaFM(
+        diameter=0.02,
+        p0_a=1.2e5,
+        p0_b=1.1e5,
+        m_flow0=0.1,
+        length=0.2,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                 annotation (extent=[-70,2; -50,22]);
+      FlowModels.AlphaFM alphaFM1(
+        length=0.1,
+        diameter=0.02,
+        p0_a=1.1e5,
+        p0_b=1.05e5,
+        m_flow0=0.05,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                  annotation (extent=[-24,22; -4,42]);
+      FlowModels.AlphaFM alphaFM2(
+        length=0.1,
+        diameter=0.02,
+        p0_a=1.1e5,
+        p0_b=1.05e5,
+        m_flow0=0.05,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                  annotation (extent=[-22,-16; -2,4]);
+      ControlVolumes.AlphaCV alphaCV1(
+        length=0.1,
+        diameter=0.02,
+        p0=1.05e5,
+        T0=300,
+        initType=Modelica_Fluid.Types.Init.InitialValues,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                      annotation (extent=[4,2; 24,22]);
+      FlowModels.AlphaFM alphaFM3(
+        length=0.1,
+        diameter=0.02,
+        p0_a=1.05e5,
+        p0_b=1.0e5,
+        m_flow0=0.1,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                  annotation (extent=[32,2; 52,22]);
+    equation 
+      connect(ramp.y, sink.p_in) annotation (points=[87,62; 98,62; 98,17.5;
+            76.8,17.5], style(color=74, rgbcolor={0,0,127}));
+      connect(source.port, alphaFM.port_a) annotation (points=[-79.1,9.7;
+            -74.55,9.7; -74.55,12.7; -66.9,12.7],
+                                         style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaFM.port_b, alphaCV.port_a) annotation (points=[-53.1,12.7;
+            -50.55,12.7; -50.55,9.7; -46.9,9.7],
+                                         style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaFM1.port_a, alphaCV.port_b) annotation (points=[-20.9,32.7; -32,
+            32.7; -32,9.7; -33.1,9.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaCV.port_b, alphaFM2.port_a) annotation (points=[-33.1,9.7; -33.1,
+            -5.3; -18.9,-5.3], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaFM1.port_b, alphaCV1.port_a) annotation (points=[-7.1,32.7; 7.1,
+            32.7; 7.1,11.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaFM2.port_b, alphaCV1.port_a) annotation (points=[-5.1,-5.3; 7.1,
+            -5.3; 7.1,11.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaCV1.port_b, alphaFM3.port_a) annotation (points=[20.9,11.7;
+            28.45,11.7; 28.45,12.7; 35.1,12.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaFM3.port_b, sink.port) annotation (points=[48.9,12.7; 53.45,12.7;
+            53.45,9.7; 59.1,9.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      annotation (Diagram);
+    end AlphaSystem_02;
+    
+    model AlphaPVSystem_02 
+      FluidConcept.BoundaryConditions.AlphaFlowSourceA source(
+        T=300,
+        m_flow=0.1,
+        p=1.2e5,
+        useMassFlowRate=false,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
+                              annotation (extent=[-100,0; -80,20]);
+      
+      FluidConcept.BoundaryConditions.AlphaFlowSourceA sink(
+        useMassFlowRate=false,
+        p=1e5,
+        usePressureInput=true,
+        T=400,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
+        annotation (extent=[80,0; 60,20]);
+      Modelica.Blocks.Sources.Ramp ramp(
+        height=0.5e5,
+        duration=1,
+        offset=1.0e5,
+        startTime=1) annotation (extent=[66,52; 86,72]);
+      ControlVolumes.AlphaCVPortVolume alphaCV(
+        diameter=0.01,
+        initType=Modelica_Fluid.Types.Init.InitialValues,
+        T0=300,
+        p0=1.1e5,
+        length=0.01,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                     annotation (extent=[-52,0; -32,20]);
+      FlowModels.AlphaFM alphaFM(
+        length=1,
+        diameter=0.01,
+        p0_a=1.2e5,
+        p0_b=1.1e5,
+        m_flow0=0.1,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
+                                 annotation (extent=[-72,-2; -52,18]);
+      FlowModels.AlphaFM alphaFM1(
+        length=1,
+        diameter=0.01,
+        p0_a=1.1e5,
+        p0_b=1.05e5,
+        m_flow0=0.05,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
+                                  annotation (extent=[-24,22; -4,42]);
+      FlowModels.AlphaFM alphaFM2(
+        length=1,
+        diameter=0.01,
+        p0_a=1.1e5,
+        p0_b=1.05e5,
+        m_flow0=0.05,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
+                                  annotation (extent=[-22,-16; -2,4]);
+      ControlVolumes.AlphaCVPortVolume alphaCV1(
+        diameter=0.01,
+        initType=Modelica_Fluid.Types.Init.InitialValues,
+        T0=300,
+        p0=1.05e5,
+        redeclare package Medium = Modelica.Media.Water.StandardWater,
+        length=0.01)                  annotation (extent=[4,2; 24,22]);
+      FlowModels.AlphaFM alphaFM3(
+        length=1,
+        diameter=0.01,
+        p0_a=1.05e5,
+        p0_b=1.0e5,
+        m_flow0=0.1,
+        redeclare package Medium = Modelica.Media.Water.StandardWater) 
+                                  annotation (extent=[32,2; 52,22]);
+    equation 
+      connect(ramp.y, sink.p_in) annotation (points=[87,62; 98,62; 98,17.5;
+            76.8,17.5], style(color=74, rgbcolor={0,0,127}));
+      connect(source.port, alphaFM.port_a) annotation (points=[-79.1,9.7; -74.55,
+            9.7; -74.55,8.7; -68.9,8.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaFM3.port_b, sink.port) annotation (points=[48.9,12.7; 53.45,12.7;
+            53.45,9.7; 59.1,9.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      annotation (Diagram);
+      connect(alphaFM.port_b, alphaCV.port) annotation (points=[-55.1,8.7; 
+            -47.55,8.7; -47.55,9.7; -41.9,9.7],   style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaCV.port, alphaFM1.port_a) annotation (points=[-41.9,9.7; 
+            -41.9,31.85; -20.9,31.85; -20.9,32.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaCV.port, alphaFM2.port_a) annotation (points=[-41.9,9.7; 
+            -38.95,9.7; -38.95,-5.3; -18.9,-5.3],  style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaCV1.port, alphaFM2.port_b) annotation (points=[14.1,11.7;
+            15.05,11.7; 15.05,-5.3; -5.1,-5.3], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaFM1.port_b, alphaCV1.port) annotation (points=[-7.1,32.7;
+            14.45,32.7; 14.45,11.7; 14.1,11.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(alphaCV1.port, alphaFM3.port_a) annotation (points=[14.1,11.7;
+            25.05,11.7; 25.05,12.7; 35.1,12.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+    end AlphaPVSystem_02;
+    
+    model GammaSystem_02 
+      FluidConcept.BoundaryConditions.GammaFlowSourceA source(
+        T=300,
+        m_flow=0.1,
+        p=1.2e5,
+        useMassFlowRate=false,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                              annotation (extent=[-100,0; -80,20]);
+      
+      FluidConcept.BoundaryConditions.GammaFlowSourceA sink(
+        useMassFlowRate=false,
+        p=1e5,
+        usePressureInput=true,
+        T=400,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+        annotation (extent=[80,0; 60,20]);
+      Modelica.Blocks.Sources.Ramp ramp(
+        height=0.5e5,
+        duration=1,
+        offset=1.0e5,
+        startTime=1) annotation (extent=[66,52; 86,72]);
+      ControlVolumes.GammaCV CV1(
+        diameter=0.01,
+        initType=Modelica_Fluid.Types.Init.InitialValues,
+        T0=300,
+        p0=1.1e5,
+        length=0.01,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                     annotation (extent=[-50,0; -30,20]);
+      FlowModels.GammaFM FM1(
+        length=1,
+        diameter=0.01,
+        p0_a=1.2e5,
+        p0_b=1.1e5,
+        m_flow0=0.1,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                 annotation (extent=[-72,-2; -52,18]);
+      FlowModels.GammaFM FM2(
+        length=1,
+        diameter=0.01,
+        p0_a=1.1e5,
+        p0_b=1.05e5,
+        m_flow0=0.05,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                  annotation (extent=[-24,22; -4,42]);
+      FlowModels.GammaFM FM3(
+        length=1,
+        diameter=0.01,
+        p0_a=1.1e5,
+        p0_b=1.05e5,
+        m_flow0=0.05,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                  annotation (extent=[-22,-16; -2,4]);
+      ControlVolumes.GammaCV CV2(
+        diameter=0.01,
+        initType=Modelica_Fluid.Types.Init.InitialValues,
+        T0=300,
+        p0=1.05e5,
+        length=0.01,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                      annotation (extent=[4,2; 24,22]);
+      FlowModels.GammaFM FM4(
+        length=1,
+        diameter=0.01,
+        p0_a=1.05e5,
+        p0_b=1.0e5,
+        m_flow0=0.1,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                  annotation (extent=[32,2; 52,22]);
+    equation 
+      connect(ramp.y, sink.p_in) annotation (points=[87,62; 98,62; 98,17.5;
+            76.8,17.5], style(color=74, rgbcolor={0,0,127}));
+      connect(source.port, FM1.port_a)     annotation (points=[-79.1,9.7; -74.55,
+            9.7; -74.55,8.7; -68.9,8.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(FM4.port_b, sink.port)      annotation (points=[48.9,12.7; 53.45,12.7;
+            53.45,9.7; 59.1,9.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      annotation (Diagram);
+      connect(FM1.port_b, CV1.port) annotation (points=[-55.1,8.7; -47.55,8.7;
+            -47.55,9.7; -39.9,9.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(FM2.port_a, CV1.port) annotation (points=[-20.9,32.7; -20.9,21.35;
+            -39.9,21.35; -39.9,9.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(CV1.port, FM3.port_a) annotation (points=[-39.9,9.7; -29.95,9.7;
+            -29.95,-5.3; -18.9,-5.3], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(FM2.port_b, CV2.port) annotation (points=[-7.1,32.7; 4.45,32.7;
+            4.45,11.7; 14.1,11.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(CV2.port, FM3.port_b) annotation (points=[14.1,11.7; 5.05,11.7;
+            5.05,-5.3; -5.1,-5.3], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(CV2.port, FM4.port_a) annotation (points=[14.1,11.7; 25.05,11.7;
+            25.05,12.7; 35.1,12.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+    end GammaSystem_02;
+    
+    model BetaSystem_02 
+      FluidConcept.BoundaryConditions.BetaFlowSourceB source(
+        T=300,
+        m_flow=0.1,
+        p=1.2e5,
+        useMassFlowRate=false,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                              annotation (extent=[-100,0; -80,20]);
+      
+      FluidConcept.BoundaryConditions.BetaFlowSourceA sink(
+        useMassFlowRate=false,
+        p=1e5,
+        usePressureInput=true,
+        T=400,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+        annotation (extent=[80,0; 60,20]);
+      Modelica.Blocks.Sources.Ramp ramp(
+        height=0.5e5,
+        duration=1,
+        offset=1.0e5,
+        startTime=1) annotation (extent=[66,52; 86,72]);
+      FlowModels.BetaFM FM1(
+        length=1,
+        diameter=0.01,
+        p0_a=1.2e5,
+        p0_b=1.1e5,
+        m_flow0=0.1,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                 annotation (extent=[-72,-2; -52,18]);
+      FlowModels.BetaFM FM2(
+        length=1,
+        diameter=0.01,
+        p0_a=1.1e5,
+        p0_b=1.05e5,
+        m_flow0=0.05,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                  annotation (extent=[-24,28; -4,48]);
+      FlowModels.BetaFM FM3(
+        length=1,
+        diameter=0.01,
+        p0_a=1.1e5,
+        p0_b=1.05e5,
+        m_flow0=0.05,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                  annotation (extent=[-22,-16; -2,4]);
+      FlowModels.BetaFM FM4(
+        length=1,
+        diameter=0.01,
+        p0_a=1.05e5,
+        p0_b=1.0e5,
+        m_flow0=0.1,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+                                  annotation (extent=[32,2; 52,22]);
+      ControlVolumes.BetaCV CV1(
+        diameter=0.01,
+        initType=Modelica_Fluid.Types.Init.InitialValues,
+        T0=300,
+        p0=1.1e5,
+        length=0.01,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa,
+        na=1,
+        nb=2)                        annotation (extent=[-48,0; -28,20]);
+      ControlVolumes.BetaCV CV2(
+        diameter=0.01,
+        initType=Modelica_Fluid.Types.Init.InitialValues,
+        T0=300,
+        p0=1.05e5,
+        length=0.01,
+        redeclare package Medium = Modelica.Media.Air.DryAirNasa,
+        na=2,
+        nb=1)                         annotation (extent=[4,4; 24,24]);
+    equation 
+      connect(ramp.y, sink.p_in) annotation (points=[87,62; 98,62; 98,17.5;
+            76.8,17.5], style(color=74, rgbcolor={0,0,127}));
+      annotation (Diagram);
+      connect(source.port, FM1.port_a) annotation (points=[-79.1,9.7; -72.55,
+            9.7; -72.55,8.7; -68.9,8.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(FM4.port_b, sink.port) annotation (points=[48.9,12.7; 54.45,12.7;
+            54.45,9.7; 59.1,9.7], style(
+          color=3,
+          rgbcolor={0,0,255},
+          thickness=2,
+          fillColor=7,
+          rgbfillColor={255,255,255},
+          fillPattern=1));
+      connect(FM1.port_b, CV1.port_a[1]) annotation (points=[-55.1,8.7; -49.55,
+            8.7; -49.55,9.7; -44.9,9.7], style(
+          color=3, 
+          rgbcolor={0,0,255}, 
+          thickness=2));
+      connect(CV1.port_b[2], FM3.port_a) annotation (points=[-31.1,10.45; -28,
+            10.45; -28,-5.3; -18.9,-5.3], style(
+          color=3, 
+          rgbcolor={0,0,255}, 
+          thickness=2));
+      connect(FM3.port_b, CV2.port_a[2]) annotation (points=[-5.1,-5.3; 6,-5.3; 
+            6,14.45; 7.1,14.45], style(
+          color=3, 
+          rgbcolor={0,0,255}, 
+          thickness=2));
+      connect(CV2.port_b[1], FM4.port_a) annotation (points=[20.9,13.7; 27.45,
+            13.7; 27.45,12.7; 35.1,12.7], style(
+          color=3, 
+          rgbcolor={0,0,255}, 
+          thickness=2));
+      connect(FM2.port_a, CV1.port_b[1]) annotation (points=[-20.9,38.7; -20.9,
+            40; -30,40; -30,8.95; -31.1,8.95], style(
+          color=3, 
+          rgbcolor={0,0,255}, 
+          thickness=2));
+      connect(FM2.port_b, CV2.port_a[1]) annotation (points=[-7.1,38.7; -7.1,
+            39.35; 7.1,39.35; 7.1,12.95], style(
+          color=3, 
+          rgbcolor={0,0,255}, 
+          thickness=2));
+    end BetaSystem_02;
   end Systems;
   
-  package Sources 
+  package BoundaryConditions "Sources and sinks, boundary conditions" 
     partial model PartialFlowSource 
       "Ideal flow source that produces a prescribed mass flow with prescribed temperature and mass fraction" 
       replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
@@ -1690,13 +2594,13 @@ solving a non-linear equation.
       end if;
     end PartialFlowSource;
     
-    model AlphaFlowSource 
+    model AlphaFlowSourceB 
       extends PartialFlowSource;
       
       parameter Modelica_Fluid.Types.SourceFlowDirection.Temp flowDirection=
           Modelica_Fluid.Types.SourceFlowDirection.Bidirectional 
         "Allowed flow direction"               annotation(Evaluate=true, Dialog(tab="Advanced"));
-      FluidConcept.Interfaces.AlphaFlowPortA port(
+      Interfaces.AlphaFlowPortB port(
                        m_flow(max=if flowDirection==Modelica_Fluid.Types.SourceFlowDirection.OutOfPort then 
                      0 else  +Modelica.Constants.inf,
                               min=if flowDirection==Modelica_Fluid.Types.SourceFlowDirection.InToPort then 
@@ -1721,7 +2625,7 @@ solving a non-linear equation.
               fillColor=71,
               rgbfillColor={85,170,255}),
             string="alpha")));
-    end AlphaFlowSource;
+    end AlphaFlowSourceB;
     
     model GammaFlowSourceA 
       extends PartialFlowSource;
@@ -1778,7 +2682,7 @@ solving a non-linear equation.
       medium.p = p_in_internal;
     end if;
       port.p = medium.p;
-      port.h_a = medium.h;
+      port.h_ab = medium.h;
       
       annotation (Icon(
           Text(
@@ -1848,7 +2752,7 @@ solving a non-linear equation.
       medium.p = p_in_internal;
     end if;
       port.p = medium.p;
-      port.h_b = medium.h;
+      port.h_ba = medium.h;
       
       annotation (Icon(
           Text(
@@ -1861,9 +2765,42 @@ solving a non-linear equation.
               rgbfillColor={85,170,255}),
             string="beta")));
     end BetaFlowSourceB;
-  end Sources;
+    
+    model AlphaFlowSourceA 
+      extends PartialFlowSource;
+      
+      parameter Modelica_Fluid.Types.SourceFlowDirection.Temp flowDirection=
+          Modelica_Fluid.Types.SourceFlowDirection.Bidirectional 
+        "Allowed flow direction"               annotation(Evaluate=true, Dialog(tab="Advanced"));
+      Interfaces.AlphaFlowPortA port(
+                       m_flow(max=if flowDirection==Modelica_Fluid.Types.SourceFlowDirection.OutOfPort then 
+                     0 else  +Modelica.Constants.inf,
+                              min=if flowDirection==Modelica_Fluid.Types.SourceFlowDirection.InToPort then 
+                     0 else  -Modelica.Constants.inf)) 
+                                    annotation (extent=[94,-18; 124,12]);
+      
+    equation 
+    if useMassFlowRate then
+      port.m_flow = -m_flow_in_internal;
+    else
+      medium.p = p_in_internal;
+    end if;
+      port.p = medium.p;
+      port.h=medium.h;
+      annotation (Icon(
+          Text(
+            extent=[-86,18; 48,-16],
+            style(
+              color=0,
+              rgbcolor={0,0,0},
+              gradient=2,
+              fillColor=71,
+              rgbfillColor={85,170,255}),
+            string="alpha")));
+    end AlphaFlowSourceA;
+  end BoundaryConditions;
   
-  package Junctions 
+  package Junctions "Junction models for branching systems" 
     model AlphaJunction 
       
       annotation (Diagram, Icon(
@@ -2123,13 +3060,13 @@ solving a non-linear equation.
     equation 
       for i in 1:n_a loop
         port_a[i].p = medium.p;
-        port_a[i].h_a = medium.h;
-        H_flow_a[i] = if noEvent(port_a[i].m_flow>=0) then port_a[i].m_flow*port_a[i].h_b else port_a[i].m_flow*port_a[i].h_a;
+        port_a[i].h_ab = medium.h;
+        H_flow_a[i] = if noEvent(port_a[i].m_flow>=0) then port_a[i].m_flow*port_a[i].h_ba else port_a[i].m_flow*port_a[i].h_ab;
       end for;
       for i in 1:n_b loop
-        port_b[i].h_b = medium.h;
+        port_b[i].h_ba = medium.h;
         port_b[i].p - medium.p = C*port_b[i].m_flow;
-        H_flow_b[i] =if  noEvent(port_b[i].m_flow>=0) then port_b[i].m_flow*port_b[i].h_a else port_b[i].m_flow*port_b[i].h_b;
+        H_flow_b[i] =if  noEvent(port_b[i].m_flow>=0) then port_b[i].m_flow*port_b[i].h_ab else port_b[i].m_flow*port_b[i].h_ba;
       end for;
       
       M = medium.d*V;
