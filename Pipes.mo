@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Pipes "Lumped, distributed and thermal pipe components" 
     extends Modelica_Fluid.Icons.VariantLibrary;
   
@@ -1296,7 +1297,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
       parameter Medium.MassFlowRate mflow_start 
-        "Start value for mass flow rate"                                       annotation(Evaluate=true, Dialog(tab = "Initialization"));
+        "Start value for mass flow rate" 
+       annotation(Evaluate=true, Dialog(tab = "Initialization"));
       final parameter SI.Pressure dp_start=p_a_start - p_b_start;
       
   //Geometry
