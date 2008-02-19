@@ -945,4 +945,17 @@ solving a non-linear equation.
       dp(start=p_a_start - p_b_start));
     
   end WallFriction;
+
+  model WallFrictionAA 
+    "Pressure drop in pipe due to wall friction (for both flow directions, with two PortA's)" 
+    annotation (defaultComponentName="pipeFriction");
+    
+    extends BaseClasses.PartialWallFrictionWithSmoothing;
+    extends FluidInterface.PartialTwoPortTransportAA(
+      m_flow(start=m_flow_start),
+      port_a(p(start=p_a_start)),
+      port_b(p(start=p_b_start)),
+      dp(start=p_a_start - p_b_start));
+    
+  end WallFrictionAA;
 end PressureLosses;

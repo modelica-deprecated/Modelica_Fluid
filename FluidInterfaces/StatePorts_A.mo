@@ -374,4 +374,17 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 </ul>
 </html>"));
   end PartialSymmetricDistributedPipe;
+
+  redeclare replaceable partial model extends PartialTwoPortTransportAA 
+    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, illegal in this approach)" 
+    
+  equation 
+    assert(false, "A PartialTwoPortTransport with PortA interfaces is illegal in the StatePorts_A approach.");
+    
+    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
+            color=1,
+            rgbcolor={255,0,0},
+            pattern=2,
+            thickness=2))));
+  end PartialTwoPortTransportAA;
 end StatePorts_A;

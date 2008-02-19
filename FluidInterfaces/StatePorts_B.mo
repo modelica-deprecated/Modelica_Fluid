@@ -417,4 +417,58 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 </ul>
 </html>"));
   end PartialSymmetricDistributedPipe;
+
+  redeclare replaceable partial model extends PartialTwoPortTransportAA 
+    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
+    
+    Medium.BaseProperties medium_a 
+      "Port medium related to port_a (in this approach, this is sensible and allowed)";
+    Medium.BaseProperties medium_b 
+      "Port medium related to port_b (in this approach, this is sensible and allowed)";
+    
+  equation 
+    // Mass balance
+    port_a.m_flow + port_b.m_flow = 0;
+    // Enthalpy flow rate
+    port_a.H_flow = semiLinear(
+            port_a.m_flow,
+            port_a.h,
+            port_b.h) + G*(medium_a.T - medium_b.T);
+    port_b.H_flow = -port_a.H_flow "No storage";
+    // Mass fraction propagation, substance mass balance
+    port_a.mXi_flow = semiLinear(
+            port_a.m_flow,
+            port_a.Xi,
+            port_b.Xi) + H*(medium_a.Xi - medium_b.Xi);
+    port_b.mXi_flow = port_a.mXi_flow "No storage";
+    
+    // Port media
+    medium_a.p = port_a.p;
+    medium_a.h = port_a.h;
+    medium_a.Xi = port_a.Xi;
+    medium_b.p = port_b.p;
+    medium_b.h = port_b.h;
+    medium_b.Xi = port_b.Xi;
+    
+    // Design direction of mass flow rate
+    m_flow = port_a.m_flow;
+    
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
+    
+    // This approach provides upstream and downstream properties (FM-FM connections might be considered an exception)
+    p_designDirection = port_a.p 
+      "Upstream pressure if flow is in design direction";
+    h_designDirection = port_a.h 
+      "Upstream specific enthalpy if flow is in design direction";
+    Xi_designDirection = port_a.Xi 
+      "Upstream mass fractions if flow is in design direction";
+    p_nonDesignDirection = port_b.p 
+      "Upstream pressure if flow is in non-design direction";
+    h_nonDesignDirection = port_b.h 
+      "Upstream specific enthalpy if flow is in non-design direction";
+    Xi_nonDesignDirection = port_b.Xi 
+      "Upstream mass fractions if flow is in non-design direction";
+    
+  end PartialTwoPortTransportAA;
 end StatePorts_B;

@@ -1,5 +1,5 @@
 model FM_CV_FM_2 
-  "Boundary condition (pressure) - flow model - control volume - flow model - boundary condition (pressure)" 
+  "Boundary condition (mass flow rate) - flow model - control volume - flow model - boundary condition (pressure)" 
   extends Icons.Example;
   FluidSandbox.Sources.PrescribedBoundary_pTX_A source2(
     redeclare package Medium = Medium,
@@ -93,9 +93,9 @@ equation
         8; 64,10; 60,10],     style(color=69, rgbcolor={0,127,255}));
   connect(semantics3.port_b, source2.port) annotation (points=[76,8; 80,8; 80,
         -10], style(color=69, rgbcolor={0,127,255}));
-  
-  // Use plain connections is no new semantics are required for this approach
   if not FluidInterface.usesNewConnectionSemantics then
+    
+  // Use plain connections is no new semantics are required for this approach
     connect(pipeFriction1.port_a, prescribedMassFlowRate_TX_A.port) 
                                                                   annotation (
       points=[-60,10; -62,10; -62,12; -80,12; -80,30], style(color=69, rgbcolor=
@@ -109,8 +109,8 @@ equation
           14,10; 14,12; 34,12; 34,10; 40,10],   style(color=69, rgbcolor={0,127,
           255}));
     connect(pipeFriction2.port_a, source2.port) 
-                                              annotation (points=[60,10;
-          64,10; 64,12; 80,12; 80,-10],
+                                              annotation (points=[60,10; 64,10;
+          64,12; 80,12; 80,-10],
                                style(color=69, rgbcolor={0,127,255}));
   end if;
   connect(sine1.y, prescribedMassFlowRate_TX_A.m_flow_in) annotation (
