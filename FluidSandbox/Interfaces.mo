@@ -360,6 +360,56 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
             style(gradient=2, fillColor=69))));
       
     end PartialSymmetricDistributedPipe;
+
+    replaceable partial model PartialTwoPortTransportAA 
+      "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, not supported for all interfaces)" 
+      
+      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+        "Medium in the component"                                          annotation (
+          choicesAllMatching =                                                                            true);
+      
+      FluidPort_a port_a(redeclare package Medium = Medium) 
+        "Fluid connector a (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[-110,-10; -90,10]);
+      FluidPort_a port_b(redeclare package Medium = Medium) 
+        "Fluid connector b (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[110,-10; 90,10]);
+      
+      Medium.MassFlowRate m_flow 
+        "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
+      SI.Pressure dp "Pressure drop between port_a and port_b";
+      
+      // Used for some approaches only
+      SI.ThermalConductance G=0 
+        "Conductive heat flow through component (used in some fluid interfaces only)";
+      SI.DiffusionCoefficient H=0 
+        "Mass diffusion through component (used in some fluid interfaces only)";
+      
+      // Properties for fluid flowing in design direction, have to be provided by PartialTwoPortTransport
+      // Used in pressure drop correlation
+      Medium.AbsolutePressure p_designDirection 
+        "Pressure for flow in design direction";
+      Medium.SpecificEnthalpy h_designDirection 
+        "Specific mixing enthalpy for flow in design direction";
+      Medium.MassFraction Xi_designDirection[Medium.nXi] 
+        "Mass fractions for flow in design direction";
+      
+      // Properties for fluid flowing in non-design direction, have to be provided by PartialTwoPortTransport
+      // Used in pressure drop correlation
+      Medium.AbsolutePressure p_nonDesignDirection 
+        "Pressure for flow in non-design direction";
+      Medium.SpecificEnthalpy h_nonDesignDirection 
+        "Specific mixing enthalpy for flow in non-design direction";
+      Medium.MassFraction Xi_nonDesignDirection[Medium.nXi] 
+        "Mass fractions for flow in non-design direction";
+      
+      annotation (Icon(Text(
+            extent=[-144,119; 144,70],
+            string="%name",
+            style(gradient=2, fillColor=69))));
+    equation 
+      
+    end PartialTwoPortTransportAA;
   end PartialFluidInterface;
   
   partial package PartialFluidDiscretization 
