@@ -92,20 +92,20 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
-  redeclare replaceable partial model extends PartialTwoPortTransport 
+  redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
   equation 
-    // Mass balance
+    // Balance equations
     port_a.m_flow + port_b.m_flow = 0;
+    port_a.H_flow + port_b.H_flow = 0;
+    port_a.mXi_flow + port_b.mXi_flow = zeros(Medium.nXi);
     // Enthalpy flow rate
     port_a.H_flow = port_a.m_flow*noEvent(if port_a.m_flow > 0 then port_a.h else 
             port_b.h);
-    port_b.H_flow = -port_a.H_flow "No storage";
-    // Mass fraction propagation, substance mass balance
+    // Substance mass flow rates
     port_a.mXi_flow = port_a.m_flow*noEvent(if port_a.m_flow > 0 then 
       port_a.Xi else port_b.Xi);
-    port_b.mXi_flow = port_a.mXi_flow "No storage";
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
@@ -127,7 +127,99 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Xi_nonDesignDirection = port_b.Xi 
       "Upstream mass fractions if flow is in non-design direction";
     
-  end PartialTwoPortTransport;
+  end PartialTransportIsenthalpic;
+  
+  redeclare replaceable partial model extends PartialTransportIsenthalpicAA 
+    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, illegal in this approach)" 
+    
+  equation 
+    assert(false, "A PartialTransportIsenthalpic with PortA interfaces is illegal in the StatePorts_A approach.");
+    
+    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
+            color=1,
+            rgbcolor={255,0,0},
+            pattern=2,
+            thickness=2))));
+  end PartialTransportIsenthalpicAA;
+  
+  redeclare replaceable partial model extends PartialTransportIsenthalpicAB 
+    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, illegal in this approach)" 
+    
+  equation 
+    assert(false, "A PartialTransportIsenthalpic with a PortA and PortB is illegal in the StatePorts_A approach.");
+    
+    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
+            color=1,
+            rgbcolor={255,0,0},
+            pattern=2,
+            thickness=2))));
+  end PartialTransportIsenthalpicAB;
+  
+  redeclare replaceable partial model extends PartialTransportIsentropic 
+    "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
+    
+  equation 
+    // Balance equations
+    port_a.m_flow + port_b.m_flow = 0;
+    port_a.H_flow + port_b.H_flow + P_mechanical = 0;
+    port_a.mXi_flow + port_b.mXi_flow = zeros(Medium.nXi);
+    // Enthalpy flow rate
+    port_a.H_flow = port_a.m_flow*noEvent(if port_a.m_flow > 0 then port_a.h else 
+            port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_b)));
+    port_b.H_flow = port_b.m_flow*noEvent(if port_b.m_flow > 0 then port_b.h else 
+            port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_a)));
+    
+    // Substance mass flow rates
+    port_a.mXi_flow = port_a.m_flow*noEvent(if port_a.m_flow > 0 then 
+      port_a.Xi else port_b.Xi);
+    
+    // Design direction of mass flow rate
+    m_flow = port_a.m_flow;
+    
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
+    
+    // This approach provides upstream and downstream properties (FM-FM connections are illegal)
+    p_designDirection = port_a.p 
+      "Upstream pressure if flow is in design direction";
+    h_designDirection = port_a.h 
+      "Upstream specific enthalpy if flow is in design direction";
+    Xi_designDirection = port_a.Xi 
+      "Upstream mass fractions if flow is in design direction";
+    p_nonDesignDirection = port_b.p 
+      "Upstream pressure if flow is in non-design direction";
+    h_nonDesignDirection = port_b.h 
+      "Upstream specific enthalpy if flow is in non-design direction";
+    Xi_nonDesignDirection = port_b.Xi 
+      "Upstream mass fractions if flow is in non-design direction";
+    
+  end PartialTransportIsentropic;
+  
+  redeclare replaceable partial model extends PartialTransportIsentropicAA 
+    "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_a's, illegal in this approach)" 
+    
+  equation 
+    assert(false, "A PartialTransportIsentropic with PortA interfaces is illegal in the StatePorts_A approach.");
+    
+    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
+            color=1,
+            rgbcolor={255,0,0},
+            pattern=2,
+            thickness=2))));
+  end PartialTransportIsentropicAA;
+  
+  redeclare replaceable partial model extends PartialTransportIsentropicAB 
+    "Partial isentropic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, illegal in this approach)" 
+    
+  equation 
+    assert(false, "A PartialTransportIsentropic with a PortA and PortB is illegal in the StatePorts_A approach.");
+    
+    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
+            color=1,
+            rgbcolor={255,0,0},
+            pattern=2,
+            thickness=2))));
+  end PartialTransportIsentropicAB;
   
   redeclare replaceable partial model extends PartialIdealJunction 
     "Partial infinitesimal junction model" 
@@ -374,17 +466,5 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 </ul>
 </html>"));
   end PartialSymmetricDistributedPipe;
-
-  redeclare replaceable partial model extends PartialTwoPortTransportAA 
-    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, illegal in this approach)" 
-    
-  equation 
-    assert(false, "A PartialTwoPortTransport with PortA interfaces is illegal in the StatePorts_A approach.");
-    
-    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
-            color=1,
-            rgbcolor={255,0,0},
-            pattern=2,
-            thickness=2))));
-  end PartialTwoPortTransportAA;
+  
 end StatePorts_A;

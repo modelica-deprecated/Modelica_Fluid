@@ -13,12 +13,11 @@ model FM_FM_FM
     redeclare package FluidInterface = FluidInterface) 
            annotation (extent=[-90,-20; -70,0]);
   FluidSandbox.PressureLosses.WallFriction pipeFriction1(
-    redeclare package Medium = Medium, 
-    length=2, 
-    diameter=0.1, 
+    redeclare package Medium = Medium,
+    length=2,
+    diameter=0.1,
     redeclare package WallFriction = 
-        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent, 
-      
+        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
     redeclare package FluidInterface = FluidInterface) 
                                               annotation (extent=[-50,-20; -30,
         0]);
@@ -30,23 +29,23 @@ model FM_FM_FM
     offset=1e5) 
               annotation (extent=[-72,20; -92,40], rotation=0);
   PressureLosses.WallFrictionAA pipeFriction2(
-    redeclare package Medium = Medium, 
-    length=2, 
-    diameter=0.1, 
+    redeclare package Medium = Medium,
+    length=2,
+    diameter=0.1,
     redeclare package WallFriction = 
-        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent, 
-      
+        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
     redeclare package FluidInterface = FluidInterface) 
                                               annotation (extent=[-10,-20; 10,0]);
+  
   FluidSandbox.PressureLosses.WallFriction pipeFriction3(
-    redeclare package Medium = Medium, 
-    length=2, 
-    diameter=0.1, 
+    redeclare package Medium = Medium,
+    length=2,
+    diameter=0.1,
     redeclare package WallFriction = 
-        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent, 
-      
+        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
     redeclare package FluidInterface = FluidInterface) 
                                               annotation (extent=[30,-20; 50,0]);
+  
 equation 
   connect(sine.y, prescribedMassFlowRate_TX_A.p_in) 
     annotation (points=[-93,30; -96,30; -96,-4; -92,-4],

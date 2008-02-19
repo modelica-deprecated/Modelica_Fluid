@@ -56,7 +56,7 @@ equation
         -1.22461e-015; 15,-1.22461e-015; 15,0; 10,0],
                                      style(color=69, rgbcolor={0,127,255}));
   connect(source2.port, pipeFriction2.port_a)                  annotation (
-      points=[50,1.22461e-015; 47.5,1.22461e-015; 47.5,0; 45,0; 45,1.22461e-015; 
+      points=[50,1.22461e-015; 47.5,1.22461e-015; 47.5,0; 45,0; 45,1.22461e-015;
         40,1.22461e-015],                                    style(color=69,
         rgbcolor={0,127,255}));
   connect(sine1.y, prescribedMassFlowRate_TX_A.p_in) annotation (points=[-80,29;

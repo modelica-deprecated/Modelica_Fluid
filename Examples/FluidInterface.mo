@@ -1,3 +1,3 @@
 package FluidInterface = 
-    FluidInterfaces.SemiLinear_A1(redeclare package FluidDiscretization = 
-                            FluidDiscretization) "Based on Modelica_Fluid";
+    FluidInterfaces.EffortPairs_A(redeclare package FluidDiscretization = 
+                            FluidDiscretization) "Similar to ThermoPower";

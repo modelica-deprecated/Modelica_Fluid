@@ -65,15 +65,15 @@ equation
   connect(idealJunction.port_2, pipeFriction2.port_a) 
   annotation (points=[0,-10; 10,-10], style(color=69, rgbcolor={0,127,255}));
   connect(prescribedBoundary_pTX_A1.p_in, sine.y) 
-                                                annotation (points=[-4,62;
-        -4,70; -39,70],
+                                                annotation (points=[-4,62; -4,
+        70; -39,70],
                    style(color=74, rgbcolor={0,0,127}));
   connect(prescribedBoundary_pTX_A.port, pipeFriction1.port_a) 
                                                              annotation (
     points=[-60,-10; -50,-10], style(color=69, rgbcolor={0,127,255}));
   connect(pipeFriction3.port_b, prescribedBoundary_pTX_A1.port) 
                                                               annotation (
-    points=[-10,30; -10,40],                 style(color=69, rgbcolor={0,127,
+    points=[-10,30; -10,35; -10,40; -10,40], style(color=69, rgbcolor={0,127,
         255}));
   connect(pipeFriction2.port_b, prescribedBoundary_pTX_A2.port) 
                                                               annotation (

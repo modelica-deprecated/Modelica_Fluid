@@ -106,7 +106,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
-  redeclare replaceable partial model extends PartialTwoPortTransport 
+  redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
   equation 
@@ -139,8 +139,204 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Xi_nonDesignDirection = port_b.Xi_a 
       "Upstream mass fractions if flow is in non-design direction";
     
-  end PartialTwoPortTransport;
+  end PartialTransportIsenthalpic;
   
+  redeclare replaceable partial model extends PartialTransportIsenthalpicAA 
+    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
+    
+  equation 
+    // Mass balance
+    port_a.m_flow + port_b.m_flow = 0;
+    // Enthalpy propagation, energy balance
+    port_a.h_a = port_b.h_b;
+    port_b.h_a = port_a.h_b;
+    // Mass fraction propagation, substance mass balance
+    port_a.Xi_a = port_b.Xi_b;
+    port_b.Xi_a = port_a.Xi_b;
+    
+    // Design direction of mass flow rate
+    m_flow = port_a.m_flow;
+    
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
+    
+    // This approach provides upstream and downstream properties
+    p_designDirection = port_a.p 
+      "Upstream pressure if flow is in design direction";
+    h_designDirection = port_a.h_b 
+      "Upstream specific enthalpy if flow is in design direction";
+    Xi_designDirection = port_a.Xi_b 
+      "Upstream mass fractions if flow is in design direction";
+    p_nonDesignDirection = port_b.p 
+      "Upstream pressure if flow is in non-design direction";
+    h_nonDesignDirection = port_b.h_b 
+      "Upstream specific enthalpy if flow is in non-design direction";
+    Xi_nonDesignDirection = port_b.Xi_b 
+      "Upstream mass fractions if flow is in non-design direction";
+    
+  end PartialTransportIsenthalpicAA;
+  
+  redeclare replaceable partial model extends PartialTransportIsenthalpicAB 
+    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, allowed in this approach)" 
+    
+  equation 
+    // Mass balance
+    port_a.m_flow + port_b.m_flow = 0;
+    // Enthalpy propagation, energy balance
+    port_a.h_a = port_b.h_a;
+    port_b.h_b = port_a.h_b;
+    // Mass fraction propagation, substance mass balance
+    port_a.Xi_a = port_b.Xi_a;
+    port_b.Xi_b = port_a.Xi_b;
+    
+    // Design direction of mass flow rate
+    m_flow = port_a.m_flow;
+    
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
+    
+    // This approach provides upstream and downstream properties
+    p_designDirection = port_a.p 
+      "Upstream pressure if flow is in design direction";
+    h_designDirection = port_a.h_b 
+      "Upstream specific enthalpy if flow is in design direction";
+    Xi_designDirection = port_a.Xi_b 
+      "Upstream mass fractions if flow is in design direction";
+    p_nonDesignDirection = port_b.p 
+      "Upstream pressure if flow is in non-design direction";
+    h_nonDesignDirection = port_b.h_a 
+      "Upstream specific enthalpy if flow is in non-design direction";
+    Xi_nonDesignDirection = port_b.Xi_a 
+      "Upstream mass fractions if flow is in non-design direction";
+    
+  end PartialTransportIsenthalpicAB;
+  
+  redeclare replaceable partial model extends PartialTransportIsentropic 
+    "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
+    
+  equation 
+    // Mass balance
+    port_a.m_flow + port_b.m_flow = 0;
+    
+    // Enthalpy propagation, energy balance
+    port_b.h_b = port_a.h_a - eta_ise*(port_a.h_a - Medium.isentropicEnthalpy(port_b.p, medium_a)) 
+      "Design mass flow direction";
+    port_a.h_b = port_b.h_a - eta_ise*(port_b.h_a - Medium.isentropicEnthalpy(port_a.p, medium_b)) 
+      "Non-design mass flow direction";
+    
+    P_mechanical = -noEvent((port_a.m_flow*(if port_a.m_flow > 0 then port_a.h_a else port_a.h_b)) + (port_b.m_flow*(
+      if port_b.m_flow > 0 then port_b.h_a else port_b.h_b)));
+    
+    // Mass fraction propagation, substance mass balance
+    port_a.Xi_b = port_b.Xi_a;
+    port_b.Xi_b = port_a.Xi_a;
+    
+    // Design direction of mass flow rate
+    m_flow = port_a.m_flow;
+    
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
+    
+    // This approach provides upstream and downstream properties
+    p_designDirection = port_a.p 
+      "Upstream pressure if flow is in design direction";
+    h_designDirection = port_a.h_a 
+      "Upstream specific enthalpy if flow is in design direction";
+    Xi_designDirection = port_a.Xi_a 
+      "Upstream mass fractions if flow is in design direction";
+    p_nonDesignDirection = port_b.p 
+      "Upstream pressure if flow is in non-design direction";
+    h_nonDesignDirection = port_b.h_a 
+      "Upstream specific enthalpy if flow is in non-design direction";
+    Xi_nonDesignDirection = port_b.Xi_a 
+      "Upstream mass fractions if flow is in non-design direction";
+    
+  end PartialTransportIsentropic;
+
+  redeclare replaceable partial model extends PartialTransportIsentropicAA 
+    "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
+    
+  equation 
+    // Mass balance
+    port_a.m_flow + port_b.m_flow = 0;
+    
+    // Enthalpy propagation, energy balance
+    port_b.h_a = port_a.h_b - eta_ise*(port_a.h_b - Medium.isentropicEnthalpy(port_b.p, medium_a)) 
+      "Design mass flow direction";
+    port_a.h_a = port_b.h_b - eta_ise*(port_b.h_b - Medium.isentropicEnthalpy(port_a.p, medium_b)) 
+      "Non-design mass flow direction";
+    
+    P_mechanical = -noEvent((port_a.m_flow*(if port_a.m_flow > 0 then port_a.h_b else port_a.h_a)) + (port_b.m_flow*(
+      if port_b.m_flow > 0 then port_b.h_b else port_b.h_a)));
+    
+    // Mass fraction propagation, substance mass balance
+    port_a.Xi_b = port_b.Xi_a;
+    port_b.Xi_b = port_a.Xi_a;
+    
+    // Design direction of mass flow rate
+    m_flow = port_a.m_flow;
+    
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
+    
+    // This approach provides upstream and downstream properties
+    p_designDirection = port_a.p 
+      "Upstream pressure if flow is in design direction";
+    h_designDirection = port_a.h_b 
+      "Upstream specific enthalpy if flow is in design direction";
+    Xi_designDirection = port_a.Xi_b 
+      "Upstream mass fractions if flow is in design direction";
+    p_nonDesignDirection = port_b.p 
+      "Upstream pressure if flow is in non-design direction";
+    h_nonDesignDirection = port_b.h_b 
+      "Upstream specific enthalpy if flow is in non-design direction";
+    Xi_nonDesignDirection = port_b.Xi_b 
+      "Upstream mass fractions if flow is in non-design direction";
+    
+  end PartialTransportIsentropicAA;
+
+  redeclare replaceable partial model extends PartialTransportIsentropicAB 
+    "Partial isentropic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, allowed in this approach)" 
+    
+  equation 
+    // Mass balance
+    port_a.m_flow + port_b.m_flow = 0;
+    
+    // Enthalpy propagation, energy balance
+    port_b.h_b = port_a.h_b - eta_ise*(port_a.h_b - Medium.isentropicEnthalpy(port_b.p, medium_a)) 
+      "Design mass flow direction";
+    port_a.h_a = port_b.h_a - eta_ise*(port_b.h_a - Medium.isentropicEnthalpy(port_a.p, medium_b)) 
+      "Non-design mass flow direction";
+    
+    P_mechanical = -noEvent((port_a.m_flow*(if port_a.m_flow > 0 then port_a.h_b else port_a.h_a)) + (port_b.m_flow*(
+      if port_b.m_flow > 0 then port_b.h_a else port_b.h_b)));
+    
+    // Mass fraction propagation, substance mass balance
+    port_a.Xi_b = port_b.Xi_a;
+    port_b.Xi_b = port_a.Xi_a;
+    
+    // Design direction of mass flow rate
+    m_flow = port_a.m_flow;
+    
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
+    
+    // This approach provides upstream and downstream properties
+    p_designDirection = port_a.p 
+      "Upstream pressure if flow is in design direction";
+    h_designDirection = port_a.h_b 
+      "Upstream specific enthalpy if flow is in design direction";
+    Xi_designDirection = port_a.Xi_b 
+      "Upstream mass fractions if flow is in design direction";
+    p_nonDesignDirection = port_b.p 
+      "Upstream pressure if flow is in non-design direction";
+    h_nonDesignDirection = port_b.h_a 
+      "Upstream specific enthalpy if flow is in non-design direction";
+    Xi_nonDesignDirection = port_b.Xi_a 
+      "Upstream mass fractions if flow is in non-design direction";
+    
+  end PartialTransportIsentropicAB;
+
   redeclare replaceable partial model extends PartialIdealJunction 
     "Partial infinitesimal junction model" 
     
@@ -439,39 +635,5 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 </ul>
 </html>"));
   end PartialAsymmetricDistributedPipe;
-
-  redeclare replaceable partial model extends PartialTwoPortTransportAA 
-    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
-    
-  equation 
-    // Mass balance
-    port_a.m_flow + port_b.m_flow = 0;
-    // Enthalpy propagation, energy balance
-    port_a.h_a = port_b.h_b;
-    port_b.h_a = port_a.h_b;
-    // Mass fraction propagation, substance mass balance
-    port_a.Xi_a = port_b.Xi_b;
-    port_b.Xi_a = port_a.Xi_b;
-    
-    // Design direction of mass flow rate
-    m_flow = port_a.m_flow;
-    
-    // Pressure difference between ports
-    dp = port_a.p - port_b.p;
-    
-    // This approach provides upstream and downstream properties
-    p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
-    h_designDirection = port_a.h_b 
-      "Upstream specific enthalpy if flow is in design direction";
-    Xi_designDirection = port_a.Xi_b 
-      "Upstream mass fractions if flow is in design direction";
-    p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
-    h_nonDesignDirection = port_b.h_b 
-      "Upstream specific enthalpy if flow is in non-design direction";
-    Xi_nonDesignDirection = port_b.Xi_b 
-      "Upstream mass fractions if flow is in non-design direction";
-    
-  end PartialTwoPortTransportAA;
+  
 end EffortPairs_A;
