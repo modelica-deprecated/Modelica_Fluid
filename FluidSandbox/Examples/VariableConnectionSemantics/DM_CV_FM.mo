@@ -119,11 +119,11 @@ equation
           -34,10; -34,12; -14,12; -14,10; -10,10],   style(color=69, rgbcolor={
           0,127,255}));
     connect(mixingVolume.port_b[1], pipeFriction2.port_b) 
-                                                        annotation (points=[10,10; 
+                                                        annotation (points=[10,10;
           14,10; 14,12; 34,12; 34,10; 40,10],   style(color=69, rgbcolor={0,127,
           255}));
     connect(pipeFriction2.port_a, source2.port) 
-                                              annotation (points=[60,10; 64,10; 
+                                              annotation (points=[60,10; 64,10;
           64,12; 80,12; 80,-10],
                                style(color=69, rgbcolor={0,127,255}));
   end if;

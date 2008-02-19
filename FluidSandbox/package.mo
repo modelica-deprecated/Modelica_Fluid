@@ -1,11 +1,12 @@
 package FluidSandbox "Library to study different numerical solution methods in the fluid dynamics domain"
   annotation (
-    version="0.32",
+    version="0.33",
     versionDate="2008-01-11",
     preferedView="info",
     classOrder={"Examples","FluidInterfaces","FluidDiscretizations",
         "*","ConnectionSemantics", "Interfaces","Icons"},
-    uses(Modelica_Fluid(version="1.0 Beta 3"), Modelica(version="2.2.1")),
+    uses(Modelica_Fluid(version="1.0 Beta 3"), Modelica(version="2.2.1"),
+      PowerFluid(version="1")),
     Documentation(info="<html>
 <h1>Fluid Sandbox</h1>
 <p>

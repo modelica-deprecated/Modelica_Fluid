@@ -23,14 +23,14 @@ package Interfaces
       "Generic fluid connector at design inlet" 
       extends FluidPort;
       annotation (
-        defaultComponentName="port_a",
+        defaultComponentName="port_a", 
         Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=69,
-              rgbfillColor={0,127,255})), Text(extent=[-150,110; 150,50], string=
-                "%name")),
-        Icon(Ellipse(extent=[-100,100; 100,-100], style(color=69, fillColor=69)),
+              color=0, 
+              rgbcolor={0,0,0}, 
+              fillColor=69, 
+              rgbfillColor={0,127,255})), Text(extent=[-150,110; 150,50], 
+              string="%name")), 
+        Icon(Ellipse(extent=[-100,100; 100,-100], style(color=69, fillColor=69)), 
             Ellipse(extent=[-100,100; 100,-100], style(color=16, fillColor=69))));
     end FluidPort_a;
     
@@ -38,18 +38,18 @@ package Interfaces
       "Generic fluid connector at design outlet" 
       extends FluidPort;
       annotation (
-        defaultComponentName="port_b",
+        defaultComponentName="port_b", 
         Diagram(
           Ellipse(extent=[-40,40; 40,-40], style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=69,
-              rgbfillColor={0,127,255})),
-          Ellipse(extent=[-30,30; 30,-30], style(color=69, fillColor=7)),
-          Text(extent=[-150,110; 150,50], string="%name")),
+              color=0, 
+              rgbcolor={0,0,0}, 
+              fillColor=69, 
+              rgbfillColor={0,127,255})), 
+          Ellipse(extent=[-30,30; 30,-30], style(color=69, fillColor=7)), 
+          Text(extent=[-150,110; 150,50], string="%name")), 
         Icon(
-          Ellipse(extent=[-100,100; 100,-100], style(color=69, fillColor=69)),
-          Ellipse(extent=[-100,100; 100,-100], style(color=16, fillColor=69)),
+          Ellipse(extent=[-100,100; 100,-100], style(color=69, fillColor=69)), 
+          Ellipse(extent=[-100,100; 100,-100], style(color=16, fillColor=69)), 
           Ellipse(extent=[-80,80; 80,-80], style(color=69, fillColor=7))));
     end FluidPort_b;
     
@@ -67,9 +67,9 @@ package Interfaces
                             annotation (extent=[90,-10; 110,10]);
       
       annotation (
-        defaultComponentName="semantics",
-        Coordsys(extent=[-100,-20; 100,20], scale=0.05),
-        Icon(Text(extent=[-3,0; 3,-64], string=" ")),
+        defaultComponentName="semantics", 
+        Coordsys(extent=[-100,-20; 100,20], scale=0.05), 
+        Icon(Text(extent=[-3,0; 3,-64], string=" ")), 
         Diagram);
     end ConnectionSemantics;
     
@@ -93,10 +93,10 @@ package Interfaces
       
     // BaseProperties instance
       Medium.BaseProperties medium(
-        preferredMediumStates=true,
-        p(start=p_start),
-        h(start=h_start),
-        T(start=T_start),
+        preferredMediumStates=true, 
+        p(start=p_start), 
+        h(start=h_start), 
+        T(start=T_start), 
         Xi(start=X_start[1:Medium.nXi]));
       
     // Extensive properties
@@ -115,17 +115,17 @@ package Interfaces
       parameter Boolean use_T_start=true 
         "= true, use T_start, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate=true);
-      parameter Medium.Temperature T_start=if use_T_start then Medium.T_default else 
-                Medium.temperature_phX(
-            p_start,
-            h_start,
-            X_start) "Start value of temperature" 
+      parameter Medium.Temperature T_start=if use_T_start then Medium.T_default
+           else Medium.temperature_phX(
+              p_start, 
+              h_start, 
+              X_start) "Start value of temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
       parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
           Medium.specificEnthalpy_pTX(
-            p_start,
-            T_start,
-            X_start) else Medium.h_default "Start value of specific enthalpy" 
+              p_start, 
+              T_start, 
+              X_start) else Medium.h_default "Start value of specific enthalpy"
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
       parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default 
         "Start value of mass fractions m_i/m" 
@@ -142,16 +142,16 @@ package Interfaces
       SI.Power Ws_flow "Work flow across boundaries or source term";
       annotation (
         Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
-            extent=[-130,-108; 144,-150],
-            style(color=0),
-            string="V=%V")),
+            extent=[-130,-108; 144,-150], 
+            style(color=0), 
+            string="V=%V")), 
         Documentation(info="<html>
 Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
 <ul>
 <li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
 </ul>
 The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
-</html>"),
+</html>"), 
         Diagram);
       
     equation 
@@ -200,28 +200,21 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       end if;
     end PartialLumpedVolume;
     
-    replaceable partial model PartialTwoPortTransport 
+    replaceable partial model PartialTransport 
       "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
       
       replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
         "Medium in the component"                                          annotation (
           choicesAllMatching =                                                                            true);
       
-      FluidPort_b port_a(redeclare package Medium = Medium) 
-        "Fluid connector a (positive design flow direction is from port_a to port_b)"
-        annotation (extent=[-110,-10; -90,10]);
-      FluidPort_b port_b(redeclare package Medium = Medium) 
-        "Fluid connector b (positive design flow direction is from port_a to port_b)"
-        annotation (extent=[110,-10; 90,10]);
-      
       Medium.MassFlowRate m_flow 
         "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
       SI.Pressure dp "Pressure drop between port_a and port_b";
       
       // Used for some approaches only
-      SI.ThermalConductance G=0 
+      parameter SI.ThermalConductance G=0 
         "Conductive heat flow through component (used in some fluid interfaces only)";
-      SI.DiffusionCoefficient H=0 
+      parameter SI.DiffusionCoefficient H=0 
         "Mass diffusion through component (used in some fluid interfaces only)";
       
       // Properties for fluid flowing in design direction, have to be provided by PartialTwoPortTransport
@@ -248,7 +241,133 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
             style(gradient=2, fillColor=69))));
     equation 
       
-    end PartialTwoPortTransport;
+    end PartialTransport;
+    
+    replaceable partial model PartialTransportIsenthalpic 
+      "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
+      
+      extends PartialTransport;
+      
+      FluidPort_b port_a(redeclare package Medium = Medium) 
+        "Fluid connector a (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[-110,-10; -90,10]);
+      FluidPort_b port_b(redeclare package Medium = Medium) 
+        "Fluid connector b (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[110,-10; 90,10]);
+      
+    end PartialTransportIsenthalpic;
+    
+    replaceable partial model PartialTransportIsenthalpicAA 
+      "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, not supported for all interfaces)" 
+      
+      extends PartialTransport;
+      
+      FluidPort_a port_a(redeclare package Medium = Medium) 
+        "Fluid connector a (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[-110,-10; -90,10]);
+      FluidPort_a port_b(redeclare package Medium = Medium) 
+        "Fluid connector b (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[110,-10; 90,10]);
+      
+    end PartialTransportIsenthalpicAA;
+    
+    replaceable partial model PartialTransportIsenthalpicAB 
+      "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, not supported for all interfaces)" 
+      
+      extends PartialTransport;
+      
+      FluidPort_a port_a(redeclare package Medium = Medium) 
+        "Fluid connector a (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[-110,-10; -90,10]);
+      FluidPort_b port_b(redeclare package Medium = Medium) 
+        "Fluid connector b (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[110,-10; 90,10]);
+      
+    end PartialTransportIsenthalpicAB;
+    
+    replaceable partial model PartialTransportIsentropic 
+      "Partial Isentropic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
+      
+      extends PartialTransport;
+      
+      // Limit the decomposition complexity and repeat declarations
+      parameter Real eta_ise = 1 "Isentropic efficiency";
+      Modelica.SIunits.Power P_mechanical 
+        "Power exchanged through work done on the environment";
+      
+      FluidPort_b port_a(redeclare package Medium = Medium) 
+        "Fluid connector a (positive design flow direction is from port_a to port_b)"
+          annotation (extent=[-110,-10; -90,10]);
+      FluidPort_b port_b(redeclare package Medium = Medium) 
+        "Fluid connector b (positive design flow direction is from port_a to port_b)"
+          annotation (extent=[110,-10; 90,10]);
+      
+    //protected 
+      Medium.BaseProperties medium_a 
+        "Medium properties in port_a, may only be used if result is sensible";
+      Medium.BaseProperties medium_b 
+        "Medium properties in port_b, may only be used if result is sensible";
+      
+    equation 
+      // Media instances may only be used if sensible
+      medium_a.p = p_designDirection;
+      medium_a.h = h_designDirection;
+      medium_a.Xi = Xi_designDirection;
+      medium_b.p = p_nonDesignDirection;
+      medium_b.h = h_nonDesignDirection;
+      medium_b.Xi = Xi_nonDesignDirection;
+      
+    end PartialTransportIsentropic;
+    
+    replaceable partial model PartialTransportIsentropicAA 
+      "Partial Isentropic element transporting fluid between two ports without storing mass or energy (two Port_a's, not supported for all interfaces)" 
+      
+      extends PartialTransport;
+      
+      // Limit the decomposition complexity and repeat declarations
+      parameter Real eta_ise = 1 "Isentropic efficiency";
+      Modelica.SIunits.Power P_mechanical 
+        "Power exchanged through work done on the environment";
+      
+      FluidPort_a port_a(redeclare package Medium = Medium) 
+        "Fluid connector a (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[-110,-10; -90,10]);
+      FluidPort_a port_b(redeclare package Medium = Medium) 
+        "Fluid connector b (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[110,-10; 90,10]);
+      
+    protected 
+      Medium.BaseProperties medium_a 
+        "Medium properties in port_a, may only be used if result is sensible";
+      Medium.BaseProperties medium_b 
+        "Medium properties in port_b, may only be used if result is sensible";
+      
+    end PartialTransportIsentropicAA;
+    
+    replaceable partial model PartialTransportIsentropicAB 
+      "Partial Isentropic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, not supported for all interfaces)" 
+      
+      extends PartialTransport;
+      
+      // Limit the decomposition complexity and repeat declarations
+      parameter Real eta_ise = 1 "Isentropic efficiency";
+      Modelica.SIunits.Power P_mechanical 
+        "Power exchanged through work done on the environment";
+      
+      FluidPort_a port_a(redeclare package Medium = Medium) 
+        "Fluid connector a (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[-110,-10; -90,10]);
+      FluidPort_b port_b(redeclare package Medium = Medium) 
+        "Fluid connector b (positive design flow direction is from port_a to port_b)"
+        annotation (extent=[110,-10; 90,10]);
+      
+    protected 
+      Medium.BaseProperties medium_a 
+        "Medium properties in port_a, may only be used if result is sensible";
+      Medium.BaseProperties medium_b 
+        "Medium properties in port_b, may only be used if result is sensible";
+      
+    end PartialTransportIsentropicAB;
     
     replaceable partial model PartialIdealJunction 
       "Partial infinitesimal junction model" 
@@ -329,8 +448,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         "Mass diffusion through component (used in some fluid interfaces only)";
       
       annotation (Icon(Text(
-            extent=[-148,-42; 148,-92],
-            string="%name",
+            extent=[-148,-42; 148,-92], 
+            string="%name", 
             style(gradient=2, fillColor=69))));
       
     end PartialAsymmetricDistributedPipe;
@@ -355,61 +474,12 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         "Mass diffusion through component (used in some fluid interfaces only)";
       
       annotation (Icon(Text(
-            extent=[-148,-42; 148,-92],
-            string="%name",
+            extent=[-148,-42; 148,-92], 
+            string="%name", 
             style(gradient=2, fillColor=69))));
       
     end PartialSymmetricDistributedPipe;
-
-    replaceable partial model PartialTwoPortTransportAA 
-      "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, not supported for all interfaces)" 
-      
-      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
-        "Medium in the component"                                          annotation (
-          choicesAllMatching =                                                                            true);
-      
-      FluidPort_a port_a(redeclare package Medium = Medium) 
-        "Fluid connector a (positive design flow direction is from port_a to port_b)"
-        annotation (extent=[-110,-10; -90,10]);
-      FluidPort_a port_b(redeclare package Medium = Medium) 
-        "Fluid connector b (positive design flow direction is from port_a to port_b)"
-        annotation (extent=[110,-10; 90,10]);
-      
-      Medium.MassFlowRate m_flow 
-        "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
-      SI.Pressure dp "Pressure drop between port_a and port_b";
-      
-      // Used for some approaches only
-      SI.ThermalConductance G=0 
-        "Conductive heat flow through component (used in some fluid interfaces only)";
-      SI.DiffusionCoefficient H=0 
-        "Mass diffusion through component (used in some fluid interfaces only)";
-      
-      // Properties for fluid flowing in design direction, have to be provided by PartialTwoPortTransport
-      // Used in pressure drop correlation
-      Medium.AbsolutePressure p_designDirection 
-        "Pressure for flow in design direction";
-      Medium.SpecificEnthalpy h_designDirection 
-        "Specific mixing enthalpy for flow in design direction";
-      Medium.MassFraction Xi_designDirection[Medium.nXi] 
-        "Mass fractions for flow in design direction";
-      
-      // Properties for fluid flowing in non-design direction, have to be provided by PartialTwoPortTransport
-      // Used in pressure drop correlation
-      Medium.AbsolutePressure p_nonDesignDirection 
-        "Pressure for flow in non-design direction";
-      Medium.SpecificEnthalpy h_nonDesignDirection 
-        "Specific mixing enthalpy for flow in non-design direction";
-      Medium.MassFraction Xi_nonDesignDirection[Medium.nXi] 
-        "Mass fractions for flow in non-design direction";
-      
-      annotation (Icon(Text(
-            extent=[-144,119; 144,70],
-            string="%name",
-            style(gradient=2, fillColor=69))));
-    equation 
-      
-    end PartialTwoPortTransportAA;
+    
   end PartialFluidInterface;
   
   partial package PartialFluidDiscretization 

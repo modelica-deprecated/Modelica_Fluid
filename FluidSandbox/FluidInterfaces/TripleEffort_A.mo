@@ -187,7 +187,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
-  redeclare replaceable partial model extends PartialTwoPortTransport 
+  redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
   equation 
@@ -224,7 +224,33 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Xi_nonDesignDirection = port_b.Xi_inflow 
       "Upstream mass fractions if flow is in non-design direction";
     
-  end PartialTwoPortTransport;
+  end PartialTransportIsenthalpic;
+  
+  redeclare replaceable partial model extends PartialTransportIsenthalpicAA 
+    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, not yet implemented)" 
+    
+  equation 
+    assert(false, "The PartialTransportIsenthalpicAA was not yet implemented for this approach.");
+    
+    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
+            color=1,
+            rgbcolor={255,0,0},
+            pattern=2,
+            thickness=2))));
+  end PartialTransportIsenthalpicAA;
+  
+  redeclare replaceable partial model extends PartialTransportIsenthalpicAB 
+    "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, not yet implemented)" 
+    
+  equation 
+    assert(false, "The PartialTransportIsenthalpicAB was not yet implemented for this approach.");
+    
+    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
+            color=1,
+            rgbcolor={255,0,0},
+            pattern=2,
+            thickness=2))));
+  end PartialTransportIsenthalpicAB;
   
   redeclare replaceable partial model extends PartialIdealJunction 
     "Partial infinitesimal junction model" 

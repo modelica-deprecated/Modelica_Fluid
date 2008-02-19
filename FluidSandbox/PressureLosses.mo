@@ -938,24 +938,37 @@ solving a non-linear equation.
     annotation (defaultComponentName="pipeFriction");
     
     extends BaseClasses.PartialWallFrictionWithSmoothing;
-    extends FluidInterface.PartialTwoPortTransport(
+    extends FluidInterface.PartialTransportIsenthalpic(
       m_flow(start=m_flow_start),
       port_a(p(start=p_a_start)),
       port_b(p(start=p_b_start)),
       dp(start=p_a_start - p_b_start));
     
   end WallFriction;
-
+  
   model WallFrictionAA 
     "Pressure drop in pipe due to wall friction (for both flow directions, with two PortA's)" 
     annotation (defaultComponentName="pipeFriction");
     
     extends BaseClasses.PartialWallFrictionWithSmoothing;
-    extends FluidInterface.PartialTwoPortTransportAA(
+    extends FluidInterface.PartialTransportIsenthalpicAA(
       m_flow(start=m_flow_start),
       port_a(p(start=p_a_start)),
       port_b(p(start=p_b_start)),
       dp(start=p_a_start - p_b_start));
     
   end WallFrictionAA;
+  
+  model WallFrictionAB 
+    "Pressure drop in pipe due to wall friction (for both flow directions, with a PortA and PortB each)" 
+    annotation (defaultComponentName="pipeFriction");
+    
+    extends BaseClasses.PartialWallFrictionWithSmoothing;
+    extends FluidInterface.PartialTransportIsenthalpicAB(
+      m_flow(start=m_flow_start),
+      port_a(p(start=p_a_start)),
+      port_b(p(start=p_b_start)),
+      dp(start=p_a_start - p_b_start));
+    
+  end WallFrictionAB;
 end PressureLosses;
