@@ -1,3 +1,4 @@
+within FluidSandbox.Examples.VariableConnectionSemantics;
 model DM_CV_FM 
   "Boundary condition (pressure) - distributed model (1D discretized) - control volume - flow model - boundary condition (pressure)" 
   extends Icons.Example;

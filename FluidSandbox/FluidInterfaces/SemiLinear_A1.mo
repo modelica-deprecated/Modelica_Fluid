@@ -1,3 +1,4 @@
+within FluidSandbox.FluidInterfaces;
 package SemiLinear_A1 
   "Implementation A1 using SemiLinear (similar to the Modelica_Fluid library)" 
   extends Interfaces.PartialFluidInterface(usesNewConnectionSemantics=false);
@@ -281,7 +282,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       "Upstream mass fractions if flow is in non-design direction";
     
   end PartialTransportIsentropic;
-
+  
   redeclare replaceable partial model extends PartialTransportIsentropicAA 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
     
@@ -325,7 +326,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       "Upstream mass fractions if flow is in non-design direction";
     
   end PartialTransportIsentropicAA;
-
+  
   redeclare replaceable partial model extends PartialTransportIsentropicAB 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, allowed in this approach)" 
     
@@ -369,7 +370,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       "Upstream mass fractions if flow is in non-design direction";
     
   end PartialTransportIsentropicAB;
-
+  
   redeclare replaceable partial model extends PartialIdealJunction 
     "Partial infinitesimal junction model" 
     

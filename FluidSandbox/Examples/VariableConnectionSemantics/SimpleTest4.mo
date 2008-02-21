@@ -1,3 +1,4 @@
+within FluidSandbox.Examples.VariableConnectionSemantics;
 model SimpleTest4 
   
   extends Icons.Example;

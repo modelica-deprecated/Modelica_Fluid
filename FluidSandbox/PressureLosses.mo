@@ -1,3 +1,4 @@
+within FluidSandbox;
 package PressureLosses 
   "Models and functions providing pressure loss correlations " 
   extends Icons.VariantLibrary;

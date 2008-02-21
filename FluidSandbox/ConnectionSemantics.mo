@@ -1,3 +1,4 @@
+within FluidSandbox;
 package ConnectionSemantics 
   "Classes to implement yet unsupported connection semantics" 
   extends Icons.VariantLibrary;

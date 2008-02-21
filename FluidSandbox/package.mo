@@ -1,12 +1,17 @@
+within ;
+import "F:/C_Sandbox/tmp3/Modelica_Fluid/package.mo";
 package FluidSandbox "Library to study different numerical solution methods in the fluid dynamics domain"
+  import SI = Modelica.SIunits;
+
   annotation (
     version="0.33",
     versionDate="2008-01-11",
     preferedView="info",
     classOrder={"Examples","FluidInterfaces","FluidDiscretizations",
         "*","ConnectionSemantics", "Interfaces","Icons"},
-    uses(Modelica_Fluid(version="1.0 Beta 3"), Modelica(version="2.2.1"),
-      PowerFluid(version="1")),
+    uses(Modelica_Fluid(version="1.0 Beta 3"),
+      PowerFluid(version="1"), 
+    Modelica(version="2.2.2")),
     Documentation(info="<html>
 <h1>Fluid Sandbox</h1>
 <p>
@@ -29,5 +34,4 @@ Most component models are based on Modelica_Fluid code.
    Created.</li>
 </ul>
 </html>"));
-  import SI = Modelica.SIunits;
 end FluidSandbox;

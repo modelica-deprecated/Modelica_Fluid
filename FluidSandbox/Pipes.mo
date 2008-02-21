@@ -1,3 +1,4 @@
+within FluidSandbox;
 package Pipes "Lumped, distributed and thermal pipe components" 
   extends Icons.VariantLibrary;
   

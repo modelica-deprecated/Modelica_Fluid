@@ -1,3 +1,4 @@
+within FluidSandbox.FluidInterfaces;
 package TripleEffort_A 
   "Inflow Outflow Outside implementation A (no explicit junctions, asymmetric models, static momentum balances)" 
   extends Interfaces.PartialFluidInterface(usesNewConnectionSemantics=true);

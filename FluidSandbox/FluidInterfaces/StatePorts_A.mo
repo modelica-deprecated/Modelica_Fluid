@@ -1,3 +1,4 @@
+within FluidSandbox.FluidInterfaces;
 package StatePorts_A 
   "Implementation A with dynamic states on the connector effort variables (similar to the ThermoFluid library)" 
   extends Interfaces.PartialFluidInterface(usesNewConnectionSemantics=false);

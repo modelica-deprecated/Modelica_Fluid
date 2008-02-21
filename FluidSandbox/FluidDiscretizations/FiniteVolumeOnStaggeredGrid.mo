@@ -1,3 +1,4 @@
+within FluidSandbox.FluidDiscretizations;
 package FiniteVolumeOnStaggeredGrid 
   "Discretizations using the finite volume method on a staggered grid" 
   extends Icons.FluidDiscretization;

@@ -1,3 +1,4 @@
+within FluidSandbox;
 package Turbomachinery "Compressor, turbine models and the like" 
   extends Icons.VariantLibrary;
   model TurbineStage "Turbine stage according to Stodola's law" 
@@ -21,8 +22,8 @@ package Turbomachinery "Compressor, turbine models and the like"
             rgbcolor={0,0,255},
             fillColor=46,
             rgbfillColor={216,62,1})), Text(
-          extent=[-144,-53; 144,-102], 
-          string="%name", 
+          extent=[-144,-53; 144,-102],
+          string="%name",
           style(gradient=2, fillColor=69))), Diagram);
   end TurbineStage;
 end Turbomachinery;
