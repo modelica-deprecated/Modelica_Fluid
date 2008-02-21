@@ -1,3 +1,4 @@
+within FluidSandbox.Examples.StandardConnectionSemantics;
 model FM_CV_FM 
   extends Icons.Example;
   FluidSandbox.Sources.PrescribedBoundary_pTX_A source2(

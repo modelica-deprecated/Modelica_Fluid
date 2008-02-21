@@ -1,3 +1,4 @@
+within FluidSandbox.FluidInterfaces;
 package StatePorts_B 
   "Implementation B with dynamic states on the connector effort variables and conductance (based on PowerFluid library)" 
   extends Interfaces.PartialFluidInterface(usesNewConnectionSemantics=false);

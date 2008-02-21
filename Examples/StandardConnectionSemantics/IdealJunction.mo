@@ -1,3 +1,4 @@
+within FluidSandbox.Examples.StandardConnectionSemantics;
 model IdealJunction 
   extends Icons.Example;
   

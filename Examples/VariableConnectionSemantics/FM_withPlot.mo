@@ -1,3 +1,4 @@
+within FluidSandbox.Examples.VariableConnectionSemantics;
 model FM_withPlot 
   "Boundary condition (pressure) - flow model - boundary condition (pressure), with plot of pressure drop correlation" 
   extends Icons.Example;
@@ -83,7 +84,7 @@ equation
   connect(semantics2.port_a, pipeFriction.port_b) 
     annotation (points=[35,-2; 28,-2; 28,0; 20,0],
                                      style(color=69, rgbcolor={0,127,255}));
-  connect(semantics2.port_b, prescribedBoundary_pTX_A.port) annotation (points=[45,-2; 
+  connect(semantics2.port_b, prescribedBoundary_pTX_A.port) annotation (points=[45,-2;
         52,-2; 52,1.22461e-015; 60,1.22461e-015],
                                   style(color=69,
         rgbcolor={0,127,255}));

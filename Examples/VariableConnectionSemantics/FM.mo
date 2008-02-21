@@ -1,3 +1,4 @@
+within FluidSandbox.Examples.VariableConnectionSemantics;
 model FM 
   "Boundary condition (pressure) - flow model - boundary condition (pressure)" 
   extends Icons.Example;

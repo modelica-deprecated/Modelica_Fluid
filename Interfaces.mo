@@ -1,3 +1,4 @@
+within FluidSandbox;
 package Interfaces 
   "Interfaces to implement different elements of a numerical solution method for fluid dynamics" 
   
@@ -23,14 +24,14 @@ package Interfaces
       "Generic fluid connector at design inlet" 
       extends FluidPort;
       annotation (
-        defaultComponentName="port_a", 
+        defaultComponentName="port_a",
         Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-              color=0, 
-              rgbcolor={0,0,0}, 
-              fillColor=69, 
-              rgbfillColor={0,127,255})), Text(extent=[-150,110; 150,50], 
-              string="%name")), 
-        Icon(Ellipse(extent=[-100,100; 100,-100], style(color=69, fillColor=69)), 
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=69,
+              rgbfillColor={0,127,255})), Text(extent=[-150,110; 150,50],
+              string="%name")),
+        Icon(Ellipse(extent=[-100,100; 100,-100], style(color=69, fillColor=69)),
             Ellipse(extent=[-100,100; 100,-100], style(color=16, fillColor=69))));
     end FluidPort_a;
     
@@ -38,18 +39,18 @@ package Interfaces
       "Generic fluid connector at design outlet" 
       extends FluidPort;
       annotation (
-        defaultComponentName="port_b", 
+        defaultComponentName="port_b",
         Diagram(
           Ellipse(extent=[-40,40; 40,-40], style(
-              color=0, 
-              rgbcolor={0,0,0}, 
-              fillColor=69, 
-              rgbfillColor={0,127,255})), 
-          Ellipse(extent=[-30,30; 30,-30], style(color=69, fillColor=7)), 
-          Text(extent=[-150,110; 150,50], string="%name")), 
+              color=0,
+              rgbcolor={0,0,0},
+              fillColor=69,
+              rgbfillColor={0,127,255})),
+          Ellipse(extent=[-30,30; 30,-30], style(color=69, fillColor=7)),
+          Text(extent=[-150,110; 150,50], string="%name")),
         Icon(
-          Ellipse(extent=[-100,100; 100,-100], style(color=69, fillColor=69)), 
-          Ellipse(extent=[-100,100; 100,-100], style(color=16, fillColor=69)), 
+          Ellipse(extent=[-100,100; 100,-100], style(color=69, fillColor=69)),
+          Ellipse(extent=[-100,100; 100,-100], style(color=16, fillColor=69)),
           Ellipse(extent=[-80,80; 80,-80], style(color=69, fillColor=7))));
     end FluidPort_b;
     
@@ -67,9 +68,9 @@ package Interfaces
                             annotation (extent=[90,-10; 110,10]);
       
       annotation (
-        defaultComponentName="semantics", 
-        Coordsys(extent=[-100,-20; 100,20], scale=0.05), 
-        Icon(Text(extent=[-3,0; 3,-64], string=" ")), 
+        defaultComponentName="semantics",
+        Coordsys(extent=[-100,-20; 100,20], scale=0.05),
+        Icon(Text(extent=[-3,0; 3,-64], string=" ")),
         Diagram);
     end ConnectionSemantics;
     
@@ -93,10 +94,10 @@ package Interfaces
       
     // BaseProperties instance
       Medium.BaseProperties medium(
-        preferredMediumStates=true, 
-        p(start=p_start), 
-        h(start=h_start), 
-        T(start=T_start), 
+        preferredMediumStates=true,
+        p(start=p_start),
+        h(start=h_start),
+        T(start=T_start),
         Xi(start=X_start[1:Medium.nXi]));
       
     // Extensive properties
@@ -115,16 +116,16 @@ package Interfaces
       parameter Boolean use_T_start=true 
         "= true, use T_start, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate=true);
-      parameter Medium.Temperature T_start=if use_T_start then Medium.T_default
-           else Medium.temperature_phX(
-              p_start, 
-              h_start, 
+      parameter Medium.Temperature T_start=if use_T_start then Medium.T_default else 
+                Medium.temperature_phX(
+              p_start,
+              h_start,
               X_start) "Start value of temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
       parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
           Medium.specificEnthalpy_pTX(
-              p_start, 
-              T_start, 
+              p_start,
+              T_start,
               X_start) else Medium.h_default "Start value of specific enthalpy"
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
       parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default 
@@ -142,16 +143,16 @@ package Interfaces
       SI.Power Ws_flow "Work flow across boundaries or source term";
       annotation (
         Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
-            extent=[-130,-108; 144,-150], 
-            style(color=0), 
-            string="V=%V")), 
+            extent=[-130,-108; 144,-150],
+            style(color=0),
+            string="V=%V")),
         Documentation(info="<html>
 Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
 <ul>
 <li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
 </ul>
 The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
-</html>"), 
+</html>"),
         Diagram);
       
     equation 
@@ -302,7 +303,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         "Fluid connector b (positive design flow direction is from port_a to port_b)"
           annotation (extent=[110,-10; 90,10]);
       
-    //protected 
+    protected 
       Medium.BaseProperties medium_a 
         "Medium properties in port_a, may only be used if result is sensible";
       Medium.BaseProperties medium_b 
@@ -448,8 +449,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         "Mass diffusion through component (used in some fluid interfaces only)";
       
       annotation (Icon(Text(
-            extent=[-148,-42; 148,-92], 
-            string="%name", 
+            extent=[-148,-42; 148,-92],
+            string="%name",
             style(gradient=2, fillColor=69))));
       
     end PartialAsymmetricDistributedPipe;
@@ -474,8 +475,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         "Mass diffusion through component (used in some fluid interfaces only)";
       
       annotation (Icon(Text(
-            extent=[-148,-42; 148,-92], 
-            string="%name", 
+            extent=[-148,-42; 148,-92],
+            string="%name",
             style(gradient=2, fillColor=69))));
       
     end PartialSymmetricDistributedPipe;

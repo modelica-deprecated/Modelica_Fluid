@@ -1,3 +1,4 @@
+within FluidSandbox;
 package Valves "Valve models" 
   extends Icons.VariantLibrary;
   model ValveLinear "Valve for water/steam flows with linear pressure drop" 
@@ -32,7 +33,7 @@ package Valves "Valve models"
             fillPattern=1)),
            Text(extent=[-143,-66; 148,-106],  string="%name")));
   end ValveLinear;
-
+  
   model ValveLinearAA 
     "Valve for water/steam flows with linear pressure drop with two PortA's" 
     
@@ -66,7 +67,7 @@ package Valves "Valve models"
             fillPattern=1)),
            Text(extent=[-143,-66; 148,-106],  string="%name")));
   end ValveLinearAA;
-
+  
   model ValveLinearAB 
     "Valve for water/steam flows with linear pressure drop with a PortA and PortB each" 
     
