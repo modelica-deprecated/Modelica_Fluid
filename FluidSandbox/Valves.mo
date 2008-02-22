@@ -6,7 +6,7 @@ package Valves "Valve models"
     extends Interfaces.PartialComponent;
     extends FluidInterface.PartialTransportIsenthalpic;
     
-    parameter PowerFluid.Types.HydraulicConductance Kv 
+    parameter Modelica_Fluid.Types.HydraulicConductance Kv 
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening 
     annotation (extent=[-20,70; 20,110],   rotation=-90);
@@ -40,7 +40,7 @@ package Valves "Valve models"
     extends Interfaces.PartialComponent;
     extends FluidInterface.PartialTransportIsenthalpicAA;
     
-    parameter PowerFluid.Types.HydraulicConductance Kv 
+    parameter Modelica_Fluid.Types.HydraulicConductance Kv 
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening 
     annotation (extent=[-20,70; 20,110],   rotation=-90);
@@ -74,7 +74,7 @@ package Valves "Valve models"
     extends Interfaces.PartialComponent;
     extends FluidInterface.PartialTransportIsenthalpicAB;
     
-    parameter PowerFluid.Types.HydraulicConductance Kv 
+    parameter Modelica_Fluid.Types.HydraulicConductance Kv 
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening 
     annotation (extent=[-20,70; 20,110],   rotation=-90);
