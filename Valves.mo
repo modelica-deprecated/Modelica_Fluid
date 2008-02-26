@@ -30,8 +30,7 @@ package Valves "Valve models"
         Polygon(points=[100,50; 0,0; 100,-50; 100,50],  style(
             color=0,
             thickness=2,
-            fillPattern=1)),
-           Text(extent=[-143,-66; 148,-106],  string="%name")));
+            fillPattern=1))));
   end ValveLinear;
   
   model ValveLinearAA 
@@ -64,8 +63,7 @@ package Valves "Valve models"
         Polygon(points=[100,50; 0,0; 100,-50; 100,50],  style(
             color=0,
             thickness=2,
-            fillPattern=1)),
-           Text(extent=[-143,-66; 148,-106],  string="%name")));
+            fillPattern=1))));
   end ValveLinearAA;
   
   model ValveLinearAB 
@@ -98,7 +96,6 @@ package Valves "Valve models"
         Polygon(points=[100,50; 0,0; 100,-50; 100,50],  style(
             color=0,
             thickness=2,
-            fillPattern=1)),
-           Text(extent=[-143,-66; 148,-106],  string="%name")));
+            fillPattern=1))));
   end ValveLinearAB;
 end Valves;

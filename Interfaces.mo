@@ -200,7 +200,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         assert(false, "Unsupported initialization option");
       end if;
     end PartialLumpedVolume;
-
+    
     replaceable partial model PartialTwoSidedVolume 
       "Volume with two different sides and without connectors (careful: choose your own prefered states!)" 
       
@@ -292,12 +292,84 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       Medium.MassFraction Xi_nonDesignDirection[Medium.nXi] 
         "Mass fractions for flow in non-design direction";
       
-      annotation (Icon(Text(
-            extent=[-144,119; 144,70],
-            string="%name",
-            style(gradient=2, fillColor=69))));
-    equation 
+      // Sensor outputs //////////////////////////////////////////////////////////////////////////////
+      Modelica.Blocks.Interfaces.RealOutput p_a(redeclare type SignalType = 
+            SI.Pressure) if provide_p_a annotation (extent=[-120,70; -100,90], rotation=180);
+      Modelica.Blocks.Interfaces.RealOutput p_b(redeclare type SignalType = 
+            SI.Pressure) if provide_p_b annotation (extent=[100,70; 120,90], rotation=0);
+      Modelica.Blocks.Interfaces.RealOutput T_a(redeclare type SignalType = 
+            SI.Temperature) if provide_T_a annotation (extent=[-120,40; -100,60], rotation=180);
+      Modelica.Blocks.Interfaces.RealOutput T_b(redeclare type SignalType = 
+            SI.Temperature) if provide_T_b annotation (extent=[100,40; 120,60], rotation=0);
+      Modelica.Blocks.Interfaces.RealOutput m_flow_ab(redeclare type SignalType
+          = SI.MassFlowRate) if provide_m_flow_ab annotation (extent=[-70,100; -50,
+            120],                                                                       rotation=90);
       
+      parameter Boolean provide_p_a = false "Provide pressure at port a?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+      parameter Boolean provide_p_b = false "Provide pressure at port b?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+      parameter Boolean provide_T_a = false "Provide temperature at port a?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+      parameter Boolean provide_T_b = false "Provide temperature at port b?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+      parameter Boolean provide_m_flow_ab = false "Provide mass flow rate?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+      
+    protected 
+      Modelica.Blocks.Interfaces.RealOutput calc_T_a(redeclare type SignalType 
+          = SI.Temperature) annotation (extent=[-84,40; -76,48], rotation=90);
+      Modelica.Blocks.Interfaces.RealOutput calc_p_a(redeclare type SignalType 
+          = SI.Pressure) annotation (extent=[-74,40; -66,48], rotation=90);
+      Modelica.Blocks.Interfaces.RealOutput calc_m_flow_ab(redeclare type 
+          SignalType = SI.MassFlowRate) 
+        annotation (extent=[-64,40; -56,48], rotation=90);
+      Modelica.Blocks.Interfaces.RealOutput calc_p_b(redeclare type SignalType 
+          = SI.Pressure) annotation (extent=[-54,40; -46,48], rotation=90);
+      Modelica.Blocks.Interfaces.RealOutput calc_T_b(redeclare type SignalType 
+          = SI.Temperature) annotation (extent=[-44,40; -36,48], rotation=90);
+      
+      // Using Medium.temperature(Medium.setState_phX()) for temperature sensor results in numeric Jacobian; using BaseProperties instead
+      Medium.BaseProperties medium_T_a;
+      Medium.BaseProperties medium_T_b;
+    equation 
+      connect(T_a, calc_T_a) annotation (points=[-110,50; -80,50; -80,44], style(
+          color=74,
+          rgbcolor={0,0,127},
+          smooth=0));
+      connect(calc_p_a, p_a) annotation (points=[-70,44; -70,80; -110,80], style(
+          color=74,
+          rgbcolor={0,0,127},
+          smooth=0));
+      connect(m_flow_ab, calc_m_flow_ab) annotation (points=[-60,110; -60,44],
+          style(
+          color=74,
+          rgbcolor={0,0,127},
+          smooth=0));
+      connect(calc_p_b, p_b) annotation (points=[-50,44; -50,80; 110,80], style(
+          color=74,
+          rgbcolor={0,0,127},
+          smooth=0));
+      connect(calc_T_b, T_b) annotation (points=[-40,44; -40,50; 110,50], style(
+          color=74,
+          rgbcolor={0,0,127},
+          smooth=0));
+      
+      annotation (Icon(Text(
+            extent=[-144,-61; 144,-110],
+            string="%name",
+            style(gradient=2, fillColor=69)),
+          Text(
+            extent=[-132,116; -100,100],
+            style(color=3, rgbcolor={0,0,255}),
+            string="p_a"),
+          Text(
+            extent=[100,116; 132,100],
+            style(color=3, rgbcolor={0,0,255}),
+            string="p_b"),
+          Text(
+            extent=[100,30; 132,14],
+            style(color=3, rgbcolor={0,0,255}),
+            string="T_b"),
+          Text(
+            extent=[-132,30; -100,14],
+            style(color=3, rgbcolor={0,0,255}),
+            string="T_a")), Diagram);
     end PartialTransport;
     
     replaceable partial model PartialTransportIsenthalpic 

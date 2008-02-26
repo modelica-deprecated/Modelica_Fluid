@@ -11,7 +11,12 @@ model IdealJunction
     length=1,
     diameter=0.1,
     redeclare package FluidInterface = FluidInterface,
-    redeclare package Medium = Medium) 
+    redeclare package Medium = Medium, 
+    provide_p_a=false, 
+    provide_p_b=false, 
+    provide_T_a=false, 
+    provide_T_b=false, 
+    provide_m_flow_ab=false) 
   annotation (extent=[-50,-20; -30,0]);
   
   FluidSandbox.PressureLosses.WallFriction pipeFriction2(
@@ -20,7 +25,12 @@ model IdealJunction
     length=1,
     diameter=0.1,
     redeclare package FluidInterface = FluidInterface,
-    redeclare package Medium = Medium) 
+    redeclare package Medium = Medium, 
+    provide_p_a=false, 
+    provide_p_b=false, 
+    provide_T_a=false, 
+    provide_T_b=false, 
+    provide_m_flow_ab=false) 
   annotation (extent=[10,-20; 30,0]);
   
   FluidSandbox.PressureLosses.WallFriction pipeFriction3(
@@ -29,7 +39,12 @@ model IdealJunction
     length=1,
     diameter=0.1,
     redeclare package FluidInterface = FluidInterface,
-    redeclare package Medium = Medium) 
+    redeclare package Medium = Medium, 
+    provide_p_a=false, 
+    provide_p_b=false, 
+    provide_T_a=false, 
+    provide_T_b=false, 
+    provide_m_flow_ab=false) 
   annotation (extent=[-20,10; 0,30], rotation=90);
   
   FluidSandbox.Sources.PrescribedBoundary_pTX_A prescribedBoundary_pTX_A(

@@ -19,8 +19,12 @@ model FM_FM_FM
     diameter=0.1,
     redeclare package WallFriction = 
         FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
-    redeclare package FluidInterface = FluidInterface) 
-                                              annotation (extent=[-50,-20; -30,
+    redeclare package FluidInterface = FluidInterface, 
+    provide_p_a=false, 
+    provide_p_b=false, 
+    provide_T_a=false, 
+    provide_T_b=false, 
+    provide_m_flow_ab=false)                  annotation (extent=[-50,-20; -30,
         0]);
   
   Modelica.Blocks.Sources.Sine sine(
@@ -35,8 +39,12 @@ model FM_FM_FM
     diameter=0.1,
     redeclare package WallFriction = 
         FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
-    redeclare package FluidInterface = FluidInterface) 
-                                              annotation (extent=[-10,-20; 10,0]);
+    redeclare package FluidInterface = FluidInterface, 
+    provide_p_a=false, 
+    provide_p_b=false, 
+    provide_T_a=false, 
+    provide_T_b=false, 
+    provide_m_flow_ab=false)                  annotation (extent=[-10,-20; 10,0]);
   
   FluidSandbox.PressureLosses.WallFriction pipeFriction3(
     redeclare package Medium = Medium,
@@ -44,8 +52,12 @@ model FM_FM_FM
     diameter=0.1,
     redeclare package WallFriction = 
         FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
-    redeclare package FluidInterface = FluidInterface) 
-                                              annotation (extent=[30,-20; 50,0]);
+    redeclare package FluidInterface = FluidInterface, 
+    provide_p_a=false, 
+    provide_p_b=false, 
+    provide_T_a=false, 
+    provide_T_b=false, 
+    provide_m_flow_ab=false)                  annotation (extent=[30,-20; 50,0]);
   
 equation 
   connect(sine.y, prescribedMassFlowRate_TX_A.p_in) 

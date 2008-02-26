@@ -19,8 +19,12 @@ model FM
     diameter=0.1,
     redeclare package WallFriction = 
         FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
-    redeclare package FluidInterface = FluidInterface) 
-                                              annotation (extent=[0,-20; 20,0]);
+    redeclare package FluidInterface = FluidInterface,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_b=false,
+    provide_m_flow_ab=false, 
+    provide_T_a=false)                        annotation (extent=[0,-20; 20,0]);
   
   Modelica.Blocks.Sources.Sine sine(
     phase=0,
