@@ -132,34 +132,35 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
-    Medium.BaseProperties medium_a 
-      "Port medium related to port_a (in this approach, this is sensible and allowed)";
-    Medium.BaseProperties medium_b 
-      "Port medium related to port_b (in this approach, this is sensible and allowed)";
+    // Required to model conduction
+    Medium.BaseProperties medium_designDirection 
+      "Upstream properties if fluid flew in design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
+    Medium.BaseProperties medium_nonDesignDirection 
+      "Upstream properties if fluid flew against design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
     
   equation 
     // Enthalpy flow rate
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            port_b.h) + G*(medium_a.T - medium_b.T);
+            port_b.h) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
     // Mass fraction propagation, substance mass balance
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_a.Xi - medium_b.Xi);
+            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
     // Balance equations
     port_a.m_flow + port_b.m_flow = 0;
     port_b.H_flow + port_a.H_flow = 0;
     port_b.mXi_flow + port_a.mXi_flow = zeros(Medium.nXi);
     
     // Port media
-    medium_a.p = port_a.p;
-    medium_a.h = port_a.h;
-    medium_a.Xi = port_a.Xi;
-    medium_b.p = port_b.p;
-    medium_b.h = port_b.h;
-    medium_b.Xi = port_b.Xi;
+    medium_designDirection.p = p_designDirection;
+    medium_designDirection.h = h_designDirection;
+    medium_designDirection.Xi = Xi_designDirection;
+    medium_nonDesignDirection.p = p_nonDesignDirection;
+    medium_nonDesignDirection.h = h_nonDesignDirection;
+    medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
@@ -167,67 +168,70 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties (FM-FM connections might be considered an exception)
+    // This approach provides both potential upstream properties 
+    // (independent of current mass flow direction, unless non-alternating 
+    // connections such as FM-FM are used in model)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Upstream specific enthalpy if flow was in design direction (approximation if this connector is in a FM only set)";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Upstream mass fractions if flow was in design direction (approximation if this connector is in a FM only set)";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Upstream specific enthalpy if flow was in non-design direction (approximation if this connector is in a FM only set)";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Upstream mass fractions if flow was in non-design direction (approximation if this connector is in a FM only set)";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsenthalpic;
   
   redeclare replaceable partial model extends PartialTransportIsenthalpicAA 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
     
-    Medium.BaseProperties medium_a 
-      "Port medium related to port_a (in this approach, this is sensible and allowed)";
-    Medium.BaseProperties medium_b 
-      "Port medium related to port_b (in this approach, this is sensible and allowed)";
+    // Required to model conduction
+    Medium.BaseProperties medium_designDirection 
+      "Upstream properties if fluid flew in design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
+    Medium.BaseProperties medium_nonDesignDirection 
+      "Upstream properties if fluid flew against design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
     
   equation 
     // Enthalpy flow rate
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            port_b.h) + G*(medium_a.T - medium_b.T);
+            port_b.h) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
     // Mass fraction propagation, substance mass balance
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_a.Xi - medium_b.Xi);
+            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
     // Balance equations
     port_a.m_flow + port_b.m_flow = 0;
     port_b.H_flow + port_a.H_flow = 0;
     port_b.mXi_flow + port_a.mXi_flow = zeros(Medium.nXi);
     
     // Port media
-    medium_a.p = port_a.p;
-    medium_a.h = port_a.h;
-    medium_a.Xi = port_a.Xi;
-    medium_b.p = port_b.p;
-    medium_b.h = port_b.h;
-    medium_b.Xi = port_b.Xi;
+    medium_designDirection.p = p_designDirection;
+    medium_designDirection.h = h_designDirection;
+    medium_designDirection.Xi = Xi_designDirection;
+    medium_nonDesignDirection.p = p_nonDesignDirection;
+    medium_nonDesignDirection.h = h_nonDesignDirection;
+    medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
@@ -235,67 +239,70 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties (FM-FM connections might be considered an exception)
+    // This approach provides both potential upstream properties 
+    // (independent of current mass flow direction, unless non-alternating 
+    // connections such as FM-FM are used in model)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Upstream specific enthalpy if flow was in design direction (approximation if this connector is in a FM only set)";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Upstream mass fractions if flow was in design direction (approximation if this connector is in a FM only set)";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Upstream specific enthalpy if flow was in non-design direction (approximation if this connector is in a FM only set)";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Upstream mass fractions if flow was in non-design direction (approximation if this connector is in a FM only set)";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsenthalpicAA;
   
   redeclare replaceable partial model extends PartialTransportIsenthalpicAB 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, allowed in this approach)" 
     
-    Medium.BaseProperties medium_a 
-      "Port medium related to port_a (in this approach, this is sensible and allowed)";
-    Medium.BaseProperties medium_b 
-      "Port medium related to port_b (in this approach, this is sensible and allowed)";
+    // Required to model conduction
+    Medium.BaseProperties medium_designDirection 
+      "Upstream properties if fluid flew in design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
+    Medium.BaseProperties medium_nonDesignDirection 
+      "Upstream properties if fluid flew against design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
     
   equation 
     // Enthalpy flow rate
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            port_b.h) + G*(medium_a.T - medium_b.T);
+            port_b.h) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
     // Mass fraction propagation, substance mass balance
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_a.Xi - medium_b.Xi);
+            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
     // Balance equations
     port_a.m_flow + port_b.m_flow = 0;
     port_b.H_flow + port_a.H_flow = 0;
     port_b.mXi_flow + port_a.mXi_flow = zeros(Medium.nXi);
     
     // Port media
-    medium_a.p = port_a.p;
-    medium_a.h = port_a.h;
-    medium_a.Xi = port_a.Xi;
-    medium_b.p = port_b.p;
-    medium_b.h = port_b.h;
-    medium_b.Xi = port_b.Xi;
+    medium_designDirection.p = p_designDirection;
+    medium_designDirection.h = h_designDirection;
+    medium_designDirection.Xi = Xi_designDirection;
+    medium_nonDesignDirection.p = p_nonDesignDirection;
+    medium_nonDesignDirection.h = h_nonDesignDirection;
+    medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
@@ -303,33 +310,35 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties (FM-FM connections might be considered an exception)
+    // This approach provides both potential upstream properties 
+    // (independent of current mass flow direction, unless non-alternating 
+    // connections such as FM-FM are used in model)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Upstream specific enthalpy if flow was in design direction (approximation if this connector is in a FM only set)";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Upstream mass fractions if flow was in design direction (approximation if this connector is in a FM only set)";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Upstream specific enthalpy if flow was in non-design direction (approximation if this connector is in a FM only set)";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Upstream mass fractions if flow was in non-design direction (approximation if this connector is in a FM only set)";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsenthalpicAB;
   
@@ -339,22 +348,22 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
     Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
     
-    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_b.state);
-    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_a.state);
+    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
+    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
     
   equation 
   /* Handle reverse and zero flow */
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            h_a_outflow) + G*(medium_a.T - medium_b.T);
+            h_a_outflow) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
     port_b.H_flow = semiLinear(port_b.m_flow,
             port_b.h,
-            h_b_outflow) - G*(medium_a.T - medium_b.T);
+            h_b_outflow) - G*(medium_designDirection.T - medium_nonDesignDirection.T);
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_a.Xi - medium_b.Xi);
+            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
     
   /* Mass, energy, substance mass balance */
     port_a.m_flow + port_b.m_flow = 0;
@@ -367,33 +376,35 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties
+    // This approach provides both potential upstream properties 
+    // (independent of current mass flow direction, unless non-alternating 
+    // connections such as FM-FM are used in model)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Upstream specific enthalpy if flow was in design direction (approximation if this connector is in a FM only set)";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Upstream mass fractions if flow was in design direction (approximation if this connector is in a FM only set)";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Upstream specific enthalpy if flow was in non-design direction (approximation if this connector is in a FM only set)";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Upstream mass fractions if flow was in non-design direction (approximation if this connector is in a FM only set)";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsentropic;
   
@@ -403,22 +414,22 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
     Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
     
-    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_b.state);
-    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_a.state);
+    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
+    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
     
   equation 
   /* Handle reverse and zero flow */
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            h_a_outflow) + G*(medium_a.T - medium_b.T);
+            h_a_outflow) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
     port_b.H_flow = semiLinear(port_b.m_flow,
             port_b.h,
-            h_b_outflow) - G*(medium_a.T - medium_b.T);
+            h_b_outflow) - G*(medium_designDirection.T - medium_nonDesignDirection.T);
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_a.Xi - medium_b.Xi);
+            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
     
   /* Mass, energy, substance mass balance */
     port_a.m_flow + port_b.m_flow = 0;
@@ -431,33 +442,35 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties
+    // This approach provides both potential upstream properties 
+    // (independent of current mass flow direction, unless non-alternating 
+    // connections such as FM-FM are used in model)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Upstream specific enthalpy if flow was in design direction (approximation if this connector is in a FM only set)";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Upstream mass fractions if flow was in design direction (approximation if this connector is in a FM only set)";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Upstream specific enthalpy if flow was in non-design direction (approximation if this connector is in a FM only set)";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Upstream mass fractions if flow was in non-design direction (approximation if this connector is in a FM only set)";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsentropicAA;
   
@@ -467,22 +480,22 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
     Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
     
-    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_b.state);
-    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_a.state);
+    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
+    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
     
   equation 
   /* Handle reverse and zero flow */
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            h_a_outflow) + G*(medium_a.T - medium_b.T);
+            h_a_outflow) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
     port_b.H_flow = semiLinear(port_b.m_flow,
             port_b.h,
-            h_b_outflow) - G*(medium_a.T - medium_b.T);
+            h_b_outflow) - G*(medium_designDirection.T - medium_nonDesignDirection.T);
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_a.Xi - medium_b.Xi);
+            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
     
   /* Mass, energy, substance mass balance */
     port_a.m_flow + port_b.m_flow = 0;
@@ -495,33 +508,35 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties
+    // This approach provides both potential upstream properties 
+    // (independent of current mass flow direction, unless non-alternating 
+    // connections such as FM-FM are used in model)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Upstream specific enthalpy if flow was in design direction (approximation if this connector is in a FM only set)";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Upstream mass fractions if flow was in design direction (approximation if this connector is in a FM only set)";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Upstream specific enthalpy if flow was in non-design direction (approximation if this connector is in a FM only set)";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Upstream mass fractions if flow was in non-design direction (approximation if this connector is in a FM only set)";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsentropicAB;
   
