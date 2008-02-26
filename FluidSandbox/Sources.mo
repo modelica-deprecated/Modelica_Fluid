@@ -34,6 +34,80 @@ package Sources "Source models"
     
   end PrescribedMassFlowRate_TX_B;
   
+  model ControlledPump "Simple model of pump with prescribed mass flow rate" 
+    
+    extends Interfaces.PartialComponent;
+    extends FluidInterface.PartialTransportIsentropic;
+    
+    Modelica.Blocks.Interfaces.RealInput massFlowRate(redeclare type SignalType
+        =            SI.MassFlowRate) 
+      annotation (extent=[-10,80; 10,100],  rotation=270);
+  equation 
+    port_a.m_flow = massFlowRate;
+    annotation (Icon(
+        Polygon(points=[-40,-64; -60,-100; 60,-100; 40,-64; -40,-64], style(
+              pattern=0, fillColor=74)),
+        Ellipse(extent=[-80,80; 80,-80], style(gradient=3)),
+        Polygon(points=[-38,40; -38,-40; 54,0; -38,40], style(
+            pattern=0,
+            gradient=2,
+            fillColor=7)),
+        Text(extent=[-100,-120; 100,-140], string="%name"),
+        Text(extent=[20,100; 48,80], string="m_flow"),
+        Line(points=[-100,0; -80,0], style(color=3, rgbcolor={0,0,255})),
+        Line(points=[80,0; 100,0], style(color=3, rgbcolor={0,0,255}))), Diagram);
+  end ControlledPump;
+  
+  model ControlledPumpAA 
+    "Simple model of pump with prescribed mass flow rate (two PortA's, not supported for all interfaces)" 
+    
+    extends Interfaces.PartialComponent;
+    extends FluidInterface.PartialTransportIsentropicAA;
+    
+    Modelica.Blocks.Interfaces.RealInput m_flow(redeclare type SignalType = 
+                     SI.MassFlowRate) 
+      annotation (extent=[-10,80; 10,100],  rotation=270);
+  equation 
+    port_a.m_flow = m_flow;
+    annotation (Icon(
+        Polygon(points=[-40,-64; -60,-100; 60,-100; 40,-64; -40,-64], style(
+              pattern=0, fillColor=74)),
+        Ellipse(extent=[-80,80; 80,-80], style(gradient=3)),
+        Polygon(points=[-38,40; -38,-40; 54,0; -38,40], style(
+            pattern=0,
+            gradient=2,
+            fillColor=7)),
+        Text(extent=[-100,-120; 100,-140], string="%name"),
+        Text(extent=[20,100; 48,80], string="m_flow"),
+        Line(points=[-100,0; -80,0], style(color=3, rgbcolor={0,0,255})),
+        Line(points=[80,0; 100,0], style(color=3, rgbcolor={0,0,255}))), Diagram);
+  end ControlledPumpAA;
+
+  model ControlledPumpAB 
+    "Simple model of pump with prescribed mass flow rate (PortA and PortB, not supported for all interfaces)" 
+    
+    extends Interfaces.PartialComponent;
+    extends FluidInterface.PartialTransportIsentropicAB;
+    
+    Modelica.Blocks.Interfaces.RealInput m_flow(redeclare type SignalType = 
+                     SI.MassFlowRate) 
+      annotation (extent=[-10,80; 10,100],  rotation=270);
+  equation 
+    port_a.m_flow = m_flow;
+    annotation (Icon(
+        Polygon(points=[-40,-64; -60,-100; 60,-100; 40,-64; -40,-64], style(
+              pattern=0, fillColor=74)),
+        Ellipse(extent=[-80,80; 80,-80], style(gradient=3)),
+        Polygon(points=[-38,40; -38,-40; 54,0; -38,40], style(
+            pattern=0,
+            gradient=2,
+            fillColor=7)),
+        Text(extent=[-100,-120; 100,-140], string="%name"),
+        Text(extent=[20,100; 48,80], string="m_flow"),
+        Line(points=[-100,0; -80,0], style(color=3, rgbcolor={0,0,255})),
+        Line(points=[80,0; 100,0], style(color=3, rgbcolor={0,0,255}))), Diagram);
+  end ControlledPumpAB;
+
   package BaseClasses 
     extends Icons.BaseClassLibrary;
     partial model PartialPrescribedBoundary_pTX 
@@ -70,8 +144,7 @@ package Sources "Source models"
       Modelica.Blocks.Interfaces.RealInput T_in(redeclare type SignalType = 
             Medium.Temperature) if                    useTemperatureInput 
         "Prescribed boundary temperature" annotation (extent=[-140,-20; -100,20]);
-      Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](redeclare type 
-          SignalType = 
+      Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](redeclare type SignalType = 
             Medium.MassFraction) if                    useCompositionInput 
         "Prescribed boundary composition" annotation (extent=[-140,-80; -100,-40]);
       
@@ -86,46 +159,47 @@ package Sources "Source models"
       Modelica.Blocks.Interfaces.RealInput T_in_internal(redeclare type 
           SignalType = Medium.Temperature) 
         "Needed to connect to conditional connector";
-      Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
-          redeclare type SignalType = Medium.MassFraction) 
+      Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](redeclare 
+          type SignalType = Medium.MassFraction) 
         "Needed to connect to conditional connector";
       annotation (
-        defaultComponentName="boundary_prescribed",
+        defaultComponentName="boundary_prescribed", 
         Coordsys(
-          extent=[-100,-100; 100,100],
-          grid=[2,2],
-          component=[20,20]),
+          extent=[-100,-100; 100,100], 
+          grid=[2,2], 
+          component=[20,20]), 
         Icon(
           Ellipse(extent=[-100,100; 100,-100], style(
-              color=69,
-              gradient=3,
-              fillColor=69)),
-          Line(points=[-100,60; -80,60], style(color=3, rgbcolor={0,0,255})),
-          Line(points=[-100,-60; -80,-60], style(color=3, rgbcolor={0,0,255})),
+              color=69, 
+              gradient=3, 
+              fillColor=69)), 
+          Line(points=[-100,60; -80,60], style(color=3, rgbcolor={0,0,255})), 
+          Line(points=[-100,-60; -80,-60], style(color=3, rgbcolor={0,0,255})), 
+            
           Text(
-            extent=[-146,110; -62,70],
+            extent=[-146,110; -62,70], 
             style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=7,
-              rgbfillColor={255,255,255}),
-            string="p"),
+              color=0, 
+              rgbcolor={0,0,0}, 
+              fillColor=7, 
+              rgbfillColor={255,255,255}), 
+            string="p"), 
           Text(
-            extent=[-160,-22; -58,-62],
+            extent=[-160,-22; -58,-62], 
             style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=7,
-              rgbfillColor={255,255,255}),
-            string="X"),
+              color=0, 
+              rgbcolor={0,0,0}, 
+              fillColor=7, 
+              rgbfillColor={255,255,255}), 
+            string="X"), 
           Text(
-            extent=[-158,44; -56,4],
+            extent=[-158,44; -56,4], 
             style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=7,
-              rgbfillColor={255,255,255}),
-            string="T")),
+              color=0, 
+              rgbcolor={0,0,0}, 
+              fillColor=7, 
+              rgbfillColor={255,255,255}), 
+            string="T")), 
         Documentation(info="<html>
 <p>
 Defines prescribed values for boundary conditions:
@@ -145,7 +219,7 @@ is from the boundary into the port. If mass is flowing from
 the port into the boundary, the boundary definitions,
 with exception of boundary pressure, do not have an effect.
 </p>
-</html>"),
+</html>"), 
         Diagram);
       
     equation 
@@ -198,7 +272,7 @@ with exception of boundary pressure, do not have an effect.
       
       // Source property input connectors
       Modelica.Blocks.Interfaces.RealInput m_flow_in(redeclare type SignalType 
-          =            Medium.MassFlowRate) if            useFlowRateInput 
+          = Medium.MassFlowRate) if                       useFlowRateInput 
         "Prescribed mass flow rate" 
       annotation (extent=[-113,40; -73,80]);
       Modelica.Blocks.Interfaces.RealInput T_in(redeclare type SignalType = 
@@ -221,63 +295,63 @@ with exception of boundary pressure, do not have an effect.
       Modelica.Blocks.Interfaces.RealInput T_in_internal(redeclare type 
           SignalType = Medium.Temperature) 
         "Needed to connect to conditional connector";
-      Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
-          redeclare type SignalType = Medium.MassFraction) 
+      Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](redeclare 
+          type SignalType = Medium.MassFraction) 
         "Needed to connect to conditional connector";
       annotation (
-        defaultComponentName="massFlowRate",
+        defaultComponentName="massFlowRate", 
         Coordsys(
-          extent=[-100,-100; 100,100],
-          grid=[2,2],
-          component=[20,20],
-          scale=0),
+          extent=[-100,-100; 100,100], 
+          grid=[2,2], 
+          component=[20,20], 
+          scale=0), 
         Icon(
           Rectangle(extent=[20,60; 100,-60], style(
-              color=0,
-              gradient=2,
-              fillColor=8)),
+              color=0, 
+              gradient=2, 
+              fillColor=8)), 
           Rectangle(extent=[38,40; 100,-40], style(
-              color=69,
-              gradient=2,
-              fillColor=69)),
-          Ellipse(extent=[-100,80; 60,-80], style(fillColor=7)),
-          Polygon(points=[-60,70; 60,0; -60,-68; -60,70], style(color=73,
-                fillColor=73)),
+              color=69, 
+              gradient=2, 
+              fillColor=69)), 
+          Ellipse(extent=[-100,80; 60,-80], style(fillColor=7)), 
+          Polygon(points=[-60,70; 60,0; -60,-68; -60,70], style(color=73, 
+                fillColor=73)), 
           Text(
-            extent=[-54,32; 16,-30],
-            style(color=41, fillColor=41),
-            string="m"),
-          Ellipse(extent=[-26,30; -18,22], style(color=1, fillColor=1)),
+            extent=[-54,32; 16,-30], 
+            style(color=41, fillColor=41), 
+            string="m"), 
+          Ellipse(extent=[-26,30; -18,22], style(color=1, fillColor=1)), 
           Text(
-            extent=[-194,112; -54,80],
+            extent=[-194,112; -54,80], 
             style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=7,
-              rgbfillColor={255,255,255}),
-            string="m_flow"),
+              color=0, 
+              rgbcolor={0,0,0}, 
+              fillColor=7, 
+              rgbfillColor={255,255,255}), 
+            string="m_flow"), 
           Text(
-            extent=[-100,14; -60,-20],
+            extent=[-100,14; -60,-20], 
             style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=7,
-              rgbfillColor={255,255,255}),
-            string="T"),
+              color=0, 
+              rgbcolor={0,0,0}, 
+              fillColor=7, 
+              rgbfillColor={255,255,255}), 
+            string="T"), 
           Text(
-            extent=[-144,-90; -24,-118],
+            extent=[-144,-90; -24,-118], 
             style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=7,
-              rgbfillColor={255,255,255}),
-            string="X")),
+              color=0, 
+              rgbcolor={0,0,0}, 
+              fillColor=7, 
+              rgbfillColor={255,255,255}), 
+            string="X")), 
         Window(
-          x=0.45,
-          y=0.01,
-          width=0.44,
-          height=0.65),
-        Diagram,
+          x=0.45, 
+          y=0.01, 
+          width=0.44, 
+          height=0.65), 
+        Diagram, 
         Documentation(info="<html>
 <p>
 Models an ideal flow source, with prescribed values of flow rate, temperature and composition:

@@ -200,6 +200,62 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         assert(false, "Unsupported initialization option");
       end if;
     end PartialLumpedVolume;
+
+    replaceable partial model PartialTwoSidedVolume 
+      "Volume with two different sides and without connectors (careful: choose your own prefered states!)" 
+      
+      import Modelica_Fluid.Types;
+      
+    // Medium model
+      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+        "Medium in the component" 
+          annotation (choicesAllMatching = true);
+      
+      // Interfaces
+      FluidPort_a port_a(redeclare package Medium = Medium) "Fluid inlet port" 
+                           annotation (extent=[-110,-10; -90,10]);
+      FluidPort_a port_b(redeclare package Medium = Medium) 
+        "Fluid outlet port (Port_a, too!)" annotation (extent=[90,-10; 110,10]);
+      
+    // BaseProperties instance
+      Medium.BaseProperties medium 
+        "No start or guess values as states have to be chosen in submodel";
+      
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b heatPort 
+        annotation (extent=[-10,-110; 10,-90]);
+      
+      Medium.SpecificEnthalpy h_a = medium.h "Specific enthalpy at port_a";
+      Medium.MassFraction Xi_a[Medium.nXi] = medium.Xi 
+        "Independent mixture mass fractions m_i/m in the connection point a";
+      
+      Medium.SpecificEnthalpy h_b = medium.h "Specific enthalpy at port_a";
+      Medium.MassFraction Xi_b[Medium.nXi] = medium.Xi 
+        "Independent mixture mass fractions m_i/m in the connection point b";
+      
+      Medium.MassFlowRate m_flow_net "Net mass flow into the volume";
+      Medium.MassFlowRate mXi_flow_net[Medium.nXi] 
+        "Net substance mass flow into the volume";
+      Medium.EnthalpyFlowRate H_flow_net "Net enthalpy flow into the volume";
+      
+    equation 
+      // boundary conditions heat port
+      heatPort.T = medium.T;
+      
+      annotation (
+        Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
+            extent=[-130,-108; 144,-150],
+            style(color=0),
+            string="V=%V")),
+        Documentation(info="<html>
+Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
+<ul>
+<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
+</ul>
+The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
+</html>"),
+        Diagram);
+      
+    end PartialTwoSidedVolume;
     
     replaceable partial model PartialTransport 
       "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
@@ -343,6 +399,14 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       Medium.BaseProperties medium_b 
         "Medium properties in port_b, may only be used if result is sensible";
       
+    equation 
+      // Media instances may only be used if sensible
+      medium_a.p = p_designDirection;
+      medium_a.h = h_designDirection;
+      medium_a.Xi = Xi_designDirection;
+      medium_b.p = p_nonDesignDirection;
+      medium_b.h = h_nonDesignDirection;
+      medium_b.Xi = Xi_nonDesignDirection;
     end PartialTransportIsentropicAA;
     
     replaceable partial model PartialTransportIsentropicAB 
@@ -368,6 +432,14 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       Medium.BaseProperties medium_b 
         "Medium properties in port_b, may only be used if result is sensible";
       
+    equation 
+      // Media instances may only be used if sensible
+      medium_a.p = p_designDirection;
+      medium_a.h = h_designDirection;
+      medium_a.Xi = Xi_designDirection;
+      medium_b.p = p_nonDesignDirection;
+      medium_b.h = h_nonDesignDirection;
+      medium_b.Xi = Xi_nonDesignDirection;
     end PartialTransportIsentropicAB;
     
     replaceable partial model PartialIdealJunction 

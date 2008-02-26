@@ -116,6 +116,55 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
+  redeclare replaceable partial model extends PartialTwoSidedVolume 
+    "Volume with two sides and inlet and outlet ports (flow reversal is allowed)" 
+    
+    annotation (
+      Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
+          extent=[-130,-108; 144,-150],
+          style(color=0),
+          string="V=%V")),
+      Documentation(info="<html>
+Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
+<ul>
+<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
+</ul>
+The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
+</html>"),
+      Diagram);
+    
+  equation 
+    // Pressure
+    port_a.p = medium.p;
+    port_b.p = medium.p;
+    
+    // Enthalpy flow
+    port_a.H_flow = semiLinear(
+        port_a.m_flow,
+        port_a.h,
+        h_a);
+    port_b.H_flow = semiLinear(
+        port_b.m_flow,
+        port_b.h,
+        h_b);
+    
+    // Substance mass flows
+    port_a.mXi_flow = semiLinear(
+        port_a.m_flow,
+        port_a.Xi,
+        Xi_a);
+    port_b.mXi_flow = semiLinear(
+        port_b.m_flow,
+        port_b.Xi,
+        Xi_b);
+    
+    // Net flow rates
+    m_flow_net = port_a.m_flow + port_b.m_flow;
+    mXi_flow_net = port_a.mXi_flow + port_b.mXi_flow;
+    H_flow_net = port_a.H_flow + port_b.H_flow;
+    
+  end PartialTwoSidedVolume;
+
   redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
@@ -141,19 +190,23 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-  // This approach provides upstream and downstream properties
+    // This approach provides upstream and downstream properties
     p_designDirection = port_a.p 
       "Upstream pressure if flow is in design direction";
     h_designDirection = inflow(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow is in design direction";
-    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
+    Xi_designDirection =                           port_a.Xi 
       "Upstream mass fractions if flow is in design direction";
+                         /*inflow(port_a.m_flow, */
+                                                            //) 
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow is in non-design direction";
     h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow is in non-design direction";
-    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
+    Xi_nonDesignDirection =                           port_b.Xi 
       "Upstream mass fractions if flow is in non-design direction";
+                            /*inflow(port_b.m_flow, */
+                                                               //) 
     
   end PartialTransportIsenthalpic;
   
@@ -182,19 +235,23 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-  // This approach provides upstream and downstream properties
+    // This approach provides upstream and downstream properties
     p_designDirection = port_a.p 
       "Upstream pressure if flow is in design direction";
     h_designDirection = inflow(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow is in design direction";
-    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
+    Xi_designDirection =                           port_a.Xi 
       "Upstream mass fractions if flow is in design direction";
+                         /*inflow(port_a.m_flow, */
+                                                            //) 
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow is in non-design direction";
     h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow is in non-design direction";
-    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
+    Xi_nonDesignDirection =                           port_b.Xi 
       "Upstream mass fractions if flow is in non-design direction";
+                            /*inflow(port_b.m_flow, */
+                                                               //) 
     
   end PartialTransportIsenthalpicAA;
   
@@ -223,19 +280,23 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-  // This approach provides upstream and downstream properties
+    // This approach provides upstream and downstream properties
     p_designDirection = port_a.p 
       "Upstream pressure if flow is in design direction";
     h_designDirection = inflow(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow is in design direction";
-    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
+    Xi_designDirection =                           port_a.Xi 
       "Upstream mass fractions if flow is in design direction";
+                         /*inflow(port_a.m_flow, */
+                                                            //) 
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow is in non-design direction";
     h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow is in non-design direction";
-    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
+    Xi_nonDesignDirection =                           port_b.Xi 
       "Upstream mass fractions if flow is in non-design direction";
+                            /*inflow(port_b.m_flow, */
+                                                               //) 
     
   end PartialTransportIsenthalpicAB;
   
@@ -254,12 +315,12 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       port_a.m_flow,
       port_a.h,
       h_a_outflow) 
-      "Symbolic machinery seems to work better if provided a variable, not an expression!?";
+      "According to Sven Erik, semiLinear has to be provided a variable, not an expression";
     port_b.H_flow = semiLinear(
       port_b.m_flow,
       port_b.h,
       h_b_outflow) 
-      "Symbolic machinery seems to work better if provided a variable, not an expression!?";
+      "According to Sven Erik, semiLinear has to be provided a variable, not an expression";
     port_a.mXi_flow = semiLinear(
       port_a.m_flow,
       port_a.Xi,
@@ -286,35 +347,47 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   Medium.specificEntropy(medium_a) = Medium.specificEntropy(Medium.setState_phX(port_b.p, h_ab_isentropic, port_a.Xi));
   */
     
-  // This approach provides upstream and downstream properties
+    // This approach provides upstream and downstream properties
     p_designDirection = port_a.p 
       "Upstream pressure if flow is in design direction";
     h_designDirection = inflow(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow is in design direction";
-    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
+    Xi_designDirection =                           port_a.Xi 
       "Upstream mass fractions if flow is in design direction";
+                         /*inflow(port_a.m_flow, */
+                                                            //) 
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow is in non-design direction";
     h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow is in non-design direction";
-    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
+    Xi_nonDesignDirection =                           port_b.Xi 
       "Upstream mass fractions if flow is in non-design direction";
+                            /*inflow(port_b.m_flow, */
+                                                               //) 
     
   end PartialTransportIsentropic;
   
   redeclare replaceable partial model extends PartialTransportIsentropicAA 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
     
+    Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
+    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
+    
+    Medium.SpecificEnthalpy h_ba_isentropic;
+    Medium.SpecificEnthalpy h_ab_isentropic;
+    
   equation 
     /* Handle reverse and zero flow */
     port_a.H_flow = semiLinear(
       port_a.m_flow,
       port_a.h,
-      port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_b)));
+      h_a_outflow) 
+      "According to Sven Erik, semiLinear has to be provided a variable, not an expression";
     port_b.H_flow = semiLinear(
       port_b.m_flow,
       port_b.h,
-      port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_a)));
+      h_b_outflow) 
+      "According to Sven Erik, semiLinear has to be provided a variable, not an expression";
     port_a.mXi_flow = semiLinear(
       port_a.m_flow,
       port_a.Xi,
@@ -331,35 +404,57 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-  // This approach provides upstream and downstream properties
+    // Isentropic process
+    // Preferably, if supported by Medium model
+    h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_b);
+    h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_a);
+    // Implicit equation if not supported
+    /*
+  Medium.specificEntropy(medium_b) = Medium.specificEntropy(Medium.setState_phX(port_a.p, h_ba_isentropic, port_b.Xi));
+  Medium.specificEntropy(medium_a) = Medium.specificEntropy(Medium.setState_phX(port_b.p, h_ab_isentropic, port_a.Xi));
+  */
+    
+    // This approach provides upstream and downstream properties
     p_designDirection = port_a.p 
       "Upstream pressure if flow is in design direction";
     h_designDirection = inflow(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow is in design direction";
-    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
+    Xi_designDirection =                           port_a.Xi 
       "Upstream mass fractions if flow is in design direction";
+                         /*inflow(port_a.m_flow, */
+                                                            //) 
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow is in non-design direction";
     h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow is in non-design direction";
-    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
+    Xi_nonDesignDirection =                           port_b.Xi 
       "Upstream mass fractions if flow is in non-design direction";
+                            /*inflow(port_b.m_flow, */
+                                                               //) 
     
   end PartialTransportIsentropicAA;
   
   redeclare replaceable partial model extends PartialTransportIsentropicAB 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, allowed in this approach)" 
     
+    Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
+    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
+    
+    Medium.SpecificEnthalpy h_ba_isentropic;
+    Medium.SpecificEnthalpy h_ab_isentropic;
+    
   equation 
     /* Handle reverse and zero flow */
     port_a.H_flow = semiLinear(
       port_a.m_flow,
       port_a.h,
-      port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_b)));
+      h_a_outflow) 
+      "According to Sven Erik, semiLinear has to be provided a variable, not an expression";
     port_b.H_flow = semiLinear(
       port_b.m_flow,
       port_b.h,
-      port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_a)));
+      h_b_outflow) 
+      "According to Sven Erik, semiLinear has to be provided a variable, not an expression";
     port_a.mXi_flow = semiLinear(
       port_a.m_flow,
       port_a.Xi,
@@ -376,21 +471,48 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-  // This approach provides upstream and downstream properties
+    // Isentropic process
+    // Preferably, if supported by Medium model
+    h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_b);
+    h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_a);
+    // Implicit equation if not supported
+    /*
+  Medium.specificEntropy(medium_b) = Medium.specificEntropy(Medium.setState_phX(port_a.p, h_ba_isentropic, port_b.Xi));
+  Medium.specificEntropy(medium_a) = Medium.specificEntropy(Medium.setState_phX(port_b.p, h_ab_isentropic, port_a.Xi));
+  */
+    
+    // This approach provides upstream and downstream properties
     p_designDirection = port_a.p 
       "Upstream pressure if flow is in design direction";
     h_designDirection = inflow(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow is in design direction";
-    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
+    Xi_designDirection =                           port_a.Xi 
       "Upstream mass fractions if flow is in design direction";
+                         /*inflow(port_a.m_flow, */
+                                                            //) 
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow is in non-design direction";
     h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow is in non-design direction";
-    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
+    Xi_nonDesignDirection =                           port_b.Xi 
       "Upstream mass fractions if flow is in non-design direction";
+                            /*inflow(port_b.m_flow, */
+                                                               //) 
     
   end PartialTransportIsentropicAB;
+  
+  redeclare replaceable partial model extends PartialIdealJunction 
+    "Partial infinitesimal junction model" 
+    
+  equation 
+    connect(port_1, port_3) 
+                          annotation (points=[-100,0; 0,0; 0,100], style(
+    color=69, rgbcolor={0,127,255}));
+    connect(port_1, port_2) 
+                          annotation (points=[-100,0; 100,0], style(color=
+          69,
+    rgbcolor={0,127,255}));
+  end PartialIdealJunction;
   
   redeclare replaceable partial model extends PartialSource_A 
     "Partial source model with a Port_a" 
