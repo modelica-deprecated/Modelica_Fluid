@@ -277,20 +277,20 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       // Properties for fluid flowing in design direction, have to be provided by PartialTwoPortTransport
       // Used in pressure drop correlation
       Medium.AbsolutePressure p_designDirection 
-        "Pressure for flow in design direction";
+        "Ideally: Upstream p if fluid flew in design direction (even if currently not the case). At least: Upstream p if fluid actually flows in design direction.";
       Medium.SpecificEnthalpy h_designDirection 
-        "Specific mixing enthalpy for flow in design direction";
+        "Ideally: Upstream h if fluid flew in design direction (even if currently not the case). At least: Upstream h if fluid actually flows in design direction.";
       Medium.MassFraction Xi_designDirection[Medium.nXi] 
-        "Mass fractions for flow in design direction";
+        "Ideally: Upstream Xi if fluid flew in design direction (even if currently not the case). At least: Upstream Xi if fluid actually flows in design direction.";
       
       // Properties for fluid flowing in non-design direction, have to be provided by PartialTwoPortTransport
       // Used in pressure drop correlation
       Medium.AbsolutePressure p_nonDesignDirection 
-        "Pressure for flow in non-design direction";
+        "Ideally: Upstream p if fluid flew against design direction (even if currently not the case). At least: Upstream p if fluid actually flows against design direction.";
       Medium.SpecificEnthalpy h_nonDesignDirection 
-        "Specific mixing enthalpy for flow in non-design direction";
+        "Ideally: Upstream h if fluid flew against design direction (even if currently not the case). At least: Upstream h if fluid actually flows against design direction.";
       Medium.MassFraction Xi_nonDesignDirection[Medium.nXi] 
-        "Mass fractions for flow in non-design direction";
+        "Ideally: Upstream Xi if fluid flew against design direction (even if currently not the case). At least: Upstream Xi if fluid actually flows against design direction.";
       
       // Sensor outputs //////////////////////////////////////////////////////////////////////////////
       Modelica.Blocks.Interfaces.RealOutput p_a(redeclare type SignalType = 
@@ -325,8 +325,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
           = SI.Temperature) annotation (extent=[-44,40; -36,48], rotation=90);
       
       // Using Medium.temperature(Medium.setState_phX()) for temperature sensor results in numeric Jacobian; using BaseProperties instead
-      Medium.BaseProperties medium_T_a;
-      Medium.BaseProperties medium_T_b;
+      Medium.BaseProperties calc_T_a_medium;
+      Medium.BaseProperties calc_T_b_medium;
     equation 
       connect(T_a, calc_T_a) annotation (points=[-110,50; -80,50; -80,44], style(
           color=74,
@@ -432,19 +432,19 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
           annotation (extent=[110,-10; 90,10]);
       
     protected 
-      Medium.BaseProperties medium_a 
-        "Medium properties in port_a, may only be used if result is sensible";
-      Medium.BaseProperties medium_b 
-        "Medium properties in port_b, may only be used if result is sensible";
+      Medium.BaseProperties medium_designDirection 
+        "Ideally: Upstream properties if fluid flew in design direction (even if currently not the case). At least: Upstream properties if fluid actually flows in design direction.";
+      Medium.BaseProperties medium_nonDesignDirection 
+        "Ideally: Upstream properties if fluid flew against design direction (even if currently not the case). At least: Upstream properties if fluid actually flows against design direction.";
       
     equation 
       // Media instances may only be used if sensible
-      medium_a.p = p_designDirection;
-      medium_a.h = h_designDirection;
-      medium_a.Xi = Xi_designDirection;
-      medium_b.p = p_nonDesignDirection;
-      medium_b.h = h_nonDesignDirection;
-      medium_b.Xi = Xi_nonDesignDirection;
+      medium_designDirection.p = p_designDirection;
+      medium_designDirection.h = h_designDirection;
+      medium_designDirection.Xi = Xi_designDirection;
+      medium_nonDesignDirection.p = p_nonDesignDirection;
+      medium_nonDesignDirection.h = h_nonDesignDirection;
+      medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
       
     end PartialTransportIsentropic;
     
@@ -466,19 +466,19 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         annotation (extent=[110,-10; 90,10]);
       
     protected 
-      Medium.BaseProperties medium_a 
-        "Medium properties in port_a, may only be used if result is sensible";
-      Medium.BaseProperties medium_b 
-        "Medium properties in port_b, may only be used if result is sensible";
+      Medium.BaseProperties medium_designDirection 
+        "Ideally: Upstream properties if fluid flew in design direction (even if currently not the case). At least: Upstream properties if fluid actually flows in design direction.";
+      Medium.BaseProperties medium_nonDesignDirection 
+        "Ideally: Upstream properties if fluid flew against design direction (even if currently not the case). At least: Upstream properties if fluid actually flows against design direction.";
       
     equation 
       // Media instances may only be used if sensible
-      medium_a.p = p_designDirection;
-      medium_a.h = h_designDirection;
-      medium_a.Xi = Xi_designDirection;
-      medium_b.p = p_nonDesignDirection;
-      medium_b.h = h_nonDesignDirection;
-      medium_b.Xi = Xi_nonDesignDirection;
+      medium_designDirection.p = p_designDirection;
+      medium_designDirection.h = h_designDirection;
+      medium_designDirection.Xi = Xi_designDirection;
+      medium_nonDesignDirection.p = p_nonDesignDirection;
+      medium_nonDesignDirection.h = h_nonDesignDirection;
+      medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
     end PartialTransportIsentropicAA;
     
     replaceable partial model PartialTransportIsentropicAB 
@@ -499,19 +499,19 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         annotation (extent=[110,-10; 90,10]);
       
     protected 
-      Medium.BaseProperties medium_a 
-        "Medium properties in port_a, may only be used if result is sensible";
-      Medium.BaseProperties medium_b 
-        "Medium properties in port_b, may only be used if result is sensible";
+      Medium.BaseProperties medium_designDirection 
+        "Ideally: Upstream properties if fluid flew in design direction (even if currently not the case). At least: Upstream properties if fluid actually flows in design direction.";
+      Medium.BaseProperties medium_nonDesignDirection 
+        "Ideally: Upstream properties if fluid flew against design direction (even if currently not the case). At least: Upstream properties if fluid actually flows against design direction.";
       
     equation 
       // Media instances may only be used if sensible
-      medium_a.p = p_designDirection;
-      medium_a.h = h_designDirection;
-      medium_a.Xi = Xi_designDirection;
-      medium_b.p = p_nonDesignDirection;
-      medium_b.h = h_nonDesignDirection;
-      medium_b.Xi = Xi_nonDesignDirection;
+      medium_designDirection.p = p_designDirection;
+      medium_designDirection.h = h_designDirection;
+      medium_designDirection.Xi = Xi_designDirection;
+      medium_nonDesignDirection.p = p_nonDesignDirection;
+      medium_nonDesignDirection.h = h_nonDesignDirection;
+      medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
     end PartialTransportIsentropicAB;
     
     replaceable partial model PartialIdealJunction 

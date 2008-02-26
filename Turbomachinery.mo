@@ -12,7 +12,7 @@ package Turbomachinery "Compressor, turbine models and the like"
     annotation (extent=[90,20; 110,40]);
   equation 
     port_a.m_flow = K_t*Modelica_Fluid.Utilities.regRoot((port_a.p^2 - port_b.p^2)/
-      medium_a.T) "Stodola's law";
+      medium_designDirection.T) "Stodola's law";
     0 = P_mechanical + flange.tau*der(flange.phi);
     
     annotation (Icon(Polygon(points=[-100,100; 100,150; 100,-50; -100,0; -100,

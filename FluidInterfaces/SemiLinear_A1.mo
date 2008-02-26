@@ -197,33 +197,34 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties
+    // This approach does not provide both potential upstream properties 
+    // (only upstream properties for current mass flow direction and downstream mixing properties)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Approximation of upstream specific enthalpy if flow was in design direction";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Approxiamtion of upstream mass fractions if flow was in design direction";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Approximation of upstream specific enthalpy if flow was in non-design direction";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Approximation of upstream mass fractions if flow was in non-design direction";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     /*
   // Simpler approach for temperature like that below results in numeric Jacobian
   calc_T_a = if provide_T_a then 
@@ -264,33 +265,34 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties
+    // This approach does not provide both potential upstream properties 
+    // (only upstream properties for current mass flow direction and downstream mixing properties)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Approximation of upstream specific enthalpy if flow was in design direction";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Approxiamtion of upstream mass fractions if flow was in design direction";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Approximation of upstream specific enthalpy if flow was in non-design direction";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Approximation of upstream mass fractions if flow was in non-design direction";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     /*
   // Simpler approach for temperature like that below results in numeric Jacobian
   calc_T_a = if provide_T_a then 
@@ -331,33 +333,34 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties
+    // This approach does not provide both potential upstream properties 
+    // (only upstream properties for current mass flow direction and downstream mixing properties)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Approximation of upstream specific enthalpy if flow was in design direction";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Approxiamtion of upstream mass fractions if flow was in design direction";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Approximation of upstream specific enthalpy if flow was in non-design direction";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Approximation of upstream mass fractions if flow was in non-design direction";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     /*
   // Simpler approach for temperature like that below results in numeric Jacobian
   calc_T_a = if provide_T_a then 
@@ -379,8 +382,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
     Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
     
-    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_b.state);
-    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_a.state);
+    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
+    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
     
   equation 
   /* Handle reverse and zero flow */
@@ -407,33 +410,34 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties
+    // This approach does not provide both potential upstream properties 
+    // (only upstream properties for current mass flow direction and downstream mixing properties)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Approximation of upstream specific enthalpy if flow was in design direction";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Approxiamtion of upstream mass fractions if flow was in design direction";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Approximation of upstream specific enthalpy if flow was in non-design direction";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Approximation of upstream mass fractions if flow was in non-design direction";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     /*
   // Simpler approach for temperature like that below results in numeric Jacobian
   calc_T_a = if provide_T_a then 
@@ -456,8 +460,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
     Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
     
-    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_b.state);
-    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_a.state);
+    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
+    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
     
   equation 
   /* Handle reverse and zero flow */
@@ -484,33 +488,34 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties
+    // This approach does not provide both potential upstream properties 
+    // (only upstream properties for current mass flow direction and downstream mixing properties)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Approximation of upstream specific enthalpy if flow was in design direction";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Approxiamtion of upstream mass fractions if flow was in design direction";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Approximation of upstream specific enthalpy if flow was in non-design direction";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Approximation of upstream mass fractions if flow was in non-design direction";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     /*
   // Simpler approach for temperature like that below results in numeric Jacobian
   calc_T_a = if provide_T_a then 
@@ -533,8 +538,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
     Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
     
-    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_b.state);
-    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_a.state);
+    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
+    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
     
   equation 
   /* Handle reverse and zero flow */
@@ -561,33 +566,34 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // This approach provides upstream and downstream properties
+    // This approach does not provide both potential upstream properties 
+    // (only upstream properties for current mass flow direction and downstream mixing properties)
     p_designDirection = port_a.p 
-      "Upstream pressure if flow is in design direction";
+      "Upstream pressure if flow was in design direction";
     h_designDirection = port_a.h 
-      "Upstream specific enthalpy if flow is in design direction";
+      "Approximation of upstream specific enthalpy if flow was in design direction";
     Xi_designDirection = port_a.Xi 
-      "Upstream mass fractions if flow is in design direction";
+      "Approxiamtion of upstream mass fractions if flow was in design direction";
     p_nonDesignDirection = port_b.p 
-      "Upstream pressure if flow is in non-design direction";
+      "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = port_b.h 
-      "Upstream specific enthalpy if flow is in non-design direction";
+      "Approximation of upstream specific enthalpy if flow was in non-design direction";
     Xi_nonDesignDirection = port_b.Xi 
-      "Upstream mass fractions if flow is in non-design direction";
+      "Approximation of upstream mass fractions if flow was in non-design direction";
     
     // sensors
-    calc_T_a = if provide_T_a then medium_T_a.T else 0;
-    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
-    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
-    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
-    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
-    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
-    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
-    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     /*
   // Simpler approach for temperature like that below results in numeric Jacobian
   calc_T_a = if provide_T_a then 
