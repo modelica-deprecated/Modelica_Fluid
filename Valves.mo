@@ -35,7 +35,7 @@ package Valves "Valve models"
   end ValveLinear;
   
   model ValveLinearAA 
-    "Valve for water/steam flows with linear pressure drop with two PortA's" 
+    "Valve for water/steam flows with linear pressure drop with two PortA's (not supported for all interfaces)" 
     
     extends Interfaces.PartialComponent;
     extends FluidInterface.PartialTransportIsenthalpicAA;
@@ -69,7 +69,7 @@ package Valves "Valve models"
   end ValveLinearAA;
   
   model ValveLinearAB 
-    "Valve for water/steam flows with linear pressure drop with a PortA and PortB each" 
+    "Valve for water/steam flows with linear pressure drop with a PortA and PortB each (not supported for all interfaces)" 
     
     extends Interfaces.PartialComponent;
     extends FluidInterface.PartialTransportIsenthalpicAB;

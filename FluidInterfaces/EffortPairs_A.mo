@@ -90,15 +90,15 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Net flow rates
     m_flow_net = sum(port_a.m_flow) + sum(port_b.m_flow);
     for j in 1:Medium.nXi loop
-      mXi_flow_net[j] = sum({port_a[i].m_flow*(if port_a[i].m_flow > 0 then 
+      mXi_flow_net[j] = noEvent(sum({port_a[i].m_flow*(if port_a[i].m_flow > 0 then 
               port_a[i].Xi_b[j] else port_a[i].Xi_a[j]) for i in 1:n_a}) +
         sum({port_b[i].m_flow*(if port_b[i].m_flow > 0 then port_b[i].Xi_b[
-        j] else port_b[i].Xi_a[j]) for i in 1:n_b});
+        j] else port_b[i].Xi_a[j]) for i in 1:n_b}));
     end for;
-    H_flow_net = sum({port_a[i].m_flow*(if port_a[i].m_flow > 0 then port_a[
+    H_flow_net = noEvent(sum({port_a[i].m_flow*(if port_a[i].m_flow > 0 then port_a[
       i].h_b else port_a[i].h_a) for i in 1:n_a}) + sum({port_b[i].m_flow*(
       if port_b[i].m_flow > 0 then port_b[i].h_b else port_b[i].h_a) for i in 
-          1:n_b});
+          1:n_b}));
   /*
   All substances at once
   mXi_flow_net = {sum(port_a[:].mXi_flow[i]) + sum(port_b[:].mXi_flow[i]) for i in 1:Medium.nXi};
@@ -107,6 +107,47 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
+  redeclare replaceable partial model extends PartialTwoSidedVolume 
+    "Volume with two sides and inlet and outlet ports (flow reversal is allowed)" 
+    
+    annotation (
+      Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
+          extent=[-130,-108; 144,-150],
+          style(color=0),
+          string="V=%V")),
+      Documentation(info="<html>
+Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
+<ul>
+<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
+</ul>
+The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
+</html>"),
+      Diagram);
+    
+  equation 
+    // Pressure
+    port_a.p = medium.p;
+    port_b.p = medium.p;
+    
+    // Enthalpy flow
+    port_a.h_a = h_a;
+    port_b.h_a = h_b "port_b is a Port_a instance, too";
+    
+    // Substance mass flows
+    port_a.Xi_a = Xi_a;
+    port_b.Xi_a = Xi_b "port_b is a Port_a instance, too";
+    
+    // Net flow rates
+    m_flow_net = port_a.m_flow + port_b.m_flow;
+    
+    mXi_flow_net = noEvent(port_a.m_flow*(if port_a.m_flow > 0 then port_a.Xi_b else port_a.Xi_a)
+      + port_b.m_flow*(if port_b.m_flow > 0 then port_b.Xi_b else port_b.Xi_a));
+    
+    H_flow_net = noEvent(port_a.m_flow*(if port_a.m_flow > 0 then port_a.h_b else port_a.h_a)
+       + port_b.m_flow*(if port_b.m_flow > 0 then port_b.h_b else port_b.h_a));
+    
+  end PartialTwoSidedVolume;
+
   redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
