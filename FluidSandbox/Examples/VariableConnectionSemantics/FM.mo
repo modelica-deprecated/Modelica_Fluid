@@ -4,10 +4,9 @@ model FM
   extends Icons.Example;
   FluidSandbox.Sources.PrescribedBoundary_pTX_A prescribedBoundary_pTX_A(
     redeclare package Medium = Medium,
-    p=1e5,
-    T=300,
-    redeclare package FluidInterface = FluidInterface) 
-           annotation (extent=[60,-10; 80,10],rotation=180);
+    redeclare package FluidInterface = FluidInterface, 
+    p=100000, 
+    T=300) annotation (extent=[60,-10; 80,10],rotation=180);
   FluidSandbox.Sources.PrescribedBoundary_pTX_A prescribedMassFlowRate_TX_A(
     redeclare package Medium = Medium,
     T=320,
@@ -21,8 +20,13 @@ model FM
     diameter=0.1,
     redeclare package FluidInterface = FluidInterface,
     redeclare package WallFriction = 
-        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent)
-                                              annotation (extent=[0,-10; 20,
+        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent, 
+      
+    provide_p_a=false, 
+    provide_p_b=false, 
+    provide_T_a=true, 
+    provide_T_b=true, 
+    provide_m_flow_ab=false)                  annotation (extent=[0,-10; 20,
         10]);
   
   Modelica.Blocks.Sources.Sine sine(
@@ -52,8 +56,8 @@ equation
   connect(semantics2.port_a, pipeFriction.port_b) 
     annotation (points=[35,-2; 28,-2; 28,0; 20,0],
                                      style(color=69, rgbcolor={0,127,255}));
-  connect(semantics2.port_b, prescribedBoundary_pTX_A.port) annotation (points=[45,-2;
-        52,-2; 52,1.22461e-015; 60,1.22461e-015],
+  connect(semantics2.port_b, prescribedBoundary_pTX_A.port) annotation (points=[45,-2; 
+        52,-2; 52,1.22465e-015; 60,1.22465e-015],
                                   style(color=69,
         rgbcolor={0,127,255}));
   
@@ -64,8 +68,8 @@ equation
                                      style(color=69, rgbcolor={0,127,255}));
     connect(pipeFriction.port_b, prescribedBoundary_pTX_A.port) 
                                                               annotation (
-      points=[20,0; 28,0; 28,2; 52,2; 52,0; 58,0; 58,1.22461e-015; 60,
-          1.22461e-015],                          style(color=69,
+      points=[20,0; 28,0; 28,2; 52,2; 52,0; 58,0; 58,1.22465e-015; 60,
+          1.22465e-015],                          style(color=69,
         rgbcolor={0,127,255}));
   end if;
 end FM;

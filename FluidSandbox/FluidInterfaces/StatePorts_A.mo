@@ -45,7 +45,7 @@ package StatePorts_A
       Icon(Text(extent=[-300,0; 300,-64], string="unused")),
       Diagram);
   end ConnectionSemantics;
-
+  
   redeclare replaceable partial model extends PartialLumpedVolume 
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)" 
     
@@ -93,7 +93,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
-  
   redeclare replaceable partial model extends PartialTwoSidedVolume 
     "Volume with two sides and inlet and outlet ports (flow reversal is allowed)" 
     
@@ -130,7 +129,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     H_flow_net = port_a.H_flow + port_b.H_flow;
     
   end PartialTwoSidedVolume;
-
+  
   redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
@@ -166,6 +165,20 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Xi_nonDesignDirection = port_b.Xi 
       "Upstream mass fractions if flow is in non-design direction";
     
+    // sensors
+    calc_T_a = if provide_T_a then medium_T_a.T else 0;
+    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_p_a = if provide_p_a then port_a.p else 0;
+    calc_p_b = if provide_p_b then port_b.p else 0;
+    calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
+    
+    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
+    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
+    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
+    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
+    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
+    
   end PartialTransportIsenthalpic;
   
   redeclare replaceable partial model extends PartialTransportIsenthalpicAA 
@@ -197,6 +210,12 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   redeclare replaceable partial model extends PartialTransportIsentropic 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
+    Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
+    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
+    
+    Medium.SpecificEnthalpy h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_b.state);
+    Medium.SpecificEnthalpy h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_a.state);
+    
   equation 
     // Balance equations
     port_a.m_flow + port_b.m_flow = 0;
@@ -204,9 +223,9 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_a.mXi_flow + port_b.mXi_flow = zeros(Medium.nXi);
     // Enthalpy flow rate
     port_a.H_flow = port_a.m_flow*noEvent(if port_a.m_flow > 0 then port_a.h else 
-            port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_b)));
+            h_a_outflow);
     port_b.H_flow = port_b.m_flow*noEvent(if port_b.m_flow > 0 then port_b.h else 
-            port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_a)));
+            h_b_outflow);
     
     // Substance mass flow rates
     port_a.mXi_flow = port_a.m_flow*noEvent(if port_a.m_flow > 0 then 
@@ -231,6 +250,20 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       "Upstream specific enthalpy if flow is in non-design direction";
     Xi_nonDesignDirection = port_b.Xi 
       "Upstream mass fractions if flow is in non-design direction";
+    
+    // sensors
+    calc_T_a = if provide_T_a then medium_T_a.T else 0;
+    calc_T_b = if provide_T_b then medium_T_a.T else 0;
+    calc_p_a = if provide_p_a then port_a.p else 0;
+    calc_p_b = if provide_p_b then port_b.p else 0;
+    calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
+    
+    medium_T_a.p = if provide_T_a then port_a.p else Medium.p_default;
+    medium_T_a.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    medium_T_a.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
+    medium_T_b.p = if provide_T_b then port_b.p else Medium.p_default;
+    medium_T_b.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    medium_T_b.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsentropic;
   

@@ -12,8 +12,8 @@ model UncontrolledWaterSteamCycle
     m_D=100e3,
     V_t=50,
     V_l_start=33,
-    redeclare package FluidInterface = FluidInterface, 
-    initType=Modelica_Fluid.Types.Init.InitialValues, 
+    redeclare package FluidInterface = FluidInterface,
+    initType=Modelica_Fluid.Types.Init.InitialValues,
     p_start=100000)     annotation (extent=[-40,10; -20,30]);
   Modelica.Blocks.Sources.TimeTable fuelTable(table=[0,0; 5400,1000; 7210,
         1000]) 
@@ -29,13 +29,13 @@ public
     redeclare package FluidInterface = FluidInterface) 
     annotation (extent=[9,32; 29,52]);
   Modelica.Mechanics.Rotational.ConstantSpeed load(w_fixed=-50) 
-    annotation (extent=[87,38.5; 72,53.5]);
+    annotation (extent=[87,37.5; 72,52.5]);
   HeatTransfer.EvaporatingVessel condenser(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     V_t=100,
     m_D=10e3,
     cp_D=500,
-    redeclare package FluidInterface = FluidInterface, 
+    redeclare package FluidInterface = FluidInterface,
     p_start=10000) 
               annotation (extent=[20,-70; 40,-90]);
   Modelica.Thermal.HeatTransfer.PrescribedHeatFlow furnace1 
@@ -55,8 +55,7 @@ equation
                              annotation (points=[-59,-50; -30,-50; -30,-38.6],
                          style(color=74, rgbcolor={0,0,127}));
   connect(turbine.flange,load. flange) 
-    annotation (points=[29,48; 50.5,48; 50.5,46; 72,46],
-                                         style(color=0, rgbcolor={0,0,0}));
+    annotation (points=[29,45; 72,45],   style(color=0, rgbcolor={0,0,0}));
   annotation (Diagram, experiment(StopTime=1200));
   connect(MW2W.y, furnace.Q_flow) annotation (points=[-30,-25.95; -30,-20], style(
       color=74,

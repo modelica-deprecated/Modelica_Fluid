@@ -213,23 +213,15 @@ package PressureLosses
       Medium.DynamicViscosity eta_nonDesignDirection 
         "Upstream dynamics viscosity for non-design flow direction";
       
+    protected 
+      Medium.BaseProperties medium_designDirection(p=p_designDirection, h=h_designDirection, Xi=Xi_designDirection);
+      Medium.BaseProperties medium_nonDesignDirection(p=p_nonDesignDirection, h=h_nonDesignDirection, Xi=Xi_nonDesignDirection);
+      
     equation 
-      d_designDirection = Medium.density(Medium.setState_phX(
-              p_designDirection,
-              h_designDirection,
-              Xi_designDirection));
-      eta_designDirection = Medium.dynamicViscosity(Medium.setState_phX(
-              p_designDirection,
-              h_designDirection,
-              Xi_designDirection));
-      d_nonDesignDirection = Medium.density(Medium.setState_phX(
-              p_nonDesignDirection,
-              h_nonDesignDirection,
-              Xi_nonDesignDirection));
-      eta_nonDesignDirection = Medium.dynamicViscosity(Medium.setState_phX(
-              p_nonDesignDirection,
-              h_nonDesignDirection,
-              Xi_nonDesignDirection));
+      d_designDirection = Medium.density(medium_designDirection.state);
+      eta_designDirection = if not WallFriction.use_eta then 1.e-10 else Medium.dynamicViscosity(medium_designDirection);
+      d_nonDesignDirection = Medium.density(medium_nonDesignDirection.state);
+      eta_nonDesignDirection = if not WallFriction.use_eta then 1.e-10 else Medium.dynamicViscosity(medium_nonDesignDirection);
       
       if from_dp and not WallFriction.dp_is_zero then
         m_flow = WallFriction.massFlowRate_dp(
@@ -312,7 +304,6 @@ package PressureLosses
               fillPattern=1),
             string="length")),
         Coordsys(grid=[1,1], scale=0));
-      
     end PartialWallFrictionWithSmoothing;
   end BaseClasses;
   

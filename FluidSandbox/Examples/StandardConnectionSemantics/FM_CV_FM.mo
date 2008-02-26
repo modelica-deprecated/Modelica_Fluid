@@ -13,8 +13,12 @@ model FM_CV_FM
     diameter=0.1,
     redeclare package WallFriction = 
         FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
-    redeclare package FluidInterface = FluidInterface) 
-                                              annotation (extent=[-40,-10; -20,
+    redeclare package FluidInterface = FluidInterface, 
+    provide_p_a=false, 
+    provide_p_b=false, 
+    provide_T_a=false, 
+    provide_T_b=false, 
+    provide_m_flow_ab=false)                  annotation (extent=[-40,-10; -20,
         10], rotation=0);
   
   FluidSandbox.Volumes.Volume mixingVolume(
@@ -34,8 +38,12 @@ model FM_CV_FM
     diameter=0.1,
     redeclare package WallFriction = 
         FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
-    redeclare package FluidInterface = FluidInterface) 
-                                              annotation (extent=[20,10; 40,-10],
+    redeclare package FluidInterface = FluidInterface, 
+    provide_p_a=false, 
+    provide_p_b=false, 
+    provide_T_a=false, 
+    provide_T_b=false, 
+    provide_m_flow_ab=false)                  annotation (extent=[20,10; 40,-10],
       rotation=180);
   
   FluidSandbox.Sources.PrescribedBoundary_pTX_A prescribedMassFlowRate_TX_A(
@@ -54,11 +62,11 @@ equation
   connect(pipeFriction1.port_b, mixingVolume.port_a[1]) annotation (points=[-20,0;
         -10,0],            style(color=69, rgbcolor={0,127,255}));
   connect(pipeFriction2.port_b, mixingVolume.port_b[1]) annotation (points=[20,
-        -1.22461e-015; 15,-1.22461e-015; 15,0; 10,0],
+        -1.22465e-015; 15,-1.22465e-015; 15,0; 10,0],
                                      style(color=69, rgbcolor={0,127,255}));
   connect(source2.port, pipeFriction2.port_a)                  annotation (
-      points=[50,1.22461e-015; 47.5,1.22461e-015; 47.5,0; 45,0; 45,1.22461e-015;
-        40,1.22461e-015],                                    style(color=69,
+      points=[50,1.22465e-015; 47.5,1.22465e-015; 47.5,0; 45,0; 45,1.22465e-015; 
+        40,1.22465e-015],                                    style(color=69,
         rgbcolor={0,127,255}));
   connect(sine1.y, prescribedMassFlowRate_TX_A.p_in) annotation (points=[-80,29;
         -80,6; -72,6],       style(color=74, rgbcolor={0,0,127}));
