@@ -17,7 +17,7 @@ Even though it was proven by various entities that problems of the thermo fluid 
 </p>
 <p>
 In parallel, an effort was started to summarize some of the options in the fluid domain, and to discuss their respective advantages and drawbacks. 
-Turn to <a href=\"https://trac.modelica.org/Modelica_Fluid/wiki/FluidConcepts\">the web page</a> to read and contribute.
+Turn to <a href=\"https://trac.modelica.org/Modelica_Fluid/wiki/FluidConcepts\">the web page</a> to read and contribute (log in to get access).
 </p>
 <p>
 The FluidConcept library by Katrin Pr&ouml;l&szlig; provided relevant input for this work. 

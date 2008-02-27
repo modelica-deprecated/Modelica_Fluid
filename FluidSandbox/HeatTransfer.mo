@@ -120,4 +120,161 @@ package HeatTransfer "Component models depicting heat transfer"
         Ellipse(extent=[71,0; 101,-29], style(pattern=0, fillColor=7)),
         Ellipse(extent=[74,14; 104,-15], style(pattern=0, fillColor=7))));
   end EvaporatingVessel;
+  
+  model HeatedPipe "Model for heating or cooling a fluid" 
+    
+    extends Interfaces.PartialComponent;
+    extends FluidInterface.PartialPortsAndMediumOnlyBA;
+    
+    import Modelica_Fluid.Types;
+    
+    parameter Types.Init.Temp initType=
+              Types.Init.NoInit "Initialization option" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_start = Medium.p_default 
+      "Start value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start = true 
+      "= true, use T_start, otherwise h_start" 
+      annotation(Dialog(tab = "Initialization"), Evaluate=true);
+    parameter Medium.Temperature T_start=
+      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
+      "Start value of temperature" 
+      annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=
+      if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
+      "Start value of specific enthalpy" 
+      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    
+    import SI = Modelica.SIunits;
+    import Modelica.SIunits.Conversions.*;
+    
+    parameter SI.Volume V_lumped=1 "Volume";
+    
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b heatPort 
+       annotation (extent=[-10,-110; 10,-90]);
+    
+    annotation (Icon(
+        Rectangle(extent=[-100,60; 100,-60], style(
+            color=0,
+            rgbcolor={0,0,0},
+            gradient=2,
+            fillColor=1,
+            rgbfillColor={255,0,0})),
+        Text(
+          extent=[-150,140; 150,80],
+          string="%name",
+          style(gradient=2, fillColor=69)),
+        Line(points=[0,-60; 0,-90], style(color=1, rgbcolor={255,0,0}))), Diagram);
+    Volumes.Volume lumpedVolume(
+      initType=initType,
+      p_start=p_start,
+      use_T_start=use_T_start,
+      T_start=T_start,
+      h_start=h_start,
+      X_start=X_start,
+      redeclare package FluidInterface = FluidInterface,
+      redeclare package Medium = Medium,
+      V=V_lumped,
+      n_a=1,
+      n_b=1,
+      provide_p=provide_p_b,
+      provide_T=provide_T_b)                     annotation (extent=[-10,10; 10,
+          -10]);
+    PressureLosses.WallFriction pipe(
+      provide_p_b=false,
+      provide_T_b=false,
+      redeclare package FluidInterface = FluidInterface,
+      redeclare package Medium = Medium,
+      redeclare package WallFriction = WallFriction,
+      length=length,
+      roughness=roughness,
+      diameter=diameter,
+      provide_p_a=provide_p_a,
+      provide_T_a=provide_T_a,
+      provide_m_flow_ab=provide_m_flow_a) 
+              annotation (extent=[-66,-10; -46,10]);
+    
+    replaceable package WallFriction = 
+        PressureLosses.WallFrictionCorrelations.Laminar 
+      extends PressureLosses.WallFrictionCorrelations.PartialWallFriction 
+      "Characteristic of wall friction"  annotation(choicesAllMatching=true);
+    
+    parameter SI.Length length "Length of pipe";
+    parameter SI.Length roughness=2.5e-5 
+      "Absolute roughness of pipe (default = smooth steel pipe)";
+    parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+    
+    // sensors
+    parameter Boolean provide_p_a=false "Provide pressure at port a?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+    parameter Boolean provide_T_a=false "Provide temperature at port a?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+    parameter Boolean provide_m_flow_a=false 
+      "Provide mass flow rate at port a?"                                        annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+    Modelica.Blocks.Interfaces.RealOutput m_flow_a(redeclare type SignalType = 
+          SI.MassFlowRate) if provide_m_flow_a 
+      annotation (extent=[-120,70; -100,90], rotation=180);
+    Modelica.Blocks.Interfaces.RealOutput p_a(redeclare type SignalType = 
+          SI.Pressure) if provide_p_a 
+      annotation (extent=[-120,50; -100,70], rotation=180);
+    Modelica.Blocks.Interfaces.RealOutput T_a(redeclare type SignalType = 
+          SI.Temperature) if provide_T_a 
+      annotation (extent=[-120,30; -100,50], rotation=180);
+    
+    parameter Boolean provide_p_b=false "Provide pressure at port b?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+    parameter Boolean provide_T_b=false "Provide temperature at port b?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+    Modelica.Blocks.Interfaces.RealOutput T_b(redeclare type SignalType = 
+          SI.Temperature) if provide_T_b  annotation (extent=[100,30; 120,50]);
+    Modelica.Blocks.Interfaces.RealOutput p_b(redeclare type SignalType = 
+          SI.Pressure) if provide_p_b  annotation (extent=[100,50; 120,70]);
+  equation 
+    connect(port_a, pipe.port_a) annotation (points=[-102,0; -66,0], style(
+      color=69,
+      rgbcolor={0,127,255},
+      gradient=3,
+      fillColor=1,
+      rgbfillColor={255,0,0}));
+    connect(lumpedVolume.thermalPort, heatPort) annotation (points=[0,-9.8; 0,
+          -100], style(
+        color=42,
+        rgbcolor={191,0,0},
+        smooth=0));
+    connect(pipe.port_b, lumpedVolume.port_a[1]) annotation (points=[-46,0; -10,0],
+        style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
+    connect(lumpedVolume.port_b[1], port_b) annotation (points=[10,0; 100,0],
+        style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
+    connect(pipe.m_flow_ab, m_flow_a) annotation (points=[-62,11; -62,80; -110,80],
+        style(
+        color=74,
+        rgbcolor={0,0,127},
+        smooth=0));
+    connect(pipe.p_a, p_a) annotation (points=[-67,8; -68,8; -68,60; -110,60],
+        style(
+        color=74,
+        rgbcolor={0,0,127},
+        smooth=0));
+    connect(pipe.T_a, T_a) annotation (points=[-67,5; -76,5; -76,40; -110,40],
+        style(
+        color=74,
+        rgbcolor={0,0,127},
+        smooth=0));
+    connect(lumpedVolume.T, T_b) annotation (points=[-11,-5; -14,-5; -14,40; 110,
+          40], style(
+        color=74,
+        rgbcolor={0,0,127},
+        smooth=0));
+    connect(lumpedVolume.p, p_b) annotation (points=[-11,-8; -20,-8; -20,60; 110,
+          60], style(
+        color=74,
+        rgbcolor={0,0,127},
+        smooth=0));
+  end HeatedPipe;
 end HeatTransfer;

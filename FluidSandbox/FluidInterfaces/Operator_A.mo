@@ -210,16 +210,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
     calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
-    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
     calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
     calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
-    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
     calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsenthalpic;
@@ -269,16 +269,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
     calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
-    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
     calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
     calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
-    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
     calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsenthalpicAA;
@@ -328,16 +328,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
     calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
-    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else h_a_outflow) else Medium.h_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h else port_b.h) else Medium.h_default;
     calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi else port_b.Xi) else zeros(Medium.nXi);
     calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
-    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else h_b_outflow) else Medium.h_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h else port_a.h) else Medium.h_default;
     calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi else port_a.Xi) else zeros(Medium.nXi);
     
   end PartialTransportIsenthalpicAB;
@@ -345,11 +345,20 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   redeclare replaceable partial model extends PartialTransportIsentropic 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
-    Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
-    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
+    import Modelica_Fluid.Types;
     
-    Medium.SpecificEnthalpy h_ba_isentropic;
-    Medium.SpecificEnthalpy h_ab_isentropic;
+    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h;
+    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
+    
+    /*
+  // Isentropic process
+  // Preferably, if supported by Medium model
+  h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
+  h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
+  // Implicit equation if not supported
+  Medium.specificEntropy(medium_nonDesignDirection) = Medium.specificEntropy(Medium.setState_phX(port_a.p, h_ba_isentropic, port_b.Xi));
+  Medium.specificEntropy(medium_designDirection) = Medium.specificEntropy(Medium.setState_phX(port_b.p, h_ab_isentropic, port_a.Xi));
+  */
     
   equation 
     /* Handle reverse and zero flow */
@@ -379,16 +388,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // Isentropic process
-    // Preferably, if supported by Medium model
-    h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
-    h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
-    // Implicit equation if not supported
-    /*
-  Medium.specificEntropy(medium_nonDesignDirection) = Medium.specificEntropy(Medium.setState_phX(port_a.p, h_ba_isentropic, port_b.Xi));
-  Medium.specificEntropy(medium_designDirection) = Medium.specificEntropy(Medium.setState_phX(port_b.p, h_ab_isentropic, port_a.Xi));
-  */
-    
     // This approach provides both potential upstream properties (independent of current mass flow direction)
     p_designDirection = port_a.p 
       "Upstream pressure if flow was in design direction";
@@ -409,7 +408,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
@@ -426,11 +425,20 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   redeclare replaceable partial model extends PartialTransportIsentropicAA 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
     
-    Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
-    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
+    import Modelica_Fluid.Types;
     
-    Medium.SpecificEnthalpy h_ba_isentropic;
-    Medium.SpecificEnthalpy h_ab_isentropic;
+    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h;
+    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
+    
+    /*
+  // Isentropic process
+  // Preferably, if supported by Medium model
+  h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
+  h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
+  // Implicit equation if not supported
+  Medium.specificEntropy(medium_nonDesignDirection) = Medium.specificEntropy(Medium.setState_phX(port_a.p, h_ba_isentropic, port_b.Xi));
+  Medium.specificEntropy(medium_designDirection) = Medium.specificEntropy(Medium.setState_phX(port_b.p, h_ab_isentropic, port_a.Xi));
+  */
     
   equation 
     /* Handle reverse and zero flow */
@@ -460,16 +468,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // Isentropic process
-    // Preferably, if supported by Medium model
-    h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
-    h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
-    // Implicit equation if not supported
-    /*
-  Medium.specificEntropy(medium_nonDesignDirection) = Medium.specificEntropy(Medium.setState_phX(port_a.p, h_ba_isentropic, port_b.Xi));
-  Medium.specificEntropy(medium_designDirection) = Medium.specificEntropy(Medium.setState_phX(port_b.p, h_ab_isentropic, port_a.Xi));
-  */
-    
     // This approach provides both potential upstream properties (independent of current mass flow direction)
     p_designDirection = port_a.p 
       "Upstream pressure if flow was in design direction";
@@ -490,7 +488,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
@@ -507,11 +505,20 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   redeclare replaceable partial model extends PartialTransportIsentropicAB 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, allowed in this approach)" 
     
-    Medium.SpecificEnthalpy h_a_outflow = port_b.h - eta_ise*(port_b.h - h_ba_isentropic);
-    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - h_ab_isentropic);
+    import Modelica_Fluid.Types;
     
-    Medium.SpecificEnthalpy h_ba_isentropic;
-    Medium.SpecificEnthalpy h_ab_isentropic;
+    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h;
+    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
+    
+    /*
+  // Isentropic process
+  // Preferably, if supported by Medium model
+  h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
+  h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
+  // Implicit equation if not supported
+  Medium.specificEntropy(medium_nonDesignDirection) = Medium.specificEntropy(Medium.setState_phX(port_a.p, h_ba_isentropic, port_b.Xi));
+  Medium.specificEntropy(medium_designDirection) = Medium.specificEntropy(Medium.setState_phX(port_b.p, h_ab_isentropic, port_a.Xi));
+  */
     
   equation 
     /* Handle reverse and zero flow */
@@ -541,16 +548,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
     
-    // Isentropic process
-    // Preferably, if supported by Medium model
-    h_ba_isentropic = Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state);
-    h_ab_isentropic = Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state);
-    // Implicit equation if not supported
-    /*
-  Medium.specificEntropy(medium_nonDesignDirection) = Medium.specificEntropy(Medium.setState_phX(port_a.p, h_ba_isentropic, port_b.Xi));
-  Medium.specificEntropy(medium_designDirection) = Medium.specificEntropy(Medium.setState_phX(port_b.p, h_ab_isentropic, port_a.Xi));
-  */
-    
     // This approach provides both potential upstream properties (independent of current mass flow direction)
     p_designDirection = port_a.p 
       "Upstream pressure if flow was in design direction";
@@ -571,7 +568,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
@@ -597,6 +594,19 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
           69,
     rgbcolor={0,127,255}));
   end PartialIdealJunction;
+  
+  redeclare replaceable partial model extends PartialIdealJunctionAAB 
+    "Partial infinitesimal junction model (two PortA's, one PortB, not supported for all interfaces)" 
+    
+  equation 
+    connect(port_1, port_3) 
+                          annotation (points=[-100,0; 0,0; 0,100], style(
+    color=69, rgbcolor={0,127,255}));
+    connect(port_1, port_2) 
+                          annotation (points=[-100,0; 100,0], style(color=
+          69,
+    rgbcolor={0,127,255}));
+  end PartialIdealJunctionAAB;
   
   redeclare replaceable partial model extends PartialSource_A 
     "Partial source model with a Port_a" 

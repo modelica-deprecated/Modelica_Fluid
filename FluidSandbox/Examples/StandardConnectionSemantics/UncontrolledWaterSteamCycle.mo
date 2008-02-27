@@ -4,7 +4,12 @@ model UncontrolledWaterSteamCycle
   extends Icons.Example;
   Sources.ControlledPump pump(   redeclare package Medium = 
         Modelica.Media.Water.StandardWater, redeclare package FluidInterface = 
-        FluidInterface) 
+        FluidInterface,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=false,
+    provide_m_flow_ab=false) 
     annotation (extent=[-80,10; -60,30]);
   HeatTransfer.EvaporatingVessel evaporator(
     cp_D=500,
@@ -26,7 +31,12 @@ public
   Turbomachinery.TurbineStage turbine(
                                   redeclare package Medium = 
         Modelica.Media.Water.StandardWater, K_t=0.001,
-    redeclare package FluidInterface = FluidInterface) 
+    redeclare package FluidInterface = FluidInterface,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=false,
+    provide_m_flow_ab=false) 
     annotation (extent=[9,32; 29,52]);
   Modelica.Mechanics.Rotational.ConstantSpeed load(w_fixed=-50) 
     annotation (extent=[87,37.5; 72,52.5]);
