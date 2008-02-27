@@ -141,20 +141,21 @@ package Interfaces
       SI.HeatFlowRate Qs_flow 
         "Heat flow across boundaries or energy source/sink";
       SI.Power Ws_flow "Work flow across boundaries or source term";
-      annotation (
-        Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
-            extent=[-130,-108; 144,-150],
-            style(color=0),
-            string="V=%V")),
-        Documentation(info="<html>
-Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
-<ul>
-<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
-</ul>
-The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
-</html>"),
-        Diagram);
       
+      // sensors /////////////////  
+    public 
+      parameter Boolean provide_p = false "Provide pressure?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+      parameter Boolean provide_T = false "Provide temperature?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+      
+      Modelica.Blocks.Interfaces.RealOutput p(redeclare type SignalType = 
+            SI.Pressure) if provide_p annotation (extent=[-120,70; -100,90], rotation=180);
+      Modelica.Blocks.Interfaces.RealOutput T(redeclare type SignalType = 
+            SI.Temperature) if provide_T annotation (extent=[-120,40; -100,60], rotation=180);
+    protected 
+      Modelica.Blocks.Interfaces.RealOutput calc_p(redeclare type SignalType = 
+            SI.Pressure) annotation (extent=[-74,40; -66,48], rotation=90);
+      Modelica.Blocks.Interfaces.RealOutput calc_T(redeclare type SignalType = 
+            SI.Temperature) annotation (extent=[-84,40; -76,48], rotation=90);
     equation 
     // Extensive quantities
       m = V_lumped*medium.d;
@@ -165,6 +166,18 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       der(m) = m_flow_net;
       der(mXi) = mXi_flow_net;
       der(U) = H_flow_net + Qs_flow + Ws_flow;
+      
+      // sensors
+      calc_p = medium.p;
+      calc_T = medium.T;
+      connect(T,calc_T)  annotation (points=[-110,50; -80,50; -80,44], style(
+          color=74,
+          rgbcolor={0,0,127},
+          smooth=0));
+      connect(calc_p,p)  annotation (points=[-70,44; -70,80; -110,80], style(
+          color=74,
+          rgbcolor={0,0,127},
+          smooth=0));
       
     initial equation 
     // Initial conditions
@@ -199,6 +212,21 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       else
         assert(false, "Unsupported initialization option");
       end if;
+      
+      annotation (
+        Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
+            extent=[-130,-108; 144,-150],
+            style(color=0),
+            string="V=%V")),
+        Documentation(info="<html>
+Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
+<ul>
+<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
+</ul>
+The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
+</html>"),
+        Diagram);
+      
     end PartialLumpedVolume;
     
     replaceable partial model PartialTwoSidedVolume 
@@ -237,9 +265,46 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         "Net substance mass flow into the volume";
       Medium.EnthalpyFlowRate H_flow_net "Net enthalpy flow into the volume";
       
+      // sensors  
+      Modelica.Blocks.Interfaces.RealOutput T_inside(redeclare type SignalType 
+          = SI.Temperature) if provide_T_inside annotation (extent=[100,40; 120,60],   rotation=0);
+      Modelica.Blocks.Interfaces.RealOutput p_inside(redeclare type SignalType 
+          = SI.Pressure) if provide_p_inside annotation (extent=[100,70; 120,90],   rotation=0);
+      
+      parameter Boolean provide_p_inside = false "Provide inside pressure?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+      parameter Boolean provide_T_inside = false "Provide inside temperature?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
+      
+    protected 
+      Modelica.Blocks.Interfaces.RealOutput calc_T_inside(redeclare type 
+          SignalType = 
+            SI.Temperature) annotation (extent=[-84,40; -76,48], rotation=90);
+      Modelica.Blocks.Interfaces.RealOutput calc_p_inside(redeclare type 
+          SignalType = 
+            SI.Pressure) annotation (extent=[-74,40; -66,48], rotation=90);
+      
+      // Using Medium.temperature(Medium.setState_phX()) for temperature sensor results in numeric Jacobian; using BaseProperties instead
+      Medium.BaseProperties calc_T_inside_medium(
+        p=if provide_T_inside then medium.p else Medium.p_default,
+        h=if provide_T_inside then medium.h else Medium.h_default,
+        Xi=if provide_T_inside then medium.Xi else zeros(Medium.nXi));
     equation 
       // boundary conditions heat port
       heatPort.T = medium.T;
+      
+      // sensors
+      calc_T_inside = if provide_T_inside then calc_T_inside_medium.T else 0;
+      calc_p_inside = if provide_p_inside then medium.p else 0;
+      
+      connect(T_inside, calc_T_inside) 
+                             annotation (points=[110,50; -80,50; -80,44],  style(
+          color=74,
+          rgbcolor={0,0,127},
+          smooth=0));
+      connect(calc_p_inside, p_inside) 
+                             annotation (points=[-70,44; -70,80; 110,80],  style(
+          color=74,
+          rgbcolor={0,0,127},
+          smooth=0));
       
       annotation (
         Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
@@ -254,7 +319,6 @@ Base class for an ideally mixed fluid volume with two ports and the ability to s
 The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
 </html>"),
         Diagram);
-      
     end PartialTwoSidedVolume;
     
     replaceable partial model PartialTransport 
@@ -417,7 +481,13 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     replaceable partial model PartialTransportIsentropic 
       "Partial Isentropic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
       
+      import Modelica_Fluid.Types;
+      
       extends PartialTransport;
+      
+      parameter Types.FlowDirection.Temp flowDirection=Types.FlowDirection.Bidirectional 
+        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+         annotation(Evauate=true, Dialog(tab="Advanced"));
       
       // Limit the decomposition complexity and repeat declarations
       parameter Real eta_ise = 1 "Isentropic efficiency";
@@ -442,16 +512,24 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       medium_designDirection.p = p_designDirection;
       medium_designDirection.h = h_designDirection;
       medium_designDirection.Xi = Xi_designDirection;
-      medium_nonDesignDirection.p = p_nonDesignDirection;
-      medium_nonDesignDirection.h = h_nonDesignDirection;
-      medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
+      medium_nonDesignDirection.p = if flowDirection==Types.FlowDirection.Bidirectional then p_nonDesignDirection else Medium.p_default;
+      medium_nonDesignDirection.h = if flowDirection==Types.FlowDirection.Bidirectional then h_nonDesignDirection else Medium.h_default;
+      medium_nonDesignDirection.Xi = if flowDirection==Types.FlowDirection.Bidirectional then Xi_nonDesignDirection else zeros(Medium.nXi);
+      
+      assert(flowDirection==Types.FlowDirection.Bidirectional or m_flow>-0.001, "PartialTransportIsentropic: Mass flow direction was said to be positive only but is not.");
       
     end PartialTransportIsentropic;
     
     replaceable partial model PartialTransportIsentropicAA 
       "Partial Isentropic element transporting fluid between two ports without storing mass or energy (two Port_a's, not supported for all interfaces)" 
       
+      import Modelica_Fluid.Types;
+      
       extends PartialTransport;
+      
+      parameter Types.FlowDirection.Temp flowDirection=Types.FlowDirection.Bidirectional 
+        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+         annotation(Evauate=true, Dialog(tab="Advanced"));
       
       // Limit the decomposition complexity and repeat declarations
       parameter Real eta_ise = 1 "Isentropic efficiency";
@@ -476,15 +554,24 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       medium_designDirection.p = p_designDirection;
       medium_designDirection.h = h_designDirection;
       medium_designDirection.Xi = Xi_designDirection;
-      medium_nonDesignDirection.p = p_nonDesignDirection;
-      medium_nonDesignDirection.h = h_nonDesignDirection;
-      medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
+      medium_nonDesignDirection.p = if flowDirection==Types.FlowDirection.Bidirectional then p_nonDesignDirection else Medium.p_default;
+      medium_nonDesignDirection.h = if flowDirection==Types.FlowDirection.Bidirectional then h_nonDesignDirection else Medium.h_default;
+      medium_nonDesignDirection.Xi = if flowDirection==Types.FlowDirection.Bidirectional then Xi_nonDesignDirection else zeros(Medium.nXi);
+      
+      assert(flowDirection==Types.FlowDirection.Bidirectional or m_flow>-0.001, "PartialTransportIsentropicAA: Mass flow direction was said to be positive only but is not.");
+      
     end PartialTransportIsentropicAA;
     
     replaceable partial model PartialTransportIsentropicAB 
       "Partial Isentropic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, not supported for all interfaces)" 
       
+      import Modelica_Fluid.Types;
+      
       extends PartialTransport;
+      
+      parameter Types.FlowDirection.Temp flowDirection=Types.FlowDirection.Bidirectional 
+        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+         annotation(Evauate=true, Dialog(tab="Advanced"));
       
       // Limit the decomposition complexity and repeat declarations
       parameter Real eta_ise = 1 "Isentropic efficiency";
@@ -509,9 +596,12 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       medium_designDirection.p = p_designDirection;
       medium_designDirection.h = h_designDirection;
       medium_designDirection.Xi = Xi_designDirection;
-      medium_nonDesignDirection.p = p_nonDesignDirection;
-      medium_nonDesignDirection.h = h_nonDesignDirection;
-      medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
+      medium_nonDesignDirection.p = if flowDirection==Types.FlowDirection.Bidirectional then p_nonDesignDirection else Medium.p_default;
+      medium_nonDesignDirection.h = if flowDirection==Types.FlowDirection.Bidirectional then h_nonDesignDirection else Medium.h_default;
+      medium_nonDesignDirection.Xi = if flowDirection==Types.FlowDirection.Bidirectional then Xi_nonDesignDirection else zeros(Medium.nXi);
+      
+      assert(flowDirection==Types.FlowDirection.Bidirectional or m_flow>-0.001, "PartialTransportIsentropicAB: Mass flow direction was said to be positive only but is not.");
+      
     end PartialTransportIsentropicAB;
     
     replaceable partial model PartialIdealJunction 
@@ -528,6 +618,21 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       FluidPort_a port_3(redeclare package Medium = Medium) 
         annotation (extent=[-10,90; 10,110]);
     end PartialIdealJunction;
+    
+    replaceable partial model PartialIdealJunctionAAB 
+      "Partial infinitesimal junction model (two PortA's, one PortB, not supported for all interfaces)" 
+      
+      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+        "Fluid medium model" 
+          annotation (choicesAllMatching=true);
+      
+      FluidPort_a port_1(redeclare package Medium = Medium) 
+        annotation (extent=[-110,-10; -90,10]);
+      FluidPort_b port_2(redeclare package Medium = Medium) 
+        annotation (extent=[90,-10; 110,10]);
+      FluidPort_a port_3(redeclare package Medium = Medium) 
+        annotation (extent=[-10,90; 10,110]);
+    end PartialIdealJunctionAAB;
     
     replaceable partial model PartialSource_A 
       "Partial source model with a Port_a" 
@@ -625,6 +730,37 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       
     end PartialSymmetricDistributedPipe;
     
+    partial model PartialPortsAndMediumOnlyAB 
+      
+      // Medium model
+      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+        "Medium model within the source" 
+         annotation (choicesAllMatching=true);
+      
+      FluidPort_a port_a(redeclare package Medium = Medium) "Fluid inlet port" 
+                         annotation (extent=[-112,-10; -92,10]);
+      
+      FluidPort_b port_b(redeclare package Medium = Medium) "Fluid outlet port"
+                          annotation (extent=[90,-10; 110,10]);
+    equation 
+      
+    end PartialPortsAndMediumOnlyAB;
+    
+    partial model PartialPortsAndMediumOnlyBA 
+      
+      // Medium model
+      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+        "Medium model within the source" 
+         annotation (choicesAllMatching=true);
+      
+      FluidPort_b port_a(redeclare package Medium = Medium) "Fluid inlet port" 
+                         annotation (extent=[-112,-10; -92,10]);
+      
+      FluidPort_a port_b(redeclare package Medium = Medium) "Fluid outlet port"
+                          annotation (extent=[90,-10; 110,10]);
+    equation 
+      
+    end PartialPortsAndMediumOnlyBA;
   end PartialFluidInterface;
   
   partial package PartialFluidDiscretization 

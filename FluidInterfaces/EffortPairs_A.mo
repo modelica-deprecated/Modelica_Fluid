@@ -183,7 +183,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
@@ -232,7 +232,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
@@ -281,7 +281,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
@@ -298,15 +298,18 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   redeclare replaceable partial model extends PartialTransportIsentropic 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
+    import Modelica_Fluid.Types;
+    
+    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h_a - eta_ise*(port_b.h_a - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h_a;
+    Medium.SpecificEnthalpy h_b_outflow = port_a.h_a - eta_ise*(port_a.h_a - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
+    
   equation 
     // Mass balance
     port_a.m_flow + port_b.m_flow = 0;
     
     // Enthalpy propagation, energy balance
-    port_b.h_b = port_a.h_a - eta_ise*(port_a.h_a - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state)) 
-      "Design mass flow direction";
-    port_a.h_b = port_b.h_a - eta_ise*(port_b.h_a - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) 
-      "Non-design mass flow direction";
+    port_b.h_b = h_b_outflow "Design mass flow direction";
+    port_a.h_b = h_a_outflow "Non-design mass flow direction";
     
     P_mechanical = -noEvent((port_a.m_flow*(if port_a.m_flow > 0 then port_a.h_a else port_a.h_b)) + (port_b.m_flow*(
       if port_b.m_flow > 0 then port_b.h_a else port_b.h_b)));
@@ -337,16 +340,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
     calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
-    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h_a else port_b.h_b) else Medium.h_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h_a else h_a_outflow) else Medium.h_default;
     calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi_a else port_b.Xi_b) else zeros(Medium.nXi);
     calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
-    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h_a else port_a.h_b) else Medium.h_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h_a else h_b_outflow) else Medium.h_default;
     calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi_a else port_a.Xi_b) else zeros(Medium.nXi);
     
   end PartialTransportIsentropic;
@@ -354,15 +357,18 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
   redeclare replaceable partial model extends PartialTransportIsentropicAA 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
     
+    import Modelica_Fluid.Types;
+    
+    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h_b - eta_ise*(port_b.h_b - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h_b;
+    Medium.SpecificEnthalpy h_b_outflow = port_a.h_b - eta_ise*(port_a.h_b - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
+    
   equation 
     // Mass balance
     port_a.m_flow + port_b.m_flow = 0;
     
     // Enthalpy propagation, energy balance
-    port_b.h_a = port_a.h_b - eta_ise*(port_a.h_b - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state)) 
-      "Design mass flow direction";
-    port_a.h_a = port_b.h_b - eta_ise*(port_b.h_b - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) 
-      "Non-design mass flow direction";
+    port_b.h_a = h_b_outflow "Design mass flow direction";
+    port_a.h_a = h_a_outflow "Non-design mass flow direction";
     
     P_mechanical = -noEvent((port_a.m_flow*(if port_a.m_flow > 0 then port_a.h_b else port_a.h_a)) + (port_b.m_flow*(
       if port_b.m_flow > 0 then port_b.h_b else port_b.h_a)));
@@ -393,31 +399,34 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
     calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
-    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h_b else port_b.h_a) else Medium.h_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h_b else h_a_outflow) else Medium.h_default;
     calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi_b else port_b.Xi_a) else zeros(Medium.nXi);
     calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
-    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h_b else port_a.h_a) else Medium.h_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h_b else h_b_outflow) else Medium.h_default;
     calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi_b else port_a.Xi_a) else zeros(Medium.nXi);
   end PartialTransportIsentropicAA;
   
   redeclare replaceable partial model extends PartialTransportIsentropicAB 
     "Partial isentropic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, allowed in this approach)" 
     
+    import Modelica_Fluid.Types;
+    
+    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h_a - eta_ise*(port_b.h_a - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h_a;
+    Medium.SpecificEnthalpy h_b_outflow = port_a.h_b - eta_ise*(port_a.h_b - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
+    
   equation 
     // Mass balance
     port_a.m_flow + port_b.m_flow = 0;
     
     // Enthalpy propagation, energy balance
-    port_b.h_b = port_a.h_b - eta_ise*(port_a.h_b - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state)) 
-      "Design mass flow direction";
-    port_a.h_a = port_b.h_a - eta_ise*(port_b.h_a - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) 
-      "Non-design mass flow direction";
+    port_b.h_b = h_b_outflow "Design mass flow direction";
+    port_a.h_a = h_a_outflow "Non-design mass flow direction";
     
     P_mechanical = -noEvent((port_a.m_flow*(if port_a.m_flow > 0 then port_a.h_b else port_a.h_a)) + (port_b.m_flow*(
       if port_b.m_flow > 0 then port_b.h_a else port_b.h_b)));
@@ -448,16 +457,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
     
     calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
-    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h_b else port_b.h_a) else Medium.h_default;
+    calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h_b else h_a_outflow) else Medium.h_default;
     calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi_b else port_b.Xi_a) else zeros(Medium.nXi);
     calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
-    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h_a else port_a.h_b) else Medium.h_default;
+    calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h_a else h_b_outflow) else Medium.h_default;
     calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi_a else port_a.Xi_b) else zeros(Medium.nXi);
     
   end PartialTransportIsentropicAB;
@@ -466,6 +475,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     "Partial infinitesimal junction model" 
     
     Medium.AbsolutePressure p "Pressure";
+    
+    parameter Real eps = 1e-8;
     
   equation 
     // Mass balance
@@ -476,62 +487,151 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_2.p = p;
     port_3.p = p;
     
-    // Flow directions
-    if noEvent(port_2.m_flow > 0 and port_3.m_flow < 0) then
-      port_1.h_a = port_2.h_b;
-      port_1.Xi_a = port_2.Xi_b;
-    elseif noEvent(port_2.m_flow < 0 and port_3.m_flow > 0) then
-      port_1.h_a = port_3.h_b;
-      port_1.Xi_a = port_3.Xi_b;
-    elseif noEvent(port_2.m_flow > 0 and port_3.m_flow > 0) then
-      port_1.h_a = (port_2.m_flow*port_2.h_b + port_3.m_flow*port_3.h_b)/(port_2.m_flow
-         + port_3.m_flow);
-      port_1.Xi_a = (port_2.m_flow*port_2.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_2.m_flow
-         + port_3.m_flow);
-    else
-      port_1.h_a = port_1.h_b 
-        "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-      port_1.Xi_a = port_1.Xi_b 
-        "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-    end if;
+    port_1.h_a = (max(port_2.m_flow, eps)*port_2.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps));
+    port_2.h_a = (max(port_1.m_flow, eps)*port_1.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps));
+    port_3.h_a = (max(port_1.m_flow, eps)*port_1.h_b + max(port_2.m_flow, eps)*port_2.h_b) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps));
     
-    if noEvent(port_1.m_flow > 0 and port_3.m_flow < 0) then
-      port_2.h_a = port_1.h_b;
-      port_2.Xi_a = port_1.Xi_b;
-    elseif noEvent(port_1.m_flow < 0 and port_3.m_flow > 0) then
-      port_2.h_a = port_3.h_b;
-      port_2.Xi_a = port_3.Xi_b;
-    elseif noEvent(port_1.m_flow > 0 and port_3.m_flow > 0) then
-      port_2.h_a = (port_1.m_flow*port_1.h_b + port_3.m_flow*port_3.h_b)/(port_1.m_flow
-         + port_3.m_flow);
-      port_2.Xi_a = (port_1.m_flow*port_1.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_1.m_flow
-         + port_3.m_flow);
-    else
-      port_2.h_a = port_2.h_b 
-        "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-      port_2.Xi_a = port_2.Xi_b 
-        "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-    end if;
-    
-    if noEvent(port_1.m_flow > 0 and port_2.m_flow < 0) then
-      port_3.h_a = port_1.h_b;
-      port_3.Xi_a = port_1.Xi_b;
-    elseif noEvent(port_1.m_flow < 0 and port_2.m_flow > 0) then
-      port_3.h_a = port_2.h_b;
-      port_3.Xi_a = port_2.Xi_b;
-    elseif noEvent(port_1.m_flow > 0 and port_2.m_flow > 0) then
-      port_3.h_a = (port_1.m_flow*port_1.h_b + port_2.m_flow*port_2.h_b)/(port_1.m_flow
-         + port_2.m_flow);
-      port_3.Xi_a = (port_1.m_flow*port_1.Xi_b + port_2.m_flow*port_2.Xi_b)/(port_1.m_flow
-         + port_2.m_flow);
-    else
-      port_3.h_a = port_3.h_b 
-        "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-      port_3.Xi_a = port_3.Xi_b 
-        "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-    end if;
+  /* Deprecated as problematic if an iteration variable is chosen on a connector that has zero mass flow rate
+  
+  // Flow directions
+  if noEvent(port_2.m_flow > 0 and port_3.m_flow < 0) then
+    port_1.h_a = port_2.h_b;
+    port_1.Xi_a = port_2.Xi_b;
+  elseif noEvent(port_2.m_flow < 0 and port_3.m_flow > 0) then
+    port_1.h_a = port_3.h_b;
+    port_1.Xi_a = port_3.Xi_b;
+  elseif noEvent(port_2.m_flow > 0 and port_3.m_flow > 0) then
+    port_1.h_a = (port_2.m_flow*port_2.h_b + port_3.m_flow*port_3.h_b)/(port_2.m_flow
+       + port_3.m_flow);
+    port_1.Xi_a = (port_2.m_flow*port_2.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_2.m_flow
+       + port_3.m_flow);
+  else
+    port_1.h_a = port_1.h_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+    port_1.Xi_a = port_1.Xi_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+  end if;
+  
+  if noEvent(port_1.m_flow > 0 and port_3.m_flow < 0) then
+    port_2.h_a = port_1.h_b;
+    port_2.Xi_a = port_1.Xi_b;
+  elseif noEvent(port_1.m_flow < 0 and port_3.m_flow > 0) then
+    port_2.h_a = port_3.h_b;
+    port_2.Xi_a = port_3.Xi_b;
+  elseif noEvent(port_1.m_flow > 0 and port_3.m_flow > 0) then
+    port_2.h_a = (port_1.m_flow*port_1.h_b + port_3.m_flow*port_3.h_b)/(port_1.m_flow
+       + port_3.m_flow);
+    port_2.Xi_a = (port_1.m_flow*port_1.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_1.m_flow
+       + port_3.m_flow);
+  else
+    port_2.h_a = port_2.h_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+    port_2.Xi_a = port_2.Xi_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+  end if;
+  
+  if noEvent(port_1.m_flow > 0 and port_2.m_flow < 0) then
+    port_3.h_a = port_1.h_b;
+    port_3.Xi_a = port_1.Xi_b;
+  elseif noEvent(port_1.m_flow < 0 and port_2.m_flow > 0) then
+    port_3.h_a = port_2.h_b;
+    port_3.Xi_a = port_2.Xi_b;
+  elseif noEvent(port_1.m_flow > 0 and port_2.m_flow > 0) then
+    port_3.h_a = (port_1.m_flow*port_1.h_b + port_2.m_flow*port_2.h_b)/(port_1.m_flow
+       + port_2.m_flow);
+    port_3.Xi_a = (port_1.m_flow*port_1.Xi_b + port_2.m_flow*port_2.Xi_b)/(port_1.m_flow
+       + port_2.m_flow);
+  else
+    port_3.h_a = port_3.h_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+    port_3.Xi_a = port_3.Xi_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+  end if;
+ 
+*/
     
   end PartialIdealJunction;
+  
+  redeclare replaceable partial model extends PartialIdealJunctionAAB 
+    "Partial infinitesimal junction model (two PortA's, one PortB, not supported for all interfaces)" 
+    
+    Medium.AbsolutePressure p "Pressure";
+    
+    parameter Real eps = 1e-8;
+    
+  equation 
+    // Mass balance
+    port_1.m_flow + port_2.m_flow + port_3.m_flow = 0;
+    
+    // Pressure
+    port_1.p = p;
+    port_2.p = p;
+    port_3.p = p;
+    
+    port_1.h_a = (max(port_2.m_flow, eps)*port_2.h_a + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps));
+    port_2.h_b = (max(port_1.m_flow, eps)*port_1.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps));
+    port_3.h_a = (max(port_1.m_flow, eps)*port_1.h_b + max(port_2.m_flow, eps)*port_2.h_a) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps));
+    
+  /* Deprecated as problematic if an iteration variable is chosen on a connector that has zero mass flow rate
+   
+  // Flow directions
+  if noEvent(port_2.m_flow > 0 and port_3.m_flow < 0) then
+    port_1.h_a = port_2.h_a;
+    port_1.Xi_a = port_2.Xi_a;
+  elseif noEvent(port_2.m_flow < 0 and port_3.m_flow > 0) then
+    port_1.h_a = port_3.h_b;
+    port_1.Xi_a = port_3.Xi_b;
+  elseif noEvent(port_2.m_flow > 0 and port_3.m_flow > 0) then
+    port_1.h_a = (port_2.m_flow*port_2.h_a + port_3.m_flow*port_3.h_b)/(port_2.m_flow
+       + port_3.m_flow);
+    port_1.Xi_a = (port_2.m_flow*port_2.Xi_a + port_3.m_flow*port_3.Xi_b)/(port_2.m_flow
+       + port_3.m_flow);
+  else
+    port_1.h_a = port_1.h_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+    port_1.Xi_a = port_1.Xi_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+  end if;
+  
+  if noEvent(port_1.m_flow > 0 and port_3.m_flow < 0) then
+    port_2.h_b = port_1.h_b;
+    port_2.Xi_b = port_1.Xi_b;
+  elseif noEvent(port_1.m_flow < 0 and port_3.m_flow > 0) then
+    port_2.h_b = port_3.h_b;
+    port_2.Xi_b = port_3.Xi_b;
+  elseif noEvent(port_1.m_flow > 0 and port_3.m_flow > 0) then
+    port_2.h_b = (port_1.m_flow*port_1.h_b + port_3.m_flow*port_3.h_b)/(port_1.m_flow
+       + port_3.m_flow);
+    port_2.Xi_b = (port_1.m_flow*port_1.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_1.m_flow
+       + port_3.m_flow);
+  else
+    port_2.h_b = port_2.h_a 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+    port_2.Xi_b = port_2.Xi_a 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+  end if;
+  
+  if noEvent(port_1.m_flow > 0 and port_2.m_flow < 0) then
+    port_3.h_a = port_1.h_b;
+    port_3.Xi_a = port_1.Xi_b;
+  elseif noEvent(port_1.m_flow < 0 and port_2.m_flow > 0) then
+    port_3.h_a = port_2.h_a;
+    port_3.Xi_a = port_2.Xi_a;
+  elseif noEvent(port_1.m_flow > 0 and port_2.m_flow > 0) then
+    port_3.h_a = (port_1.m_flow*port_1.h_b + port_2.m_flow*port_2.h_a)/(port_1.m_flow
+       + port_2.m_flow);
+    port_3.Xi_a = (port_1.m_flow*port_1.Xi_b + port_2.m_flow*port_2.Xi_a)/(port_1.m_flow
+       + port_2.m_flow);
+  else
+    port_3.h_a = port_3.h_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+    port_3.Xi_a = port_3.Xi_b 
+      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
+  end if;
+ 
+*/
+    
+  end PartialIdealJunctionAAB;
   
   redeclare replaceable partial model extends PartialSource_A 
     "Partial source model with a Port_a" 

@@ -264,7 +264,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     // sensors (not yet tested for this approach)
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
-    calc_T_b = if provide_T_b then calc_T_a_medium.T else 0;
+    calc_T_b = if provide_T_b then calc_T_b_medium.T else 0;
     calc_p_a = if provide_p_a then port_a.p else 0;
     calc_p_b = if provide_p_b then port_b.p else 0;
     calc_m_flow_ab = if provide_m_flow_ab then m_flow else 0;
@@ -316,6 +316,19 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
             pattern=2,
             thickness=2))));
   end PartialIdealJunction;
+  
+  redeclare replaceable partial model extends PartialIdealJunctionAAB 
+    "Partial infinitesimal junction model (two PortA's, one PortB, not supported for all interfaces)" 
+    
+  equation 
+    assert(false, "The PartialIdealJunction was not yet implemented for this approach.");
+    
+    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
+            color=1,
+            rgbcolor={255,0,0},
+            pattern=2,
+            thickness=2))));
+  end PartialIdealJunctionAAB;
   
   redeclare replaceable partial model extends PartialSource_A 
     "Partial source model with a Port_a" 

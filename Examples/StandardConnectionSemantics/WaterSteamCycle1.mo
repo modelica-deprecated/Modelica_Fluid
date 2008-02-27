@@ -12,9 +12,10 @@ model WaterSteamCycle1
     initType=PowerFluid.Types.Init.InitialValues,
     m_D=100e3,
     V_t=50,
-    V_l_start=33, 
-    redeclare package FluidInterface = FluidInterface) 
-                        annotation (extent=[-25,-20; -5,0]);
+    V_l_start=33,
+    redeclare package FluidInterface = FluidInterface,
+    provide_p_inside=false,
+    provide_T_inside=false)                              annotation (extent=[-24,-20; -5,0]);
   annotation (
     Diagram,
     Coordsys(
@@ -24,7 +25,7 @@ model WaterSteamCycle1
       scale=0.1),
     experiment(StopTime=7200));
   Modelica.Thermal.HeatTransfer.PrescribedHeatFlow furnace 
-    annotation (extent=[-25,-50; -5,-30],    rotation=90);
+    annotation (extent=[-24.5,-50; -4.5,-30],rotation=90);
   Modelica.Blocks.Continuous.PI controller(       k=10, T=60) 
     annotation (extent=[-51,33; -65,47]);
   Modelica.Blocks.Math.Feedback feedback 
@@ -55,11 +56,11 @@ public
   Sources.ControlledPump pump(              redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
     provide_p_b=false,
-    provide_T_a=false,
     provide_T_b=true,
     provide_m_flow_ab=false,
-    provide_p_a=true, 
-    redeclare package FluidInterface = FluidInterface) 
+    provide_p_a=true,
+    redeclare package FluidInterface = FluidInterface,
+    provide_T_a=false) 
     annotation (extent=[-75,-20; -55,0]);
   Modelica.Blocks.Interfaces.RealOutput T_W(redeclare type SignalType = 
         Real (unit="degC")) 
@@ -70,7 +71,7 @@ public
     provide_m_flow_ab=true,
     provide_p_a=true,
     provide_T_b=true,
-    provide_T_a=true, 
+    provide_T_a=true,
     redeclare package FluidInterface = FluidInterface) 
     annotation (extent=[85,26; 105,46]);
   HeatTransfer.EvaporatingVessel condenser(
@@ -78,8 +79,10 @@ public
     V_t=100,
     p_start=1e4,
     m_D=10e3,
-    cp_D=500, 
-    redeclare package FluidInterface = FluidInterface) 
+    cp_D=500,
+    redeclare package FluidInterface = FluidInterface,
+    provide_p_inside=false,
+    provide_T_inside=false) 
               annotation (extent=[141,-70; 161,-90]);
   Modelica.Thermal.HeatTransfer.PrescribedHeatFlow furnace1 
     annotation (extent=[141,-35; 161,-55],   rotation=90);
@@ -109,12 +112,12 @@ equation
   connect(controller.u,feedback.y) 
     annotation (points=[-49.6,40; -45,40], style(rgbcolor={0,0,127}));
   connect(feedback.u2,      evaporator.V) 
-    annotation (points=[-36,32; -36,20; -11,20; -11,1],
+    annotation (points=[-36,32; -36,20; -10.7,20; -10.7,1],
                                           style(rgbcolor={0,0,127}));
   connect(evaporator.V, V_l) 
-    annotation (points=[-11,1; -11,30; -4,30],     style(rgbcolor={0,0,127}));
-  connect(MW2W.y,furnace.Q_flow)       annotation (points=[-22.5,-60; -15,-60;
-        -15,-50],          style(rgbcolor={0,0,127}));
+    annotation (points=[-10.7,1; -10.7,30; -4,30], style(rgbcolor={0,0,127}));
+  connect(MW2W.y,furnace.Q_flow)       annotation (points=[-22.5,-60; -14.5,-60;
+        -14.5,-50],        style(rgbcolor={0,0,127}));
   connect(controller.y, limiter.u) annotation (points=[-65.7,40; -69.6,40],
       style(color=74, rgbcolor={0,0,127}));
   connect(levelSetPoint.y, feedback.u1) annotation (points=[-27.3,65; -20,65; 
@@ -147,7 +150,7 @@ equation
       color=74,
       rgbcolor={0,0,127},
       smooth=0));
-  connect(pump.port_b, evaporator.port_a) annotation (points=[-55,-10; -25,-10],
+  connect(pump.port_b, evaporator.port_a) annotation (points=[-55,-10; -24,-10],
       style(
       color=69,
       rgbcolor={0,127,255},
@@ -167,8 +170,9 @@ equation
       color=42,
       rgbcolor={191,0,0},
       smooth=0));
-  connect(evaporator.heatPort, furnace.port) annotation (points=[-15,-20; -15,
-        -30], style(
+  connect(evaporator.heatPort, furnace.port) annotation (points=[-14.5,-20;
+        -14.5,-30],
+              style(
       color=42,
       rgbcolor={191,0,0},
       smooth=0));
