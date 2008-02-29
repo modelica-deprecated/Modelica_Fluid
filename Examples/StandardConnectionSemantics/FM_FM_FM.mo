@@ -17,53 +17,56 @@ model FM_FM_FM
     redeclare package Medium = Medium,
     length=2,
     diameter=0.1,
+    redeclare package FluidInterface = FluidInterface,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=false,
+    provide_m_flow_ab=false, 
     redeclare package WallFriction = 
-        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
-    redeclare package FluidInterface = FluidInterface, 
-    provide_p_a=false, 
-    provide_p_b=false, 
-    provide_T_a=false, 
-    provide_T_b=false, 
-    provide_m_flow_ab=false)                  annotation (extent=[-50,-20; -30,
+        FluidSandbox.PressureLosses.WallFrictionCorrelations.Detailed, 
+    G=1e3)                                    annotation (extent=[-50,-20; -30,
         0]);
   
   Modelica.Blocks.Sources.Sine sine(
-    phase=0,
     freqHz=2,
     amplitude=0.05e5,
-    offset=1e5) 
+    offset=1e5, 
+    phase=0.00174532925199433) 
               annotation (extent=[-72,20; -92,40], rotation=0);
   PressureLosses.WallFrictionAA pipeFriction2(
     redeclare package Medium = Medium,
     length=2,
     diameter=0.1,
+    redeclare package FluidInterface = FluidInterface,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=false,
+    provide_m_flow_ab=false, 
     redeclare package WallFriction = 
-        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
-    redeclare package FluidInterface = FluidInterface, 
-    provide_p_a=false, 
-    provide_p_b=false, 
-    provide_T_a=false, 
-    provide_T_b=false, 
-    provide_m_flow_ab=false)                  annotation (extent=[-10,-20; 10,0]);
+        FluidSandbox.PressureLosses.WallFrictionCorrelations.Detailed, 
+    G=0)                                      annotation (extent=[-10,-20; 10,0]);
   
   FluidSandbox.PressureLosses.WallFriction pipeFriction3(
     redeclare package Medium = Medium,
     length=2,
     diameter=0.1,
+    redeclare package FluidInterface = FluidInterface,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=false,
+    provide_m_flow_ab=false, 
     redeclare package WallFriction = 
-        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
-    redeclare package FluidInterface = FluidInterface, 
-    provide_p_a=false, 
-    provide_p_b=false, 
-    provide_T_a=false, 
-    provide_T_b=false, 
-    provide_m_flow_ab=false)                  annotation (extent=[30,-20; 50,0]);
+        FluidSandbox.PressureLosses.WallFrictionCorrelations.Detailed, 
+    G=1e3)                                    annotation (extent=[30,-20; 50,0]);
   
 equation 
   connect(sine.y, prescribedMassFlowRate_TX_A.p_in) 
     annotation (points=[-93,30; -96,30; -96,-4; -92,-4],
                                        style(color=74, rgbcolor={0,0,127}));
-  annotation (Diagram);
+  annotation (Diagram, experiment(StopTime=10));
   connect(prescribedMassFlowRate_TX_A.port, pipeFriction1.port_a) annotation (
       points=[-70,-10; -50,-10], style(color=69, rgbcolor={0,127,255}));
   connect(pipeFriction1.port_b, pipeFriction2.port_a) annotation (points=[-30,
