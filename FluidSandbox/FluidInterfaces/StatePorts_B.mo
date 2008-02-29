@@ -133,9 +133,10 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
     // Required to model conduction
-    Medium.BaseProperties medium_designDirection 
+  protected 
+    Medium.BaseProperties medium_conduction_a(p=port_a.p, h=port_a.h, Xi=port_a.Xi) 
       "Upstream properties if fluid flew in design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
-    Medium.BaseProperties medium_nonDesignDirection 
+    Medium.BaseProperties medium_conduction_b(p=port_b.p, h=port_b.h, Xi=port_b.Xi) 
       "Upstream properties if fluid flew against design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
     
   equation 
@@ -143,24 +144,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            port_b.h) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
+            port_b.h) + G*(medium_conduction_a.T - medium_conduction_b.T);
     // Mass fraction propagation, substance mass balance
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
+            port_b.Xi) + H*(medium_conduction_a.Xi - medium_conduction_b.Xi);
     // Balance equations
     port_a.m_flow + port_b.m_flow = 0;
     port_b.H_flow + port_a.H_flow = 0;
     port_b.mXi_flow + port_a.mXi_flow = zeros(Medium.nXi);
-    
-    // Port media
-    medium_designDirection.p = p_designDirection;
-    medium_designDirection.h = h_designDirection;
-    medium_designDirection.Xi = Xi_designDirection;
-    medium_nonDesignDirection.p = p_nonDesignDirection;
-    medium_nonDesignDirection.h = h_nonDesignDirection;
-    medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
@@ -204,9 +197,10 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_a's, allowed in this approach)" 
     
     // Required to model conduction
-    Medium.BaseProperties medium_designDirection 
+  protected 
+    Medium.BaseProperties medium_conduction_a(p=port_a.p, h=port_a.h, Xi=port_a.Xi) 
       "Upstream properties if fluid flew in design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
-    Medium.BaseProperties medium_nonDesignDirection 
+    Medium.BaseProperties medium_conduction_b(p=port_b.p, h=port_b.h, Xi=port_b.Xi) 
       "Upstream properties if fluid flew against design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
     
   equation 
@@ -214,24 +208,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            port_b.h) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
+            port_b.h) + G*(medium_conduction_a.T - medium_conduction_b.T);
     // Mass fraction propagation, substance mass balance
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
+            port_b.Xi) + H*(medium_conduction_a.Xi - medium_conduction_b.Xi);
     // Balance equations
     port_a.m_flow + port_b.m_flow = 0;
     port_b.H_flow + port_a.H_flow = 0;
     port_b.mXi_flow + port_a.mXi_flow = zeros(Medium.nXi);
-    
-    // Port media
-    medium_designDirection.p = p_designDirection;
-    medium_designDirection.h = h_designDirection;
-    medium_designDirection.Xi = Xi_designDirection;
-    medium_nonDesignDirection.p = p_nonDesignDirection;
-    medium_nonDesignDirection.h = h_nonDesignDirection;
-    medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
@@ -275,9 +261,10 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (a Port_a and Port_b each, allowed in this approach)" 
     
     // Required to model conduction
-    Medium.BaseProperties medium_designDirection 
+  protected 
+    Medium.BaseProperties medium_conduction_a(p=port_a.p, h=port_a.h, Xi=port_a.Xi) 
       "Upstream properties if fluid flew in design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
-    Medium.BaseProperties medium_nonDesignDirection 
+    Medium.BaseProperties medium_conduction_b(p=port_b.p, h=port_b.h, Xi=port_b.Xi) 
       "Upstream properties if fluid flew against design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
     
   equation 
@@ -285,24 +272,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            port_b.h) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
+            port_b.h) + G*(medium_conduction_a.T - medium_conduction_b.T);
     // Mass fraction propagation, substance mass balance
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
+            port_b.Xi) + H*(medium_conduction_a.Xi - medium_conduction_b.Xi);
     // Balance equations
     port_a.m_flow + port_b.m_flow = 0;
     port_b.H_flow + port_a.H_flow = 0;
     port_b.mXi_flow + port_a.mXi_flow = zeros(Medium.nXi);
-    
-    // Port media
-    medium_designDirection.p = p_designDirection;
-    medium_designDirection.h = h_designDirection;
-    medium_designDirection.Xi = Xi_designDirection;
-    medium_nonDesignDirection.p = p_nonDesignDirection;
-    medium_nonDesignDirection.h = h_nonDesignDirection;
-    medium_nonDesignDirection.Xi = Xi_nonDesignDirection;
     
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
@@ -350,19 +329,25 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h;
     Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
     
+  protected 
+    Medium.BaseProperties medium_conduction_a(p=port_a.p, h=port_a.h, Xi=port_a.Xi) 
+      "Upstream properties if fluid flew in design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
+    Medium.BaseProperties medium_conduction_b(p=port_b.p, h=port_b.h, Xi=port_b.Xi) 
+      "Upstream properties if fluid flew against design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
+    
   equation 
   /* Handle reverse and zero flow */
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            h_a_outflow) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
+            h_a_outflow) + G*(medium_conduction_a.T - medium_conduction_b.T);
     port_b.H_flow = semiLinear(port_b.m_flow,
             port_b.h,
-            h_b_outflow) - G*(medium_designDirection.T - medium_nonDesignDirection.T);
+            h_b_outflow) - G*(medium_conduction_a.T - medium_conduction_b.T);
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
+            port_b.Xi) + H*(medium_conduction_a.Xi - medium_conduction_b.Xi);
     
   /* Mass, energy, substance mass balance */
     port_a.m_flow + port_b.m_flow = 0;
@@ -415,19 +400,25 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h;
     Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
     
+  protected 
+    Medium.BaseProperties medium_conduction_a(p=port_a.p, h=port_a.h, Xi=port_a.Xi) 
+      "Upstream properties if fluid flew in design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
+    Medium.BaseProperties medium_conduction_b(p=port_b.p, h=port_b.h, Xi=port_b.Xi) 
+      "Upstream properties if fluid flew against design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
+    
   equation 
   /* Handle reverse and zero flow */
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            h_a_outflow) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
+            h_a_outflow) + G*(medium_conduction_a.T - medium_conduction_b.T);
     port_b.H_flow = semiLinear(port_b.m_flow,
             port_b.h,
-            h_b_outflow) - G*(medium_designDirection.T - medium_nonDesignDirection.T);
+            h_b_outflow) - G*(medium_conduction_a.T - medium_conduction_b.T);
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
+            port_b.Xi) + H*(medium_conduction_a.Xi - medium_conduction_b.Xi);
     
   /* Mass, energy, substance mass balance */
     port_a.m_flow + port_b.m_flow = 0;
@@ -480,19 +471,25 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h;
     Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
     
+  protected 
+    Medium.BaseProperties medium_conduction_a(p=port_a.p, h=port_a.h, Xi=port_a.Xi) 
+      "Upstream properties if fluid flew in design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
+    Medium.BaseProperties medium_conduction_b(p=port_b.p, h=port_b.h, Xi=port_b.Xi) 
+      "Upstream properties if fluid flew against design direction (even if currently not the case). Approximation if the corresponding connector is in a FM only set.";
+    
   equation 
   /* Handle reverse and zero flow */
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            h_a_outflow) + G*(medium_designDirection.T - medium_nonDesignDirection.T);
+            h_a_outflow) + G*(medium_conduction_a.T - medium_conduction_b.T);
     port_b.H_flow = semiLinear(port_b.m_flow,
             port_b.h,
-            h_b_outflow) - G*(medium_designDirection.T - medium_nonDesignDirection.T);
+            h_b_outflow) - G*(medium_conduction_a.T - medium_conduction_b.T);
     port_a.mXi_flow = semiLinear(
             port_a.m_flow,
             port_a.Xi,
-            port_b.Xi) + H*(medium_designDirection.Xi - medium_nonDesignDirection.Xi);
+            port_b.Xi) + H*(medium_conduction_a.Xi - medium_conduction_b.Xi);
     
   /* Mass, energy, substance mass balance */
     port_a.m_flow + port_b.m_flow = 0;
@@ -541,26 +538,28 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     "Partial infinitesimal junction model" 
     
   equation 
-    assert(false, "The PartialIdealJunction was not yet implemented for the StatePorts_B approach.");
-    
-    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
-            color=1,
-            rgbcolor={255,0,0},
-            pattern=2,
-            thickness=2))));
+    connect(port_1, port_2) annotation (points=[-100,0; 100,0], style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
+    connect(port_1, port_3) annotation (points=[-100,0; 0,0; 0,100], style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
   end PartialIdealJunction;
   
   redeclare replaceable partial model extends PartialIdealJunctionAAB 
     "Partial infinitesimal junction model (two PortA's, one PortB, not supported for all interfaces)" 
     
   equation 
-    assert(false, "The PartialIdealJunction was not yet implemented for the StatePorts_B approach.");
-    
-    annotation (Icon(Rectangle(extent=[-102,102; 102,-102], style(
-            color=1,
-            rgbcolor={255,0,0},
-            pattern=2,
-            thickness=2))));
+    connect(port_1, port_2) annotation (points=[-100,0; 100,0], style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
+    connect(port_1, port_3) annotation (points=[-100,0; 0,0; 0,100], style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
   end PartialIdealJunctionAAB;
   
   redeclare replaceable partial model extends PartialSource_A 
