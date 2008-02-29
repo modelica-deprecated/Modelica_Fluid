@@ -7,16 +7,15 @@ model WaterSteamCycle2
   
   HeatTransfer.EvaporatingVessel evaporator(
     cp_D=500,
-    initType=PowerFluid.Types.Init.InitialValues,
     m_D=100e3,
     V_t=50,
-    V_l_start=33, 
-    provide_p_inside=true, 
-    provide_T_inside=true, 
-    p_start=100000, 
-    redeclare package FluidInterface = FluidInterface, 
-    redeclare package Medium = Modelica.Media.Water.StandardWater) 
-                        annotation (extent=[-30,0; -10,20]);
+    V_l_start=33,
+    provide_p_inside=true,
+    provide_T_inside=true,
+    redeclare package FluidInterface = FluidInterface,
+    redeclare package Medium = Modelica.Media.Water.StandardWater, 
+    initType=Modelica_Fluid.Types.Init.InitialValues, 
+    p_start=100000)     annotation (extent=[-30,0; -10,20]);
   annotation (
     Diagram,
     Coordsys(
@@ -55,36 +54,36 @@ public
         1000]) 
               annotation (extent=[-79.5,-70; -59.5,-50]);
   Sources.ControlledPump pump(
-    provide_p_a=true, 
-    provide_p_b=false, 
-    provide_T_a=false, 
-    provide_T_b=true, 
-    provide_m_flow_ab=false, 
-    redeclare package FluidInterface = FluidInterface, 
+    provide_p_a=true,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=true,
+    provide_m_flow_ab=false,
+    redeclare package FluidInterface = FluidInterface,
     redeclare package Medium = Modelica.Media.Water.StandardWater) 
     annotation (extent=[-79.5,0; -59.5,20]);
   Modelica.Blocks.Interfaces.RealOutput T_W(redeclare type SignalType = 
         Real (unit="degC")) 
     annotation (extent=[-42.5,-30; -32.5,-20]);
-  Turbomachinery.TurbineStageAA turbineStage1(
+  Turbomachinery.TurbineStageAA turbineStage1(medium_designDirection(h(start=2.6e6), p(start=10000)),
     K_t=0.001,
-    G=1e3, 
-    redeclare package FluidInterface = FluidInterface, 
-    redeclare package Medium = Modelica.Media.Water.StandardWater, 
-    provide_p_a=false, 
-    provide_p_b=false, 
-    provide_T_a=false, 
-    provide_T_b=false, 
+    G=1e3,
+    redeclare package FluidInterface = FluidInterface,
+    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=false,
     provide_m_flow_ab=false) 
     annotation (extent=[140,10; 160,30]);
   HeatTransfer.EvaporatingVessel condenser(
     V_t=100,
     m_D=10e3,
-    cp_D=500, 
-    provide_p_inside=false, 
-    provide_T_inside=true, 
-    p_start=10000, 
-    redeclare package FluidInterface = FluidInterface, 
+    cp_D=500,
+    provide_p_inside=false,
+    provide_T_inside=true,
+    p_start=10000,
+    redeclare package FluidInterface = FluidInterface,
     redeclare package Medium = Modelica.Media.Water.StandardWater) 
               annotation (extent=[175,-70; 195,-90]);
   Modelica.Thermal.HeatTransfer.PrescribedHeatFlow cooling 
@@ -95,45 +94,45 @@ public
     annotation (extent=[103,-37; 117,-23]);
   Modelica.Blocks.Continuous.PI controller1(T=60, k=1e9) 
     annotation (extent=[153,-37; 167,-23]);
-  Turbomachinery.TurbineStage turbineStage2(
+  Turbomachinery.TurbineStage turbineStage2(medium_designDirection(p(start=10000), h(start=2.6e6)),
     K_t=0.001,
-    G=1e3, 
-    redeclare package FluidInterface = FluidInterface, 
-    redeclare package Medium = Modelica.Media.Water.StandardWater, 
-    provide_p_a=false, 
-    provide_p_b=false, 
-    provide_T_a=false, 
-    provide_T_b=false, 
+    G=1e3,
+    redeclare package FluidInterface = FluidInterface,
+    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=false,
     provide_m_flow_ab=false) 
     annotation (extent=[169,10; 189,30]);
   HeatTransfer.HeatedPipe superHeater(V_lumped=25, T_start=from_degC(100),
-    initType=PowerFluid.Types.Init.InitialValues, 
-    redeclare package FluidInterface = FluidInterface, 
-    redeclare package Medium = Modelica.Media.Water.StandardWater, 
-    provide_m_flow_a=true, 
-    provide_p_a=false, 
-    provide_T_a=false, 
-    provide_p_b=true, 
-    provide_T_b=true, 
+    redeclare package FluidInterface = FluidInterface,
+    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    provide_m_flow_a=true,
+    provide_p_a=false,
+    provide_T_a=false,
+    provide_p_b=true,
+    provide_T_b=true,
     redeclare package WallFriction = 
-        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent, 
-      
-    length=5, 
-    diameter=0.15) 
+        FluidSandbox.PressureLosses.WallFrictionCorrelations.LaminarAndQuadraticTurbulent,
+    length=5,
+    diameter=0.15, 
+    initType=Modelica_Fluid.Types.Init.InitialValues) 
     annotation (extent=[35.5,0; 55.5,20]);
+  
   Modelica.Thermal.HeatTransfer.PrescribedHeatFlow furnace2 
     annotation (extent=[35.5,-35; 55.5,-15], rotation=90);
 public 
   Modelica.Blocks.Math.Gain MW2W2(k=0.2e6) 
     annotation (extent=[40.5,-52.5; 50.5,-41.5],
                                              rotation=90);
-  Valves.ValveLinear bypass(               Kv=1e-4, 
-    redeclare package FluidInterface = FluidInterface, 
-    redeclare package Medium = Modelica.Media.Water.StandardWater, 
-    provide_p_a=false, 
-    provide_p_b=false, 
-    provide_T_a=false, 
-    provide_T_b=false, 
+  Valves.ValveLinear bypass(               Kv=1e-4,
+    redeclare package FluidInterface = FluidInterface,
+    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=false,
     provide_m_flow_ab=false) 
     annotation (extent=[150,40; 170,60]);
   Modelica.Blocks.Sources.TimeTable bypassTable(table=[0,1; 3600,0; 7210,0]) 
@@ -149,13 +148,13 @@ public
     annotation (extent=[223,-54; 231,-46]);
   Modelica.Thermal.HeatTransfer.HeatCapacitor furnace2_mass(C=1e7) 
     annotation (extent=[10,-15; 30,-35]);
-  Valves.ValveLinear control(               Kv=1e-4, 
-    redeclare package FluidInterface = FluidInterface, 
-    redeclare package Medium = Modelica.Media.Water.StandardWater, 
-    provide_p_a=false, 
-    provide_p_b=false, 
-    provide_T_a=false, 
-    provide_T_b=false, 
+  Valves.ValveLinear control(               Kv=1e-4,
+    redeclare package FluidInterface = FluidInterface,
+    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    provide_p_a=false,
+    provide_p_b=false,
+    provide_T_a=false,
+    provide_T_b=false,
     provide_m_flow_ab=false) 
     annotation (extent=[110,10; 130,30]);
   Modelica.Blocks.Sources.TimeTable controlTable(table=[0,0; 1800,0; 3600,1;
@@ -314,37 +313,37 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(partialConversionBlock1.y, T_E) annotation (points=[28.8,50; 36.5,50], 
+  connect(partialConversionBlock1.y, T_E) annotation (points=[28.8,50; 36.5,50],
       style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
   connect(evaporator.T_inside, partialConversionBlock1.u) annotation (points=[
         -9,15; 6,15; 6,50; 10.4,50], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
-  connect(partialConversionBlock2.y, p_E) annotation (points=[28.8,80; 36.5,80], 
+  connect(partialConversionBlock2.y, p_E) annotation (points=[28.8,80; 36.5,80],
       style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
   connect(evaporator.p_inside, partialConversionBlock2.u) annotation (points=[
         -9,18; 3,18; 3,80; 10.4,80], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
   connect(T_W, partialConversionBlock3.y) annotation (points=[-37.5,-25; -52.25,
         -25; -52.25,-18.8; -52,-18.8], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
   connect(pump.T_b, partialConversionBlock3.u) annotation (points=[-58.5,15; 
         -52,15; -52,-0.4], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
-  connect(Pa2bar.u, pump.p_a) annotation (points=[98,-66.6; 98,-84; -94,-84; 
+  connect(Pa2bar.u, pump.p_a) annotation (points=[98,-66.6; 98,-84; -94,-84;
         -94,18; -80.5,18],
                          style(
       color=74,
@@ -357,42 +356,42 @@ equation
       smooth=0));
   connect(condenser.T_inside, partialConversionBlock4.u) annotation (points=[
         196,-85; 218,-85; 218,-79.6], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
   connect(partialConversionBlock4.y, T_C) annotation (points=[218,-61.2; 218,
         -50; 227,-50], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
-  connect(limiter.y, pump.massFlowRate) annotation (points=[-73.7,50; -80,50; 
+  connect(limiter.y, pump.massFlowRate) annotation (points=[-73.7,50; -80,50;
         -80,30; -69.5,30; -69.5,19], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
-  connect(superHeater.m_flow_a, qm_S) annotation (points=[34.5,18; 13,18; 13,30; 
+  connect(superHeater.m_flow_a, qm_S) annotation (points=[34.5,18; 13,18; 13,30;
         21.5,30], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
   connect(superHeater.T_b, partialConversionBlock5.u) annotation (points=[56.5,
         14; 75,14; 75,22.4], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
-  connect(partialConversionBlock5.y, T_S) annotation (points=[75,40.8; 75,50; 
+  connect(partialConversionBlock5.y, T_S) annotation (points=[75,40.8; 75,50;
         83.5,50], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
   connect(partialConversionBlock6.u, superHeater.p_b) annotation (points=[60,
         50.4; 60,16; 56.5,16], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
-  connect(partialConversionBlock6.y, p_S) annotation (points=[60,68.8; 60,75; 
+  connect(partialConversionBlock6.y, p_S) annotation (points=[60,68.8; 60,75;
         76.5,75], style(
-      color=74, 
-      rgbcolor={0,0,127}, 
+      color=74,
+      rgbcolor={0,0,127},
       smooth=0));
 end WaterSteamCycle2;
