@@ -347,8 +347,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     import Modelica_Fluid.Types;
     
-    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h;
-    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
+    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then h_nonDesignDirection - eta_ise*(h_nonDesignDirection - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else h_nonDesignDirection;
+    Medium.SpecificEnthalpy h_b_outflow = h_designDirection - eta_ise*(h_designDirection - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
     
     /*
   // Isentropic process
@@ -393,18 +393,15 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       "Upstream pressure if flow was in design direction";
     h_designDirection = inflow(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow was in design direction";
-    Xi_designDirection =                           port_a.Xi 
+    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
       "Upstream mass fractions if flow was in design direction";
-                         /*inflow(port_a.m_flow, */
-                                                            //) 
+    
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow was in non-design direction";
-    Xi_nonDesignDirection =                           port_b.Xi 
+    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
       "Upstream mass fractions if flow was in non-design direction";
-                            /*inflow(port_b.m_flow, */
-                                                               //) 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
@@ -427,8 +424,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     import Modelica_Fluid.Types;
     
-    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h;
-    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
+    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then h_nonDesignDirection - eta_ise*(h_nonDesignDirection - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else h_nonDesignDirection;
+    Medium.SpecificEnthalpy h_b_outflow = h_designDirection - eta_ise*(h_designDirection - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
     
     /*
   // Isentropic process
@@ -473,18 +470,15 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       "Upstream pressure if flow was in design direction";
     h_designDirection = inflow(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow was in design direction";
-    Xi_designDirection =                           port_a.Xi 
+    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
       "Upstream mass fractions if flow was in design direction";
-                         /*inflow(port_a.m_flow, */
-                                                            //) 
+    
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow was in non-design direction";
-    Xi_nonDesignDirection =                           port_b.Xi 
+    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
       "Upstream mass fractions if flow was in non-design direction";
-                            /*inflow(port_b.m_flow, */
-                                                               //) 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
@@ -507,8 +501,8 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     import Modelica_Fluid.Types;
     
-    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then port_b.h - eta_ise*(port_b.h - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else port_b.h;
-    Medium.SpecificEnthalpy h_b_outflow = port_a.h - eta_ise*(port_a.h - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
+    Medium.SpecificEnthalpy h_a_outflow = if flowDirection==Types.FlowDirection.Bidirectional then h_nonDesignDirection - eta_ise*(h_nonDesignDirection - Medium.isentropicEnthalpy(port_a.p, medium_nonDesignDirection.state)) else h_nonDesignDirection;
+    Medium.SpecificEnthalpy h_b_outflow = h_designDirection - eta_ise*(h_designDirection - Medium.isentropicEnthalpy(port_b.p, medium_designDirection.state));
     
     /*
   // Isentropic process
@@ -553,18 +547,15 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       "Upstream pressure if flow was in design direction";
     h_designDirection = inflow(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow was in design direction";
-    Xi_designDirection =                           port_a.Xi 
+    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
       "Upstream mass fractions if flow was in design direction";
-                         /*inflow(port_a.m_flow, */
-                                                            //) 
+    
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow was in non-design direction";
     h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow was in non-design direction";
-    Xi_nonDesignDirection =                           port_b.Xi 
+    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
       "Upstream mass fractions if flow was in non-design direction";
-                            /*inflow(port_b.m_flow, */
-                                                               //) 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;

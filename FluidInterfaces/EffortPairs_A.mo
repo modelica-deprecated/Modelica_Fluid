@@ -487,9 +487,9 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_2.p = p;
     port_3.p = p;
     
-    port_1.h_a = (max(port_2.m_flow, eps)*port_2.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps));
-    port_2.h_a = (max(port_1.m_flow, eps)*port_1.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps));
-    port_3.h_a = (max(port_1.m_flow, eps)*port_1.h_b + max(port_2.m_flow, eps)*port_2.h_b) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps));
+    port_1.h_a = noEvent((max(port_2.m_flow, eps)*port_2.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps)));
+    port_2.h_a = noEvent((max(port_1.m_flow, eps)*port_1.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps)));
+    port_3.h_a = noEvent((max(port_1.m_flow, eps)*port_1.h_b + max(port_2.m_flow, eps)*port_2.h_b) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps)));
     
   /* Deprecated as problematic if an iteration variable is chosen on a connector that has zero mass flow rate
   
