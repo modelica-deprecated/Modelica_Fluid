@@ -487,7 +487,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       
       parameter Types.FlowDirection.Temp flowDirection=Types.FlowDirection.Bidirectional 
         "Unidirectional (port_a -> port_b) or bidirectional flow component" 
-         annotation(Evauate=true, Dialog(tab="Advanced"));
+         annotation(Evaluate=true, Dialog(tab="Advanced"));
       
       // Limit the decomposition complexity and repeat declarations
       parameter Real eta_ise = 1 "Isentropic efficiency";
