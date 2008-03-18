@@ -4,21 +4,94 @@ package Volumes "Generic mixing volume and other volume type components"
   
   model Volume "Volume with inlet and outlet ports (flow reversal is allowed)" 
     
+    import Modelica_Fluid.Types;
+    
     extends Interfaces.PartialComponent;
     
-    extends FluidInterface.PartialLumpedVolume(V_lumped=V, Ws_flow=0);
+    extends FluidInterface.PartialLumpedVolume(medium(
+      preferredMediumStates=true,
+      p(start=p_start),
+      h(start=h_start),
+      T(start=T_start),
+      Xi(start=X_start[1:Medium.nXi])));
     
     // Constant volume
     parameter SI.Volume V "Volume";
     
-    // Heat port
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
-      "Thermal port" annotation (extent=[-20,88; 20,108]);
+  // Extensive properties
+    SI.Energy U "Internal energy of fluid";
+    SI.Mass m "Mass of fluid";
+    SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
+    
+  //Initialization  
+    parameter Types.Init.Temp initType=Types.Init.NoInit 
+      "Initialization option" 
+    annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_start=Medium.p_default 
+      "Start value of pressure" 
+    annotation(Dialog(tab = "Initialization"));
+    parameter Boolean use_T_start=true "= true, use T_start, otherwise h_start"
+    annotation(Dialog(tab = "Initialization"), Evaluate=true);
+    parameter Medium.Temperature T_start=if use_T_start then Medium.T_default else 
+              Medium.temperature_phX(
+            p_start,
+            h_start,
+            X_start) "Start value of temperature" 
+    annotation(Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
+        Medium.specificEnthalpy_pTX(
+            p_start,
+            T_start,
+            X_start) else Medium.h_default "Start value of specific enthalpy" 
+    annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default 
+      "Start value of mass fractions m_i/m" 
+    annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
     
   equation 
-    thermalPort.T = medium.T;
-    Qs_flow = thermalPort.Q_flow;
+  // Extensive quantities
+    m = V*medium.d;
+    mXi = m*medium.Xi;
+    U = m*medium.u;
     
+  // Mass and energy balance
+    der(m) = m_flow_net;
+    der(mXi) = mXi_flow_net;
+    der(U) = H_flow_net + heatPort.Q_flow;
+    
+  initial equation 
+  // Initial conditions
+    if initType == Types.Init.NoInit then
+    // no initial equations
+    elseif initType == Types.Init.InitialValues then
+      if not Medium.singleState then
+        medium.p = p_start;
+      end if;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    elseif initType == Types.Init.SteadyState then
+      if not Medium.singleState then
+        der(medium.p) = 0;
+      end if;
+      der(medium.h) = 0;
+      der(medium.Xi) = zeros(Medium.nXi);
+    elseif initType == Types.Init.SteadyStateHydraulic then
+      if not Medium.singleState then
+        der(medium.p) = 0;
+      end if;
+      if use_T_start then
+        medium.T = T_start;
+      else
+        medium.h = h_start;
+      end if;
+      medium.Xi = X_start[1:Medium.nXi];
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
     annotation (
       Icon(
         Ellipse(extent=[-100,100; 100,-100], style(

@@ -72,21 +72,21 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_a.H_flow = semiLinear(
             port_a.m_flow,
             port_a.h,
-            medium.h*ones(n_a));
+            h_a_outflow*ones(n_a));
     port_b.H_flow = semiLinear(
             port_b.m_flow,
             port_b.h,
-            medium.h*ones(n_b));
+            h_b_outflow*ones(n_b));
     
   // Substance mass flows
     port_a.mXi_flow = {semiLinear(
             port_a[i].m_flow,
             port_a[i].Xi,
-            medium.Xi) for i in 1:n_a};
+            Xi_a_outflow) for i in 1:n_a};
     port_b.mXi_flow = {semiLinear(
             port_b[i].m_flow,
             port_b[i].Xi,
-            medium.Xi) for i in 1:n_b};
+            Xi_b_outflow) for i in 1:n_b};
       /*
   for i in 1:n_a loop
   port_a[i].mXi_flow = semiLinear(
@@ -116,61 +116,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
-  redeclare replaceable partial model extends PartialTwoSidedVolume 
-    "Volume with two sides and inlet and outlet ports (flow reversal is allowed)" 
-    
-    annotation (
-      Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
-          extent=[-130,-108; 144,-150],
-          style(color=0),
-          string="V=%V")),
-      Documentation(info="<html>
-Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
-<ul>
-<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
-</ul>
-The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
-</html>"),
-      Diagram);
-    
-  equation 
-  // Pressure
-    port_a.p = medium.p;
-    port_b.p = medium.p;
-    
-  // Enthalpy flow
-    port_a.H_flow = semiLinear(
-            port_a.m_flow,
-            port_a.h,
-            h_a);
-    port_b.H_flow = semiLinear(
-            port_b.m_flow,
-            port_b.h,
-            h_b);
-    
-  // Substance mass flows
-    port_a.mXi_flow = semiLinear(
-            port_a.m_flow,
-            port_a.Xi,
-            Xi_a);
-    port_b.mXi_flow = semiLinear(
-            port_b.m_flow,
-            port_b.Xi,
-            Xi_b);
-    
-  // Net flow rates
-    m_flow_net = sum(port_a.m_flow) + sum(port_b.m_flow);
-    mXi_flow_net = {sum(port_a[:].mXi_flow[i]) + sum(port_b[:].mXi_flow[i]) 
-      for i in 1:Medium.nXi};
-    H_flow_net = sum(port_a.H_flow) + sum(port_b.H_flow);
-      /*
-  Each substance separately
-  for i in 1:Medium.nXi loop
-    mXi_flow_net[i] = sum(port_a[:].mXi_flow[i]) + sum(port_b[:].mXi_flow[i]);
-  end for;
-*/
-    
-  end PartialTwoSidedVolume;
   
   redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 

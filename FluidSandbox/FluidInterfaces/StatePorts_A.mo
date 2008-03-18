@@ -69,14 +69,13 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_b.p = medium.p*ones(n_b);
     
     // Specific enthalpy
-    port_a.h = medium.h*ones(n_a);
-    port_b.h = medium.h*ones(n_b) "Port_a instance, too";
+    port_a.h = h_a_outflow*ones(n_a);
+    port_b.h = h_b_outflow*ones(n_b);
     
     // Substance mass fractions
     for j in 1:Medium.nXi loop
-      port_a[:].Xi[j] = medium.Xi[j]*ones(n_a);
-      port_b[:].Xi[j] = medium.Xi[j]*ones(n_b) 
-        "port_b is a Port_a instance, too";
+      port_a[:].Xi[j] = Xi_a_outflow[j]*ones(n_a);
+      port_b[:].Xi[j] = Xi_b_outflow[j]*ones(n_b);
     end for;
     
     // Net flow rates
@@ -93,42 +92,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
-  redeclare replaceable partial model extends PartialTwoSidedVolume 
-    "Volume with two sides and inlet and outlet ports (flow reversal is allowed)" 
-    
-    annotation (
-      Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
-          extent=[-130,-108; 144,-150],
-          style(color=0),
-          string="V=%V")),
-      Documentation(info="<html>
-Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
-<ul>
-<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
-</ul>
-The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
-</html>"),
-      Diagram);
-    
-  equation 
-    // Pressure
-    port_a.p = medium.p;
-    port_b.p = medium.p;
-    
-    // Specific enthalpy
-    port_a.h = h_a;
-    port_b.h = h_b;
-    
-    // Substance mass fractions
-    port_a.Xi = Xi_a;
-    port_b.Xi = Xi_b;
-    
-    // Net flow rates
-    m_flow_net = port_a.m_flow + port_b.m_flow;
-    mXi_flow_net = port_a.mXi_flow + port_b.mXi_flow;
-    H_flow_net = port_a.H_flow + port_b.H_flow;
-    
-  end PartialTwoSidedVolume;
   
   redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 

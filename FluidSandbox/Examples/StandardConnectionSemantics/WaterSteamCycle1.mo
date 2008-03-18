@@ -7,15 +7,15 @@ model WaterSteamCycle1
   
   HeatTransfer.EvaporatingVessel evaporator(
     cp_D=500,
-    p_start=1e5,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    initType=PowerFluid.Types.Init.InitialValues,
     m_D=100e3,
     V_t=50,
     V_l_start=33,
-    redeclare package FluidInterface = FluidInterface,
-    provide_p_inside=false,
-    provide_T_inside=false)                              annotation (extent=[-24,-20; -5,0]);
+    redeclare package FluidInterface = FluidInterface, 
+    provide_p=false, 
+    provide_T=false, 
+    initType=Modelica_Fluid.Types.Init.InitialValues, 
+    p_start=100000)                                      annotation (extent=[-24,-20; -5,0]);
   annotation (
     Diagram,
     Coordsys(
@@ -77,12 +77,12 @@ public
   HeatTransfer.EvaporatingVessel condenser(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     V_t=100,
-    p_start=1e4,
     m_D=10e3,
     cp_D=500,
-    redeclare package FluidInterface = FluidInterface,
-    provide_p_inside=false,
-    provide_T_inside=false) 
+    redeclare package FluidInterface = FluidInterface, 
+    provide_p=false, 
+    provide_T=false, 
+    p_start=10000) 
               annotation (extent=[141,-70; 161,-90]);
   Modelica.Thermal.HeatTransfer.PrescribedHeatFlow furnace1 
     annotation (extent=[141,-35; 161,-55],   rotation=90);
@@ -150,31 +150,10 @@ equation
       color=74,
       rgbcolor={0,0,127},
       smooth=0));
-  connect(pump.port_b, evaporator.port_a) annotation (points=[-55,-10; -24,-10],
-      style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
   connect(limiter.y, pump.massFlowRate) annotation (points=[-85.7,40; -90,40;
         -90,20; -65,20; -65,-1], style(
       color=74,
       rgbcolor={0,0,127},
-      smooth=0));
-  connect(condenser.port_a, pump.port_a) annotation (points=[141,-80; -90,-80;
-        -90,-10; -75,-10], style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
-  connect(furnace1.port, condenser.heatPort) annotation (points=[151,-55; 151,
-        -70], style(
-      color=42,
-      rgbcolor={191,0,0},
-      smooth=0));
-  connect(evaporator.heatPort, furnace.port) annotation (points=[-14.5,-20;
-        -14.5,-30],
-              style(
-      color=42,
-      rgbcolor={191,0,0},
       smooth=0));
   connect(feedback1.u2, Pa2bar.y) annotation (points=[98,-33; 98,-53.95], style(
       color=74,
@@ -200,11 +179,6 @@ equation
       color=74,
       rgbcolor={0,0,127},
       smooth=0));
-  connect(evaporator.port_b, turbine.port_a) annotation (points=[-5,-10; 70,-10;
-        70,36; 85,36], style(
-      color=69,
-      rgbcolor={0,127,255},
-      smooth=0));
   connect(turbine.T_b, partialConversionBlock.u) annotation (points=[106,41;
         117,41; 117,10; 128,10], style(
       color=74,
@@ -225,9 +199,38 @@ equation
       color=74,
       rgbcolor={0,0,127},
       smooth=0));
-  connect(turbine.port_b, condenser.port_b) annotation (points=[105,36; 137,36;
-        137,28; 190,28; 190,-80; 161,-80], style(
-      color=69,
-      rgbcolor={0,127,255},
+  connect(evaporator.port_b[1], turbine.port_a) annotation (points=[-5,-10; 70,
+        -10; 70,36; 85,36], style(
+      color=69, 
+      rgbcolor={0,127,255}, 
+      thickness=2, 
+      smooth=0));
+  connect(pump.port_b, evaporator.port_a[1]) annotation (points=[-55,-10; -24,
+        -10], style(
+      color=69, 
+      rgbcolor={0,127,255}, 
+      thickness=2, 
+      smooth=0));
+  connect(condenser.port_a[1], pump.port_a) annotation (points=[141,-80; -90,
+        -80; -90,-10; -75,-10], style(
+      color=69, 
+      rgbcolor={0,127,255}, 
+      thickness=2, 
+      smooth=0));
+  connect(condenser.port_b[1], turbine.port_b) annotation (points=[161,-80; 190,
+        -80; 190,36; 105,36], style(
+      color=69, 
+      rgbcolor={0,127,255}, 
+      thickness=2, 
+      smooth=0));
+  connect(evaporator.heatPort, furnace.port) annotation (points=[-14.5,-20; 
+        -14.5,-30], style(
+      color=42, 
+      rgbcolor={191,0,0}, 
+      smooth=0));
+  connect(furnace1.port, condenser.heatPort) annotation (points=[151,-55; 151,
+        -70], style(
+      color=42, 
+      rgbcolor={191,0,0}, 
       smooth=0));
 end WaterSteamCycle1;

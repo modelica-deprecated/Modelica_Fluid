@@ -77,8 +77,6 @@ package Interfaces
     replaceable partial model PartialLumpedVolume 
       "Mixing volume without connectors" 
       
-      import Modelica_Fluid.Types;
-      
     // Medium model
       replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
         "Medium in the component" 
@@ -93,125 +91,56 @@ package Interfaces
       parameter Integer n_b=1 "Number of port_b's";
       
     // BaseProperties instance
-      Medium.BaseProperties medium(
-        preferredMediumStates=true,
-        p(start=p_start),
-        h(start=h_start),
-        T(start=T_start),
-        Xi(start=X_start[1:Medium.nXi]));
+      Medium.BaseProperties medium 
+        "No start or guess values as states have to be chosen in submodel";
       
-    // Extensive properties
-      SI.Energy U "Internal energy of fluid";
-      SI.Mass m "Mass of fluid";
-      SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
-      SI.Volume V_lumped "Volume";
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b heatPort 
+        annotation (extent=[-10,-110; 10,-90]);
       
-    //Initialization  
-      parameter Types.Init.Temp initType=Types.Init.NoInit 
-        "Initialization option" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization"));
-      parameter Medium.AbsolutePressure p_start=Medium.p_default 
-        "Start value of pressure" 
-      annotation(Dialog(tab = "Initialization"));
-      parameter Boolean use_T_start=true 
-        "= true, use T_start, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"), Evaluate=true);
-      parameter Medium.Temperature T_start=if use_T_start then Medium.T_default else 
-                Medium.temperature_phX(
-              p_start,
-              h_start,
-              X_start) "Start value of temperature" 
-      annotation(Dialog(tab = "Initialization", enable = use_T_start));
-      parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
-          Medium.specificEnthalpy_pTX(
-              p_start,
-              T_start,
-              X_start) else Medium.h_default "Start value of specific enthalpy"
-      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-      parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default 
-        "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+      // add a modifier to these declaration equations to override this
+      Medium.SpecificEnthalpy h_a_outflow = medium.h 
+        "Specific enthalpy at port_a if fluid exits";
+      Medium.MassFraction Xi_a_outflow[Medium.nXi] = medium.Xi 
+        "Independent mixture mass fractions m_i/m in the connection point a if fluid exits";
+      
+      Medium.SpecificEnthalpy h_b_outflow = medium.h 
+        "Specific enthalpy at port_a if fluid exits";
+      Medium.MassFraction Xi_b_outflow[Medium.nXi] = medium.Xi 
+        "Independent mixture mass fractions m_i/m in the connection point b if fluid exits";
       
       Medium.MassFlowRate m_flow_net "Net mass flow into the volume";
       Medium.MassFlowRate mXi_flow_net[Medium.nXi] 
         "Net substance mass flow into the volume";
       Medium.EnthalpyFlowRate H_flow_net "Net enthalpy flow into the volume";
       
-    protected 
-      SI.HeatFlowRate Qs_flow 
-        "Heat flow across boundaries or energy source/sink";
-      SI.Power Ws_flow "Work flow across boundaries or source term";
-      
       // sensors /////////////////  
-    public 
       parameter Boolean provide_p = false "Provide pressure?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
       parameter Boolean provide_T = false "Provide temperature?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
       
-      Modelica.Blocks.Interfaces.RealOutput p(redeclare type SignalType = 
-            SI.Pressure) if provide_p annotation (extent=[-120,70; -100,90], rotation=180);
-      Modelica.Blocks.Interfaces.RealOutput T(redeclare type SignalType = 
-            SI.Temperature) if provide_T annotation (extent=[-120,40; -100,60], rotation=180);
+      Modelica.Blocks.Interfaces.RealOutput p_sensor(redeclare type SignalType 
+          = SI.Pressure) if provide_p annotation (extent=[-120,70; -100,90], rotation=180);
+      Modelica.Blocks.Interfaces.RealOutput T_sensor(redeclare type SignalType 
+          = SI.Temperature) if provide_T annotation (extent=[-120,40; -100,60], rotation=180);
     protected 
       Modelica.Blocks.Interfaces.RealOutput calc_p(redeclare type SignalType = 
             SI.Pressure) annotation (extent=[-74,40; -66,48], rotation=90);
       Modelica.Blocks.Interfaces.RealOutput calc_T(redeclare type SignalType = 
             SI.Temperature) annotation (extent=[-84,40; -76,48], rotation=90);
     equation 
-    // Extensive quantities
-      m = V_lumped*medium.d;
-      mXi = m*medium.Xi;
-      U = m*medium.u;
-      
-    // Mass and energy balance
-      der(m) = m_flow_net;
-      der(mXi) = mXi_flow_net;
-      der(U) = H_flow_net + Qs_flow + Ws_flow;
+      // boundary conditions heat port
+      heatPort.T = medium.T;
       
       // sensors
       calc_p = medium.p;
       calc_T = medium.T;
-      connect(T,calc_T)  annotation (points=[-110,50; -80,50; -80,44], style(
+      connect(T_sensor,calc_T)  annotation (points=[-110,50; -80,50; -80,44], style(
           color=74,
           rgbcolor={0,0,127},
           smooth=0));
-      connect(calc_p,p)  annotation (points=[-70,44; -70,80; -110,80], style(
+      connect(calc_p,p_sensor)  annotation (points=[-70,44; -70,80; -110,80], style(
           color=74,
           rgbcolor={0,0,127},
           smooth=0));
-      
-    initial equation 
-    // Initial conditions
-      if initType == Types.Init.NoInit then
-      // no initial equations
-      elseif initType == Types.Init.InitialValues then
-        if not Medium.singleState then
-          medium.p = p_start;
-        end if;
-        if use_T_start then
-          medium.T = T_start;
-        else
-          medium.h = h_start;
-        end if;
-        medium.Xi = X_start[1:Medium.nXi];
-      elseif initType == Types.Init.SteadyState then
-        if not Medium.singleState then
-          der(medium.p) = 0;
-        end if;
-        der(medium.h) = 0;
-        der(medium.Xi) = zeros(Medium.nXi);
-      elseif initType == Types.Init.SteadyStateHydraulic then
-        if not Medium.singleState then
-          der(medium.p) = 0;
-        end if;
-        if use_T_start then
-          medium.T = T_start;
-        else
-          medium.h = h_start;
-        end if;
-        medium.Xi = X_start[1:Medium.nXi];
-      else
-        assert(false, "Unsupported initialization option");
-      end if;
       
       annotation (
         Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
@@ -229,97 +158,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       
     end PartialLumpedVolume;
     
-    replaceable partial model PartialTwoSidedVolume 
-      "Volume with two different sides and without connectors (careful: choose your own prefered states!)" 
-      
-      import Modelica_Fluid.Types;
-      
-    // Medium model
-      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
-        "Medium in the component" 
-          annotation (choicesAllMatching = true);
-      
-      // Interfaces
-      FluidPort_a port_a(redeclare package Medium = Medium) "Fluid inlet port" 
-                           annotation (extent=[-110,-10; -90,10]);
-      FluidPort_a port_b(redeclare package Medium = Medium) 
-        "Fluid outlet port (Port_a, too!)" annotation (extent=[90,-10; 110,10]);
-      
-    // BaseProperties instance
-      Medium.BaseProperties medium 
-        "No start or guess values as states have to be chosen in submodel";
-      
-      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_b heatPort 
-        annotation (extent=[-10,-110; 10,-90]);
-      
-      Medium.SpecificEnthalpy h_a = medium.h "Specific enthalpy at port_a";
-      Medium.MassFraction Xi_a[Medium.nXi] = medium.Xi 
-        "Independent mixture mass fractions m_i/m in the connection point a";
-      
-      Medium.SpecificEnthalpy h_b = medium.h "Specific enthalpy at port_a";
-      Medium.MassFraction Xi_b[Medium.nXi] = medium.Xi 
-        "Independent mixture mass fractions m_i/m in the connection point b";
-      
-      Medium.MassFlowRate m_flow_net "Net mass flow into the volume";
-      Medium.MassFlowRate mXi_flow_net[Medium.nXi] 
-        "Net substance mass flow into the volume";
-      Medium.EnthalpyFlowRate H_flow_net "Net enthalpy flow into the volume";
-      
-      // sensors  
-      Modelica.Blocks.Interfaces.RealOutput T_inside(redeclare type SignalType 
-          = SI.Temperature) if provide_T_inside annotation (extent=[100,40; 120,60],   rotation=0);
-      Modelica.Blocks.Interfaces.RealOutput p_inside(redeclare type SignalType 
-          = SI.Pressure) if provide_p_inside annotation (extent=[100,70; 120,90],   rotation=0);
-      
-      parameter Boolean provide_p_inside = false "Provide inside pressure?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
-      parameter Boolean provide_T_inside = false "Provide inside temperature?" annotation(Evaluate=true, Dialog(descriptionLabel=true, tab="Sensors"));
-      
-    protected 
-      Modelica.Blocks.Interfaces.RealOutput calc_T_inside(redeclare type 
-          SignalType = 
-            SI.Temperature) annotation (extent=[-84,40; -76,48], rotation=90);
-      Modelica.Blocks.Interfaces.RealOutput calc_p_inside(redeclare type 
-          SignalType = 
-            SI.Pressure) annotation (extent=[-74,40; -66,48], rotation=90);
-      
-      // Using Medium.temperature(Medium.setState_phX()) for temperature sensor results in numeric Jacobian; using BaseProperties instead
-      Medium.BaseProperties calc_T_inside_medium(
-        p=if provide_T_inside then medium.p else Medium.p_default,
-        h=if provide_T_inside then medium.h else Medium.h_default,
-        Xi=if provide_T_inside then medium.Xi else zeros(Medium.nXi));
-    equation 
-      // boundary conditions heat port
-      heatPort.T = medium.T;
-      
-      // sensors
-      calc_T_inside = if provide_T_inside then calc_T_inside_medium.T else 0;
-      calc_p_inside = if provide_p_inside then medium.p else 0;
-      
-      connect(T_inside, calc_T_inside) 
-                             annotation (points=[110,50; -80,50; -80,44],  style(
-          color=74,
-          rgbcolor={0,0,127},
-          smooth=0));
-      connect(calc_p_inside, p_inside) 
-                             annotation (points=[-70,44; -70,80; 110,80],  style(
-          color=74,
-          rgbcolor={0,0,127},
-          smooth=0));
-      
-      annotation (
-        Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
-            extent=[-130,-108; 144,-150],
-            style(color=0),
-            string="V=%V")),
-        Documentation(info="<html>
-Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
-<ul>
-<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
-</ul>
-The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
-</html>"),
-        Diagram);
-    end PartialTwoSidedVolume;
     
     replaceable partial model PartialTransport 
       "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
