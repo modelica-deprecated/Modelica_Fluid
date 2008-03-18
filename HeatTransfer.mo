@@ -5,7 +5,7 @@ package HeatTransfer "Component models depicting heat transfer"
     "Valve for water/steam flows with linear pressure drop" 
     
     extends Interfaces.PartialComponent;
-    extends FluidInterface.PartialTwoSidedVolume(h_a=h_l, h_b=h_v);
+    extends FluidInterface.PartialLumpedVolume(h_a_outflow=h_l, h_b_outflow=h_v, final n_a=1, final n_b=1);
     
     import Modelica_Fluid.Types;
     
@@ -182,8 +182,8 @@ package HeatTransfer "Component models depicting heat transfer"
       n_a=1,
       n_b=1,
       provide_p=provide_p_b,
-      provide_T=provide_T_b)                     annotation (extent=[-10,10; 10,
-          -10]);
+      provide_T=provide_T_b)                     annotation (extent=[-10,-10; 
+          10,10]);
     PressureLosses.WallFriction pipe(
       provide_p_b=false,
       provide_T_b=false,
@@ -236,11 +236,6 @@ package HeatTransfer "Component models depicting heat transfer"
       gradient=3,
       fillColor=1,
       rgbfillColor={255,0,0}));
-    connect(lumpedVolume.thermalPort, heatPort) annotation (points=[0,-9.8; 0,
-          -100], style(
-        color=42,
-        rgbcolor={191,0,0},
-        smooth=0));
     connect(pipe.port_b, lumpedVolume.port_a[1]) annotation (points=[-46,0; -10,0],
         style(
         color=69,
@@ -266,15 +261,20 @@ package HeatTransfer "Component models depicting heat transfer"
         color=74,
         rgbcolor={0,0,127},
         smooth=0));
-    connect(lumpedVolume.T, T_b) annotation (points=[-11,-5; -14,-5; -14,40; 110,
-          40], style(
-        color=74,
-        rgbcolor={0,0,127},
+    connect(lumpedVolume.p_sensor, p_b) annotation (points=[-11,8; -20,8; -20,
+          60; 110,60], style(
+        color=74, 
+        rgbcolor={0,0,127}, 
         smooth=0));
-    connect(lumpedVolume.p, p_b) annotation (points=[-11,-8; -20,-8; -20,60; 110,
-          60], style(
-        color=74,
-        rgbcolor={0,0,127},
+    connect(lumpedVolume.T_sensor, T_b) annotation (points=[-11,5; -16,5; -16,
+          40; 110,40], style(
+        color=74, 
+        rgbcolor={0,0,127}, 
+        smooth=0));
+    connect(lumpedVolume.heatPort, heatPort) annotation (points=[0,-10; 0,-100], 
+        style(
+        color=42, 
+        rgbcolor={191,0,0}, 
         smooth=0));
   end HeatedPipe;
 end HeatTransfer;
