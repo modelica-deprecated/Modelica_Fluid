@@ -1,6 +1,6 @@
 within FluidSandbox.FluidInterfaces;
 package Operator_A 
-  "Implementation A using a special operator inflow() (available in Dymola 7.0 beta 3x)" 
+  "Implementation A using a special operator upstream() (available in Dymola 7.0x)" 
   extends Interfaces.PartialFluidInterface(usesNewConnectionSemantics=false);
   redeclare replaceable connector extends FluidPort 
     "Interface for quasi one-dimensional fluid flow in a piping network (incompressible or compressible, one or more phases, one or more substances)" 
@@ -116,7 +116,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
-  
   redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
@@ -145,20 +144,17 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // This approach provides both potential upstream properties (independent of current mass flow direction)
     p_designDirection = port_a.p 
       "Upstream pressure if flow was in design direction";
-    h_designDirection = inflow(port_a.m_flow, port_a.h) 
+    h_designDirection = upstream(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow was in design direction";
-    Xi_designDirection =                           port_a.Xi 
+    Xi_designDirection = upstream(port_a.m_flow, port_a.Xi) 
       "Upstream mass fractions if flow was in design direction";
-                         /*inflow(port_a.m_flow, */
-                                                            //) 
+    
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow was in non-design direction";
-    h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
+    h_nonDesignDirection = upstream(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow was in non-design direction";
-    Xi_nonDesignDirection =                           port_b.Xi 
+    Xi_nonDesignDirection = upstream(port_b.m_flow, port_b.Xi) 
       "Upstream mass fractions if flow was in non-design direction";
-                            /*inflow(port_b.m_flow, */
-                                                               //) 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
@@ -204,20 +200,17 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // This approach provides both potential upstream properties (independent of current mass flow direction)
     p_designDirection = port_a.p 
       "Upstream pressure if flow was in design direction";
-    h_designDirection = inflow(port_a.m_flow, port_a.h) 
+    h_designDirection = upstream(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow was in design direction";
-    Xi_designDirection =                           port_a.Xi 
+    Xi_designDirection = upstream(port_a.m_flow, port_a.Xi) 
       "Upstream mass fractions if flow was in design direction";
-                         /*inflow(port_a.m_flow, */
-                                                            //) 
+    
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow was in non-design direction";
-    h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
+    h_nonDesignDirection = upstream(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow was in non-design direction";
-    Xi_nonDesignDirection =                           port_b.Xi 
+    Xi_nonDesignDirection = upstream(port_b.m_flow, port_b.Xi) 
       "Upstream mass fractions if flow was in non-design direction";
-                            /*inflow(port_b.m_flow, */
-                                                               //) 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
@@ -263,20 +256,17 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // This approach provides both potential upstream properties (independent of current mass flow direction)
     p_designDirection = port_a.p 
       "Upstream pressure if flow was in design direction";
-    h_designDirection = inflow(port_a.m_flow, port_a.h) 
+    h_designDirection = upstream(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow was in design direction";
-    Xi_designDirection =                           port_a.Xi 
+    Xi_designDirection = upstream(port_a.m_flow, port_a.Xi) 
       "Upstream mass fractions if flow was in design direction";
-                         /*inflow(port_a.m_flow, */
-                                                            //) 
+    
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow was in non-design direction";
-    h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
+    h_nonDesignDirection = upstream(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow was in non-design direction";
-    Xi_nonDesignDirection =                           port_b.Xi 
+    Xi_nonDesignDirection = upstream(port_b.m_flow, port_b.Xi) 
       "Upstream mass fractions if flow was in non-design direction";
-                            /*inflow(port_b.m_flow, */
-                                                               //) 
     
     // sensors
     calc_T_a = if provide_T_a then calc_T_a_medium.T else 0;
@@ -343,16 +333,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // This approach provides both potential upstream properties (independent of current mass flow direction)
     p_designDirection = port_a.p 
       "Upstream pressure if flow was in design direction";
-    h_designDirection = inflow(port_a.m_flow, port_a.h) 
+    h_designDirection = upstream(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow was in design direction";
-    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
+    Xi_designDirection = upstream(port_a.m_flow, port_a.Xi) 
       "Upstream mass fractions if flow was in design direction";
     
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow was in non-design direction";
-    h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
+    h_nonDesignDirection = upstream(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow was in non-design direction";
-    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
+    Xi_nonDesignDirection = upstream(port_b.m_flow, port_b.Xi) 
       "Upstream mass fractions if flow was in non-design direction";
     
     // sensors
@@ -420,16 +410,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // This approach provides both potential upstream properties (independent of current mass flow direction)
     p_designDirection = port_a.p 
       "Upstream pressure if flow was in design direction";
-    h_designDirection = inflow(port_a.m_flow, port_a.h) 
+    h_designDirection = upstream(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow was in design direction";
-    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
+    Xi_designDirection = upstream(port_a.m_flow, port_a.Xi) 
       "Upstream mass fractions if flow was in design direction";
     
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow was in non-design direction";
-    h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
+    h_nonDesignDirection = upstream(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow was in non-design direction";
-    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
+    Xi_nonDesignDirection = upstream(port_b.m_flow, port_b.Xi) 
       "Upstream mass fractions if flow was in non-design direction";
     
     // sensors
@@ -497,16 +487,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     // This approach provides both potential upstream properties (independent of current mass flow direction)
     p_designDirection = port_a.p 
       "Upstream pressure if flow was in design direction";
-    h_designDirection = inflow(port_a.m_flow, port_a.h) 
+    h_designDirection = upstream(port_a.m_flow, port_a.h) 
       "Upstream specific enthalpy if flow was in design direction";
-    Xi_designDirection = inflow(port_a.m_flow, port_a.Xi) 
+    Xi_designDirection = upstream(port_a.m_flow, port_a.Xi) 
       "Upstream mass fractions if flow was in design direction";
     
     p_nonDesignDirection = port_b.p 
       "Upstream pressure if flow was in non-design direction";
-    h_nonDesignDirection = inflow(port_b.m_flow, port_b.h) 
+    h_nonDesignDirection = upstream(port_b.m_flow, port_b.h) 
       "Upstream specific enthalpy if flow was in non-design direction";
-    Xi_nonDesignDirection = inflow(port_b.m_flow, port_b.Xi) 
+    Xi_nonDesignDirection = upstream(port_b.m_flow, port_b.Xi) 
       "Upstream mass fractions if flow was in non-design direction";
     
     // sensors
