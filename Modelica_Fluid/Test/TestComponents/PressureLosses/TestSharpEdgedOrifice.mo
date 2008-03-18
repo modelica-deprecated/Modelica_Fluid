@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestSharpEdgedOrifice 
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
@@ -18,7 +19,7 @@ model TestSharpEdgedOrifice
                                                      redeclare package Medium 
       = Medium,
     p=ambient.default_p_ambient,
-    T=ambient.default_T_ambient, 
+    T=ambient.default_T_ambient,
     usePressureInput=true) 
     annotation (extent=[-40,40; -20,60]);
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.1e5; 10,2e5]) 
@@ -46,7 +47,6 @@ model TestSharpEdgedOrifice
     redeclare package Medium = Medium,
     D_pipe=0.1,
     alpha=50,
-    from_dp=false,
     D_min=0.02,
     L=0.005) annotation (extent=[0,10; 20,30]);
   

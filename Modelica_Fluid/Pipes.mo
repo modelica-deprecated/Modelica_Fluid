@@ -1781,6 +1781,10 @@ transport. This splitting is only possible under certain assumptions.
   end BaseClasses;
   annotation (Documentation(info="<html>
  
-</html>"));
+</html>"), Icon(Line(points=[-100,100; 100,-100], style(
+          color=1, 
+          rgbcolor={255,0,0}, 
+          thickness=2, 
+          smooth=0))));
   
 end Pipes;

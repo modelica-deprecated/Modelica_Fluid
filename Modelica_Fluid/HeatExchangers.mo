@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package HeatExchangers "Evaporators and condensor components" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   model EquilibriumDrumBoiler 
@@ -163,7 +164,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
   end EquilibriumDrumBoiler;
   annotation (Documentation(info="<html>
  
-</html>"));
+</html>"), Icon);
   model BasicHX "Simple heat exchanger model" 
     
     //General

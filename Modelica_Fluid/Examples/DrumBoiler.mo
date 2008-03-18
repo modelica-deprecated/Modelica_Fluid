@@ -1,3 +1,4 @@
+within Modelica_Fluid.Examples;
 package DrumBoiler 
   "Drum boiler example, see Franke, Rode, Krueger: On-line Optimization of Drum Boiler Startup, 3rd International Modelica Conference, Linkoping, 2003" 
   
@@ -18,9 +19,9 @@ Simulate for 7200 seconds.
 </p>
 </HTML>"));
   equation 
-    connect(q_F_Tab.y, drumBoiler.q_F)       annotation (points=[-59,10; -40,10;
+    connect(q_F_Tab.y, drumBoiler.q_F)       annotation (points=[-59,10; -40,10; 
           -40,-31; -21.35,-31],       style(rgbcolor={0,0,127}));
-    connect(Y_Valve_Tab.y, drumBoiler.Y_Valve)       annotation (points=[-59,-30;
+    connect(Y_Valve_Tab.y, drumBoiler.Y_Valve)       annotation (points=[-59,-30; 
           -44,-30; -44,-37; -21.35,-37],         style(
         rgbcolor={0,0,127},
         fillColor=7,
@@ -77,9 +78,8 @@ Simulate for 7200 seconds.
     Modelica.Blocks.Interfaces.RealInput Y_Valve(redeclare type SignalType = 
           Real (unit="1")) 
       annotation (extent=[-109,-95; -100,-85]);
-    Modelica_Fluid.Sources.FixedBoundary sink(          p=from_bar(0.5), redeclare 
-        package Medium = 
-                 Modelica.Media.Water.StandardWater,
+    Modelica_Fluid.Sources.FixedBoundary sink(          p=from_bar(0.5), 
+      redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase, 
       T=500) 
       annotation (extent=[80,-31; 100,-11], rotation=180);
     Modelica_Fluid.Sensors.MassFlowRate massFlowRate(           redeclare 
@@ -161,7 +161,7 @@ Simulate for 7200 seconds.
         style(color=74, rgbcolor={0,0,127}));
     connect(limiter.y, pump.m_flow_in) annotation (points=[-85.7,30; -90,30;
           -90,-14; -79.3,-14], style(color=74, rgbcolor={0,0,127}));
-    connect(temperature.T, K2degC.Kelvin) annotation (points=[-10,-1; -10,60;
+    connect(temperature.T, K2degC.Kelvin) annotation (points=[-10,-1; -10,60; 
           37,60],
                style(color=74, rgbcolor={0,0,127}));
     connect(pressure.port, massFlowRate.port_a) annotation (points=[20,14; 20,

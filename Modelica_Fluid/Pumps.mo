@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Pumps "Pump components" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   model Pump "Centrifugal pump with ideally controlled speed" 
@@ -73,7 +74,7 @@ package Pumps "Pump components"
 </ul>
 </html>"));
   end PumpShaft;
-
+  
   model PumpNPSH 
     "Centrifugal pump with ideally controlled speed and NPSHa computation" 
     extends Pump(redeclare replaceable package Medium = 
@@ -228,8 +229,8 @@ package Pumps "Pump components"
     end if;
     // Fluid properties
     fluid.p = inlet.p;
-    fluid.h = inlet.h;
-    fluid.Xi = inlet.Xi;
+    fluid.h = upstream(inlet.m_flow, inlet.h);
+    fluid.Xi = upstream(inlet.m_flow, inlet.Xi);
     d = fluid.d;
     Tin = fluid.T;
       
@@ -409,7 +410,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     algorithm 
       consumption := c[1] + q_flow*c[2];
     end linearPower;
-
+      
     function quadraticPower "Quadratic power consumption characteristic" 
       extends basePower;
       input SI.VolumeFlowRate q_nom[3] 
@@ -434,5 +435,5 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
   end BaseClasses;
   annotation (Documentation(info="<html>
  
-</html>"));
+</html>"), Icon);
 end Pumps;

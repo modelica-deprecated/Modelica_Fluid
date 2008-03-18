@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package ControlValves "Various variants of valve components" 
     extends Modelica_Fluid.Icons.VariantLibrary;
   
@@ -81,7 +82,7 @@ The model operating range includes choked flow operation, which takes place for 
   equation 
     pin = port_a.p;
     pout = port_b.p;
-    pv = Medium.saturationPressure_sat(Medium.setSat_T(medium_a.T));
+    pv = Medium.saturationPressure_sat(Medium.setSat_T(upstream_design.T));
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
     Fl = Fl_nom*FlCharacteristic(stemPosition);
     dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 
@@ -257,7 +258,7 @@ it is open.
 </html>"),
       Coordsys(grid=[1,1], scale=0));
   end ValveDiscrete;
-
+  
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
     partial model PartialValve "Base model for valves" 
@@ -314,8 +315,9 @@ it is open.
         "Stem position in the range 0-1" 
                                        annotation (extent=[-20,70; 20,110],   rotation=-90);
       
-    Medium.Density d "Density at port a";
-    Medium.Temperature T "Temperature at port a";
+    Medium.Density d "Upstream density if mass flows in design direction";
+    Medium.Temperature T 
+        "Upstream temperature if mass flows in design direction";
     protected 
     function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
       
@@ -368,8 +370,8 @@ it is open.
     end if;
     assert(CvData>=0 and CvData<=3, "Invalid CvData");
     equation 
-    T = medium_a.T;
-    d = medium_a.d;
+    T = upstream_design.T;
+    d = upstream_design.d;
     end PartialValve;
     
   package ValveCharacteristics "Functions for valve characteristics" 
@@ -417,5 +419,5 @@ This characteristic is such that the relative change of the flow coefficient is 
   end BaseClasses;
   annotation (Documentation(info="<html>
  
-</html>"));
+</html>"), Icon);
 end ControlValves;
