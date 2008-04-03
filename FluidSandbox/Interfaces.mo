@@ -158,7 +158,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       
     end PartialLumpedVolume;
     
-    
     replaceable partial model PartialTransport 
       "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
       
@@ -455,6 +454,11 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         annotation (extent=[90,-10; 110,10]);
       FluidPort_a port_3(redeclare package Medium = Medium) 
         annotation (extent=[-10,90; 10,110]);
+      
+      // switch and declarations for manual tearing
+      parameter Boolean useManualTearing = false 
+        "Use manual tearing of ideal connection equations";
+      
     end PartialIdealJunction;
     
     replaceable partial model PartialIdealJunctionAAB 
@@ -470,6 +474,11 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         annotation (extent=[90,-10; 110,10]);
       FluidPort_a port_3(redeclare package Medium = Medium) 
         annotation (extent=[-10,90; 10,110]);
+      
+      // switch and declarations for manual tearing
+      parameter Boolean useManualTearing = false 
+        "Use manual tearing of ideal connection equations";
+      
     end PartialIdealJunctionAAB;
     
     replaceable partial model PartialSource_A 

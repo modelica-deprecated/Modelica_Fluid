@@ -1,3 +1,4 @@
+within FluidSandbox.FluidInterfaces;
 package EffortPairs_A 
   "Implementation A using pairs of effort variables on connectors (similar to the ThermoPower library)" 
   extends Interfaces.PartialFluidInterface(usesNewConnectionSemantics=false);
@@ -434,7 +435,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     Medium.AbsolutePressure p "Pressure";
     
-    parameter Real eps = 1e-8;
+    parameter Real eps = 1e-12;
     
   equation 
     // Mass balance
@@ -445,72 +446,80 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_2.p = p;
     port_3.p = p;
     
-    port_1.h_a = noEvent((max(port_2.m_flow, eps)*port_2.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps)));
-    port_2.h_a = noEvent((max(port_1.m_flow, eps)*port_1.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps)));
-    port_3.h_a = noEvent((max(port_1.m_flow, eps)*port_1.h_b + max(port_2.m_flow, eps)*port_2.h_b) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps)));
-    
-    port_1.Xi_a = noEvent((max(port_2.m_flow, eps)*port_2.Xi_b + max(port_3.m_flow, eps)*port_3.Xi_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps)));
-    port_2.Xi_a = noEvent((max(port_1.m_flow, eps)*port_1.Xi_b + max(port_3.m_flow, eps)*port_3.Xi_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps)));
-    port_3.Xi_a = noEvent((max(port_1.m_flow, eps)*port_1.Xi_b + max(port_2.m_flow, eps)*port_2.Xi_b) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps)));
-    
-  /* Deprecated as problematic if an iteration variable is chosen on a connector that has zero mass flow rate
-  
-  // Flow directions
-  if noEvent(port_2.m_flow > 0 and port_3.m_flow < 0) then
-    port_1.h_a = port_2.h_b;
-    port_1.Xi_a = port_2.Xi_b;
-  elseif noEvent(port_2.m_flow < 0 and port_3.m_flow > 0) then
-    port_1.h_a = port_3.h_b;
-    port_1.Xi_a = port_3.Xi_b;
-  elseif noEvent(port_2.m_flow > 0 and port_3.m_flow > 0) then
-    port_1.h_a = (port_2.m_flow*port_2.h_b + port_3.m_flow*port_3.h_b)/(port_2.m_flow
-       + port_3.m_flow);
-    port_1.Xi_a = (port_2.m_flow*port_2.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_2.m_flow
-       + port_3.m_flow);
-  else
-    port_1.h_a = port_1.h_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-    port_1.Xi_a = port_1.Xi_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-  end if;
-  
-  if noEvent(port_1.m_flow > 0 and port_3.m_flow < 0) then
-    port_2.h_a = port_1.h_b;
-    port_2.Xi_a = port_1.Xi_b;
-  elseif noEvent(port_1.m_flow < 0 and port_3.m_flow > 0) then
-    port_2.h_a = port_3.h_b;
-    port_2.Xi_a = port_3.Xi_b;
-  elseif noEvent(port_1.m_flow > 0 and port_3.m_flow > 0) then
-    port_2.h_a = (port_1.m_flow*port_1.h_b + port_3.m_flow*port_3.h_b)/(port_1.m_flow
-       + port_3.m_flow);
-    port_2.Xi_a = (port_1.m_flow*port_1.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_1.m_flow
-       + port_3.m_flow);
-  else
-    port_2.h_a = port_2.h_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-    port_2.Xi_a = port_2.Xi_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-  end if;
-  
-  if noEvent(port_1.m_flow > 0 and port_2.m_flow < 0) then
-    port_3.h_a = port_1.h_b;
-    port_3.Xi_a = port_1.Xi_b;
-  elseif noEvent(port_1.m_flow < 0 and port_2.m_flow > 0) then
-    port_3.h_a = port_2.h_b;
-    port_3.Xi_a = port_2.Xi_b;
-  elseif noEvent(port_1.m_flow > 0 and port_2.m_flow > 0) then
-    port_3.h_a = (port_1.m_flow*port_1.h_b + port_2.m_flow*port_2.h_b)/(port_1.m_flow
-       + port_2.m_flow);
-    port_3.Xi_a = (port_1.m_flow*port_1.Xi_b + port_2.m_flow*port_2.Xi_b)/(port_1.m_flow
-       + port_2.m_flow);
-  else
-    port_3.h_a = port_3.h_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-    port_3.Xi_a = port_3.Xi_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-  end if;
- 
-*/
+    if not useManualTearing then
+      port_1.h_a = noEvent((max(port_2.m_flow, eps)*port_2.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps)));
+      port_2.h_a = noEvent((max(port_1.m_flow, eps)*port_1.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps)));
+      port_3.h_a = noEvent((max(port_1.m_flow, eps)*port_1.h_b + max(port_2.m_flow, eps)*port_2.h_b) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps)));
+      
+      port_1.Xi_a = noEvent((max(port_2.m_flow, eps)*port_2.Xi_b + max(port_3.m_flow, eps)*port_3.Xi_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps)));
+      port_2.Xi_a = noEvent((max(port_1.m_flow, eps)*port_1.Xi_b + max(port_3.m_flow, eps)*port_3.Xi_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps)));
+      port_3.Xi_a = noEvent((max(port_1.m_flow, eps)*port_1.Xi_b + max(port_2.m_flow, eps)*port_2.Xi_b) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps)));
+    else
+      if noEvent((port_1.m_flow > eps) and (port_2.m_flow < eps) and (port_3.m_flow < eps)) then
+        // Only port_1.m_flow into junction
+        port_1.h_a = (port_2.h_b + port_3.h_b)/2;
+        port_2.h_a = port_1.h_b;
+        port_3.h_a = port_1.h_b;
+        
+        port_1.Xi_a = (port_2.Xi_a + port_3.Xi_b)/2;
+        port_2.Xi_b = port_1.Xi_b;
+        port_3.Xi_a = port_1.Xi_b;
+      elseif noEvent((port_1.m_flow < eps) and (port_2.m_flow > eps) and (port_3.m_flow < eps)) then
+        // Only port_2.m_flow into junction
+        port_1.h_a = port_2.h_b;
+        port_2.h_a = (port_1.h_b + port_3.h_b)/2;
+        port_3.h_a = port_2.h_b;
+        
+        port_1.Xi_a = port_2.Xi_a;
+        port_2.Xi_b = (port_1.Xi_b + port_3.Xi_b)/2;
+        port_3.Xi_a = port_2.Xi_a;
+      elseif noEvent((port_1.m_flow < eps) and (port_2.m_flow < eps) and (port_3.m_flow > eps)) then
+        // Only port_3.m_flow into junction
+        port_1.h_a = port_3.h_b;
+        port_2.h_a = port_3.h_b;
+        port_3.h_a = (port_1.h_b + port_2.h_b)/2;
+        
+        port_1.Xi_a = port_3.Xi_b;
+        port_2.Xi_b = port_3.Xi_b;
+        port_3.Xi_a = (port_1.Xi_b + port_2.Xi_a)/2;
+      elseif noEvent((port_1.m_flow > eps) and (port_2.m_flow > eps) and (port_3.m_flow < eps)) then
+        // port_1.m_flow and port_2.m_flow into junction
+        port_1.h_a = port_2.h_b;
+        port_2.h_a = port_1.h_b;
+        port_3.h_a = (port_1.m_flow*port_1.h_b + port_2.m_flow*port_2.h_b)/(port_1.m_flow + port_2.m_flow);
+        
+        port_1.Xi_a = port_2.Xi_a;
+        port_2.Xi_b = port_1.Xi_b;
+        port_3.Xi_a = (port_1.m_flow*port_1.Xi_b + port_2.m_flow*port_2.Xi_a)/(port_1.m_flow + port_2.m_flow);
+      elseif noEvent((port_1.m_flow > eps) and (port_2.m_flow < eps) and (port_3.m_flow > eps)) then
+        // port_1.m_flow and port_3.m_flow into junction
+        port_1.h_a = port_3.h_b;
+        port_2.h_a = (port_1.m_flow*port_1.h_b + port_3.m_flow*port_3.h_b)/(port_1.m_flow + port_3.m_flow);
+        port_3.h_a = port_1.h_b;
+        
+        port_1.Xi_a = port_3.Xi_b;
+        port_2.Xi_b = (port_1.m_flow*port_1.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_1.m_flow + port_3.m_flow);
+        port_3.Xi_a = port_1.Xi_b;
+      elseif noEvent((port_1.m_flow < eps) and (port_2.m_flow > eps) and (port_3.m_flow > eps)) then
+        // port_2.m_flow and port_3.m_flow into junction
+        port_1.h_a = (port_2.m_flow*port_2.h_b + port_3.m_flow*port_3.h_b)/(port_2.m_flow + port_3.m_flow);
+        port_2.h_a = port_3.h_b;
+        port_3.h_a = port_2.h_b;
+        
+        port_1.Xi_a = (port_2.m_flow*port_2.Xi_a + port_3.m_flow*port_3.Xi_b)/(port_2.m_flow + port_3.m_flow);
+        port_2.Xi_b = port_3.Xi_b;
+        port_3.Xi_a = port_2.Xi_a;
+      else
+        // degenerate case, return mean value
+        port_1.h_a = (port_1.h_b + port_2.h_b + port_3.h_b)/3;
+        port_2.h_a = port_1.h_a;
+        port_3.h_a = port_1.h_a;
+        
+        port_1.Xi_a = (port_1.Xi_b + port_2.Xi_a + port_3.Xi_b)/3;
+        port_2.Xi_b = port_1.Xi_a;
+        port_3.Xi_a = port_1.Xi_a;
+      end if;
+    end if;
     
   end PartialIdealJunction;
   
@@ -519,7 +528,7 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     Medium.AbsolutePressure p "Pressure";
     
-    parameter Real eps = 1e-8;
+    parameter Real eps = 1e-12;
     
   equation 
     // Mass balance
@@ -530,72 +539,80 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     port_2.p = p;
     port_3.p = p;
     
-    port_1.h_a = (max(port_2.m_flow, eps)*port_2.h_a + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps));
-    port_2.h_b = (max(port_1.m_flow, eps)*port_1.h_b + max(port_3.m_flow, eps)*port_3.h_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps));
-    port_3.h_a = (max(port_1.m_flow, eps)*port_1.h_b + max(port_2.m_flow, eps)*port_2.h_a) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps));
-    
-    port_1.Xi_a = (max(port_2.m_flow, eps)*port_2.Xi_a + max(port_3.m_flow, eps)*port_3.Xi_b) / (max(port_2.m_flow, eps) + max(port_3.m_flow, eps));
-    port_2.Xi_b = (max(port_1.m_flow, eps)*port_1.Xi_b + max(port_3.m_flow, eps)*port_3.Xi_b) / (max(port_1.m_flow, eps) + max(port_3.m_flow, eps));
-    port_3.Xi_a = (max(port_1.m_flow, eps)*port_1.Xi_b + max(port_2.m_flow, eps)*port_2.Xi_a) / (max(port_1.m_flow, eps) + max(port_2.m_flow, eps));
-    
-  /* Deprecated as problematic if an iteration variable is chosen on a connector that has zero mass flow rate
-   
-  // Flow directions
-  if noEvent(port_2.m_flow > 0 and port_3.m_flow < 0) then
-    port_1.h_a = port_2.h_a;
-    port_1.Xi_a = port_2.Xi_a;
-  elseif noEvent(port_2.m_flow < 0 and port_3.m_flow > 0) then
-    port_1.h_a = port_3.h_b;
-    port_1.Xi_a = port_3.Xi_b;
-  elseif noEvent(port_2.m_flow > 0 and port_3.m_flow > 0) then
-    port_1.h_a = (port_2.m_flow*port_2.h_a + port_3.m_flow*port_3.h_b)/(port_2.m_flow
-       + port_3.m_flow);
-    port_1.Xi_a = (port_2.m_flow*port_2.Xi_a + port_3.m_flow*port_3.Xi_b)/(port_2.m_flow
-       + port_3.m_flow);
-  else
-    port_1.h_a = port_1.h_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-    port_1.Xi_a = port_1.Xi_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-  end if;
-  
-  if noEvent(port_1.m_flow > 0 and port_3.m_flow < 0) then
-    port_2.h_b = port_1.h_b;
-    port_2.Xi_b = port_1.Xi_b;
-  elseif noEvent(port_1.m_flow < 0 and port_3.m_flow > 0) then
-    port_2.h_b = port_3.h_b;
-    port_2.Xi_b = port_3.Xi_b;
-  elseif noEvent(port_1.m_flow > 0 and port_3.m_flow > 0) then
-    port_2.h_b = (port_1.m_flow*port_1.h_b + port_3.m_flow*port_3.h_b)/(port_1.m_flow
-       + port_3.m_flow);
-    port_2.Xi_b = (port_1.m_flow*port_1.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_1.m_flow
-       + port_3.m_flow);
-  else
-    port_2.h_b = port_2.h_a 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-    port_2.Xi_b = port_2.Xi_a 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-  end if;
-  
-  if noEvent(port_1.m_flow > 0 and port_2.m_flow < 0) then
-    port_3.h_a = port_1.h_b;
-    port_3.Xi_a = port_1.Xi_b;
-  elseif noEvent(port_1.m_flow < 0 and port_2.m_flow > 0) then
-    port_3.h_a = port_2.h_a;
-    port_3.Xi_a = port_2.Xi_a;
-  elseif noEvent(port_1.m_flow > 0 and port_2.m_flow > 0) then
-    port_3.h_a = (port_1.m_flow*port_1.h_b + port_2.m_flow*port_2.h_a)/(port_1.m_flow
-       + port_2.m_flow);
-    port_3.Xi_a = (port_1.m_flow*port_1.Xi_b + port_2.m_flow*port_2.Xi_a)/(port_1.m_flow
-       + port_2.m_flow);
-  else
-    port_3.h_a = port_3.h_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-    port_3.Xi_a = port_3.Xi_b 
-      "The theoretical inverse flow direction means in this case that all three flows exit the junction";
-  end if;
- 
-*/
+    if not useManualTearing then
+      port_1.h_a = noEvent(max(port_2.m_flow, eps)*port_2.h_a + max(port_3.m_flow, eps)*port_3.h_b)/(max(port_2.m_flow, eps) + max(port_3.m_flow, eps));
+      port_2.h_b = noEvent(max(port_1.m_flow, eps)*port_1.h_b + max(port_3.m_flow, eps)*port_3.h_b)/(max(port_1.m_flow, eps) + max(port_3.m_flow, eps));
+      port_3.h_a = noEvent(max(port_1.m_flow, eps)*port_1.h_b + max(port_2.m_flow, eps)*port_2.h_a)/(max(port_1.m_flow, eps) + max(port_2.m_flow, eps));
+      
+      port_1.Xi_a = noEvent(max(port_2.m_flow, eps)*port_2.Xi_a + max(port_3.m_flow, eps)*port_3.Xi_b)/(max(port_2.m_flow, eps) + max(port_3.m_flow, eps));
+      port_2.Xi_b = noEvent(max(port_1.m_flow, eps)*port_1.Xi_b + max(port_3.m_flow, eps)*port_3.Xi_b)/(max(port_1.m_flow, eps) + max(port_3.m_flow, eps));
+      port_3.Xi_a = noEvent(max(port_1.m_flow, eps)*port_1.Xi_b + max(port_2.m_flow, eps)*port_2.Xi_a)/(max(port_1.m_flow, eps) + max(port_2.m_flow, eps));
+    else
+      if noEvent((port_1.m_flow > eps) and (port_2.m_flow < eps) and (port_3.m_flow < eps)) then
+        // Only port_1.m_flow into junction
+        port_1.h_a = (port_2.h_a + port_3.h_b)/2;
+        port_2.h_b = port_1.h_b;
+        port_3.h_a = port_1.h_b;
+        
+        port_1.Xi_a = (port_2.Xi_a + port_3.Xi_b)/2;
+        port_2.Xi_b = port_1.Xi_b;
+        port_3.Xi_a = port_1.Xi_b;
+      elseif noEvent((port_1.m_flow < eps) and (port_2.m_flow > eps) and (port_3.m_flow < eps)) then
+        // Only port_2.m_flow into junction
+        port_1.h_a = port_2.h_a;
+        port_2.h_b = (port_1.h_b + port_3.h_b)/2;
+        port_3.h_a = port_2.h_a;
+        
+        port_1.Xi_a = port_2.Xi_a;
+        port_2.Xi_b = (port_1.Xi_b + port_3.Xi_b)/2;
+        port_3.Xi_a = port_2.Xi_a;
+      elseif noEvent((port_1.m_flow < eps) and (port_2.m_flow < eps) and (port_3.m_flow > eps)) then
+        // Only port_3.m_flow into junction
+        port_1.h_a = port_3.h_b;
+        port_2.h_b = port_3.h_b;
+        port_3.h_a = (port_1.h_b + port_2.h_a)/2;
+        
+        port_1.Xi_a = port_3.Xi_b;
+        port_2.Xi_b = port_3.Xi_b;
+        port_3.Xi_a = (port_1.Xi_b + port_2.Xi_a)/2;
+      elseif noEvent((port_1.m_flow > eps) and (port_2.m_flow > eps) and (port_3.m_flow < eps)) then
+        // port_1.m_flow and port_2.m_flow into junction
+        port_1.h_a = port_2.h_a;
+        port_2.h_b = port_1.h_b;
+        port_3.h_a = (port_1.m_flow*port_1.h_b + port_2.m_flow*port_2.h_a)/(port_1.m_flow + port_2.m_flow);
+        
+        port_1.Xi_a = port_2.Xi_a;
+        port_2.Xi_b = port_1.Xi_b;
+        port_3.Xi_a = (port_1.m_flow*port_1.Xi_b + port_2.m_flow*port_2.Xi_a)/(port_1.m_flow + port_2.m_flow);
+      elseif noEvent((port_1.m_flow > eps) and (port_2.m_flow < eps) and (port_3.m_flow > eps)) then
+        // port_1.m_flow and port_3.m_flow into junction
+        port_1.h_a = port_3.h_b;
+        port_2.h_b = (port_1.m_flow*port_1.h_b + port_3.m_flow*port_3.h_b)/(port_1.m_flow + port_3.m_flow);
+        port_3.h_a = port_1.h_b;
+        
+        port_1.Xi_a = port_3.Xi_b;
+        port_2.Xi_b = (port_1.m_flow*port_1.Xi_b + port_3.m_flow*port_3.Xi_b)/(port_1.m_flow + port_3.m_flow);
+        port_3.Xi_a = port_1.Xi_b;
+      elseif noEvent((port_1.m_flow < eps) and (port_2.m_flow > eps) and (port_3.m_flow > eps)) then
+        // port_2.m_flow and port_3.m_flow into junction
+        port_1.h_a = (port_2.m_flow*port_2.h_a + port_3.m_flow*port_3.h_b)/(port_2.m_flow + port_3.m_flow);
+        port_2.h_b = port_3.h_b;
+        port_3.h_a = port_2.h_a;
+        
+        port_1.Xi_a = (port_2.m_flow*port_2.Xi_a + port_3.m_flow*port_3.Xi_b)/(port_2.m_flow + port_3.m_flow);
+        port_2.Xi_b = port_3.Xi_b;
+        port_3.Xi_a = port_2.Xi_a;
+      else
+        // degenerate case, return mean value
+        port_1.h_a = (port_1.h_b + port_2.h_a + port_3.h_b)/3;
+        port_2.h_b = port_1.h_a;
+        port_3.h_a = port_1.h_a;
+        
+        port_1.Xi_a = (port_1.Xi_b + port_2.Xi_a + port_3.Xi_b)/3;
+        port_2.Xi_b = port_1.Xi_a;
+        port_3.Xi_a = port_1.Xi_a;
+      end if;
+    end if;
     
   end PartialIdealJunctionAAB;
   

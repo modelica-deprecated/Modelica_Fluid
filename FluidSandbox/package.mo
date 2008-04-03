@@ -3,8 +3,8 @@ package FluidSandbox "Library to study different numerical solution methods in t
   import SI = Modelica.SIunits;
 
   annotation (
-    version="0.43",
-    versionDate="2008-03-25",
+    version="0.44",
+    versionDate="2008-04-03",
     preferedView="info",
     classOrder={"Examples","FluidInterfaces","FluidDiscretizations",
         "*","ConnectionSemantics", "Interfaces","Icons"},
