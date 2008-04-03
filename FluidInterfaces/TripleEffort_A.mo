@@ -1,4 +1,3 @@
-within FluidSandbox.FluidInterfaces;
 package TripleEffort_A 
   "Inflow Outflow Outside implementation A (no explicit junctions, asymmetric models, static momentum balances)" 
   extends Interfaces.PartialFluidInterface(usesNewConnectionSemantics=true);
@@ -188,7 +187,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
   end PartialLumpedVolume;
   
-  
   redeclare replaceable partial model extends PartialTransportIsenthalpic 
     "Partial isenthalpic element transporting fluid between two ports without storing mass or energy (two Port_b's)" 
     
@@ -235,10 +233,10 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     
     calc_T_a_medium.p = if provide_T_a then port_a.p else Medium.p_default;
     calc_T_a_medium.h = if provide_T_a then (if port_a.m_flow > 0 then port_a.h_inflow else port_b.h_inflow) else Medium.h_default;
-    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi_inflow else port_b.Xi_inflow) else zeros(Medium.nXi);
+    calc_T_a_medium.Xi = if provide_T_a then (if port_a.m_flow > 0 then port_a.Xi_inflow else port_b.Xi_inflow) else (if Medium.nXi==0 then zeros(Medium.nXi) else Medium.X_default[1:Medium.nXi]);
     calc_T_b_medium.p = if provide_T_b then port_b.p else Medium.p_default;
     calc_T_b_medium.h = if provide_T_b then (if port_b.m_flow > 0 then port_b.h_inflow else port_a.h_inflow) else Medium.h_default;
-    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi_inflow else port_a.Xi_inflow) else zeros(Medium.nXi);
+    calc_T_b_medium.Xi = if provide_T_b then (if port_b.m_flow > 0 then port_b.Xi_inflow else port_a.Xi_inflow) else (if Medium.nXi==0 then zeros(Medium.nXi) else Medium.X_default[1:Medium.nXi]);
     
   end PartialTransportIsenthalpic;
   
