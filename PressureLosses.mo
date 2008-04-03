@@ -219,9 +219,9 @@ package PressureLosses
       
     equation 
       d_designDirection = Medium.density(medium_designDirection.state);
-      eta_designDirection = if not WallFriction.use_eta then 1.e-10 else Medium.dynamicViscosity(medium_designDirection);
+      eta_designDirection = if not WallFriction.use_eta then 1.e-10 else Medium.dynamicViscosity(medium_designDirection.state);
       d_nonDesignDirection = Medium.density(medium_nonDesignDirection.state);
-      eta_nonDesignDirection = if not WallFriction.use_eta then 1.e-10 else Medium.dynamicViscosity(medium_nonDesignDirection);
+      eta_nonDesignDirection = if not WallFriction.use_eta then 1.e-10 else Medium.dynamicViscosity(medium_nonDesignDirection.state);
       
       if from_dp and not WallFriction.dp_is_zero then
         m_flow = WallFriction.massFlowRate_dp(

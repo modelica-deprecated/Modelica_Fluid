@@ -1,3 +1,4 @@
+within FluidSandbox.FluidInterfaces;
 package StatePorts_B 
   "Implementation B with dynamic states on the connector effort variables and conductance (based on PowerFluid library)" 
   extends Interfaces.PartialFluidInterface(usesNewConnectionSemantics=false);
@@ -500,28 +501,38 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
     "Partial infinitesimal junction model" 
     
   equation 
-    connect(port_1, port_2) annotation (points=[-100,0; 100,0], style(
+    if not useManualTearing then
+      connect(port_1, port_2) annotation (points=[-100,0; 100,0], style(
         color=69,
         rgbcolor={0,127,255},
         smooth=0));
-    connect(port_1, port_3) annotation (points=[-100,0; 0,0; 0,100], style(
+      connect(port_1, port_3) annotation (points=[-100,0; 0,0; 0,100], style(
         color=69,
         rgbcolor={0,127,255},
         smooth=0));
+    else
+      assert("The manual tearing of ideal junction equations has not been implemented for this approach.");
+    end if;
+    
   end PartialIdealJunction;
   
   redeclare replaceable partial model extends PartialIdealJunctionAAB 
     "Partial infinitesimal junction model (two PortA's, one PortB, not supported for all interfaces)" 
     
   equation 
-    connect(port_1, port_2) annotation (points=[-100,0; 100,0], style(
+    if not useManualTearing then
+      connect(port_1, port_2) annotation (points=[-100,0; 100,0], style(
         color=69,
         rgbcolor={0,127,255},
         smooth=0));
-    connect(port_1, port_3) annotation (points=[-100,0; 0,0; 0,100], style(
+      connect(port_1, port_3) annotation (points=[-100,0; 0,0; 0,100], style(
         color=69,
         rgbcolor={0,127,255},
         smooth=0));
+    else
+      assert("The manual tearing of ideal junction equations has not been implemented for this approach.");
+    end if;
+    
   end PartialIdealJunctionAAB;
   
   redeclare replaceable partial model extends PartialSource_A 
