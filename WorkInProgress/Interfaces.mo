@@ -1,4 +1,3 @@
-within Modelica_Fluid.WorkInProgress;
 package Interfaces 
   partial model PartialTwoPortTransport 
     "Partial element transporting fluid between two ports without storing mass or energy" 
@@ -10,6 +9,10 @@ package Interfaces
         choicesAllMatching =                                                                            true);
     parameter Boolean allowFlowReversal = true 
       "Flow reversal at the ports is allowed by the equations"  annotation(Dialog(tab="Advanced"));
+    parameter Modelica_Fluid.Types.FlowDirection.Temp flowDirection=
+                     Modelica_Fluid.Types.FlowDirection.Bidirectional 
+      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Advanced"));
     
     Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
           Medium, m_flow(min=if allowFlowReversal then -inf else 0)) 
@@ -392,7 +395,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     dp = port_a.p - port_b.p - dz_in*g*(if pre(liquid) then rho_l else rho_v);
     
   end PartialTwoPortTransportWithDz;
-
+  
   partial model PartialInitializationParameters 
     "Define parameter menu to initialize medium in component that has one medium model" 
     import Modelica_Fluid.Types;

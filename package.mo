@@ -4,7 +4,7 @@ annotation (
   versionDate="2007-06-05",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(Modelica(version="2.2.2")),
+  uses(Modelica(version="2.2.1")),
   classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
