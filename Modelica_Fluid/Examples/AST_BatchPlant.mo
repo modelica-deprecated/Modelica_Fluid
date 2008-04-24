@@ -1706,7 +1706,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
             -40,40; -40,20; -190,20; -190,-50; -181.55,-50],
                                                            style(color=0, rgbcolor=
               {0,0,0}));
-      connect(TransitionWithSignal1.inPort, Parallel1.outPort) annotation (points=[2,-150;
+      connect(TransitionWithSignal1.inPort, Parallel1.outPort) annotation (points=[2,-150; 
             208,-150; 208,-50; 197.7,-50],       style(color=0, rgbcolor={0,0,0}));
       connect(TransitionWithSignal1.outPort, InitialStep1.inPort[1]) annotation (
           points=[-3.5,-150; -194,-150; -194,100; -181,100], style(color=0,
@@ -1800,31 +1800,31 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       end BufferMain;
       
       connector Port_Actuators 
-        Boolean P1;
-        Boolean P2;
-        Boolean T5_Heater;
-        Boolean T7_Cooling;
-        Boolean T6_Cooling;
-        Boolean V1;
-        Boolean V2;
-        Boolean V3;
-        Boolean V4;
-        Boolean V5;
-        Boolean V6;
-        Boolean V8;
-        Boolean V9;
-        Boolean V10;
-        Boolean V11;
-        Boolean V12;
-        Boolean V15;
-        Boolean V18;
-        Boolean V19;
-        Boolean V20;
-        Boolean V21;
-        Boolean V22;
-        Boolean V23;
-        Boolean V24;
-        Boolean V25;
+        output Boolean P1;
+        output Boolean P2;
+        output Boolean T5_Heater;
+        output Boolean T7_Cooling;
+        output Boolean T6_Cooling;
+        output Boolean V1;
+        output Boolean V2;
+        output Boolean V3;
+        output Boolean V4;
+        output Boolean V5;
+        output Boolean V6;
+        output Boolean V8;
+        output Boolean V9;
+        output Boolean V10;
+        output Boolean V11;
+        output Boolean V12;
+        output Boolean V15;
+        output Boolean V18;
+        output Boolean V19;
+        output Boolean V20;
+        output Boolean V21;
+        output Boolean V22;
+        output Boolean V23;
+        output Boolean V24;
+        output Boolean V25;
         
         annotation (Icon(
              Polygon(points=[-100,100; 100,0; -100,-100; -100,100], style(
@@ -1847,15 +1847,15 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       end Port_IdleTanks;
       
       connector Port_Sensors 
-        Real LIS_301;
-        Real QI_302;
-        Real LIS_501;
-        Real QIS_502;
-        Real TI_503;
-        Real LIS_601;
-        Real TIS_602;
-        Real LIS_701;
-        Real TIS_702;
+        input Real LIS_301;
+        input Real QI_302;
+        input Real LIS_501;
+        input Real QIS_502;
+        input Real TI_503;
+        input Real LIS_601;
+        input Real TIS_602;
+        input Real LIS_701;
+        input Real TIS_702;
         annotation (Icon(Polygon(points=[-100,100; -100,-100; 100,0; -100,100],
                 style(
                 color=0,

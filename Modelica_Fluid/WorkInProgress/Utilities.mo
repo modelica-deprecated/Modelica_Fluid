@@ -923,7 +923,8 @@ model PipeSegment
   extends FiniteVolume(medium(
              p(start=p_start),
              T(start=T_start), h(start=h_start), Xi(start=X_start[1:Medium.nXi])));
-  extends Modelica_Fluid.Interfaces.PartialInitializationParameters;
+  extends 
+      Modelica_Fluid.WorkInProgress.Interfaces.PartialInitializationParameters;
     
   parameter Boolean linearPressureDrop=true;
   parameter SI.AbsolutePressure dp_nominal(min=1.e-10) = 1 

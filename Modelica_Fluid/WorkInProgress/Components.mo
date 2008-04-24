@@ -1,4 +1,3 @@
-within Modelica_Fluid.WorkInProgress;
 package Components 
   
 model IsolatedPipe 
@@ -8,7 +7,8 @@ model IsolatedPipe
     Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
     
-  extends Modelica_Fluid.Interfaces.PartialInitializationParameters;
+  extends 
+      Modelica_Fluid.WorkInProgress.Interfaces.PartialInitializationParameters;
     
   parameter Integer nVolumes(min=1)=1 "Number of pipe segments/finite volumes";
     
@@ -91,147 +91,6 @@ equation
   end for;
 end IsolatedPipe;
   
-  model ShortPipe2 
-    "Short pipe with two volumes, wall friction and gravity effect" 
-    
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
-    replaceable package WallFriction = 
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
-      extends 
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
-      "Characteristic of wall friction"  annotation(choicesAllMatching=true);
-    
-    parameter SI.Length length "Length of pipe";
-    parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
-    parameter SI.Length height_ab = 0.0 "Height of port_b over port_a" annotation(Evaluate=true);
-    parameter SI.Length roughness(min=0) = 2.5e-5 
-      "Absolute roughness of pipe (default = smooth steel pipe)" 
-        annotation(Dialog(enable=WallFriction.use_roughness));
-    parameter Boolean use_nominal = false 
-      "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
-        annotation(Evaluate=true);
-    parameter SI.DynamicViscosity eta_nominal = 0.01 
-      "Nominal dynamic viscosity (for wall friction computation)" annotation(Dialog(enable=use_nominal));
-    parameter SI.Density d_nominal = 0.01 
-      "Nominal density (for wall friction computation)" annotation(Dialog(enable=use_nominal));
-  /*
-  parameter Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.Temp 
-    flowDirection=
-            Modelica_Fluid.Types.FlowDirectionWithGlobalDefault.UseGlobalFluidOption 
-    "Unidirectional (port_a -> port_b) or bidirectional flow component" 
-     annotation(Dialog(tab="Advanced"));
-*/
-    parameter SI.AbsolutePressure dp_small = 1 
-      "Turbulent flow for wall friction if |dp| >= dp_small" 
-      annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
-    final parameter SI.Volume V = Modelica.Constants.pi*(diameter/2)^2*length;
-    
-    parameter Modelica_Fluid.Types.Init.Temp initVolume1=
-               Modelica_Fluid.Types.Init.NoInit 
-      "Initialization option for volume 1" 
-      annotation(Dialog(tab = "Initialization"));
-    
-    parameter Modelica_Fluid.Types.Init.Temp initVolume2=
-              Modelica_Fluid.Types.Init.NoInit 
-      "Initialization option for volume 2" 
-      annotation(Dialog(tab = "Initialization"));
-    
-  /*
-  parameter Medium.AbsolutePressure p_start = Medium.p_default 
-    "Start value of pressure" 
-    annotation(Dialog(tab = "Initialization"));
-  parameter Boolean use_T_start = true "Use T_start if true, otherwise h_start"
-    annotation(Dialog(tab = "Initialization"), Evaluate=true);
-  parameter Medium.Temperature T_start=
-    if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
-    "Start value of temperature" 
-    annotation(Dialog(tab = "Initialization", enable = use_T_start));
-  parameter Medium.SpecificEnthalpy h_start=
-    if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default 
-    "Start value of specific enthalpy" 
-    annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-  parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
-    "Start value of mass fractions m_i/m" 
-    annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-*/
-    
-    annotation (defaultComponentName="pipe",Icon(
-        Rectangle(extent=[-100,60; 100,-60],   style(
-            color=0,
-            gradient=2,
-            fillColor=8)),
-        Rectangle(extent=[-100,34; 100,-36],   style(
-            color=69,
-            gradient=2,
-            fillColor=69)),
-        Text(
-          extent=[-150,-60; 150,-110],
-          string="%name",
-          style(gradient=2, fillColor=69)),
-        Ellipse(extent=[-90,15; -60,-15], style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=0,
-              rgbfillColor={0,0,0})),
-        Ellipse(extent=[60,15; 90,-15],   style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=0,
-              rgbfillColor={0,0,0}))),       Documentation(info="<html>
-<p>
-Simple pipe model consisting of two volumes, 
-wall friction (with different friction correlations)
-and gravity effect. This model is mostly used to demonstrate how
-to build up more detailed models from the basic components.
-</p>
-</html>"),
-      Diagram,
-      Coordsys(grid=[1,1], scale=0));
-    PressureLosses.WallFrictionAndGravity frictionAndGravity(
-      redeclare package Medium = Medium,
-      flowDirection=flowDirection,
-      redeclare package WallFriction = WallFriction,
-      diameter=diameter,
-      roughness=roughness,
-      use_nominal=use_nominal,
-      eta_nominal=eta_nominal,
-      d_nominal=d_nominal,
-      from_dp=true,
-      dp_small=dp_small,
-      show_Re=false,
-      length=length,
-      height_ab=height_ab) 
-                         annotation (extent=[-10,-10; 10,10]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume volume1(
-      redeclare package Medium = Medium,
-      p_start=p_a_start,
-      use_T_start=use_T_start,
-      T_start=T_start,
-      h_start=h_start,
-      X_start=X_start,
-      V=V/2,
-      initType=initVolume1) 
-      annotation (extent=[-70,-10; -50,10]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume volume2(
-      redeclare package Medium = Medium,
-      p_start=p_b_start,
-      use_T_start=use_T_start,
-      T_start=T_start,
-      h_start=h_start,
-      X_start=X_start,
-      V=V/2,
-      initType=initVolume2) 
-      annotation (extent=[50,-10; 70,10]);
-  equation 
-    connect(volume1.port, port_a) 
-      annotation (points=[-60,0; -100,0], style(color=69, rgbcolor={0,127,255}));
-    connect(volume1.port, frictionAndGravity.port_a) 
-      annotation (points=[-60,0; -10,0], style(color=69, rgbcolor={0,127,255}));
-    connect(frictionAndGravity.port_b, volume2.port) 
-      annotation (points=[10,0; 60,0], style(color=69, rgbcolor={0,127,255}));
-    connect(volume2.port, port_b) 
-      annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
-  end ShortPipe2;
   
 model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
       import Modelica_Fluid.Types;
@@ -804,7 +663,7 @@ transport. This splitting is only possible under certain assumptions.
         assert(false, "Unsupported initialization option");
       end if;
     end PortVolume;
-
+  
   model LumpedPipe 
     "Short pipe with one volume, wall friction and gravity effect" 
     replaceable package Medium = 
