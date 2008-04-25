@@ -1,3 +1,4 @@
+within Modelica_Fluid.WorkInProgress;
 package Components 
   
 model IsolatedPipe 
@@ -40,9 +41,9 @@ model IsolatedPipe
   parameter Real viscosityFactor1=0 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
   parameter Real viscosityFactor2=1 annotation(Dialog(enable=includeViscosity,tab="Level of Detail"));
     
-  Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
+  Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = Medium) 
               annotation (extent=[-120, -10; -100, 10]);
-  Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium = Medium) 
+  Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = Medium) 
               annotation (extent=[120, -10; 100, 10]);
   Modelica_Fluid.WorkInProgress.Utilities.PipeSegment pipeSegment[nVolumes](
       redeclare package Medium = Medium,
@@ -90,7 +91,6 @@ equation
     connect(pipeSegment[i].port_b, pipeSegment[i + 1].port_a);
   end for;
 end IsolatedPipe;
-  
   
 model OpenTank "Tank with three inlet/outlet-arrays at variable heights" 
       import Modelica_Fluid.Types;

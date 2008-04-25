@@ -1,3 +1,4 @@
+within Modelica_Fluid.Examples;
 package AST_BatchPlant 
   "Model of the experimental batch plant at Process Control Laboratory at University of Dortmund (Prof. Engell)" 
   annotation (preferedView="info",Documentation(info="<html>
@@ -1367,9 +1368,12 @@ Full steady state initialization is not supported, because the corresponding int
       SI.Length NPSHa "Net Positive Suction Head available";
       Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
       Real s(start = m_flow_start) 
-        "Curvilinear abscissa for the flow curve in parametric form";
+        "Curvilinear abscissa for the flow curve in parametric form (either mass flow rate or head)";
       Modelica.Blocks.Interfaces.IntegerInput in_Np 
         annotation (extent=[16,34; 36,54], rotation=-90);
+    protected 
+      constant SI.Height unitHead = 1;
+      constant SI.MassFlowRate unitMassFlowRate = 1;
     equation 
       // Number of pumps in parallel
       Np = in_Np;
@@ -1380,11 +1384,12 @@ Full steady state initialization is not supported, because the corresponding int
       // Flow equations
       if noEvent(s > 0 or (not checkValve)) then
         // Flow characteristics when check valve is open
-        q_flow_single = s;
+        // q_flow_single = s;
+        q_flow_single = s*unitMassFlowRate/d;
         head = noEvent((((if abs(N) > 1e-6 then N else 1e-6))/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/((if abs(N) > 1e-6 then N else 1e-6))));
       else
         // Flow characteristics when check valve is closed
-        head = (N/N_nom)^2*flowCharacteristic(0) - s;
+        head = (N/N_nom)^2*flowCharacteristic(0) - s*unitHead;
         q_flow_single = 0;
       end if;
       
@@ -1706,7 +1711,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
             -40,40; -40,20; -190,20; -190,-50; -181.55,-50],
                                                            style(color=0, rgbcolor=
               {0,0,0}));
-      connect(TransitionWithSignal1.inPort, Parallel1.outPort) annotation (points=[2,-150; 
+      connect(TransitionWithSignal1.inPort, Parallel1.outPort) annotation (points=[2,-150;
             208,-150; 208,-50; 197.7,-50],       style(color=0, rgbcolor={0,0,0}));
       connect(TransitionWithSignal1.outPort, InitialStep1.inPort[1]) annotation (
           points=[-3.5,-150; -194,-150; -194,100; -181,100], style(color=0,
@@ -1969,7 +1974,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
       SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
       SI.Energy U(stateSelect=StateSelect.never) 
         "Internal energy of tank volume";
-      SI.Heat Q_lost "Heat lost through the walls";
+      SI.HeatFlowRate Q_lost "Heat lost through the walls";
       SI.Mass m(stateSelect=StateSelect.never) "Mass of fluid in tank";
       SI.Mass mXi[Medium.nXi](each stateSelect=StateSelect.never) 
         "Masses of independent components in the fluid";

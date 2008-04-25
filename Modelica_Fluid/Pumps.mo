@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Pumps "Pump components" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   model Pump "Centrifugal pump with ideally controlled speed" 
@@ -73,11 +74,12 @@ package Pumps "Pump components"
 </ul>
 </html>"));
   end PumpShaft;
-
+  
   model PumpNPSH 
     "Centrifugal pump with ideally controlled speed and NPSHa computation" 
     extends Pump(redeclare replaceable package Medium = 
-      Modelica.Media.Interfaces.PartialTwoPhaseMedium);
+      Modelica.Media.Water.WaterIF97_ph extends 
+        Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     SI.Length NPSHa "Net Positive Suction Head available";
     Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
     
@@ -195,7 +197,7 @@ package Pumps "Pump components"
         "Small coefficient to avoid numerical singularities in efficiency computations";
     Real eta "Global Efficiency";
     Real s(start = m_flow_start) 
-        "Curvilinear abscissa for the flow curve in parametric form";
+        "Curvilinear abscissa for the flow curve in parametric form (either mass flow rate or head)";
   //  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
   //    "Global default options";
     protected 
@@ -203,17 +205,19 @@ package Pumps "Pump components"
        flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
-      
+    constant SI.Height unitHead = 1;
+    constant SI.MassFlowRate unitMassFlowRate = 1;
   equation 
     // Flow equations
     if noEvent(s > 0 or (not checkValve)) then
       // Flow characteristics when check valve is open
-      q_flow_single = s;
+      // q_flow_single = s;
+      q_flow_single = s*unitMassFlowRate/d;
       // head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-6)));
       head = noEvent((((if abs(N) > 1e-6 then N else 1e-6))/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/((if abs(N) > 1e-6 then N else 1e-6))));
     else
       // Flow characteristics when check valve is closed
-      head = (N/N_nom)^2*flowCharacteristic(0) - s;
+      head = (N/N_nom)^2*flowCharacteristic(0) - s*unitHead;
       q_flow_single = 0;
     end if;
       
@@ -409,7 +413,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
     algorithm 
       consumption := c[1] + q_flow*c[2];
     end linearPower;
-
+      
     function quadraticPower "Quadratic power consumption characteristic" 
       extends basePower;
       input SI.VolumeFlowRate q_nom[3] 

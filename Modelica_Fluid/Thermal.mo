@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Thermal "Components to model the thermal behavior of pipe walls" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   
@@ -6,7 +7,7 @@ model WallConstProps
   parameter Integer n(min=1)=1 "Segmentation perpendicular to heat conduction";
 //Geometry
   parameter SI.Length s "Wall thickness";
-  parameter SI.Length area_h "Heat transfer area";
+  parameter SI.Area area_h "Heat transfer area";
 //Material properties
   parameter SI.Density d_wall "Density of wall material";
   parameter SI.SpecificHeatCapacity c_wall 

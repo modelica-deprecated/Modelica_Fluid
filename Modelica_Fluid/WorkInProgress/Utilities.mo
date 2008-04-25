@@ -1,3 +1,4 @@
+within Modelica_Fluid.WorkInProgress;
 package Utilities 
 model TankAttachment "Equations to attach pipe at tank" 
        replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
@@ -743,9 +744,9 @@ Loss factor for mass flow rate from port_b to port_a
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
           annotation (choicesAllMatching = true);
     
-      Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare model Medium = Medium) 
+      Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = Medium) 
         annotation(extent=[-120, -10; -100, 10]);
-      Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare model Medium =  Medium) 
+      Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium =  Medium) 
         annotation(extent=[120, -10; 100, 10]);
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
         annotation(extent=[-10, 60; 10, 80], rotation=-90);
@@ -1054,7 +1055,7 @@ model PipeFriction
   annotation (
 Images(Parameters(group="frictionType = ConstantLaminar or ConstantTurbulent", source=""),
        Parameters(group="frictionType = DetailedFriction", source="Images/PipeFriction1_small.png")),
-structurallyIncomplete,
+structurallyIncomplete = true,
 preferedView="info",
     Diagram,
     Icon,
@@ -1316,6 +1317,7 @@ email: <A HREF=\"mailto:Martin.Otter@dlr.de\">Martin.Otter@dlr.de</A><br>
     
   // Auxiliary variables for ConstantLaminar and ConstantTurbulent
   protected 
+  constant SI.MassFlowRate unitMassFlowRate = 1;
   parameter Real k=if frictionType == FT.ConstantLaminar then 
       dp_nominal/m_flow_nominal else (if frictionType == FT.ConstantTurbulent then 
      dp_nominal/m_flow_nominal^2 else length/(2*D*D*D)) 

@@ -1,3 +1,4 @@
+within Modelica_Fluid.WorkInProgress.Examples;
 model TestPressureLoss 
   extends Modelica.Icons.Example;
   replaceable package Medium = 
