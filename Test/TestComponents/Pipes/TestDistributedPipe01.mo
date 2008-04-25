@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Pipes;
 model TestDistributedPipe01 
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
@@ -27,7 +28,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
             annotation (extent=[-28,68; -8,88]);
   
   annotation (Diagram, experiment(StopTime=20, Tolerance=1e-005),
-    experimentSetupOutput, 
+    experimentSetupOutput,
     Documentation(info="<html>
 Test of different distributed pipe models. The first system uses explicit junctions, in the third system some of the pipe models are replaced by non-symmetric components.
 </html>"));
@@ -134,8 +135,8 @@ Test of different distributed pipe models. The first system uses explicit juncti
     redeclare package Medium = Medium,
     V=0.00001)                         annotation (extent=[6,54; 26,74]);
   Modelica.Thermal.HeatTransfer.FixedHeatFlow[pipe2.n] heat(each Q_flow=200,
-      each alpha=10000, 
-    T_ref=350) 
+      each alpha=10000,
+      each T_ref=350) 
     annotation (extent=[-54,80; -34,100]);
  Modelica_Fluid.Pipes.DistributedPipe pipe5(
     redeclare package Medium = Medium,
@@ -238,8 +239,8 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_approxPortProperties=true) 
             annotation (extent=[-30,-12; -10,8]);
   Modelica.Thermal.HeatTransfer.FixedHeatFlow[pipe2.n] heat1(each Q_flow=200,
-      each alpha=10000, 
-    T_ref=350) 
+      each alpha=10000,
+      each T_ref=350) 
     annotation (extent=[-72,22; -52,42]);
  Modelica_Fluid.Pipes.DistributedPipe pipe9(
     redeclare package Medium = Medium,
@@ -342,8 +343,8 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_approxPortProperties=true) 
             annotation (extent=[-32,-72; -12,-52]);
   Modelica.Thermal.HeatTransfer.FixedHeatFlow[pipe2.n] heat2(each Q_flow=200,
-      each alpha=10000, 
-    T_ref=350) 
+      each alpha=10000,
+      each T_ref=350) 
     annotation (extent=[-74,-38; -54,-18]);
 equation 
   connect(boundary1.port, pipe1.port_a) annotation (points=[-88,64; -82,64],

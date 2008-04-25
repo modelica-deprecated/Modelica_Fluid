@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package ControlValves "Various variants of valve components" 
     extends Modelica_Fluid.Icons.VariantLibrary;
   
@@ -40,8 +41,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     "Valve for possibly vaporizing (almost) incompressible fluids, accounts for choked flow conditions" 
     import Modelica_Fluid.Types.CvTypes;
     extends BaseClasses.PartialValve(
-      redeclare replaceable package Medium = 
-      Modelica.Media.Interfaces.PartialTwoPhaseMedium);
+      redeclare replaceable package Medium = Modelica.Media.Water.WaterIF97_ph extends 
+        Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     parameter Real Fl_nom=0.9 "Liquid pressure recovery factor";
     replaceable function FlCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.one 

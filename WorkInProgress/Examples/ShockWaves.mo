@@ -1,3 +1,4 @@
+within Modelica_Fluid.WorkInProgress.Examples;
 package ShockWaves "Examples demonstrating shock waves in pipes" 
 extends Modelica.Icons.Library;
   
