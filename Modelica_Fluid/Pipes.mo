@@ -1038,7 +1038,8 @@ end DistributedPipeSa;
         "Inner perimeter"                                                                                     annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
     parameter SI.Area area=if isCircular then Modelica.Constants.pi*diameter*diameter/4 else 0 
         "Inner cross section area"          annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
-    SI.Volume[n] Vi "Discretized volume, to be determined in inheriting class ";
+    input SI.Volume[n] Vi 
+        "Discretized volume, to be determined in inheriting class ";
       
   //Total quantities
     SI.Energy[n] U "Internal energy of fluid";
@@ -1120,12 +1121,12 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       
     //Source terms, have to be set in inheriting class
     protected 
-    Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
-    Medium.MassFlowRate[n,Medium.nXi] msXi_flow 
+    input Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
+    input Medium.MassFlowRate[n,Medium.nXi] msXi_flow 
         "Independent mass flow rates, source or sink";
-    SI.HeatFlowRate[n] Qs_flow 
+    input SI.HeatFlowRate[n] Qs_flow 
         "Heat and/or enthalpy flow rate, perpendicular to flow direction";
-    SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
+    input SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
       
     final parameter SI.Pressure[np] dp0=fill(dp_start/np,np);
     SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
@@ -1311,7 +1312,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         "Inner perimeter"                                                                                     annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
     parameter SI.Area area=if isCircular then Modelica.Constants.pi*diameter*diameter/4 else 0 
         "Inner cross section area"          annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
-    SI.Volume[n] Vi "Discretized volume, determine in inheriting class ";
+    input SI.Volume[n] Vi "Discretized volume, determine in inheriting class ";
       
   //Total quantities
     SI.Energy[n] U "Internal energy of fluid";
