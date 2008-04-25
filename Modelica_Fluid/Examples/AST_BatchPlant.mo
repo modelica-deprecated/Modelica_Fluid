@@ -864,8 +864,7 @@ handled properly.</p>
       "Tank with Heating and Evaporation" 
       import Modelica.SIunits.Conversions.*;
       import Modelica_Fluid.Types.Init.*;
-      replaceable package Medium = 
-          Modelica.Media.Interfaces.PartialTwoPhaseMedium 
+      replaceable package Medium = Modelica.Media.Water.WaterIF97_ph 
         extends Modelica.Media.Interfaces.PartialTwoPhaseMedium 
         "Medium in the component" 
         annotation (choicesAllMatching=true);
