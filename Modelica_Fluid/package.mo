@@ -1,7 +1,7 @@
-package Modelica_Fluid "1-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 2.2.2 development)"
+package Modelica_Fluid "Modelica_Fluid, 1.0 Beta 4: 1-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 2.2.1)"
 annotation (
-  version="1.0 Beta 3",
-  versionDate="2007-06-05",
+  version="1.0 Beta 4",
+  versionDate="2008-04-26",
   preferedView="info",
   Settings(NewStateSelection=true),
   uses(Modelica(version="2.2.1")),
@@ -22,7 +22,7 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
  
 <p>
-This is version <b>1.0 Beta 3</b> of the Modelica_Fluid library.
+This is version <b>1.0 Beta 4</b> of the Modelica_Fluid library.
 We expect that the structure and the components of the library do 
 not change or only marginally change for the 1.0 release version.
 For the 1.0 version the documentation will be improved,
@@ -65,7 +65,7 @@ The reason is that some additional functions have been
 added to Modelica.Media in 2.2.1 that are accessed in Modelica_Fluid.
 </p>
  
-<p><b>Copyright &copy; 2002-2006, Modelica Association.</b></p>
+<p><b>Copyright &copy; 2002-2008, Modelica Association.</b></p>
 <p><i>
 This Modelica package is <b>free</b> software; it can be redistributed and/or modified
 under the terms of the <b>Modelica license</b>, see the license conditions
@@ -1213,6 +1213,16 @@ ambiguity is removed by rule 2.</i></p>
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
+<h3><font color=\"#008000\">Version 1.0 Beta 4, 2008-04-26</font></h3>
+ 
+<p>
+Changes according to the Modelica Design Meetings since the
+last beta version. This version is used to \"freeze\" the current
+development, in order to change to a version with a new
+connector design using stream variables.
+</p>
+
+
 <h3><font color=\"#008000\">Version 1.0 Beta 3, 2007-06-05</font></h3>
  
 <p>
