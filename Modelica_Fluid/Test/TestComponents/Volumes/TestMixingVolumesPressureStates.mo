@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestMixingVolumesPressureStates 
   "Test case where in one of the mixing volumes a pressure state appears" 
   import Modelica_Fluid;
@@ -7,10 +8,10 @@ model TestMixingVolumesPressureStates
   Modelica_Fluid.Volumes.MixingVolume MixingVolume1(
     V=1e-3,
     redeclare package Medium = Medium,
-    initType=Modelica_Fluid.Types.Init.InitialValues,
     p_start=ambient.default_p_ambient,
     use_T_start=true,
-    T_start=ambient.default_T_ambient) 
+    T_start=ambient.default_T_ambient, 
+    initType=Modelica_Fluid.Types.Init.SteadyState) 
                  annotation (extent=[-30,30; -10,50]);
   
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
