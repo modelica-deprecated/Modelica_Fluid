@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Interfaces 
   "Interfaces for steady state and unsteady, mixed-phase, multi-substance, incompressible and compressible flow" 
   
@@ -44,25 +45,18 @@ package Interfaces
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
       "Medium model" annotation (choicesAllMatching=true);
     
-    Medium.AbsolutePressure p "Pressure in the connection point";
     flow Medium.MassFlowRate m_flow 
       "Mass flow rate from the connection point into the component";
-    
-    Medium.SpecificEnthalpy h 
-      "Specific mixing enthalpy in the connection point";
-    flow Medium.EnthalpyFlowRate H_flow 
-      "Enthalpy flow rate into the component (if m_flow > 0, H_flow = m_flow*h)";
-    
-    Medium.MassFraction Xi[Medium.nXi] 
-      "Independent mixture mass fractions m_i/m in the connection point";
-    flow Medium.MassFlowRate mXi_flow[Medium.nXi] 
-      "Mass flow rates of the independent substances from the connection point into the component (if m_flow > 0, mXi_flow = m_flow*Xi)";
-    
-    Medium.ExtraProperty C[Medium.nC] 
-      "properties c_i/m in the connection point";
-    flow Medium.ExtraPropertyFlowRate mC_flow[Medium.nC] 
-      "Flow rates of auxiliary properties from the connection point into the component (if m_flow > 0, mC_flow = m_flow*C)";
-    
+    Medium.AbsolutePressure p "Pressure in the connection point";
+    Medium.SpecificEnthalpy h_outflow 
+      "Specific enthalpy close to the connection point if m_flow < 0" 
+      annotation(stream);
+    Medium.MassFraction Xi_outflow[Medium.nXi] 
+      "Independent mixture mass fractions m_i/m close to the connection point if m_flow < 0"
+      annotation(stream);
+    Medium.ExtraProperty C_outflow[Medium.nC] 
+      "Properties c_i/m close to the connection point if m_flow < 0" 
+      annotation(stream);
   end FluidPort;
   
   connector FluidPort_a "Generic fluid connector at design inlet" 

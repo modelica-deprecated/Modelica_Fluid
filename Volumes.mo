@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Volumes "Generic volume, tank and other volume type components" 
    extends Modelica_Fluid.Icons.VariantLibrary;
   
@@ -154,8 +155,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
      annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)", enable=n_bottomPorts > 0));
     Interfaces.FluidPorts_b ports[n_ports](
     redeclare package Medium = Medium,
-    m_flow(each start=0),
-    mXi_flow(each start=0)) 
+    m_flow(each start=0)) 
     annotation (extent=[-5,-125; 5,-85], rotation=90);
     
 //Ambient  
@@ -193,6 +193,10 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     SI.Mass m "Mass of fluid in tank";
     SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
     SI.Pressure p_static "bottom tank pressure";
+    Medium.EnthalpyFlowRate H_flow[n_ports] 
+      "Enthalpy flow rates from the bottom ports in to the tank";
+    Medium.MassFlowRate mXi_flow[n_ports, Medium.nXi] 
+      "Substance mass flow rates from the bottom ports in to the tank";
     
   protected 
     parameter Medium.SpecificEnthalpy h_start=Medium.specificEnthalpy_pTX(
@@ -213,15 +217,15 @@ equation
   // Mass balances
     der(m) = sum(ports.m_flow);
     for i in 1:Medium.nXi loop
-      der(mXi[i]) = sum(ports[:].mXi_flow[i]);
+      der(mXi[i]) = sum(mXi_flow[:,i]);
     end for;
     
   // Energy balance
     if Medium.singleState then
-      der(U) = sum(ports.H_flow);
-                               //Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)
+      der(U) = sum(H_flow) 
+        "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
     else
-      der(U) = sum(ports.H_flow) - p_ambient*der(V);
+      der(U) = sum(H_flow) - p_ambient*der(V);
     end if;
     assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
     assert(level > 0, "Tank is empty (level = 0), tank model is not designed to allow air flow through ports");
@@ -229,21 +233,17 @@ equation
 //Determine port properties  
     p_static = level*ambient.g*medium.d + p_ambient;
     for i in 1:n_ports loop
-      ports[i].H_flow = semiLinear(
-        ports[i].m_flow,
-        ports[i].h,
-        medium.h);
-      ports[i].mXi_flow = semiLinear(
-        ports[i].m_flow,
-        ports[i].Xi,
-        medium.Xi);
-      if p_static_at_port then
-        ports[i].p = p_static;
-      else
-       ports[i].p = p_static - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
-          pipeArea[i]^2)*(if ports[i].m_flow < 0 then (1 + zeta_out[i]) else (1
-           - zeta_in[i]))));
+       H_flow[i] = semiLinear(ports[i].m_flow, inflow(ports[i].h_outflow), medium.h);
+       mXi_flow[i,:] = semiLinear(ports[i].m_flow, inflow(ports[i].Xi_outflow), medium.Xi);
+       if p_static_at_port then
+         ports[i].p = p_static;
+       else
+         ports[i].p = p_static - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
+            pipeArea[i]^2)*(if ports[i].m_flow < 0 then (1 + zeta_out[i]) else (1
+             - zeta_in[i]))));
        end if;
+       ports[i].h_outflow = medium.h;
+       ports[i].Xi_outflow = medium.Xi;
     end for;
     
 initial equation 
@@ -374,8 +374,7 @@ model Tank
     
     Modelica_Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
     redeclare package Medium = Medium,
-    m_flow(each start=0, each min=0),
-    mXi_flow(each start=0, each min=0)) 
+    m_flow(each start=0, each min=0)) 
       "Inlet ports over levelMax at top of tank (fluid flows only from the port in to the tank)"
     annotation (extent=[-5,85; 5,125],  rotation=90);
     
@@ -384,8 +383,7 @@ model Tank
     
     Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
     redeclare package Medium = Medium,
-    m_flow(each start=0),
-    mXi_flow(each start=0)) 
+    m_flow(each start=0)) 
       "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
     annotation (extent=[-5,-125; 5,-85],  rotation=90);
     
@@ -442,7 +440,14 @@ model Tank
     SI.Mass m(stateSelect=StateSelect.never) "Mass of fluid in tank";
     SI.Mass mXi[Medium.nXi](each stateSelect=StateSelect.never) 
       "Masses of independent components in the fluid";
-    
+    Medium.EnthalpyFlowRate H_flow_top[nTopPorts] 
+      "Enthalpy flow rates from the top ports in to the tank";
+    Medium.EnthalpyFlowRate H_flow_bottom[nPorts] 
+      "Enthalpy flow rates from the bottom ports in to the tank";
+    Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi] 
+      "Substance mass flow rates from the top ports in to the tank";
+    Medium.MassFlowRate mXi_flow_bottom[nPorts, Medium.nXi] 
+      "Substance mass flow rates from the bottom ports in to the tank";
   protected 
     parameter SI.Area bottomArea[nPorts]=Constants.pi*{(portsData[i].diameter/2)^2 for i in 1:nPorts};
     parameter SI.Diameter ports_emptyPipeHysteresis[nPorts] = portsData.diameter*hysteresisFactor;
@@ -464,23 +469,24 @@ equation
   // Mass balances
     der(m) = sum(topPorts.m_flow) + sum(ports.m_flow);
     for i in 1:Medium.nXi loop
-      der(mXi[i]) = sum(topPorts.mXi_flow[i]) + sum(ports.mXi_flow[i]);
+      der(mXi[i]) = sum(mXi_flow_top[:,i]) + sum(mXi_flow_bottom[:,i]);
     end for;
     
   // Energy balance
     if Medium.singleState then
-      der(U) = sum(topPorts.H_flow) + sum(ports.H_flow);
-                               //Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)
+      der(U) = sum(H_flow_top) + sum(H_flow_bottom) 
+        "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
     else
-      der(U) = sum(topPorts.H_flow) + sum(ports.H_flow) - p_ambient*der(V);
+      der(U) = sum(H_flow_top) + sum(H_flow_bottom) - p_ambient*der(V);
     end if;
     
   // Properties at top ports
     for i in 1:nTopPorts loop
-       // It is assumed that fluid flows only into one of the top ports and never out of it 
-       topPorts[i].H_flow   = semiLinear(topPorts[i].m_flow, topPorts[i].h, h_start);
-       topPorts[i].mXi_flow = semiLinear(topPorts[i].m_flow, topPorts[i].Xi, X_start[1:Medium.nXi]);
-       topPorts[i].p        = p_ambient;
+       // It is assumed that fluid flows only from one of the top ports in to the tank and never vice versa
+       H_flow_top[i]     = semiLinear(topPorts[i].m_flow, inflow(topPorts[i].h_outflow), h_start);
+       mXi_flow_top[i,:] = semiLinear(topPorts[i].m_flow, inflow(topPorts[i].Xi_outflow), X_start[1:Medium.nXi]);
+       topPorts[i].p     = p_ambient;
+       topPorts[i].h_outflow = h_start;
 /*
        assert(topPorts[i].m_flow > -1, "Mass flows out of tank via topPorts[" + String(i) + "]\n" +
                                          "This indicates a wrong model");
@@ -489,12 +495,14 @@ equation
     
   // Properties at bottom ports
     for i in 1:nPorts loop
-       ports[i].H_flow = semiLinear(ports[i].m_flow, ports[i].h, medium.h);
-       ports[i].mXi_flow = semiLinear(ports[i].m_flow, ports[i].Xi, medium.Xi);
+       H_flow_bottom[i] = semiLinear(ports[i].m_flow, inflow(ports[i].h_outflow), medium.h);
+       mXi_flow_bottom[i,:] = semiLinear(ports[i].m_flow, inflow(ports[i].Xi_outflow), medium.Xi);
        aboveLevel[i] = level >= (portsData[i].portLevel + ports_emptyPipeHysteresis[i])
                        or pre(aboveLevel[i]) and level >= (portsData[i].portLevel - ports_emptyPipeHysteresis[i]);
        levelAbovePort[i] = if aboveLevel[i] then level - portsData[i].portLevel else 0;
       
+       ports[i].h_outflow = medium.h;
+       ports[i].Xi_outflow = medium.Xi;
        if stiffCharacteristicForEmptyPort then
           // If port is above fluid level, use large zeta if fluid flows out of port (= small mass flow rate)
           zeta_out[i] = 1 + (if aboveLevel[i] then 0 else zetaLarge);
@@ -714,7 +722,18 @@ end Tank;
         SI.Mass m "Mass of fluid";
         SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
         SI.Volume V_lumped "Volume";
-      
+        SI.EnthalpyFlowRate H_flow_a 
+        "Enthalpy flow rate from port_a in to volume";
+        SI.EnthalpyFlowRate H_flow_b 
+        "Enthalpy flow rate from port_b in to volume";
+        Medium.MassFlowRate mXi_flow_a[Medium.nXi] 
+        "Substance mass flow rate from port_a in to volume";
+        Medium.MassFlowRate mXi_flow_b[Medium.nXi] 
+        "Substance mass flow rate from port_b in to volume";
+        Medium.ExtraPropertyFlowRate mC_flow_a[Medium.nC] 
+        "Extra property flow rate from port_a in to volume";
+        Medium.ExtraPropertyFlowRate mC_flow_b[Medium.nC] 
+        "Extra property flow rate from port_b in to volume";
     protected 
         SI.HeatFlowRate Qs_flow 
         "Heat flow across boundaries or energy source/sink";
@@ -736,26 +755,16 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       // boundary conditions
         port_a.p = medium.p;
         port_b.p = medium.p;
-        port_a.H_flow = semiLinear(
-          port_a.m_flow,
-          port_a.h,
-          medium.h);
-        port_b.H_flow = semiLinear(
-          port_b.m_flow,
-          port_b.h,
-          medium.h);
-        port_a.mXi_flow = semiLinear(
-          port_a.m_flow,
-          port_a.Xi,
-          medium.Xi);
-        port_a.mC_flow = semiLinear(
-          port_a.m_flow,
-          port_a.C,
-          port_b.C);
-        port_b.mXi_flow = semiLinear(
-          port_b.m_flow,
-          port_b.Xi,
-          medium.Xi);
+        port_a.h_outflow = medium.h;
+        port_b.h_outflow = medium.h;
+      
+      // Flow rates
+        H_flow_a = semiLinear(port_a.m_flow, inflow(port_a.h_outflow), medium.h);
+        H_flow_b = semiLinear(port_b.m_flow, inflow(port_b.h_outflow), medium.h);
+        mXi_flow_a = semiLinear(port_a.m_flow, inflow(port_a.Xi_outflow), medium.Xi);
+        mXi_flow_b = semiLinear(port_b.m_flow, inflow(port_b.Xi_outflow), medium.Xi);
+        mC_flow_a = semiLinear(port_a.m_flow, inflow(port_a.C_outflow), port_b.C_outflow);
+        mC_flow_b = semiLinear(port_b.m_flow, inflow(port_b.C_outflow), port_a.C_outflow);
       
       // Total quantities
         m = V_lumped*medium.d;
@@ -764,9 +773,9 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       
       // Mass and energy balance
         der(m) = port_a.m_flow + port_b.m_flow;
-        der(mXi) = port_a.mXi_flow + port_b.mXi_flow;
-        der(U) = port_a.H_flow + port_b.H_flow + Qs_flow + Ws_flow;
-        zeros(Medium.nC) = port_a.mC_flow+port_b.mC_flow;
+        der(mXi) = mXi_flow_a + mXi_flow_b;
+        der(U) = H_flow_a + H_flow_b + Qs_flow + Ws_flow;
+        zeros(Medium.nC) = mC_flow_a + mC_flow_b;
       
       initial equation 
       // Initial conditions

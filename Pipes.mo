@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Pipes "Lumped, distributed and thermal pipe components" 
     extends Modelica_Fluid.Icons.VariantLibrary;
   
@@ -1728,10 +1729,10 @@ transport. This splitting is only possible under certain assumptions.
 </html>"),Diagram);
       equation 
         // medium properties set by port values
-          port.p = medium.p;
-          port.h = medium.h;
-          port.Xi = medium.Xi;
-          thermalPort.T = medium.T;
+          port.p          = medium.p;
+          port.h_outflow  = medium.h;
+          port.Xi_outflow = medium.Xi;
+          thermalPort.T   = medium.T;
       
         // Total quantities
            m    = V*medium.d "Total Mass";

@@ -39,17 +39,13 @@ This model describes the static head due to the relative height between the two 
 equation 
 //  d = if dp > 0 then medium_a.d else medium_b.d;
 // Use flow direction dependent density for head calculation
-  d = if port_a.m_flow>0 then medium_a.d else medium_b.d;
+  d = if port_a.m_flow>0 then d_a_inflow else d_b_inflow;
   dp = height_ab*ambient.g*d;
 end StaticHead;
   
 model SimpleGenericOrifice 
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
-      extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
-                medium_a(p(start=p_a_start), h(start=h_start),
-                         T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
-                medium_b(p(start=p_b_start), h(start=h_start),
-                         T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
+      extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
     
   parameter Real zeta "Loss factor for flow of port_a -> port_b";
   parameter SI.Diameter diameter 
@@ -57,14 +53,7 @@ model SimpleGenericOrifice
   parameter Boolean from_dp = true 
       "= true, use m_flow = f(dp) else dp = f(m_flow)" 
     annotation (Evaluate=true, Dialog(tab="Advanced"));
-  parameter SI.AbsolutePressure dp_small = 1 
-      "Turbulent flow if |dp| >= dp_small" 
-    annotation(Dialog(tab="Advanced", enable=from_dp));
-  parameter SI.MassFlowRate m_flow_small = 0.01 
-      "Turbulent flow if |m_flow| >= m_flow_small" 
-    annotation(Dialog(tab="Advanced", enable=not from_dp));
   annotation (
-    preferedView="info",
     Diagram,
     Icon(
       Text(
@@ -126,19 +115,15 @@ can appear, this component should not be used.
       Coordsys(grid=[1,1], scale=0));
 equation 
   if from_dp then
-     m_flow = PressureLosses.BaseClasses.SimpleGenericOrifice.massFlowRate_dp(dp, medium_a.d, medium_b.d, diameter, zeta);
+     m_flow = PressureLosses.BaseClasses.SimpleGenericOrifice.massFlowRate_dp(dp, d_a_inflow, d_b_inflow, diameter, zeta);
   else
-     dp = PressureLosses.BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(m_flow, medium_a.d, medium_b.d, diameter, zeta);
+     dp = PressureLosses.BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(m_flow, d_a_inflow, d_b_inflow, diameter, zeta);
   end if;
 end SimpleGenericOrifice;
   
   model WallFrictionAndGravity 
     "Pressure drop in pipe due to wall friction and gravity (for both flow directions)" 
-    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
-                  medium_a(p(start=p_a_start), h(start=h_start),
-                           T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
-                  medium_b(p(start=p_b_start), h(start=h_start),
-                           T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
+    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
     
     replaceable package WallFriction = 
       Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
@@ -277,11 +262,11 @@ simulation and/or might give a more robust simulation.
       Coordsys(grid=[1,1], scale=0));
   protected 
     SI.DynamicViscosity eta_a = if not WallFriction.use_eta then 1.e-10 else 
-                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(medium_a));
+                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(state_a_inflow));
     SI.DynamicViscosity eta_b = if not WallFriction.use_eta then 1.e-10 else 
-                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(medium_b));
-    SI.Density d_a = if use_nominal then d_nominal else medium_a.d;
-    SI.Density d_b = if use_nominal then d_nominal else medium_b.d;
+                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(state_b_inflow));
+    SI.Density d_a = if use_nominal then d_nominal else d_a_inflow;
+    SI.Density d_b = if use_nominal then d_nominal else d_b_inflow;
   equation 
     d = if port_a.m_flow>0 then d_a else d_b "density for static head";
     if from_dp and not WallFriction.dp_is_zero then
@@ -553,7 +538,6 @@ polynomials. The monotonicity is guaranteed using results from:
     New design and implementation based on previous iterations.</li>
 </ul>
 </html>"));
-  
   
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
@@ -1574,14 +1558,10 @@ Laminar region:
         "Generic pressure drop component with constant turbulent loss factor data and without an icon" 
         
         extends 
-          Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
-                      medium_a(p(start=p_a_start), h(start=h_start),
-                               T(start=T_start), Xi(start=X_start[1:Medium.nXi])),
-                      medium_b(p(start=p_b_start), h(start=h_start),
-                               T(start=T_start), Xi(start=X_start[1:Medium.nXi])));
+          Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
         
         SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(
-              m_flow, (Medium.dynamicViscosity(medium_a) + Medium.dynamicViscosity(medium_b))/2,
+              m_flow, (Medium.dynamicViscosity(state_a_inflow) + Medium.dynamicViscosity(state_b_inflow))/2,
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
         parameter LossFactorData data "Loss factor data";
         parameter Boolean show_Re = false 
@@ -1713,19 +1693,19 @@ The used sufficient criteria for monotonicity follows from:
         if from_dp then
            m_flow = if use_Re then 
                        massFlowRate_dp_and_Re(
-                          dp, medium_a.d, medium_b.d,
-                          Medium.dynamicViscosity(medium_a.state),
-                          Medium.dynamicViscosity(medium_b.state),
+                          dp, d_a_inflow, d_b_inflow,
+                          Medium.dynamicViscosity(state_a_inflow),
+                          Medium.dynamicViscosity(state_b_inflow),
                           data) else 
-                       massFlowRate_dp(dp, medium_a.d, medium_b.d, data, dp_small);
+                       massFlowRate_dp(dp, d_a_inflow, d_b_inflow, data, dp_small);
         else
            dp = if use_Re then 
                    pressureLoss_m_flow_and_Re(
-                       m_flow, medium_a.d, medium_b.d,
-                       Medium.dynamicViscosity(medium_a.state),
-                       Medium.dynamicViscosity(medium_b.state),
+                       m_flow, d_a_inflow, d_b_inflow,
+                       Medium.dynamicViscosity(state_a_inflow),
+                       Medium.dynamicViscosity(state_b_inflow),
                        data) else 
-                   pressureLoss_m_flow(m_flow, medium_a.d, medium_b.d, data, m_flow_small);
+                   pressureLoss_m_flow(m_flow, d_a_inflow, d_b_inflow, data, m_flow_small);
         end if;
       end BaseModel;
       
@@ -2359,7 +2339,6 @@ solving a non-linear equation.
       k :=8*zeta/(Modelica.Constants.pi*Modelica.Constants.pi*D*D*D*D);
     end lossConstant_D_zeta;
     
-    
   partial model PartialTwoPortTransport 
       "Partial element transporting fluid between two ports without storing mass or energy" 
       import Modelica.Constants;
@@ -2394,22 +2373,23 @@ solving a non-linear equation.
       
     Modelica_Fluid.Interfaces.FluidPort_a port_a(
                                   redeclare package Medium = Medium,
+                       p(start=p_a_start),
+                       h_outflow(start=h_start),
+                       Xi_outflow(start=X_start[1:Medium.nXi]),
                        m_flow(start=0,min=if allowFlowReversal then -Constants.inf else 0)) 
         "Fluid connector a (positive design flow direction is from port_a to port_b)"
       annotation (extent=[-110,-10; -90,10]);
     Modelica_Fluid.Interfaces.FluidPort_b port_b(
                                   redeclare package Medium = Medium,
+                       p(start=p_b_start),
+                       h_outflow(start=h_start),
+                       Xi_outflow(start=X_start[1:Medium.nXi]),
                        m_flow(start=0,max=if allowFlowReversal then +Constants.inf else 0)) 
         "Fluid connector b (positive design flow direction is from port_a to port_b)"
       annotation (extent=[110,-10; 90,10]);
-    Medium.BaseProperties medium_a(p(start=p_a_start), h(start=h_start), X(start=X_start)) 
-        "Medium properties in port_a";
-    Medium.BaseProperties medium_b(p(start=p_b_start), h(start=h_start), X(start=X_start)) 
-        "Medium properties in port_b";
     Medium.MassFlowRate m_flow 
         "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
-    SI.VolumeFlowRate V_flow_a = port_a.m_flow/medium_a.d 
-        "Volume flow rate near port_a";
+    SI.VolumeFlowRate V_flow_a "Volume flow rate near port_a";
     SI.Pressure dp(start=p_a_start-p_b_start) 
         "Pressure difference between port_a and port_b";
       
@@ -2428,30 +2408,41 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 </p>
 </html>"),
       Icon);
+    Medium.ThermodynamicState state_a_inflow 
+        "Medium state close to port_a for inflowing mass flow";
+    Medium.ThermodynamicState state_b_inflow 
+        "Medium state close to port_b for inflowing mass flow";
+    Medium.Density d_a_inflow "Density close to port_a for inflowing mass flow";
+    Medium.Density d_b_inflow "Density close to port_b for inflowing mass flow";
     protected 
       parameter Boolean allowFlowReversal=
        flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
   equation 
-    // Properties in the ports
-    port_a.p   = medium_a.p;
-    port_a.h   = medium_a.h;
-    port_a.Xi = medium_a.Xi;
-    port_b.p   = medium_b.p;
-    port_b.h   = medium_b.h;
-    port_b.Xi = medium_b.Xi;
+    // isenthalpic state transformation (no storage and no loss of energy)
+    port_a.h_outflow = inflow(port_b.h_outflow);
+    port_b.h_outflow = inflow(port_a.h_outflow);
       
-    /* Handle reverse and zero flow */
-    port_a.H_flow   = semiLinear(port_a.m_flow, port_a.h,  port_b.h);
-    port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, port_b.Xi);
-    port_a.mC_flow = semiLinear(port_a.m_flow, port_a.C, port_b.C);
+    port_a.Xi_outflow = inflow(port_b.Xi_outflow);
+    port_b.Xi_outflow = inflow(port_a.Xi_outflow);
       
-    /* Energy, mass and substance mass balance */
-    port_a.H_flow + port_b.H_flow = 0;
+    port_a.C_outflow = inflow(port_b.C_outflow);
+    port_b.C_outflow = inflow(port_a.C_outflow);
+      
+    // Medium states close to the ports when mass flows in to the respective port
+    state_a_inflow = Medium.setState_phX(port_a.p, port_b.h_outflow, port_b.Xi_outflow);
+    state_b_inflow = Medium.setState_phX(port_b.p, port_a.h_outflow, port_a.Xi_outflow);
+      
+    // Densities close to the parts when mass flows in to the respective port
+    d_a_inflow = Medium.density(state_a_inflow);
+    d_b_inflow = Medium.density(state_b_inflow);
+      
+    // Mass balance
     port_a.m_flow + port_b.m_flow = 0;
-    port_a.mXi_flow + port_b.mXi_flow = zeros(Medium.nXi);
-    port_a.mC_flow + port_b.mC_flow = zeros(Medium.nC);
+      
+    // Volume flow rate
+    V_flow_a = port_a.m_flow / (if port_a.m_flow > 0 then d_a_inflow else d_b_inflow);
       
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;

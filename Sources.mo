@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Sources 
   "Generic sources for fluid connectors to define fixed or prescribed ambient conditions" 
   extends Modelica_Fluid.Icons.VariantLibrary;
@@ -670,7 +671,7 @@ with exception of boundary flow rate, do not have an effect.
   package BaseClasses 
     extends Modelica_Fluid.Icons.BaseClassLibrary;
   partial model PartialSource 
-      "Partial component source with one fluid connector (default" 
+      "Partial component source with one fluid connector" 
       import Modelica.Constants;
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium 
@@ -688,12 +689,6 @@ with exception of boundary flow rate, do not have an effect.
                             min=if flowDirection==Types.SourceFlowDirection.InToPort then 0 else 
                                      -Constants.inf)) 
       annotation (extent=[90,-10; 110,10],    rotation=0);
-      
-  equation 
-    port.p = medium.p;
-    port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
-    port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.Xi);
-      
     annotation (Documentation(info="<html>
 <p>
 Partial component to model the <b>volume interface</b> of a <b>source</b>
@@ -709,6 +704,10 @@ features are:
 </html>"),
       Diagram,
       Coordsys(grid=[1,1], scale=0));
+  equation 
+    port.p = medium.p;
+    port.h_outflow  = medium.h;
+    port.Xi_outflow = medium.Xi;
   end PartialSource;
   end BaseClasses;
 end Sources;

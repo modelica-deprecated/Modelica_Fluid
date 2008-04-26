@@ -34,7 +34,7 @@ The <b>one port</b> sensors have the advantage of easily introducing them to and
 </html>"));
   
   model Pressure "Ideal pressure sensor" 
-      extends Sensors.BaseClasses.PartialAbsoluteSensor;
+    extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput p(unit = "Pa") "Pressure at port" 
       annotation (extent=[100,-10; 120,10]);
@@ -65,7 +65,6 @@ ideal, i.e., it does not influence the fluid.
   model DensityOnePort "Ideal one port density sensor" 
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput d(unit = "kg/m3") 
       "Density in port medium" 
       annotation (extent=[90,-10; 110,10],    rotation=0);
@@ -93,18 +92,14 @@ ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port.p = medium.p;
-    port.h = medium.h;
-    port.Xi = medium.Xi;
-    d  = medium.d;
+    d = Medium.density(Medium.setState_phX(port.p, inflow(port.h_outflow), inflow(port.Xi_outflow)));
   end DensityOnePort;
   
   model DensityTwoPort "Ideal two port density sensor" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput d(unit="kg/m3") 
-      "density of the passing fluid" 
+      "Density of the passing fluid" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
     
   annotation (defaultComponentName="density",
@@ -116,8 +111,8 @@ ideal, i.e., it does not influence the fluid.
       Text(extent=[-126,160; 138,98],   string="%name"),
         Text(
           extent=[168,-71; 8,-123],
-          style(color=0),
-          string="h"),
+          style(color=0), 
+          string="d"),
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
         Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255}))),
@@ -129,16 +124,14 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port_a.p   = medium.p;
-    h  = medium.h;
-    Xi = medium.Xi;
-    d = medium.d;
+    d = if port_a.m_flow > 0 then 
+           Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)) else 
+           Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
   end DensityTwoPort;
   
   model TemperatureOnePort "Ideal one port temperature sensor" 
       extends Sensors.BaseClasses.PartialAbsoluteSensor;
     
-    Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput T(unit = "K") 
       "Temperature in port medium" 
       annotation (extent=[60,-10; 80,10],     rotation=0);
@@ -186,18 +179,14 @@ ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port.p = medium.p;
-    port.h  = medium.h;
-    port.Xi = medium.Xi;
-    T  = medium.T;
+    T = Medium.temperature(Medium.setState_phX(port.p, inflow(port.h_outflow), inflow(port.Xi_outflow)));
   end TemperatureOnePort;
   
   model TemperatureTwoPort "Ideal two port temperature sensor" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     
-    Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput T(unit="K") 
-      "temperature of the passing fluid" 
+      "Temperature of the passing fluid" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
     
   annotation (defaultComponentName="temperature",
@@ -235,10 +224,9 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port_a.p   = medium.p;
-    h  = medium.h;
-    Xi = medium.Xi;
-    T = medium.T;
+    T = if port_a.m_flow > 0 then 
+           Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)) else 
+           Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
   end TemperatureTwoPort;
   
   model SpecificEnthalpyOnePort "Ideal one port specific enthalphy sensor" 
@@ -268,16 +256,15 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation 
-    h_out = port.h;
+    h_out = inflow(port.h_outflow);
   end SpecificEnthalpyOnePort;
   
   model SpecificEnthalpyTwoPort 
     "Ideal two port sensor for the specific enthalpy" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput h_out(unit="J/kg") 
-      "specific enthalpy of the passing fluid" 
+      "Specific enthalpy of the passing fluid" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
     
   annotation (defaultComponentName="specificEnthalpy",
@@ -302,17 +289,12 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port_a.p   = medium.p;
-    h  = medium.h;
-    Xi = medium.Xi;
-    h_out = h;
+    h_out = if port_a.m_flow > 0 then port_b.h_outflow else port_a.h_outflow;
   end SpecificEnthalpyTwoPort;
   
   model SpecificEntropyOnePort "Ideal one port specific entropy sensor" 
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium;
-    
     Modelica.Blocks.Interfaces.RealOutput s(unit="J/(kg.K)") 
       "Specific entropy in port medium" 
       annotation (extent=[90,-10; 110,10],    rotation=0);
@@ -337,19 +319,14 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port.p = medium.p;
-    port.h  = medium.h;
-    port.Xi = medium.Xi;
-    
-    s = Medium.specificEntropy(medium.state);
+    s = Medium.specificEntropy(Medium.setState_phX(port.p, inflow(port.h_outflow), inflow(port.Xi_outflow)));
   end SpecificEntropyOnePort;
   
   model SpecificEntropyTwoPort "Ideal two port sensor for the specific entropy" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput s(unit="J/(kg.K)") 
-      "specific entropy of the passing fluid" 
+      "Specific entropy of the passing fluid" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
     
   annotation (defaultComponentName="specificEntropy",
@@ -374,17 +351,17 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port_a.p   = medium.p;
-    h  = medium.h;
-    Xi = medium.Xi;
-    s = Medium.specificEntropy(medium.state);
+    s = if port_a.m_flow > 0 then 
+           Medium.specificEntropy(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)) else 
+           Medium.specificEntropy(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
+    
   end SpecificEntropyTwoPort;
   
   model MassFlowRate "Ideal sensor for mass flow rate" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput m_flow(unit = "kg/s") 
-      "mass flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
+      "Mass flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
           -100], rotation=-90);
     
   annotation (
@@ -415,9 +392,8 @@ The sensor is ideal, i.e., it does not influence the fluid.
   model VolumeFlowRate "Ideal sensor for volume flow rate" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium;
     Modelica.Blocks.Interfaces.RealOutput V_flow(unit = "m3/s") 
-      "volume flow rate from port_a to port_b" 
+      "Volume flow rate from port_a to port_b" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
     
   annotation (
@@ -442,10 +418,9 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </HTML>
 "));
   equation 
-    port_a.p   = medium.p;
-    h  = medium.h;
-    Xi = medium.Xi;
-    V_flow = port_a.m_flow/medium.d;
+    V_flow = port_a.m_flow/(if port_a.m_flow > 0 then 
+                   Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)) else 
+                   Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow)));
   end VolumeFlowRate;
   
   model RelativePressure "Ideal relative pressure sensor" 
@@ -493,12 +468,17 @@ through the sensor is allowed.
   equation 
     // Zero flow equations for connectors
     port_a.m_flow = 0;
-    port_a.H_flow = 0;
-    port_a.mXi_flow = zeros(Medium.nXi);
     port_b.m_flow = 0;
-    port_b.H_flow = 0;
-    port_b.mXi_flow = zeros(Medium.nXi);
     
+    // No contribution of specific quantities
+    port_a.h_outflow = 0;
+    port_b.h_outflow = 0;
+    port_a.Xi_outflow = zeros(Medium.nXi);
+    port_b.Xi_outflow = zeros(Medium.nXi);
+    port_a.C_outflow  = zeros(Medium.nC);
+    port_b.C_outflow  = zeros(Medium.nC);
+    
+    // Relative pressure  
     p_rel = port_a.p - port_b.p;
   end RelativePressure;
   
@@ -507,8 +487,6 @@ through the sensor is allowed.
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
-    Medium.BaseProperties medium_a "medium properties in port_a";
-    Medium.BaseProperties medium_b "medium properties in port_b";
     Modelica_Fluid.Interfaces.FluidPort_a port_a(
                                   redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
@@ -548,18 +526,19 @@ through the sensor is allowed.
   equation 
     // Zero flow equations for connectors
     port_a.m_flow = 0;
-    port_a.H_flow = 0;
-    port_a.mXi_flow = zeros(Medium.nXi);
     port_b.m_flow = 0;
-    port_b.H_flow = 0;
-    port_b.mXi_flow = zeros(Medium.nXi);
     
-    medium_a.p = port_a.p;
-    medium_a.h = port_a.h;
-    medium_b.p = port_b.p;
-    medium_b.h = port_b.h;
+    // No contribution of specific quantities
+    port_a.h_outflow = 0;
+    port_b.h_outflow = 0;
+    port_a.Xi_outflow = zeros(Medium.nXi);
+    port_b.Xi_outflow = zeros(Medium.nXi);
+    port_a.C_outflow  = zeros(Medium.nC);
+    port_b.C_outflow  = zeros(Medium.nC);
     
-    T_rel = medium_a.T - medium_b.T;
+    // Relative temperature
+    T_rel = Medium.temperature(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) -
+            Medium.temperature(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow)));
   end RelativeTemperature;
   
 /*
@@ -787,9 +766,9 @@ as signal.
         Icon);
     equation 
       port.m_flow = 0;
-      port.H_flow = 0;
-      port.mXi_flow = zeros(Medium.nXi);
-      port.mC_flow = zeros(Medium.nC);
+      port.h_outflow = 0;
+      port.Xi_outflow = zeros(Medium.nXi);
+      port.C_outflow = zeros(Medium.nC);
     end PartialAbsoluteSensor;
     
     partial model PartialFlowSensor 
@@ -800,10 +779,6 @@ as signal.
       replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
         "Medium in the sensor" 
         annotation(choicesAllMatching=true);
-      
-      Medium.SpecificEnthalpy h "Enthalpy in flow";
-      Medium.MassFraction[Medium.nXi] Xi "Flow composition";
-      Medium.ExtraProperty[Medium.nC] C "Extra properties";
       
       Modelica_Fluid.Interfaces.FluidPort_a port_a(
         redeclare package Medium=Medium,
@@ -836,20 +811,21 @@ this partial class should add a medium instance to calculate the measured proper
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
          annotation(Evaluate=true, Hide=true);
     equation 
-      port_a.p   = port_b.p;
-      // Local *zero-volume* enthalpy and composition
-      port_a.H_flow = semiLinear(port_a.m_flow,port_a.h,h);
-      port_b.H_flow = semiLinear(port_b.m_flow,port_b.h,h);
-      port_a.mXi_flow = semiLinear(port_a.m_flow,port_a.Xi,Xi);
-      port_b.mXi_flow = semiLinear(port_b.m_flow,port_b.Xi,Xi);
-      port_a.mC_flow = semiLinear(port_a.m_flow, port_a.C, C);
-      port_b.mC_flow = semiLinear(port_b.m_flow, port_b.C, C);
-      
-      // Static balances
+      // mass balance
       0 = port_a.m_flow + port_b.m_flow;
-      0 = port_a.H_flow + port_b.H_flow;
-      zeros(Medium.nXi) = port_a.mXi_flow + port_b.mXi_flow;
-      zeros(Medium.nC) = port_a.mC_flow + port_b.mC_flow;
+      
+      // momentum equation (no pressure loss)
+      port_a.p = port_b.p;
+      
+      // isenthalpic state transformation (no storage and no loss of energy)
+      port_a.h_outflow = inflow(port_b.h_outflow);
+      port_b.h_outflow = inflow(port_a.h_outflow);
+      
+      port_a.Xi_outflow = inflow(port_b.Xi_outflow);
+      port_b.Xi_outflow = inflow(port_a.Xi_outflow);
+      
+      port_a.C_outflow = inflow(port_b.C_outflow);
+      port_b.C_outflow = inflow(port_a.C_outflow);
     end PartialFlowSensor;
     
   protected 
