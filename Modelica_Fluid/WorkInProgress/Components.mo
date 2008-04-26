@@ -1,4 +1,3 @@
-within Modelica_Fluid.WorkInProgress;
 package Components 
   
 model IsolatedPipe 
@@ -454,7 +453,7 @@ model Tank "Obsolet component (use instead Components.OpenTank)"
   SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
   Real m(quantity=Medium.mediumName, unit="kg", stateSelect=StateSelect.never) 
       "Mass of tank volume";
-  Real mX[Medium.nX](quantity=Medium.substanceNames, each unit="kg") 
+  Real mX[Medium.nXi](quantity=Medium.substanceNames, each unit="kg") 
       "Component masses of the independent substances";
     
 equation 
@@ -481,7 +480,7 @@ equation
     
   /* Handle reverse and zero flow */
   port.H_flow = semiLinear(port.m_flow, port.h, medium.h);
-  port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.X);
+  port.mXi_flow = semiLinear(port.m_flow, port.Xi, medium.Xi);
     
 initial equation 
   if initType == Types.Init.NoInit then

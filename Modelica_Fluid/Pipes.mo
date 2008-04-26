@@ -1,4 +1,3 @@
-within Modelica_Fluid;
 package Pipes "Lumped, distributed and thermal pipe components" 
     extends Modelica_Fluid.Icons.VariantLibrary;
   
@@ -228,12 +227,12 @@ pipe wall/environment).
      final L=length,
      T=medium.T) extends 
       Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer(
-     redeclare final package Medium = Medium,
-     final n=n,
-     final d_h=d_h,
-     final A_h=area_h,
-     final A_cross=area,
-     final L=length,
+     redeclare package Medium = Medium,
+     n=n,
+     d_h=d_h,
+     A_h=area_h,
+     A_cross=area,
+     L=length,
      T=medium.T) "Convective heat transfer" 
              annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching, extent=[-20,-20;
      20,20]);
@@ -418,12 +417,12 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
     final L=length,
     T=medium.T) extends 
       Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer(
-    redeclare final package Medium = Medium,
-    final n=n,
-    final d_h=d_h,
-    final A_h=area_h,
-    final A_cross=area,
-    final L=length,
+    redeclare package Medium = Medium,
+    n=n,
+    d_h=d_h,
+    A_h=area_h,
+    A_cross=area,
+    L=length,
     T=medium.T) "Convective heat transfer" 
             annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching, extent=[-20,-20;
     20,20]);
@@ -638,12 +637,12 @@ model DistributedPipeSb "Distributed pipe model"
     final L=length,
     T=medium.T) extends 
       Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer(
-    redeclare final package Medium = Medium,
-    final n=n,
-    final d_h=d_h,
-    final A_h=area_h,
-    final A_cross=area,
-    final L=length,
+    redeclare package Medium = Medium,
+    n=n,
+    d_h=d_h,
+    A_h=area_h,
+    A_cross=area,
+    L=length,
     T=medium.T) "Convective heat transfer" 
             annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching, extent=[-20,-20;
     20,20]);
@@ -835,12 +834,12 @@ model DistributedPipeSa "Distributed pipe model"
     final L=length,
     T=medium.T) extends 
       Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer(
-    redeclare final package Medium = Medium,
-    final n=n,
-    final d_h=d_h,
-    final A_h=area_h,
-    final A_cross=area,
-    final L=length,
+    redeclare package Medium = Medium,
+    n=n,
+    d_h=d_h,
+    A_h=area_h,
+    A_cross=area,
+    L=length,
     T=medium.T) "Convective heat transfer" 
             annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching, extent=[-20,-20;
     20,20]);
@@ -1399,11 +1398,11 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       
     //Source terms, have to be set in inheriting class (to zero if not used)
     protected 
-    Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
-    Medium.MassFlowRate[n,Medium.nXi] msXi_flow 
+    input Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
+    input Medium.MassFlowRate[n,Medium.nXi] msXi_flow 
         "Independent mass flow rates, source or sink";
-    SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
-    SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
+    input SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
+    input SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
     final parameter Integer np=if modelStructure==Types.ModelStructure.avb then n-1 else if (modelStructure==Types.ModelStructure.a_vb or modelStructure==Types.ModelStructure.av_b) then n else n+1;
     final parameter SI.Pressure[np] dp0=fill(dp_start,np) 
         "pressure difference start values";
