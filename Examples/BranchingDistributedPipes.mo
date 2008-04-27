@@ -1,3 +1,4 @@
+within Modelica_Fluid.Examples;
 model BranchingDistributedPipes 
   import Modelica_Fluid;
 extends Modelica.Icons.Example;

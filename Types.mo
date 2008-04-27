@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Types "Common types for fluid models" 
   
   annotation (preferedView="info",

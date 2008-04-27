@@ -346,7 +346,7 @@ package Interfaces
         grid=[1,1],
         scale=0.2));
   end HeatPorts_a;
-
+  
   connector HeatPorts_b 
     "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)" 
     extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;

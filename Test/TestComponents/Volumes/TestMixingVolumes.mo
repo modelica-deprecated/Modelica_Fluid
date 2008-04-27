@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestMixingVolumes 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
@@ -33,10 +34,10 @@ model TestMixingVolumes
   inner Modelica_Fluid.Ambient ambient 
     annotation (extent=[-100,-100; -80,-80]);
 equation 
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40; 
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40;
         9.8,40],                                      style(color=69, rgbcolor=
           {0,127,255}));
-  connect(FlowSource2.port, MixingVolume1.port_a) annotation (points=[-80,40; 
+  connect(FlowSource2.port, MixingVolume1.port_a) annotation (points=[-80,40;
         -30.2,40],  style(color=69, rgbcolor={0,127,255}));
   connect(FlowSource2.port, Tmix_in.port) annotation (points=[-80,40; -50,40;
         -50,50],  style(color=69, rgbcolor={0,127,255}));

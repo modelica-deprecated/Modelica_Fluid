@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test;
 package TestOverdeterminedSteadyStateInit 
   "Contains test cases to test overdetermined systems of initial equations" 
   model HeatingSystem "Simple model of a heating system" 
@@ -151,7 +152,7 @@ Initial equations with initial values for the states close to the steady state a
 The simulation initializes and runs for 6000 seconds without problems.
 </html>"));
   equation 
-    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10; 
+    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10;
           -0.8,10], style(color=74, rgbcolor={0,0,127}));
   end Test1;
   

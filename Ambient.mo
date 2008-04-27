@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 model Ambient "Ambient field component" 
   import Modelica.SIunits.Conversions;
   

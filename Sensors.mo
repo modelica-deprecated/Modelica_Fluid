@@ -111,7 +111,7 @@ ideal, i.e., it does not influence the fluid.
       Text(extent=[-126,160; 138,98],   string="%name"),
         Text(
           extent=[168,-71; 8,-123],
-          style(color=0), 
+          style(color=0),
           string="d"),
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
         Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),

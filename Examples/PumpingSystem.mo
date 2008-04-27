@@ -1,3 +1,4 @@
+within Modelica_Fluid.Examples;
 model PumpingSystem "Model of a pumping system for drinking water" 
   extends Modelica.Icons.Example;
   Modelica_Fluid.Sources.FixedBoundary source(

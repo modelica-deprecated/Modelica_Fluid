@@ -1,3 +1,4 @@
+within Modelica_Fluid.Examples;
 package ControlledTankSystem 
   "Tank system with controller, start/stop/shut operation and diagram animation" 
   model ControlledTanks 

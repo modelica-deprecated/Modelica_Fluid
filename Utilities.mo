@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Utilities 
   "Utility models to construct fluid components (should not be used directly) " 
   extends Modelica.Icons.Library;

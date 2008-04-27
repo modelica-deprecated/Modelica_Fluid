@@ -1,3 +1,4 @@
+within Modelica_Fluid.Examples;
 package Tanks "Library demonstrating the usage of the tank model" 
   extends Modelica.Icons.Library;
   model OneTank 
@@ -508,17 +509,17 @@ package Tanks "Library demonstrating the usage of the tank model"
       flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
       height_ab=-1) annotation (extent=[50,-20; 70,0], rotation=90);
   equation 
-    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -60,-40; 
+    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -60,-40;
           -6.12303e-016,-40; -6.12303e-016,-20],      style(color=69, rgbcolor={0,
             127,255}));
-    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12303e-016,-20; 
+    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12303e-016,-20;
           0,-20; 0,-40; 60,-40; 60,-20],
                                        style(color=69, rgbcolor={0,127,255}));
-    connect(pipe2.port_b, tank2.ports[1]) annotation (points=[6.12303e-016,0; 
+    connect(pipe2.port_b, tank2.ports[1]) annotation (points=[6.12303e-016,0;
           6.12303e-016,10; 0,10; 0,19], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe3.port_b, tank3.ports[1])
+    connect(pipe3.port_b, tank3.ports[1]) 
       annotation (points=[60,0; 60,19], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe1.port_b, tank1.ports[1]) annotation (points=[-60,0; -60,19], 
+    connect(pipe1.port_b, tank1.ports[1]) annotation (points=[-60,0; -60,19],
         style(color=69, rgbcolor={0,127,255}));
   end ThreeOpenTanks;
   
