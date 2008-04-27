@@ -4,7 +4,7 @@ package ControlledTankSystem
   model ControlledTanks 
     "Demonstrating the controller of a tank filling/emptying system" 
     extends Modelica.Icons.Example;
-    package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater;
+    package Medium = Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater;
     
     Modelica_Fluid.Examples.ControlledTankSystem.Utilities.TankController 
       tankController(

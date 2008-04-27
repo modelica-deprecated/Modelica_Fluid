@@ -65,17 +65,17 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(upperTank.ports[2], pipe.port_b) annotation (points=[-20,21; -18,21;
-        -18,0; 6.12303e-016,0], style(
+  connect(upperTank.ports[2], pipe.port_b) annotation (points=[-20,21; -18,21; 
+        -18,0; 6.12323e-016,0], style(
       color=3,
       rgbcolor={0,0,255},
       smooth=0));
-  connect(pipe.port_a, lowerTank.ports[1]) annotation (points=[-6.12303e-016,
-        -20; -6.12303e-016,-70; 60,-70; 60,-61], style(
+  connect(pipe.port_a, lowerTank.ports[1]) annotation (points=[-6.12323e-016,
+        -20; -6.12323e-016,-70; 60,-70; 60,-61], style(
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(pipe.port_b, pressure.port) annotation (points=[6.12303e-016,0; 50,0;
+  connect(pipe.port_b, pressure.port) annotation (points=[6.12323e-016,0; 50,0; 
         50,16], style(
       color=69,
       rgbcolor={0,127,255},

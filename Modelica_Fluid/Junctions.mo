@@ -410,13 +410,13 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     Interfaces.FluidStatePorts_a[n_a] ports_a(
       redeclare each package Medium=Medium,
       m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[-110,-40;
-          -90,40]);
+      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[-110,40; 
+          -90,-40]);
     Interfaces.FluidStatePorts_b[n_b] ports_b(
       redeclare each package Medium=Medium,
       m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[90,-40;
-          110,40]);
+      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[90,40; 
+          110,-40]);
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
     

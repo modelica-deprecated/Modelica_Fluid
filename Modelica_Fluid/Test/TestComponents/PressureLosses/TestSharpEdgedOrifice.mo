@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestSharpEdgedOrifice 
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  // Modelica.Media.Water.ConstantPropertyLiquidWater 
+  // Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater 
   // Modelica.Media.Water.WaterIF97_ph 
   replaceable package Medium = Modelica.Media.IdealGases.SingleGases.O2 
     extends Modelica.Media.Interfaces.PartialMedium "Medium in all components" 

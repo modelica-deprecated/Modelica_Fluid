@@ -353,28 +353,28 @@ equation
       rgbcolor={0,127,255},
       thickness=2));
   connect(pipe1.port_b, junction1.ports_a[1]) annotation (points=[-62,64; -59.5,
-        64; -59.5,62; -57,62],
+        64; -59.5,64; -58,64],
              style(
       color=69,
       rgbcolor={0,127,255},
       thickness=2));
-  connect(junction1.ports_b[1], pipe2.port_a) annotation (points=[-39,61.5; -34,
-        61.5; -34,78; -28,78], style(
+  connect(junction1.ports_b[1], pipe2.port_a) annotation (points=[-38,62; -34,
+        62; -34,78; -28,78],   style(
       color=69,
       rgbcolor={0,127,255},
       thickness=2));
-  connect(junction1.ports_b[2], pipe4.port_a) annotation (points=[-39,62.5; -34,
-        62.5; -34,48; -28,48], style(
+  connect(junction1.ports_b[2], pipe4.port_a) annotation (points=[-38,66; -34,
+        66; -34,48; -28,48],   style(
       color=69,
       rgbcolor={0,127,255},
       thickness=2));
   connect(pipe2.port_b, junction2.ports_a[1]) annotation (points=[-8,78; -2,78;
-        -2,62.5; 7,62.5], style(
+        -2,62; 6,62],     style(
       color=69,
       rgbcolor={0,127,255},
       thickness=2));
   connect(pipe4.port_b, junction2.ports_a[2]) annotation (points=[-8,48; -2,48;
-        -2,61.5; 7,61.5], style(
+        -2,66; 6,66],     style(
       color=69,
       rgbcolor={0,127,255},
       thickness=2));
@@ -383,8 +383,8 @@ equation
       color=69,
       rgbcolor={0,127,255},
       thickness=2));
-  connect(junction2.ports_b[1], pipe3.port_a) annotation (points=[25,62; 29.5,
-        62; 29.5,64; 34,64],   style(
+  connect(junction2.ports_b[1], pipe3.port_a) annotation (points=[26,64; 29.5,
+        64; 29.5,64; 34,64],   style(
       color=69,
       rgbcolor={0,127,255},
       thickness=2));
