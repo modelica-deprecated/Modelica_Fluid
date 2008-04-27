@@ -432,10 +432,10 @@ Simple model of a heat exchanger consisting of two pipes and one wall in between
         gradient=2,
         fillColor=42,
         rgbfillColor={213,0,0}));
-    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8; 
+    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8;
           -10,29.5; -9,29.5],                  style(color=42, rgbcolor={191,0,
             0}));
-    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5; 
+    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5;
           -9,-7.75; -10,-7.75; -10,-13.8], style(color=42, rgbcolor={191,0,0}));
   end BasicHX;
 end HeatExchangers;

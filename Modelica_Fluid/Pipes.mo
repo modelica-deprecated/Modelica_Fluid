@@ -161,13 +161,13 @@ pipe wall/environment).
       annotation (points=[0,9.8; 0,54],style(color=42, rgbcolor={191,0,0}));
     connect(volume.port_a, frictionAndGravity1.port_b) annotation (points=[
           -10.2,0; -40,0], style(
-        color=69, 
-        rgbcolor={0,127,255}, 
+        color=69,
+        rgbcolor={0,127,255},
         smooth=0));
-    connect(volume.port_b, frictionAndGravity2.port_a) annotation (points=[10,0; 
+    connect(volume.port_b, frictionAndGravity2.port_a) annotation (points=[10,0;
           40,0], style(
-        color=69, 
-        rgbcolor={0,127,255}, 
+        color=69,
+        rgbcolor={0,127,255},
         smooth=0));
   end LumpedPipe;
   

@@ -10,7 +10,7 @@ model TestMixingVolumesPressureStates
     redeclare package Medium = Medium,
     p_start=ambient.default_p_ambient,
     use_T_start=true,
-    T_start=ambient.default_T_ambient, 
+    T_start=ambient.default_T_ambient,
     initType=Modelica_Fluid.Types.Init.SteadyState) 
                  annotation (extent=[-30,30; -10,50]);
   
@@ -90,7 +90,7 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40; 
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40;
         9.8,40],      style(
       color=0,
       rgbcolor={0,0,0},

@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test.TestComponents.Sensors;
 model TestTemperatureSensor "Test and compare case for the difference between using one port with
    and without explicit junction model and two port sensor for fluid temperature meassuring" 
   import Modelica_Fluid;
@@ -106,8 +107,8 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(temperatureTwoPort.port_b, openTankCold2.ports[1]) annotation (points
-      =[0,-10; 0,-6; 30,-6; 30,-0.5], style(color=69, rgbcolor={0,127,255}));
+  connect(temperatureTwoPort.port_b, openTankCold2.ports[1]) annotation (points=
+       [0,-10; 0,-6; 30,-6; 30,-0.5], style(color=69, rgbcolor={0,127,255}));
   connect(temperatureOnePort.port, openTankCold1.ports[1]) annotation (points=[
         -10,40; 6,40; 6,56; 30,56; 30,59.5], style(color=69, rgbcolor={0,127,
           255}));

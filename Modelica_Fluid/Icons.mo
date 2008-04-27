@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package Icons "Library of resuable icons" 
   extends Modelica.Icons.Library;
   partial class VariantLibrary 

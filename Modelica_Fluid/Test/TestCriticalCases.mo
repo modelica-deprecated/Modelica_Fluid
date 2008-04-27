@@ -1,3 +1,4 @@
+within Modelica_Fluid.Test;
 package TestCriticalCases 
   "Collection of test cases which might be critical for the solvers" 
   
