@@ -442,11 +442,11 @@ model Tank
       "Masses of independent components in the fluid";
     Medium.EnthalpyFlowRate H_flow_top[nTopPorts] 
       "Enthalpy flow rates from the top ports in to the tank";
-    Medium.EnthalpyFlowRate H_flow_bottom[nPorts] 
+    Medium.EnthalpyFlowRate port_b_H_flowottom[nPorts] 
       "Enthalpy flow rates from the bottom ports in to the tank";
     Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi] 
       "Substance mass flow rates from the top ports in to the tank";
-    Medium.MassFlowRate mXi_flow_bottom[nPorts, Medium.nXi] 
+    Medium.MassFlowRate port_b_mXi_flowottom[nPorts, Medium.nXi] 
       "Substance mass flow rates from the bottom ports in to the tank";
   protected 
     parameter SI.Area bottomArea[nPorts]=Constants.pi*{(portsData[i].diameter/2)^2 for i in 1:nPorts};
@@ -469,15 +469,15 @@ equation
   // Mass balances
     der(m) = sum(topPorts.m_flow) + sum(ports.m_flow);
     for i in 1:Medium.nXi loop
-      der(mXi[i]) = sum(mXi_flow_top[:,i]) + sum(mXi_flow_bottom[:,i]);
+      der(mXi[i]) = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flowottom[:,i]);
     end for;
     
   // Energy balance
     if Medium.singleState then
-      der(U) = sum(H_flow_top) + sum(H_flow_bottom) 
+      der(U) = sum(H_flow_top) + sum(port_b_H_flowottom) 
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
     else
-      der(U) = sum(H_flow_top) + sum(H_flow_bottom) - p_ambient*der(V);
+      der(U) = sum(H_flow_top) + sum(port_b_H_flowottom) - p_ambient*der(V);
     end if;
     
   // Properties at top ports
@@ -495,8 +495,8 @@ equation
     
   // Properties at bottom ports
     for i in 1:nPorts loop
-       H_flow_bottom[i] = semiLinear(ports[i].m_flow, inflow(ports[i].h_outflow), medium.h);
-       mXi_flow_bottom[i,:] = semiLinear(ports[i].m_flow, inflow(ports[i].Xi_outflow), medium.Xi);
+       port_b_H_flowottom[i] = semiLinear(ports[i].m_flow, inflow(ports[i].h_outflow), medium.h);
+       port_b_mXi_flowottom[i,:] = semiLinear(ports[i].m_flow, inflow(ports[i].Xi_outflow), medium.Xi);
        aboveLevel[i] = level >= (portsData[i].portLevel + ports_emptyPipeHysteresis[i])
                        or pre(aboveLevel[i]) and level >= (portsData[i].portLevel - ports_emptyPipeHysteresis[i]);
        levelAbovePort[i] = if aboveLevel[i] then level - portsData[i].portLevel else 0;
@@ -699,7 +699,7 @@ end Tank;
             Bidirectional 
         "Unidirectional (port_a -> port_b) or bidirectional flow component" 
          annotation(Dialog(tab="Advanced"));
-         parameter Boolean allowFlowReversal=flowDirection == Types.FlowDirection.
+         final parameter Boolean allowFlowReversal=flowDirection == Types.FlowDirection.
             Bidirectional 
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
          annotation(Evaluate=true, Hide=true);
@@ -722,17 +722,18 @@ end Tank;
         SI.Mass m "Mass of fluid";
         SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
         SI.Volume V_lumped "Volume";
-        SI.EnthalpyFlowRate H_flow_a 
+      
+        Medium.EnthalpyFlowRate port_a_H_flow 
         "Enthalpy flow rate from port_a in to volume";
-        SI.EnthalpyFlowRate H_flow_b 
+        Medium.EnthalpyFlowRate port_b_H_flow 
         "Enthalpy flow rate from port_b in to volume";
-        Medium.MassFlowRate mXi_flow_a[Medium.nXi] 
+        Medium.MassFlowRate port_a_mXi_flow[Medium.nXi] 
         "Substance mass flow rate from port_a in to volume";
-        Medium.MassFlowRate mXi_flow_b[Medium.nXi] 
+        Medium.MassFlowRate port_b_mXi_flow[Medium.nXi] 
         "Substance mass flow rate from port_b in to volume";
-        Medium.ExtraPropertyFlowRate mC_flow_a[Medium.nC] 
+        Medium.ExtraPropertyFlowRate port_a_mC_flow[Medium.nC] 
         "Extra property flow rate from port_a in to volume";
-        Medium.ExtraPropertyFlowRate mC_flow_b[Medium.nC] 
+        Medium.ExtraPropertyFlowRate port_b_mC_flow[Medium.nC] 
         "Extra property flow rate from port_b in to volume";
     protected 
         SI.HeatFlowRate Qs_flow 
@@ -752,19 +753,19 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
 </html>"),Diagram);
       
       equation 
-      // boundary conditions
+      // Boundary conditions
         port_a.p = medium.p;
         port_b.p = medium.p;
         port_a.h_outflow = medium.h;
         port_b.h_outflow = medium.h;
       
       // Flow rates
-        H_flow_a = semiLinear(port_a.m_flow, inflow(port_a.h_outflow), medium.h);
-        H_flow_b = semiLinear(port_b.m_flow, inflow(port_b.h_outflow), medium.h);
-        mXi_flow_a = semiLinear(port_a.m_flow, inflow(port_a.Xi_outflow), medium.Xi);
-        mXi_flow_b = semiLinear(port_b.m_flow, inflow(port_b.Xi_outflow), medium.Xi);
-        mC_flow_a = semiLinear(port_a.m_flow, inflow(port_a.C_outflow), port_b.C_outflow);
-        mC_flow_b = semiLinear(port_b.m_flow, inflow(port_b.C_outflow), port_a.C_outflow);
+        port_a_H_flow = semiLinear(port_a.m_flow, inflow(port_a.h_outflow), medium.h);
+        port_b_H_flow = semiLinear(port_b.m_flow, inflow(port_b.h_outflow), medium.h);
+        port_a_mXi_flow = semiLinear(port_a.m_flow, inflow(port_a.Xi_outflow), medium.Xi);
+        port_b_mXi_flow = semiLinear(port_b.m_flow, inflow(port_b.Xi_outflow), medium.Xi);
+        port_a_mC_flow = semiLinear(port_a.m_flow, inflow(port_a.C_outflow), port_b.C_outflow);
+        port_b_mC_flow = semiLinear(port_b.m_flow, inflow(port_b.C_outflow), port_a.C_outflow);
       
       // Total quantities
         m = V_lumped*medium.d;
@@ -773,9 +774,9 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       
       // Mass and energy balance
         der(m) = port_a.m_flow + port_b.m_flow;
-        der(mXi) = mXi_flow_a + mXi_flow_b;
-        der(U) = H_flow_a + H_flow_b + Qs_flow + Ws_flow;
-        zeros(Medium.nC) = mC_flow_a + mC_flow_b;
+        der(mXi) = port_a_mXi_flow + port_b_mXi_flow;
+        der(U) = port_a_H_flow + port_b_H_flow + Qs_flow + Ws_flow;
+        zeros(Medium.nC) = port_a_mC_flow + port_b_mC_flow;
       
       initial equation 
       // Initial conditions

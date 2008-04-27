@@ -118,9 +118,10 @@ pipe wall/environment).
         T_start=T_start,
         h_start=h_start,
         X_start=X_start) annotation (extent=[-60,-10; -40,10]);
-    Modelica_Fluid.Pipes.BaseClasses.PortVolume volume(
+    Volumes.MixingVolume volume(
       redeclare package Medium = Medium,
       V=Modelica.Constants.pi*(diameter/2)^2*length,
+      flowDirection=flowDirection,
       initType=initType,
       p_start=(p_a_start+p_b_start)/2,
       use_T_start=use_T_start,
@@ -154,14 +155,20 @@ pipe wall/environment).
   equation 
     connect(frictionAndGravity1.port_a, port_a) 
       annotation (points=[-60,0; -100,0], style(color=69, rgbcolor={0,127,255}));
-    connect(frictionAndGravity1.port_b, volume.port) 
-      annotation (points=[-40,0; 0,0], style(color=69, rgbcolor={0,127,255}));
-    connect(frictionAndGravity2.port_a, volume.port) 
-      annotation (points=[40,0; 0,0], style(color=69, rgbcolor={0,127,255}));
     connect(frictionAndGravity2.port_b, port_b) 
       annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
     connect(volume.thermalPort, thermalPort) 
-      annotation (points=[0,10; 0,54], style(color=42, rgbcolor={191,0,0}));
+      annotation (points=[0,9.8; 0,54],style(color=42, rgbcolor={191,0,0}));
+    connect(volume.port_a, frictionAndGravity1.port_b) annotation (points=[
+          -10.2,0; -40,0], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(volume.port_b, frictionAndGravity2.port_a) annotation (points=[10,0; 
+          40,0], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
   end LumpedPipe;
   
  model DistributedPipeLumpedPressure "Distributed pipe model" 
@@ -244,8 +251,8 @@ pipe wall/environment).
     
   protected 
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-       use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[1].state) else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, port_a.h, port_a.Xi)) else Medium.dynamicViscosity(medium[1].state))));
-   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, port_b.h, port_b.Xi)) else Medium.dynamicViscosity(medium[n].state))));
+       use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[1].state) else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) else Medium.dynamicViscosity(medium[1].state))));
+   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))) else Medium.dynamicViscosity(medium[n].state))));
     
    annotation (
      Icon(
@@ -434,8 +441,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
   protected 
   SI.Pressure[n+1] dp_stat;
   SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, port_a.h, port_a.Xi)) else eta[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, port_b.h, port_b.Xi)) else eta[n])));
+      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) else eta[1])));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))) else eta[n])));
   SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
     
@@ -655,8 +662,8 @@ annotation (extent=[-10,44; 10,64]);
   protected 
   SI.Pressure[n] dp_stat;
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, port_a.h, port_a.Xi)) else eta[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, port_b.h, port_b.Xi)) else eta[n])));
+      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) else eta[1])));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))) else eta[n])));
  SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
     
@@ -852,8 +859,8 @@ annotation (extent=[-10,44; 10,64]);
   protected 
   SI.Pressure[n] dp_stat;
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, port_a.h, port_a.Xi)) else eta[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, port_b.h, port_b.Xi)) else eta[n])));
+      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) else eta[1])));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))) else eta[n])));
   SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
     
@@ -1063,12 +1070,14 @@ end DistributedPipeSa;
       
     SI.Pressure[np] dp(start=dp0) "Pressure difference across staggered grid";
       
-  //Fluid ports
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium = 
+  //Fluid ports (the ports are replaceable, in order to be able to use different icons)
+    replaceable Modelica_Fluid.Interfaces.FluidPort_a port_a(redeclare package 
+          Medium = 
           Medium, m_flow(min=if allowFlowReversal and not static then -inf else 0)) 
         "Fluid inlet port" 
                          annotation (extent=[-110,-10; -90,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium = 
+    replaceable Modelica_Fluid.Interfaces.FluidPort_b port_b(redeclare package 
+          Medium = 
           Medium, m_flow(max=if allowFlowReversal and not static then +inf else 0)) 
         "Fluid outlet port" 
                           annotation (extent=[90,-10; 110,10]);
@@ -1130,29 +1139,28 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       
     final parameter SI.Pressure[np] dp0=fill(dp_start/np,np);
     SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
-    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, port_a.h, port_a.Xi) else d[1]));
-    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, port_b.h, port_b.Xi)));
+    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, inflow(port_a.h_outflow), port_a.Xi_outflow) else d[1]));
+    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, inflow(port_b.h_outflow), port_b.Xi_outflow)));
       
   equation 
     // Boundary conditions
-    port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium[1].h);
-    port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium[n].h);
-    port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, medium[1].Xi);
-    port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.Xi, medium[n].Xi);
-    port_a.mC_flow = semiLinear(port_a.m_flow, port_a.C, port_b.C);
-    port_a.m_flow = m_flow[1];
-    port_b.m_flow = -m_flow[n + 1];
+    port_a.h_outflow = medium[1].h;
+    port_b.h_outflow = medium[n].h;
+    port_a.m_flow    = m_flow[1];
+    port_b.m_flow    = -m_flow[n + 1];
+    port_a.C_outflow = inflow(port_b.C_outflow);
+    port_b.C_outflow = inflow(port_a.C_outflow);
       
-    // Distributed flow quantities
+    // Distributed flow quantities, upwind discretization
     for i in 2:n loop
       H_flow[i] = semiLinear(m_flow[i], medium[i - 1].h, medium[i].h);
       mXi_flow[i, :] = semiLinear(m_flow[i], medium[i - 1].Xi, medium[i].Xi);
       v[i] = m_flow[i]/(medium[i - 1].d + medium[i].d)*2/area;
     end for;
-    H_flow[1] = port_a.H_flow;
-    H_flow[n + 1] = -port_b.H_flow;
-    mXi_flow[1, :] = port_a.mXi_flow;
-    mXi_flow[n + 1, :] = -port_b.mXi_flow;
+    H_flow[1] = semiLinear(port_a.m_flow, inflow(port_a.h_outflow), medium[1].h);
+    H_flow[n + 1] = -semiLinear(port_b.m_flow, inflow(port_b.h_outflow), medium[n].h);
+    mXi_flow[1, :] = semiLinear(port_a.m_flow, inflow(port_a.Xi_outflow), medium[1].Xi);
+    mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inflow(port_b.Xi_outflow), medium[n].Xi);
     v[1] = m_flow[1]/d_a/area;
     v[n + 1] = m_flow[n + 1]/d_b/area;
       
@@ -1179,7 +1187,6 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         der(U[i]) = H_flow[i] - H_flow[i + 1] + Qs_flow[i] + Ws_flow[i];
       end for;
       end if;
-      zeros(Medium.nC) = port_a.mC_flow + port_b.mC_flow;
       for i in 1:n loop
         assert((allowFlowReversal and not static) or (m_flow[i] >= 0),
           "Flow reversal not allowed in distributed pipe");
@@ -1335,7 +1342,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
                                                                annotation(Dialog(tab="Advanced", group="Momentum balance",enable=use_d_nominal));
    SI.Pressure[np] dp(start=dp0) "pressure difference across staggered grid";
       
-  //Fluid ports
+  //Fluid ports (the ports are replaceable, in order to be able to use different icons)
     replaceable Modelica_Fluid.Interfaces.FluidPort port_a "Fluid inlet port" 
                          annotation (extent=[-110,-10; -90,10]);
     replaceable Modelica_Fluid.Interfaces.FluidPort port_b "Fluid outlet port" 
@@ -1396,7 +1403,6 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
        Model added to the Fluid library</li>
 </ul>
 </html>"));
-      
     //Source terms, have to be set in inheriting class (to zero if not used)
     protected 
     input Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
@@ -1408,18 +1414,16 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     final parameter SI.Pressure[np] dp0=fill(dp_start,np) 
         "pressure difference start values";
     SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
-    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, port_a.h, port_a.Xi) else d[1]));
-    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, port_b.h, port_b.Xi)));
-      
+    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow)) else d[1]));
+    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))));
   equation 
     // Boundary conditions
-    port_a.H_flow = semiLinear(port_a.m_flow, port_a.h, medium[1].h);
-    port_b.H_flow = semiLinear(port_b.m_flow, port_b.h, medium[n].h);
-    port_a.mXi_flow = semiLinear(port_a.m_flow, port_a.Xi, medium[1].Xi);
-    port_b.mXi_flow = semiLinear(port_b.m_flow, port_b.Xi, medium[n].Xi);
-    port_a.mC_flow = semiLinear(port_a.m_flow, port_a.C, port_b.C);
-    port_a.m_flow = m_flow[1];
-    port_b.m_flow = -m_flow[n + 1];
+    port_a.h_outflow = medium[1].h;
+    port_b.h_outflow = medium[n].h;
+    port_a.m_flow    = m_flow[1];
+    port_b.m_flow    = -m_flow[n + 1];
+    port_a.C_outflow = inflow(port_b.C_outflow);
+    port_b.C_outflow = inflow(port_a.C_outflow);
       
     // Distributed flow quantities, upwind discretization
     for i in 2:n loop
@@ -1427,10 +1431,10 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       mXi_flow[i, :] = semiLinear(m_flow[i], medium[i - 1].Xi, medium[i].Xi);
       v[i] = m_flow[i]/(medium[i - 1].d + medium[i].d)*2/area;
     end for;
-    H_flow[1] = port_a.H_flow;
-    H_flow[n + 1] = -port_b.H_flow;
-    mXi_flow[1, :] = port_a.mXi_flow;
-    mXi_flow[n + 1, :] = -port_b.mXi_flow;
+    H_flow[1] = semiLinear(port_a.m_flow, inflow(port_a.h_outflow), medium[1].h);
+    H_flow[n + 1] = -semiLinear(port_b.m_flow, inflow(port_b.h_outflow), medium[n].h);
+    mXi_flow[1, :] = semiLinear(port_a.m_flow, inflow(port_a.Xi_outflow), medium[1].Xi);
+    mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inflow(port_b.Xi_outflow), medium[n].Xi);
     v[1] = m_flow[1]/d_a/area;
     v[n + 1] = m_flow[n + 1]/d_b/area;
       
@@ -1457,7 +1461,6 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         der(U[i]) = H_flow[i] - H_flow[i + 1] + Qs_flow[i];
       end for;
     end if;
-    zeros(Medium.nC)=port_a.mC_flow + port_b.mC_flow;
     for i in 1:n loop
       assert((allowFlowReversal and not static) or (m_flow[i] >= 0), "Flow reversal not allowed in distributed pipe");
     end for;
@@ -1677,108 +1680,6 @@ The correlation takes into account the spatial position along the pipe flow, whi
     end PipeHT_LamTurb_local;
   end HeatTransfer;
     
-      model PortVolume 
-      "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
-      import SI = Modelica.SIunits;
-      import Modelica_Fluid.Types;
-        extends 
-        Modelica_Fluid.WorkInProgress.Interfaces.PartialInitializationParameters;
-      
-        replaceable package Medium = 
-            Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-            annotation (choicesAllMatching = true);
-      
-        parameter SI.Volume V "Volume";
-      
-        Modelica_Fluid.Interfaces.FluidPort_a port(
-          redeclare package Medium = Medium) "Fluid port" 
-          annotation (extent=[-10, -10; 10, 10], rotation=0);
-        Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
-        "Thermal port" 
-          annotation (extent=[-10,90; 10,110]);
-      
-        Medium.BaseProperties medium(preferredMediumStates=true,
-                    p(start=p_start), T(start=T_start),
-                    h(start=h_start), Xi(start= X_start[1:Medium.nXi]));
-        SI.Energy U "Internal energy of fluid";
-        SI.Mass m "Mass of fluid";
-        SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
-        annotation (
-         Icon(
-            Ellipse(extent=[-100, 100; 100, -100], style(
-                color=0,
-                rgbcolor={0,0,0},
-                gradient=3,
-                fillColor=68,
-                rgbfillColor={170,213,255})),
-            Text(extent=[-150,-100; 150,-150], string="%name")),
-                               Documentation(info="<html>
-<p>
-This component models the <b>volume</b> of <b>fixed size</b> that is
-associated with the <b>fluid port</b> to which it is connected.
-This means that all medium properties inside the volume, are identical
-to the port medium properties. In particular, the specific enthalpy
-inside the volume (= medium.h) is always identical to the specific enthalpy
-in the port (port.h = medium.h). Usually, this model is used when
-discretizing a component according to the finite volume method into
-volumes in internal ports that only store energy and mass and into
-transport elements that just transport energy, mass and momentum
-between the internal ports without storing these quantities during the
-transport. This splitting is only possible under certain assumptions.
-</p>
-</html>"),Diagram);
-      equation 
-        // medium properties set by port values
-          port.p          = medium.p;
-          port.h_outflow  = medium.h;
-          port.Xi_outflow = medium.Xi;
-          thermalPort.T   = medium.T;
-      
-        // Total quantities
-           m    = V*medium.d "Total Mass";
-           mXi = m*medium.Xi "Independent component masses";
-           U    = m*medium.u "Internal energy";
-      
-        // Mass and energy balance
-           der(m)    = port.m_flow "Total mass balance";
-           der(mXi)  = port.mXi_flow "Independent component mass balance";
-           der(U)    = port.H_flow + thermalPort.Q_flow "Energy balance";
-           zeros(Medium.nC) = port.mC_flow "Trace substances";
-      
-      initial equation 
-        // Initial conditions
-        if initType == Types.Init.NoInit then
-          // no initial equations
-        elseif initType == Types.Init.InitialValues then
-          if not Medium.singleState then
-             medium.p = p_start;
-          end if;
-          if use_T_start then
-            medium.T = T_start;
-          else
-            medium.h = h_start;
-          end if;
-          medium.Xi = X_start[1:Medium.nXi];
-        elseif initType == Types.Init.SteadyState then
-          if not Medium.singleState then
-             der(medium.p) = 0;
-          end if;
-          der(medium.h) = 0;
-          der(medium.Xi) = zeros(Medium.nXi);
-        elseif initType == Types.Init.SteadyStateHydraulic then
-          if not Medium.singleState then
-             der(medium.p) = 0;
-          end if;
-          if use_T_start then
-            medium.T = T_start;
-          else
-            medium.h = h_start;
-          end if;
-          medium.Xi = X_start[1:Medium.nXi];
-        else
-          assert(false, "Unsupported initialization option");
-        end if;
-      end PortVolume;
   end BaseClasses;
   annotation (Documentation(info="<html>
  

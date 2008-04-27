@@ -3,8 +3,8 @@ package ControlValves "Various variants of valve components"
     extends Modelica_Fluid.Icons.VariantLibrary;
   
     model ValveIncompressible "Valve for (almost) incompressible fluids" 
-    extends BaseClasses.PartialValve;
-    import Modelica_Fluid.Types.CvTypes;
+      extends BaseClasses.PartialValve;
+      import Modelica_Fluid.Types.CvTypes;
     annotation (
     Icon,
     Diagram,
@@ -23,18 +23,20 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
 </html>"),
       Coordsys(grid=[1,1], scale=0));
     initial equation 
-    if CvData == CvTypes.OpPoint then
-      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom) 
+      if CvData == CvTypes.OpPoint then
+          m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom) 
         "Determination of Av by the operating point";
-    end if;
+      end if;
     
     equation 
-    if CheckValve then
-      m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*
-               smooth(0,if dp>=0 then sqrtR(dp) else 0);
-    else
-      m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dp);
-    end if;
+      if CheckValve then
+          m_flow = flowCharacteristic(stemPosition)*Av*sqrt(port_a_d_inflow)*
+                      smooth(0,if dp>=0 then sqrtR(dp) else 0);
+      else
+        // m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dp);
+        m_flow = flowCharacteristic(stemPosition)*Av*
+                      Modelica_Fluid.Utilities.regRoot2(dp, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
+      end if;
     end ValveIncompressible;
   
   model ValveVaporizing 
@@ -55,6 +57,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     SI.Pressure dpEff "Effective pressure drop";
     Medium.AbsolutePressure pin "Inlet pressure";
     Medium.AbsolutePressure pout "Outlet pressure";
+    Medium.Temperature port_a_T_inflow 
+      "Temperature at port_a when mass flows in to port_a";
     annotation (
       Icon,
       Diagram,
@@ -82,17 +86,20 @@ The model operating range includes choked flow operation, which takes place for 
   equation 
     pin = port_a.p;
     pout = port_b.p;
-    pv = Medium.saturationPressure(medium_a.T);
+    port_a_T_inflow = Medium.temperature(port_a_state_inflow);
+    pv = Medium.saturationPressure(port_a_T_inflow);
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
     Fl = Fl_nom*FlCharacteristic(stemPosition);
     dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 
               Fl^2*(pin - Ff*pv) else dp 
       "Effective pressure drop, accounting for possible choked conditions";
     if CheckValve then
-       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*
+       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(port_a_d_inflow)*
            (if dpEff>=0 then sqrtR(dpEff) else 0);
      else
-       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dpEff);
+       // m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dpEff);
+       m_flow = flowCharacteristic(stemPosition)*Av*
+                    Modelica_Fluid.Utilities.regRoot2(dpEff, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
     end if;
   end ValveVaporizing;
   
@@ -159,10 +166,12 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     xs = smooth(0, if x < -Fxt then -Fxt else if x > Fxt then Fxt else x);
     Y = 1 - abs(xs)/(3*Fxt);
     if CheckValve then
-      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(d)*
+      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(port_a_d_inflow)*
         smooth(0,if xs>=0 then sqrtR(p*xs) else 0);
     else
-      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(d)*sqrtR(p*xs);
+      // m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(d)*sqrtR(p*xs);
+      m_flow = flowCharacteristic(stemPosition)*Av*Y*
+                    Modelica_Fluid.Utilities.regRoot2(p*xs, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
     end if;
   end ValveCompressible;
   
@@ -315,11 +324,6 @@ it is open.
         "Stem position in the range 0-1" 
                                        annotation (extent=[-20,70; 20,110],   rotation=-90);
       
-    Medium.Density d "Density at port a";
-    Medium.Temperature T "Temperature at port a";
-    protected 
-    function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
-      
     annotation (
       Icon(Text(extent=[-143,-66; 148,-106],  string="%name"),
         Line(points=[0,60; 0,0],   style(
@@ -361,6 +365,8 @@ it is open.
 </ul>
 </html>"),
       Coordsys(grid=[2,2], scale=0));
+    protected 
+      function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
     initial equation 
     if CvData == CvTypes.Kv then
       Av = 2.7778e-5*Kv "Unit conversion";
@@ -368,9 +374,6 @@ it is open.
       Av = 2.4027e-5*Cv "Unit conversion";
     end if;
     assert(CvData>=0 and CvData<=3, "Invalid CvData");
-    equation 
-    T = medium_a.T;
-    d = medium_a.d;
     end PartialValve;
     
   package ValveCharacteristics "Functions for valve characteristics" 
