@@ -7,7 +7,7 @@ model TestSimpleGenericOrifice
   parameter Real zeta =  (1 - A_rel)^2;
   
   replaceable package Medium = 
-      Modelica.Media.Water.ConstantPropertyLiquidWater 
+      Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater 
     extends Modelica.Media.Interfaces.PartialMedium "Medium in all components" 
                                                       annotation (
     choicesAllMatching =                                                                            true);

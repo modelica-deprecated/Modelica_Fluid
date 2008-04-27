@@ -94,8 +94,7 @@ package Interfaces
     extends FluidPort;
     annotation (defaultComponentName="port_a",
                 Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-            color=0,
-            rgbcolor={0,0,0},
+            color=3,
             fillColor=69,
             rgbfillColor={0,127,255})),
                                Text(extent=[-150,110; 150,50],   string="%name")),
@@ -114,8 +113,7 @@ package Interfaces
    extends FluidPort;
     annotation (defaultComponentName="port_b",
                 Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-            color=0,
-            rgbcolor={0,0,0},
+            color=3,
             fillColor=69,
             rgbfillColor={0,127,255})),
                                Ellipse(extent=[-30,30; 30,-30],   style(color=69,
@@ -137,8 +135,7 @@ package Interfaces
     annotation (defaultComponentName="ports_a",
                 Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
         Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
+            color=69,
             fillColor=7,
             rgbfillColor={255,255,255})),
         Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
@@ -146,8 +143,7 @@ package Interfaces
         Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69))),
          Icon(
         Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
+            color=69,
             fillColor=7,
             rgbfillColor={255,255,255})),
                               Ellipse(extent=[-50,180; 50,80],       style(color=16,
@@ -166,8 +162,8 @@ package Interfaces
     annotation (defaultComponentName="ports_b",
                 Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
         Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
+            color=0,
+            rgbcolor={0,0,0},
             fillColor=7,
             rgbfillColor={255,255,255})),
         Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
@@ -178,8 +174,7 @@ package Interfaces
         Ellipse(extent=[-15,50; 15,80], style(color=69, fillColor=7))),
          Icon(
         Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
+            color=69,
             fillColor=7,
             rgbfillColor={255,255,255})),
                               Ellipse(extent=[-50,180; 50,80],       style(color=16,
@@ -201,8 +196,7 @@ package Interfaces
     annotation (defaultComponentName="ports_a",
                 Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
         Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
+            color=69,
             fillColor=7,
             rgbfillColor={255,255,255})),
         Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
@@ -210,8 +204,7 @@ package Interfaces
         Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69))),
          Icon(
         Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
+            color=69,
             fillColor=7,
             rgbfillColor={255,255,255})),
                               Ellipse(extent=[-50,180; 50,80],       style(color=16,
@@ -245,8 +238,7 @@ package Interfaces
     annotation (defaultComponentName="ports_b",
                 Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
         Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
+            color=69,
             fillColor=7,
             rgbfillColor={255,255,255})),
         Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
@@ -257,17 +249,16 @@ package Interfaces
         Ellipse(extent=[-15,50; 15,80], style(color=69, fillColor=7))),
          Icon(
         Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
+            color=69,
             fillColor=7,
             rgbfillColor={255,255,255})),
                               Ellipse(extent=[-50,180; 50,80],       style(color=16,
               fillColor=69)), Ellipse(extent=[-50,50; 50,-50],       style(color=16,
               fillColor=69)), Ellipse(extent=[-50,-80; 50,-180],     style(color=16,
               fillColor=69)),
-            Ellipse(extent=[-30,30; 30,-30], style(color=69, fillColor=7)),
-            Ellipse(extent=[-30,100; 30,160], style(color=69, fillColor=7)),
-            Ellipse(extent=[-30,-100; 30,-160], style(color=69, fillColor=7)),
+            Ellipse(extent=[-45,44; 45,-44], style(color=69, fillColor=7)),
+            Ellipse(extent=[-43,88; 43,172],  style(color=69, fillColor=7)),
+            Ellipse(extent=[-43,-84; 45,-175],  style(color=69, fillColor=7)),
         Ellipse(extent=[-20,151; 20,111], style(
             color=0,
             rgbcolor={0,0,0},

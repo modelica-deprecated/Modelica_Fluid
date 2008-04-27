@@ -1,16 +1,101 @@
 within ;
-package Modelica_Fluid "Modelica_Fluid, 1.0 Stream Connectors Beta 1: 1-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 2.2.2)"
+package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 1: One-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 2.2.2)"
 
 
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
 
+
+
+annotation (
+  version="1.0 Streams Beta 1",
+  versionDate="2008-04-27",
+  preferedView="info",
+  Settings(NewStateSelection=true),
+  uses(Modelica(version="2.2.2")),
+  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
+      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
+  Documentation(info="<html>
+<p>
+Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
+components describing
+<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
+component equations and the media models are decoupled.
+All components are implemented such that they can be used for
+media from the Modelica.Media library. This means especially that an
+incompressible or compressible medium, a single or a multiple
+substance medium with one or more phases might be used.
+The goal is to include 
+the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
+</p>
+ 
+<p>
+This is version <b>1.0 Streams Beta 1</b> of the Modelica_Fluid library.
+With respect to previous versions of the Modelica_Fluid library, the design
+of the connectors has been changed, using the recently developed concept
+with streams connectors. This requires an extension to the Modelica specification
+and it is planned to include this extension in Modelica 3.1.
+There is a Dymola prototype that supports this new concept.
+The essential benefit of this new concept is that the equation systems become
+more well behaved and the models can be more reliably simulated.
+Please, read the section
+<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
+in the Users Guide before using this library.
+</p>
+ 
+<p>
+A typical example model of the Modelica_Fluid library
+is shown in the next figure (drum boiler):
+</p>
+<p align=\"center\">
+<img src=\"../Images/UsersGuide/DrumBoiler.png\">
+</p>
+<p>
+An example of a tank system that is controlled by a control system
+and where some of the components have built-in diagram animation
+is shown in the next figure:
+</p>
+<p align=\"center\">
+<img src=\"../Images/Examples/ControlledTanks1.png\">
+</p>
+<p>
+The following parts are useful, when newly starting with this library:
+</p>
+<ul>
+<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
+<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
+     summarizes the changes of the library releases.</li>
+<li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
+     contains examples that demonstrate the usage of this library.</li>
+</ul>
+ 
+<p>
+Note, Modelica_Fluid does <b>not</b> work with
+version 2.2 of the Modelica standard library. 
+The reason is that some additional functions have been
+added to Modelica.Media in 2.2.1 that are accessed in Modelica_Fluid.
+</p>
+ 
+<p><b>Copyright &copy; 2002-2008, Modelica Association.</b></p>
+<p><i>
+This Modelica package is <b>free</b> software; it can be redistributed and/or modified
+under the terms of the <b>Modelica license</b>, see the license conditions
+and the accompanying <b>disclaimer</b> in the documentation of package
+Modelica in file \"Modelica/package.mo\".
+</i></p>
+ 
+ 
+</html>"),
+    conversion(from(version="0.795", script=
+            "../ConvertFromModelica_Fluid_0.795.mos")));
+
+
 package UsersGuide "Users Guide" 
   
   annotation (DocumentationClass=true, Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Users guide of package Modelica_Fluid</font></h3>
-<p>
+<p> 
 Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
 components describing
 <b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
@@ -1327,82 +1412,4 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
-annotation (
-  version="1.0 Stream Connectors Beta 1",
-  versionDate="2008-04-26",
-  preferedView="info",
-  Settings(NewStateSelection=true),
-  uses(Modelica(version="2.2.2")),
-  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
-      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
-  Documentation(info="<html>
-<p>
-Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
-components describing
-<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models are decoupled.
-All components are implemented such that they can be used for
-media from the Modelica.Media library. This means especially that an
-incompressible or compressible medium, a single or a multiple
-substance medium with one or more phases might be used.
-The goal is to include 
-the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
-</p>
- 
-<p>
-This is version <b>1.0 Beta 4</b> of the Modelica_Fluid library.
-We expect that the structure and the components of the library do 
-not change or only marginally change for the 1.0 release version.
-For the 1.0 version the documentation will be improved,
-a few components might be slightly changed and the simulation
-will be made more stable. Please, read the section
-<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
-in the Users Guide before using this library.
-</p>
- 
-<p>
-A typical example model of the Modelica_Fluid library
-is shown in the next figure (drum boiler):
-</p>
-<p align=\"center\">
-<img src=\"../Images/UsersGuide/DrumBoiler.png\">
-</p>
-<p>
-An example of a tank system that is controlled by a control system
-and where some of the components have built-in diagram animation
-is shown in the next figure:
-</p>
-<p align=\"center\">
-<img src=\"../Images/Examples/ControlledTanks1.png\">
-</p>
-<p>
-The following parts are useful, when newly starting with this library:
-</p>
-<ul>
-<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
-<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
-     summarizes the changes of the library releases.</li>
-<li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
-     contains examples that demonstrate the usage of this library.</li>
-</ul>
- 
-<p>
-Note, Modelica_Fluid does <b>not</b> work with
-version 2.2 of the Modelica standard library. 
-The reason is that some additional functions have been
-added to Modelica.Media in 2.2.1 that are accessed in Modelica_Fluid.
-</p>
- 
-<p><b>Copyright &copy; 2002-2008, Modelica Association.</b></p>
-<p><i>
-This Modelica package is <b>free</b> software; it can be redistributed and/or modified
-under the terms of the <b>Modelica license</b>, see the license conditions
-and the accompanying <b>disclaimer</b> in the documentation of package
-Modelica in file \"Modelica/package.mo\".
-</i></p>
- 
- 
-</html>"),
-    conversion(from(version="0.795", script=
-            "../ConvertFromModelica_Fluid_0.795.mos")));
 end Modelica_Fluid;

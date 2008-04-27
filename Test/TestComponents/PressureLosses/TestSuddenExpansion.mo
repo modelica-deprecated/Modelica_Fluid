@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestSuddenExpansion 
   extends Modelica.Icons.Example;
   replaceable package Medium = 
-      Modelica.Media.Water.ConstantPropertyLiquidWater 
+      Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater 
     extends Modelica.Media.Interfaces.PartialMedium "Medium in all components" 
                                                       annotation (
     choicesAllMatching =                                                                            true);

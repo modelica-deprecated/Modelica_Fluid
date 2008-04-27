@@ -127,30 +127,30 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-114,210; -134,230]);
-    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume2(
+    Junctions.JunctionVolume portVolume2(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (extent=[-190,210; -170,230]);
+      V=0.001) annotation (extent=[-170,210; -190,230], rotation=90);
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V6(
       Kv=0.01,
       redeclare package Medium = BatchMedium,
       m_flow_small=0) 
       annotation (extent=[112,210; 132,230]);
-    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume8(
+    Junctions.JunctionVolume portVolume8(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (extent=[150,210; 170,230]);
+      V=0.001) annotation (extent=[150,210; 170,230], rotation=90);
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V23(
       m_flow_small=0,
       Kv=0.01,
       redeclare package Medium = BatchMedium,
       riseTime=riseTime,
       finiteRiseTime=false) 
-      annotation (extent=[-116,-240; -96,-260], rotation=180);
-    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume3(
+      annotation (extent=[-116,-242; -96,-262], rotation=180);
+    Volumes.MixingVolume portVolume3(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (extent=[-190,-260; -170,-240]);
+      V=0.001) annotation (extent=[-170,-260; -190,-240]);
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V1(
       m_flow_small=0,
       Kv=0.01,
@@ -165,10 +165,10 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-170,-66; -190,-46],  rotation=90);
-    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume1(
+    Volumes.MixingVolume portVolume1(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (extent=[-190,60; -170,80]);
+      V=0.001) annotation (extent=[-190,60; -170,80], rotation=90);
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V5(
       Kv=0.01,
       redeclare package Medium = BatchMedium,
@@ -188,14 +188,14 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[170,-10; 150,-30],    rotation=270);
-    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume6(
+    Volumes.MixingVolume portVolume6(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,-258; 170,-238]);
-    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume7(
+    Volumes.MixingVolume portVolume7(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (extent=[150,50; 170,70]);
+      V=0.001) annotation (extent=[150,70; 170,50], rotation=-90);
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V20(
       Kv=0.01,
       redeclare package Medium = BatchMedium,
@@ -210,10 +210,12 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[2,-210; -18,-190],    rotation=90);
-    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume4(
+    Junctions.GenericJunction portVolume4(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (extent=[-38,-260; -18,-240]);
+      V=0.001, 
+      n_a=2, 
+      n_b=3)   annotation (extent=[-38,-260; -18,-240]);
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V10(
       m_flow_small=0,
       Kv=0.01,
@@ -225,8 +227,8 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       riseTime=riseTime,
       finiteRiseTime=false) 
-      annotation (extent=[42,-240; 22,-260],    rotation=180);
-    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume5(
+      annotation (extent=[44,-240; 24,-260],    rotation=180);
+    Junctions.JunctionVolume portVolume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[50,-260; 70,-240]);
@@ -237,33 +239,31 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-70,-242; -90,-222],  rotation=90);
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.PumpWithAssertOfCavitation
-      P1(
+    Pumps.PumpNPSH P1(
       redeclare package Medium = BatchMedium,
       M=0.01,
-      pin_start=1e5,
-      pout_start=1e5,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
           Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (q_nom={0,
               0.001,0.0015}, head_nom={100,50,0}),
-      redeclare package SatMedium = BatchMedium,
       N_nom=200,
-      checkValve=false) 
+      checkValve=false, 
+      pin_start=100000, 
+      pout_start=100000, 
+      use_N_input=true) 
       annotation (extent=[-128,-260; -148,-240]);
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.PumpWithAssertOfCavitation
-      P2(
+    Pumps.PumpNPSH P2(
       redeclare package Medium = BatchMedium,
       M=0.01,
       checkValve=false,
-      pin_start=1e5,
-      pout_start=1e5,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
           Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow(q_nom={0,
               0.001,0.0015}, head_nom={100,50,0}),
-      N_nom=200,
-      redeclare package SatMedium = BatchMedium) 
+      N_nom=200, 
+      pin_start=100000, 
+      pout_start=100000, 
+      use_N_input=true) 
       annotation (extent=[112,-256; 132,-236]);
     Volumes.Tank B1(
       level_start=0.2,
@@ -444,50 +444,11 @@ present that are regulated by a central control system.
     CoolingB6.Q_flow = if controller.actuators.T6_Cooling then -2000 else 0;
     CoolingB7.Q_flow = if controller.actuators.T7_Cooling then -2000 else 0;
     
-    connect(portVolume2.port, V3.port_b) annotation (points=[-180,220; -134,220],
-                style(color=69, rgbcolor={0,127,255}));
-    connect(V2.port_b, portVolume2.port) annotation (points=[-50,240; -180,240;
-          -180,220],      style(color=69, rgbcolor={0,127,255}));
-    connect(V6.port_b, portVolume8.port) annotation (points=[132,220; 160,220],
-        style(color=69, rgbcolor={0,127,255}));
-    connect(V4.port_a, portVolume8.port) annotation (points=[50,240; 160,240;
-          160,220],                 style(color=69, rgbcolor={0,127,255}));
-    connect(portVolume1.port, V1.port_a) annotation (points=[-180,70; -180,100],
-        style(color=69, rgbcolor={0,127,255}));
-    connect(portVolume2.port, V1.port_b) annotation (points=[-180,220; -180,120],
-        style(color=69, rgbcolor={0,127,255}));
-    connect(V22.port_a, portVolume3.port) annotation (points=[-180,-66; -180,
-          -250], style(color=69, rgbcolor={0,127,255}));
-    connect(portVolume5.port, V24.port_a) annotation (points=[60,-250; 84,-250],
-        style(color=69, rgbcolor={0,127,255}));
-    connect(V25.port_a, portVolume6.port) annotation (points=[160,-30; 160,-248],
-        style(color=69, rgbcolor={0,127,255}));
-    connect(V5.port_a, portVolume7.port) annotation (points=[160,100; 160,60],
-        style(color=69, rgbcolor={0,127,255}));
-    connect(V5.port_b, portVolume8.port) annotation (points=[160,120; 160,220],
-        style(color=69, rgbcolor={0,127,255}));
-    connect(V19.port_a, portVolume4.port) annotation (points=[-8,-210; -8,-250;
-          -28,-250], style(color=69, rgbcolor={0,127,255}));
-    connect(V23.port_a, portVolume4.port) annotation (points=[-96,-250; -28,
-          -250],     style(color=69, rgbcolor={0,127,255}));
-    connect(V21.port_b, portVolume5.port) annotation (points=[42,-250; 60,-250],
-        style(color=69, rgbcolor={0,127,255}));
-    connect(portVolume4.port, V21.port_a) annotation (points=[-28,-250; 22,-250],
-                 style(color=69, rgbcolor={0,127,255}));
-    connect(V20.port_a, portVolume5.port) annotation (points=[60,-210; 60,-250],
-                 style(color=69, rgbcolor={0,127,255}));
-    connect(V18.port_a, V23.port_a) annotation (points=[-80,-242; -80,-250; -96,
-          -250],            style(color=69, rgbcolor={0,127,255}));
-    connect(P1.outlet, portVolume3.port) annotation (points=[-144,-246.8; -144,
-          -250; -180,-250],      style(color=69, rgbcolor={0,127,255}));
-    connect(P1.inlet, V23.port_b) annotation (points=[-130,-252; -114,-252;
-          -114,-250; -116,-250],
+    connect(P1.inlet, V23.port_b) annotation (points=[-130,-252; -116,-252],
         style(color=69, rgbcolor={0,127,255}));
     connect(V24.port_b, P2.inlet) annotation (points=[104,-250; 106,-250; 106,
           -248; 114,-248],
         style(color=69, rgbcolor={0,127,255}));
-    connect(P2.outlet, portVolume6.port) annotation (points=[128,-242.8; 128,
-          -248; 160,-248],     style(color=69, rgbcolor={0,127,255}));
     connect(V15.port_a, B5.BottomFluidPort[1]) annotation (points=[-80,-72; -80,
           -60.4],          style(color=69, rgbcolor={0,127,255}));
     connect(V3.port_a, B1.topPorts[1]) annotation (points=[-114,220; -106,220;
@@ -529,8 +490,6 @@ present that are regulated by a central control system.
           70],       style(color=69, rgbcolor={0,127,255}));
     connect(V10.port_a, pipeB1B1.port_b) annotation (points=[20,60; 20,40],
         style(color=69, rgbcolor={0,127,255}));
-    connect(pipeB1B1.port_a, V21.port_a) annotation (points=[20,20; 20,-250; 22,
-          -250],     style(color=69, rgbcolor={0,127,255}));
     connect(B5.TopFluidPort[1], V12.port_a) annotation (points=[-80,-19.6; -80,
           -8],style(color=3, rgbcolor={0,0,255}));
     connect(V15.port_b, B7.topPorts[1]) annotation (points=[-80,-92; -80,-100],
@@ -541,15 +500,11 @@ present that are regulated by a central control system.
           -222], style(color=69, rgbcolor={0,127,255}));
     connect(pipePump1B1.port_a, V22.port_b) annotation (points=[-180,-14; -180,
           -46],  style(color=69, rgbcolor={0,127,255}));
-    connect(pipePump1B1.port_b, portVolume1.port) annotation (points=[-180,6;
-          -180,70],  style(color=69, rgbcolor={0,127,255}));
-    connect(pipePump2B2.port_b, portVolume7.port) annotation (points=[160,20;
-          160,60],  style(color=69, rgbcolor={0,127,255}));
     connect(V25.port_b, pipePump2B2.port_a) annotation (points=[160,-10; 160,0],
                            style(color=69, rgbcolor={0,127,255}));
     connect(B6.ports[1], pipeB6Pump.port_b) annotation (points=[60,-80; 60,-96],
         style(color=69, rgbcolor={0,127,255}));
-    connect(B6.topPorts[1], B5.Condensed) annotation (points=[60,-40; 60,-28;
+    connect(B6.topPorts[1], B5.Condensed) annotation (points=[60,-40; 60,-28; 
           -19.6,-28],            style(color=69, rgbcolor={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (points=[92,-60; 80,-60],
                         style(color=42, rgbcolor={191,0,0}));
@@ -564,6 +519,116 @@ present that are regulated by a central control system.
         fillColor=30,
         rgbfillColor={215,215,215},
         fillPattern=10));
+    connect(V1.port_a, portVolume1.port_b) annotation (points=[-180,100; -180,
+          80], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume1.port_a, pipePump1B1.port_b) annotation (points=[-180,
+          59.8; -180,6], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume2.port_3, V3.port_b) annotation (points=[-170,220; -134,
+          220], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(V1.port_b, portVolume2.port_1) annotation (points=[-180,120; -180,
+          210], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume2.port_2, V2.port_b) annotation (points=[-180,230; -180,
+          240; -50,240], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(V6.port_b, portVolume8.port_3) annotation (points=[132,220; 150,220], 
+        style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume8.port_2, V4.port_a) annotation (points=[160,230; 160,240; 
+          50,240], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume8.port_1, V5.port_b) annotation (points=[160,210; 160,120], 
+        style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume7.port_a, pipePump2B2.port_b) annotation (points=[160,
+          49.8; 160,20; 160,20], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume7.port_b, V5.port_a) annotation (points=[160,70; 160,100], 
+        style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(P2.outlet, portVolume6.port_a) annotation (points=[128,-242.8; 138,
+          -242.8; 138,-248; 149.8,-248], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume6.port_b, V25.port_a) annotation (points=[170,-248; 188,
+          -248; 188,-200; 160,-200; 160,-30], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume5.port_1, V21.port_b) annotation (points=[50,-250; 44,
+          -250], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume5.port_2, V24.port_a) annotation (points=[70,-250; 84,
+          -250], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume5.port_3, V20.port_a) annotation (points=[60,-240; 60,
+          -210], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(V23.port_a, portVolume4.ports_a[2]) annotation (points=[-96,-252; 
+          -38,-252], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume4.ports_a[1], V18.port_a) annotation (points=[-38,-248; 
+          -60,-248; -60,-246; -80,-246; -80,-242], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume4.ports_b[1], V19.port_a) annotation (points=[-18,
+          -247.333; -8,-247.333; -8,-210], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume4.ports_b[2], V21.port_a) annotation (points=[-18,-250; 3,
+          -250; 3,-250; 24,-250], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(pipeB1B1.port_a, portVolume4.ports_b[3]) annotation (points=[20,20; 
+          20,0; 12,0; 12,-252; -18,-252; -18,-252.667], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume3.port_a, P1.outlet) annotation (points=[-169.8,-250; 
+          -156,-250; -156,-246.8; -144,-246.8], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
+    connect(portVolume3.port_b, V22.port_a) annotation (points=[-190,-250; -212,
+          -250; -212,-80; -180,-80; -180,-66], style(
+        color=69, 
+        rgbcolor={0,127,255}, 
+        smooth=0));
   end BatchPlant_StandardWater;
   
   package BaseClasses 
@@ -851,7 +916,7 @@ handled properly.</p>
 </html>"),
         Coordsys(grid=[1,1], scale=0));
     equation 
-      connect(trapezoid.u, open) annotation (points=[-7.34764e-016,62; 0,62; 0,
+      connect(trapezoid.u, open) annotation (points=[-7.34788e-016,62; 0,62; 0,
             84],
           style(color=5, rgbcolor={255,0,255}));
       connect(m_flow_trapezoid.y, set.u) annotation (points=[46.5,-30; 60,-30; 60,
@@ -1190,7 +1255,6 @@ Full steady state initialization is not supported, because the corresponding int
     end TankWith3InletOutletArraysWithEvaporatorCondensor;
     
     model InnerTank 
-      import Modelica_Fluid;
         replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching=true);
@@ -1198,7 +1262,6 @@ Full steady state initialization is not supported, because the corresponding int
         Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = 
             Medium) 
         annotation (extent=[-10, -120; 10, -100], rotation=90);
-       // Real mXi_flow;
         Boolean m_flow_negative( start = true) "true= massflow out of tank";
         constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
        input Real aboveLevel;
@@ -1234,253 +1297,7 @@ Full steady state initialization is not supported, because the corresponding int
       
     end InnerTank;
     
-    model PumpWithAssertOfCavitation 
-      "Centrifugal pump with ideally controlled speed" 
-      extends Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.PartialPump(final 
-          computeNPSHa =                                                                        true);
-      import Modelica.SIunits.Conversions.NonSIunits.*;
-      parameter AngularVelocity_rpm N_const = N_nom "Constant rotational speed";
-      Modelica.Blocks.Interfaces.RealInput N_in "Prescribed rotational speed" 
-        annotation (extent=[-36,34; -16,54],   rotation=-90);
-    equation 
-      
-       assert(inlet.p >= pv,   " 
-    wahrscheinlich ist ein Ventil zu oder ein Tank vor der Pumpe leer.
-    ");
-      
-        N = N_in "Rotational speed";
-      if cardinality(N_in)==0 then
-        N_in = N_const "Rotational speed provided by parameter";
-      end if;
-      annotation (
-        Icon(
-          Text(extent=[-58,58; -30,38], string="n")),
-        Diagram,
-        Documentation(info="<HTML>
-<p>This model describes a centrifugal pump (or a group of <tt>Np</tt> pumps in parallel) with controlled speed, either fixed or provided by an external signal.
-<p>The model extends <tt>PartialPump</tt>
-<p>If the <tt>N_in</tt> input connector is wired, it provides rotational speed of the pumps (rpm); otherwise, a constant rotational speed equal to <tt>n_const</tt> (which can be different from <tt>N_nom</tt>) is assumed.</p>
-</HTML>", revisions="<html>
-<ul>
-<li><i>31 Oct 2005</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Model added to the Fluid library</li>
-</ul>
-</html>"));
-    end PumpWithAssertOfCavitation;
     
-    partial model PartialPump "Base model for centrifugal pumps" 
-      import Modelica.SIunits.Conversions.NonSIunits.*;
-      import Modelica.Constants.*;
-      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
-        "Medium model" annotation(choicesAllMatching=true);
-      Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
-        "Fluid properties at the inlet";
-      replaceable package SatMedium = 
-          Modelica.Media.Interfaces.PartialTwoPhaseMedium 
-        "Saturated medium model (required only for NPSH computation)" 
-                                                                     annotation(choicesAllMatching=true);
-      replaceable function flowCharacteristic = 
-          Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.baseFlow 
-        "Head vs. q_flow characteristic at nominal speed and density" 
-        annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
-      parameter Boolean usePowerCharacteristic = false 
-        "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
-         annotation(Dialog(group="Characteristics"));
-        replaceable function powerCharacteristic = 
-          Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticPower (
-           q_nom={0,0,0},W_nom={0,0,0}) 
-        "Power consumption vs. q_flow at nominal speed and density" 
-          annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
-                     choicesAllMatching=true);
-      
-      replaceable function efficiencyCharacteristic = 
-        Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.constantEfficiency
-          ( eta_nom=0.8) extends 
-        Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.baseEfficiency 
-        "Efficiency vs. q_flow at nominal speed and density" 
-        annotation(Dialog(group="Characteristics",enable = not usePowerCharacteristic),
-                   choicesAllMatching=true);
-      parameter AngularVelocity_rpm N_nom = 1500 "Nominal rotational speed" 
-        annotation(Dialog(group="Characteristics"));
-      parameter Medium.Density d_nom = 1000 "Nominal fluid density" 
-        annotation(Dialog(group="Characteristics"));
-      parameter Integer Np_nom(min=1) = 1 "Nominal number of pumps in parallel";
-      parameter SI.Mass M = 0 "Fluid mass inside the pump";
-      parameter Boolean checkValve=true "Reverse flow stopped";
-      parameter Boolean allowFlowReversal = true 
-        "Flow reversal at the ports is allowed by the equations";
-      parameter Boolean computeNPSHa=false 
-        "Compute NPSH Available at the inlet";
-      parameter Medium.AbsolutePressure pin_start "Inlet Pressure Start Value" 
-        annotation(Dialog(tab="Initialization"));
-      parameter Medium.AbsolutePressure pout_start 
-        "Outlet Pressure Start Value" 
-        annotation(Dialog(tab="Initialization"));
-      parameter Boolean use_T_start = true 
-        "Use T_start if true, otherwise h_start" 
-        annotation(Dialog(tab = "Initialization"), Evaluate = true);
-      parameter Medium.Temperature T_start=
-        if use_T_start then 293.15 else Medium.temperature_phX(pin_start,h_start,Medium.reference_X[1:Medium.nXi]) 
-        "Start value of temperature" 
-        annotation(Dialog(tab = "Initialization", enable = use_T_start));
-      parameter Medium.SpecificEnthalpy h_start=
-        if use_T_start then Medium.specificEnthalpy_pTX(pin_start, T_start, Medium.reference_X[1:Medium.nXi]) else 1e4 
-        "Start value of specific enthalpy" 
-        annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-      parameter SI.MassFlowRate m_flow_start = 0 
-        "Start value of mass flow rate (total)" 
-        annotation(Dialog(tab="Initialization"));
-      constant SI.Acceleration g=Modelica.Constants.g_n;
-    //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit 
-    //    "Initialisation option";
-      Modelica_Fluid.Interfaces.FluidPort_a inlet(
-        redeclare package Medium = Medium,
-        p(start=pin_start),
-        m_flow(start=m_flow_start, min=if allowFlowReversal and not checkValve then 
-                    -inf else 0)) 
-      annotation (extent=[-100,-40; -60,0]);
-      Modelica_Fluid.Interfaces.FluidPort_b outlet(
-        redeclare package Medium = Medium,
-        p(start=pout_start),
-        m_flow(start=-m_flow_start, max=if allowFlowReversal and not checkValve then 
-                    +inf else 0)) 
-      annotation (extent=[40,12; 80,52]);
-      SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
-      SI.Height head = dp/(d*g) "Pump head";
-      Medium.Density d "Liquid density at the inlet";
-      Medium.SpecificEnthalpy h_out(start=h_start) 
-        "Enthalpy of the liquid flowing out of the pump";
-      Medium.Temperature Tin "Liquid inlet temperature";
-      SI.MassFlowRate m_flow = inlet.m_flow "Mass flow rate (total)";
-      SI.MassFlowRate m_flow_single = m_flow/Np "Mass flow rate (single pump)";
-      SI.VolumeFlowRate q_flow = m_flow/d "Volume flow rate (total)";
-      SI.VolumeFlowRate q_flow_single = q_flow/Np 
-        "Volume flow rate (single pump)";
-      AngularVelocity_rpm N "Shaft rotational speed";
-      Integer Np(min=1) "Number of pumps in parallel";
-      SI.Power W_single "Power Consumption (single pump)";
-      SI.Power W_tot = W_single*Np "Power Consumption (total)";
-      constant SI.Power W_eps=1e-8 
-        "Small coefficient to avoid numerical singularities in efficiency computations";
-      Real eta "Global Efficiency";
-      SI.Length NPSHa "Net Positive Suction Head available";
-      Medium.AbsolutePressure pv "Saturation pressure of inlet liquid";
-      Real s(start = m_flow_start) 
-        "Curvilinear abscissa for the flow curve in parametric form (either mass flow rate or head)";
-      Modelica.Blocks.Interfaces.IntegerInput in_Np 
-        annotation (extent=[16,34; 36,54], rotation=-90);
-    protected 
-      constant SI.Height unitHead = 1;
-      constant SI.MassFlowRate unitMassFlowRate = 1;
-    equation 
-      // Number of pumps in parallel
-      Np = in_Np;
-      if cardinality(in_Np)==0 then
-        in_Np = Np_nom "Number of pumps selected by parameter";
-      end if;
-      
-      // Flow equations
-      if noEvent(s > 0 or (not checkValve)) then
-        // Flow characteristics when check valve is open
-        // q_flow_single = s;
-        q_flow_single = s*unitMassFlowRate/d;
-        head = noEvent((((if abs(N) > 1e-6 then N else 1e-6))/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/((if abs(N) > 1e-6 then N else 1e-6))));
-      else
-        // Flow characteristics when check valve is closed
-        head = (N/N_nom)^2*flowCharacteristic(0) - s*unitHead;
-        q_flow_single = 0;
-      end if;
-      
-      // Power consumption  
-      if usePowerCharacteristic then
-        W_single = (N/N_nom)^3*(d/d_nom)*powerCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-6))) 
-          "Power consumption (single pump)";
-        eta = (dp*q_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
-      else
-        eta = efficiencyCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-10)));
-        W_single = dp*q_flow/eta;
-      end if;
-      // Fluid properties
-      fluid.p = inlet.p;
-      fluid.h = inlet.h;
-      fluid.Xi = inlet.Xi;
-      d = fluid.d;
-      Tin = fluid.T;
-      
-      // Mass and energy balances
-      inlet.m_flow + outlet.m_flow = 0 "Mass balance";
-      inlet.mXi_flow + outlet.mXi_flow = zeros(Medium.nXi) 
-        "Substance mass balance";
-      inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,h_out) 
-        "Enthalpy flow at the inlet";
-      outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,h_out) 
-        "Enthalpy flow at the outlet";
-      if M > 0 then
-        M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single 
-          "Dynamic energy balance (density variations neglected)";
-      else
-        inlet.H_flow + outlet.H_flow + W_single*Np = 0 "Static energy balance";
-      end if;
-      
-      // NPSH computations
-      if computeNPSHa then
-          pv = SatMedium.saturationPressure(fluid.T);
-        NPSHa = (inlet.p - pv)/(d*Modelica.Constants.g_n);
-      else
-        pv = 0;
-        NPSHa = 0;
-      end if;
-    /*
-initial equation 
-  if initOpt == Choices.Init.Options.noInit then
-    // do nothing
-  elseif initOpt == Choices.Init.Options.steadyState then
-    if ThermalCapacity then
-      der(h)=0;
-    end if;
-  else
-    assert(false, "Unsupported initialisation option");
-  end if;
-*/
-      annotation (
-        Icon(
-          Polygon(points=[-40,-64; -60,-100; 60,-100; 40,-64; -40,-64],
-              style(pattern=0, fillColor=74)),
-          Ellipse(extent=[-60,40; 60,-80],   style(gradient=3)),
-          Polygon(points=[-30,12; -30,-48; 48,-20; -30,12],   style(
-              pattern=0,
-              gradient=2,
-              fillColor=7)),
-          Text(extent=[-100,-110; 100,-136], string="%name"),
-          Text(extent=[-10,60; 18,40],  string="Np")),
-        Diagram,
-        Documentation(info="<HTML>
-<p>This is the base model for the <tt>Pump</tt> and <tt>
-PumpMech</tt> pump models.
-<p>The model describes a centrifugal pump, or a group of <tt>Np</tt> identical pumps in parallel. The pump model is based on the theory of kinematic similarity: the pump characteristics are given for nominal operating conditions (rotational speed and fluid density), and then adapted to actual operating condition, according to the similarity equations. 
-<p><b>Modelling options</b></p>
-<p> The nominal hydraulic characteristic (head vs. volume flow rate) is given by the the replaceable function <tt>flowCharacteristic</tt>. 
-<p> The pump energy balance can be specified in two alternative ways:
-<ul>
-<li><tt>usePowerCharacteristic = false</tt> (default option): the replaceable function <tt>efficiencyCharacteristic</tt> (efficiency vs. volume flow rate in nominal conditions) is used to determine the efficiency, and then the power consumption. The default is a constant efficiency of 0.8.
-<li><tt>usePowerCharacteristic = true</tt>: the replaceable function <tt>powerCharacteristic</tt> (power consumption vs. volume flow rate in nominal conditions) is used to determine the power consumption, and then the efficiency.
-</ul>
-<p>
-Several functions are provided in the package <tt>PumpCharacteristics</tt> to specify the characteristics as a function of some operating points at nominal conditions.
-<p>Depending on the value of the <tt>checkValve</tt> parameter, the model either supports reverse flow conditions, or includes a built-in check valve to avoid flow reversal.
-<p>If the <tt>in_Np</tt> input connector is wired, it provides the number of pumps in parallel; otherwise,  <tt>Np_n</tt> parallel pumps are assumed.</p>
-<p>It is possible to take into account the heat capacity of the fluid inside the pump by specifying its mass <tt>M</tt> at nominal conditions; this is necessary to avoid singularities in the computation of the outlet enthalpy in case of zero flow rate. If zero flow rate conditions are always avoided, this dynamic effect can be neglected by leaving the default value <tt>M = 0</tt>, thus avoiding a fast state variable in the model.
-<p>If <tt>computeNPSHa = true</tt>, the available net positive suction head is also computed; this requires a two-phase medium model to provide the fluid saturation pressure.
-</HTML>", revisions="<html>
-<ul>
-<li><i>31 Oct 2005</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Model added to the Fluid library</li>
-</ul>
-</html>"));
-      
-    end PartialPump;
     
     model Controller 
       
@@ -1710,7 +1527,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
             -40,40; -40,20; -190,20; -190,-50; -181.55,-50],
                                                            style(color=0, rgbcolor=
               {0,0,0}));
-      connect(TransitionWithSignal1.inPort, Parallel1.outPort) annotation (points=[2,-150;
+      connect(TransitionWithSignal1.inPort, Parallel1.outPort) annotation (points=[2,-150; 
             208,-150; 208,-50; 197.7,-50],       style(color=0, rgbcolor={0,0,0}));
       connect(TransitionWithSignal1.outPort, InitialStep1.inPort[1]) annotation (
           points=[-3.5,-150; -194,-150; -194,100; -181,100], style(color=0,

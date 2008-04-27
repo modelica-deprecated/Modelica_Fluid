@@ -3,36 +3,48 @@ package TestCriticalCases
   "Collection of test cases which might be critical for the solvers" 
   
   model BranchingPipes1 
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    //replaceable package Medium = Modelica.Media.Water.StandardWater;
+    replaceable package Medium = 
+        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater;
     
     Sources.FixedBoundary_pTX source(
-      redeclare package Medium = Medium,
-      p=5.0e5,
+      redeclare package Medium = Medium, 
+      p=200000, 
       T=300) annotation (extent=[-100,0; -88,12]);
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
-      p_a_start=5.0e5,
-      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2) annotation (extent=[-72,-4; -52,16]);
+      diameter=2.54e-2, 
+      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic, 
+      p_a_start=200000, 
+      p_b_start=100000, 
+      T_start=300)      annotation (extent=[-72,-4; -52,16]);
     
     ControlValves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (extent=[10,36; 30,56]);
+      d_nom=1000, 
+      T_start=300, 
+      pin_start=200000, 
+      pout_start=200000, 
+      p_nom=200000, 
+      dp_nom=200000) 
+                  annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (extent=[8,-50; 28,-30]);
+      d_nom=1000, 
+      T_start=300, 
+      pin_start=200000, 
+      pout_start=200000, 
+      p_nom=200000, 
+      dp_nom=200000) 
+                  annotation (extent=[8,-50; 28,-30]);
     annotation (
       Diagram,
       experiment(StopTime=5),
@@ -46,23 +58,27 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=1.0e5) annotation (extent=[74,-20; 62,-8]);
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
-      p_a_start=5.0e5,
-      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2) annotation (extent=[-40,36; -20,56]);
+      diameter=2.54e-2, 
+      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic, 
+      p_a_start=200000, 
+      p_b_start=200000, 
+      T_start=300)      annotation (extent=[-40,36; -20,56]);
     
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
-      p_a_start=5.0e5,
-      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2) annotation (extent=[-40,-50; -20,-30]);
+      diameter=2.54e-2, 
+      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic, 
+      p_a_start=200000, 
+      p_b_start=200000, 
+      T_start=300)      annotation (extent=[-40,-50; -20,-30]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
           1,0; 100,0]) annotation (extent=[-20,70; 0,90]);

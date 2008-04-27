@@ -87,6 +87,9 @@ package Pumps "Pump components"
     // NPSHa computation
     pv = Medium.saturationPressure(Tin);
     NPSHa = (inlet.p-pv)/(d*Modelica.Constants.g_n);
+    
+    // Check for cavitation
+    assert(inlet.p >= pv, "Cavitation occurs at the inlet (propably a valve is closed or a tank/reservoir is empty)");
     annotation (Documentation(info="<html>Same as the Pump model, with added computation of Net Positive Suction Head available. Requires a two-phase medium model.
 </html>", revisions="<html>
 <ul>
@@ -249,6 +252,10 @@ package Pumps "Pump components"
       
     // Mass and energy balances
     inlet.m_flow + outlet.m_flow = 0 "Mass balance";
+    inlet.h_outflow   = h_out;
+    outlet.h_outflow  = h_out;
+    inlet.Xi_outflow  = inflow(outlet.Xi_outflow);
+    outlet.Xi_outflow = inflow(inlet.Xi_outflow);
     inlet.C_outflow = inflow(outlet.C_outflow);
     outlet.C_outflow = inflow(inlet.C_outflow);
     inlet_H_flow=semiLinear(inlet.m_flow, inflow(inlet.h_outflow), h_out) 

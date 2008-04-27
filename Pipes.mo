@@ -99,25 +99,25 @@ pipe wall/environment).
       Diagram,
       Coordsys(grid=[1,1], scale=0),
       uses(Modelica_Fluid(version="1.0 Beta 2"), Modelica(version="2.2.2")));
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity frictionAndGravity1(
-        redeclare package Medium = Medium,
-        flowDirection=flowDirection,
-        redeclare package WallFriction = WallFriction,
-        length=length/2,
-        diameter=diameter,
-        height_ab=height_ab/2,
-        roughness=roughness,
-        use_nominal=use_nominal,
-        eta_nominal=eta_nominal,
-        d_nominal=d_nominal,
-        from_dp=true,
-        dp_small=dp_small,
-        show_Re=false,
-        p_a_start=p_a_start,
-        p_b_start=(p_a_start+p_b_start)/2,
-        T_start=T_start,
-        h_start=h_start,
-        X_start=X_start) annotation (extent=[-60,-10; -40,10]);
+    Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction1(
+      redeclare package Medium = Medium, 
+      flowDirection=flowDirection, 
+      redeclare package WallFriction = WallFriction, 
+      length=length/2, 
+      diameter=diameter, 
+      height_ab=height_ab/2, 
+      roughness=roughness, 
+      use_nominal=use_nominal, 
+      eta_nominal=eta_nominal, 
+      d_nominal=d_nominal, 
+      from_dp=true, 
+      dp_small=dp_small, 
+      show_Re=false, 
+      p_a_start=p_a_start, 
+      p_b_start=(p_a_start + p_b_start)/2, 
+      T_start=T_start, 
+      h_start=h_start, 
+      X_start=X_start)   annotation (extent=[-60,-10; -40,10]);
     Volumes.MixingVolume volume(
       redeclare package Medium = Medium,
       V=Modelica.Constants.pi*(diameter/2)^2*length,
@@ -129,42 +129,41 @@ pipe wall/environment).
       h_start=h_start,
       X_start=X_start) 
       annotation (extent=[-10,-10; 10,10]);
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity frictionAndGravity2(
-        redeclare package Medium = Medium,
-        flowDirection=flowDirection,
-        redeclare package WallFriction = WallFriction,
-        length=length/2,
-        diameter=diameter,
-        height_ab=height_ab/2,
-        roughness=roughness,
-        use_nominal=use_nominal,
-        eta_nominal=eta_nominal,
-        d_nominal=d_nominal,
-        from_dp=true,
-        dp_small=dp_small,
-        show_Re=false,
-        p_a_start=(p_a_start+p_b_start)/2,
-        p_b_start=p_b_start,
-        T_start=T_start,
-        h_start=h_start,
-        X_start=X_start,
-        use_T_start=true) 
-                         annotation (extent=[40,-10; 60,10]);
+    Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction2(
+      redeclare package Medium = Medium, 
+      flowDirection=flowDirection, 
+      redeclare package WallFriction = WallFriction, 
+      length=length/2, 
+      diameter=diameter, 
+      height_ab=height_ab/2, 
+      roughness=roughness, 
+      use_nominal=use_nominal, 
+      eta_nominal=eta_nominal, 
+      d_nominal=d_nominal, 
+      from_dp=true, 
+      dp_small=dp_small, 
+      show_Re=false, 
+      p_a_start=(p_a_start + p_b_start)/2, 
+      p_b_start=p_b_start, 
+      T_start=T_start, 
+      h_start=h_start, 
+      X_start=X_start, 
+      use_T_start=true)  annotation (extent=[40,-10; 60,10]);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
       annotation (extent=[-10,44; 10,64]);
   equation 
-    connect(frictionAndGravity1.port_a, port_a) 
+    connect(wallFriction1.port_a, port_a) 
       annotation (points=[-60,0; -100,0], style(color=69, rgbcolor={0,127,255}));
-    connect(frictionAndGravity2.port_b, port_b) 
+    connect(wallFriction2.port_b, port_b) 
       annotation (points=[60,0; 100,0], style(color=69, rgbcolor={0,127,255}));
     connect(volume.thermalPort, thermalPort) 
       annotation (points=[0,9.8; 0,54],style(color=42, rgbcolor={191,0,0}));
-    connect(volume.port_a, frictionAndGravity1.port_b) annotation (points=[
-          -10.2,0; -40,0], style(
+    connect(volume.port_a, wallFriction1.port_b)       annotation (points=[-10.2,0; 
+          -40,0],          style(
         color=69,
         rgbcolor={0,127,255},
         smooth=0));
-    connect(volume.port_b, frictionAndGravity2.port_a) annotation (points=[10,0;
+    connect(volume.port_b, wallFriction2.port_a)       annotation (points=[10,0;
           40,0], style(
         color=69,
         rgbcolor={0,127,255},

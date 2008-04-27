@@ -90,7 +90,7 @@ equation
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40;
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-10,40; 
         9.8,40],      style(
       color=0,
       rgbcolor={0,0,0},

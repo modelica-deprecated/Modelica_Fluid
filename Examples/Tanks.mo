@@ -8,7 +8,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     
     Modelica_Fluid.Volumes.Tank tank(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       area=1,
       levelMax=1,
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(
@@ -21,7 +21,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     
     Sources.PrescribedMassFlowRate_TX flowSource(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort,
       m_flow=20,
       T=ambient.default_T_ambient) 
@@ -36,14 +36,14 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Ambient ambient annotation (extent=[-10,72; 10,92]);
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
       p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-54,-20; -34,0]);
     PressureLosses.WallFrictionAndGravity pipe(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
       length=1,
@@ -71,7 +71,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Ambient ambient annotation (extent=[40,62; 60,82]);
     Modelica_Fluid.Volumes.Tank tank1(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort,
       area=1,
       levelMax=4,
@@ -82,7 +82,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (extent=[-80,0; -40,40]);
     Modelica_Fluid.Volumes.Tank tank2(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort,
       area=1,
       levelMax=4,
@@ -93,7 +93,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (extent=[0,0; 40,40]);
     PressureLosses.WallFrictionAndGravity pipe(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
       length=1,
@@ -112,7 +112,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     
     Sources.PrescribedMassFlowRate_TX flowSource(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort,
       m_flow=50,
       T=ambient.default_T_ambient) 
@@ -128,19 +128,19 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
       p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-60,-100; -40,-80]);
     ControlValves.ValveDiscrete valveDiscrete(redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, Kv=100) 
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater, Kv=100) 
       annotation (extent=[-30,-60; -10,-40], rotation=90);
     Modelica.Blocks.Sources.BooleanConstant open(k=false) 
       annotation (extent=[-60,-60; -40,-40]);
     Modelica_Fluid.Volumes.Tank tank1(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       area=1,
       V0=0.1,
       levelMax=2,
@@ -154,7 +154,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (extent=[-40,-20; 0,20]);
     PressureLosses.WallFrictionAndGravity pipe(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
       length=1,
@@ -197,14 +197,14 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
       p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-60,-100; -40,-80]);
     Modelica_Fluid.Volumes.Tank tank1(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       area=1,
       V0=0.1,
       levelMax=2,
@@ -217,7 +217,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (extent=[-40,-20; 0,20]);
     PressureLosses.WallFrictionAndGravity pipe1(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
       length=1,
@@ -227,7 +227,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     
     PressureLosses.WallFrictionAndGravity pipe2(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
       length=1,
@@ -235,7 +235,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       height_ab=1) annotation (extent=[20,-70; 40,-50], rotation=90);
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
                                            redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
       p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
@@ -266,14 +266,14 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
                                             redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, flowDirection=
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater, flowDirection=
           Modelica_Fluid.Types.SourceFlowDirection.InToPort,
       p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-100,-80; -80,-60]);
     Modelica_Fluid.Volumes.Tank tank1(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       area=1,
       V0=0.1,
       levelMax=2,
@@ -286,7 +286,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (extent=[-80,0; -40,40]);
     PressureLosses.WallFrictionAndGravity pipe1(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
       length=1,
@@ -296,7 +296,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     
     PressureLosses.WallFrictionAndGravity pipe2(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
       length=1,
@@ -304,14 +304,14 @@ package Tanks "Library demonstrating the usage of the tank model"
       height_ab=1) annotation (extent=[30,-50; 50,-30], rotation=90);
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed2(
                                            redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
       p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[0,-80; 20,-60]);
     Modelica_Fluid.Volumes.Tank tank2(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       area=1,
       V0=0.1,
       levelMax=2,
@@ -324,7 +324,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (extent=[20,0; 60,40]);
     PressureLosses.WallFrictionAndGravity pipe3(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
       length=1,
@@ -355,7 +355,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     import Modelica.SIunits.Conversions.from_bar;
     extends Modelica.Icons.Example;
     replaceable package Medium = 
-       Modelica.Media.Water.ConstantPropertyLiquidWater                    extends 
+       Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater                    extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
     
@@ -368,13 +368,13 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       flowDirection=Modelica_Fluid.Types.SourceFlowDirection.InToPort,
       p=ambient.default_p_ambient,
       T=ambient.default_T_ambient) 
       annotation (extent=[-16,-102; -36,-82]);
     ControlValves.ValveDiscrete valveDiscrete(redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, Kv=100) 
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater, Kv=100) 
       annotation (extent=[-70,-88; -50,-68], rotation=90);
     Modelica.Blocks.Sources.BooleanConstant open(k=false) 
       annotation (extent=[-98,-88; -78,-68]);
@@ -429,11 +429,11 @@ package Tanks "Library demonstrating the usage of the tank model"
           -60,-51],      style(color=69, rgbcolor={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (points=[70,40; 70,49],
         style(color=69, rgbcolor={0,127,255}));
-    connect(pipe2.port_b, tank2.ports[2]) annotation (points=[6.12303e-016,-14;
-          6.12303e-016,-10; 0,-10; 0,9],
+    connect(pipe2.port_b, tank2.ports[2]) annotation (points=[6.12323e-016,-14; 
+          6.12323e-016,-10; 0,-10; 0,9],
                              style(color=69, rgbcolor={0,127,255}));
-    connect(pipe2.port_a, tank3.ports[2]) annotation (points=[-6.12303e-016,-34;
-          -6.12303e-016,-48; 0,-60; -58,-60; -58,-51; -60,-51],
+    connect(pipe2.port_a, tank3.ports[2]) annotation (points=[-6.12323e-016,-34; 
+          -6.12323e-016,-48; 0,-60; -58,-60; -58,-51; -60,-51],
                                   style(color=69, rgbcolor={0,127,255}));
     connect(pipe3.port_a, tank3.topPorts[1]) 
                                             annotation (points=[-60,0; -60,-9],
@@ -449,11 +449,11 @@ package Tanks "Library demonstrating the usage of the tank model"
   model ThreeOpenTanks "Demonstrating the usage of OpenTank" 
     import Modelica_Fluid;
     extends Modelica.Icons.Example;
-     // replaceable package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater extends 
+     // replaceable package Medium = Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater extends 
     // replaceable package Medium = Modelica.Media.Water.StandardWaterOnePhase extends 
     // replaceable package Medium = Modelica.Media.Incompressible.Examples.Glycol47 extends
      replaceable package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater                           extends 
+        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater                           extends 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
     
@@ -509,14 +509,14 @@ package Tanks "Library demonstrating the usage of the tank model"
       flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
       height_ab=-1) annotation (extent=[50,-20; 70,0], rotation=90);
   equation 
-    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -60,-40;
-          -6.12303e-016,-40; -6.12303e-016,-20],      style(color=69, rgbcolor={0,
+    connect(pipe1.port_a, pipe2.port_a) annotation (points=[-60,-20; -60,-40; 
+          -6.12323e-016,-40; -6.12323e-016,-20],      style(color=69, rgbcolor={0,
             127,255}));
-    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12303e-016,-20;
+    connect(pipe2.port_a, pipe3.port_a) annotation (points=[-6.12323e-016,-20; 
           0,-20; 0,-40; 60,-40; 60,-20],
                                        style(color=69, rgbcolor={0,127,255}));
-    connect(pipe2.port_b, tank2.ports[1]) annotation (points=[6.12303e-016,0;
-          6.12303e-016,10; 0,10; 0,19], style(color=69, rgbcolor={0,127,255}));
+    connect(pipe2.port_b, tank2.ports[1]) annotation (points=[6.12323e-016,0; 
+          6.12323e-016,10; 0,10; 0,19], style(color=69, rgbcolor={0,127,255}));
     connect(pipe3.port_b, tank3.ports[1]) 
       annotation (points=[60,0; 60,19], style(color=69, rgbcolor={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (points=[-60,0; -60,19],
@@ -527,7 +527,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     extends Modelica.Icons.Example;
     Modelica_Fluid.Volumes.Tank tank1(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       area=1,
       level_start=1,
       levelMax=1,
@@ -537,7 +537,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.LaminarAndQuadraticTurbulent,
       length=1,
@@ -552,17 +552,18 @@ package Tanks "Library demonstrating the usage of the tank model"
       area=1,
       level_start=0,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
       levelMax=1,
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(
-          diameter=0.1, portLevel=0)}) 
+          diameter=0.1, portLevel=0)}, 
+      initType=Modelica_Fluid.Types.Init.NoInit) 
       annotation (extent=[-20,-80; 20,-40]);
     inner Modelica_Fluid.Ambient ambient 
                                      annotation (extent=[56,58; 76,78]);
   equation 
-    connect(pipe.port_b, tank1.ports[1]) annotation (points=[6.12303e-016,0; 0,
+    connect(pipe.port_b, tank1.ports[1]) annotation (points=[6.12323e-016,0; 0,
           0; 0,19], style(color=69, rgbcolor={0,127,255}));
-    connect(pipe.port_a, tank2.topPorts[1]) annotation (points=[-6.12303e-016,
+    connect(pipe.port_a, tank2.topPorts[1]) annotation (points=[-6.12323e-016,
           -20; 0,-20; 0,-39], style(color=69, rgbcolor={0,127,255}));
   end TestEmptyOpenTank;
   
