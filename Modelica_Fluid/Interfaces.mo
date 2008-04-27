@@ -289,4 +289,119 @@ package Interfaces
         scale=0.2));
   end FluidStatePorts_b;
   
+  connector HeatPorts_a 
+    "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)" 
+    extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
+    annotation (defaultComponentName="heatPorts_a",
+                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
+        Rectangle(extent=[-25,100; 25,-100], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255})),
+        Rectangle(extent=[-21,89; 22,44], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=42,
+            rgbfillColor={127,0,0},
+            fillPattern=1)),
+        Rectangle(extent=[-21,22; 22,-23], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=42,
+            rgbfillColor={127,0,0},
+            fillPattern=1)),
+        Rectangle(extent=[-21.5,-43; 21.5,-88], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=42,
+            rgbfillColor={127,0,0},
+            fillPattern=1))),
+         Icon(
+        Rectangle(extent=[-50,200; 50,-200], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255})),
+        Rectangle(extent=[-44,176; 44,86], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=42,
+            rgbfillColor={127,0,0},
+            fillPattern=1)),
+        Rectangle(extent=[-43,46; 45,-44], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=42,
+            rgbfillColor={127,0,0},
+            fillPattern=1)),
+        Rectangle(extent=[-44,-86; 44,-176], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=42,
+            rgbfillColor={127,0,0},
+            fillPattern=1))),
+      Coordsys(
+        extent=[-50,-200; 50,200],
+        grid=[1,1],
+        scale=0.2));
+  end HeatPorts_a;
+
+  connector HeatPorts_b 
+    "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)" 
+    extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
+    annotation (defaultComponentName="heatPorts_b",
+                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
+        Rectangle(extent=[-25,100; 25,-100], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255})),
+        Rectangle(extent=[-21,88; 22,43], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255},
+            fillPattern=1)),
+        Rectangle(extent=[-21,22; 22,-23], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255},
+            fillPattern=1)),
+        Rectangle(extent=[-21,-43; 22,-88], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255},
+            fillPattern=1))),
+         Icon(
+        Rectangle(extent=[-50,200; 50,-200], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255})),
+        Rectangle(extent=[-43,175; 45,85], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255},
+            fillPattern=1)),
+        Rectangle(extent=[-44,46; 44,-44], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255},
+            fillPattern=1)),
+        Rectangle(extent=[-44,-86; 44,-176], style(
+            color=42,
+            rgbcolor={127,0,0},
+            fillColor=7,
+            rgbfillColor={255,255,255},
+            fillPattern=1))),
+      Coordsys(
+        extent=[-50,-200; 50,200],
+        grid=[1,1],
+        scale=0.2));
+  end HeatPorts_b;
 end Interfaces;

@@ -1,7 +1,8 @@
+within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestPortVolumes 
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
-  Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume1(
+  Modelica_Fluid.WorkInProgress.Components.PortVolume PortVolume1(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
@@ -17,7 +18,7 @@ model TestPortVolumes
                Medium,
     h=Medium.h_default) 
     annotation (extent=[100,-10; 80,10]);
-  Modelica_Fluid.Pipes.BaseClasses.PortVolume PortVolume2(
+  Modelica_Fluid.WorkInProgress.Components.PortVolume PortVolume2(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,

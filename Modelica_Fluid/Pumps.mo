@@ -85,7 +85,7 @@ package Pumps "Pump components"
     
   equation 
     // NPSHa computation
-    pv = Medium.saturationPressure(fluid.T);
+    pv = Medium.saturationPressure(Tin);
     NPSHa = (inlet.p-pv)/(d*Modelica.Constants.g_n);
     annotation (Documentation(info="<html>Same as the Pump model, with added computation of Net Positive Suction Head available. Requires a two-phase medium model.
 </html>", revisions="<html>
@@ -107,8 +107,11 @@ package Pumps "Pump components"
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
         "Medium model" 
                      annotation(choicesAllMatching=true);
-    Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
-        "Fluid properties at the inlet";
+      
+  /*
+  Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
+    "Fluid properties at the inlet";
+*/
     replaceable function flowCharacteristic = 
         PumpCharacteristics.baseFlow 
         "Head vs. q_flow characteristic at nominal speed and density" 
@@ -200,6 +203,11 @@ package Pumps "Pump components"
         "Curvilinear abscissa for the flow curve in parametric form (either mass flow rate or head)";
   //  outer Modelica_Fluid.Components.FluidOptions fluidOptions 
   //    "Global default options";
+      
+    Medium.ThermodynamicState inlet_state_inflow 
+        "Medium state close to inlet for inflowing mass flow";
+    Medium.EnthalpyFlowRate inlet_H_flow;
+    Medium.EnthalpyFlowRate outlet_H_flow;
     protected 
    parameter Boolean allowFlowReversal=
        flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
@@ -230,28 +238,29 @@ package Pumps "Pump components"
       eta = efficiencyCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-10)));
       W_single = dp*q_flow/eta;
     end if;
-    // Fluid properties
-    fluid.p = inlet.p;
-    fluid.h = inlet.h;
-    fluid.Xi = inlet.Xi;
-    d = fluid.d;
-    Tin = fluid.T;
+      
+    // Medium states close to the ports when mass flows in to the respective port
+    inlet_state_inflow = Medium.setState_phX(inlet.p, inlet.h_outflow, inlet.Xi_outflow);
+    // outlet_state_inflow = Medium.setState_phX(outlet.p, outlet.h_outflow, outlet.Xi_outflow);
+      
+    // Inflow density and temperature at the inlet port
+    d = Medium.density(inlet_state_inflow);
+    Tin = Medium.temperature(inlet_state_inflow);
       
     // Mass and energy balances
     inlet.m_flow + outlet.m_flow = 0 "Mass balance";
-    inlet.mXi_flow + outlet.mXi_flow = zeros(Medium.nXi) 
-        "Substance mass balance";
-    inlet.mC_flow + outlet.mC_flow = zeros(Medium.nC) 
-        "Trace substance mass balances";
-    inlet.H_flow=semiLinear(inlet.m_flow,inlet.h,h_out) 
+    inlet.C_outflow = inflow(outlet.C_outflow);
+    outlet.C_outflow = inflow(inlet.C_outflow);
+    inlet_H_flow=semiLinear(inlet.m_flow, inflow(inlet.h_outflow), h_out) 
         "Enthalpy flow at the inlet";
-    outlet.H_flow=semiLinear(outlet.m_flow,outlet.h,h_out) 
+    outlet_H_flow=semiLinear(outlet.m_flow, inflow(outlet.h_outflow), h_out) 
         "Enthalpy flow at the outlet";
     if M > 0 then
-      M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single 
+      // M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single 
+      (M*Np) * der(h_out) = inlet_H_flow + outlet_H_flow + W_tot 
           "Dynamic energy balance (density variations neglected)";
     else
-      inlet.H_flow + outlet.H_flow + W_single*Np = 0 "Static energy balance";
+      inlet_H_flow + outlet_H_flow + W_tot = 0 "Static energy balance";
     end if;
       
   /*

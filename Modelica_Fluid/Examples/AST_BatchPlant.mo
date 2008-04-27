@@ -127,7 +127,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-114,210; -134,230]);
-    Pipes.BaseClasses.PortVolume portVolume2(
+    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume2(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-190,210; -170,230]);
@@ -136,7 +136,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       m_flow_small=0) 
       annotation (extent=[112,210; 132,230]);
-    Pipes.BaseClasses.PortVolume portVolume8(
+    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume8(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,210; 170,230]);
@@ -147,7 +147,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-116,-240; -96,-260], rotation=180);
-    Pipes.BaseClasses.PortVolume portVolume3(
+    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume3(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-190,-260; -170,-240]);
@@ -165,7 +165,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[-170,-66; -190,-46],  rotation=90);
-    Pipes.BaseClasses.PortVolume portVolume1(
+    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume1(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-190,60; -170,80]);
@@ -188,11 +188,11 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[170,-10; 150,-30],    rotation=270);
-    Pipes.BaseClasses.PortVolume portVolume6(
+    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume6(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,-258; 170,-238]);
-    Pipes.BaseClasses.PortVolume portVolume7(
+    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume7(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[150,50; 170,70]);
@@ -210,7 +210,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[2,-210; -18,-190],    rotation=90);
-    Pipes.BaseClasses.PortVolume portVolume4(
+    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume4(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[-38,-260; -18,-240]);
@@ -226,7 +226,7 @@ present that are regulated by a central control system.
       riseTime=riseTime,
       finiteRiseTime=false) 
       annotation (extent=[42,-240; 22,-260],    rotation=180);
-    Pipes.BaseClasses.PortVolume portVolume5(
+    Modelica_Fluid.WorkInProgress.Components.PortVolume portVolume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (extent=[50,-260; 70,-240]);
@@ -466,7 +466,7 @@ present that are regulated by a central control system.
         style(color=69, rgbcolor={0,127,255}));
     connect(V5.port_b, portVolume8.port) annotation (points=[160,120; 160,220],
         style(color=69, rgbcolor={0,127,255}));
-    connect(V19.port_a, portVolume4.port) annotation (points=[-8,-210; -8,-250; 
+    connect(V19.port_a, portVolume4.port) annotation (points=[-8,-210; -8,-250;
           -28,-250], style(color=69, rgbcolor={0,127,255}));
     connect(V23.port_a, portVolume4.port) annotation (points=[-96,-250; -28,
           -250],     style(color=69, rgbcolor={0,127,255}));
@@ -549,7 +549,7 @@ present that are regulated by a central control system.
                            style(color=69, rgbcolor={0,127,255}));
     connect(B6.ports[1], pipeB6Pump.port_b) annotation (points=[60,-80; 60,-96],
         style(color=69, rgbcolor={0,127,255}));
-    connect(B6.topPorts[1], B5.Condensed) annotation (points=[60,-40; 60,-28; 
+    connect(B6.topPorts[1], B5.Condensed) annotation (points=[60,-40; 60,-28;
           -19.6,-28],            style(color=69, rgbcolor={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (points=[92,-60; 80,-60],
                         style(color=42, rgbcolor={191,0,0}));
@@ -930,7 +930,7 @@ handled properly.</p>
       Real m_flow_TopPorts_pos[n_TopPorts];
       Real m_flow_pos;
       Medium.MassFlowRate mXi_flow_topPorts[n_TopPorts,Medium.nXi];
-      Medium.MassFlowRate mXi_flow_bottomPorts[n_BottomPorts,Medium.nXi];
+      Medium.MassFlowRate port_b_mXi_flowottomPorts[n_BottomPorts,Medium.nXi];
       Medium.MassFlowRate mXi_flow_sidePorts[n_SidePorts,Medium.nXi];
       
     // Connectors and InnerTanks
@@ -982,7 +982,7 @@ handled properly.</p>
         each Xi = medium.Xi,
         H_flow=H_flow_BottomPorts,
         m_flow=m_flow_BottomPorts,
-        mXi_flow=mXi_flow_bottomPorts,
+        mXi_flow=port_b_mXi_flowottomPorts,
         aboveLevel={level - bottom_heights[i] for i in 1:n_BottomPorts},
         pipeArea={bottom_pipeArea[i] for i in 1:n_BottomPorts},
         redeclare package Medium = Medium) 
@@ -1089,7 +1089,7 @@ handled properly.</p>
         m_flow_BottomPorts_pos);
       
       for i in 1:Medium.nXi loop
-           der(mXi[i]) = sum(mXi_flow_bottomPorts[:,i]) +
+           der(mXi[i]) = sum(port_b_mXi_flowottomPorts[:,i]) +
                          sum(mXi_flow_sidePorts[:,i]) +
                          sum(mXi_flow_topPorts[:,i]);
       end for;

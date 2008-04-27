@@ -1,3 +1,4 @@
+within Modelica_Fluid;
 package HeatExchangers "Evaporators and condensor components" 
   extends Modelica_Fluid.Icons.VariantLibrary;
   model EquilibriumDrumBoiler 
@@ -6,8 +7,7 @@ package HeatExchangers "Evaporators and condensor components"
     import Modelica.Constants;
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.FlowDirection;
-  replaceable package Medium = 
-      Modelica.Media.Interfaces.PartialTwoPhaseMedium 
+  replaceable package Medium = Modelica.Media.Water.StandardWater 
     extends Modelica.Media.Interfaces.PartialTwoPhaseMedium "Medium model" 
       annotation (choicesAllMatching=true);
   parameter SI.Mass m_D "mass of surrounding drum metal";
@@ -61,8 +61,10 @@ package HeatExchangers "Evaporators and condensor components"
   SI.Energy U "internal energy";
   Medium.Temperature T_D=heatPort.T "temperature of drum";
   SI.HeatFlowRate q_F=heatPort.Q_flow "heat flow rate from furnace";
-  Medium.SpecificEnthalpy h_W=feedwater.h "feed water enthalpy";
-  Medium.SpecificEnthalpy h_S=steam.h "steam enthalpy";
+  Medium.SpecificEnthalpy h_W=inflow(feedwater.h_outflow) 
+      "Feed water enthalpy (specific enthalpy close to feedwater port when mass flows in to the boiler)";
+  Medium.SpecificEnthalpy h_S=inflow(steam.h_outflow) 
+      "steam enthalpy (specific enthalpy close to steam port when mass flows in to the boiler";
   SI.MassFlowRate qm_W=feedwater.m_flow "feed water mass flow rate";
   SI.MassFlowRate qm_S=steam.m_flow "steam mass flow rate";
   /*outer Modelica_Fluid.Components.FluidOptions fluidOptions 
@@ -90,9 +92,11 @@ package HeatExchangers "Evaporators and condensor components"
     
   // boundary conditions at the ports
   feedwater.p = p;
-  feedwater.H_flow = semiLinear(feedwater.m_flow, feedwater.h, h_l);
+  feedwater.h_outflow = h_l;
+  // feedwater.H_flow = semiLinear(feedwater.m_flow, feedwater.h, h_l);
   steam.p = p;
-  steam.H_flow = semiLinear(steam.m_flow, steam.h, h_v);
+  steam.h_outflow = h_v;
+  //steam.H_flow = semiLinear(steam.m_flow, steam.h, h_v);
     
   // liquid volume 
   V = V_l;

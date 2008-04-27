@@ -1,3 +1,4 @@
+within Modelica_Fluid.WorkInProgress;
 package Components 
   
 model IsolatedPipe 
@@ -184,7 +185,7 @@ Modelica_Fluid.Ambient ambient;
   parameter Integer precision = 3 "Precision for tank level in animation" annotation(Hide=false);
     
   Medium.EnthalpyFlowRate H_flow_topPorts[n_topPorts];
-  Medium.EnthalpyFlowRate H_flow_bottomPorts[n_bottomPorts];
+  Medium.EnthalpyFlowRate port_b_H_flowottomPorts[n_bottomPorts];
   Medium.EnthalpyFlowRate H_flow_sidePorts[n_sidePorts];
     
   Medium.MassFlowRate m_flow_topPorts[n_topPorts];
@@ -192,7 +193,7 @@ Modelica_Fluid.Ambient ambient;
   Medium.MassFlowRate m_flow_sidePorts[n_sidePorts];
     
   Medium.MassFlowRate mXi_flow_topPorts[n_topPorts,Medium.nXi];
-  Medium.MassFlowRate mXi_flow_bottomPorts[n_bottomPorts,Medium.nXi];
+  Medium.MassFlowRate port_b_mXi_flowottomPorts[n_bottomPorts,Medium.nXi];
   Medium.MassFlowRate mXi_flow_sidePorts[n_sidePorts,Medium.nXi];
     
   protected 
@@ -224,9 +225,9 @@ Modelica_Fluid.Ambient ambient;
     each X_start = X_start,
     each level_start = level_start,
     each onlyInFlow=false,
-    H_flow=H_flow_bottomPorts,
+    H_flow=port_b_H_flowottomPorts,
     m_flow=m_flow_bottomPorts,
-    mXi_flow=mXi_flow_bottomPorts,
+    mXi_flow=port_b_mXi_flowottomPorts,
     pipeHeight=bottom_heights,
     pipeDiameter=bottom_diameters,
     redeclare package Medium = Medium) 
@@ -265,7 +266,7 @@ equation
     
   for i in 1:n_sidePorts loop
      connect(tankAttachmentSide[i].port, sidePorts[i]) 
-       annotation (points=[80.4,-1.2491e-015; 104,0],
+       annotation (points=[80.4,-1.24914e-015; 104,0],
                                            style(color=3, rgbcolor={0,0,255}));
   end for;
     
@@ -279,17 +280,17 @@ equation
   // Mass balances
   der(m) = sum(m_flow_bottomPorts) + sum(m_flow_sidePorts) + sum(m_flow_topPorts);
   for i in 1:Medium.nXi loop
-       der(mXi[i]) = sum(mXi_flow_bottomPorts[i,:]) +
+       der(mXi[i]) = sum(port_b_mXi_flowottomPorts[i,:]) +
                      sum(mXi_flow_sidePorts[i,:]) +
                      sum(mXi_flow_topPorts[i,:]);
   end for;
     
   // Energy balance
   if Medium.singleState then
-     der(U) = sum(H_flow_bottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) + Q_lost 
+     der(U) = sum(port_b_H_flowottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) + Q_lost 
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
   else
-     der(U) = sum(H_flow_bottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) - p_ambient*der(V) + Q_lost;
+     der(U) = sum(port_b_H_flowottomPorts)+sum(H_flow_sidePorts)+sum(H_flow_topPorts) - p_ambient*der(V) + Q_lost;
   end if;
   assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
     
@@ -559,109 +560,6 @@ Full steady state initialization is not supported, because the corresponding int
     Diagram);
 end Tank;
   
-    model PortVolume 
-    "Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
-    import SI = Modelica.SIunits;
-    import Modelica_Fluid.Types;
-      extends 
-      Modelica_Fluid.WorkInProgress.Interfaces.PartialInitializationParameters;
-    
-      replaceable package Medium = 
-          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-          annotation (choicesAllMatching = true);
-    
-      parameter SI.Volume V "Volume";
-    
-      Modelica_Fluid.Interfaces.FluidPort_a port(
-        redeclare package Medium = Medium) "Fluid port" 
-        annotation (extent=[-10, -10; 10, 10], rotation=0);
-      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
-      "Thermal port" 
-        annotation (extent=[-10,90; 10,110]);
-    
-      Medium.BaseProperties medium(preferredMediumStates=true,
-                  p(start=p_start), T(start=T_start),
-                  h(start=h_start), Xi(start= X_start[1:Medium.nXi]));
-      SI.Energy U "Internal energy of fluid";
-      SI.Mass m "Mass of fluid";
-      SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
-      annotation (
-       Icon(
-          Ellipse(extent=[-100, 100; 100, -100], style(
-              color=0,
-              rgbcolor={0,0,0},
-              gradient=3,
-              fillColor=68,
-              rgbfillColor={170,213,255})),
-          Text(extent=[-150,-100; 150,-150], string="%name")),
-                             Documentation(info="<html>
-<p>
-This component models the <b>volume</b> of <b>fixed size</b> that is
-associated with the <b>fluid port</b> to which it is connected.
-This means that all medium properties inside the volume, are identical
-to the port medium properties. In particular, the specific enthalpy
-inside the volume (= medium.h) is always identical to the specific enthalpy
-in the port (port.h = medium.h). Usually, this model is used when
-discretizing a component according to the finite volume method into
-volumes in internal ports that only store energy and mass and into
-transport elements that just transport energy, mass and momentum
-between the internal ports without storing these quantities during the
-transport. This splitting is only possible under certain assumptions.
-</p>
-</html>"),
-        Diagram);
-    equation 
-      // medium properties set by port values
-        port.p = medium.p;
-        port.h = medium.h;
-        port.Xi = medium.Xi;
-        thermalPort.T = medium.T;
-    
-      // Total quantities
-         m    = V*medium.d "Total Mass";
-         mXi = m*medium.Xi "Independent component masses";
-         U    = m*medium.u "Internal energy";
-    
-      // Mass and energy balance
-         der(m)    = port.m_flow "Total mass balance";
-         der(mXi)  = port.mXi_flow "Independent component mass balance";
-         der(U)    = port.H_flow + thermalPort.Q_flow "Energy balance";
-         zeros(Medium.nC) = port.mC_flow "Trace substances";
-    
-    initial equation 
-      // Initial conditions
-      if initType == Types.Init.NoInit then
-        // no initial equations
-      elseif initType == Types.Init.InitialValues then
-        if not Medium.singleState then
-           medium.p = p_start;
-        end if;
-        if use_T_start then
-          medium.T = T_start;
-        else
-          medium.h = h_start;
-        end if;
-        medium.Xi = X_start[1:Medium.nXi];
-      elseif initType == Types.Init.SteadyState then
-        if not Medium.singleState then
-           der(medium.p) = 0;
-        end if;
-        der(medium.h) = 0;
-        der(medium.Xi) = zeros(Medium.nXi);
-      elseif initType == Types.Init.SteadyStateHydraulic then
-        if not Medium.singleState then
-           der(medium.p) = 0;
-        end if;
-        if use_T_start then
-          medium.T = T_start;
-        else
-          medium.h = h_start;
-        end if;
-        medium.Xi = X_start[1:Medium.nXi];
-      else
-        assert(false, "Unsupported initialization option");
-      end if;
-    end PortVolume;
   
   model LumpedPipe 
     "Short pipe with one volume, wall friction and gravity effect" 
@@ -824,4 +722,112 @@ pipe wall/environment).
     connect(volume.thermalPort, thermalPort) 
       annotation (points=[0,10; 0,54], style(color=42, rgbcolor={191,0,0}));
   end LumpedPipe;
+
+    model PortVolume 
+    "Obsolete (cannot be implemented with stream connectors) Fixed volume associated with a port by the finite volume method (used to build up physical components; fulfills mass and energy balance)" 
+    import SI = Modelica.SIunits;
+    import Modelica_Fluid.Types;
+      annotation(__Dymola_obsolete="PortVolume cannot be implemented with stream connectors");
+      extends 
+      Modelica_Fluid.WorkInProgress.Interfaces.PartialInitializationParameters;
+    
+      replaceable package Medium = 
+          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+          annotation (choicesAllMatching = true);
+    
+      parameter SI.Volume V "Volume";
+    
+      Modelica_Fluid.Interfaces.FluidPort_a port(
+        redeclare package Medium = Medium) "Fluid port" 
+        annotation (extent=[-10, -10; 10, 10], rotation=0);
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
+      "Thermal port" 
+        annotation (extent=[-10,90; 10,110]);
+    
+      Medium.BaseProperties medium(preferredMediumStates=true,
+                  p(start=p_start), T(start=T_start),
+                  h(start=h_start), Xi(start= X_start[1:Medium.nXi]));
+      SI.Energy U "Internal energy of fluid";
+      SI.Mass m "Mass of fluid";
+      SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
+      annotation (
+       Icon(
+          Ellipse(extent=[-100, 100; 100, -100], style(
+              color=0,
+              rgbcolor={0,0,0},
+              gradient=3,
+              fillColor=68,
+              rgbfillColor={170,213,255})),
+          Text(extent=[-150,-100; 150,-150], string="%name")),
+                             Documentation(info="<html>
+<p>
+This component models the <b>volume</b> of <b>fixed size</b> that is
+associated with the <b>fluid port</b> to which it is connected.
+This means that all medium properties inside the volume, are identical
+to the port medium properties. In particular, the specific enthalpy
+inside the volume (= medium.h) is always identical to the specific enthalpy
+in the port (port.h = medium.h). Usually, this model is used when
+discretizing a component according to the finite volume method into
+volumes in internal ports that only store energy and mass and into
+transport elements that just transport energy, mass and momentum
+between the internal ports without storing these quantities during the
+transport. This splitting is only possible under certain assumptions.
+</p>
+</html>"),
+        Diagram);
+    equation 
+      // medium properties set by port values
+        port.p          = medium.p;
+        port.h_outflow  = medium.h;
+        port.Xi_outflow = medium.Xi;
+        thermalPort.T   = medium.T;
+    
+      // Total quantities
+         m    = V*medium.d "Total Mass";
+         mXi = m*medium.Xi "Independent component masses";
+         U    = m*medium.u "Internal energy";
+    
+      // Mass and energy balance
+         der(m)    = port.m_flow "Total mass balance";
+         der(mXi)  = semiLinear(port.m_flow,inflow(port.Xi_outflow),medium.Xi) 
+      "Independent component mass balance";
+         der(U)    = semiLinear(port.m_flow,inflow(port.h_outflow),medium.h) + thermalPort.Q_flow 
+      "Energy balance";
+         zeros(Medium.nC) = semiLinear(port.m_flow, inflow(port.C_outflow), port.C_outflow) 
+      "Trace substances";
+    
+    initial equation 
+      // Initial conditions
+      if initType == Types.Init.NoInit then
+        // no initial equations
+      elseif initType == Types.Init.InitialValues then
+        if not Medium.singleState then
+           medium.p = p_start;
+        end if;
+        if use_T_start then
+          medium.T = T_start;
+        else
+          medium.h = h_start;
+        end if;
+        medium.Xi = X_start[1:Medium.nXi];
+      elseif initType == Types.Init.SteadyState then
+        if not Medium.singleState then
+           der(medium.p) = 0;
+        end if;
+        der(medium.h) = 0;
+        der(medium.Xi) = zeros(Medium.nXi);
+      elseif initType == Types.Init.SteadyStateHydraulic then
+        if not Medium.singleState then
+           der(medium.p) = 0;
+        end if;
+        if use_T_start then
+          medium.T = T_start;
+        else
+          medium.h = h_start;
+        end if;
+        medium.Xi = X_start[1:Medium.nXi];
+      else
+        assert(false, "Unsupported initialization option");
+      end if;
+    end PortVolume;
 end Components;
