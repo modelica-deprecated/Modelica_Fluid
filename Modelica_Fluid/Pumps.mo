@@ -264,7 +264,7 @@ package Pumps "Pump components"
         "Enthalpy flow at the outlet";
     if M > 0 then
       // M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single 
-      (M*Np) * der(h_out) = inlet_H_flow + outlet_H_flow + W_tot 
+         M * der(h_out) = (inlet_H_flow + outlet_H_flow + W_tot)/Np 
           "Dynamic energy balance (density variations neglected)";
     else
       inlet_H_flow + outlet_H_flow + W_tot = 0 "Static energy balance";

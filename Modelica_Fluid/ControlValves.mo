@@ -30,11 +30,11 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     
     equation 
       if CheckValve then
-          m_flow = flowCharacteristic(stemPosition)*Av*sqrt(port_a_d_inflow)*
+          m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
                       smooth(0,if dp>=0 then sqrtR(dp) else 0);
       else
         // m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dp);
-        m_flow = flowCharacteristic(stemPosition)*Av*
+        m_flow = flowCharacteristic(modifiedStemPosition)*Av*
                       Modelica_Fluid.Utilities.regRoot2(dp, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
       end if;
     end ValveIncompressible;
@@ -94,11 +94,11 @@ The model operating range includes choked flow operation, which takes place for 
               Fl^2*(pin - Ff*pv) else dp 
       "Effective pressure drop, accounting for possible choked conditions";
     if CheckValve then
-       m_flow = flowCharacteristic(stemPosition)*Av*sqrt(port_a_d_inflow)*
+       m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
            (if dpEff>=0 then sqrtR(dpEff) else 0);
      else
        // m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dpEff);
-       m_flow = flowCharacteristic(stemPosition)*Av*
+       m_flow = flowCharacteristic(modifiedStemPosition)*Av*
                     Modelica_Fluid.Utilities.regRoot2(dpEff, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
     end if;
   end ValveVaporizing;
@@ -161,16 +161,16 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     
   equation 
     p = noEvent(if dp>=0 then port_a.p else port_b.p);
-    Fxt = Fxt_full*xtCharacteristic(stemPosition);
+    Fxt = Fxt_full*xtCharacteristic(modifiedStemPosition);
     x = dp/p;
     xs = smooth(0, if x < -Fxt then -Fxt else if x > Fxt then Fxt else x);
     Y = 1 - abs(xs)/(3*Fxt);
     if CheckValve then
-      m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(port_a_d_inflow)*
+      m_flow = flowCharacteristic(modifiedStemPosition)*Av*Y*sqrt(port_a_d_inflow)*
         smooth(0,if xs>=0 then sqrtR(p*xs) else 0);
     else
       // m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(d)*sqrtR(p*xs);
-      m_flow = flowCharacteristic(stemPosition)*Av*Y*
+      m_flow = flowCharacteristic(modifiedStemPosition)*Av*Y*
                     Modelica_Fluid.Utilities.regRoot2(p*xs, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
     end if;
   end ValveCompressible;
@@ -179,10 +179,18 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
     parameter Types.HydraulicConductance Kv 
       "Hydraulic conductance at full opening";
-    Modelica.Blocks.Interfaces.RealInput opening 
+    Modelica.Blocks.Interfaces.RealInput opening(min=0,max=1) 
+      "=1: completely open, =0: completely closed" 
     annotation (extent=[-20,70; 20,110],   rotation=-90);
+    parameter Real minOpening(min=0, max=0.1)=0.001 
+      "Minimum position of opening (determines leckage flow and improves numerics)"
+    annotation(Dialog(tab="Advanced"));
+    Real modifiedOpening 
+      "Modified, actually used opening, so that the valve is not completely closed to improve numerics";
+    
   equation 
-    m_flow = Kv*opening*dp;
+    modifiedOpening = noEvent(if opening > minOpening then opening else minOpening);
+    m_flow = Kv*modifiedOpening*dp;
     
   annotation (
     Icon(
@@ -222,7 +230,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
     parameter Modelica_Fluid.Types.HydraulicConductance Kv 
       "Hydraulic conductance for open valve (m_flow = Kv*dp)";
-    parameter Real Kv_small_rel = 0 
+    parameter Real Kv_small_rel(min=0, max=0.1) = 0.001 
       "Relative hydraulic conductance for closed valve (m_flow = Kv_small_rel*Kv*dp)";
     Modelica.Blocks.Interfaces.BooleanInput open 
     annotation (extent=[-20,60; 20,100],   rotation=-90);
@@ -320,9 +328,15 @@ it is open.
       annotation(Dialog(tab = "Initialization"));
     parameter Real delta=0.01 "Regularisation factor" annotation(Dialog(tab="Advanced"));
       
-    Modelica.Blocks.Interfaces.RealInput stemPosition 
+    Modelica.Blocks.Interfaces.RealInput stemPosition(min=-1e-10, max=1) 
         "Stem position in the range 0-1" 
                                        annotation (extent=[-20,70; 20,110],   rotation=-90);
+      
+      parameter Real minStemPosition(min=0, max=0.1)=0.001 
+        "Minimum stemPosition (determines leckage flow and improves numerics)" 
+      annotation(Dialog(tab="Advanced"));
+      Real modifiedStemPosition 
+        "Modified, actually used stemPosition, so that the valve is not completely closed to improve numerics";
       
     annotation (
       Icon(Text(extent=[-143,-66; 148,-106],  string="%name"),
@@ -374,6 +388,8 @@ it is open.
       Av = 2.4027e-5*Cv "Unit conversion";
     end if;
     assert(CvData>=0 and CvData<=3, "Invalid CvData");
+    equation 
+      modifiedStemPosition = noEvent(if stemPosition > minStemPosition then stemPosition else minStemPosition);
     end PartialValve;
     
   package ValveCharacteristics "Functions for valve characteristics" 

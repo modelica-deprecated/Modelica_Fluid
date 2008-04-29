@@ -79,7 +79,8 @@ package HeatExchangers "Evaporators and condensor components"
   m = rho_v*V_v + rho_l*V_l + m_D "Total mass";
   U = rho_v*V_v*h_v + rho_l*V_l*h_l - p*V_t + m_D*cp_D*T_D "Total energy";
   der(m) = qm_W + qm_S "Mass balance";
-  der(U) = q_F + qm_W*h_W + qm_S*h_S "Energy balance";
+  der(U) = q_F + semiLinear(qm_W, h_W, h_l) + semiLinear(qm_S, h_S, h_v) 
+      "Energy balance";
   V_t = V_l + V_v;
     
   // Properties of saturated liquid and steam

@@ -5,11 +5,11 @@ package TestCriticalCases
   model BranchingPipes1 
     //replaceable package Medium = Modelica.Media.Water.StandardWater;
     replaceable package Medium = 
-        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater;
+        Modelica.Media.Water.StandardWater;
     
     Sources.FixedBoundary_pTX source(
-      redeclare package Medium = Medium, 
-      p=200000, 
+      redeclare package Medium = Medium,
+      p=200000,
       T=300) annotation (extent=[-100,0; -88,12]);
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
@@ -17,32 +17,32 @@ package TestCriticalCases
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2, 
-      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic, 
-      p_a_start=200000, 
-      p_b_start=100000, 
+      diameter=2.54e-2,
+      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
+      p_a_start=200000,
+      p_b_start=100000,
       T_start=300)      annotation (extent=[-72,-4; -52,16]);
     
     ControlValves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
-      d_nom=1000, 
-      T_start=300, 
-      pin_start=200000, 
-      pout_start=200000, 
-      p_nom=200000, 
+      d_nom=1000,
+      T_start=300,
+      pin_start=200000,
+      pout_start=200000,
+      p_nom=200000,
       dp_nom=200000) 
                   annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
-      d_nom=1000, 
-      T_start=300, 
-      pin_start=200000, 
-      pout_start=200000, 
-      p_nom=200000, 
+      d_nom=1000,
+      T_start=300,
+      pin_start=200000,
+      pout_start=200000,
+      p_nom=200000,
       dp_nom=200000) 
                   annotation (extent=[8,-50; 28,-30]);
     annotation (
@@ -62,10 +62,10 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2, 
-      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic, 
-      p_a_start=200000, 
-      p_b_start=200000, 
+      diameter=2.54e-2,
+      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
+      p_a_start=200000,
+      p_b_start=200000,
       T_start=300)      annotation (extent=[-40,36; -20,56]);
     
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
@@ -74,10 +74,10 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
-      diameter=2.54e-2, 
-      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic, 
-      p_a_start=200000, 
-      p_b_start=200000, 
+      diameter=2.54e-2,
+      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
+      p_a_start=200000,
+      p_b_start=200000,
       T_start=300)      annotation (extent=[-40,-50; -20,-30]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
@@ -257,10 +257,10 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       length=10,
       diameter=2.54e-2) annotation (extent=[-40,-50; -20,-30]);
     
-    Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
-          1,0; 100,0]) annotation (extent=[-20,70; 0,90]);
-    Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1;
-          2,0; 100,0]) annotation (extent=[-20,-10; 0,10]);
+    Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,0; 1,0;
+          1,1; 100,1]) annotation (extent=[-20,70; 0,90]);
+    Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,0; 2,0;
+          2,1; 100,1]) annotation (extent=[-20,-10; 0,10]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
     Junctions.JunctionIdeal splitter(redeclare package Medium = Medium) 
       annotation (extent=[-50,0; -36,12], rotation=90);
@@ -279,12 +279,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[1,80; 20,80; 20,55], style(color=74, rgbcolor={0,0,127}));
     connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, splitter.port_3) annotation (points=[-60,6; -50.7,6],
+    connect(pipe1.port_b, splitter.port_3) annotation (points=[-60,6; -50,6],
         style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, splitter.port_2) annotation (points=[-40,46; -43,46;
-          -43,12.6], style(color=69, rgbcolor={0,127,255}));
-    connect(splitter.port_1, pipe3.port_a) annotation (points=[-43,-0.6; -43,
-          -40.3; -40,-40.3; -40,-40], style(color=69, rgbcolor={0,127,255}));
+          -43,12],   style(color=69, rgbcolor={0,127,255}));
+    connect(splitter.port_1, pipe3.port_a) annotation (points=[-43,0; -43,-40.3;
+          -40,-40.3; -40,-40],        style(color=69, rgbcolor={0,127,255}));
   end BranchingPipes3;
   
   model BranchingPipes4 
@@ -349,14 +349,15 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       p_a_start=5.0e5,
       p_b_start=5.0e5)  annotation (extent=[-40,-50; -20,-30]);
     
-    Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
-          1,0; 100,0]) annotation (extent=[-20,70; 0,90]);
-    Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1;
-          2,0; 100,0]) annotation (extent=[-20,-10; 0,10]);
+    Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,0; 1,0;
+          1,1; 100,1]) annotation (extent=[-20,70; 0,90]);
+    Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,0; 2,0;
+          2,1; 100,1]) annotation (extent=[-20,-10; 0,10]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
     Junctions.JunctionVolume splitter(redeclare package Medium = Medium,
-      p_start=5.0e5,
-      initType=Modelica_Fluid.Types.Init.InitialValues) 
+      initType=Modelica_Fluid.Types.Init.InitialValues, 
+      V=0.0002, 
+      p_start=500000) 
       annotation (extent=[-50,0; -36,12], rotation=90);
   equation 
     connect(source.port, pipe1.port_a) annotation (points=[-88,6; -80,6], style(
@@ -373,12 +374,12 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
         points=[1,80; 20,80; 20,55], style(color=74, rgbcolor={0,0,127}));
     connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, splitter.port_3) annotation (points=[-60,6; -50.7,6],
+    connect(pipe1.port_b, splitter.port_3) annotation (points=[-60,6; -50,6],
         style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, splitter.port_2) annotation (points=[-40,46; -43,46;
-          -43,12.6], style(color=69, rgbcolor={0,127,255}));
-    connect(splitter.port_1, pipe3.port_a) annotation (points=[-43,-0.6; -43,
-          -40.3; -40,-40.3; -40,-40], style(color=69, rgbcolor={0,127,255}));
+          -43,12],   style(color=69, rgbcolor={0,127,255}));
+    connect(splitter.port_1, pipe3.port_a) annotation (points=[-43,0; -43,-40.3;
+          -40,-40.3; -40,-40],        style(color=69, rgbcolor={0,127,255}));
   end BranchingPipes4;
   
   model SeriesPipes1 
@@ -386,25 +387,25 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     
     Sources.FixedBoundary_pTX source(
       redeclare package Medium = Medium,
-      p=5.0e5,
+      p=500000,
       T=300) annotation (extent=[-100,-6; -88,6]);
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
-      p_a_start=5.0e5,
-      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.5e-2,
-      redeclare package Medium = Medium) annotation (extent=[-76,-10; -56,10]);
+      redeclare package Medium = Medium,
+      p_a_start=500000,
+      p_b_start=500000)                  annotation (extent=[-76,-10; -56,10]);
     
     ControlValves.ValveIncompressible valveIncompressible(
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=1000,
-      redeclare package Medium = Medium) annotation (extent=[52,-10; 72,10]);
+      redeclare package Medium = Medium,
+      p_nom=500000,
+      dp_nom=400000)                     annotation (extent=[52,-10; 72,10]);
     annotation (
       Diagram,
       experiment(StopTime=5),
@@ -413,18 +414,18 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
 Simulation starts with the valve open. At t=1, the valve is closed, and the simulation fails.
 </html>"));
     Sources.FixedBoundary_pTX sink(
-      T=300,
-      p=1.0e5,
-      redeclare package Medium = Medium) annotation (extent=[94,-6; 82,6]);
+      redeclare package Medium = Medium,
+      p=100000,
+      T=300)                             annotation (extent=[94,-6; 82,6]);
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
-      p_a_start=5.0e5,
-      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.5e-2,
-      redeclare package Medium = Medium) annotation (extent=[-14,-10; 6,10]);
+      redeclare package Medium = Medium,
+      p_a_start=500000,
+      p_b_start=500000)                  annotation (extent=[-14,-10; 6,10]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
           1,0; 100,0]) annotation (extent=[-44,78; -24,98]);
@@ -434,14 +435,14 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (extent=[-46,-10; -26,10]);
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
-      p_a_start=5.0e5,
-      p_b_start=5.0e5,
       use_T_start=true,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.5e-2,
-      redeclare package Medium = Medium) annotation (extent=[16,-10; 36,10]);
+      redeclare package Medium = Medium,
+      p_a_start=500000,
+      p_b_start=500000)                  annotation (extent=[16,-10; 36,10]);
     
   equation 
     connect(source.port, pipe1.port_a) annotation (points=[-88,0; -76,0], style(
@@ -850,11 +851,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
-          -53.5,6; -53.5,6; -49,6],
+          -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
-          46; -38,17], style(color=69, rgbcolor={0,127,255}));
-    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-5; -38,
+          46; -38,16], style(color=69, rgbcolor={0,127,255}));
+    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-4; -38,
           -40; -30,-40], style(color=69, rgbcolor={0,127,255}));
   end BranchingPipes13;
   
@@ -951,11 +952,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
-          -53.5,6; -53.5,6; -49,6],
+          -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
-          46; -38,17], style(color=69, rgbcolor={0,127,255}));
-    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-5; -38,
+          46; -38,16], style(color=69, rgbcolor={0,127,255}));
+    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-4; -38,
           -40; -30,-40], style(color=69, rgbcolor={0,127,255}));
   end BranchingPipes14;
   
@@ -1056,11 +1057,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
-          -53.5,6; -53.5,6; -49,6],
+          -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
-          46; -38,17], style(color=69, rgbcolor={0,127,255}));
-    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-5; -38,
+          46; -38,16], style(color=69, rgbcolor={0,127,255}));
+    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-4; -38,
           -40; -30,-40], style(color=69, rgbcolor={0,127,255}));
   end BranchingPipes15;
   
@@ -1160,11 +1161,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[1,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
-          -53.5,6; -53.5,6; -49,6],
+          -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
-          46; -38,17], style(color=69, rgbcolor={0,127,255}));
-    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-5; -38,
+          46; -38,16], style(color=69, rgbcolor={0,127,255}));
+    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-4; -38,
           -40; -30,-40], style(color=69, rgbcolor={0,127,255}));
   end BranchingPipes16;
   
@@ -1264,18 +1265,18 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[3,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
-          -54.5,6; -54.5,6; -51,6],
+          -54.5,6; -54.5,6; -50,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -40,
-          46; -40,17], style(color=69, rgbcolor={0,127,255}));
-    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-40,-5; -40,
+          46; -40,16], style(color=69, rgbcolor={0,127,255}));
+    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-40,-4; -40,
           -40; -30,-40], style(color=69, rgbcolor={0,127,255}));
-    connect(junctionVolume.port_3, sink.port) annotation (points=[67,-12; 82,
+    connect(junctionVolume.port_3, sink.port) annotation (points=[66,-12; 82,
           -12], style(color=69, rgbcolor={0,127,255}));
     connect(valve2.port_b, junctionVolume.port_1) annotation (points=[28,-40;
-          56,-40; 56,-23], style(color=69, rgbcolor={0,127,255}));
+          56,-40; 56,-22], style(color=69, rgbcolor={0,127,255}));
     connect(valve1.port_b, junctionVolume.port_2) annotation (points=[30,46; 56,
-          46; 56,-1], style(color=69, rgbcolor={0,127,255}));
+          46; 56,-2], style(color=69, rgbcolor={0,127,255}));
   end BranchingPipes17;
   
   model BranchingPipes18 
@@ -1372,18 +1373,18 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[3,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
-          -53.5,6; -53.5,6; -49,6],
+          -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
-          46; -38,17], style(color=69, rgbcolor={0,127,255}));
-    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-5; -38,
+          46; -38,16], style(color=69, rgbcolor={0,127,255}));
+    connect(junctionIdeal.port_1, pipe3.port_a) annotation (points=[-38,-4; -38,
           -40; -30,-40], style(color=69, rgbcolor={0,127,255}));
-    connect(junctionVolume.port_3, sink.port) annotation (points=[67,-12; 82,
+    connect(junctionVolume.port_3, sink.port) annotation (points=[66,-12; 82,
           -12], style(color=69, rgbcolor={0,127,255}));
     connect(valve2.port_b, junctionVolume.port_1) annotation (points=[28,-40;
-          56,-40; 56,-23], style(color=69, rgbcolor={0,127,255}));
+          56,-40; 56,-22], style(color=69, rgbcolor={0,127,255}));
     connect(valve1.port_b, junctionVolume.port_2) annotation (points=[30,46; 56,
-          46; 56,-1], style(color=69, rgbcolor={0,127,255}));
+          46; 56,-2], style(color=69, rgbcolor={0,127,255}));
   end BranchingPipes18;
   
   model BranchingPipes131 
@@ -1402,10 +1403,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.54e-2,
-      p_b_start=4.95e5,
-      frictionAndGravity2(dp(start=1000)),
-      frictionAndGravity1(dp(start=1000))) 
-                        annotation (extent=[-78,-4; -58,16]);
+      p_b_start=4.95e5) annotation (extent=[-78,-4; -58,16]);
     
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
@@ -1436,10 +1434,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5,
-      frictionAndGravity1(dp(start=1000)),
-      frictionAndGravity2(dp(start=1000))) 
-                        annotation (extent=[-30,-50; -10,-30]);
+      p_b_start=4.90e5) annotation (extent=[-30,-50; -10,-30]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
           1,0; 100,0]) annotation (extent=[-20,70; 0,90]);

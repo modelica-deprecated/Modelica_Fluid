@@ -36,9 +36,11 @@ The <b>one port</b> sensors have the advantage of easily introducing them to and
   model Pressure "Ideal pressure sensor" 
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput p(unit = "Pa") "Pressure at port" 
+    Modelica.Blocks.Interfaces.RealOutput p(final quantity="Pressure",
+                                            final unit="Pa",
+                                            displayUnit="bar",
+                                            min=0) "Pressure at port" 
       annotation (extent=[100,-10; 120,10]);
-    
     annotation (
     Diagram(
         Line(points=[70,0; 100,0], style(rgbcolor={0,0,127})),
@@ -65,8 +67,10 @@ ideal, i.e., it does not influence the fluid.
   model DensityOnePort "Ideal one port density sensor" 
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput d(unit = "kg/m3") 
-      "Density in port medium" 
+    Modelica.Blocks.Interfaces.RealOutput d(final quantity="Density",
+                                            final unit="kg/m3",
+                                            displayUnit="g/cm3",
+                                            min=0) "Density in port medium" 
       annotation (extent=[90,-10; 110,10],    rotation=0);
     
   annotation (defaultComponentName="density",
@@ -98,10 +102,15 @@ ideal, i.e., it does not influence the fluid.
   model DensityTwoPort "Ideal two port density sensor" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput d(unit="kg/m3") 
+    Modelica.Blocks.Interfaces.RealOutput d(final quantity="Density",
+                                            final unit="kg/m3",
+                                            displayUnit="g/cm3",
+                                            min=0) 
       "Density of the passing fluid" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
-    
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
+      annotation(Dialog(tab="Advanced"));
   annotation (defaultComponentName="density",
     Diagram(
         Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
@@ -123,16 +132,27 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
+  protected 
+    Medium.Density d_a_inflow "Density of inflowing fluid at port_a";
+    Medium.Density d_b_inflow 
+      "Density of inflowing fluid at port_b or d_a_inflow, if uni-directional flow";
   equation 
-    d = if port_a.m_flow > 0 then 
-           Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)) else 
-           Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
+    if allowFlowReversal then
+       d_a_inflow = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       d_b_inflow = Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
+       d = Modelica_Fluid.Utilities.regStep(port_a.m_flow, d_a_inflow, d_b_inflow, m_flow_small);
+    else
+       d = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       d_a_inflow = d;
+       d_b_inflow = d;
+    end if;
   end DensityTwoPort;
   
   model TemperatureOnePort "Ideal one port temperature sensor" 
       extends Sensors.BaseClasses.PartialAbsoluteSensor;
     
-    Modelica.Blocks.Interfaces.RealOutput T(unit = "K") 
+    Modelica.Blocks.Interfaces.RealOutput T(final quantity="ThermodynamicTemperature",
+                                            final unit = "K", displayUnit = "degC", min=0) 
       "Temperature in port medium" 
       annotation (extent=[60,-10; 80,10],     rotation=0);
     
@@ -185,20 +205,22 @@ ideal, i.e., it does not influence the fluid.
   model TemperatureTwoPort "Ideal two port temperature sensor" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     
-    Modelica.Blocks.Interfaces.RealOutput T(unit="K") 
+    Modelica.Blocks.Interfaces.RealOutput T( final quantity="ThermodynamicTemperature",
+                                             final unit="K",
+                                             min = 0,
+                                             displayUnit="degC") 
       "Temperature of the passing fluid" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      "For bi-directional flow, temperature is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
+      annotation(Dialog(tab="Advanced"));
     
   annotation (defaultComponentName="temperature",
-    Diagram(
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
+    Diagram,
     Icon(
       Text(extent=[-126,160; 138,98],   string="%name"),
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
+        Line(points=[-92,0; 100,0],style(color=69, rgbcolor={0,128,255})),
         Ellipse(extent=[-20,-88; 20,-50],   style(
             color=0,
             thickness=2,
@@ -214,8 +236,7 @@ ideal, i.e., it does not influence the fluid.
         Text(
           extent=[120,-40; 0,-90],
           style(color=0),
-          string="T"),
-        Line(points=[12,0; 60,0],  style(rgbcolor={0,0,127}))),
+          string="T")),
     Documentation(info="<HTML>
 <p>
 This component monitors the temperature of the passing fluid. 
@@ -223,16 +244,27 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
+  protected 
+    Medium.Temperature T_a_inflow "Temperature of inflowing fluid at port_a";
+    Medium.Temperature T_b_inflow 
+      "Temperature of inflowing fluid at port_b or T_a_inflow, if uni-directional flow";
   equation 
-    T = if port_a.m_flow > 0 then 
-           Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)) else 
-           Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
+    if allowFlowReversal then
+       T_a_inflow = Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       T_b_inflow = Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
+       T = Modelica_Fluid.Utilities.regStep(port_a.m_flow, T_a_inflow, T_b_inflow, m_flow_small);
+    else
+       T = Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       T_a_inflow = T;
+       T_b_inflow = T;
+    end if;
   end TemperatureTwoPort;
   
   model SpecificEnthalpyOnePort "Ideal one port specific enthalphy sensor" 
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput h_out(unit="J/kg") 
+    Modelica.Blocks.Interfaces.RealOutput h_out(final quantity="SpecificEnergy",
+                                                final unit="J/kg") 
       "Specific enthalpy in port medium" 
       annotation (extent=[90,-10; 110,10],    rotation=0);
     
@@ -263,9 +295,14 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
     "Ideal two port sensor for the specific enthalpy" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput h_out(unit="J/kg") 
+    Modelica.Blocks.Interfaces.RealOutput h_out(final quantity="SpecificEnergy",
+                                                final unit="J/kg") 
       "Specific enthalpy of the passing fluid" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
+    
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      "For bi-directional flow, specific enthalpy is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
+      annotation(Dialog(tab="Advanced"));
     
   annotation (defaultComponentName="specificEnthalpy",
     Diagram(
@@ -289,13 +326,18 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </HTML>
 "));
   equation 
-    h_out = if port_a.m_flow > 0 then port_b.h_outflow else port_a.h_outflow;
+    if allowFlowReversal then
+       h_out = Modelica_Fluid.Utilities.regStep(port_a.m_flow, port_b.h_outflow, port_a.h_outflow, m_flow_small);
+    else
+       h_out = port_b.h_outflow;
+    end if;
   end SpecificEnthalpyTwoPort;
   
   model SpecificEntropyOnePort "Ideal one port specific entropy sensor" 
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput s(unit="J/(kg.K)") 
+    Modelica.Blocks.Interfaces.RealOutput s(final quantity="SpecificEntropy",
+                                            final unit="J/(kg.K)") 
       "Specific entropy in port medium" 
       annotation (extent=[90,-10; 110,10],    rotation=0);
     
@@ -325,9 +367,13 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
   model SpecificEntropyTwoPort "Ideal two port sensor for the specific entropy" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput s(unit="J/(kg.K)") 
+    Modelica.Blocks.Interfaces.RealOutput s(final quantity="SpecificEntropy",
+                                            final unit="J/(kg.K)") 
       "Specific entropy of the passing fluid" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      "For bi-directional flow, specific entropy is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
+      annotation(Dialog(tab="Advanced"));
     
   annotation (defaultComponentName="specificEntropy",
     Diagram(
@@ -350,17 +396,28 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
+  protected 
+    Medium.SpecificEntropy s_a_inflow 
+      "Specific entropy of inflowing fluid at port_a";
+    Medium.SpecificEntropy s_b_inflow 
+      "Specific entropy of inflowing fluid at port_b or s_a_inflow, if uni-directional flow";
   equation 
-    s = if port_a.m_flow > 0 then 
-           Medium.specificEntropy(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)) else 
-           Medium.specificEntropy(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
-    
+    if allowFlowReversal then
+       s_a_inflow = Medium.specificEntropy(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       s_b_inflow = Medium.specificEntropy(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
+       s = Modelica_Fluid.Utilities.regStep(port_a.m_flow, s_a_inflow, s_b_inflow, m_flow_small);
+    else
+       s = Medium.specificEntropy(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       s_a_inflow = s;
+       s_b_inflow = s;
+    end if;
   end SpecificEntropyTwoPort;
   
   model MassFlowRate "Ideal sensor for mass flow rate" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput m_flow(unit = "kg/s") 
+    Modelica.Blocks.Interfaces.RealOutput m_flow(quantity="MassFlowRate",
+                                                 final unit="kg/s") 
       "Mass flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
           -100], rotation=-90);
     
@@ -392,9 +449,13 @@ The sensor is ideal, i.e., it does not influence the fluid.
   model VolumeFlowRate "Ideal sensor for volume flow rate" 
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
-    Modelica.Blocks.Interfaces.RealOutput V_flow(unit = "m3/s") 
+    Modelica.Blocks.Interfaces.RealOutput V_flow(final quantity="VolumeFlowRate",
+                                                 final unit="m3/s") 
       "Volume flow rate from port_a to port_b" 
       annotation (extent=[-10,-120; 10,-100], rotation=-90);
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
+      annotation(Dialog(tab="Advanced"));
     
   annotation (
     Diagram(
@@ -417,10 +478,22 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
+  protected 
+    Medium.Density d_a_inflow "Density of inflowing fluid at port_a";
+    Medium.Density d_b_inflow 
+      "Density of inflowing fluid at port_b or d_a_inflow, if uni-directional flow";
+    Medium.Density d "Density of the passing fluid";
   equation 
-    V_flow = port_a.m_flow/(if port_a.m_flow > 0 then 
-                   Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)) else 
-                   Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow)));
+    if allowFlowReversal then
+       d_a_inflow = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       d_b_inflow = Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
+       d = Modelica_Fluid.Utilities.regStep(port_a.m_flow, d_a_inflow, d_b_inflow, m_flow_small);
+    else
+       d = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       d_a_inflow = d;
+       d_b_inflow = d;
+    end if;
+    V_flow = port_a.m_flow/d;
   end VolumeFlowRate;
   
   model RelativePressure "Ideal relative pressure sensor" 
@@ -429,15 +502,17 @@ The sensor is ideal, i.e. it does not influence the fluid.
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
     
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(m_flow(min=0),
                                   redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(m_flow(min=0),
                                   redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
     
-    Modelica.Blocks.Interfaces.RealOutput p_rel(unit="Pa") 
-      "Relative pressure signal"                                                      annotation (extent=[-10, -80; 10, -100], rotation=90);
+    Modelica.Blocks.Interfaces.RealOutput p_rel(final quantity="Pressure",
+                                                final unit="Pa",
+                                                displayUnit="bar") 
+      "Relative pressure signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
     annotation (
       Icon(
         Line(points=[-100, 0; -70, 0], style(color=69)),
@@ -487,14 +562,15 @@ through the sensor is allowed.
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(m_flow(min=0),
                                   redeclare package Medium = Medium) 
       annotation (extent=[-120, -10; -100, 10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(m_flow(min=0),
                                   redeclare package Medium = Medium) 
       annotation (extent=[120, -10; 100, 10]);
     
-    Modelica.Blocks.Interfaces.RealOutput T_rel(unit="K") 
+    Modelica.Blocks.Interfaces.RealOutput T_rel(final quantity="ThermodynamicTemperature",
+                                                final unit = "K", displayUnit = "degC", min=0) 
       "Relative temperature signal"                                                                               annotation (extent=[-10, -80; 10, -100], rotation=90);
     annotation (
       Icon(
@@ -750,8 +826,7 @@ the two ports of this component and is provided as output signal.
         "Medium in the sensor" 
         annotation(choicesAllMatching=true);
       
-      Modelica_Fluid.Interfaces.FluidPort_a port(
-        redeclare package Medium=Medium) 
+      Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium=Medium, m_flow(min=0)) 
         annotation (extent=[-10,-110; 10,-90],rotation=90);
       
       annotation (Documentation(info="<html>

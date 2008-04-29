@@ -7,7 +7,10 @@ model StaticHead
     "Models the static head between two ports at different heights" 
   extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
   parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
-  Medium.Density d "Fluid density";
+  parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
+    annotation(Dialog(tab="Advanced"));
+  Medium.Density d "Density of the passing fluid";
   outer Modelica_Fluid.Ambient ambient "Ambient conditions";
   annotation (Icon(
       Rectangle(extent=[-100,60; 100,-60],   style(
@@ -38,8 +41,18 @@ This model describes the static head due to the relative height between the two 
 </html>"));
 equation 
 //  d = if dp > 0 then medium_a.d else medium_b.d;
-// Use flow direction dependent density for head calculation
-  d = if port_a.m_flow>0 then port_a_d_inflow else port_b_d_inflow;
+  /* Density is currently not handled correctly. The correct formula:
+        d = if port_a.m_flow>0 then d_a else d_b
+     leads to a non-linear system of equations that mays have an infinite number of
+     solutions and also no solution may exist for small flow rates.
+     Most likely, this can only be correctly handled with a dynamic momentum balance.
+  */
+  if allowFlowReversal then
+     d = (port_a_d_inflow + port_b_d_inflow)/2 
+        "temporary solution that must be improved (BUT NOT WITH if port_a.m_flow>0 then d_a else d_b)";
+  else
+     d = port_a_d_inflow;
+  end if;
   dp = height_ab*ambient.g*d;
 end StaticHead;
   
@@ -135,7 +148,7 @@ end SimpleGenericOrifice;
     parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
     parameter SI.Length height_ab = 0.0 "Height(port_b) - Height(port_a)" 
                                                                        annotation(Evaluate=true);
-    Medium.Density d "Fluid density";
+    Medium.Density d "Density of the passing fluid";
     parameter SI.Length roughness(min=0) = 2.5e-5 
       "Absolute roughness of pipe (default = smooth steel pipe)" 
         annotation(Dialog(enable=WallFriction.use_roughness));
@@ -160,7 +173,7 @@ end SimpleGenericOrifice;
       "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
     parameter SI.MassFlowRate m_flow_small = 0.01 
-      "Turbulent flow if |m_flow| >= m_flow_small (only used if WallFriction=QuadraticTurbulent)"
+      "Turbulent flow if |m_flow| >= m_flow_small (used if WallFriction=QuadraticTurbulent); also used to regularize density for the static head"
       annotation(Dialog(tab="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
     SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, (eta_a+eta_b)/2, diameter) if show_Re 
       "Reynolds number of pipe";
@@ -268,7 +281,18 @@ simulation and/or might give a more robust simulation.
     SI.Density d_a = if use_nominal then d_nominal else port_a_d_inflow;
     SI.Density d_b = if use_nominal then d_nominal else port_b_d_inflow;
   equation 
-    d = if port_a.m_flow>0 then d_a else d_b "density for static head";
+    /* Density is currently not handled correctly. The correct formula:
+        d = if port_a.m_flow>0 then d_a else d_b
+     leads to a non-linear system of equations that mays have an infinite number of
+     solutions and also no solution may exist for small flow rates.
+     Most likely, this can only be correctly handled with a dynamic momentum balance.
+  */
+    if allowFlowReversal then
+       d = (d_a + d_b)/2 
+        "temporary solution that must be improved (BUT NOT WITH if port_a.m_flow>0 then d_a else d_b)";
+    else
+       d = d_a;
+    end if;
     if from_dp and not WallFriction.dp_is_zero then
        m_flow = WallFriction.massFlowRate_dp(dp-height_ab*ambient.g*d,
                                              d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
@@ -2389,7 +2413,6 @@ solving a non-linear equation.
       annotation (extent=[110,-10; 90,10]);
     Medium.MassFlowRate m_flow 
         "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
-    SI.VolumeFlowRate V_flow_a "Volume flow rate near port_a";
     SI.Pressure dp(start=p_a_start-p_b_start) 
         "Pressure difference between port_a and port_b";
       
@@ -2442,9 +2465,6 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
       
     // Mass balance
     port_a.m_flow + port_b.m_flow = 0;
-      
-    // Volume flow rate
-    V_flow_a = port_a.m_flow / (if port_a.m_flow > 0 then port_a_d_inflow else port_b_d_inflow);
       
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
