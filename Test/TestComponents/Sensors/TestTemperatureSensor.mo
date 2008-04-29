@@ -103,7 +103,7 @@ equation
       rgbcolor={0,0,127},
       smooth=0));
   connect(temperatureOnePortJunction.port, junctionIdeal.port_1) annotation (
-      points=[-10,-80; 19,-80], style(
+      points=[-10,-80; 20,-80], style(
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
@@ -117,9 +117,9 @@ equation
   connect(temperatureTwoPort.port_b, openTankHot2.ports[1]) annotation (points=
         [0,-10; 34,-10; 34,-20.5; 70,-20.5], style(color=69, rgbcolor={0,127,
           255}));
-  connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (points=[30,
-        -69; 30,-60.5], style(color=69, rgbcolor={0,127,255}));
-  connect(junctionIdeal.port_2, openTankHot3.ports[1]) annotation (points=[41,
-        -80; 55.5,-80; 55.5,-80.5; 70,-80.5], style(color=69, rgbcolor={0,127,
+  connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (points=[30,-70; 
+        30,-60.5],      style(color=69, rgbcolor={0,127,255}));
+  connect(junctionIdeal.port_2, openTankHot3.ports[1]) annotation (points=[40,-80; 
+        55.5,-80; 55.5,-80.5; 70,-80.5],      style(color=69, rgbcolor={0,127,
           255}));
 end TestTemperatureSensor;

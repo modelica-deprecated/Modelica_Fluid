@@ -140,9 +140,8 @@ package TestOverdeterminedSteadyStateInit
                 annotation (extent=[0,0; 20,20]);
     Modelica.Blocks.Sources.Step valveOpening(
       height=0.1,
-      offset=1,
-      startTime=2000) 
-                    annotation (extent=[-40,0; -20,20]);
+      startTime=2000,
+      offset=0.9)   annotation (extent=[-40,0; -20,20]);
     annotation (Diagram,
       experiment(StopTime=6000, Tolerance=1e-006),
       experimentSetupOutput(equdistant=false),
@@ -152,7 +151,7 @@ Initial equations with initial values for the states close to the steady state a
 The simulation initializes and runs for 6000 seconds without problems.
 </html>"));
   equation 
-    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10;
+    connect(valveOpening.y, plant.valvePosition) annotation (points=[-19,10; 
           -0.8,10], style(color=74, rgbcolor={0,0,127}));
   end Test1;
   
@@ -184,8 +183,8 @@ Initial equations for steady-state are selected for all components. Moreover, ad
 "),   experiment(StopTime=6000, Tolerance=1e-006),
       experimentSetupOutput(equdistant=false));
   initial equation 
-    plant.tank.level = 1;
-    plant.tank.medium.T = Modelica.SIunits.Conversions.from_degC(20);
+   // plant.tank.level = 1;
+   // plant.tank.medium.T = Modelica.SIunits.Conversions.from_degC(20);
   end Test3;
   
   model Test4 

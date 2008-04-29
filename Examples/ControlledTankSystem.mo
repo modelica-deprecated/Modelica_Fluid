@@ -100,7 +100,8 @@ This example is based on
             "../Scripts/Examples/ControlledTanks/plot level and ports.m_flow.mos" 
           "plot level and ports.m_flow"));
     ControlValves.ValveDiscrete valve1(                             redeclare 
-        package Medium = Medium, Kv=4e-4) 
+        package Medium = Medium, Kv=4e-4, 
+      Kv_small_rel=0) 
       annotation (extent=[10,40; 30,60], rotation=90);
     Volumes.Tank tank1(
       level_start=0.05,
@@ -113,10 +114,12 @@ This example is based on
     Modelica.Blocks.Sources.RealExpression level1(y=tank1.level) 
       annotation (extent=[-90,-60; -55,-40]);
     ControlValves.ValveDiscrete valve2(                redeclare package Medium
-        = Medium, Kv=100) 
+        = Medium, Kv=100, 
+      Kv_small_rel=0) 
       annotation (extent=[10,-40; 30,-20], rotation=90);
     ControlValves.ValveDiscrete valve3(                redeclare package Medium
-        = Medium, Kv=10) 
+        = Medium, Kv=10, 
+      Kv_small_rel=0) 
       annotation (extent=[70,-80; 90,-60], rotation=90);
     Volumes.Tank tank2(
       level_start=0.05,
@@ -163,12 +166,12 @@ This example is based on
     connect(source.port, valve1.port_b) 
       annotation (points=[20,70; 20,60], style(color=69, rgbcolor={0,127,255}));
     connect(valve1.port_a, tank1.topPorts[1]) 
-      annotation (points=[20,40; 20,30], style(color=69, rgbcolor={0,127,255}));
-    connect(tank1.ports[1], valve2.port_b) annotation (points=[20,-10; 20,-20],
+      annotation (points=[20,40; 20,31], style(color=69, rgbcolor={0,127,255}));
+    connect(tank1.ports[1], valve2.port_b) annotation (points=[20,-11; 20,-20],
         style(color=69, rgbcolor={0,127,255}));
     connect(valve2.port_a, tank2.topPorts[1]) annotation (points=[20,-40; 20,
-          -50; 50,-50; 50,2; 80,2; 80,-10],style(color=69, rgbcolor={0,127,255}));
-    connect(tank2.ports[1], valve3.port_b) annotation (points=[80,-50; 80,-60], style(
+          -50; 50,-50; 50,2; 80,2; 80,-9], style(color=69, rgbcolor={0,127,255}));
+    connect(tank2.ports[1], valve3.port_b) annotation (points=[80,-51; 80,-60], style(
           color=69, rgbcolor={0,127,255}));
     connect(valve3.port_a, ambient1.port) annotation (points=[80,-80; 80,-90;
           30,-90], style(color=69, rgbcolor={0,127,255}));
