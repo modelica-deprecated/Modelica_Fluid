@@ -16,6 +16,9 @@ package Pipes "Lumped, distributed and thermal pipe components"
     parameter Medium.AbsolutePressure p_b_start = p_a_start 
       "Start value of pressure at port_b" 
       annotation(Dialog(tab = "Initialization"));
+    parameter Medium.MassFlowRate m_flow_start = 0 
+      "Guess value of port_a.m_flow" 
+      annotation(Dialog(tab = "Initialization"));
     parameter Boolean use_T_start = true 
       "= true, use T_start, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate=true);
@@ -78,7 +81,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
             gradient=2,
             fillColor=69)),
         Text(
-          extent=[-145,-40; 155,-90],
+          extent=[-150,-60; 150,-100],
           string="%name",
           style(gradient=2, fillColor=69)),
         Ellipse(extent=[-11,10; 9,-10],   style(
@@ -100,24 +103,22 @@ pipe wall/environment).
       Coordsys(grid=[1,1], scale=0),
       uses(Modelica_Fluid(version="1.0 Beta 2"), Modelica(version="2.2.2")));
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction1(
-      redeclare package Medium = Medium, 
-      flowDirection=flowDirection, 
-      redeclare package WallFriction = WallFriction, 
-      length=length/2, 
-      diameter=diameter, 
-      height_ab=height_ab/2, 
-      roughness=roughness, 
-      use_nominal=use_nominal, 
-      eta_nominal=eta_nominal, 
-      d_nominal=d_nominal, 
-      from_dp=true, 
-      dp_small=dp_small, 
-      show_Re=false, 
-      p_a_start=p_a_start, 
-      p_b_start=(p_a_start + p_b_start)/2, 
-      T_start=T_start, 
-      h_start=h_start, 
-      X_start=X_start)   annotation (extent=[-60,-10; -40,10]);
+      redeclare package Medium = Medium,
+      flowDirection=flowDirection,
+      redeclare package WallFriction = WallFriction,
+      length=length/2,
+      diameter=diameter,
+      height_ab=height_ab/2,
+      roughness=roughness,
+      use_nominal=use_nominal,
+      eta_nominal=eta_nominal,
+      d_nominal=d_nominal,
+      from_dp=true,
+      dp_small=dp_small,
+      show_Re=false,
+      dp_start = (p_a_start - p_b_start)/2,
+      m_flow_start = m_flow_start) 
+      annotation (extent=[-60,-10; -40,10]);
     Volumes.MixingVolume volume(
       redeclare package Medium = Medium,
       V=Modelica.Constants.pi*(diameter/2)^2*length,
@@ -130,25 +131,21 @@ pipe wall/environment).
       X_start=X_start) 
       annotation (extent=[-10,-10; 10,10]);
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction2(
-      redeclare package Medium = Medium, 
-      flowDirection=flowDirection, 
-      redeclare package WallFriction = WallFriction, 
-      length=length/2, 
-      diameter=diameter, 
-      height_ab=height_ab/2, 
-      roughness=roughness, 
-      use_nominal=use_nominal, 
-      eta_nominal=eta_nominal, 
-      d_nominal=d_nominal, 
-      from_dp=true, 
-      dp_small=dp_small, 
-      show_Re=false, 
-      p_a_start=(p_a_start + p_b_start)/2, 
-      p_b_start=p_b_start, 
-      T_start=T_start, 
-      h_start=h_start, 
-      X_start=X_start, 
-      use_T_start=true)  annotation (extent=[40,-10; 60,10]);
+      redeclare package Medium = Medium,
+      flowDirection=flowDirection,
+      redeclare package WallFriction = WallFriction,
+      length=length/2,
+      diameter=diameter,
+      height_ab=height_ab/2,
+      roughness=roughness,
+      use_nominal=use_nominal,
+      eta_nominal=eta_nominal,
+      d_nominal=d_nominal,
+      from_dp=true,
+      dp_small=dp_small,
+      show_Re=false,
+      dp_start = (p_a_start - p_b_start)/2,
+      m_flow_start = m_flow_start)  annotation (extent=[40,-10; 60,10]);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
       annotation (extent=[-10,44; 10,64]);
   equation 
@@ -286,7 +283,7 @@ pipe wall/environment).
            fillColor=0,
            rgbfillColor={0,0,0})),
        Text(
-         extent=[-143,-42; 157,-92],
+         extent=[-150,-60; 150,-100],
          string="%name",
          style(gradient=2, fillColor=69))),
      Diagram,
@@ -478,7 +475,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
         fillColor=0,
         rgbfillColor={0,0,0})),
     Text(
-      extent=[-143,-42; 157,-92],
+      extent=[-150,-60; 150,-100],
       string="%name",
       style(gradient=2, fillColor=69))),
   Diagram,
@@ -699,7 +696,7 @@ annotation (
         fillColor=0,
         rgbfillColor={0,0,0})),
     Text(
-      extent=[-143,-42; 157,-92],
+      extent=[-150,-60; 150,-100],
       string="%name",
       style(gradient=2, fillColor=69))),
   Diagram,
@@ -896,7 +893,7 @@ annotation (
         fillColor=0,
         rgbfillColor={0,0,0})),
     Text(
-      extent=[-143,-42; 157,-92],
+      extent=[-150,-60; 150,-100],
       string="%name",
       style(gradient=2, fillColor=69))),
   Diagram,

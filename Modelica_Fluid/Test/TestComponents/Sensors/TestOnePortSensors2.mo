@@ -34,7 +34,7 @@ model TestOnePortSensors2
     annotation (extent=[-100,-100; -80,-80]);
   Modelica.Blocks.Sources.Ramp ramp(
     height=2,
-    offset=-1, 
+    offset=-1,
     duration=10) 
                annotation (extent=[-100,30; -80,50]);
   Modelica_Fluid.Volumes.MixingVolume MixingVolume3(
@@ -66,7 +66,7 @@ equation
         -34.2,40],  style(color=69, rgbcolor={0,127,255}));
   connect(MixingVolume2.port_b, Sink2.port) annotation (points=[52,40; 80,40],
       style(color=69, rgbcolor={0,127,255}));
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-14,40; 
+  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (points=[-14,40;
         31.8,40],     style(
       color=69,
       rgbcolor={0,127,255},

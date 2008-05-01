@@ -44,21 +44,13 @@ model TestMixingVolumesPressureStates
     diameter=0.2,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
-    length=1,
-    p_a_start=ambient.default_p_ambient,
-    p_b_start=ambient.default_p_ambient,
-    T_start=ambient.default_T_ambient) 
-                                annotation (extent=[50,30; 70,50]);
+    length=1)                   annotation (extent=[50,30; 70,50]);
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity simpleGenericOrifice1(
     redeclare package Medium = Medium,
     diameter=0.2,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
-    length=1,
-    T_start=ambient.default_T_ambient,
-    p_a_start=ambient.default_p_ambient,
-    p_b_start=ambient.default_p_ambient) 
-                                annotation (extent=[-70,30; -50,50]);
+    length=1)                   annotation (extent=[-70,30; -50,50]);
 equation 
   connect(simpleGenericOrifice2.port_b, Sink2.port) annotation (points=[70,40;
         80,40], style(

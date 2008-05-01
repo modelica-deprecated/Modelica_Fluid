@@ -25,7 +25,7 @@ model Ambient "Ambient field component"
           fillColor=7,
           rgbfillColor={255,255,255})),
       Text(
-        extent=[-160,160; 160,110],
+        extent=[-150,150; 150,110],
         style(color=3, rgbcolor={0,0,255}),
         string="%name"),
       Line(points=[-86,-30; 82,-30], style(color=0, rgbcolor={0,0,0})),

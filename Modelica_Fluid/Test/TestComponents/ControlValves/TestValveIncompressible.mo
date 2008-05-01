@@ -13,9 +13,7 @@ model TestValveIncompressible "Test case for valves"
     m_flow_nom=1.5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
-    Cv=10,
-    p_nom=10e5) 
-            annotation (extent=[-50,30; -30,50]);
+    Cv=10)  annotation (extent=[-50,30; -30,50]);
   
 annotation (
   Diagram,
@@ -44,7 +42,6 @@ annotation (
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
-    p_nom=10e5,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.equalPercentage)
             annotation (extent=[-50,-10; -30,10]);
@@ -65,7 +62,6 @@ annotation (
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
-    p_nom=10e5,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.equalPercentage
         (                                                                              rangeability=10)) 

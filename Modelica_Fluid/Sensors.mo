@@ -43,12 +43,12 @@ The <b>one port</b> sensors have the advantage of easily introducing them to and
       annotation (extent=[100,-10; 120,10]);
     annotation (
     Diagram(
-        Line(points=[70,0; 100,0], style(rgbcolor={0,0,127})),
+        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127})),
         Line(points=[0,-70; 0,-100], style(color=69))),
     Icon(
-        Line(points=[70,0; 100,0], style(rgbcolor={0,0,127})),
+        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127})),
         Line(points=[0,-70; 0,-100], style(color=69)),
-        Text(extent=[-126,160; 138,98], string="%name"),
+        Text(extent=[-150,80; 150,120], string="%name"),
         Text(
           extent=[212,-51; 52,-103],
           style(color=0),
@@ -71,20 +71,20 @@ ideal, i.e., it does not influence the fluid.
                                             final unit="kg/m3",
                                             displayUnit="g/cm3",
                                             min=0) "Density in port medium" 
-      annotation (extent=[90,-10; 110,10],    rotation=0);
+      annotation (extent=[100,-10; 120,10],   rotation=0);
     
   annotation (defaultComponentName="density",
     Diagram(
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
+        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
+        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
     Icon(
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Text(extent=[-126,160; 138,98], string="%name"),
+        Text(extent=[-150,80; 150,120], string="%name"),
         Text(
           extent=[170,-53; 10,-105],
           style(color=0),
-          string="d")),
+          string="d"),
+        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
     Documentation(info="<HTML>
 <p>
 This component monitors the density of the medium in the flow
@@ -117,7 +117,7 @@ ideal, i.e., it does not influence the fluid.
         Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
     Icon(
-      Text(extent=[-126,160; 138,98],   string="%name"),
+      Text(extent=[-150,80; 150,120],   string="%name"),
         Text(
           extent=[168,-71; 8,-123],
           style(color=0),
@@ -170,7 +170,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
         Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
         Line(points=[-40, -20; -12, -20], style(color=0)),
         Line(points=[-40, 20; -12, 20], style(color=0)),
-        Line(points=[-40, 60; -12, 60], style(color=0))),
+        Line(points=[-40, 60; -12, 60], style(color=0)),
+        Line(points=[12,0; 60,0], style(color=74, rgbcolor={0,0,127}))),
       Icon(
         Ellipse(extent=[-20,-88; 20,-50],   style(
             color=0,
@@ -188,8 +189,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           extent=[120,-40; 0,-90],
           style(color=0),
           string="T"),
-        Text(extent=[-126,160; 138,98],   string="%name"),
-        Line(points=[12,0; 60,0],  style(rgbcolor={0,0,127}))),
+        Text(extent=[-150,110; 150,150],   string="%name"),
+        Line(points=[12,0; 60,0], style(color=74, rgbcolor={0,0,127}))),
       Documentation(info="<HTML>
 <p>
 This component monitors the temperature of the medium in the flow
@@ -218,8 +219,8 @@ ideal, i.e., it does not influence the fluid.
   annotation (defaultComponentName="temperature",
     Diagram,
     Icon(
-      Text(extent=[-126,160; 138,98],   string="%name"),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
+      Text(extent=[-150,110; 150,150],   string="%name"),
+        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127})),
         Line(points=[-92,0; 100,0],style(color=69, rgbcolor={0,128,255})),
         Ellipse(extent=[-20,-88; 20,-50],   style(
             color=0,
@@ -266,20 +267,20 @@ The sensor is ideal, i.e. it does not influence the fluid.
     Modelica.Blocks.Interfaces.RealOutput h_out(final quantity="SpecificEnergy",
                                                 final unit="J/kg") 
       "Specific enthalpy in port medium" 
-      annotation (extent=[90,-10; 110,10],    rotation=0);
+      annotation (extent=[100,-10; 120,10],   rotation=0);
     
   annotation (defaultComponentName="specificEnthalpy",
     Diagram(
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
-    Icon(
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Text(extent=[-126,160; 138,98], string="%name"),
+        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
+    Icon(
+        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
+        Text(extent=[-150,80; 150,120], string="%name"),
         Text(
           extent=[212,-51; 52,-103],
           style(color=0),
-          string="h")),
+          string="h"),
+        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific enthalphy of the medium in the flow
@@ -308,9 +309,9 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
     Diagram(
         Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
+        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127}))),
     Icon(
-      Text(extent=[-126,160; 138,98],   string="%name"),
+      Text(extent=[-150,80; 150,120],   string="%name"),
         Text(
           extent=[168,-71; 8,-123],
           style(color=0),
@@ -339,20 +340,20 @@ The sensor is ideal, i.e. it does not influence the fluid.
     Modelica.Blocks.Interfaces.RealOutput s(final quantity="SpecificEntropy",
                                             final unit="J/(kg.K)") 
       "Specific entropy in port medium" 
-      annotation (extent=[90,-10; 110,10],    rotation=0);
+      annotation (extent=[100,-10; 120,10],   rotation=0);
     
   annotation (defaultComponentName="specificEntropy",
     Diagram(
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
-    Icon(
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Text(extent=[-126,160; 138,98], string="%name"),
+        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
+    Icon(
+        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
+        Text(extent=[-150,80; 150,120], string="%name"),
         Text(
           extent=[170,-55; 10,-107],
           style(color=0),
-          string="s")),
+          string="s"),
+        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific enthalphy of the medium in the flow
@@ -381,12 +382,12 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
         Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
     Icon(
-      Text(extent=[-126,160; 138,98],   string="%name"),
+      Text(extent=[-150,80; 150,120],   string="%name"),
         Text(
           extent=[168,-71; 8,-123],
           style(color=0),
           string="s"),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
+        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127})),
         Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255}))),
     Documentation(info="<HTML>
@@ -427,13 +428,13 @@ The sensor is ideal, i.e. it does not influence the fluid.
         Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
     Icon(
-      Text(extent=[-140,147; 140,82],   string="%name"),
+      Text(extent=[-150,80; 150,120],   string="%name"),
         Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
         Text(
           extent=[178,-81; 18,-133],
           style(color=0),
           string="m_flow"),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
+        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127})),
         Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255}))),
     Documentation(info="<HTML>
 <p>
@@ -463,12 +464,12 @@ The sensor is ideal, i.e., it does not influence the fluid.
         Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
     Icon(
-      Text(extent=[-126,160; 138,98],   string="%name"),
+      Text(extent=[-150,80; 150,120],   string="%name"),
         Text(
           extent=[188,-71; 28,-123],
           style(color=0),
           string="V_flow"),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
+        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127})),
         Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
         Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255}))),
     Documentation(info="<HTML>
@@ -504,10 +505,10 @@ The sensor is ideal, i.e. it does not influence the fluid.
     
     Modelica_Fluid.Interfaces.FluidPort_a port_a(m_flow(min=0),
                                   redeclare package Medium = Medium) 
-      annotation (extent=[-120, -10; -100, 10]);
+      annotation (extent=[-110,-10; -90,10]);
     Modelica_Fluid.Interfaces.FluidPort_b port_b(m_flow(min=0),
                                   redeclare package Medium = Medium) 
-      annotation (extent=[120, -10; 100, 10]);
+      annotation (extent=[110,-12; 90,8]);
     
     Modelica.Blocks.Interfaces.RealOutput p_rel(final quantity="Pressure",
                                                 final unit="Pa",
@@ -517,8 +518,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
       Icon(
         Line(points=[-100, 0; -70, 0], style(color=69)),
         Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(rgbcolor={0,0,127})),
-        Text(extent=[-140, 94; 144, 34], string="%name"),
+        Line(points=[0, -30; 0, -80], style(color=74, rgbcolor={0,0,127})),
+        Text(extent=[-150,40; 150,80], string="%name"),
         Text(
           extent=[92, -62; 34, -122],
           string="p_rel",
@@ -526,7 +527,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
       Diagram(
         Line(points=[-100, 0; -70, 0], style(color=69)),
         Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(rgbcolor={0,0,127})),
+        Line(points=[0, -30; 0, -80], style(color=74, rgbcolor={0,0,127})),
         Text(
           extent=[64, -74; 32, -102],
           string="p_rel",
@@ -564,10 +565,10 @@ through the sensor is allowed.
         choicesAllMatching = true);
     Modelica_Fluid.Interfaces.FluidPort_a port_a(m_flow(min=0),
                                   redeclare package Medium = Medium) 
-      annotation (extent=[-120, -10; -100, 10]);
+      annotation (extent=[-110,-10; -90,10]);
     Modelica_Fluid.Interfaces.FluidPort_b port_b(m_flow(min=0),
                                   redeclare package Medium = Medium) 
-      annotation (extent=[120, -10; 100, 10]);
+      annotation (extent=[110,-10; 90,10]);
     
     Modelica.Blocks.Interfaces.RealOutput T_rel(final quantity="ThermodynamicTemperature",
                                                 final unit = "K", displayUnit = "degC", min=0) 
@@ -576,8 +577,8 @@ through the sensor is allowed.
       Icon(
         Line(points=[-100, 0; -70, 0], style(color=69)),
         Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(rgbcolor={0,0,127})),
-        Text(extent=[-140, 94; 144, 34], string="%name"),
+        Line(points=[0, -30; 0, -80], style(color=74, rgbcolor={0,0,127})),
+        Text(extent=[-150,40; 150,80], string="%name"),
         Text(
           extent=[92, -62; 34, -122],
           string="p_rel",
@@ -585,7 +586,7 @@ through the sensor is allowed.
       Diagram(
         Line(points=[-100, 0; -70, 0], style(color=69)),
         Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(rgbcolor={0,0,127})),
+        Line(points=[0, -30; 0, -80], style(color=74, rgbcolor={0,0,127})),
         Text(
           extent=[64, -74; 32, -102],
           style(color=0),
@@ -902,38 +903,6 @@ this partial class should add a medium instance to calculate the measured proper
       port_a.C_outflow = inflow(port_b.C_outflow);
       port_b.C_outflow = inflow(port_a.C_outflow);
     end PartialFlowSensor;
-    
-  protected 
-    partial model PartialRelativeSensor 
-      "Partial component to model a sensor that measures the difference of effort variables at two ports" 
-      
-      replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
-          choicesAllMatching =                                                                         true);
-      
-      Modelica_Fluid.Interfaces.FluidPort_a port_a(
-                                    redeclare package Medium = Medium) 
-        annotation (extent=[-120, -10; -100, 10]);
-      Modelica_Fluid.Interfaces.FluidPort_b port_b(
-                                    redeclare package Medium = Medium) 
-        annotation (extent=[120, -10; 100, 10]);
-      
-      annotation (Documentation(info="<html>
-<p>
-Partial component to model a <b>sensor</b> that measures
-the <b>difference between two effort variables</b>, e.g. to obtain the temperature difference 
-between fluid connectors.
-</p>
-</html>"));
-    equation 
-      port_a.m_flow = 0;
-      port_a.H_flow = 0;
-      port_a.mXi_flow = zeros(Medium.nXi);
-      
-      port_b.m_flow = 0;
-      port_b.H_flow = 0;
-      port_b.mXi_flow = zeros(Medium.nXi);
-    end PartialRelativeSensor;
     
   end BaseClasses;
 end Sensors;

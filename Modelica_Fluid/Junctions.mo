@@ -337,9 +337,9 @@ This model describes a simple flow partitioning, which is very helpful in cases 
       Diagram);
     
   equation 
-    port_a.h_outflow  = sum(inflow(ports_b.h_outflow))/nOutlets;
-    port_a.Xi_outflow = {sum(inflow(ports_b.Xi_outflow[j]))/nOutlets for j in 1:Medium.nXi};
-    port_a.C_outflow  = {sum(inflow(ports_b.C_outflow[j]))/nOutlets for j in 1:Medium.nXi};
+    port_a.h_outflow  =  sum( {inflow(ports_b[i].h_outflow)     for i in 1:nOutlets})/nOutlets;
+    port_a.Xi_outflow = {sum( {inflow(ports_b[i].Xi_outflow[j]) for i in 1:nOutlets})/nOutlets for j in 1:Medium.nXi};
+    port_a.C_outflow  = {sum( {inflow(ports_b[i].C_outflow[j])  for i in 1:nOutlets})/nOutlets for j in 1:Medium.nXi};
     
     for i in 1:nOutlets loop
        ports_b[i].h_outflow  = inflow(port_a.h_outflow);
@@ -410,12 +410,12 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     Interfaces.FluidStatePorts_a[n_a] ports_a(
       redeclare each package Medium=Medium,
       m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[-110,40; 
+      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[-110,40;
           -90,-40]);
     Interfaces.FluidStatePorts_b[n_b] ports_b(
       redeclare each package Medium=Medium,
       m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[90,40; 
+      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (extent=[90,40;
           110,-40]);
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
@@ -469,7 +469,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
               rgbcolor={0,0,0},
               fillColor=0,
               rgbfillColor={0,0,0})),Text(
-        extent=[-150,153; 150,103],
+        extent=[-150,150; 150,110],
         string="%name",
         style(gradient=2, fillColor=69))),
       Coordsys(grid=[1,1]),

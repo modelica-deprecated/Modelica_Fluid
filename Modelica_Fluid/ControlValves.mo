@@ -57,8 +57,6 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     SI.Pressure dpEff "Effective pressure drop";
     Medium.AbsolutePressure pin "Inlet pressure";
     Medium.AbsolutePressure pout "Outlet pressure";
-    Medium.Temperature port_a_T_inflow 
-      "Temperature at port_a when mass flows in to port_a";
     annotation (
       Icon,
       Diagram,
@@ -86,7 +84,6 @@ The model operating range includes choked flow operation, which takes place for 
   equation 
     pin = port_a.p;
     pout = port_b.p;
-    port_a_T_inflow = Medium.temperature(port_a_state_inflow);
     pv = Medium.saturationPressure(port_a_T_inflow);
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
     Fl = Fl_nom*FlCharacteristic(stemPosition);
@@ -107,6 +104,8 @@ The model operating range includes choked flow operation, which takes place for 
     "Valve for compressible fluids, accounts for choked flow conditions" 
     extends BaseClasses.PartialValve;
     import Modelica_Fluid.Types.CvTypes;
+    parameter Medium.AbsolutePressure p_nom "Nominal inlet pressure" 
+    annotation(Dialog(group="Nominal operating point"));
     parameter Real Fxt_full=0.5 "Fk*xt critical ratio at full opening";
     replaceable function xtCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.one 
@@ -182,8 +181,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     Modelica.Blocks.Interfaces.RealInput opening(min=0,max=1) 
       "=1: completely open, =0: completely closed" 
     annotation (extent=[-20,70; 20,110],   rotation=-90);
-    parameter Real minOpening(min=0, max=0.1)=0.001 
-      "Minimum position of opening (determines leckage flow and improves numerics)"
+    parameter Real minOpening(min=0, max=0.1)=0 
+      "Minimum position of opening (leckage flow to improve numerics)" 
     annotation(Dialog(tab="Advanced"));
     Real modifiedOpening 
       "Modified, actually used opening, so that the valve is not completely closed to improve numerics";
@@ -210,7 +209,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
             color=0,
             thickness=2,
             fillPattern=1)),
-           Text(extent=[-143,-66; 148,-106],  string="%name")),
+           Text(extent=[-153,-60; 150,-100],  string="%name")),
     Diagram,
     Documentation(info="<HTML>
 <p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>opening</tt> signal, without computing any fluid property.
@@ -247,7 +246,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
             color=0,
             fillColor=0,
             fillPattern=1)),
-           Text(extent=[-145,-58; 146,-98],   string="%name"),
+           Text(extent=[-150,-60; 150,-100],   string="%name"),
         Polygon(points=[-100,50; 100,-50; 100,50; 0,0; -100,-50; -100,50], style(
             color=0,
             rgbcolor={0,0,0},
@@ -282,14 +281,7 @@ it is open.
       
       import Modelica_Fluid.Types.CvTypes;
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
-                                                              m_flow(start = m_flow_start),
-          final p_a_start = pin_start, final p_b_start = pout_start);
-    parameter Medium.AbsolutePressure pin_start = p_nom 
-        "Start value of inlet pressure" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Medium.AbsolutePressure pout_start = p_nom-dp_nom 
-        "Start value of outlet pressure" 
-      annotation(Dialog(tab = "Initialization"));
+            dp_start = dp_nom, m_flow_start = m_flow_nom);
     parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
     parameter SI.Area Av(fixed = if CvData==CvTypes.Av then true else false,
@@ -304,8 +296,6 @@ it is open.
     parameter Real Cv(unit="USG/min")=0 "Cv (US) flow coefficient" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Cv)));
-    parameter Medium.AbsolutePressure p_nom "Nominal inlet pressure" 
-      annotation(Dialog(group="Nominal operating point"));
     parameter SI.Pressure dp_nom "Nominal pressure drop" 
       annotation(Dialog(group="Nominal operating point"));
     parameter Medium.MassFlowRate m_flow_nom "Nominal mass flowrate" 
@@ -323,23 +313,20 @@ it is open.
         "Inherent flow characteristic" 
       annotation(choicesAllMatching=true);
       
-    parameter Medium.MassFlowRate m_flow_start = m_flow_nom 
-        "Start value of mass flow rate" 
-      annotation(Dialog(tab = "Initialization"));
     parameter Real delta=0.01 "Regularisation factor" annotation(Dialog(tab="Advanced"));
       
     Modelica.Blocks.Interfaces.RealInput stemPosition(min=-1e-10, max=1) 
         "Stem position in the range 0-1" 
                                        annotation (extent=[-20,70; 20,110],   rotation=-90);
       
-      parameter Real minStemPosition(min=0, max=0.1)=0.001 
-        "Minimum stemPosition (determines leckage flow and improves numerics)" 
+      parameter Real minStemPosition(min=0, max=0.1)=0 
+        "Minimum stemPosition (leckage flow to improve numerics)" 
       annotation(Dialog(tab="Advanced"));
       Real modifiedStemPosition 
         "Modified, actually used stemPosition, so that the valve is not completely closed to improve numerics";
       
     annotation (
-      Icon(Text(extent=[-143,-66; 148,-106],  string="%name"),
+      Icon(Text(extent=[-150,-60; 150,-100],  string="%name"),
         Line(points=[0,60; 0,0],   style(
             color=0,
             thickness=2,

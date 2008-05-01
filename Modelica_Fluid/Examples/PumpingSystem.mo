@@ -14,8 +14,6 @@ model PumpingSystem "Model of a pumping system for drinking water"
         Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
     flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
     diameter=1,
-    p_a_start=ambient.default_p_ambient+0.1e5,
-    p_b_start=ambient.default_p_ambient,
     length=100,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
@@ -127,8 +125,8 @@ equation
     annotation (points=[-19,70; -2,70], style(color=5, rgbcolor={255,0,255}));
   connect(reservoirPressure.p_rel, controller.u) annotation (points=[20,-13; 20,
         50; -52,50; -52,64; -42,64], style(color=74, rgbcolor={0,0,127}));
-  connect(reservoirPressure.port_b, sink.port)    annotation (points=[31,-22;
-        44,-22; 44,-48; 80,-48; 80,-30],
+  connect(reservoirPressure.port_b, sink.port)    annotation (points=[30,-21.8;
+        44,-21.8; 44,-48; 80,-48; 80,-30],
                                       style(
       color=69,
       rgbcolor={0,127,255},
@@ -144,8 +142,8 @@ equation
         -30; -4,-30; -4,-16.5], style(color=69, rgbcolor={0,127,255}));
   connect(userValve.port_a, reservoir.ports[1]) annotation (points=[58,-30;
         -4,-30; -4,-16.5], style(color=69, rgbcolor={0,127,255}));
-  connect(reservoir.ports[1], reservoirPressure.port_a) annotation (points=[
-        -4,-16.5; -4,-22; 9,-22], style(
+  connect(reservoir.ports[1], reservoirPressure.port_a) annotation (points=[-4,-16.5;
+        -4,-22; 10,-22],          style(
       color=3,
       rgbcolor={0,0,255},
       pattern=3));

@@ -35,7 +35,7 @@ package Sources
       Icon(Ellipse(extent=[-100,100; 100,-100], style(
             color=69,
             gradient=3,
-            fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
+            fillColor=69)), Text(extent=[-150,110; 150,150], string="%name")),
       Documentation(info="<html>
 <p>
 Model <b>FixedBoundary</b> defines constant values for boundary conditions:
@@ -90,7 +90,7 @@ with exception of boundary pressure, do not have an effect.
       Icon(Ellipse(extent=[-100,100; 100,-100], style(
             color=69,
             gradient=3,
-            fillColor=69)), Text(extent=[-150,150; 150,100],   string="%name")),
+            fillColor=69)), Text(extent=[-150,110; 150,150],   string="%name")),
       Documentation(info="<html>
 <p>
 Defines constant values for boundary conditions:
@@ -133,7 +133,7 @@ with exception of boundary pressure, do not have an effect.
       Icon(Ellipse(extent=[-100,100; 100,-100], style(
             color=69,
             gradient=3,
-            fillColor=69)), Text(extent=[-136, 144; 132, 82], string="%name")),
+            fillColor=69)), Text(extent=[-150,110; 150,150], string="%name")),
       Documentation(info="<html>
 <p>
 Defines constant values for boundary conditions:
@@ -216,7 +216,7 @@ to define fixed or prescribed ambient conditions.
       Icon(Ellipse(extent=[-100,100; 100,-100], style(
             color=69,
             gradient=3,
-            fillColor=69)), Text(extent=[-134,168; 134,106],  string="%name"),
+            fillColor=69)), Text(extent=[-150,110; 150,150],  string="%name"),
         Line(points=[-100,60; -80,60], style(color=3, rgbcolor={0,0,255})),
         Line(points=[-100,-60; -80,-60], style(color=3, rgbcolor={0,0,255})),
         Text(
@@ -325,7 +325,7 @@ with exception of boundary pressure, do not have an effect.
       Icon(Ellipse(extent=[-100,100; 100,-100], style(
             color=69,
             gradient=3,
-            fillColor=69)), Text(extent=[-134,168; 134,106],  string="%name"),
+            fillColor=69)), Text(extent=[-150,110; 150,150],  string="%name"),
         Line(points=[-100,60; -66,60], style(color=3, rgbcolor={0,0,255})),
         Line(points=[-100,-60; -66,-60], style(color=3, rgbcolor={0,0,255})),
         Text(
@@ -459,7 +459,7 @@ with exception of boundary pressure, do not have an effect.
           extent=[-54, 32; 16, -30],
           style(color=41, fillColor=41),
           string="m"),
-        Text(extent=[-150,160; 150,110],  string="%name"),
+        Text(extent=[-150,110; 150,150],  string="%name"),
         Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1)),
         Text(
           extent=[-194,112; -54,80],
@@ -621,7 +621,7 @@ with exception of boundary flow rate, do not have an effect.
             fillColor=7,
             rgbfillColor={255,255,255}),
           string="X"),
-        Text(extent=[-150,160; 150,110],  string="%name")),
+        Text(extent=[-150,110; 150,150],  string="%name")),
       Window(
         x=0.45,
         y=0.01,
