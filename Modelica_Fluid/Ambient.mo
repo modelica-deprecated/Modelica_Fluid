@@ -1,14 +1,11 @@
 within Modelica_Fluid;
 model Ambient "Ambient field component" 
-  import Modelica.SIunits.Conversions;
   
   parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure 
-    default_p_ambient =                                                                  101325 
-    "Default ambient pressure" 
+    default_p_ambient = 101325 "Default ambient pressure" 
       annotation(Dialog(group="Defaults"));
   parameter Modelica.Media.Interfaces.PartialMedium.Temperature 
-    default_T_ambient=
-      Conversions.from_degC(20) "Default ambient temperature" 
+    default_T_ambient = 293.15 "Default ambient temperature" 
       annotation(Dialog(group="Defaults"));
   parameter SI.Acceleration g=Modelica.Constants.g_n 
     "Constant gravity acceleration"                                                  annotation(Dialog(group="Environment"));

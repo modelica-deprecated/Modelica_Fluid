@@ -172,8 +172,8 @@ end SimpleGenericOrifice;
     parameter SI.AbsolutePressure dp_small = 1 
       "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
-    parameter SI.MassFlowRate m_flow_small = 0.01 
-      "Turbulent flow if |m_flow| >= m_flow_small (used if WallFriction=QuadraticTurbulent); also used to regularize density for the static head"
+    parameter SI.MassFlowRate m_flow_small = reg_m_flow_small 
+      "Turbulent flow if |m_flow| >= m_flow_small (used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
     SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, (eta_a+eta_b)/2, diameter) if show_Re 
       "Reynolds number of pipe";
@@ -2376,11 +2376,17 @@ solving a non-linear equation.
         Modelica_Fluid.Types.FlowDirection.Bidirectional 
         "Unidirectional (port_a -> port_b) or bidirectional flow" 
        annotation(Dialog(tab="Advanced"));
+    parameter Boolean compute_T = true 
+        "= true, if temperatures at port_a and port_b are computed" 
+      annotation(Dialog(tab="Advanced"), choices(__Dymola_checkBox=true));
     parameter Medium.AbsolutePressure dp_start = 0 
         "Guess value of dp = port_a.p - port_b.p" 
       annotation(Dialog(tab = "Advanced"));
     parameter Medium.MassFlowRate m_flow_start = 0 
         "Guess value of m_flow = port_a.m_flow" 
+      annotation(Dialog(tab = "Advanced"));
+    parameter Medium.MassFlowRate reg_m_flow_small = 0.01 
+        "Small mass flow rate that is used to regularize port_a_T and V_flow_a"
       annotation(Dialog(tab = "Advanced"));
       
     Modelica_Fluid.Interfaces.FluidPort_a port_a(
@@ -2395,6 +2401,8 @@ solving a non-linear equation.
       annotation (extent=[110,-10; 90,10]);
     Medium.MassFlowRate m_flow(start=m_flow_start) 
         "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
+    Modelica.SIunits.VolumeFlowRate V_flow 
+        "Volume flow rate at inflowing port (positive when flow from port_a to port_b)";
     Modelica.SIunits.Pressure dp(start=dp_start) 
         "Pressure difference between port_a and port_b (= port_a.p - port_b.p)";
       
@@ -2414,8 +2422,10 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 </html>"),
       Icon,
       uses(Modelica_Fluid(version="1.0 Streams Beta 1"), Modelica(version="2.2.2")));
-    Medium.Temperature port_a_T "Temperature close to port_a";
-    Medium.Temperature port_b_T "Temperature close to port_b";
+    Medium.Temperature port_a_T 
+        "Temperature close to port_a, if compute_T = true";
+    Medium.Temperature port_b_T 
+        "Temperature close to port_b, if compute_T = true";
     Medium.ThermodynamicState port_a_state_inflow 
         "Medium state close to port_a for inflowing mass flow";
     Medium.ThermodynamicState port_b_state_inflow 
@@ -2429,11 +2439,6 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
         "Density close to port_a for inflowing mass flow";
     Medium.Density port_b_d_inflow 
         "Density close to port_b for inflowing mass flow";
-    Medium.Temperature port_a_T_inflow 
-        "Temperature close to port_a for inflowing mass flow";
-    Medium.Temperature port_b_T_inflow 
-        "Temperature close to port_b for inflowing mass flow";
-      
   equation 
     // Isenthalpic state transformation (no storage and no loss of energy)
     port_a.h_outflow = inflow(port_b.h_outflow);
@@ -2462,11 +2467,24 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
       
+    // Computation of Volume flow rate, just for plotting
+    V_flow = m_flow/Modelica_Fluid.Utilities.regStep(
+                     m_flow, port_a_d_inflow, port_b_d_inflow, reg_m_flow_small);
+      
     // Computation of temperature, just for plotting
-    port_a_T_inflow = Medium.temperature(port_a_state_inflow);
-    port_b_T_inflow = Medium.temperature(port_b_state_inflow);
-    port_a_T = Modelica_Fluid.Utilities.regStep(port_a.m_flow, port_a_T_inflow, port_b_T_inflow);
-    port_b_T = Modelica_Fluid.Utilities.regStep(port_b.m_flow, port_b_T_inflow, port_a_T_inflow);
+    if compute_T then
+       port_a_T = Modelica_Fluid.Utilities.regStep(port_a.m_flow,
+                    Medium.temperature(port_a_state_inflow),
+                    Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow)),
+                    reg_m_flow_small);
+       port_b_T = Modelica_Fluid.Utilities.regStep(port_b.m_flow,
+                    Medium.temperature(port_b_state_inflow),
+                    Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)),
+                    reg_m_flow_small);
+    else
+       port_a_T = 0;
+       port_b_T = 0;
+    end if;
   end PartialTwoPortTransport;
   end BaseClasses;
 end PressureLosses;
