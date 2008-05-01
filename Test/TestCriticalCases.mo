@@ -483,17 +483,17 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.5e-2,
-      redeclare package Medium = Medium, 
-      initType=Modelica_Fluid.Types.Init.InitialValues, 
-      p_a_start=500000, 
+      redeclare package Medium = Medium,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
+      p_a_start=500000,
       p_b_start=500000)                  annotation (extent=[-76,-10; -56,10]);
     
     ControlValves.ValveIncompressible valveIncompressible(
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
       d_nom=1000,
-      redeclare package Medium = Medium, 
-      dp_nom=400000, 
+      redeclare package Medium = Medium,
+      dp_nom=400000,
       minStemPosition=0.01)              annotation (extent=[52,-10; 72,10]);
     annotation (
       Diagram,
@@ -512,9 +512,9 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.5e-2,
-      redeclare package Medium = Medium, 
-      initType=Modelica_Fluid.Types.Init.InitialValues, 
-      p_a_start=500000, 
+      redeclare package Medium = Medium,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
+      p_a_start=500000,
       p_b_start=500000)                  annotation (extent=[-14,-10; 6,10]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
@@ -530,9 +530,9 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.5e-2,
-      redeclare package Medium = Medium, 
-      initType=Modelica_Fluid.Types.Init.InitialValues, 
-      p_a_start=500000, 
+      redeclare package Medium = Medium,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
+      p_a_start=500000,
       p_b_start=500000)                  annotation (extent=[16,-10; 36,10]);
     
   equation 
@@ -877,16 +877,16 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
-      d_nom=5, 
-      dp_nom=400000, 
+      d_nom=5,
+      dp_nom=400000,
       minStemPosition=0.001) 
                   annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
-      d_nom=5, 
-      dp_nom=400000, 
+      d_nom=5,
+      dp_nom=400000,
       minStemPosition=0.001) 
                   annotation (extent=[8,-50; 28,-30]);
     annotation (
@@ -926,8 +926,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           2.01,1e-6; 100,0]) 
                        annotation (extent=[-20,-10; 0,10]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
-    Junctions.JunctionIdeal junctionIdeal(redeclare package Medium = Medium,
-        p_start=5.0e5) 
+    Junctions.JunctionIdeal junctionIdeal(redeclare package Medium = Medium) 
       annotation (extent=[-48,-4; -28,16], rotation=90);
   equation 
     connect(source.port, pipe1.port_a) annotation (points=[-88,6; -78,6], style(
@@ -1493,9 +1492,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
-      d_nom=5, 
-      minStemPosition=0.001, 
-      dp(start=400000), 
+      d_nom=5,
+      minStemPosition=0.001,
+      dp(start=400000),
       dp_nom=400000) 
                   annotation (extent=[8,-50; 28,-30]);
     annotation (

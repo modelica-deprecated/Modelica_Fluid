@@ -117,7 +117,8 @@ pipe wall/environment).
       dp_small=dp_small,
       show_Re=false,
       dp_start = (p_a_start - p_b_start)/2,
-      m_flow_start = m_flow_start) 
+      m_flow_start = m_flow_start, 
+      compute_T=false) 
       annotation (extent=[-60,-10; -40,10]);
     Volumes.MixingVolume volume(
       redeclare package Medium = Medium,
@@ -145,7 +146,8 @@ pipe wall/environment).
       dp_small=dp_small,
       show_Re=false,
       dp_start = (p_a_start - p_b_start)/2,
-      m_flow_start = m_flow_start)  annotation (extent=[40,-10; 60,10]);
+      m_flow_start = m_flow_start, 
+      compute_T=false)              annotation (extent=[40,-10; 60,10]);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
       annotation (extent=[-10,44; 10,64]);
   equation 

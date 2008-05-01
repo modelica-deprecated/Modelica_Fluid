@@ -200,10 +200,10 @@ quantities are assumed to be constant.
       end density_phX;
     end PartialSimpleMedium;
   end Interfaces;
-
+  
   package Water 
   package ConstantPropertyLiquidWater 
-      "Water: Simple liquid water medium (incompressible, constant data)" 
+      "Water in Modelica_Fluid: Simple liquid water medium (incompressible, constant data)" 
       
       import Cv = Modelica.SIunits.Conversions;
     extends Modelica_Fluid.Media.Interfaces.PartialSimpleMedium(

@@ -373,7 +373,7 @@ model Tank
       "Inlet ports over levelMax at top of tank (fluid flows only from the port in to the tank)"
     annotation (extent=[-5,85; 5,125],  rotation=90);
     
-    parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0)} 
+    parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0.1)} 
       "Data of inlet/outlet ports at side and bottom of tank";
     
     Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
