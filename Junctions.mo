@@ -11,50 +11,6 @@ package Junctions "Junction components"
       "Fluid medium model" 
       annotation (choicesAllMatching=true);
     
-    Modelica_Fluid.Interfaces.FluidPort_a port_1(redeclare package Medium = 
-          Medium, p(start=p_start), h_outflow(start=h_start), Xi_outflow(start=X_start),
-                  m_flow(min=if (portFlowDirection_1 == PortFlowDirection.Entering) then 
-                  0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_1
-             == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-      annotation (extent=[-110,-10; -90,10]);
-    Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
-          Medium, p(start=p_start), h_outflow(start=h_start), Xi_outflow(start=X_start),
-                  m_flow(min=if (portFlowDirection_2 == PortFlowDirection.Entering) then 
-                  0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_2
-             == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-      annotation (extent=[90,-10; 110,10]);
-    Modelica_Fluid.Interfaces.FluidPort_a port_3(
-      redeclare package Medium=Medium,p(start=p_start), h_outflow(start=h_start), Xi_outflow(start=X_start),
-      m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-      annotation (extent=[-10,90; 10,110]);
-    
-  /* 
-  Medium.AbsolutePressure p "Pressure";
-  Medium.SpecificEnthalpy h "Mixing enthalpy";
-  Medium.MassFraction Xi[Medium.nXi] "Independent mixture mass fractions m_i/m";
-  Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
-*/
-    
-    parameter Types.Init.Temp initType=Types.Init.NoInit 
-      "Initialization option" 
-      annotation(Evaluate=true,Dialog(tab="Initialization"));
-    parameter Medium.AbsolutePressure p_start "Start value of pressure" 
-      annotation(Dialog(tab="Initialization"));
-    parameter Boolean use_T_start=true "=true, use T_start, otherwise h_start" 
-      annotation(Dialog(tab="Initialization"),Evaluate=true);
-    parameter Medium.Temperature T_start=
-      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start) 
-      "Start value of temperature" 
-      annotation(Dialog(tab="Initialization",enable=use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.specificEnthalpy_pTX(p_start,T_start,X_start) else Medium.h_default 
-      "Start value of specific enthalpy" 
-      annotation(Dialog(tab="Initialization",enable=not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default 
-      "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
-    
     parameter PortFlowDirection.Temp portFlowDirection_1=PortFlowDirection.Bidirectional 
       "Flow direction for port_1" 
      annotation(Dialog(tab="Advanced"));
@@ -64,6 +20,22 @@ package Junctions "Junction components"
     parameter PortFlowDirection.Temp portFlowDirection_3=PortFlowDirection.Bidirectional 
       "Flow direction for port_3" 
      annotation(Dialog(tab="Advanced"));
+    
+    Modelica_Fluid.Interfaces.FluidPort_a port_1(redeclare package Medium = 
+          Medium, m_flow(min=if (portFlowDirection_1 == PortFlowDirection.Entering) then 
+                  0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_1
+             == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+      annotation (extent=[-110,-10; -90,10]);
+    Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
+          Medium, m_flow(min=if (portFlowDirection_2 == PortFlowDirection.Entering) then 
+                  0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_2
+             == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+      annotation (extent=[90,-10; 110,10]);
+    Modelica_Fluid.Interfaces.FluidPort_a port_3(
+      redeclare package Medium=Medium,
+      m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
+      max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+      annotation (extent=[-10,90; 10,110]);
     
     annotation(Documentation(info="<html>
   This model is the simplest implementation for a splitting/joining component for
@@ -102,26 +74,8 @@ package Junctions "Junction components"
           style(color=3, rgbcolor={0,0,255}),
           string="%name")),
       Diagram);
-  initial equation 
-    // Initial conditions
     
-  /*
-  if initType == Types.Init.NoInit then
-  elseif initType == Types.Init.InitialValues then
-    p = p_start;
-    h = h_start;
-  elseif initType == Types.Init.SteadyState then
-    der(p) = 0;
-    der(h) = 0;
-  elseif initType == Types.Init.SteadyStateHydraulic then
-    der(p) = 0;
-    h = h_start;
-  else
-    assert(false, "Unsupported initialization option");
-  end if;
-*/
   equation 
-    
     connect(port_1, port_2) annotation (points=[-100,0; 100,0], style(
         color=69,
         rgbcolor={0,127,255},
@@ -197,25 +151,6 @@ package Junctions "Junction components"
       "Flow direction for port_3" 
      annotation(Dialog(tab="Advanced"));
     
-    Medium.EnthalpyFlowRate port_1_H_flow 
-      "Enthalpy flow rate from port_1 in to junction";
-    Medium.EnthalpyFlowRate port_2_H_flow 
-      "Enthalpy flow rate from port_1 in to junction";
-    Medium.EnthalpyFlowRate port_3_H_flow 
-      "Enthalpy flow rate from port_3 in to junction";
-    Medium.MassFlowRate port_1_mXi_flow[Medium.nXi] 
-      "Substance mass flow rate from port_1 in to junction";
-    Medium.MassFlowRate port_2_mXi_flow[Medium.nXi] 
-      "Substance mass flow rate from port_2 in to junction";
-    Medium.MassFlowRate port_3_mXi_flow[Medium.nXi] 
-      "Substance mass flow rate from port_3 in to junction";
-    Medium.ExtraPropertyFlowRate port_1_mC_flow[Medium.nC] 
-      "Extra property flow rate from port_1 in to junction";
-    Medium.ExtraPropertyFlowRate port_2_mC_flow[Medium.nC] 
-      "Extra property flow rate from port_2 in to junction";
-    Medium.ExtraPropertyFlowRate port_3_mC_flow[Medium.nC] 
-      "Extra property flow rate from port_3 in to junction";
-    
     annotation (Icon(
         Rectangle(extent=[-100,41; 100,-47],   style(
             color=0,
@@ -271,17 +206,6 @@ package Junctions "Junction components"
     port_2.h_outflow = medium.h;
     port_3.h_outflow = medium.h;
     
-    // Flow rates
-    port_1_H_flow = semiLinear(port_1.m_flow, inflow(port_1.h_outflow), medium.h);
-    port_2_H_flow = semiLinear(port_2.m_flow, inflow(port_2.h_outflow), medium.h);
-    port_3_H_flow = semiLinear(port_3.m_flow, inflow(port_3.h_outflow), medium.h);
-    port_1_mXi_flow = semiLinear(port_1.m_flow, inflow(port_1.Xi_outflow), medium.Xi);
-    port_2_mXi_flow = semiLinear(port_2.m_flow, inflow(port_2.Xi_outflow), medium.Xi);
-    port_3_mXi_flow = semiLinear(port_3.m_flow, inflow(port_3.Xi_outflow), medium.Xi);
-    port_1_mC_flow = semiLinear(port_1.m_flow, inflow(port_1.C_outflow), C);
-    port_2_mC_flow = semiLinear(port_2.m_flow, inflow(port_2.C_outflow), C);
-    port_3_mC_flow = semiLinear(port_3.m_flow, inflow(port_3.C_outflow), C);
-    
     // Internal quantities
     m   = medium.d*V;
     mXi = m*medium.Xi;
@@ -289,9 +213,13 @@ package Junctions "Junction components"
     
     // Mass balances
     der(m)   = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-    der(mXi) = port_1_mXi_flow + port_2_mXi_flow + port_3_mXi_flow 
-      "Component mass balances";
-    zeros(Medium.nC) = port_1_mC_flow + port_2_mC_flow + port_3_mC_flow 
+    der(mXi) = streamFlow(port_1.Xi_outflow) +
+               streamFlow(port_2.Xi_outflow) +
+               streamFlow(port_3.Xi_outflow) "Component mass balances";
+    
+    zeros(Medium.nC) = streamFlow(port_1.C_outflow) +
+                       streamFlow(port_2.C_outflow) +
+                       streamFlow(port_3.C_outflow) 
       "Trace substance mass balances";
     
     // Momentum balance (suitable for compressible media)
@@ -300,7 +228,9 @@ package Junctions "Junction components"
     port_3.p = medium.p;
     
     // Energy balance
-    der(U) = port_1_H_flow + port_2_H_flow + port_3_H_flow;
+    der(U) = streamFlow(port_1.h_outflow) +
+             streamFlow(port_2.h_outflow) +
+             streamFlow(port_3.h_outflow);
   end JunctionVolume;
   
   model MassFlowRatio "simple flow multiplier" 

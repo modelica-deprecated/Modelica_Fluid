@@ -718,18 +718,6 @@ end Tank;
         SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
         SI.Volume V_lumped "Volume";
       
-        Medium.EnthalpyFlowRate port_a_H_flow 
-        "Enthalpy flow rate from port_a in to volume";
-        Medium.EnthalpyFlowRate port_b_H_flow 
-        "Enthalpy flow rate from port_b in to volume";
-        Medium.MassFlowRate port_a_mXi_flow[Medium.nXi] 
-        "Substance mass flow rate from port_a in to volume";
-        Medium.MassFlowRate port_b_mXi_flow[Medium.nXi] 
-        "Substance mass flow rate from port_b in to volume";
-        Medium.ExtraPropertyFlowRate port_a_mC_flow[Medium.nC] 
-        "Extra property flow rate from port_a in to volume";
-        Medium.ExtraPropertyFlowRate port_b_mC_flow[Medium.nC] 
-        "Extra property flow rate from port_b in to volume";
     protected 
         SI.HeatFlowRate Qs_flow 
         "Heat flow across boundaries or energy source/sink";
@@ -754,14 +742,6 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
         port_a.h_outflow = medium.h;
         port_b.h_outflow = medium.h;
       
-      // Flow rates
-        port_a_H_flow = semiLinear(port_a.m_flow, inflow(port_a.h_outflow), medium.h);
-        port_b_H_flow = semiLinear(port_b.m_flow, inflow(port_b.h_outflow), medium.h);
-        port_a_mXi_flow = semiLinear(port_a.m_flow, inflow(port_a.Xi_outflow), medium.Xi);
-        port_b_mXi_flow = semiLinear(port_b.m_flow, inflow(port_b.Xi_outflow), medium.Xi);
-        port_a_mC_flow = semiLinear(port_a.m_flow, inflow(port_a.C_outflow), port_b.C_outflow);
-        port_b_mC_flow = semiLinear(port_b.m_flow, inflow(port_b.C_outflow), port_a.C_outflow);
-      
       // Total quantities
         m = V_lumped*medium.d;
         mXi = m*medium.Xi;
@@ -769,9 +749,9 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
       
       // Mass and energy balance
         der(m) = port_a.m_flow + port_b.m_flow;
-        der(mXi) = port_a_mXi_flow + port_b_mXi_flow;
-        der(U) = port_a_H_flow + port_b_H_flow + Qs_flow + Ws_flow;
-        zeros(Medium.nC) = port_a_mC_flow + port_b_mC_flow;
+        der(mXi) = streamFlow(port_a.Xi_outflow) + streamFlow(port_b.Xi_outflow);
+        der(U) = streamFlow(port_a.h_outflow) + streamFlow(port_b.h_outflow) + Qs_flow + Ws_flow;
+        zeros(Medium.nC) = streamFlow(port_a.C_outflow) + streamFlow(port_b.C_outflow);
       
       initial equation 
       // Initial conditions

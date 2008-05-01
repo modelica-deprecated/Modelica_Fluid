@@ -169,11 +169,14 @@ to define fixed or prescribed ambient conditions.
     "Boundary with prescribed pressure, temperature and composition" 
     extends Sources.BaseClasses.PartialSource;
     parameter Boolean usePressureInput = false 
-      "Get the pressure from the input connector";
+      "Get the pressure from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean useTemperatureInput= false 
-      "Get the temperature from the input connector";
+      "Get the temperature from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean useCompositionInput = false 
-      "Get the composition from the input connector";
+      "Get the composition from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Medium.AbsolutePressure p = Medium.reference_p 
       "Fixed value of pressure" 
       annotation (Evaluate = true,
@@ -288,11 +291,14 @@ with exception of boundary pressure, do not have an effect.
     "Boundary with prescribed pressure, specific enthalpy and composition" 
     extends Sources.BaseClasses.PartialSource;
     parameter Boolean usePressureInput = false 
-      "Get the pressure from the input connector";
+      "Get the pressure from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean useEnthalpyInput= false 
-      "Get the specific enthalpy from the input connector";
+      "Get the specific enthalpy from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean useCompositionInput = false 
-      "Get the composition from the input connector";
+      "Get the composition from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Medium.AbsolutePressure p = Medium.reference_p 
       "Fixed value of pressure" 
       annotation (Evaluate = true,
@@ -398,11 +404,14 @@ with exception of boundary pressure, do not have an effect.
     "Ideal flow source that produces a prescribed mass flow with prescribed temperature and mass fraction" 
     extends Sources.BaseClasses.PartialSource;
     parameter Boolean useFlowRateInput = false 
-      "Get the mass flow rate from the input connector";
+      "Get the mass flow rate from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean useTemperatureInput= false 
-      "Get the temperature from the input connector";
+      "Get the temperature from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean useCompositionInput = false 
-      "Get the composition from the input connector";
+      "Get the composition from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port" 
       annotation (Evaluate = true,
@@ -535,11 +544,14 @@ with exception of boundary flow rate, do not have an effect.
     "Ideal flow source that produces a prescribed mass flow with prescribed specific enthalpy and mass fraction" 
     extends Sources.BaseClasses.PartialSource;
     parameter Boolean useFlowRateInput = false 
-      "Get the mass flow rate from the input connector";
+      "Get the mass flow rate from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean useEnthalpyInput= false 
-      "Get the specific enthalpy from the input connector";
+      "Get the specific enthalpy from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean useCompositionInput = false 
-      "Get the composition from the input connector";
+      "Get the composition from the input connector" 
+      annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Medium.MassFlowRate m_flow = 0 
       "Fixed mass flow rate going out of the fluid port" 
       annotation (Evaluate = true,
