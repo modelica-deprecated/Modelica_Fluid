@@ -204,10 +204,10 @@ Initial equations for steady-state are selected for the pipe components, initial
     "Prescribed inputs, all derivatives equal to zero, zero pressure loss in the radiator" 
     extends Test1(plant(
         tank(initType=Modelica_Fluid.Types.Init.SteadyState),
+        pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
         radiator(initType=Modelica_Fluid.Types.Init.SteadyState,
                  redeclare package WallFriction = 
-              Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction),
-        pipe(initType=Modelica_Fluid.Types.Init.SteadyState)));
+              Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction)));
     
     annotation (
       Documentation(info="<html>
