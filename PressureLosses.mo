@@ -22,7 +22,7 @@ model StaticHead
           gradient=2,
           fillColor=69)),
       Text(
-        extent=[-150,140; 150,80],
+        extent=[-150,80; 150,120],
         string="%name",
         style(gradient=2, fillColor=69))), Documentation(info="<html>
 <p>
@@ -70,7 +70,7 @@ model SimpleGenericOrifice
     Diagram,
     Icon(
       Text(
-        extent=[-148,109; 148,58],
+        extent=[-150,60; 150,100],
         string="%name",
         style(gradient=2, fillColor=69)),
       Line(points=[-60, -50; -60, 50; 60, -50; 60, 50], style(color=0,
@@ -190,7 +190,7 @@ end SimpleGenericOrifice;
             gradient=2,
             fillColor=69)),
         Text(
-          extent=[-152,119; 138,70],
+          extent=[-150,80; 150,120],
           string="%name",
           style(gradient=2, fillColor=69))), Documentation(info="<html>
 <p>
@@ -371,7 +371,7 @@ model SuddenExpansion
         string="D_b")),
     Icon(
       Text(
-        extent=[-132,144; 138,98],
+        extent=[-150,90; 150,130],
         string="%name",
         style(gradient=2, fillColor=69)),
       Rectangle(extent=[-100,80; 100,-80],   style(
@@ -406,7 +406,7 @@ model SharpEdgedOrifice
 </html>"),
     Icon(
       Text(
-        extent=[-148,136; 148,92],
+        extent=[-150,90; 150,130],
         string="%name",
         style(gradient=2, fillColor=69)),
       Rectangle(extent=[-100,80; 100,-80],   style(
@@ -1748,7 +1748,7 @@ The used sufficient criteria for monotonicity follows from:
         Diagram,
         Icon(
           Text(
-            extent=[-122,114; 124,68],
+            extent=[-150,80; 150,120],
             string="%name",
             style(gradient=2, fillColor=69)),
           Rectangle(extent=[-100,60; 100,-60],   style(
@@ -2365,56 +2365,38 @@ solving a non-linear equation.
     
   partial model PartialTwoPortTransport 
       "Partial element transporting fluid between two ports without storing mass or energy" 
-      import Modelica.Constants;
+    import Modelica.Constants;
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
                                                                          annotation (
         choicesAllMatching =                                                                            true);
       
     //Initialization
-    parameter Medium.AbsolutePressure p_a_start "Guess value of pressure" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Medium.AbsolutePressure p_b_start "Guess value of pressure" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Boolean use_T_start = true 
-        "= true, use T_start, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"), Evaluate=true);
-    parameter Medium.Temperature T_start=
-      if use_T_start then Medium.T_default else Medium.temperature_phX(p_a_start,h_start,X_start) 
-        "Guess value of temperature" 
-      annotation(Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.specificEnthalpy_pTX(p_a_start, T_start, X_start) else Medium.h_default 
-        "Guess value of specific enthalpy" 
-      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default 
-        "Guess value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-   parameter Types.FlowDirection.Temp flowDirection=
-                     Modelica_Fluid.Types.FlowDirection.Bidirectional 
-        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+    parameter Modelica_Fluid.Types.FlowDirection.Temp flowDirection=
+        Modelica_Fluid.Types.FlowDirection.Bidirectional 
+        "Unidirectional (port_a -> port_b) or bidirectional flow" 
        annotation(Dialog(tab="Advanced"));
+    parameter Medium.AbsolutePressure dp_start = 0 
+        "Guess value of dp = port_a.p - port_b.p" 
+      annotation(Dialog(tab = "Advanced"));
+    parameter Medium.MassFlowRate m_flow_start = 0 
+        "Guess value of m_flow = port_a.m_flow" 
+      annotation(Dialog(tab = "Advanced"));
       
     Modelica_Fluid.Interfaces.FluidPort_a port_a(
                                   redeclare package Medium = Medium,
-                       p(start=p_a_start),
-                       h_outflow(start=h_start),
-                       Xi_outflow(start=X_start[1:Medium.nXi]),
-                       m_flow(start=0,min=if allowFlowReversal then -Constants.inf else 0)) 
+                       m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
         "Fluid connector a (positive design flow direction is from port_a to port_b)"
       annotation (extent=[-110,-10; -90,10]);
     Modelica_Fluid.Interfaces.FluidPort_b port_b(
                                   redeclare package Medium = Medium,
-                       p(start=p_b_start),
-                       h_outflow(start=h_start),
-                       Xi_outflow(start=X_start[1:Medium.nXi]),
-                       m_flow(start=0,max=if allowFlowReversal then +Constants.inf else 0)) 
+                       m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
         "Fluid connector b (positive design flow direction is from port_a to port_b)"
       annotation (extent=[110,-10; 90,10]);
-    Medium.MassFlowRate m_flow 
+    Medium.MassFlowRate m_flow(start=m_flow_start) 
         "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
-    SI.Pressure dp(start=p_a_start-p_b_start) 
-        "Pressure difference between port_a and port_b";
+    Modelica.SIunits.Pressure dp(start=dp_start) 
+        "Pressure difference between port_a and port_b (= port_a.p - port_b.p)";
       
     annotation (
       Coordsys(grid=[1, 1], component=[20, 20]),
@@ -2430,20 +2412,28 @@ balance has to be added by specifying a relationship
 between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 </p>
 </html>"),
-      Icon);
+      Icon,
+      uses(Modelica_Fluid(version="1.0 Streams Beta 1"), Modelica(version="2.2.2")));
+    Medium.Temperature port_a_T "Temperature close to port_a";
+    Medium.Temperature port_b_T "Temperature close to port_b";
     Medium.ThermodynamicState port_a_state_inflow 
         "Medium state close to port_a for inflowing mass flow";
     Medium.ThermodynamicState port_b_state_inflow 
         "Medium state close to port_b for inflowing mass flow";
-    Medium.Density port_a_d_inflow 
-        "Density close to port_a for inflowing mass flow";
-    Medium.Density port_b_d_inflow 
-        "Density close to port_b for inflowing mass flow";
     protected 
       parameter Boolean allowFlowReversal=
        flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
+    Medium.Density port_a_d_inflow 
+        "Density close to port_a for inflowing mass flow";
+    Medium.Density port_b_d_inflow 
+        "Density close to port_b for inflowing mass flow";
+    Medium.Temperature port_a_T_inflow 
+        "Temperature close to port_a for inflowing mass flow";
+    Medium.Temperature port_b_T_inflow 
+        "Temperature close to port_b for inflowing mass flow";
+      
   equation 
     // Isenthalpic state transformation (no storage and no loss of energy)
     port_a.h_outflow = inflow(port_b.h_outflow);
@@ -2472,6 +2462,11 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
       
+    // Computation of temperature, just for plotting
+    port_a_T_inflow = Medium.temperature(port_a_state_inflow);
+    port_b_T_inflow = Medium.temperature(port_b_state_inflow);
+    port_a_T = Modelica_Fluid.Utilities.regStep(port_a.m_flow, port_a_T_inflow, port_b_T_inflow);
+    port_b_T = Modelica_Fluid.Utilities.regStep(port_b.m_flow, port_b_T_inflow, port_a_T_inflow);
   end PartialTwoPortTransport;
   end BaseClasses;
 end PressureLosses;

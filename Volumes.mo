@@ -18,7 +18,6 @@ package Volumes "Generic volume, tank and other volume type components"
             gradient=3,
             fillColor=68,
             rgbfillColor={170,213,255})),
-        Text(extent=[-144,178; 146,116], string="%name"),
         Text(
           extent=[-130,-108; 144,-150],
           style(color=0),
@@ -284,11 +283,7 @@ initial equation
           extent=[-95,90; 95,60],
           string="%name",
           style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=69,
-            rgbfillColor={0,127,255},
-            fillPattern=1)),
+            color=3)),
         Text(
           extent=[-129,53; 130,39],
           style(color=0),
@@ -740,7 +735,7 @@ end Tank;
         "Heat flow across boundaries or energy source/sink";
         SI.Power Ws_flow "Work flow across boundaries or source term";
         annotation (
-          Icon(Text(extent=[-144,178; 146,116], string="%name"), Text(
+          Icon(Text(extent=[-150,110; 150,150], string="%name"), Text(
               extent=[-130,-108; 144,-150],
               style(color=0),
               string="V=%V")),

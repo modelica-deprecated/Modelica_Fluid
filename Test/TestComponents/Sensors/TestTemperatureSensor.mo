@@ -117,9 +117,9 @@ equation
   connect(temperatureTwoPort.port_b, openTankHot2.ports[1]) annotation (points=
         [0,-10; 34,-10; 34,-20.5; 70,-20.5], style(color=69, rgbcolor={0,127,
           255}));
-  connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (points=[30,-70; 
+  connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (points=[30,-70;
         30,-60.5],      style(color=69, rgbcolor={0,127,255}));
-  connect(junctionIdeal.port_2, openTankHot3.ports[1]) annotation (points=[40,-80; 
+  connect(junctionIdeal.port_2, openTankHot3.ports[1]) annotation (points=[40,-80;
         55.5,-80; 55.5,-80.5; 70,-80.5],      style(color=69, rgbcolor={0,127,
           255}));
 end TestTemperatureSensor;

@@ -11,12 +11,7 @@ model TestDensity
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
-    p_a_start=ambient.default_p_ambient,
-    p_b_start=ambient.default_p_ambient,
-    T_start=ambient.default_T_ambient,
-    diameter=0.1,
-    use_T_start=false,
-    h_start=3200e3) annotation (extent=[20,-30; 40,-10]);
+    diameter=0.1) annotation (extent=[20,-30; 40,-10]);
   Modelica.Blocks.Sources.Sine sine1 
                                     annotation (extent=[-100,-20; -80,0]);
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX massFlowRate2(
@@ -34,12 +29,7 @@ model TestDensity
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
-    p_a_start=ambient.default_p_ambient,
-    p_b_start=ambient.default_p_ambient,
-    T_start=ambient.default_T_ambient,
-    diameter=0.1,
-    use_T_start=false,
-    h_start=3200e3) annotation (extent=[20,40; 40,60]);
+    diameter=0.1) annotation (extent=[20,40; 40,60]);
   Modelica.Blocks.Sources.Sine sine annotation (extent=[-100,50; -80,70]);
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX massFlowRate1(
     useFlowRateInput=true,

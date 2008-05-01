@@ -6,9 +6,6 @@ model TestPressure
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
-    p_a_start=ambient.default_p_ambient,
-    p_b_start=ambient.default_p_ambient,
-    T_start=ambient.default_T_ambient,
     diameter=0.1) annotation (extent=[20,-10; 40,10]);
   Modelica_Fluid.Sensors.RelativePressure relativePressure(redeclare package 
       Medium = Modelica.Media.Water.StandardWater) 
@@ -47,12 +44,13 @@ equation
       rgbcolor={0,127,255},
       smooth=0));
   connect(simpleGenericOrifice.port_a, relativePressure.port_a) annotation (
-      points=[20,0; 20,44; 19,44], style(
+      points=[20,0; 20,44; 20,44], style(
       color=69,
       rgbcolor={0,127,255},
       smooth=0));
   connect(relativePressure.port_b, simpleGenericOrifice.port_b) annotation (
-      points=[41,44; 41,23; 40,23; 40,0], style(
+      points=[40,43.8; 40,23; 40,23; 40,0],
+                                          style(
       color=69,
       rgbcolor={0,127,255},
       smooth=0));

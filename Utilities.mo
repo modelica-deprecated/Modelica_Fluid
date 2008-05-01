@@ -529,32 +529,14 @@ k1=1, k2=3 is shown in the next figure:
                                   -regSquare2_utility(-x,x_small,k2,k1,use_yd0,yd0));
   end regSquare2;
   
-  function regUnitStep 
-    "Approximation of a unit step, such that the characteristic is continuous and differentiable" 
-    extends Modelica.Icons.Function;
-    input Real x "Abszissa value";
-    input Real x_small 
-      "Approximation of step for 0 <= x <= x_small; x_small > 0 required";
-    output Real y "Ordinate value to approximate y = if x > 0 then 1 else 0";
-    annotation(Documentation(revisions="<html>
-<ul>
-<li><i>April 29, 2008</i>
-    by <a href=\"mailto:Martin.Otter@DLR.de\">Martin Otter</a>:<br>
-    Designed and implemented.</li>
-</ul>
-</html>"));
-  algorithm 
-    y := smooth(1, if x > x_small then 1 else 
-                   (if x > 0 then (x/x_small)^2*(3-2*(x/x_small)) else 0));
-  end regUnitStep;
-
+  
   function regStep 
     "Approximation of a general step, such that the characteristic is continuous and differentiable" 
     extends Modelica.Icons.Function;
     input Real x "Abszissa value";
     input Real y1 "Ordinate value for x > 0";
     input Real y2 "Ordinate value for x < 0";
-    input Real x_small(min=0) 
+    input Real x_small(min=0) = 1e-5 
       "Approximation of step for -x_small <= x <= x_small; x_small > 0 required";
     output Real y "Ordinate value to approximate y = if x > 0 then y1 else y2";
     // output Real yd;
@@ -570,7 +552,7 @@ k1=1, k2=3 is shown in the next figure:
                    if x < -x_small then y2 else 
                    (x/x_small)*((x/x_small)^2 - 3)*(y2-y1)/4 + (y1+y2)/2);
   end regStep;
-
+  
   function evaluatePoly3_derivativeAtZero 
     "Evaluate polynomial of order 3 that passes the origin with a predefined derivative" 
     extends Modelica.Icons.Function;

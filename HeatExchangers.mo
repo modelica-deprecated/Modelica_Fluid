@@ -41,7 +41,7 @@ package HeatExchangers "Evaporators and condensor components"
     annotation (extent=[-10,-110; 10,-90]);
   Modelica.Blocks.Interfaces.RealOutput V(
     redeclare type SignalType = SI.Volume) "liquid volume" 
-    annotation (extent=[30, 100; 50, 120], rotation=90);
+    annotation (extent=[90,100; 110,120],  rotation=90);
     
   Medium.SaturationProperties sat 
       "State vector to compute saturation properties";
@@ -126,7 +126,7 @@ package HeatExchangers "Evaporators and condensor components"
     Coordsys(grid=[1, 1], component=[20, 20]),
     Diagram,
     Icon(
-      Rectangle(extent=[-100, 59; 100, -61], style(
+      Rectangle(extent=[-100,60; 100,-61],   style(
           color=0,
           gradient=2,
           fillColor=8)),
@@ -144,11 +144,11 @@ package HeatExchangers "Evaporators and condensor components"
       Ellipse(extent=[74, 14; 104, -15], style(pattern=0, fillColor=7)),
       Ellipse(extent=[71, 29; 101, 0], style(pattern=0, fillColor=7)),
       Text(
-        extent=[-139,111; 144,57],
+        extent=[-150,70; 150,110],
         string="%name",
         style(gradient=2, fillColor=69)),
       Line(points=[0, -60; 0, -100], style(color=42)),
-      Line(points=[40, 99; 40, 60])),
+      Line(points=[100,100; 100,60], style(color=74, rgbcolor={0,0,127}))),
     Documentation(revisions="<html>
 <ul>
 <li><i>2 Nov 2005</i>
@@ -433,10 +433,10 @@ Simple model of a heat exchanger consisting of two pipes and one wall in between
         gradient=2,
         fillColor=42,
         rgbfillColor={213,0,0}));
-    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8;
+    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (points=[-10,41.8; 
           -10,29.5; -9,29.5],                  style(color=42, rgbcolor={191,0,
             0}));
-    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5;
+    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (points=[-9,0.5; 
           -9,-7.75; -10,-7.75; -10,-13.8], style(color=42, rgbcolor={191,0,0}));
   end BasicHX;
 end HeatExchangers;

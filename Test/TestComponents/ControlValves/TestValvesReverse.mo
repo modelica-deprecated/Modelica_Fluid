@@ -21,35 +21,30 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
     dp_nom=9e5,
     m_flow_nom=1.5,
   redeclare package Medium = Medium,
-    p_nom=10e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     Av=0.1) annotation (extent=[-50, 58; -30, 78]);
   Modelica_Fluid.ControlValves.ValveIncompressible V2(
     dp_nom=5e5,
     m_flow_nom=1.2,
   redeclare package Medium = Medium,
-    p_nom=10e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     Av=0.1) annotation (extent=[-38, 26; -18, 46]);
   Modelica_Fluid.ControlValves.ValveIncompressible V3(
     dp_nom=3e5,
     m_flow_nom=1.1,
   redeclare package Medium = Medium,
-    p_nom=8e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (extent=[-38, -38; -18, -18]);
   Modelica_Fluid.ControlValves.ValveIncompressible V4(
     dp_nom=8e5,
     m_flow_nom=1.3,
   redeclare package Medium = Medium,
-    p_nom=8e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (extent=[-40,-78; -20,-58]);
   Modelica_Fluid.ControlValves.ValveIncompressible V5(
     dp_nom=4e5,
     m_flow_nom=2,
   redeclare package Medium = Medium,
-    p_nom=6e5,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (extent=[30,-4; 50,16]);
   

@@ -1,6 +1,108 @@
 within Modelica_Fluid.Test;
 package TestCriticalCases 
   "Collection of test cases which might be critical for the solvers" 
+  model IdealMixing1 "Test properties of ideal mixing" 
+    // package Medium =  Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater;
+    // Modelica.Media.IdealGases.MixtureGases.FlueGasSixComponents,package Medium = Modelica.Media.Air.DryAirNasa;
+    package Medium = 
+        Modelica.Media.IdealGases.MixtureGases.FlueGasSixComponents;
+    
+    PressureLosses.WallFrictionAndGravity pipeFriction1(
+      redeclare package WallFriction = 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+      length=1,
+      diameter=0.2,
+      redeclare package Medium = Medium) annotation (extent=[-32,-40; -12,-20]);
+    PressureLosses.WallFrictionAndGravity pipeFriction2(
+      redeclare package WallFriction = 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+      length=1,
+      diameter=0.2,
+      redeclare package Medium = Medium) annotation (extent=[12,-40; 32,-20]);
+    annotation (
+      Diagram,
+      experiment(StopTime=10),
+      experimentSetupOutput);
+    PressureLosses.WallFrictionAndGravity pipeFriction3(
+      redeclare package WallFriction = 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+      length=1,
+      diameter=0.2,
+      redeclare package Medium = Medium) 
+      annotation (extent=[-10,-10; 10,10], rotation=90);
+    Sources.PrescribedBoundary_pTX boundary1(
+      usePressureInput=true,
+      useTemperatureInput=true,
+      redeclare package Medium = Medium) annotation (extent=[-68,-40; -48,-20]);
+    Sources.PrescribedBoundary_pTX boundary2(
+      usePressureInput=false,
+      useTemperatureInput=false,
+      p=101000,
+      T=320,
+      redeclare package Medium = Medium) annotation (extent=[66,-40; 46,-20]);
+    Sources.PrescribedBoundary_pTX boundary3(
+      usePressureInput=true,
+      useTemperatureInput=false,
+      T=340,
+      redeclare package Medium = Medium) 
+      annotation (extent=[10,20; -10,40], rotation=-90);
+    Modelica.Blocks.Sources.Sine sine1(
+      amplitude=0.05e5,
+      freqHz=2,
+      offset=1e5,
+      phase=0.013962634015955) annotation (extent=[-100,-20; -80,0]);
+    Modelica.Blocks.Sources.Sine sine2(
+      amplitude=10,
+      freqHz=1,
+      phase=0.0017453292519943,
+      offset=300) annotation (extent=[-100,-58; -80,-38]);
+    Modelica.Blocks.Sources.Sine sine3(
+      amplitude=0.05e5,
+      freqHz=2,
+      offset=1e5) annotation (extent=[-10,80; 10,60], rotation=90);
+    inner Ambient ambient annotation (extent=[-88,60; -68,80]);
+  equation 
+    connect(pipeFriction1.port_b, pipeFriction2.port_a) annotation (points=[-12,
+          -30; 12,-30], style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
+    connect(pipeFriction3.port_a, pipeFriction1.port_b) annotation (points=[
+          -6.12323e-016,-10; 0,-10; 0,-30; -12,-30], style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
+    connect(boundary1.port, pipeFriction1.port_a) annotation (points=[-48,-30;
+          -32,-30], style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
+    connect(boundary2.port, pipeFriction2.port_b) annotation (points=[46,-30;
+          32,-30], style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
+    connect(boundary3.port, pipeFriction3.port_b) annotation (points=[
+          -6.12323e-016,20; -6.12323e-016,10; 6.12323e-016,10], style(
+        color=69,
+        rgbcolor={0,127,255},
+        smooth=0));
+    connect(sine1.y, boundary1.p_in) annotation (points=[-79,-10; -76,-10; -76,
+          -24; -70,-24], style(
+        color=74,
+        rgbcolor={0,0,127},
+        smooth=0));
+    connect(sine2.y, boundary1.T_in) annotation (points=[-79,-48; -76,-48; -76,
+          -30; -70,-30], style(
+        color=74,
+        rgbcolor={0,0,127},
+        smooth=0));
+    connect(sine3.y, boundary3.p_in) annotation (points=[6.73556e-016,59; 
+          6.73556e-016,50.5; -6,50.5; -6,42], style(
+        color=74,
+        rgbcolor={0,0,127},
+        smooth=0));
+  end IdealMixing1;
   
   model BranchingPipes1 
     //replaceable package Medium = Modelica.Media.Water.StandardWater;
@@ -28,10 +130,6 @@ package TestCriticalCases
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
       d_nom=1000,
-      T_start=300,
-      pin_start=200000,
-      pout_start=200000,
-      p_nom=200000,
       dp_nom=200000) 
                   annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valveIncompressible1(
@@ -39,10 +137,6 @@ package TestCriticalCases
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
       d_nom=1000,
-      T_start=300,
-      pin_start=200000,
-      pout_start=200000,
-      p_nom=200000,
       dp_nom=200000) 
                   annotation (extent=[8,-50; 28,-30]);
     annotation (
@@ -127,14 +221,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=1000) annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=1000) annotation (extent=[8,-50; 28,-30]);
@@ -215,14 +307,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=1000) annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=1000) annotation (extent=[8,-50; 28,-30]);
@@ -307,14 +397,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=1000) annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=1000) annotation (extent=[8,-50; 28,-30]);
@@ -355,8 +443,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
           2,1; 100,1]) annotation (extent=[-20,-10; 0,10]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
     Junctions.JunctionVolume splitter(redeclare package Medium = Medium,
-      initType=Modelica_Fluid.Types.Init.InitialValues, 
-      V=0.0002, 
+      initType=Modelica_Fluid.Types.Init.InitialValues,
+      V=0.0002,
       p_start=500000) 
       annotation (extent=[-50,0; -36,12], rotation=90);
   equation 
@@ -395,17 +483,18 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.5e-2,
-      redeclare package Medium = Medium,
-      p_a_start=500000,
+      redeclare package Medium = Medium, 
+      initType=Modelica_Fluid.Types.Init.InitialValues, 
+      p_a_start=500000, 
       p_b_start=500000)                  annotation (extent=[-76,-10; -56,10]);
     
     ControlValves.ValveIncompressible valveIncompressible(
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
       d_nom=1000,
-      redeclare package Medium = Medium,
-      p_nom=500000,
-      dp_nom=400000)                     annotation (extent=[52,-10; 72,10]);
+      redeclare package Medium = Medium, 
+      dp_nom=400000, 
+      minStemPosition=0.01)              annotation (extent=[52,-10; 72,10]);
     annotation (
       Diagram,
       experiment(StopTime=5),
@@ -423,12 +512,13 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.5e-2,
-      redeclare package Medium = Medium,
-      p_a_start=500000,
+      redeclare package Medium = Medium, 
+      initType=Modelica_Fluid.Types.Init.InitialValues, 
+      p_a_start=500000, 
       p_b_start=500000)                  annotation (extent=[-14,-10; 6,10]);
     
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
-          1,0; 100,0]) annotation (extent=[-44,78; -24,98]);
+          1,0; 100,0]) annotation (extent=[-20,70; 0,90]);
     inner Ambient ambient annotation (extent=[-100,60; -80,80]);
     PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
       zeta=0.4,
@@ -440,8 +530,9 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
       length=10,
       diameter=2.5e-2,
-      redeclare package Medium = Medium,
-      p_a_start=500000,
+      redeclare package Medium = Medium, 
+      initType=Modelica_Fluid.Types.Init.InitialValues, 
+      p_a_start=500000, 
       p_b_start=500000)                  annotation (extent=[16,-10; 36,10]);
     
   equation 
@@ -450,7 +541,7 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
     connect(valveIncompressible.port_b, sink.port) 
       annotation (points=[72,0; 82,0], style(color=69, rgbcolor={0,127,255}));
     connect(valveOpening1.y, valveIncompressible.stemPosition) annotation (
-        points=[-23,88; 62,88; 62,9], style(color=74, rgbcolor={0,0,127}));
+        points=[1,80; 62,80; 62,9],   style(color=74, rgbcolor={0,0,127}));
     connect(pipe1.port_b, simpleGenericOrifice.port_a) annotation (points=[-56,
           0; -46,0], style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, simpleGenericOrifice.port_b) annotation (points=[-14,
@@ -554,17 +645,19 @@ fails for zero flow rate.
     ControlValves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=3.0e4,
       m_flow_nom=1,
-      d_nom=1000) annotation (extent=[-40,48; -26,64]);
+      d_nom=1000,
+      dp_nom=30000,
+      minStemPosition=0.01) 
+                  annotation (extent=[-40,48; -26,64]);
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=3.0e4,
       m_flow_nom=1,
-      d_nom=1000) annotation (extent=[-40,-28; -26,-44]);
+      d_nom=1000,
+      dp_nom=30000,
+      minStemPosition=0.01) 
+                  annotation (extent=[-40,-28; -26,-44]);
     Modelica_Fluid.Pipes.LumpedPipe pipe7(
       p_a_start=5.0e5,
       use_T_start=true,
@@ -577,10 +670,11 @@ fails for zero flow rate.
     ControlValves.ValveIncompressible valve3(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=3.0e4,
       m_flow_nom=1,
-      d_nom=1000) annotation (extent=[62,2; 76,18]);
+      d_nom=1000,
+      dp_nom=30000,
+      minStemPosition=0.01) 
+                  annotation (extent=[62,2; 76,18]);
     Sources.FixedBoundary_pTX sink(
       redeclare package Medium = Medium,
       T=300,
@@ -694,14 +788,12 @@ fails for zero flow rate.
     ControlValves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=1000) annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=1000) annotation (extent=[8,-50; 28,-30]);
@@ -784,17 +876,19 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (extent=[10,36; 30,56]);
+      d_nom=5, 
+      dp_nom=400000, 
+      minStemPosition=0.001) 
+                  annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (extent=[8,-50; 28,-30]);
+      d_nom=5, 
+      dp_nom=400000, 
+      minStemPosition=0.001) 
+                  annotation (extent=[8,-50; 28,-30]);
     annotation (
       Diagram,
       experiment(StopTime=5),
@@ -850,7 +944,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[1,80; 20,80; 20,55], style(color=74, rgbcolor={0,0,127}));
     connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -880,14 +974,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=4.0e5,
+       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5)    annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5)    annotation (extent=[8,-50; 28,-30]);
@@ -951,7 +1043,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[1,82; 20,82; 20,55], style(color=74, rgbcolor={0,0,127}));
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -983,14 +1075,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5)    annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5)    annotation (extent=[8,-50; 28,-30]);
@@ -1056,7 +1146,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points=[1,82; 20,82; 20,55], style(color=74, rgbcolor={0,0,127}));
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[1,0; 18,0; 18,-31], style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -1088,14 +1178,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5)    annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5)    annotation (extent=[8,-50; 28,-30]);
@@ -1160,7 +1248,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[1,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -1192,7 +1280,6 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5,
@@ -1201,7 +1288,6 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5)    annotation (extent=[8,-50; 28,-30]);
@@ -1264,7 +1350,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[3,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -54.5,6; -54.5,6; -50,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -40,
@@ -1302,14 +1388,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5)    annotation (extent=[10,36; 30,56]);
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
       dp_nom=4.0e5,
       m_flow_nom=1,
       d_nom=5)    annotation (extent=[8,-50; 28,-30]);
@@ -1372,7 +1456,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.stemPosition)               annotation (
         points=[3,-2; 18,-2; 18,-31],
                                     style(color=74, rgbcolor={0,0,127}));
-    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6;
+    connect(pipe1.port_b, junctionIdeal.port_3) annotation (points=[-58,6; 
           -53.5,6; -53.5,6; -48,6],
                               style(color=69, rgbcolor={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (points=[-34,46; -38,
@@ -1408,11 +1492,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      p_nom=5.0e5,
-      dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5,
-      dp(start=4.0e5)) 
+      d_nom=5, 
+      minStemPosition=0.001, 
+      dp(start=400000), 
+      dp_nom=400000) 
                   annotation (extent=[8,-50; 28,-30]);
     annotation (
       Diagram,

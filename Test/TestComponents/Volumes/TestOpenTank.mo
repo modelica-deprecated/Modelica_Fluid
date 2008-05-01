@@ -31,12 +31,9 @@ model TestOpenTank
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(
     height_ab=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    p_a_start=ambient.default_p_ambient,
-    p_b_start=ambient.default_p_ambient,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.LaminarAndQuadraticTurbulent,
     diameter=0.02,
-    T_start=ambient.default_T_ambient,
     length=200) annotation (extent=[-10,-20; 10,0], rotation=90);
   
   Modelica_Fluid.Volumes.OpenTank lowerTank(

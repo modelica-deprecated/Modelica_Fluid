@@ -4,9 +4,6 @@ model TestFlowRate
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
-    p_a_start=ambient.default_p_ambient,
-    p_b_start=ambient.default_p_ambient,
-    T_start=ambient.default_T_ambient,
     diameter=0.1) annotation (extent=[-20,-10; 0,10]);
   Modelica.Blocks.Sources.Sine sine annotation (extent=[-100,0; -80,20]);
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate1(
