@@ -43,6 +43,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     "Valve for possibly vaporizing (almost) incompressible fluids, accounts for choked flow conditions" 
     import Modelica_Fluid.Types.CvTypes;
     extends BaseClasses.PartialValve(
+      final compute_T = true,
       redeclare replaceable package Medium = Modelica.Media.Water.WaterIF97_ph extends 
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     parameter Real Fl_nom=0.9 "Liquid pressure recovery factor";
@@ -84,7 +85,7 @@ The model operating range includes choked flow operation, which takes place for 
   equation 
     pin = port_a.p;
     pout = port_b.p;
-    pv = Medium.saturationPressure(port_a_T_inflow);
+    pv = Medium.saturationPressure(port_a_T);
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
     Fl = Fl_nom*FlCharacteristic(stemPosition);
     dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 
