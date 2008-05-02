@@ -10,8 +10,8 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 1: One-dimensional ther
 
 annotation (
   version="1.0 Streams Beta 1",
-  versionBuild="$Rev: 1098 $",
-  versionDate="$Date:: 2008-02-28 08:08:06 +0100 #$",
+  versionBuild="$Rev$",
+  versionDate="$Date::                            $",
   preferedView="info",
   Settings(NewStateSelection=true),
   uses(Modelica(version="2.2.2")),
