@@ -22,7 +22,8 @@ package TestCriticalCases
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{12,-40},{32,-20}}, rotation=0)));
     annotation (
-      Diagram(graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
       experiment(StopTime=10),
       experimentSetupOutput);
     PressureLosses.WallFrictionAndGravity pipeFriction3(
@@ -77,6 +78,9 @@ package TestCriticalCases
           rotation=90)));
     inner Ambient ambient annotation (Placement(transformation(extent={{-88,60},
               {-68,80}}, rotation=0)));
+    Sensors.TemperatureOnePort temperature(redeclare package Medium = Medium) 
+      annotation (Placement(transformation(extent={{-10,-60},{10,-80}},
+            rotation=0)));
   equation
     connect(pipeFriction1.port_b, pipeFriction2.port_a) annotation (Line(
         points={{-12,-30},{12,-30}},
@@ -95,7 +99,7 @@ package TestCriticalCases
         color={0,127,255},
         smooth=Smooth.None));
     connect(boundary3.port, pipeFriction3.port_b) annotation (Line(
-        points={{-6.12323e-016,20},{-6.12323e-016,10},{6.12323e-016,10}},
+        points={{-1.83697e-015,20},{-1.83697e-015,10},{6.12323e-016,10}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(sine1.y, boundary1.p_in) annotation (Line(
@@ -107,8 +111,12 @@ package TestCriticalCases
         color={0,0,127},
         smooth=Smooth.None));
     connect(sine3.y, boundary3.p_in) annotation (Line(
-        points={{6.73556e-016,59},{6.73556e-016,50.5},{-6,50.5},{-6,42}},
+        points={{-6.73556e-016,59},{-6.73556e-016,50.5},{-6,50.5},{-6,42}},
         color={0,0,127},
+        smooth=Smooth.None));
+    connect(temperature.port, pipeFriction3.port_a) annotation (Line(
+        points={{0,-60},{0,-10},{-6.12323e-016,-10}},
+        color={0,127,255},
         smooth=Smooth.None));
   end IdealMixing1;
 

@@ -1,11 +1,7 @@
 within ;
-package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 1: One-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 2.2.2)"
-
-
+package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 2: One-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 3.0)"
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
-
-
 
 package UsersGuide "Users Guide"
 
@@ -1328,7 +1324,6 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
-
 annotation (
   version="1.0 Streams Beta 2",
   versionBuild="$Rev$",
@@ -1410,7 +1405,5 @@ Modelica in file \"Modelica/package.mo\".
  
 </html>"),
     conversion(from(version="0.795", script=
-            "../ConvertFromModelica_Fluid_0.795.mos"), from(version=
-          "1.0 Streams Beta 1", script=
-          "ConvertFromModelica_Fluid_1.0 Streams Beta 1.mos")));
+            "../ConvertFromModelica_Fluid_0.795.mos")));
 end Modelica_Fluid;

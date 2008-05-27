@@ -11,13 +11,13 @@ package Junctions "Junction components"
       "Fluid medium model" 
       annotation (choicesAllMatching=true);
 
-    parameter PortFlowDirection.Temp portFlowDirection_1=PortFlowDirection.Bidirectional
+    parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
       "Flow direction for port_1" 
      annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection.Temp portFlowDirection_2=PortFlowDirection.Bidirectional
+    parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
       "Flow direction for port_2" 
      annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection.Temp portFlowDirection_3=PortFlowDirection.Bidirectional
+    parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
       "Flow direction for port_3" 
      annotation(Dialog(tab="Advanced"));
 
@@ -134,7 +134,7 @@ package Junctions "Junction components"
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(preferredMediumStates=true);
 
-    parameter Types.Init.Temp initType=Types.Init.NoInit
+    parameter Types.Init initType=Types.Init.NoInit
       "Initialization option" 
       annotation(Evaluate=true,Dialog(tab="Initialization"));
     parameter Medium.AbsolutePressure p_start "Start value of pressure" 
@@ -153,13 +153,13 @@ package Junctions "Junction components"
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
 
-    parameter PortFlowDirection.Temp portFlowDirection_1=PortFlowDirection.Bidirectional
+    parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
       "Flow direction for port_1" 
      annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection.Temp portFlowDirection_2=PortFlowDirection.Bidirectional
+    parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
       "Flow direction for port_2" 
      annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection.Temp portFlowDirection_3=PortFlowDirection.Bidirectional
+    parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
       "Flow direction for port_3" 
      annotation(Dialog(tab="Advanced"));
 
@@ -374,7 +374,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
 
-    parameter Types.Init.Temp initType=Types.Init.NoInit
+    parameter Types.Init initType=Types.Init.NoInit
       "Initialization option" 
       annotation(Evaluate=true,Dialog(tab="Initialization"));
     parameter Medium.AbsolutePressure p_start "Start value of pressure" 
@@ -393,10 +393,10 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
 
-    parameter PortFlowDirection.Temp portFlowDirection=PortFlowDirection.Bidirectional
+    parameter PortFlowDirection portFlowDirection=PortFlowDirection.Bidirectional
       "Allowed flow direction for ports" 
      annotation(Dialog(tab="Advanced"));
-    parameter ModelStructure.Temp modelStructure=ModelStructure.avb annotation(Evaluate=true);
+    parameter ModelStructure modelStructure=ModelStructure.avb annotation(Evaluate=true);
 
     Medium.EnthalpyFlowRate ports_a_H_flow[n_a];
     Medium.EnthalpyFlowRate ports_b_H_flow[n_b];

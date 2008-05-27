@@ -140,7 +140,7 @@ package Pumps "Pump components"
     parameter Integer Np(min=1) = 1 "Number of pumps in parallel";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
     parameter Boolean checkValve=false "Reverse flow stopped";
-    parameter Types.FlowDirection.Temp flowDirection=
+    parameter Types.FlowDirection flowDirection=
                      Types.FlowDirection.Bidirectional
         "Unidirectional (inlet -> outlet) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
@@ -170,7 +170,7 @@ package Pumps "Pump components"
       annotation(Dialog(tab="Initialization"));
     outer Modelica_Fluid.Ambient ambient "Ambient conditions";
     parameter SI.Acceleration g=ambient.g;
-  //  parameter Choices.Init.Options.Temp initOpt=Choices.Init.Options.noInit
+  //  parameter Choices.Init.Options initOpt=Choices.Init.Options.noInit
   //    "Initialisation option";
     Modelica_Fluid.Interfaces.FluidPort_a inlet(
                                  redeclare package Medium = Medium,

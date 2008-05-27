@@ -16,7 +16,7 @@ model WallConstProps
       "Thermal conductivity of wall material";
   parameter SI.Mass[n] m=fill(d_wall*area_h*s/n,n) "Distribution of wall mass";
 //Initialization
-  parameter Types.Init.Temp initType=Types.
+  parameter Types.Init initType=Types.
         Init.NoInit "Initialization option" 
     annotation(Evaluate=true);
   parameter SI.Temperature T_start "Wall temperature start value";
