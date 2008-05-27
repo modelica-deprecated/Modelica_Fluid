@@ -203,7 +203,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{-40,20},{-12,20}}, color={0,0,0}),
           Line(points={{-40,60},{-12,60}}, color={0,0,0}),
           Line(points={{12,0},{60,0}}, color={0,0,127})}),
-      Icon(graphics={
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Ellipse(
             extent={{-20,-88},{20,-50}},
             lineColor={0,0,0},
@@ -984,7 +985,7 @@ as signal.
         annotation (Placement(transformation(extent={{110,-10},{90,10}},
               rotation=0)));
 
-      parameter FlowDirection.Temp flowDirection=FlowDirection.Bidirectional
+      parameter FlowDirection flowDirection=FlowDirection.Bidirectional
         "Unidirectional (port_a -> port_b) or bidirectional flow component" 
          annotation(Dialog(tab="Advanced"));
 

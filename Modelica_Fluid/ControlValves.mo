@@ -4,7 +4,7 @@ package ControlValves "Various variants of valve components"
 
     model ValveIncompressible "Valve for (almost) incompressible fluids"
       extends BaseClasses.PartialValve;
-      import Modelica_Fluid.Types.CvTypes;
+    import Modelica_Fluid.Types.CvTypes;
     annotation (
     Icon(coordinateSystem(
           preserveAspectRatio=false,
@@ -64,7 +64,9 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     Medium.AbsolutePressure pin "Inlet pressure";
     Medium.AbsolutePressure pout "Outlet pressure";
     annotation (
-      Icon(graphics),
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}),
+           graphics),
       Diagram(graphics),
       Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid at the inlet, and possibly two-phase fluid at the outlet, with resulting choked flow conditions. <p>
@@ -130,7 +132,9 @@ The model operating range includes choked flow operation, which takes place for 
     parameter Real Y_nom(fixed=false) "Nominal compressibility factor";
 
     annotation (
-    Icon(graphics),
+    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}),
+         graphics),
     Diagram(graphics),
     Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid, no phase change, including choked conditions. <p>
@@ -222,8 +226,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
             points={{100,50},{0,0},{100,-50},{100,50}},
             lineColor={0,0,0},
             lineThickness=0.5),
-          Text(extent={{-153,-60},{150,-100}}, textString=
-                                                     "%name")}),
+          Text(extent={{-153,-60},{150,-100}}, textString="%name")}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -266,13 +269,11 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid),
-          Text(extent={{-150,-60},{150,-100}}, textString=
-                                                      "%name"),
+          Text(extent={{-150,-60},{150,-100}}, textString="%name"),
           Polygon(
             points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
-            fillColor=DynamicSelect({255,255,255}, if 
-                                          open > 0.5 then {0,255,0} else {255,
-                255,255}),
+            fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,0}
+                 else {255,255,255}),
             lineColor={0,0,0})}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
@@ -307,7 +308,7 @@ it is open.
       import Modelica_Fluid.Types.CvTypes;
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
             dp_start = dp_nom, m_flow_start = m_flow_nom);
-    parameter CvTypes.Temp CvData = CvTypes.Av "Selection of flow coefficient" 
+    parameter CvTypes CvData = CvTypes.Av "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
     parameter SI.Area Av(fixed = if CvData==CvTypes.Av then true else false,
                          start = m_flow_nom/(sqrt(d_nom*dp_nom))*
@@ -358,8 +359,7 @@ it is open.
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics={
-            Text(extent={{-150,-60},{150,-100}}, textString=
-                                                     "%name"),
+            Text(extent={{-150,-60},{150,-100}}, textString="%name"),
             Line(
               points={{0,60},{0,0}},
               color={0,0,0},
@@ -410,7 +410,7 @@ it is open.
     elseif CvData == CvTypes.Cv then
       Av = 2.4027e-5*Cv "Unit conversion";
     end if;
-    assert(CvData>=0 and CvData<=3, "Invalid CvData");
+
     equation
       modifiedStemPosition = noEvent(if stemPosition > minStemPosition then stemPosition else minStemPosition);
     end PartialValve;

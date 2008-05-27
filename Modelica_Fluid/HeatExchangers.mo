@@ -15,7 +15,7 @@ package HeatExchangers "Evaporators and condensor components"
   parameter Medium.SpecificHeatCapacity cp_D
       "specific heat capacity of drum metal";
   parameter SI.Volume V_t "total volume inside drum";
-  parameter Types.Init.Temp initType=
+  parameter Types.Init initType=
             Types.Init.NoInit "Initialization option" 
     annotation(Dialog(tab = "Initialization"));
   parameter Medium.AbsolutePressure p_start = Medium.p_default
@@ -25,7 +25,7 @@ package HeatExchangers "Evaporators and condensor components"
       "Start value of liquid volumeStart value of volume" 
     annotation(Dialog(tab = "Initialization"));
 
-  parameter FlowDirection.Temp flowDirection=
+  parameter FlowDirection flowDirection=
             FlowDirection.Bidirectional
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
@@ -257,7 +257,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       annotation (Dialog(group="Solid material properties"));
 
     //Initialization pipe 1
-    parameter Types.Init.Temp initType=Types.Init.InitialValues
+    parameter Types.Init initType=Types.Init.InitialValues
       "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter SI.Temperature Twall_start "Start value of wall temperature" 

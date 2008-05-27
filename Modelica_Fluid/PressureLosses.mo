@@ -790,7 +790,7 @@ The used sufficient criteria for monotonicity follows from:
 
        encapsulated function wallFriction
           "Return pressure loss data due to friction in a straight pipe with walls of nonuniform roughness (not useful for smooth pipes, since zeta is no function of Re)"
-                  import
+          import
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           import lg = Modelica.Math.log10;
           import SI = Modelica.SIunits;
@@ -937,7 +937,7 @@ As a short summary:
 
        encapsulated function suddenExpansion
           "Return pressure loss data for sudden expansion or contraction in a pipe (for both flow directions)"
-                  import
+          import
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           import SI = Modelica.SIunits;
          input SI.Diameter D_a "Inner diameter of pipe at port_a" annotation(Dialog);
@@ -2282,14 +2282,14 @@ solving a non-linear equation.
 
   partial model PartialTwoPortTransport
       "Partial element transporting fluid between two ports without storing mass or energy"
-    import Modelica.Constants;
+      import Modelica.Constants;
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
                                                                          annotation (
         choicesAllMatching =                                                                            true);
 
     //Initialization
-    parameter Modelica_Fluid.Types.FlowDirection.Temp flowDirection=
+    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
         Modelica_Fluid.Types.FlowDirection.Bidirectional
         "Unidirectional (port_a -> port_b) or bidirectional flow" 
        annotation(Dialog(tab="Advanced"));

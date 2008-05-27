@@ -15,7 +15,8 @@ model Ambient "Ambient field component"
     defaultComponentName="ambient",
     defaultComponentPrefixes="inner",
     missingInnerMessage="Your model is using an outer \"ambient\" component. An inner \"ambient\" component is not defined. For simulation drag Modelica_Fluid.Components.Ambient into your model and specify ambient conditions.",
-    Icon(graphics={
+    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+            100}}), graphics={
         Rectangle(
           extent={{-100,100},{100,-100}},
           lineColor={0,0,255},
@@ -24,8 +25,7 @@ model Ambient "Ambient field component"
         Text(
           extent={{-150,150},{150,110}},
           lineColor={0,0,255},
-          textString=
-               "%name"),
+          textString="%name"),
         Line(points={{-86,-30},{82,-30}}, color={0,0,0}),
         Line(points={{-82,-68},{-52,-30}}, color={0,0,0}),
         Line(points={{-48,-68},{-18,-30}}, color={0,0,0}),
@@ -42,13 +42,11 @@ model Ambient "Ambient field component"
           lineColor={0,0,0},
           fillColor={0,0,0},
           fillPattern=FillPattern.Solid,
-          textString=
-               "g"),
+          textString="g"),
         Text(
           extent={{-90,82},{74,50}},
           lineColor={0,0,0},
-          textString=
-                 "defaults")}),
+          textString="defaults")}),
     Diagram(graphics),
     Documentation(info="<html>
  

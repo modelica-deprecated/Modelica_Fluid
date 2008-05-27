@@ -7,7 +7,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
-    parameter Modelica_Fluid.Types.Init.Temp initType=Modelica_Fluid.Types.Init.NoInit
+    parameter Modelica_Fluid.Types.Init initType=Modelica_Fluid.Types.Init.NoInit
       "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_a_start
@@ -54,7 +54,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       "Nominal dynamic viscosity (for wall friction computation)" annotation(Dialog(enable=use_nominal));
     parameter Modelica.SIunits.Density d_nominal=0.01
       "Nominal density (for wall friction computation)" annotation(Dialog(enable=use_nominal));
-    parameter Modelica_Fluid.Types.FlowDirection.Temp flowDirection=
+    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
         Modelica_Fluid.Types.FlowDirection.Bidirectional
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
@@ -1000,8 +1000,8 @@ end DistributedPipeSa;
 
   partial model PartialDistributedFlowLumpedPressure
       "Base class for 1D fluid flow with the number of momentum balances reduced to 2"
-    import Modelica_Fluid.Types;
-    import Modelica.Constants.*;
+      import Modelica_Fluid.Types;
+      import Modelica.Constants.*;
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
         "Fluid medium model" 
         annotation (choicesAllMatching=true);
@@ -1025,7 +1025,7 @@ end DistributedPipeSa;
                                                                                                        annotation(Dialog(tab="Advanced", group="Momentum balances"),Evaluate=true);
 
   //Initialization
-      parameter Types.Init.Temp initType=Types.
+      parameter Types.Init initType=Types.
           Init.NoInit "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
       parameter Boolean use_T_start=true
@@ -1277,7 +1277,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
   end PartialDistributedFlowLumpedPressure;
 
   partial model PartialDistributedFlow
-    import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types;
 
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
         "Fluid medium model" 
@@ -1294,7 +1294,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         "= true, static balances, no mass or energy is stored" 
                                   annotation(Dialog(tab="Advanced", group="Mass and energy balances"),Evaluate=true);
 
-    parameter Types.ModelStructure.Temp modelStructure=Types.ModelStructure.a_v_b
+    parameter Types.ModelStructure modelStructure=Types.ModelStructure.a_v_b
         "Determines whether flow model between volume and port is present"                                                                           annotation(Dialog(tab="Advanced", group="Mass and energy balances"),Evaluate=true);
 
     parameter Boolean use_approxPortProperties=false
@@ -1302,7 +1302,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
                                                                                                        annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
 
   //Initialization
-      parameter Types.Init.Temp initType=Types.
+      parameter Types.Init initType=Types.
           Init.NoInit "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
       parameter Boolean use_T_start=true

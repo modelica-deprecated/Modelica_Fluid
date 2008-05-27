@@ -36,7 +36,7 @@ package Sources
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
             fillColor={0,127,255}), Text(extent={{-150,110},{150,150}},
-              textString =                                          "%name")}),
+              textString="%name")}),
       Documentation(info="<html>
 <p>
 Model <b>FixedBoundary</b> defines constant values for boundary conditions:
@@ -92,7 +92,7 @@ with exception of boundary pressure, do not have an effect.
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
             fillColor={0,127,255}), Text(extent={{-150,110},{150,150}},
-              textString =                                            "%name")}),
+              textString="%name")}),
       Documentation(info="<html>
 <p>
 Defines constant values for boundary conditions:
@@ -136,7 +136,7 @@ with exception of boundary pressure, do not have an effect.
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
             fillColor={0,127,255}), Text(extent={{-150,110},{150,150}},
-              textString =                                          "%name")}),
+              textString="%name")}),
       Documentation(info="<html>
 <p>
 Defines constant values for boundary conditions:
@@ -222,7 +222,7 @@ to define fixed or prescribed ambient conditions.
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
             fillColor={0,127,255}),
-          Text(extent={{-150,110},{150,150}}, textString =           "%name"),
+          Text(extent={{-150,110},{150,150}}, textString="%name"),
           Line(points={{-100,60},{-80,60}}, color={0,0,255}),
           Line(points={{-100,-60},{-80,-60}}, color={0,0,255}),
           Text(
@@ -230,22 +230,19 @@ to define fixed or prescribed ambient conditions.
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "p"),
+            textString="p"),
           Text(
             extent={{-160,-22},{-58,-62}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "X"),
+            textString="X"),
           Text(
             extent={{-158,44},{-56,4}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "T")}),
+            textString="T")}),
       Documentation(info="<html>
 <p>
 Defines prescribed values for boundary conditions:
@@ -337,7 +334,7 @@ with exception of boundary pressure, do not have an effect.
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
             fillColor={0,127,255}),
-          Text(extent={{-150,110},{150,150}}, textString =           "%name"),
+          Text(extent={{-150,110},{150,150}}, textString="%name"),
           Line(points={{-100,60},{-66,60}}, color={0,0,255}),
           Line(points={{-100,-60},{-66,-60}}, color={0,0,255}),
           Text(
@@ -345,15 +342,13 @@ with exception of boundary pressure, do not have an effect.
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "p"),
+            textString="p"),
           Text(
             extent={{-152,-86},{-50,-126}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "h")}),
+            textString="h")}),
       Documentation(info="<html>
 <p>
 Defines prescribed values for boundary conditions:
@@ -475,10 +470,8 @@ with exception of boundary pressure, do not have an effect.
             lineColor={255,0,0},
             fillColor={255,0,0},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "m"),
-          Text(extent={{-150,110},{150,150}}, textString=
-                                                 "%name"),
+            textString="m"),
+          Text(extent={{-150,110},{150,150}}, textString="%name"),
           Ellipse(
             extent={{-26,30},{-18,22}},
             lineColor={255,0,0},
@@ -489,22 +482,19 @@ with exception of boundary pressure, do not have an effect.
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "m_flow"),
+            textString="m_flow"),
           Text(
             extent={{-100,14},{-60,-20}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "T"),
+            textString="T"),
           Text(
             extent={{-144,-90},{-24,-118}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "X")}),
+            textString="X")}),
       Window(
         x=0.45,
         y=0.01,
@@ -628,8 +618,7 @@ with exception of boundary flow rate, do not have an effect.
             lineColor={255,0,0},
             fillColor={255,0,0},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "m"),
+            textString="m"),
           Ellipse(
             extent={{-26,30},{-18,22}},
             lineColor={255,0,0},
@@ -640,24 +629,20 @@ with exception of boundary flow rate, do not have an effect.
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "m_flow"),
+            textString="m_flow"),
           Text(
             extent={{-100,15},{-60,-19}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "T"),
+            textString="T"),
           Text(
             extent={{-145,-85},{-25,-113}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "X"),
-          Text(extent={{-150,110},{150,150}}, textString=
-                                                 "%name")}),
+            textString="X"),
+          Text(extent={{-150,110},{150,150}}, textString="%name")}),
       Window(
         x=0.45,
         y=0.01,
@@ -711,24 +696,23 @@ with exception of boundary flow rate, do not have an effect.
     extends Modelica_Fluid.Icons.BaseClassLibrary;
   partial model PartialSource
       "Partial component source with one fluid connector"
-      import Modelica.Constants;
+    import Modelica.Constants;
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium
         "Medium model within the source" 
        annotation (choicesAllMatching=true);
-    parameter Types.SourceFlowDirection.Temp flowDirection=
-                     Types.SourceFlowDirection.Bidirectional
+    parameter Types.PortFlowDirection flowDirection=
+                     Types.PortFlowDirection.Bidirectional
         "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
 
     Medium.BaseProperties medium "Medium in the source";
     Modelica_Fluid.Interfaces.FluidPort_b port(
                                 redeclare package Medium = Medium,
-                     m_flow(max=if flowDirection==Types.SourceFlowDirection.OutOfPort then 0 else 
+                     m_flow(max=if flowDirection==Types.PortFlowDirection.Leaving then 0 else 
                                      +Constants.inf,
-                            min=if flowDirection==Types.SourceFlowDirection.InToPort then 0 else 
+                            min=if flowDirection==Types.PortFlowDirection.Entering then 0 else 
                                      -Constants.inf)) 
-      annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation
-              =0)));
+      annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation=0)));
     annotation (Documentation(info="<html>
 <p>
 Partial component to model the <b>volume interface</b> of a <b>source</b>
@@ -743,9 +727,9 @@ features are:
 </ul>
 </html>"),
       Diagram(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics));
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics));
   equation
     port.p = medium.p;
     port.h_outflow  = medium.h;

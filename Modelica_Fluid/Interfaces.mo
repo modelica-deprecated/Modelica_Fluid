@@ -62,13 +62,15 @@ package Interfaces
   connector FluidPort_a "Generic fluid connector at design inlet"
     extends FluidPort;
     annotation (defaultComponentName="port_a",
-                Diagram(graphics={Ellipse(
+                Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+              -100,-100},{100,100}}), graphics={Ellipse(
             extent={{-40,40},{40,-40}},
             lineColor={0,0,0},
             fillColor={0,127,255},
             fillPattern=FillPattern.Solid), Text(extent={{-150,110},{150,50}},
               textString =                                              "%name")}),
-         Icon(graphics={Ellipse(
+         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,127,255},
             fillColor={0,127,255},
@@ -82,7 +84,8 @@ package Interfaces
   connector FluidPort_b "Generic fluid connector at design outlet"
     extends FluidPort;
     annotation (defaultComponentName="port_b",
-                Diagram(graphics={
+                Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+              -100,-100},{100,100}}), graphics={
           Ellipse(
             extent={{-40,40},{40,-40}},
             lineColor={0,0,0},
@@ -94,7 +97,8 @@ package Interfaces
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
           Text(extent={{-150,110},{150,50}}, textString =              "%name")}),
-         Icon(graphics={
+         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={
           Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,127,255},

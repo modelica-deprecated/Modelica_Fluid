@@ -167,7 +167,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     outer Modelica_Fluid.Ambient ambient;
 
 //Initialization
-    parameter Types.Init.Temp initType=Types.Init.InitialValues
+    parameter Types.Init initType=Types.Init.InitialValues
       "Initialization option" 
     annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
     parameter SI.Height level_start "Start value of tank level" 
@@ -350,10 +350,10 @@ end OpenTank;
 model Tank
     "Open tank with top and bottom inlet/outlet ports at a defineable height"
 
-  import Modelica.Constants;
-  import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
-  import Modelica_Fluid.Utilities.regRoot2;
-  import Modelica_Fluid.Volumes.BaseClasses.TankPortData;
+    import Modelica.Constants;
+    import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
+    import Modelica_Fluid.Utilities.regRoot2;
+    import Modelica_Fluid.Volumes.BaseClasses.TankPortData;
 
   replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -402,7 +402,7 @@ model Tank
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
 
 //Initialization
-    parameter Types.Init.Temp initType=Types.Init.InitialValues
+    parameter Types.Init initType=Types.Init.InitialValues
       "Initialization option" 
     annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
     parameter SI.Height level_start(min=0) "Start value of tank level" 
@@ -687,7 +687,7 @@ end Tank;
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation (choicesAllMatching = true);
-        parameter Types.Init.Temp initType=
+        parameter Types.Init initType=
                   Types.Init.NoInit "Initialization option" 
           annotation(Evaluate=true, Dialog(tab = "Initialization"));
         parameter Medium.AbsolutePressure p_start = Medium.p_default
@@ -708,7 +708,7 @@ end Tank;
         "Start value of mass fractions m_i/m" 
           annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
 
-        parameter Types.FlowDirection.Temp flowDirection=Types.FlowDirection.
+        parameter Types.FlowDirection flowDirection=Types.FlowDirection.
             Bidirectional
         "Unidirectional (port_a -> port_b) or bidirectional flow component" 
          annotation(Dialog(tab="Advanced"));

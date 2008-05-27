@@ -13,77 +13,26 @@ package Types "Common types for fluid models"
       final quantity="HydraulicResistance",
       final unit="Pa.s/kg");
 
-  package FrictionTypes
-    "Type, constants and menu choices to define the pressure loss equations due to friction, as temporary solution until enumerations are available"
+  type FrictionTypes = enumeration(
+      ConstantLaminar "constant laminar flow",
+      ConstantTurbulent "constant turbulent",
+      DetailedFriction "detailed friction model")
+    "Enumeration to define the pressure loss equations due to friction";
 
-    extends ObsoleteModelica3.Icons.Enumeration;
-    constant Integer ConstantLaminar=1;
-    constant Integer ConstantTurbulent=2;
-    constant Integer DetailedFriction=3;
-    type Temp
-      "Temporary type of FrictionTypes with choices for menus (until enumerations are available)"
+  type CrossSectionTypes = enumeration(
+      Circular "circular",
+      Rectangular "rectangular",
+      General "general")
+    "Enumeration to define the geometric cross section of pipes";
 
-      extends Integer;
-      annotation (Evaluate=true, choices(
-          choice=Modelica_Fluid.Types.FrictionTypes.ConstantLaminar
-            "ConstantLaminar \"dp = k*m_flow\"",
-          choice=Modelica_Fluid.Types.FrictionTypes.ConstantTurbulent
-            "ConstantTurbulent \"dp = k*m_flow^2\"",
-          choice=Modelica_Fluid.Types.FrictionTypes.DetailedFriction
-            "DetailedFriction \"dp = f(Re,delta,rho,L,D,nu)\""));
-    end Temp;
-  end FrictionTypes;
-
-  package CrossSectionTypes
-    "Type, constants and menu choices to define the geometric cross section of pipes, as temporary solution until enumerations are available"
-
-    annotation (preferedView="text");
-
-    extends ObsoleteModelica3.Icons.Enumeration;
-    constant Integer Circular=1;
-    constant Integer Rectangular=2;
-    constant Integer General=3;
-    type Temp
-      "Temporary type of CrossSectionTypes with choices for menus (until enumerations are available)"
-
-      extends Integer;
-      annotation (Evaluate=true, choices(
-          choice=Modelica_Fluid.Types.CrossSectionTypes.Circular
-            "Circular cross section",
-          choice=Modelica_Fluid.Types.CrossSectionTypes.Rectangular
-            "Rectangular cross section",
-          choice=Modelica_Fluid.Types.CrossSectionTypes.General
-            "General cross section"));
-    end Temp;
-  end CrossSectionTypes;
-
-  package Init
-    "Type, constants and menu choices to define initialization, as temporary solution until enumerations are available"
-
-    annotation (Documentation(info="<html>
- 
-</html>"));
-    extends ObsoleteModelica3.Icons.Enumeration;
-    constant Integer NoInit = 1
-      "No initial conditions (guess values for p, T or h, X)";
-    constant Integer InitialValues = 2 "Initial values for p, T or h, X";
-    constant Integer SteadyState = 3
-      "Steady state (guess values for p, T or h, X)";
-    constant Integer SteadyStateHydraulic = 4
-      "Hydraulic steady state (der(p)=0), guess value for p, initial values for T or h, X";
-    type Temp
-      "Temporary type with choices for menus (until enumerations are available)"
-      extends Modelica.Icons.TypeInteger(min=1, max=4);
-      annotation (Evaluate=true, choices(
-          choice=Modelica_Fluid.Types.Init.NoInit
-            "NoInit (guess values for p, T or h, X)",
-          choice=Modelica_Fluid.Types.Init.InitialValues
-            "InitialValues (initial values for p, T or h, X)",
-          choice=Modelica_Fluid.Types.Init.SteadyState
-            "SteadyState (guess values for p, T or h, X)",
-          choice=Modelica_Fluid.Types.Init.SteadyStateHydraulic
-            "SteadyStateHydraulic (der(p)=0, guess value for p, initial values for T or h, X)"),
-        Documentation(info="<html>
+  type Init = enumeration(
+      NoInit "No initial conditions (guess values for p, T or h, X)",
+      InitialValues "Initial values for p, T or h, X",
+      SteadyState "Steady state (guess values for p, T or h, X)",
+      SteadyStateHydraulic
+        "Hydraulic steady state (der(p)=0), guess value for p, initial values for T or h, X")
+    "Enumeration to define initialization options" 
+  annotation (Documentation(info="<html>
 <p>
 Integer type that can have the following values
 (to be selected via choices menu):
@@ -91,180 +40,44 @@ Integer type that can have the following values
  
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Types.Init.</b></th><th><b>Meaning</b></th></tr>
-<tr><td>NoInit (=1)</td>
+<tr><td>NoInit</td>
     <td>No initial conditions (guess values for p, T or h, X)</td></tr>
  
-<tr><td>InitialValues (=2)</td>
+<tr><td>InitialValues</td>
     <td>Initial values for p, T or h, X</td></tr>
  
-<tr><td>SteadyState (=3)</td>
+<tr><td>SteadyState</td>
     <td>Steady state (guess values for p, T or h, X)</td></tr>
  
-<tr><td>SteadyStateHydraulic (=4)</td>
+<tr><td>SteadyStateHydraulic</td>
     <td>Hydraulic steady state (der(p)=0), guess value for p, 
         initial values for T or h, X</td></tr>
 </table>
 </html>"));
 
-    end Temp;
-  end Init;
+  type FlowDirection = enumeration(
+      Unidirectional "Fluid flows only from port_a to port_b",
+      Bidirectional "No restrictions on fluid flow (flow reversal possible)")
+    "Enumeration to define whether flow reversal is allowed";
 
-  package FlowDirection
-    "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available"
-    extends ObsoleteModelica3.Icons.Enumeration;
-    constant Integer Unidirectional = 1
-      "Fluid flows only from port_a to port_b";
-    constant Integer Bidirectional = 2
-      "No restrictions on fluid flow (flow reversal possible)";
 
-    type Temp
-      "Temporary type with choices for menus (until enumerations are available)"
-      extends Modelica.Icons.TypeInteger(min=1, max=2);
-      annotation (Evaluate=true, choices(
-          choice=Modelica_Fluid.Types.FlowDirection.Unidirectional
-            "Unidirectional (fluid flows only from port_a to port_b)",
-          choice=Modelica_Fluid.Types.FlowDirection.Bidirectional
-            "Bidirectional (flow reversal possible)"),
-        Documentation(info="<html>
-<p>
-Integer type that can have the following values
-(to be selected via choices menu):
-</p>
- 
-<table border=1 cellspacing=0 cellpadding=2>
-<tr><th><b>Types.FlowDirection.</b></th><th><b>Meaning</b></th></tr>
-<tr><td>Unidirectional (=1)</td>
-    <td>Fluid flows only from port_a to port_b.
-        By this option, min and max values are set for
-        port_a.m_flow and port_b.m_flow. This allows a
-        Modelica translator to remove if-clauses of 
-        the semiLinear(..) operator reducing the
-        size of non-linear equation systems.</td></tr>
- 
-<tr><td>Bidirectional (=2)</td>
-    <td>No restrictions on fluid flow (flow reversal possible)</td></tr>
- 
-</table>
-</html>"));
-    end Temp;
-  end FlowDirection;
+  type CvTypes = enumeration(
+      Av "Av (metric) flow coefficient",
+      Kv "Kv (metric) flow coefficient",
+      Cv "Cv (US) flow coefficient",
+      OpPoint "Av defined by operating point")
+    "Enumeration to define the choice of valve flow coefficient";
 
-  package SourceFlowDirection
-    "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available"
+  type PortFlowDirection = enumeration(
+      Entering "Fluid flow is only entering",
+      Leaving "Fluid flow is only leaving",
+      Bidirectional "No restrictions on fluid flow (flow reversal possible)")
+    "Enumeration to define whether flow reversal is allowed";
 
-    annotation (Documentation(info="<html>
-  
-</html>"));
-    extends ObsoleteModelica3.Icons.Enumeration;
-    constant Integer OutOfPort = 1 "Fluid flows only out of the port";
-    constant Integer InToPort = 2 "Fluid flows only in to the port";
-    constant Integer Bidirectional = 3
-      "No restrictions on fluid flow (flow reversal possible)";
-
-    type Temp
-      "Temporary type with choices for menus (until enumerations are available)"
-      extends Modelica.Icons.TypeInteger(min=1, max=3);
-      annotation (Evaluate=true, choices(
-          choice=Modelica_Fluid.Types.SourceFlowDirection.OutOfPort
-            "OutOfPort (fluid flows only out of port_b)",
-          choice=Modelica_Fluid.Types.SourceFlowDirection.InToPort
-            "InToPort (fluid flows only in to port_b)",
-          choice=Modelica_Fluid.Types.FlowDirection.Bidirectional
-            "Bidirectional (flow reversal possible)"),
-        Documentation(info="<html>
-<p>
-Integer type that can have the following values
-(to be selected via choices menu):
-</p>
- 
-<table border=1 cellspacing=0 cellpadding=2>
-<tr><th><b>Types.FlowDirection.</b></th><th><b>Meaning</b></th></tr>
-<tr><td>OutOfPort (=1)</td>
-    <td>Fluid flows only out of the port.
-        By this option, max=0 is set for
-        port_b.m_flow. This allows a
-        Modelica translator to remove if-clauses of 
-        the semiLinear(..) operator reducing the
-        size of non-linear equation systems.</td></tr>
- 
- <tr><td>InTofPort (=2)</td>
-    <td>Fluid flows only in to the port.
-        By this option, min=0 is set for
-        port_b.m_flow. This allows a
-        Modelica translator to remove if-clauses of 
-        the semiLinear(..) operator reducing the
-        size of non-linear equation systems.</td></tr>
- 
-<tr><td>Bidirectional (=3)</td>
-    <td>No restrictions on fluid flow (flow reversal possible)</td></tr>
- 
-</table>
-</html>"));
-    end Temp;
-  end SourceFlowDirection;
-
-  model CvTypes
-    "Type, constants and menu choices to define the choice of valve flow coefficient"
-    extends ObsoleteModelica3.Icons.Enumeration;
-    annotation (preferedView="text");
-    constant Integer Av = 0 "Av (metric) flow coefficient";
-    constant Integer Kv = 1 "Kv (metric) flow coefficient";
-    constant Integer Cv = 2 "Cv (US) flow coefficient";
-    constant Integer OpPoint = 3 "Av defined by operating point";
-    type Temp
-      "Temporary type with choices for menus (until enumerations are available)"
-      extends Integer(min=0, max=3);
-      annotation (Evaluate=true, choices(
-        choice=Modelica_Fluid.Types.CvTypes.Av "Av (metric) flow coefficient",
-        choice=Modelica_Fluid.Types.CvTypes.Kv "Kv (metric) flow coefficient",
-        choice=Modelica_Fluid.Types.CvTypes.Cv "Cv (US) flow coefficient",
-        choice=Modelica_Fluid.Types.CvTypes.OpPoint
-            "Av defined by nominal operating point"));
-    end Temp;
-
-  end CvTypes;
-
-  package PortFlowDirection
-    "Type, constants and menu choices to define whether flow reversal is allowed, as temporary solution until enumerations are available"
-    extends ObsoleteModelica3.Icons.Enumeration;
-    constant Integer Entering=1 "Fluid flow is only entering";
-    constant Integer Leaving=2 "Fluid flow is only leaving";
-    constant Integer Bidirectional=3
-      "No restrictions on fluid flow (flow reversal possible)";
-
-    type Temp
-      "Temporary type with choices for menus (until enumerations are available)"
-      extends Modelica.Icons.TypeInteger(min=1, max=3);
-      annotation (Evaluate=true, choices(
-          choice=Modelica_Fluid.Types.PortFlowDirection.Entering
-            "Entering (fluid flow is only entering)",
-          choice=Modelica_Fluid.Types.PortFlowDirection.Leaving
-            "Leaving (fluid flow is only entering)",
-          choice=Modelica_Fluid.Types.PortFlowDirection.Bidirectional
-            "Bidirectional (flow reversal possible)"));
-    end Temp;
-  end PortFlowDirection;
-
-  package ModelStructure
-    extends ObsoleteModelica3.Icons.Enumeration;
-    constant Integer a_v_b=1
-      "port_a - flow model - volume - flow model - port_b";
-    constant Integer av_b=2 "port_a - volume - flow model - port_b";
-    constant Integer a_vb=3 "port_a - flow model - volume - port_b";
-    constant Integer avb=4 "port_a - volume - port_b";
-
-    type Temp
-      "Temporary type with choices for menus (until enumerations are available)"
-      extends Modelica.Icons.TypeInteger(min=1, max=4);
-      annotation (Evaluate=true, choices(
-          choice=Modelica_Fluid.Types.ModelStructure.a_v_b
-            "port_a - flow model - volume - flow model - port_b",
-          choice=Modelica_Fluid.Types.ModelStructure.av_b
-            "port_a - volume - flow model - port_b",
-          choice=Modelica_Fluid.Types.ModelStructure.a_vb
-            "port_a - flow model - volume - port_b",
-          choice=Modelica_Fluid.Types.ModelStructure.avb
-            "port_a - volume - port_b"));
-    end Temp;
-  end ModelStructure;
+  type ModelStructure = enumeration(
+      a_v_b "port_a - flow model - volume - flow model - port_b",
+      av_b "port_a - volume - flow model - port_b",
+      a_vb "port_a - flow model - volume - port_b",
+      avb "port_a - volume - port_b")
+    "Enumeration with choices for model structure in distributed pipe models";
 end Types;
