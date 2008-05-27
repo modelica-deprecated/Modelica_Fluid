@@ -1,9 +1,9 @@
 within Modelica_Fluid;
-package Utilities 
-  "Utility models to construct fluid components (should not be used directly) " 
+package Utilities
+  "Utility models to construct fluid components (should not be used directly) "
   extends Modelica.Icons.Library;
-  
-  function checkBoundary "Check whether boundary definition is correct" 
+
+  function checkBoundary "Check whether boundary definition is correct"
     extends Modelica.Icons.Function;
     input String mediumName;
     input String substanceNames[:] "Names of substances";
@@ -11,17 +11,17 @@ package Utilities
     input Boolean define_p;
     input Real X_boundary[:];
     input String modelName = "??? boundary ???";
-  protected 
+  protected
     Integer nX = size(X_boundary,1);
     String X_str;
-  algorithm 
+  algorithm
     assert(not singleState or singleState and define_p, "
 Wrong value of parameter define_p (= false) in model \""   + modelName + "\":
 The selected medium \"" + mediumName + "\" has Medium.singleState=true.
 Therefore, an boundary density cannot be defined and
 define_p = true is required.
 ");
-    
+
     for i in 1:nX loop
       assert(X_boundary[i] >= 0.0, "
 Wrong boundary mass fractions in medium \""
@@ -32,7 +32,7 @@ The boundary value X_boundary("
 is negative. It must be positive.
 ");
     end for;
-    
+
     if nX > 0 and abs(sum(X_boundary) - 1.0) > 1.e-10 then
        X_str :="";
        for i in 1:nX loop
@@ -45,12 +45,12 @@ is negative. It must be positive.
           + X_str);
     end if;
   end checkBoundary;
-  
-  function regRoot 
-    "Anti-symmetric square root approximation with finite derivative in the origin" 
+
+  function regRoot
+    "Anti-symmetric square root approximation with finite derivative in the origin"
     extends Modelica.Icons.Function;
     input Real x;
-    input Real delta=0.01 
+    input Real delta=0.01
       "Range of significant deviation from sqrt(abs(x))*sgn(x)";
     output Real y;
     annotation(derivative(zeroDerivative=delta)=Utilities.regRoot_der,
@@ -74,9 +74,9 @@ With the default value of delta=0.01, the difference between sqrt(x) and regRoot
        Created. </li>
 </ul>
 </html>"));
-  algorithm 
+  algorithm
     y := x/(x*x+delta*delta)^0.25;
-    
+
   annotation (Documentation(info="<html>
 This function approximates sqrt(x)*sign(x), such that the derivative is finite and smooth in x=0. 
 </p>
@@ -98,16 +98,16 @@ With the default value of delta=0.01, the difference between sqrt(x) and sqrtReg
 </ul>
 </html>"));
   end regRoot;
-  
-  function regRoot_der "Derivative of regRoot" 
+
+  function regRoot_der "Derivative of regRoot"
     extends Modelica.Icons.Function;
     input Real x;
     input Real delta=0.01 "Range of significant deviation from sqrt(x)";
     input Real dx "Derivative of x";
     output Real dy;
-  algorithm 
+  algorithm
     dy := dx*0.5*(x*x+2*delta*delta)/((x*x+delta*delta)^1.25);
-    
+
   annotation (Documentation(info="<html>
 </html>",
         revisions="<html>
@@ -118,9 +118,9 @@ With the default value of delta=0.01, the difference between sqrt(x) and sqrtReg
 </ul>
 </html>"));
   end regRoot_der;
-  
-  function regSquare 
-    "Anti-symmetric square approximation with non-zero derivative in the origin" 
+
+  function regSquare
+    "Anti-symmetric square approximation with non-zero derivative in the origin"
     extends Modelica.Icons.Function;
     input Real x;
     input Real delta=0.01 "Range of significant deviation from x^2*sgn(x)";
@@ -146,9 +146,9 @@ With the default value of delta=0.01, the difference between x^2 and regSquare(x
        Created. </li>
 </ul>
 </html>"));
-  algorithm 
+  algorithm
     y := x*sqrt(x*x+delta*delta);
-    
+
   annotation (Documentation(info="<html>
 This function approximates sqrt(x)*sign(x), such that the derivative is finite and smooth in x=0. 
 </p>
@@ -170,9 +170,9 @@ With the default value of delta=0.01, the difference between sqrt(x) and sqrtReg
 </ul>
 </html>"));
   end regSquare;
-  
-  function regPow 
-    "Anti-symmetric power approximation with non-zero derivative in the origin" 
+
+  function regPow
+    "Anti-symmetric power approximation with non-zero derivative in the origin"
     extends Modelica.Icons.Function;
     input Real x;
     input Real a;
@@ -195,9 +195,9 @@ This function approximates abs(x)^a*sign(x), such that the derivative is positiv
        Created. </li>
 </ul>
 </html>"));
-  algorithm 
+  algorithm
     y := x*(x*x+delta*delta)^((a-1)/2);
-    
+
   annotation (Documentation(info="<html>
 This function approximates sqrt(x)*sign(x), such that the derivative is finite and smooth in x=0. 
 </p>
@@ -219,13 +219,13 @@ With the default value of delta=0.01, the difference between sqrt(x) and sqrtReg
 </ul>
 </html>"));
   end regPow;
-  
-  function regRoot2 
-    "Anti-symmetric approximation of square root with discontinuous factor so that the first derivative is finite and continuous" 
-    
+
+  function regRoot2
+    "Anti-symmetric approximation of square root with discontinuous factor so that the first derivative is finite and continuous"
+
     extends Modelica.Icons.Function;
     input Real x "abszissa value";
-    input Real x_small(min=0)=0.01 
+    input Real x_small(min=0)=0.01
       "approximation of function for |x| <= x_small";
     input Real k1(min=0)=1 "y = if x>=0 then sqrt(k1*x) else -sqrt(k2*|x|)";
     input Real k2(min=0)=1 "y = if x>=0 then sqrt(k1*x) else -sqrt(k2*|x|)";
@@ -294,9 +294,9 @@ k1=1, k2=3 is shown in the next figure:
     Designed and implemented.</li>
 </ul>
 </html>"));
-  protected 
-    encapsulated function regRoot2_utility 
-      "Interpolating with two 3-order polynomials with a prescribed derivative at x=0" 
+  protected
+    encapsulated function regRoot2_utility
+      "Interpolating with two 3-order polynomials with a prescribed derivative at x=0"
       import Modelica_Fluid.Utilities.evaluatePoly3_derivativeAtZero;
        input Real x;
        input Real x1 "approximation of function abs(x) < x1";
@@ -306,7 +306,7 @@ k1=1, k2=3 is shown in the next figure:
        input Real yd0(min=0) "Desired derivative at x=0: dy/dx = yd0";
        output Real y;
        annotation(smoothOrder=2);
-    protected 
+    protected
        Real x2;
        Real xsqrt1;
        Real xsqrt2;
@@ -318,7 +318,7 @@ k1=1, k2=3 is shown in the next figure:
        Real y0d;
        Real w1;
        Real w2;
-    algorithm 
+    algorithm
        x2 :=-x1*(k2/k1);
        //x2 :=-x1;
        if x <= x2 then
@@ -328,7 +328,7 @@ k1=1, k2=3 is shown in the next figure:
           y2 :=-sqrt(k2*abs(x2));
           y1d :=sqrt(k1/x1)/2;
           y2d :=sqrt(k2/abs(x2))/2;
-        
+
           if use_yd0 then
              y0d :=yd0;
           else
@@ -372,7 +372,7 @@ k1=1, k2=3 is shown in the next figure:
              w :=x2/x1;
              y0d := ( (3*y2 - x2*y2d)/w - (3*y1 - x1*y1d)*w) /(2*x1*(1 - w));
           end if;
-        
+
           /* Modify derivative y0d, such that the polynomial is 
            monotonically increasing. A sufficient condition is
              0 <= y0d <= sqrt(8.75*k_i/|x_i|)
@@ -380,7 +380,7 @@ k1=1, k2=3 is shown in the next figure:
           w1 :=sqrt(8.75*k1/x1);
           w2 :=sqrt(8.75*k2/abs(x2));
           y0d :=min(y0d, 0.9*min(w1, w2));
-        
+
           /* Perform interpolation in scaled polynomial:
            y_new = y/y1
            x_new = x/x1
@@ -389,18 +389,18 @@ k1=1, k2=3 is shown in the next figure:
                                   evaluatePoly3_derivativeAtZero(x/x1,x2/x1,y2/y1,y2d*x1/y1,y0d*x1/y1));
        end if;
     end regRoot2_utility;
-  algorithm 
+  algorithm
     y := smooth(2,if x >= x_small then sqrt(k1*x) else 
                   if x <= -x_small then -sqrt(k2*abs(x)) else 
                   if k1 >= k2 then regRoot2_utility(x,x_small,k1,k2,use_yd0,yd0) else 
                                   -regRoot2_utility(-x,x_small,k2,k1,use_yd0,yd0));
   end regRoot2;
-  
-  function regSquare2 
-    "Anti-symmetric approximation of square with discontinuous factor so that the first derivative is non-zero and is continuous" 
+
+  function regSquare2
+    "Anti-symmetric approximation of square with discontinuous factor so that the first derivative is non-zero and is continuous"
     extends Modelica.Icons.Function;
     input Real x "abszissa value";
-    input Real x_small(min=0)=0.01 
+    input Real x_small(min=0)=0.01
       "approximation of function for |x| <= x_small";
     input Real k1(min=0)=1 "y = (if x>=0 then k1 else k2)*x*|x|";
     input Real k2(min=0)=1 "y = (if x>=0 then k1 else k2)*x*|x|";
@@ -467,9 +467,9 @@ k1=1, k2=3 is shown in the next figure:
     Designed and implemented.</li>
 </ul>
 </html>"));
-  protected 
-    encapsulated function regSquare2_utility 
-      "Interpolating with two 3-order polynomials with a prescribed derivative at x=0" 
+  protected
+    encapsulated function regSquare2_utility
+      "Interpolating with two 3-order polynomials with a prescribed derivative at x=0"
       import Modelica_Fluid.Utilities.evaluatePoly3_derivativeAtZero;
        input Real x;
        input Real x1 "approximation of function abs(x) < x1";
@@ -479,7 +479,7 @@ k1=1, k2=3 is shown in the next figure:
        input Real yd0(min=0)=1 "Desired derivative at x=0: dy/dx = yd0";
        output Real y;
        annotation(smoothOrder=2);
-    protected 
+    protected
        Real x2;
        Real y1;
        Real y2;
@@ -489,7 +489,7 @@ k1=1, k2=3 is shown in the next figure:
        Real w1;
        Real w2;
        Real y0d;
-    algorithm 
+    algorithm
        // x2 :=-x1*(k2/k1)^2;
        x2 := -x1;
        if x <= x2 then
@@ -509,7 +509,7 @@ k1=1, k2=3 is shown in the next figure:
              w :=x2/x1;
              y0d := ( (3*y2 - x2*y2d)/w - (3*y1 - x1*y1d)*w) /(2*x1*(1 - w));
           end if;
-        
+
           /* Modify derivative y0d, such that the polynomial is 
            monotonically increasing. A sufficient condition is
              0 <= y0d <= sqrt(5)*k_i*|x_i|
@@ -517,26 +517,25 @@ k1=1, k2=3 is shown in the next figure:
           w1 :=sqrt(5)*k1*x1;
           w2 :=sqrt(5)*k2*abs(x2);
           y0d :=min(y0d, 0.9*min(w1, w2));
-        
+
           y := if x >= 0 then evaluatePoly3_derivativeAtZero(x,x1,y1,y1d,y0d) else 
                               evaluatePoly3_derivativeAtZero(x,x2,y2,y2d,y0d);
        end if;
     end regSquare2_utility;
-  algorithm 
+  algorithm
     y := smooth(2,if x >= x_small then k1*x^2 else 
                   if x <= -x_small then -k2*x^2 else 
                   if k1 >= k2 then regSquare2_utility(x,x_small,k1,k2,use_yd0,yd0) else 
                                   -regSquare2_utility(-x,x_small,k2,k1,use_yd0,yd0));
   end regSquare2;
-  
-  
-  function regStep 
-    "Approximation of a general step, such that the characteristic is continuous and differentiable" 
+
+  function regStep
+    "Approximation of a general step, such that the characteristic is continuous and differentiable"
     extends Modelica.Icons.Function;
     input Real x "Abszissa value";
     input Real y1 "Ordinate value for x > 0";
     input Real y2 "Ordinate value for x < 0";
-    input Real x_small(min=0) = 1e-5 
+    input Real x_small(min=0) = 1e-5
       "Approximation of step for -x_small <= x <= x_small; x_small > 0 required";
     output Real y "Ordinate value to approximate y = if x > 0 then y1 else y2";
     // output Real yd;
@@ -547,14 +546,14 @@ k1=1, k2=3 is shown in the next figure:
     Designed and implemented.</li>
 </ul>
 </html>"));
-  algorithm 
+  algorithm
     y := smooth(1, if x >  x_small then y1 else 
                    if x < -x_small then y2 else 
                    (x/x_small)*((x/x_small)^2 - 3)*(y2-y1)/4 + (y1+y2)/2);
   end regStep;
-  
-  function evaluatePoly3_derivativeAtZero 
-    "Evaluate polynomial of order 3 that passes the origin with a predefined derivative" 
+
+  function evaluatePoly3_derivativeAtZero
+    "Evaluate polynomial of order 3 that passes the origin with a predefined derivative"
     extends Modelica.Icons.Function;
     input Real x "Value for which polynomial shall be evaluated";
     input Real x1 "Abscissa value";
@@ -565,33 +564,33 @@ k1=1, k2=3 is shown in the next figure:
     annotation(smoothOrder=3, Documentation(info="<html>
  
 </html>"));
-  protected 
+  protected
     Real a1;
     Real a2;
     Real a3;
     Real xx;
-  algorithm 
+  algorithm
     a1 := x1*y0d;
     a2 := 3*y1 - x1*y1d - 2*a1;
     a3 := y1 - a2 - a1;
     xx := x/x1;
     y  := xx*(a1 + xx*(a2 + xx*a3));
   end evaluatePoly3_derivativeAtZero;
-  
-  function ReynoldsNumber_m_flow 
-    "Return Reynolds number as a function of mass flow rate m_flow" 
+
+  function ReynoldsNumber_m_flow
+    "Return Reynolds number as a function of mass flow rate m_flow"
     extends Modelica.Icons.Function;
       input SI.MassFlowRate m_flow "Mass flow rate";
     input SI.DynamicViscosity eta "Dynamic viscosity of medium";
     input SI.Diameter diameter "Diameter of pipe/orifice";
     output SI.ReynoldsNumber Re "Reynolds number";
-  algorithm 
+  algorithm
     Re :=abs(m_flow)*(4/Modelica.Constants.pi)/(diameter*eta);
     annotation (Documentation(info="<html>
  
 </html>"));
   end ReynoldsNumber_m_flow;
-  
+
   annotation (Documentation(info="<html>
  
 </html>"));

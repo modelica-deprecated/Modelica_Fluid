@@ -1,13 +1,19 @@
 within Modelica_Fluid;
-package ControlValves "Various variants of valve components" 
+package ControlValves "Various variants of valve components"
     extends Modelica_Fluid.Icons.VariantLibrary;
-  
-    model ValveIncompressible "Valve for (almost) incompressible fluids" 
+
+    model ValveIncompressible "Valve for (almost) incompressible fluids"
       extends BaseClasses.PartialValve;
       import Modelica_Fluid.Types.CvTypes;
     annotation (
-    Icon,
-    Diagram,
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
     Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluids. <p>
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
@@ -20,15 +26,14 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Adapted from the ThermoPower library.</li>
 </ul>
-</html>"),
-      Coordsys(grid=[1,1], scale=0));
-    initial equation 
+</html>"));
+    initial equation
       if CvData == CvTypes.OpPoint then
-          m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom) 
+          m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom)
         "Determination of Av by the operating point";
       end if;
-    
-    equation 
+
+    equation
       if CheckValve then
           m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
                       smooth(0,if dp>=0 then sqrtR(dp) else 0);
@@ -38,19 +43,19 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
                       Modelica_Fluid.Utilities.regRoot2(dp, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
       end if;
     end ValveIncompressible;
-  
-  model ValveVaporizing 
-    "Valve for possibly vaporizing (almost) incompressible fluids, accounts for choked flow conditions" 
+
+  model ValveVaporizing
+    "Valve for possibly vaporizing (almost) incompressible fluids, accounts for choked flow conditions"
     import Modelica_Fluid.Types.CvTypes;
     extends BaseClasses.PartialValve(
       final compute_T = true,
-      redeclare replaceable package Medium = Modelica.Media.Water.WaterIF97_ph extends 
+      redeclare replaceable package Medium = Modelica.Media.Water.WaterIF97_ph constrainedby
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     parameter Real Fl_nom=0.9 "Liquid pressure recovery factor";
     replaceable function FlCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.one 
-      extends 
-      Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun 
+      constrainedby
+      Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun
       "Pressure recovery characteristic";
     Real Ff "Ff coefficient (see IEC/ISA standard)";
     Real Fl "Pressure recovery coefficient Fl (see IEC/ISA standard)";
@@ -59,8 +64,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     Medium.AbsolutePressure pin "Inlet pressure";
     Medium.AbsolutePressure pout "Outlet pressure";
     annotation (
-      Icon,
-      Diagram,
+      Icon(graphics),
+      Diagram(graphics),
       Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid at the inlet, and possibly two-phase fluid at the outlet, with resulting choked flow conditions. <p>
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).<p>
@@ -77,19 +82,19 @@ The model operating range includes choked flow operation, which takes place for 
        Adapted from the ThermoPower library.</li>
 </ul>
 </html>"));
-  initial equation 
+  initial equation
     if CvData == CvTypes.OpPoint then
-      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom) 
+      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom)
         "Determination of Av by the operating point";
     end if;
-  equation 
+  equation
     pin = port_a.p;
     pout = port_b.p;
     pv = Medium.saturationPressure(port_a_T);
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
     Fl = Fl_nom*FlCharacteristic(stemPosition);
     dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 
-              Fl^2*(pin - Ff*pv) else dp 
+              Fl^2*(pin - Ff*pv) else dp
       "Effective pressure drop, accounting for possible choked conditions";
     if CheckValve then
        m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
@@ -100,9 +105,9 @@ The model operating range includes choked flow operation, which takes place for 
                     Modelica_Fluid.Utilities.regRoot2(dpEff, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
     end if;
   end ValveVaporizing;
-  
-  model ValveCompressible 
-    "Valve for compressible fluids, accounts for choked flow conditions" 
+
+  model ValveCompressible
+    "Valve for compressible fluids, accounts for choked flow conditions"
     extends BaseClasses.PartialValve;
     import Modelica_Fluid.Types.CvTypes;
     parameter Medium.AbsolutePressure p_nom "Nominal inlet pressure" 
@@ -110,23 +115,23 @@ The model operating range includes choked flow operation, which takes place for 
     parameter Real Fxt_full=0.5 "Fk*xt critical ratio at full opening";
     replaceable function xtCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.one 
-      extends 
-      Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun 
+      constrainedby
+      Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun
       "Critical ratio characteristic";
     Real Fxt;
     Real x "Pressure drop ratio";
     Real xs "Saturated pressure drop ratio";
     Real Y "Compressibility factor";
     Medium.AbsolutePressure p "Inlet pressure";
-  protected 
+  protected
     parameter Real Fxt_nom(fixed=false) "Nominal Fxt";
     parameter Real x_nom(fixed=false) "Nominal pressure drop ratio";
     parameter Real xs_nom(fixed=false) "Nominal saturated pressure drop ratio";
     parameter Real Y_nom(fixed=false) "Nominal compressibility factor";
-    
+
     annotation (
-    Icon,
-    Diagram,
+    Icon(graphics),
+    Diagram(graphics),
     Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid, no phase change, including choked conditions. <p>
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
@@ -143,7 +148,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
        Adapted from the ThermoPower library.</li>
 </ul>
 </html>"));
-  initial equation 
+  initial equation
     if CvData == CvTypes.OpPoint then
       // Determination of Av by the nominal operating point conditions
       Fxt_nom = Fxt_full*xtCharacteristic(stemPosition_nom);
@@ -158,8 +163,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
       xs_nom = 0;
       Y_nom = 0;
     end if;
-    
-  equation 
+
+  equation
     p = noEvent(if dp>=0 then port_a.p else port_b.p);
     Fxt = Fxt_full*xtCharacteristic(modifiedStemPosition);
     x = dp/p;
@@ -174,44 +179,55 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
                     Modelica_Fluid.Utilities.regRoot2(p*xs, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
     end if;
   end ValveCompressible;
-  
-  model ValveLinear "Valve for water/steam flows with linear pressure drop" 
+
+  model ValveLinear "Valve for water/steam flows with linear pressure drop"
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-    parameter Types.HydraulicConductance Kv 
+    parameter Types.HydraulicConductance Kv
       "Hydraulic conductance at full opening";
-    Modelica.Blocks.Interfaces.RealInput opening(min=0,max=1) 
+    Modelica.Blocks.Interfaces.RealInput opening(min=0,max=1)
       "=1: completely open, =0: completely closed" 
-    annotation (extent=[-20,70; 20,110],   rotation=-90);
-    parameter Real minOpening(min=0, max=0.1)=0 
+    annotation (Placement(transformation(
+          origin={0,90},
+          extent={{-20,-20},{20,20}},
+          rotation=270)));
+    parameter Real minOpening(min=0, max=0.1)=0
       "Minimum position of opening (leckage flow to improve numerics)" 
     annotation(Dialog(tab="Advanced"));
-    Real modifiedOpening 
+    Real modifiedOpening
       "Modified, actually used opening, so that the valve is not completely closed to improve numerics";
-    
-  equation 
+
+  equation
     modifiedOpening = noEvent(if opening > minOpening then opening else minOpening);
     m_flow = Kv*modifiedOpening*dp;
-    
+
   annotation (
-    Icon(
-        Polygon(points=[-100,50; -100,-50; 0,0; -100,50],  style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-        Line(points=[0,60; 0,0],   style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-        Rectangle(extent=[-20,70; 20,50],   style(
-            color=0,
-            fillColor=0,
-            fillPattern=1)),
-        Polygon(points=[100,50; 0,0; 100,-50; 100,50],  style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-           Text(extent=[-153,-60; 150,-100],  string="%name")),
-    Diagram,
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Polygon(
+            points={{-100,50},{-100,-50},{0,0},{-100,50}},
+            lineColor={0,0,0},
+            lineThickness=0.5),
+          Line(
+            points={{0,60},{0,0}},
+            color={0,0,0},
+            thickness=0.5),
+          Rectangle(
+            extent={{-20,70},{20,50}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{100,50},{0,0},{100,-50},{100,50}},
+            lineColor={0,0,0},
+            lineThickness=0.5),
+          Text(extent={{-153,-60},{150,-100}}, textString=
+                                                     "%name")}),
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
     Documentation(info="<HTML>
 <p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>opening</tt> signal, without computing any fluid property.
 <p>A medium model must be nevertheless be specified, so that the fluid ports can be connected to other components using the same medium model.
@@ -222,37 +238,46 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Adapted from the ThermoPower library.</li>
 </ul>
-</html>"),
-      Coordsys(grid=[1,1], scale=0));
+</html>"));
   end ValveLinear;
-  
-  model ValveDiscrete "Valve for water/steam flows with linear pressure drop" 
+
+  model ValveDiscrete "Valve for water/steam flows with linear pressure drop"
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-    parameter Modelica_Fluid.Types.HydraulicConductance Kv 
+    parameter Modelica_Fluid.Types.HydraulicConductance Kv
       "Hydraulic conductance for open valve (m_flow = Kv*dp)";
-    parameter Real Kv_small_rel(min=0, max=0.1) = 0.001 
+    parameter Real Kv_small_rel(min=0, max=0.1) = 0.001
       "Relative hydraulic conductance for closed valve (m_flow = Kv_small_rel*Kv*dp)";
     Modelica.Blocks.Interfaces.BooleanInput open 
-    annotation (extent=[-20,60; 20,100],   rotation=-90);
-  equation 
+    annotation (Placement(transformation(
+          origin={0,80},
+          extent={{-20,-20},{20,20}},
+          rotation=270)));
+  equation
     m_flow = if open then Kv*dp else Kv_small_rel*Kv*dp;
-    
+
   annotation (
-    Icon(
-        Line(points=[0,50; 0,0],   style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillPattern=1)),
-        Rectangle(extent=[-20,60; 20,50],   style(
-            color=0,
-            fillColor=0,
-            fillPattern=1)),
-           Text(extent=[-150,-60; 150,-100],   string="%name"),
-        Polygon(points=[-100,50; 100,-50; 100,50; 0,0; -100,-50; -100,50], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=DynamicSelect(7, if open > 0.5 then 2 else 7)))),
-    Diagram,
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Line(points={{0,50},{0,0}}, color={0,0,0}),
+          Rectangle(
+            extent={{-20,60},{20,50}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid),
+          Text(extent={{-150,-60},{150,-100}}, textString=
+                                                      "%name"),
+          Polygon(
+            points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
+            fillColor=DynamicSelect({255,255,255}, if 
+                                          open > 0.5 then {0,255,0} else {255,
+                255,255}),
+            lineColor={0,0,0})}),
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
     Documentation(info="<HTML>
 <
 <p>
@@ -272,14 +297,13 @@ it is open.
 <li><i>Nov 2005</i>
     by Katja Poschlad (based on ValveLinear).</li>
 </ul>
-</html>"),
-      Coordsys(grid=[1,1], scale=0));
+</html>"));
   end ValveDiscrete;
-  
-  package BaseClasses 
+
+  package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
-    partial model PartialValve "Base model for valves" 
-      
+    partial model PartialValve "Base model for valves"
+
       import Modelica_Fluid.Types.CvTypes;
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
             dp_start = dp_nom, m_flow_start = m_flow_nom);
@@ -287,7 +311,7 @@ it is open.
        annotation(Dialog(group = "Flow Coefficient"));
     parameter SI.Area Av(fixed = if CvData==CvTypes.Av then true else false,
                          start = m_flow_nom/(sqrt(d_nom*dp_nom))*
-                                             flowCharacteristic(stemPosition_nom)) = 0 
+                                             flowCharacteristic(stemPosition_nom)) = 0
         "Av (metric) flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient",
                          enable = (CvData==CvTypes.Av)));
@@ -306,45 +330,57 @@ it is open.
     parameter Real stemPosition_nom = 1 "Nominal stem position" 
       annotation(Dialog(group="Nominal operating point"));
     parameter Boolean CheckValve=false "Reverse flow stopped";
-      
+
     replaceable function flowCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.linear 
-        extends 
-        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun 
+        constrainedby
+        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun
         "Inherent flow characteristic" 
       annotation(choicesAllMatching=true);
-      
+
     parameter Real delta=0.01 "Regularisation factor" annotation(Dialog(tab="Advanced"));
-      
-    Modelica.Blocks.Interfaces.RealInput stemPosition(min=-1e-10, max=1) 
+
+    Modelica.Blocks.Interfaces.RealInput stemPosition(min=-1e-10, max=1)
         "Stem position in the range 0-1" 
-                                       annotation (extent=[-20,70; 20,110],   rotation=-90);
-      
-      parameter Real minStemPosition(min=0, max=0.1)=0 
+                                       annotation (Placement(transformation(
+            origin={0,90},
+            extent={{-20,-20},{20,20}},
+            rotation=270)));
+
+      parameter Real minStemPosition(min=0, max=0.1)=0
         "Minimum stemPosition (leckage flow to improve numerics)" 
       annotation(Dialog(tab="Advanced"));
-      Real modifiedStemPosition 
+      Real modifiedStemPosition
         "Modified, actually used stemPosition, so that the valve is not completely closed to improve numerics";
-      
+
     annotation (
-      Icon(Text(extent=[-150,-60; 150,-100],  string="%name"),
-        Line(points=[0,60; 0,0],   style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-        Polygon(points=[-100,50; -100,-50; 0,0; -100,50],  style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-        Polygon(points=[100,50; 0,0; 100,-50; 100,50],  style(
-            color=0,
-            thickness=2,
-            fillPattern=1)),
-        Rectangle(extent=[-20,70; 20,50],   style(
-            color=0,
-            fillColor=0,
-            fillPattern=1))),
-      Diagram,
+      Icon(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={2,2}), graphics={
+            Text(extent={{-150,-60},{150,-100}}, textString=
+                                                     "%name"),
+            Line(
+              points={{0,60},{0,0}},
+              color={0,0,0},
+              thickness=0.5),
+            Polygon(
+              points={{-100,50},{-100,-50},{0,0},{-100,50}},
+              lineColor={0,0,0},
+              lineThickness=0.5),
+            Polygon(
+              points={{100,50},{0,0},{100,-50},{100,50}},
+              lineColor={0,0,0},
+              lineThickness=0.5),
+            Rectangle(
+              extent={{-20,70},{20,50}},
+              lineColor={0,0,0},
+              fillColor={0,0,0},
+              fillPattern=FillPattern.Solid)}),
+      Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={2,2}), graphics),
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>ValveIncompressible</tt>, <tt>ValveVaporizing</tt>, and <tt>ValveCompressible</tt> valve models. The model is based on the IEC 534 / ISA S.75 standards for valve sizing.
 <p>The model optionally supports reverse flow conditions (assuming symmetrical behaviour) or check valve operation, and has been suitably modified to avoid numerical singularities at zero pressure drop. 
@@ -365,51 +401,50 @@ it is open.
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Adapted from the ThermoPower library.</li>
 </ul>
-</html>"),
-      Coordsys(grid=[2,2], scale=0));
-    protected 
+</html>"));
+    protected
       function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
-    initial equation 
+    initial equation
     if CvData == CvTypes.Kv then
       Av = 2.7778e-5*Kv "Unit conversion";
     elseif CvData == CvTypes.Cv then
       Av = 2.4027e-5*Cv "Unit conversion";
     end if;
     assert(CvData>=0 and CvData<=3, "Invalid CvData");
-    equation 
+    equation
       modifiedStemPosition = noEvent(if stemPosition > minStemPosition then stemPosition else minStemPosition);
     end PartialValve;
-    
-  package ValveCharacteristics "Functions for valve characteristics" 
-    partial function baseFun "Base class for valve characteristics" 
+
+  package ValveCharacteristics "Functions for valve characteristics"
+    partial function baseFun "Base class for valve characteristics"
       extends Modelica.Icons.Function;
       input Real pos "Stem position (per unit)";
       output Real rc "Relative flow coefficient (per unit)";
     end baseFun;
-      
-    function linear "Linear characteristic" 
+
+    function linear "Linear characteristic"
       extends baseFun;
-    algorithm 
+    algorithm
       rc := pos;
     end linear;
-      
-    function one "Constant characteristic" 
+
+    function one "Constant characteristic"
       extends baseFun;
-    algorithm 
+    algorithm
       rc := 1;
     end one;
-      
-    function quadratic "Quadratic characteristic" 
+
+    function quadratic "Quadratic characteristic"
       extends baseFun;
-    algorithm 
+    algorithm
       rc := pos*pos;
     end quadratic;
-      
-    function equalPercentage "Equal percentage characteristic" 
+
+    function equalPercentage "Equal percentage characteristic"
       extends baseFun;
       input Real rangeability = 20 "Rangeability";
       input Real delta = 0.01;
-    algorithm 
+    algorithm
       rc := if pos > delta then rangeability^(pos-1) else 
               pos/delta*rangeability^(delta-1);
       annotation (Documentation(info="<html>
@@ -420,7 +455,7 @@ This characteristic is such that the relative change of the flow coefficient is 
 <p> The theoretical characteristic has a non-zero opening when pos = 0; the implemented characteristic is modified so that the valve closes linearly when pos &lt delta.
 </html>"));
     end equalPercentage;
-      
+
   end ValveCharacteristics;
   end BaseClasses;
   annotation (Documentation(info="<html>

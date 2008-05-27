@@ -1,8 +1,8 @@
 within Modelica_Fluid;
-package Sources 
-  "Generic sources for fluid connectors to define fixed or prescribed ambient conditions" 
+package Sources
+  "Generic sources for fluid connectors to define fixed or prescribed ambient conditions"
   extends Modelica_Fluid.Icons.VariantLibrary;
-  model FixedBoundary "Boundary source component" 
+  model FixedBoundary "Boundary source component"
     extends Sources.BaseClasses.PartialSource;
     parameter Boolean use_p=true "select p or d" 
       annotation (Evaluate = true,
@@ -23,19 +23,20 @@ package Sources
       annotation (Dialog(group="Boundary temperature or Boundary specific enthalpy",
                   enable = not use_T));
     parameter Medium.MassFraction X[Medium.nX](
-         quantity=Medium.substanceNames)=Medium.X_default 
+         quantity=Medium.substanceNames)=Medium.X_default
       "Boundary mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow", enable=Medium.nXi > 0));
-    
+
     annotation (defaultComponentName = "Boundary_fixed",
-      Coordsys(
-        extent=[-100, -100; 100, 100],
-        grid=[2, 2],
-        component=[20, 20]),
-      Icon(Ellipse(extent=[-100,100; 100,-100], style(
-            color=69,
-            gradient=3,
-            fillColor=69)), Text(extent=[-150,110; 150,150], string="%name")),
+      Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={2,2}), graphics={Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.Sphere,
+            fillColor={0,127,255}), Text(extent={{-150,110},{150,150}},
+              textString =                                          "%name")}),
       Documentation(info="<html>
 <p>
 Model <b>FixedBoundary</b> defines constant values for boundary conditions:
@@ -53,8 +54,8 @@ the port into the boundary, the boundary definitions,
 with exception of boundary pressure, do not have an effect.
 </p>
 </html>"));
-    
-  equation 
+
+  equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
                                           Medium.singleState, use_p, X,
                                           "FixedBoundary");
@@ -68,29 +69,30 @@ with exception of boundary pressure, do not have an effect.
     else
       medium.h = h;
     end if;
-    
+
     medium.Xi = X[1:Medium.nXi];
   end FixedBoundary;
-  
-  model FixedBoundary_pTX 
-    "Boundary pressure, temperature and mass fraction source" 
+
+  model FixedBoundary_pTX
+    "Boundary pressure, temperature and mass fraction source"
     extends Sources.BaseClasses.PartialSource;
     parameter Medium.AbsolutePressure p "Boundary pressure";
     parameter Medium.Temperature T "Boundary temperature";
     parameter Medium.MassFraction X[Medium.nX](
-         quantity=Medium.substanceNames) = Medium.X_default 
+         quantity=Medium.substanceNames) = Medium.X_default
       "Boundary mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow",
                   enable=Medium.nXi > 0));
     annotation (defaultComponentName = "boundary_fixed",
-      Coordsys(
-        extent=[-100, -100; 100, 100],
-        grid=[2, 2],
-        component=[20, 20]),
-      Icon(Ellipse(extent=[-100,100; 100,-100], style(
-            color=69,
-            gradient=3,
-            fillColor=69)), Text(extent=[-150,110; 150,150],   string="%name")),
+      Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={2,2}), graphics={Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.Sphere,
+            fillColor={0,127,255}), Text(extent={{-150,110},{150,150}},
+              textString =                                            "%name")}),
       Documentation(info="<html>
 <p>
 Defines constant values for boundary conditions:
@@ -108,32 +110,33 @@ the port into the boundary, the boundary definitions,
 with exception of boundary pressure, do not have an effect.
 </p>
 </html>"));
-  equation 
+  equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
                                           Medium.singleState, true, X, "FixedBoundary_pTX");
     medium.p   = p;
     medium.T   = T;
     medium.Xi = X[1:Medium.nXi];
   end FixedBoundary_pTX;
-  
-  model FixedBoundary_phX 
-    "Boundary pressure, specific enthalpy and mass fraction source" 
+
+  model FixedBoundary_phX
+    "Boundary pressure, specific enthalpy and mass fraction source"
     extends Sources.BaseClasses.PartialSource;
     parameter Medium.AbsolutePressure p "Boundary pressure";
     parameter Medium.SpecificEnthalpy h "Boundary specific enthalpy";
     parameter Medium.MassFraction X[
-      Medium.nX](quantity=Medium.substanceNames) = Medium.X_default 
+      Medium.nX](quantity=Medium.substanceNames) = Medium.X_default
       "Boundary mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nXi > 0));
     annotation (defaultComponentName = "boundary_fixed",
-      Coordsys(
-        extent=[-100, -100; 100, 100],
-        grid=[2, 2],
-        component=[20, 20]),
-      Icon(Ellipse(extent=[-100,100; 100,-100], style(
-            color=69,
-            gradient=3,
-            fillColor=69)), Text(extent=[-150,110; 150,150], string="%name")),
+      Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={2,2}), graphics={Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.Sphere,
+            fillColor={0,127,255}), Text(extent={{-150,110},{150,150}},
+              textString =                                          "%name")}),
       Documentation(info="<html>
 <p>
 Defines constant values for boundary conditions:
@@ -151,101 +154,98 @@ the port into the boundary, the boundary definitions,
 with exception of boundary pressure, do not have an effect.
 </p>
 </html>"));
-  equation 
+  equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
                                           Medium.singleState, true, X, "FixedBoundary_phX");
     medium.p = p;
     medium.h = h;
     medium.Xi = X[1:Medium.nXi];
   end FixedBoundary_phX;
-  
+
   annotation (Documentation(info="<html>
 <p>
 Package <b>Sources</b> contains generic sources for fluid connectors
 to define fixed or prescribed ambient conditions.
 </p>
 </html>"));
-  model PrescribedBoundary_pTX 
-    "Boundary with prescribed pressure, temperature and composition" 
+  model PrescribedBoundary_pTX
+    "Boundary with prescribed pressure, temperature and composition"
     extends Sources.BaseClasses.PartialSource;
-    parameter Boolean usePressureInput = false 
+    parameter Boolean usePressureInput = false
       "Get the pressure from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useTemperatureInput= false 
+    parameter Boolean useTemperatureInput= false
       "Get the temperature from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useCompositionInput = false 
+    parameter Boolean useCompositionInput = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Medium.AbsolutePressure p = Medium.reference_p 
+    parameter Medium.AbsolutePressure p = Medium.reference_p
       "Fixed value of pressure" 
       annotation (Evaluate = true,
                   Dialog(enable = not usePressureInput));
-    parameter Medium.Temperature T = Medium.reference_T 
+    parameter Medium.Temperature T = Medium.reference_T
       "Fixed value of temperature" 
       annotation (Evaluate = true,
                   Dialog(enable = not useTemperatureInput));
-    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default 
+    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
                   Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
-    Modelica.Blocks.Interfaces.RealInput p_in(
-      redeclare type SignalType = Medium.AbsolutePressure) if usePressureInput 
+    Modelica.Blocks.Interfaces.RealInput p_in if              usePressureInput
       "Prescribed boundary pressure" 
-      annotation (extent=[-140,40; -100,80]);
-    Modelica.Blocks.Interfaces.RealInput T_in(
-      redeclare type SignalType = Medium.Temperature) if useTemperatureInput 
+      annotation (Placement(transformation(extent={{-140,40},{-100,80}},
+            rotation=0)));
+    Modelica.Blocks.Interfaces.RealInput T_in if         useTemperatureInput
       "Prescribed boundary temperature" 
-      annotation (extent=[-140,-20; -100,20]);
-    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
-      redeclare type SignalType = Medium.MassFraction) if useCompositionInput 
+      annotation (Placement(transformation(extent={{-140,-20},{-100,20}},
+            rotation=0)));
+    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
+                                                          useCompositionInput
       "Prescribed boundary composition" 
-      annotation (extent=[-140,-80; -100,-40]);
-  protected 
-    Modelica.Blocks.Interfaces.RealInput p_in_internal(
-      redeclare type SignalType = Medium.AbsolutePressure) 
+      annotation (Placement(transformation(extent={{-140,-80},{-100,-40}},
+            rotation=0)));
+  protected
+    Modelica.Blocks.Interfaces.RealInput p_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput T_in_internal(
-      redeclare type SignalType = Medium.Temperature) 
+    Modelica.Blocks.Interfaces.RealInput T_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
-     redeclare type SignalType = Medium.MassFraction) 
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
       "Needed to connect to conditional connector";
     annotation (defaultComponentName = "boundary_prescribed",
-  Coordsys(
-        extent=[-100, -100; 100, 100],
-        grid=[2, 2],
-        component=[20, 20]),
-      Icon(Ellipse(extent=[-100,100; 100,-100], style(
-            color=69,
-            gradient=3,
-            fillColor=69)), Text(extent=[-150,110; 150,150],  string="%name"),
-        Line(points=[-100,60; -80,60], style(color=3, rgbcolor={0,0,255})),
-        Line(points=[-100,-60; -80,-60], style(color=3, rgbcolor={0,0,255})),
-        Text(
-          extent=[-146,110; -62,70],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="p"),
-        Text(
-          extent=[-160,-22; -58,-62],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="X"),
-        Text(
-          extent=[-158,44; -56,4],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="T")),
+      Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={2,2}), graphics={
+          Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.Sphere,
+            fillColor={0,127,255}),
+          Text(extent={{-150,110},{150,150}}, textString =           "%name"),
+          Line(points={{-100,60},{-80,60}}, color={0,0,255}),
+          Line(points={{-100,-60},{-80,-60}}, color={0,0,255}),
+          Text(
+            extent={{-146,110},{-62,70}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "p"),
+          Text(
+            extent={{-160,-22},{-58,-62}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "X"),
+          Text(
+            extent={{-158,44},{-56,4}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "T")}),
       Documentation(info="<html>
 <p>
 Defines prescribed values for boundary conditions:
@@ -266,8 +266,11 @@ the port into the boundary, the boundary definitions,
 with exception of boundary pressure, do not have an effect.
 </p>
 </html>"),
-      Diagram);
-  equation 
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={2,2}), graphics));
+  equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
       Medium.singleState, true, X_in_internal, "PrescribedBoundary_pTX");
     connect(p_in, p_in_internal);
@@ -286,70 +289,71 @@ with exception of boundary pressure, do not have an effect.
     medium.T = T_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedBoundary_pTX;
-  
-  model PrescribedBoundary_phX 
-    "Boundary with prescribed pressure, specific enthalpy and composition" 
+
+  model PrescribedBoundary_phX
+    "Boundary with prescribed pressure, specific enthalpy and composition"
     extends Sources.BaseClasses.PartialSource;
-    parameter Boolean usePressureInput = false 
+    parameter Boolean usePressureInput = false
       "Get the pressure from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useEnthalpyInput= false 
+    parameter Boolean useEnthalpyInput= false
       "Get the specific enthalpy from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useCompositionInput = false 
+    parameter Boolean useCompositionInput = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Medium.AbsolutePressure p = Medium.reference_p 
+    parameter Medium.AbsolutePressure p = Medium.reference_p
       "Fixed value of pressure" 
       annotation (Evaluate = true,
                   Dialog(enable = not usePressureInput));
-    parameter Medium.SpecificEnthalpy h = Medium.h_default 
+    parameter Medium.SpecificEnthalpy h = Medium.h_default
       "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
                   Dialog(enable = not useEnthalpyInput));
-    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default 
+    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
                   Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
-    Modelica.Blocks.Interfaces.RealInput p_in(
-      redeclare type SignalType = Medium.AbsolutePressure) if usePressureInput 
+    Modelica.Blocks.Interfaces.RealInput p_in if              usePressureInput
       "Prescribed boundary pressure" 
-      annotation (extent=[-140,40; -100,80]);
-    Modelica.Blocks.Interfaces.RealInput h_in(
-      redeclare type SignalType = Medium.SpecificEnthalpy) if useEnthalpyInput 
+      annotation (Placement(transformation(extent={{-140,40},{-100,80}},
+            rotation=0)));
+    Modelica.Blocks.Interfaces.RealInput h_in if              useEnthalpyInput
       "Prescribed boundary specific enthalpy" 
-      annotation (extent=[-140,-20; -100,20]);
-    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
-      redeclare type SignalType = Medium.MassFraction) if useCompositionInput 
+      annotation (Placement(transformation(extent={{-140,-20},{-100,20}},
+            rotation=0)));
+    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
+                                                          useCompositionInput
       "Prescribed boundary composition" 
-      annotation (extent=[-140,-80; -100,-40]);
+      annotation (Placement(transformation(extent={{-140,-80},{-100,-40}},
+            rotation=0)));
     annotation (defaultComponentName = "boundary_prescribed",
-  Coordsys(
-        extent=[-100, -100; 100, 100],
-        grid=[2, 2],
-        component=[20, 20]),
-      Icon(Ellipse(extent=[-100,100; 100,-100], style(
-            color=69,
-            gradient=3,
-            fillColor=69)), Text(extent=[-150,110; 150,150],  string="%name"),
-        Line(points=[-100,60; -66,60], style(color=3, rgbcolor={0,0,255})),
-        Line(points=[-100,-60; -66,-60], style(color=3, rgbcolor={0,0,255})),
-        Text(
-          extent=[-148,120; -70,80],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="p"),
-        Text(
-          extent=[-152,-86; -50,-126],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="h")),
+      Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={2,2}), graphics={
+          Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.Sphere,
+            fillColor={0,127,255}),
+          Text(extent={{-150,110},{150,150}}, textString =           "%name"),
+          Line(points={{-100,60},{-66,60}}, color={0,0,255}),
+          Line(points={{-100,-60},{-66,-60}}, color={0,0,255}),
+          Text(
+            extent={{-148,120},{-70,80}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "p"),
+          Text(
+            extent={{-152,-86},{-50,-126}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "h")}),
       Documentation(info="<html>
 <p>
 Defines prescribed values for boundary conditions:
@@ -370,17 +374,14 @@ the port into the boundary, the boundary definitions,
 with exception of boundary pressure, do not have an effect.
 </p>
 </html>"));
-  protected 
-    Modelica.Blocks.Interfaces.RealInput p_in_internal(
-      redeclare type SignalType = Medium.AbsolutePressure) 
+  protected
+    Modelica.Blocks.Interfaces.RealInput p_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput h_in_internal(
-      redeclare type SignalType = Medium.SpecificEnthalpy) 
+    Modelica.Blocks.Interfaces.RealInput h_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
-      redeclare type SignalType = Medium.MassFraction) 
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
       "Needed to connect to conditional connector";
-  equation 
+  equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
       Medium.singleState, true, X_in_internal, "PrescribedBoundary_phX");
     connect(p_in, p_in_internal);
@@ -399,107 +400,120 @@ with exception of boundary pressure, do not have an effect.
     medium.h = h_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedBoundary_phX;
-  
-  model PrescribedMassFlowRate_TX 
-    "Ideal flow source that produces a prescribed mass flow with prescribed temperature and mass fraction" 
+
+  model PrescribedMassFlowRate_TX
+    "Ideal flow source that produces a prescribed mass flow with prescribed temperature and mass fraction"
     extends Sources.BaseClasses.PartialSource;
-    parameter Boolean useFlowRateInput = false 
+    parameter Boolean useFlowRateInput = false
       "Get the mass flow rate from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useTemperatureInput= false 
+    parameter Boolean useTemperatureInput= false
       "Get the temperature from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useCompositionInput = false 
+    parameter Boolean useCompositionInput = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Medium.MassFlowRate m_flow = 0 
+    parameter Medium.MassFlowRate m_flow = 0
       "Fixed mass flow rate going out of the fluid port" 
       annotation (Evaluate = true,
                   Dialog(enable = not useFlowRateInput));
-    parameter Medium.Temperature T = Medium.reference_T 
+    parameter Medium.Temperature T = Medium.reference_T
       "Fixed value of temperature" 
       annotation (Evaluate = true,
                   Dialog(enable = not useTemperatureInput));
-    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default 
+    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
                   Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
-    Modelica.Blocks.Interfaces.RealInput m_flow_in(
-      redeclare type SignalType = Medium.MassFlowRate) if useFlowRateInput 
+    Modelica.Blocks.Interfaces.RealInput m_flow_in if     useFlowRateInput
       "Prescribed mass flow rate" 
-      annotation (extent=[-113,40; -73,80]);
-    Modelica.Blocks.Interfaces.RealInput T_in(
-      redeclare type SignalType = Medium.Temperature) if useTemperatureInput 
+      annotation (Placement(transformation(extent={{-113,40},{-73,80}},
+            rotation=0)));
+    Modelica.Blocks.Interfaces.RealInput T_in if         useTemperatureInput
       "Prescribed fluid temperature" 
-      annotation (extent=[-140,-20; -100,20]);
-    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
-      redeclare type SignalType = Medium.MassFraction) if useCompositionInput 
+      annotation (Placement(transformation(extent={{-140,-20},{-100,20}},
+            rotation=0)));
+    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
+                                                          useCompositionInput
       "Prescribed fluid composition" 
-      annotation (extent=[-112,-81; -72,-41]);
-  protected 
-    Modelica.Blocks.Interfaces.RealInput m_flow_in_internal(
-      redeclare type SignalType = Medium.MassFlowRate) 
+      annotation (Placement(transformation(extent={{-112,-81},{-72,-41}},
+            rotation=0)));
+  protected
+    Modelica.Blocks.Interfaces.RealInput m_flow_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput T_in_internal(
-      redeclare type SignalType = Medium.Temperature) 
+    Modelica.Blocks.Interfaces.RealInput T_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
-      redeclare type SignalType = Medium.MassFraction) 
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
       "Needed to connect to conditional connector";
     annotation (defaultComponentName = "massFlowRate",
-      Coordsys(
-        extent=[-100, -100; 100, 100],
-        grid=[1,1],
-        component=[20, 20],
-        scale=0),
-      Icon(
-        Rectangle(extent=[20, 60; 100, -60], style(
-            color=0,
-            gradient=2,
-            fillColor=8)),
-        Rectangle(extent=[38, 40; 100, -40], style(
-            color=69,
-            gradient=2,
-            fillColor=69)),
-        Ellipse(extent=[-100, 80; 60, -80], style(fillColor=7)),
-        Polygon(points=[-60, 70; 60, 0; -60, -68; -60, 70], style(color=73,
-              fillColor=73)),
-        Text(
-          extent=[-54, 32; 16, -30],
-          style(color=41, fillColor=41),
-          string="m"),
-        Text(extent=[-150,110; 150,150],  string="%name"),
-        Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1)),
-        Text(
-          extent=[-194,112; -54,80],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="m_flow"),
-        Text(
-          extent=[-100,14; -60,-20],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="T"),
-        Text(
-          extent=[-144,-90; -24,-118],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="X")),
+      Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Rectangle(
+            extent={{20,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={192,192,192}),
+          Rectangle(
+            extent={{38,40},{100,-40}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Ellipse(
+            extent={{-100,80},{60,-80}},
+            lineColor={0,0,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{-60,70},{60,0},{-60,-68},{-60,70}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid),
+          Text(
+            extent={{-54,32},{16,-30}},
+            lineColor={255,0,0},
+            fillColor={255,0,0},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "m"),
+          Text(extent={{-150,110},{150,150}}, textString=
+                                                 "%name"),
+          Ellipse(
+            extent={{-26,30},{-18,22}},
+            lineColor={255,0,0},
+            fillColor={255,0,0},
+            fillPattern=FillPattern.Solid),
+          Text(
+            extent={{-194,112},{-54,80}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "m_flow"),
+          Text(
+            extent={{-100,14},{-60,-20}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "T"),
+          Text(
+            extent={{-144,-90},{-24,-118}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "X")}),
       Window(
         x=0.45,
         y=0.01,
         width=0.44,
         height=0.65),
-      Diagram,
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
       Documentation(info="<html>
 <p>
 Models an ideal flow source, with prescribed values of flow rate, temperature and composition:
@@ -520,7 +534,7 @@ the port into the boundary, the boundary definitions,
 with exception of boundary flow rate, do not have an effect.
 </p>
 </html>"));
-  equation 
+  equation
     Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
       Medium.singleState, true, X_in_internal, "PrescribedMassFlowRate_TX");
     connect(m_flow_in, m_flow_in_internal);
@@ -539,107 +553,120 @@ with exception of boundary flow rate, do not have an effect.
     medium.T = T_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedMassFlowRate_TX;
-  
-  model PrescribedMassFlowRate_hX 
-    "Ideal flow source that produces a prescribed mass flow with prescribed specific enthalpy and mass fraction" 
+
+  model PrescribedMassFlowRate_hX
+    "Ideal flow source that produces a prescribed mass flow with prescribed specific enthalpy and mass fraction"
     extends Sources.BaseClasses.PartialSource;
-    parameter Boolean useFlowRateInput = false 
+    parameter Boolean useFlowRateInput = false
       "Get the mass flow rate from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useEnthalpyInput= false 
+    parameter Boolean useEnthalpyInput= false
       "Get the specific enthalpy from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useCompositionInput = false 
+    parameter Boolean useCompositionInput = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Medium.MassFlowRate m_flow = 0 
+    parameter Medium.MassFlowRate m_flow = 0
       "Fixed mass flow rate going out of the fluid port" 
       annotation (Evaluate = true,
                   Dialog(enable = not useFlowRateInput));
-    parameter Medium.SpecificEnthalpy h = Medium.h_default 
+    parameter Medium.SpecificEnthalpy h = Medium.h_default
       "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
                   Dialog(enable = not useEnthalpyInput));
-    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default 
+    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
                   Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
-    Modelica.Blocks.Interfaces.RealInput m_flow_in(
-      redeclare type SignalType = Medium.MassFlowRate) if useFlowRateInput 
+    Modelica.Blocks.Interfaces.RealInput m_flow_in if     useFlowRateInput
       "Prescribed mass flow rate" 
-      annotation (extent=[-113,40; -73,80]);
-    Modelica.Blocks.Interfaces.RealInput h_in(
-      redeclare type SignalType = Medium.SpecificEnthalpy) if useEnthalpyInput 
+      annotation (Placement(transformation(extent={{-113,40},{-73,80}},
+            rotation=0)));
+    Modelica.Blocks.Interfaces.RealInput h_in if              useEnthalpyInput
       "Prescribed fluid specific enthalpy" 
-      annotation (extent=[-140,-20; -100,20]);
-    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX](
-      redeclare type SignalType = Medium.MassFraction) if useCompositionInput 
+      annotation (Placement(transformation(extent={{-140,-20},{-100,20}},
+            rotation=0)));
+    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
+                                                          useCompositionInput
       "Prescribed fluid composition" 
-      annotation (extent=[-113,-80; -73,-40]);
-  protected 
-    Modelica.Blocks.Interfaces.RealInput m_flow_in_internal(
-      redeclare type SignalType = Medium.MassFlowRate) 
+      annotation (Placement(transformation(extent={{-113,-80},{-73,-40}},
+            rotation=0)));
+  protected
+    Modelica.Blocks.Interfaces.RealInput m_flow_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput h_in_internal(
-      redeclare type SignalType = Medium.SpecificEnthalpy) 
+    Modelica.Blocks.Interfaces.RealInput h_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX](
-      redeclare type SignalType = Medium.MassFraction) 
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
       "Needed to connect to conditional connector";
     annotation (defaultComponentName = "massFlowRate",
-      Coordsys(
-        extent=[-100, -100; 100, 100],
-        grid=[1,1],
-        component=[20, 20],
-        scale=0),
-      Icon(
-        Rectangle(extent=[20, 60; 100, -60], style(
-            color=0,
-            gradient=2,
-            fillColor=8)),
-        Rectangle(extent=[38, 40; 100, -40], style(
-            color=69,
-            gradient=2,
-            fillColor=69)),
-        Ellipse(extent=[-100, 80; 60, -80], style(fillColor=7)),
-        Polygon(points=[-60, 70; 60, 0; -60, -68; -60, 70], style(color=73,
-              fillColor=73)),
-        Text(
-          extent=[-54, 32; 16, -30],
-          style(color=41, fillColor=41),
-          string="m"),
-        Ellipse(extent=[-26, 30; -18, 22], style(color=1, fillColor=1)),
-        Text(
-          extent=[-194,115; -54,83],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="m_flow"),
-        Text(
-          extent=[-100,15; -60,-19],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="T"),
-        Text(
-          extent=[-145,-85; -25,-113],
-          style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255}),
-          string="X"),
-        Text(extent=[-150,110; 150,150],  string="%name")),
+      Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Rectangle(
+            extent={{20,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={192,192,192}),
+          Rectangle(
+            extent={{38,40},{100,-40}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Ellipse(
+            extent={{-100,80},{60,-80}},
+            lineColor={0,0,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{-60,70},{60,0},{-60,-68},{-60,70}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid),
+          Text(
+            extent={{-54,32},{16,-30}},
+            lineColor={255,0,0},
+            fillColor={255,0,0},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "m"),
+          Ellipse(
+            extent={{-26,30},{-18,22}},
+            lineColor={255,0,0},
+            fillColor={255,0,0},
+            fillPattern=FillPattern.Solid),
+          Text(
+            extent={{-194,115},{-54,83}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "m_flow"),
+          Text(
+            extent={{-100,15},{-60,-19}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "T"),
+          Text(
+            extent={{-145,-85},{-25,-113}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "X"),
+          Text(extent={{-150,110},{150,150}}, textString=
+                                                 "%name")}),
       Window(
         x=0.45,
         y=0.01,
         width=0.44,
         height=0.65),
-      Diagram,
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
       Documentation(info="<html>
 <p>
 Models an ideal flow source, with prescribed values of flow rate, temperature and composition:
@@ -660,7 +687,7 @@ the port into the boundary, the boundary definitions,
 with exception of boundary flow rate, do not have an effect.
 </p>
 </html>"));
-  equation 
+  equation
     Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
       Medium.singleState, true, X_in_internal, "PrescribedMassFlowRate_hX");
     connect(m_flow_in, m_flow_in_internal);
@@ -679,20 +706,20 @@ with exception of boundary flow rate, do not have an effect.
     medium.h = h_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedMassFlowRate_hX;
-  
-  package BaseClasses 
+
+  package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
-  partial model PartialSource 
-      "Partial component source with one fluid connector" 
+  partial model PartialSource
+      "Partial component source with one fluid connector"
       import Modelica.Constants;
     replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium 
+        Modelica.Media.Interfaces.PartialMedium
         "Medium model within the source" 
        annotation (choicesAllMatching=true);
     parameter Types.SourceFlowDirection.Temp flowDirection=
-                     Types.SourceFlowDirection.Bidirectional 
+                     Types.SourceFlowDirection.Bidirectional
         "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
-      
+
     Medium.BaseProperties medium "Medium in the source";
     Modelica_Fluid.Interfaces.FluidPort_b port(
                                 redeclare package Medium = Medium,
@@ -700,7 +727,8 @@ with exception of boundary flow rate, do not have an effect.
                                      +Constants.inf,
                             min=if flowDirection==Types.SourceFlowDirection.InToPort then 0 else 
                                      -Constants.inf)) 
-      annotation (extent=[90,-10; 110,10],    rotation=0);
+      annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation
+              =0)));
     annotation (Documentation(info="<html>
 <p>
 Partial component to model the <b>volume interface</b> of a <b>source</b>
@@ -714,9 +742,11 @@ features are:
      substances (= port.mX_flow) depend on the direction of the mass flow rate.</li>
 </ul>
 </html>"),
-      Diagram,
-      Coordsys(grid=[1,1], scale=0));
-  equation 
+      Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics));
+  equation
     port.p = medium.p;
     port.h_outflow  = medium.h;
     port.Xi_outflow = medium.Xi;

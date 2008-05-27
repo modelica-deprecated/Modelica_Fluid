@@ -7,93 +7,8 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 1: One-dimensional ther
 
 
 
+package UsersGuide "Users Guide"
 
-annotation (
-  version="1.0 Streams Beta 1",
-  versionBuild="$Rev$",
-  versionDate="$Date::                            $",
-  preferedView="info",
-  Settings(NewStateSelection=true),
-  uses(Modelica(version="2.2.2")),
-  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
-      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
-  Documentation(info="<html>
-<p>
-Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
-components describing
-<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models are decoupled.
-All components are implemented such that they can be used for
-media from the Modelica.Media library. This means especially that an
-incompressible or compressible medium, a single or a multiple
-substance medium with one or more phases might be used.
-The goal is to include 
-the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
-</p>
- 
-<p>
-This is version <b>1.0 Streams Beta 1</b> of the Modelica_Fluid library.
-With respect to previous versions of the Modelica_Fluid library, the design
-of the connectors has been changed, using the recently developed concept
-with streams connectors. This requires an extension to the Modelica specification
-and it is planned to include this extension in Modelica 3.1.
-There is a Dymola prototype that supports this new concept.
-The essential benefit of this new concept is that the equation systems become
-more well behaved and the models can be more reliably simulated.
-Please, read the section
-<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
-in the Users Guide before using this library.
-</p>
- 
-<p>
-A typical example model of the Modelica_Fluid library
-is shown in the next figure (drum boiler):
-</p>
-<p align=\"center\">
-<img src=\"../Images/UsersGuide/DrumBoiler.png\">
-</p>
-<p>
-An example of a tank system that is controlled by a control system
-and where some of the components have built-in diagram animation
-is shown in the next figure:
-</p>
-<p align=\"center\">
-<img src=\"../Images/Examples/ControlledTanks1.png\">
-</p>
-<p>
-The following parts are useful, when newly starting with this library:
-</p>
-<ul>
-<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
-<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
-     summarizes the changes of the library releases.</li>
-<li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
-     contains examples that demonstrate the usage of this library.</li>
-</ul>
- 
-<p>
-Note, Modelica_Fluid does <b>not</b> work with
-version 2.2 of the Modelica standard library. 
-The reason is that some additional functions have been
-added to Modelica.Media in 2.2.1 that are accessed in Modelica_Fluid.
-</p>
- 
-<p><b>Copyright &copy; 2002-2008, Modelica Association.</b></p>
-<p><i>
-This Modelica package is <b>free</b> software; it can be redistributed and/or modified
-under the terms of the <b>Modelica license</b>, see the license conditions
-and the accompanying <b>disclaimer</b> in the documentation of package
-Modelica in file \"Modelica/package.mo\".
-</i></p>
- 
- 
-</html>"),
-    conversion(from(version="0.795", script=
-            "../ConvertFromModelica_Fluid_0.795.mos")));
-
-
-package UsersGuide "Users Guide" 
-  
   annotation (DocumentationClass=true, Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Users guide of package Modelica_Fluid</font></h3>
 <p> 
@@ -109,9 +24,9 @@ The goal is to include
 the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
 </HTML>"));
-  
-class KnownLimitations "Known limitations" 
-    
+
+class KnownLimitations "Known limitations"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Known limitations</font></h3>
 
@@ -167,9 +82,9 @@ version:
 </ul>
 </html>"));
 end KnownLimitations;
-  
-  class Overview "Overview" 
-    
+
+  class Overview "Overview"
+
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Overview</font></h3>
 <p>
@@ -244,12 +159,12 @@ This library has the following main features:
 </ul>
 </HTML>
 "));
-  equation 
-    
+  equation
+
   end Overview;
-  
-  class GettingStarted "Getting started" 
-    
+
+  class GettingStarted "Getting started"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Getting started</font></h3>
 <p>
@@ -257,12 +172,12 @@ An example will be included here.
 </p>
 </html>
 "));
-  equation 
-    
+  equation
+
   end GettingStarted;
-  
-  class ComponentDefinition "Component definition" 
-    
+
+  class ComponentDefinition "Component definition"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Component definition</font></h3>
 <p>
@@ -286,9 +201,9 @@ This section is partly based on the following paper:
 </dl>
 </html>
 "));
-    
-  class FluidConnectors "Fluid connectors" 
-      
+
+  class FluidConnectors "Fluid connectors"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Fluid connectors</font></h3>
 <p>
@@ -495,9 +410,9 @@ xxx
 </html>
 "));
   end FluidConnectors;
-    
-  class UpstreamDiscretization "Upstream discretization" 
-      
+
+  class UpstreamDiscretization "Upstream discretization"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Upstream discretization</font></h3>
 <p>
@@ -657,9 +572,9 @@ by using the solution of h from the last accepted step.
 </html>
 "));
   end UpstreamDiscretization;
-    
-  class PropertyPropagation "Property propagation" 
-      
+
+  class PropertyPropagation "Property propagation"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Property propagation</font></h3>
 <p>
@@ -730,9 +645,9 @@ lead to an unnecessary overhead.
 </html>
 "));
   end PropertyPropagation;
-    
-  class RegularizingCharacteristics "Regularizing characteristics" 
-      
+
+  class RegularizingCharacteristics "Regularizing characteristics"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Regularizing characteristics</font></h3>
 <p>
@@ -806,9 +721,9 @@ and 0.0025% around x=1.
 </html>
 "));
   end RegularizingCharacteristics;
-    
-  class WallFriction "Wall friction" 
-      
+
+  class WallFriction "Wall friction"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Wall friction</font></h3>
  
@@ -1095,9 +1010,9 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
 </html>
 "));
   end WallFriction;
-    
-  class SemiLinearDefinition "SemiLinear definition" 
-      
+
+  class SemiLinearDefinition "SemiLinear definition"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>SemiLinear definition</font></h3>
 <p>
@@ -1216,9 +1131,9 @@ ambiguity is removed by rule 2.</i></p>
 "));
   end SemiLinearDefinition;
   end ComponentDefinition;
-  
-  class ReleaseNotes "Release notes" 
-    
+
+  class ReleaseNotes "Release notes"
+
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
@@ -1364,12 +1279,12 @@ standard library.
 </ul>
 </HTML>
 "));
-  equation 
-    
+  equation
+
   end ReleaseNotes;
-  
-class Contact "Contact" 
-    
+
+class Contact "Contact"
+
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Contact</font></h3>
  
@@ -1413,4 +1328,89 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
+
+annotation (
+  version="1.0 Streams Beta 2",
+  versionBuild="$Rev$",
+  versionDate="$Date::                            $",
+  preferedView="info",
+  Settings(NewStateSelection=true),
+  uses(Modelica(version="3.0")),
+  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
+      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
+  Documentation(info="<html>
+<p>
+Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
+components describing
+<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
+component equations and the media models are decoupled.
+All components are implemented such that they can be used for
+media from the Modelica.Media library. This means especially that an
+incompressible or compressible medium, a single or a multiple
+substance medium with one or more phases might be used.
+The goal is to include 
+the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
+</p>
+ 
+<p>
+This is version <b>1.0 Streams Beta 1</b> of the Modelica_Fluid library.
+With respect to previous versions of the Modelica_Fluid library, the design
+of the connectors has been changed, using the recently developed concept
+with streams connectors. This requires an extension to the Modelica specification
+and it is planned to include this extension in Modelica 3.1.
+There is a Dymola prototype that supports this new concept.
+The essential benefit of this new concept is that the equation systems become
+more well behaved and the models can be more reliably simulated.
+Please, read the section
+<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
+in the Users Guide before using this library.
+</p>
+ 
+<p>
+A typical example model of the Modelica_Fluid library
+is shown in the next figure (drum boiler):
+</p>
+<p align=\"center\">
+<img src=\"../Images/UsersGuide/DrumBoiler.png\">
+</p>
+<p>
+An example of a tank system that is controlled by a control system
+and where some of the components have built-in diagram animation
+is shown in the next figure:
+</p>
+<p align=\"center\">
+<img src=\"../Images/Examples/ControlledTanks1.png\">
+</p>
+<p>
+The following parts are useful, when newly starting with this library:
+</p>
+<ul>
+<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
+<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
+     summarizes the changes of the library releases.</li>
+<li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
+     contains examples that demonstrate the usage of this library.</li>
+</ul>
+ 
+<p>
+Note, Modelica_Fluid does <b>not</b> work with
+version 2.2 of the Modelica standard library. 
+The reason is that some additional functions have been
+added to Modelica.Media in 2.2.1 that are accessed in Modelica_Fluid.
+</p>
+ 
+<p><b>Copyright &copy; 2002-2008, Modelica Association.</b></p>
+<p><i>
+This Modelica package is <b>free</b> software; it can be redistributed and/or modified
+under the terms of the <b>Modelica license</b>, see the license conditions
+and the accompanying <b>disclaimer</b> in the documentation of package
+Modelica in file \"Modelica/package.mo\".
+</i></p>
+ 
+ 
+</html>"),
+    conversion(from(version="0.795", script=
+            "../ConvertFromModelica_Fluid_0.795.mos"), from(version=
+          "1.0 Streams Beta 1", script=
+          "ConvertFromModelica_Fluid_1.0 Streams Beta 1.mos")));
 end Modelica_Fluid;

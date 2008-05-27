@@ -1,30 +1,35 @@
 within Modelica_Fluid;
-package PressureLosses 
-  "Models and functions providing pressure loss correlations " 
+package PressureLosses
+  "Models and functions providing pressure loss correlations "
      extends Modelica_Fluid.Icons.VariantLibrary;
-  
-model StaticHead 
-    "Models the static head between two ports at different heights" 
+
+model StaticHead
+    "Models the static head between two ports at different heights"
   extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
   parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
-  parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+  parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
     annotation(Dialog(tab="Advanced"));
   Medium.Density d "Density of the passing fluid";
   outer Modelica_Fluid.Ambient ambient "Ambient conditions";
-  annotation (Icon(
-      Rectangle(extent=[-100,60; 100,-60],   style(
-          color=0,
-          gradient=2,
-          fillColor=8)),
-      Rectangle(extent=[-100,34; 100,-36],   style(
-          color=69,
-          gradient=2,
-          fillColor=69)),
-      Text(
-        extent=[-150,80; 150,120],
-        string="%name",
-        style(gradient=2, fillColor=69))), Documentation(info="<html>
+  annotation (Icon(graphics={
+          Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={192,192,192}),
+          Rectangle(
+            extent={{-100,34},{100,-36}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Text(
+            extent={{-150,80},{150,120}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString=
+               "%name")}),                 Documentation(info="<html>
 <p>
 This model describes the static head due to the relative height between the two connectors. No mass, energy and momentum storage, and no pressure drop due to friction are considered.
 </p>
@@ -39,7 +44,7 @@ This model describes the static head due to the relative height between the two 
        Added to Modelica_Fluid</li>
 </ul>
 </html>"));
-equation 
+equation
 //  d = if dp > 0 then medium_a.d else medium_b.d;
   /* Density is currently not handled correctly. The correct formula:
         d = if port_a.m_flow>0 then d_a else d_b
@@ -48,45 +53,57 @@ equation
      Most likely, this can only be correctly handled with a dynamic momentum balance.
   */
   if allowFlowReversal then
-     d = (port_a_d_inflow + port_b_d_inflow)/2 
+     d = (port_a_d_inflow + port_b_d_inflow)/2
         "temporary solution that must be improved (BUT NOT WITH if port_a.m_flow>0 then d_a else d_b)";
   else
      d = port_a_d_inflow;
   end if;
   dp = height_ab*ambient.g*d;
 end StaticHead;
-  
-model SimpleGenericOrifice 
-    "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)" 
+
+model SimpleGenericOrifice
+    "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
       extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-    
+
   parameter Real zeta "Loss factor for flow of port_a -> port_b";
-  parameter SI.Diameter diameter 
+  parameter SI.Diameter diameter
       "Diameter at which zeta is defined (either port_a or port_b)";
-  parameter Boolean from_dp = true 
+  parameter Boolean from_dp = true
       "= true, use m_flow = f(dp) else dp = f(m_flow)" 
     annotation (Evaluate=true, Dialog(tab="Advanced"));
   annotation (
-    Diagram,
-    Icon(
-      Text(
-        extent=[-150,60; 150,100],
-        string="%name",
-        style(gradient=2, fillColor=69)),
-      Line(points=[-60, -50; -60, 50; 60, -50; 60, 50], style(color=0,
-            thickness=2)),
-      Line(points=[-60, 0; -100, 0], style(color=69)),
-      Line(points=[60, 0; 100, 0], style(color=69)),
-        Text(
-          extent=[-168,-92; 180,-134],
-          string="zeta=%zeta",
-          style(color=0, rgbcolor={0,0,0})),
-        Line(points=[-50,-70; 50,-70], style(color=69, rgbcolor={0,128,255})),
-        Polygon(points=[24,-60; 24,-80; 50,-70; 24,-60], style(
-            color=69,
-            rgbcolor={0,128,255},
-            fillColor=69,
-            rgbfillColor={0,128,255}))),
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Text(
+            extent={{-150,60},{150,100}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString=
+               "%name"),
+          Line(
+            points={{-60,-50},{-60,50},{60,-50},{60,50}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(points={{-60,0},{-100,0}}, color={0,127,255}),
+          Line(points={{60,0},{100,0}}, color={0,127,255}),
+          Text(
+            extent={{-168,-92},{180,-134}},
+            lineColor={0,0,0},
+            textString=
+                 "zeta=%zeta"),
+          Line(points={{-50,-70},{50,-70}}, color={0,128,255}),
+          Polygon(
+            points={{24,-60},{24,-80},{50,-70},{24,-60}},
+            lineColor={0,128,255},
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
     Documentation(info="<html>
 <p>
 This pressure drop component defines a
@@ -124,75 +141,82 @@ flow is reversing. If reversing flow only occurs in a short time interval,
 this is most likely uncritical. If significant reversing flow
 can appear, this component should not be used.
 </p>
-</html>"),
-      Coordsys(grid=[1,1], scale=0));
-equation 
+</html>"));
+equation
   if from_dp then
      m_flow = PressureLosses.BaseClasses.SimpleGenericOrifice.massFlowRate_dp(dp, port_a_d_inflow, port_b_d_inflow, diameter, zeta);
   else
      dp = PressureLosses.BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(m_flow, port_a_d_inflow, port_b_d_inflow, diameter, zeta);
   end if;
 end SimpleGenericOrifice;
-  
-  model WallFrictionAndGravity 
-    "Pressure drop in pipe due to wall friction and gravity (for both flow directions)" 
+
+  model WallFrictionAndGravity
+    "Pressure drop in pipe due to wall friction and gravity (for both flow directions)"
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-    
+
     replaceable package WallFriction = 
       Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
-      extends 
+      constrainedby
       Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
       "Characteristic of wall friction"  annotation(choicesAllMatching=true);
-    
+
     parameter SI.Length length "Length of pipe";
     parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
     parameter SI.Length height_ab = 0.0 "Height(port_b) - Height(port_a)" 
                                                                        annotation(Evaluate=true);
     Medium.Density d "Density of the passing fluid";
-    parameter SI.Length roughness(min=0) = 2.5e-5 
+    parameter SI.Length roughness(min=0) = 2.5e-5
       "Absolute roughness of pipe (default = smooth steel pipe)" 
         annotation(Dialog(enable=WallFriction.use_roughness));
-    
-    parameter Boolean use_nominal = false 
+
+    parameter Boolean use_nominal = false
       "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
                                                                                                     annotation(Evaluate=true);
-    parameter SI.DynamicViscosity eta_nominal = 0.01 
+    parameter SI.DynamicViscosity eta_nominal = 0.01
       "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
                                                                               annotation(Dialog(enable=use_nominal));
-    parameter SI.Density d_nominal = 0.01 
+    parameter SI.Density d_nominal = 0.01
       "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
                                                                annotation(Dialog(enable=use_nominal));
-    
-    parameter Boolean show_Re = false 
+
+    parameter Boolean show_Re = false
       "= true, if Reynolds number is included for plotting" 
        annotation (Evaluate=true, Dialog(tab="Advanced"));
-    parameter Boolean from_dp=true 
+    parameter Boolean from_dp=true
       " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
       annotation (Evaluate=true, Dialog(tab="Advanced"));
-    parameter SI.AbsolutePressure dp_small = 1 
+    parameter SI.AbsolutePressure dp_small = 1
       "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
-    parameter SI.MassFlowRate m_flow_small = reg_m_flow_small 
+    parameter SI.MassFlowRate m_flow_small = reg_m_flow_small
       "Turbulent flow if |m_flow| >= m_flow_small (used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
-    SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, (eta_a+eta_b)/2, diameter) if show_Re 
+    SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, (eta_a+eta_b)/2, diameter) if show_Re
       "Reynolds number of pipe";
-    
+
     outer Modelica_Fluid.Ambient ambient "Ambient conditions";
-    
-    annotation (defaultComponentName="pipeFriction",Icon(
-        Rectangle(extent=[-100,60; 100,-60],   style(
-            color=0,
-            gradient=2,
-            fillColor=8)),
-        Rectangle(extent=[-100,34; 100,-36],   style(
-            color=69,
-            gradient=2,
-            fillColor=69)),
-        Text(
-          extent=[-150,80; 150,120],
-          string="%name",
-          style(gradient=2, fillColor=69))), Documentation(info="<html>
+
+    annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={192,192,192}),
+          Rectangle(
+            extent={{-100,34},{100,-36}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Text(
+            extent={{-150,80},{150,120}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString=
+                 "%name")}),                 Documentation(info="<html>
 <p>
 This model describes pressure losses due to <b>wall friction</b> in a pipe
 and due to gravity.
@@ -225,62 +249,50 @@ at the desired operating point. This might speed-up the
 simulation and/or might give a more robust simulation.
 </p>
 </html>"),
-      Diagram(
-        Rectangle(extent=[-100,64; 100,-64], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=7,
-            rgbfillColor={255,255,255},
-            fillPattern=8)),
-        Rectangle(extent=[-100,50; 100,-49], style(
-              color=0,
-              rgbcolor={0,0,0},
-              fillColor=7,
-              rgbfillColor={255,255,255},
-              fillPattern=1)),
-        Line(points=[-60,-49; -60,50], style(
-            color=3,
-            rgbcolor={0,0,255},
-            arrow=3,
-            fillColor=3,
-            rgbfillColor={0,0,255},
-            fillPattern=1)),
-        Text(
-          extent=[-50,16; 6,-10],
-          style(
-            color=3,
-            rgbcolor={0,0,255},
-            arrow=3,
-            fillColor=3,
-            rgbfillColor={0,0,255},
-            fillPattern=1),
-          string="diameter"),
-        Line(points=[-100,74; 100,74], style(
-            color=3,
-            rgbcolor={0,0,255},
-            arrow=3,
-            fillColor=3,
-            rgbfillColor={0,0,255},
-            fillPattern=1)),
-        Text(
-          extent=[-34,92; 34,74],
-          style(
-            color=3,
-            rgbcolor={0,0,255},
-            arrow=3,
-            fillColor=3,
-            rgbfillColor={0,0,255},
-            fillPattern=1),
-          string="length")),
-      Coordsys(grid=[1,1], scale=0));
-  protected 
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Rectangle(
+            extent={{-100,64},{100,-64}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward),
+          Rectangle(
+            extent={{-100,50},{100,-49}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Line(
+            points={{-60,-49},{-60,50}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-50,16},{6,-10}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "diameter"),
+          Line(
+            points={{-100,74},{100,74}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-34,92},{34,74}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+                 "length")}));
+  protected
     SI.DynamicViscosity eta_a = if not WallFriction.use_eta then 1.e-10 else 
                                 (if use_nominal then eta_nominal else Medium.dynamicViscosity(port_a_state_inflow));
     SI.DynamicViscosity eta_b = if not WallFriction.use_eta then 1.e-10 else 
                                 (if use_nominal then eta_nominal else Medium.dynamicViscosity(port_b_state_inflow));
     SI.Density d_a = if use_nominal then d_nominal else port_a_d_inflow;
     SI.Density d_b = if use_nominal then d_nominal else port_b_d_inflow;
-  equation 
+  equation
     /* Density is currently not handled correctly. The correct formula:
         d = if port_a.m_flow>0 then d_a else d_b
      leads to a non-linear system of equations that mays have an infinite number of
@@ -288,7 +300,7 @@ simulation and/or might give a more robust simulation.
      Most likely, this can only be correctly handled with a dynamic momentum balance.
   */
     if allowFlowReversal then
-       d = (d_a + d_b)/2 
+       d = (d_a + d_b)/2
         "temporary solution that must be improved (BUT NOT WITH if port_a.m_flow>0 then d_a else d_b)";
     else
        d = d_a;
@@ -301,102 +313,86 @@ simulation and/or might give a more robust simulation.
             + height_ab*ambient.g*d;
     end if;
   end WallFrictionAndGravity;
-  
-model SuddenExpansion 
-    "Pressure drop in pipe due to suddenly expanding area (for both flow directions)" 
+
+model SuddenExpansion
+    "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"
   extends PressureLosses.BaseClasses.QuadraticTurbulent.BaseModel(
      final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.suddenExpansion(D_a, D_b));
   parameter SI.Diameter D_a "Inner diameter of pipe at port_a";
   parameter SI.Diameter D_b "Inner diameter of pipe at port_b";
-    
+
   annotation (
-    Diagram(
-      Line(points=[0,40; -100,40; -100,-40; 0,-40; 0,-100; 100,-100; 100,100; 0,
-            100; 0,40], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=1)),
-      Rectangle(extent=[-100,40; 0,-40], style(
-          color=7,
-          rgbcolor={255,255,255},
-          fillColor=7,
-          rgbfillColor={255,255,255})),
-      Rectangle(extent=[0,100; 100,-100], style(
-          color=7,
-          rgbcolor={255,255,255},
-          fillColor=7,
-          rgbfillColor={255,255,255})),
-      Line(points=[0,40; -100,40; -100,-40; 0,-40; 0,-100; 100,-100; 100,100; 0,
-            100; 0,40], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=1)),
-      Line(points=[-60,-40; -60,40], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[-50,16; -26,-10],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="D_a"),
-      Line(points=[34,-100; 34,100], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[54,16; 78,-10],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="D_b")),
-    Icon(
-      Text(
-        extent=[-150,90; 150,130],
-        string="%name",
-        style(gradient=2, fillColor=69)),
-      Rectangle(extent=[-100,80; 100,-80],   style(
-          color=0,
-          gradient=2,
-          fillColor=8)),
-      Rectangle(extent=[-100,20; 0,-20],     style(
-          color=69,
-          gradient=2,
-          fillColor=69)),
-      Rectangle(extent=[0,60; 100,-60],      style(
-          color=69,
-          gradient=2,
-          fillColor=69))),
+    Diagram(graphics={
+          Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,-100},
+                {100,100},{0,100},{0,40}}, color={0,0,0}),
+          Rectangle(
+            extent={{-100,40},{0,-40}},
+            lineColor={255,255,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{0,100},{100,-100}},
+            lineColor={255,255,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,-100},
+                {100,100},{0,100},{0,40}}, color={0,0,0}),
+          Line(
+            points={{-60,-40},{-60,40}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-50,16},{-26,-10}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+               "D_a"),
+          Line(
+            points={{34,-100},{34,100}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{54,16},{78,-10}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+               "D_b")}),
+    Icon(graphics={
+          Text(
+            extent={{-150,90},{150,130}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString=
+               "%name"),
+          Rectangle(
+            extent={{-100,80},{100,-80}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={192,192,192}),
+          Rectangle(
+            extent={{-100,20},{0,-20}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Rectangle(
+            extent={{0,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255})}),
       Documentation(info="<html>
  
 </html>"));
 end SuddenExpansion;
-  
-model SharpEdgedOrifice 
-    "Pressure drop due to sharp edged orifice (for both flow directions)" 
+
+model SharpEdgedOrifice
+    "Pressure drop due to sharp edged orifice (for both flow directions)"
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
   extends PressureLosses.BaseClasses.QuadraticTurbulent.BaseModel(
      final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(D_pipe, D_min, L, alpha));
-  parameter SI.Diameter D_pipe 
+  parameter SI.Diameter D_pipe
       "Inner diameter of pipe (= same at port_a and port_b)";
   parameter SI.Diameter D_min "Smallest diameter of orifice";
   parameter SI.Diameter L "Length of orifice";
@@ -404,119 +400,96 @@ model SharpEdgedOrifice
   annotation (defaultComponentName="orifice",
     Documentation(info="<html>
 </html>"),
-    Icon(
-      Text(
-        extent=[-150,90; 150,130],
-        string="%name",
-        style(gradient=2, fillColor=69)),
-      Rectangle(extent=[-100,80; 100,-80],   style(
-          color=0,
-          gradient=2,
-          fillColor=8)),
-      Rectangle(extent=[-100,60; 100,-60],   style(
-          color=69,
-          gradient=2,
-          fillColor=69)),
-      Polygon(points=[-24,60; -24,12; 36,50; 36,60; -24,60], style(
-          color=0,
-          rgbcolor={0,0,0},
-          gradient=2,
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=8)),
-      Polygon(points=[-22,-10; -22,-60; 38,-60; 38,-50; -22,-10], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=8))),
-    Diagram(       Rectangle(extent=[-100,60; 100,-60], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255})),
-      Polygon(points=[-30,60; -30,12; 30,50; 30,60; -30,60], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=8)),
-      Polygon(points=[-30,-10; -30,-60; 30,-60; 30,-50; -30,-10], style(
-          color=0,
-          rgbcolor={0,0,0},
-          fillColor=7,
-          rgbfillColor={255,255,255},
-          fillPattern=8)),
-      Line(points=[-82,-60; -82,60], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[-78,16; -44,-8],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="D_pipe"),
-      Line(points=[-30,-10; -30,12], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Text(
-        extent=[-24,14; 8,-10],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="D_min"),
-      Text(
-        extent=[-20,84; 18,70],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1),
-        string="L"),
-      Line(points=[30,68; -30,68],   style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=1)),
-      Line(points=[16,40; 32,18; 36,-2; 34,-20; 20,-42], style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=8)),
-      Text(
-        extent=[38,8; 92,-6],
-        style(
-          color=3,
-          rgbcolor={0,0,255},
-          arrow=3,
-          fillColor=3,
-          rgbfillColor={0,0,255},
-          fillPattern=8),
-        string="alpha")));
+    Icon(graphics={
+          Text(
+            extent={{-150,90},{150,130}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString=
+               "%name"),
+          Rectangle(
+            extent={{-100,80},{100,-80}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={192,192,192}),
+          Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Polygon(
+            points={{-24,60},{-24,12},{36,50},{36,60},{-24,60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={255,255,255}),
+          Polygon(
+            points={{-22,-10},{-22,-60},{38,-60},{38,-50},{-22,-10}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward)}),
+    Diagram(graphics={
+          Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{-30,60},{-30,12},{30,50},{30,60},{-30,60}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward),
+          Polygon(
+            points={{-30,-10},{-30,-60},{30,-60},{30,-50},{-30,-10}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward),
+          Line(
+            points={{-82,-60},{-82,60}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-78,16},{-44,-8}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+               "D_pipe"),
+          Line(
+            points={{-30,-10},{-30,12}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-24,14},{8,-10}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+               "D_min"),
+          Text(
+            extent={{-20,84},{18,70}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString=
+               "L"),
+          Line(
+            points={{30,68},{-30,68}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Line(
+            points={{16,40},{32,18},{36,-2},{34,-20},{20,-42}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{38,8},{92,-6}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Backward,
+            textString=
+               "alpha")}));
 end SharpEdgedOrifice;
-  
+
   annotation (Documentation(info="<html>
 <p>
 This sublibrary contains models and functions providing pressure 
@@ -562,26 +535,26 @@ polynomials. The monotonicity is guaranteed using results from:
     New design and implementation based on previous iterations.</li>
 </ul>
 </html>"));
-  
-  package BaseClasses 
+
+  package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
-    
-    package SimpleGenericOrifice 
-      "Simple pressure loss component defined by two constants (diameter, zeta) for the quadratic turbulent regime" 
-      
-      function massFlowRate_dp 
-        "Return mass flow rate from pressure drop (m_flow = f(dp))" 
+
+    package SimpleGenericOrifice
+      "Simple pressure loss component defined by two constants (diameter, zeta) for the quadratic turbulent regime"
+
+      function massFlowRate_dp
+        "Return mass flow rate from pressure drop (m_flow = f(dp))"
         extends Modelica.Icons.Function;
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
         input SI.Density d_a "Density at port_a";
         input SI.Density d_b "Density at port_b";
         input SI.Diameter D "Diameter at port_a or port_b";
-        input Real zeta 
+        input Real zeta
           "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
-        input SI.AbsolutePressure dp_small = 1 
+        input SI.AbsolutePressure dp_small = 1
           "Turbulent flow if |dp| >= dp_small";
         output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
-        
+
         annotation (Documentation(info="<html>
 <p>
 Compute mass flow rate from constant loss factor and pressure drop (m_flow = f(dp)).
@@ -589,7 +562,7 @@ For small pressure drops (dp &lt; dp_small), the characteristic is approximated 
 a polynomial in order to have a finite derivative at zero mass flow rate.
 </p>
 </html>"));
-      algorithm 
+      algorithm
         /*
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
@@ -605,21 +578,21 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
             d_a/lossConstant_D_zeta(D, zeta),
             d_b/lossConstant_D_zeta(D, zeta));
       end massFlowRate_dp;
-      
-      function pressureLoss_m_flow 
-        "Return pressure drop from mass flow rate (dp = f(m_flow))" 
+
+      function pressureLoss_m_flow
+        "Return pressure drop from mass flow rate (dp = f(m_flow))"
               extends Modelica.Icons.Function;
-        
+
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         input SI.Density d_a "Density at port_a";
         input SI.Density d_b "Density at port_b";
         input SI.Diameter D "Diameter at port_a or port_b";
-        input Real zeta 
+        input Real zeta
           "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
-        input SI.MassFlowRate m_flow_small = 0.01 
+        input SI.MassFlowRate m_flow_small = 0.01
           "Turbulent flow if |m_flow| >= m_flow_small";
         output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
-        
+
         annotation (Documentation(info="<html>
 <p>
 Compute pressure drop from mass flow rate (dp = f(m_flow)).
@@ -627,7 +600,7 @@ For small mass flow rates(|m_flow| &lt; m_flow_small), the characteristic is app
 a polynomial in order to have a finite derivative at zero mass flow rate.
 </p>
 </html>"));
-      algorithm 
+      algorithm
         /*
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
@@ -682,32 +655,32 @@ can appear, this component should not be used.
 </p>
 </html>"));
     end SimpleGenericOrifice;
-    
-    package QuadraticTurbulent 
-      "Pressure loss components that are mainly defined by a quadratic turbulent regime with constant loss factor data" 
-     record LossFactorData 
-        "Data structure defining constant loss factor data for dp = zeta*rho*v*|v|/2 and functions providing the data for some loss types" 
-        
+
+    package QuadraticTurbulent
+      "Pressure loss components that are mainly defined by a quadratic turbulent regime with constant loss factor data"
+     record LossFactorData
+        "Data structure defining constant loss factor data for dp = zeta*rho*v*|v|/2 and functions providing the data for some loss types"
+
             extends Modelica.Icons.Record;
-        
+
       SI.Diameter D_a "Diameter at port_a" annotation(Dialog);
       SI.Diameter D_b "Diameter at port_b" annotation(Dialog);
       Real zeta1 "Loss factor for flow port_a -> port_b" annotation(Dialog);
       Real zeta2 "Loss factor for flow port_b -> port_a" annotation(Dialog);
-      SI.ReynoldsNumber Re_turbulent 
+      SI.ReynoldsNumber Re_turbulent
           "Loss factors suited for Re >= Re_turbulent"                            annotation(Dialog);
       SI.Diameter D_Re "Diameter used to compute Re" annotation(Dialog);
-      Boolean zeta1_at_a = true 
+      Boolean zeta1_at_a = true
           "dp = zeta1*(if zeta1_at_a then d_a*v_a^2/2 else d_b*v_b^2/2)" 
                                                                         annotation(Dialog);
-      Boolean zeta2_at_a = false 
+      Boolean zeta2_at_a = false
           "dp = -zeta2*(if zeta2_at_a then d_a*v_a^2/2 else d_b*v_b^2/2)" 
                                                                          annotation(Dialog);
-      Boolean zetaLaminarKnown = false 
+      Boolean zetaLaminarKnown = false
           "= true, if zeta = c0/Re in laminar region"                              annotation(Dialog);
-      Real c0 = 1 
+      Real c0 = 1
           "zeta = c0/Re; dp = zeta*d_Re*v_Re^2/2, Re=v_Re*D_Re*d_Re/eta_Re)"         annotation(Dialog(enable=zetaLaminarKnown));
-        
+
       annotation (preferedView="info", Documentation(info="<html>
 <p>
 This record defines the pressure loss factors of a pipe
@@ -814,73 +787,65 @@ The used sufficient criteria for monotonicity follows from:
      SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
 </dl>
 </html>"));
-        
-       encapsulated function wallFriction 
-          "Return pressure loss data due to friction in a straight pipe with walls of nonuniform roughness (not useful for smooth pipes, since zeta is no function of Re)" 
-                  import 
+
+       encapsulated function wallFriction
+          "Return pressure loss data due to friction in a straight pipe with walls of nonuniform roughness (not useful for smooth pipes, since zeta is no function of Re)"
+                  import
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           import lg = Modelica.Math.log10;
           import SI = Modelica.SIunits;
-          
+
          input SI.Length length "Length of pipe" annotation(Dialog);
          input SI.Diameter diameter "Inner diameter of pipe" annotation(Dialog);
-         input SI.Length roughness(min=1e-10) 
+         input SI.Length roughness(min=1e-10)
             "Absolute roughness of pipe (> 0 required, details see info layer)"
                                                                                annotation(Dialog);
-         output LossFactorData data 
+         output LossFactorData data
             "Pressure loss factors for both flow directions";
-         annotation (Icon(Rectangle(extent=[-100,50; 100,-50], style(
-                 color=0,
-                 rgbcolor={0,0,0},
-                 fillColor=7,
-                 rgbfillColor={255,255,255}))),
-                                   Diagram(
-             Rectangle(extent=[-100,64; 100,-64], style(
-                 color=0,
-                 rgbcolor={0,0,0},
-                 fillColor=7,
-                 rgbfillColor={255,255,255},
-                 fillPattern=8)),
-             Rectangle(extent=[-100,50; 100,-49], style(
-                   color=0,
-                   rgbcolor={0,0,0},
-                   fillColor=7,
-                   rgbfillColor={255,255,255},
-                   fillPattern=1)),
-             Line(points=[-60,-49; -60,50], style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1)),
-             Text(
-               extent=[-50,16; 6,-10],
-               style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1),
-               string="diameter"),
-             Line(points=[-100,74; 100,74], style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1)),
-             Text(
-               extent=[-34,92; 34,74],
-               style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1),
-               string="length")),
+         annotation (Icon(coordinateSystem(
+                preserveAspectRatio=false,
+                extent={{-100,-100},{100,100}},
+                grid={1,1}), graphics={Rectangle(
+                  extent={{-100,50},{100,-50}},
+                  lineColor={0,0,0},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Solid)}),
+                                   Diagram(coordinateSystem(
+                preserveAspectRatio=false,
+                extent={{-100,-100},{100,100}},
+                grid={1,1}), graphics={
+                Rectangle(
+                  extent={{-100,64},{100,-64}},
+                  lineColor={0,0,0},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Backward),
+                Rectangle(
+                  extent={{-100,50},{100,-49}},
+                  lineColor={0,0,0},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Solid),
+                Line(
+                  points={{-60,-49},{-60,50}},
+                  color={0,0,255},
+                  arrow={Arrow.Filled,Arrow.Filled}),
+                Text(
+                  extent={{-50,16},{6,-10}},
+                  lineColor={0,0,255},
+                  fillColor={0,0,255},
+                  fillPattern=FillPattern.Solid,
+                  textString=
+                      "diameter"),
+                Line(
+                  points={{-100,74},{100,74}},
+                  color={0,0,255},
+                  arrow={Arrow.Filled,Arrow.Filled}),
+                Text(
+                  extent={{-34,92},{34,74}},
+                  lineColor={0,0,255},
+                  fillColor={0,0,255},
+                  fillPattern=FillPattern.Solid,
+                  textString=
+                      "length")}),
            Documentation(info="<html>
 <p>
 Friction in straight pipe with walls of nonuniform roughness 
@@ -953,15 +918,15 @@ As a short summary:
       <td><font face=\"Symbol\">d</font> = 1 mm</td>
   </tr>
 </table>
-</html>"), Coordsys(grid=[1,1], scale=0));
-        protected 
+</html>"));
+        protected
          Real Delta = roughness/diameter "relative roughness";
-       algorithm 
+       algorithm
          data.D_a          := diameter;
          data.D_b          := diameter;
          data.zeta1        := (length/diameter)/(2*lg(3.7 /Delta))^2;
          data.zeta2        := data.zeta1;
-         data.Re_turbulent := 4000 
+         data.Re_turbulent := 4000
             ">= 560/Delta flow does not depend on Re, but interpolation is bad";
          data.D_Re         := diameter;
          data.zeta1_at_a   := true;
@@ -969,92 +934,66 @@ As a short summary:
          data.zetaLaminarKnown := true;
          data.c0               := 64*(length/diameter);
        end wallFriction;
-        
-       encapsulated function suddenExpansion 
-          "Return pressure loss data for sudden expansion or contraction in a pipe (for both flow directions)" 
-                  import 
+
+       encapsulated function suddenExpansion
+          "Return pressure loss data for sudden expansion or contraction in a pipe (for both flow directions)"
+                  import
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           import SI = Modelica.SIunits;
          input SI.Diameter D_a "Inner diameter of pipe at port_a" annotation(Dialog);
          input SI.Diameter D_b "Inner diameter of pipe at port_b" annotation(Dialog);
-         output LossFactorData data 
+         output LossFactorData data
             "Pressure loss factors for both flow directions";
-         annotation (Icon(
-             Rectangle(extent=[-100,40; 0,-40], style(
-                 color=7,
-                 rgbcolor={255,255,255},
-                 fillColor=7,
-                 rgbfillColor={255,255,255})),
-             Rectangle(extent=[0,100; 100,-100], style(
-                 color=7,
-                 rgbcolor={255,255,255},
-                 fillColor=7,
-                 rgbfillColor={255,255,255})),
-             Line(points=[0,40; -100,40; -100,-40; 0,-40; 0,-100; 100,-100; 100,100; 0,
-                   100; 0,40], style(
-                 color=0,
-                 rgbcolor={0,0,0},
-                 fillColor=7,
-                 rgbfillColor={255,255,255},
-                 fillPattern=1))), Diagram(
-             Line(points=[0,40; -100,40; -100,-40; 0,-40; 0,-100; 100,-100; 100,100; 0,
-                   100; 0,40], style(
-                 color=0,
-                 rgbcolor={0,0,0},
-                 fillColor=7,
-                 rgbfillColor={255,255,255},
-                 fillPattern=1)),
-             Rectangle(extent=[-100,40; 0,-40], style(
-                 color=7,
-                 rgbcolor={255,255,255},
-                 fillColor=7,
-                 rgbfillColor={255,255,255})),
-             Rectangle(extent=[0,100; 100,-100], style(
-                 color=7,
-                 rgbcolor={255,255,255},
-                 fillColor=7,
-                 rgbfillColor={255,255,255})),
-             Line(points=[0,40; -100,40; -100,-40; 0,-40; 0,-100; 100,-100; 100,100; 0,
-                   100; 0,40], style(
-                 color=0,
-                 rgbcolor={0,0,0},
-                 fillColor=7,
-                 rgbfillColor={255,255,255},
-                 fillPattern=1)),
-             Line(points=[-60,-40; -60,40], style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1)),
-             Text(
-               extent=[-50,16; -26,-10],
-               style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1),
-               string="D_a"),
-             Line(points=[34,-100; 34,100], style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1)),
-             Text(
-               extent=[54,16; 78,-10],
-               style(
-                 color=3,
-                 rgbcolor={0,0,255},
-                 arrow=3,
-                 fillColor=3,
-                 rgbfillColor={0,0,255},
-                 fillPattern=1),
-               string="D_b")),
+         annotation (Icon(graphics={
+                Rectangle(
+                  extent={{-100,40},{0,-40}},
+                  lineColor={255,255,255},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Solid),
+                Rectangle(
+                  extent={{0,100},{100,-100}},
+                  lineColor={255,255,255},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Solid),
+                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,
+                      -100},{100,100},{0,100},{0,40}}, color={0,0,0})}),
+                                   Diagram(graphics={
+                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,
+                      -100},{100,100},{0,100},{0,40}}, color={0,0,0}),
+                Rectangle(
+                  extent={{-100,40},{0,-40}},
+                  lineColor={255,255,255},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Solid),
+                Rectangle(
+                  extent={{0,100},{100,-100}},
+                  lineColor={255,255,255},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Solid),
+                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,
+                      -100},{100,100},{0,100},{0,40}}, color={0,0,0}),
+                Line(
+                  points={{-60,-40},{-60,40}},
+                  color={0,0,255},
+                  arrow={Arrow.Filled,Arrow.Filled}),
+                Text(
+                  extent={{-50,16},{-26,-10}},
+                  lineColor={0,0,255},
+                  fillColor={0,0,255},
+                  fillPattern=FillPattern.Solid,
+                  textString=
+                      "D_a"),
+                Line(
+                  points={{34,-100},{34,100}},
+                  color={0,0,255},
+                  arrow={Arrow.Filled,Arrow.Filled}),
+                Text(
+                  extent={{54,16},{78,-10}},
+                  lineColor={0,0,255},
+                  fillColor={0,0,255},
+                  fillPattern=FillPattern.Solid,
+                  textString=
+                      "D_b")}),
            Documentation(info="<html>
 <p>
 The loss factors are given for mass flow rates from 
@@ -1072,15 +1011,15 @@ port_a to port_b as:
       zeta = 30/Re                  for Re_a &lt; 10  (laminar flow)
 </pre>
 </html>"));
-        protected 
+        protected
          Real A_rel;
-       algorithm 
+       algorithm
          data.D_a          := D_a;
          data.D_b          := D_b;
          data.Re_turbulent := 100;
          data.zetaLaminarKnown := true;
          data.c0 := 30;
-          
+
          if D_a <= D_b then
             A_rel :=(D_a/D_b)^2;
             data.zeta1 :=(1 - A_rel)^2;
@@ -1097,14 +1036,14 @@ port_a to port_b as:
             data.D_Re := D_b;
          end if;
        end suddenExpansion;
-        
-       encapsulated function sharpEdgedOrifice 
-          "Return pressure loss data for sharp edged orifice (for both flow directions)" 
+
+       encapsulated function sharpEdgedOrifice
+          "Return pressure loss data for sharp edged orifice (for both flow directions)"
           import NonSI = Modelica.SIunits.Conversions.NonSIunits;
-          import 
+          import
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           import SI = Modelica.SIunits;
-          input SI.Diameter D_pipe 
+          input SI.Diameter D_pipe
             "Inner diameter of pipe (= same at port_a and port_b)" 
                                                                   annotation(Dialog);
           input SI.Diameter D_min "Smallest diameter of orifice" 
@@ -1113,113 +1052,85 @@ port_a to port_b as:
                                                  annotation(Dialog);
           input NonSI.Angle_deg alpha "Angle of orifice" 
                                                         annotation(Dialog);
-          output LossFactorData data 
+          output LossFactorData data
             "Pressure loss factors for both flow directions";
           annotation (
-            Icon(
-              Rectangle(extent=[-100,60; 100,-60], style(
-                  color=0,
-                  rgbcolor={0,0,0},
-                  fillColor=7,
-                  rgbfillColor={255,255,255})),
-              Polygon(points=[-30,60; -30,12; 30,50; 30,60; -30,60], style(
-                  color=0,
-                  rgbcolor={0,0,0},
-                  fillColor=7,
-                  rgbfillColor={255,255,255},
-                  fillPattern=8)),
-              Polygon(points=[-30,-10; -30,-60; 30,-60; 30,-50; -30,-10], style(
-                  color=0,
-                  rgbcolor={0,0,0},
-                  fillColor=7,
-                  rgbfillColor={255,255,255},
-                  fillPattern=8))),
-            Diagram(
-              Rectangle(extent=[-100,60; 100,-60], style(
-                  color=0,
-                  rgbcolor={0,0,0},
-                  fillColor=7,
-                  rgbfillColor={255,255,255})),
-              Polygon(points=[-30,60; -30,12; 30,50; 30,60; -30,60], style(
-                  color=0,
-                  rgbcolor={0,0,0},
-                  fillColor=7,
-                  rgbfillColor={255,255,255},
-                  fillPattern=8)),
-              Polygon(points=[-30,-10; -30,-60; 30,-60; 30,-50; -30,-10], style(
-                  color=0,
-                  rgbcolor={0,0,0},
-                  fillColor=7,
-                  rgbfillColor={255,255,255},
-                  fillPattern=8)),
-              Line(points=[-82,-60; -82,60], style(
-                  color=3,
-                  rgbcolor={0,0,255},
-                  arrow=3,
-                  fillColor=3,
-                  rgbfillColor={0,0,255},
-                  fillPattern=1)),
-              Text(
-                extent=[-78,16; -44,-8],
-                style(
-                  color=3,
-                  rgbcolor={0,0,255},
-                  arrow=3,
-                  fillColor=3,
-                  rgbfillColor={0,0,255},
-                  fillPattern=1),
-                string="D_pipe"),
-              Line(points=[-30,-10; -30,12], style(
-                  color=3,
-                  rgbcolor={0,0,255},
-                  arrow=3,
-                  fillColor=3,
-                  rgbfillColor={0,0,255},
-                  fillPattern=1)),
-              Text(
-                extent=[-24,14; 8,-10],
-                style(
-                  color=3,
-                  rgbcolor={0,0,255},
-                  arrow=3,
-                  fillColor=3,
-                  rgbfillColor={0,0,255},
-                  fillPattern=1),
-                string="D_min"),
-              Text(
-                extent=[-20,84; 18,70],
-                style(
-                  color=3,
-                  rgbcolor={0,0,255},
-                  arrow=3,
-                  fillColor=3,
-                  rgbfillColor={0,0,255},
-                  fillPattern=1),
-                string="L"),
-              Line(points=[30,68; -30,68], style(
-                  color=3,
-                  rgbcolor={0,0,255},
-                  arrow=3,
-                  fillColor=3,
-                  rgbfillColor={0,0,255},
-                  fillPattern=1)),
-              Line(points=[16,40; 32,18; 36,-2; 34,-20; 20,-42], style(
-                  color=3,
-                  rgbcolor={0,0,255},
-                  arrow=3,
-                  fillColor=3,
-                  rgbfillColor={0,0,255},
-                  fillPattern=8)),
-              Text(
-                extent=[38,8; 92,-6],
-                style(
-                  color=3,
-                  rgbcolor={0,0,255},
-                  arrow=3,
-                  fillColor=3,
-                  rgbfillColor={0,0,255},
-                  fillPattern=8),
-                string="alpha")),
+            Icon(graphics={
+                Rectangle(
+                  extent={{-100,60},{100,-60}},
+                  lineColor={0,0,0},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Solid),
+                Polygon(
+                  points={{-30,60},{-30,12},{30,50},{30,60},{-30,60}},
+                  lineColor={0,0,0},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Backward),
+                Polygon(
+                  points={{-30,-10},{-30,-60},{30,-60},{30,-50},{-30,-10}},
+                  lineColor={0,0,0},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Backward)}),
+            Diagram(graphics={
+                Rectangle(
+                  extent={{-100,60},{100,-60}},
+                  lineColor={0,0,0},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Solid),
+                Polygon(
+                  points={{-30,60},{-30,12},{30,50},{30,60},{-30,60}},
+                  lineColor={0,0,0},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Backward),
+                Polygon(
+                  points={{-30,-10},{-30,-60},{30,-60},{30,-50},{-30,-10}},
+                  lineColor={0,0,0},
+                  fillColor={255,255,255},
+                  fillPattern=FillPattern.Backward),
+                Line(
+                  points={{-82,-60},{-82,60}},
+                  color={0,0,255},
+                  arrow={Arrow.Filled,Arrow.Filled}),
+                Text(
+                  extent={{-78,16},{-44,-8}},
+                  lineColor={0,0,255},
+                  fillColor={0,0,255},
+                  fillPattern=FillPattern.Solid,
+                  textString=
+                       "D_pipe"),
+                Line(
+                  points={{-30,-10},{-30,12}},
+                  color={0,0,255},
+                  arrow={Arrow.Filled,Arrow.Filled}),
+                Text(
+                  extent={{-24,14},{8,-10}},
+                  lineColor={0,0,255},
+                  fillColor={0,0,255},
+                  fillPattern=FillPattern.Solid,
+                  textString=
+                       "D_min"),
+                Text(
+                  extent={{-20,84},{18,70}},
+                  lineColor={0,0,255},
+                  fillColor={0,0,255},
+                  fillPattern=FillPattern.Solid,
+                  textString=
+                       "L"),
+                Line(
+                  points={{30,68},{-30,68}},
+                  color={0,0,255},
+                  arrow={Arrow.Filled,Arrow.Filled}),
+                Line(
+                  points={{16,40},{32,18},{36,-2},{34,-20},{20,-42}},
+                  color={0,0,255},
+                  arrow={Arrow.Filled,Arrow.Filled}),
+                Text(
+                  extent={{38,8},{92,-6}},
+                  lineColor={0,0,255},
+                  fillColor={0,0,255},
+                  fillPattern=FillPattern.Backward,
+                  textString=
+                       "alpha")}),
             Documentation(info="<html>
 <p>
 Loss factor for mass flow rate from port_a to port_b
@@ -1244,11 +1155,11 @@ Loss factor for mass flow rate from port_b to port_a
                              in diagram 3-7 (this is not yet included in the function)
 </pre
 </html>"));
-        protected 
+        protected
           Real D_rel=D_min/D_pipe;
           Real LD=L/D_min;
           Real k=0.13 + 0.34*10^(-(3.4*LD + 88.4*LD^2.3));
-       algorithm 
+       algorithm
           data.D_a := D_pipe;
           data.D_b := D_pipe;
           data.zeta1 := ((1 - D_rel) + 0.707*(1 - D_rel)^0.375)^2*(1/D_rel)^2;
@@ -1261,27 +1172,27 @@ Loss factor for mass flow rate from port_b to port_a
           data.zetaLaminarKnown := false;
           data.c0 := 0;
        end sharpEdgedOrifice;
-        
+
      end LossFactorData;
-      
-      function massFlowRate_dp 
-        "Return mass flow rate from constant loss factor data and pressure drop (m_flow = f(dp))" 
+
+      function massFlowRate_dp
+        "Return mass flow rate from constant loss factor data and pressure drop (m_flow = f(dp))"
               //import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
         extends Modelica.Icons.Function;
-        
+
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
         input SI.Density d_a "Density at port_a";
         input SI.Density d_b "Density at port_b";
-        input LossFactorData data 
+        input LossFactorData data
           "Constant loss factors for both flow directions" annotation (
             choices(
             choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.wallFriction(),
             choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.suddenExpansion(),
             choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
-        input SI.AbsolutePressure dp_small = 1 
+        input SI.AbsolutePressure dp_small = 1
           "Turbulent flow if |dp| >= dp_small";
         output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
-        
+
         annotation (smoothOrder=1, Documentation(info="<html>
 <p>
 Compute mass flow rate from constant loss factor and pressure drop (m_flow = f(dp)).
@@ -1289,10 +1200,10 @@ For small pressure drops (dp &lt; dp_small), the characteristic is approximated 
 a polynomial in order to have a finite derivative at zero mass flow rate.
 </p>
 </html>"));
-      protected 
+      protected
         Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
         Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
-      algorithm 
+      algorithm
         /*
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
@@ -1337,24 +1248,24 @@ where
 </ul>
  
 </html>"));
-      
-      function massFlowRate_dp_and_Re 
-        "Return mass flow rate from constant loss factor data, pressure drop and Re (m_flow = f(dp))" 
+
+      function massFlowRate_dp_and_Re
+        "Return mass flow rate from constant loss factor data, pressure drop and Re (m_flow = f(dp))"
               extends Modelica.Icons.Function;
-        
+
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
         input SI.Density d_a "Density at port_a";
         input SI.Density d_b "Density at port_b";
         input SI.DynamicViscosity eta_a "Dynamic viscosity at port_a";
         input SI.DynamicViscosity eta_b "Dynamic viscosity at port_b";
-        input LossFactorData data 
+        input LossFactorData data
           "Constant loss factors for both flow directions" annotation (
             choices(
             choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.wallFriction(),
             choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.suddenExpansion(),
             choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
         output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
-        
+
         annotation (smoothOrder=1, Documentation(info="<html>
 <p>
 Compute mass flow rate from constant loss factor and pressure drop (m_flow = f(dp)).
@@ -1388,16 +1299,16 @@ The used sufficient criteria for monotonicity follows from:
      SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
 </dl>
 </html>"));
-      protected 
+      protected
         constant Real pi=Modelica.Constants.pi;
         Real k0=2*data.c0/(pi*data.D_Re^3);
         Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
         Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
-        Real yd0 
+        Real yd0
           "Derivative of m_flow=m_flow(dp) at zero, if data.zetaLaminarKnown";
-        SI.AbsolutePressure dp_turbulent 
+        SI.AbsolutePressure dp_turbulent
           "The turbulent region is: |dp| >= dp_turbulent";
-      algorithm 
+      algorithm
       /*
 Turbulent region:
    Re = m_flow*(4/pi)/(D_Re*eta)  
@@ -1438,24 +1349,24 @@ Laminar region:
          m_flow := Utilities.regRoot2(dp, dp_turbulent, d_a/k1, d_b/k2,
                                                      data.zetaLaminarKnown, yd0);
       end massFlowRate_dp_and_Re;
-      
-      function pressureLoss_m_flow 
-        "Return pressure drop from constant loss factor and mass flow rate (dp = f(m_flow))" 
+
+      function pressureLoss_m_flow
+        "Return pressure drop from constant loss factor and mass flow rate (dp = f(m_flow))"
               extends Modelica.Icons.Function;
-        
+
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         input SI.Density d_a "Density at port_a";
         input SI.Density d_b "Density at port_b";
-        input LossFactorData data 
+        input LossFactorData data
           "Constant loss factors for both flow directions" annotation (
             choices(
             choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.wallFriction(),
             choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.suddenExpansion(),
             choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
-        input SI.MassFlowRate m_flow_small = 0.01 
+        input SI.MassFlowRate m_flow_small = 0.01
           "Turbulent flow if |m_flow| >= m_flow_small";
         output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
-        
+
         annotation (smoothOrder=1, Documentation(info="<html>
 <p>
 Compute pressure drop from constant loss factor and mass flow rate (dp = f(m_flow)).
@@ -1463,10 +1374,10 @@ For small mass flow rates(|m_flow| &lt; m_flow_small), the characteristic is app
 a polynomial in order to have a finite derivative at zero mass flow rate.
 </p>
 </html>"));
-      protected 
+      protected
         Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
         Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
-      algorithm 
+      algorithm
         /*
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
@@ -1478,24 +1389,24 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
   */
         dp :=Utilities.regSquare2(m_flow, m_flow_small, k1/d_a, k2/d_b);
       end pressureLoss_m_flow;
-      
-      function pressureLoss_m_flow_and_Re 
-        "Return pressure drop from constant loss factor, mass flow rate and Re (dp = f(m_flow))" 
+
+      function pressureLoss_m_flow_and_Re
+        "Return pressure drop from constant loss factor, mass flow rate and Re (dp = f(m_flow))"
               extends Modelica.Icons.Function;
-        
+
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         input SI.Density d_a "Density at port_a";
         input SI.Density d_b "Density at port_b";
         input SI.DynamicViscosity eta_a "Dynamic viscosity at port_a";
         input SI.DynamicViscosity eta_b "Dynamic viscosity at port_b";
-        input LossFactorData data 
+        input LossFactorData data
           "Constant loss factors for both flow directions" annotation (
             choices(
             choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.wallFriction(),
             choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.suddenExpansion(),
             choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
         output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
-        
+
         annotation (smoothOrder=1, Documentation(info="<html>
 <p>
 Compute pressure drop from constant loss factor and mass flow rate (dp = f(m_flow)).
@@ -1529,16 +1440,16 @@ The used sufficient criteria for monotonicity follows from:
      SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
 </dl>
 </html>"));
-      protected 
+      protected
         constant Real pi=Modelica.Constants.pi;
         Real k0 = 2*data.c0/(pi*data.D_Re^3);
         Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
         Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
-        Real yd0 
+        Real yd0
           "Derivative of dp = f(m_flow) at zero, if data.zetaLaminarKnown";
-        SI.MassFlowRate m_flow_turbulent 
+        SI.MassFlowRate m_flow_turbulent
           "The turbulent region is: |m_flow| >= m_flow_turbulent";
-      algorithm 
+      algorithm
       /*
 Turbulent region:
    Re = m_flow*(4/pi)/(D_Re*eta)  
@@ -1577,36 +1488,36 @@ Laminar region:
         dp :=Utilities.regSquare2(m_flow, m_flow_turbulent, k1/d_a, k2/d_b,
                                                  data.zetaLaminarKnown, yd0);
       end pressureLoss_m_flow_and_Re;
-      
-      model BaseModel 
-        "Generic pressure drop component with constant turbulent loss factor data and without an icon" 
-        
-        extends 
+
+      model BaseModel
+        "Generic pressure drop component with constant turbulent loss factor data and without an icon"
+
+        extends
           Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-        
+
         SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(
               m_flow, (Medium.dynamicViscosity(port_a_state_inflow) + Medium.dynamicViscosity(port_b_state_inflow))/2,
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
         parameter LossFactorData data "Loss factor data";
-        parameter Boolean show_Re = false 
+        parameter Boolean show_Re = false
           "= true, if Reynolds number is included for plotting" 
            annotation (Evaluate=true, Dialog(tab="Advanced"));
-        parameter Boolean from_dp = true 
+        parameter Boolean from_dp = true
           "= true, use m_flow = f(dp) else dp = f(m_flow)" 
           annotation (Evaluate=true, Dialog(tab="Advanced"));
-        parameter Boolean use_Re = false 
+        parameter Boolean use_Re = false
           "= true, if turbulent region is defined by Re, otherwise by dp_small or m_flow_small"
           annotation(Evaluate=true, Dialog(tab="Advanced"));
-        parameter SI.AbsolutePressure dp_small = 1 
+        parameter SI.AbsolutePressure dp_small = 1
           "Turbulent flow if |dp| >= dp_small" 
           annotation(Dialog(tab="Advanced", enable=not use_Re and from_dp));
-        parameter SI.MassFlowRate m_flow_small = 0.01 
+        parameter SI.MassFlowRate m_flow_small = 0.01
           "Turbulent flow if |m_flow| >= m_flow_small" 
           annotation(Dialog(tab="Advanced", enable=not use_Re and not from_dp));
-        
+
         annotation (
-          Diagram,
-          Icon,
+          Diagram(graphics),
+          Icon(graphics),
           Documentation(info="<html>
 <p>
 This model computes the pressure loss of a pipe
@@ -1713,7 +1624,7 @@ The used sufficient criteria for monotonicity follows from:
      SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
 </dl>
 </html>"));
-      equation 
+      equation
         if from_dp then
            m_flow = if use_Re then 
                        massFlowRate_dp_and_Re(
@@ -1732,9 +1643,9 @@ The used sufficient criteria for monotonicity follows from:
                    pressureLoss_m_flow(m_flow, port_a_d_inflow, port_b_d_inflow, data, m_flow_small);
         end if;
       end BaseModel;
-      
-    model TestWallFriction 
-        "Pressure drop in pipe due to wall friction (only for test purposes; if needed use instead Utilities.WallFriction)" 
+
+    model TestWallFriction
+        "Pressure drop in pipe due to wall friction (only for test purposes; if needed use instead Utilities.WallFriction)"
             extends BaseModel(final data=
               LossFactorData.wallFriction(
               length,
@@ -1742,105 +1653,111 @@ The used sufficient criteria for monotonicity follows from:
               roughness));
       parameter SI.Length length "Length of pipe";
       parameter SI.Diameter diameter "Inner diameter of pipe";
-      parameter SI.Length roughness(min=1e-10) 
+      parameter SI.Length roughness(min=1e-10)
           "Absolute roughness of pipe (> 0 required, details see info layer)";
       annotation (
-        Diagram,
-        Icon(
-          Text(
-            extent=[-150,80; 150,120],
-            string="%name",
-            style(gradient=2, fillColor=69)),
-          Rectangle(extent=[-100,60; 100,-60],   style(
-              color=0,
-              gradient=2,
-              fillColor=8)),
-          Rectangle(extent=[-100,34; 100,-36],   style(
-              color=69,
-              gradient=2,
-              fillColor=69)),
-          Text(
-            extent=[-134,-66; 130,-92],
-            style(color=0, rgbcolor={0,0,0}),
-              string="quad. turbulent")),
+        Diagram(graphics),
+        Icon(graphics={
+              Text(
+                extent={{-150,80},{150,120}},
+                lineColor={0,0,0},
+                fillPattern=FillPattern.HorizontalCylinder,
+                fillColor={0,127,255},
+                textString=
+                   "%name"),
+              Rectangle(
+                extent={{-100,60},{100,-60}},
+                lineColor={0,0,0},
+                fillPattern=FillPattern.HorizontalCylinder,
+                fillColor={192,192,192}),
+              Rectangle(
+                extent={{-100,34},{100,-36}},
+                lineColor={0,0,0},
+                fillPattern=FillPattern.HorizontalCylinder,
+                fillColor={0,127,255}),
+              Text(
+                extent={{-134,-66},{130,-92}},
+                lineColor={0,0,0},
+                textString=
+                     "quad. turbulent")}),
           Documentation(info="<html>
  
 </html>"));
     end TestWallFriction;
     end QuadraticTurbulent;
-    
-    package WallFriction 
-      "Different variants for pressure drops due to pipe wall friction" 
-      partial package PartialWallFriction 
-        "Partial wall friction characteristic (base package of all wall friction characteristics)" 
-        
+
+    package WallFriction
+      "Different variants for pressure drops due to pipe wall friction"
+      partial package PartialWallFriction
+        "Partial wall friction characteristic (base package of all wall friction characteristics)"
+
         annotation (Documentation(info="<html>
  
 </html>"));
-        
+
       // Constants to be set in subpackages
-        constant Boolean use_eta = true 
+        constant Boolean use_eta = true
           "= true, if eta_a/eta_b are used in function, otherwise value is not used";
-        constant Boolean use_roughness = true 
+        constant Boolean use_roughness = true
           "= true, if roughness is used in function, otherwise value is not used";
-        constant Boolean use_dp_small = true 
+        constant Boolean use_dp_small = true
           "= true, if dp_small is used in function, otherwise value is not used";
-        constant Boolean use_m_flow_small = true 
+        constant Boolean use_m_flow_small = true
           "= true, if m_flow_small is used in function, otherwise value is not used";
-        constant Boolean dp_is_zero = false 
+        constant Boolean dp_is_zero = false
           "= true, if no wall friction is present, i.e., dp = 0 (function massFlowRate_dp() cannot be used)";
-        
+
       // pressure loss characteristic functions
-        replaceable partial function massFlowRate_dp 
-          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction" 
+        replaceable partial function massFlowRate_dp
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
                   extends Modelica.Icons.Function;
-          
+
           input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
           input SI.Density d_a "Density at port_a";
           input SI.Density d_b "Density at port_b";
-          input SI.DynamicViscosity eta_a 
+          input SI.DynamicViscosity eta_a
             "Dynamic viscosity at port_a (dummy if use_eta = false)";
-          input SI.DynamicViscosity eta_b 
+          input SI.DynamicViscosity eta_b
             "Dynamic viscosity at port_b (dummy if use_eta = false)";
           input SI.Length length "Length of pipe";
           input SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
-          input SI.Length roughness(min=0) = 2.5e-5 
+          input SI.Length roughness(min=0) = 2.5e-5
             "Absolute roughness of pipe, with a default for a smooth steel pipe (dummy if use_roughness = false)";
-          input SI.AbsolutePressure dp_small = 1 
+          input SI.AbsolutePressure dp_small = 1
             "Turbulent flow if |dp| >= dp_small (dummy if use_dp_small = false)";
-          
+
           output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         annotation (Documentation(info="<html>
  
 </html>"));
         end massFlowRate_dp;
-        
-        replaceable partial function pressureLoss_m_flow 
-          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction" 
+
+        replaceable partial function pressureLoss_m_flow
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction"
                   extends Modelica.Icons.Function;
-          
+
           input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
           input SI.Density d_a "Density at port_a";
           input SI.Density d_b "Density at port_b";
-          input SI.DynamicViscosity eta_a 
+          input SI.DynamicViscosity eta_a
             "Dynamic viscosity at port_a (dummy if use_eta = false)";
-          input SI.DynamicViscosity eta_b 
+          input SI.DynamicViscosity eta_b
             "Dynamic viscosity at port_b (dummy if use_eta = false)";
           input SI.Length length "Length of pipe";
           input SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
-          input SI.Length roughness(min=0) = 2.5e-5 
+          input SI.Length roughness(min=0) = 2.5e-5
             "Absolute roughness of pipe, with a default for a smooth steel pipe (dummy if use_roughness = false)";
-          input SI.MassFlowRate m_flow_small = 0.01 
+          input SI.MassFlowRate m_flow_small = 0.01
             "Turbulent flow if |m_flow| >= m_flow_small (dummy if use_m_flow_small = false)";
           output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
-          
+
         annotation (Documentation(info="<html>
  
 </html>"));
         end pressureLoss_m_flow;
-        
+
       end PartialWallFriction;
-      
+
       annotation (Documentation(info="<html>
 <p>
 This package provides functions to compute
@@ -1864,48 +1781,48 @@ in the next figure:
 <img src=\"../Images/Components/PipeFriction1.png\">
  
 </html>"));
-      package NoFriction "No pipe wall friction" 
-        
+      package NoFriction "No pipe wall friction"
+
         annotation (Documentation(info="<html>
 <p>
 This component sets the pressure loss due to wall friction 
 to zero, i.e., it allows to switch off pipe wall friction.
 </p>
 </html>"));
-        
+
         extends PartialWallFriction(
                   final use_eta = false,
                   final use_roughness = false,
                   final use_dp_small = false,
                   final use_m_flow_small = false,
                   final dp_is_zero = true);
-        
-        redeclare function extends massFlowRate_dp 
-          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction" 
-          
+
+        redeclare function extends massFlowRate_dp
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
+
           annotation (Documentation(info="<html>
  
 </html>"));
-        algorithm 
+        algorithm
           assert(false, "function massFlowRate_dp (option: from_dp=true)
 cannot be used for WallFriction.NoFriction. Use instead
 function pressureLoss_m_flow (option: from_dp=false)");
         end massFlowRate_dp;
-        
-        redeclare function extends pressureLoss_m_flow 
-          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction" 
-          
+
+        redeclare function extends pressureLoss_m_flow
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction"
+
           annotation (Documentation(info="<html>
  
 </html>"));
-        algorithm 
+        algorithm
           dp := 0;
         end pressureLoss_m_flow;
       end NoFriction;
-      
-      package Laminar 
-        "Pipe wall friction in the laminar regime (linear correlation)" 
-        
+
+      package Laminar
+        "Pipe wall friction in the laminar regime (linear correlation)"
+
         annotation (Documentation(info="<html>
 <p>
 This component defines only the laminar region of wall friction:
@@ -1927,37 +1844,37 @@ This component describes only the \"light blue curve\" called
 <img src=\"../Images/Components/PipeFriction1.png\">
  
 </html>"));
-        
+
         extends PartialWallFriction(
                   final use_eta = true,
                   final use_roughness = false,
                   final use_dp_small = false,
                   final use_m_flow_small = false);
-        
-        redeclare function extends massFlowRate_dp 
-          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction" 
-          
+
+        redeclare function extends massFlowRate_dp
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
+
           annotation (Documentation(info="<html>
  
 </html>"));
-        algorithm 
+        algorithm
           m_flow :=dp*Modelica.Constants.pi*diameter^4*(d_a + d_b)/(128*length*(eta_a + eta_b));
         end massFlowRate_dp;
-        
-        redeclare function extends pressureLoss_m_flow 
-          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction" 
-          
+
+        redeclare function extends pressureLoss_m_flow
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction"
+
           annotation (Documentation(info="<html>
  
 </html>"));
-        algorithm 
+        algorithm
           dp := m_flow*128*length*(eta_a + eta_b)/(Modelica.Constants.pi*diameter^4*(d_a + d_b));
         end pressureLoss_m_flow;
       end Laminar;
-      
-      package QuadraticTurbulent 
-        "Pipe wall friction in the quadratic turbulent regime (simple characteristic, eta not used)" 
-        
+
+      package QuadraticTurbulent
+        "Pipe wall friction in the quadratic turbulent regime (simple characteristic, eta not used)"
+
         annotation (Documentation(info="<html>
 <p>
 This component defines only the quadratic turbulent regime of wall friction:
@@ -1976,24 +1893,24 @@ Reynolds numbers, i.e., the values at the right ordinate where
 <img src=\"../Images/Components/PipeFriction1.png\">
  
 </html>"));
-        
+
         extends PartialWallFriction(
                   final use_eta = false,
                   final use_roughness = true,
                   final use_dp_small = true,
                   final use_m_flow_small = true);
-        
-        redeclare function extends massFlowRate_dp 
-          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction" 
+
+        redeclare function extends massFlowRate_dp
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
           import Modelica.Math;
           annotation (smoothOrder=1, Documentation(info="<html>
  
 </html>"));
-        protected 
+        protected
           constant Real pi = Modelica.Constants.pi;
           Real zeta;
           Real k_inv;
-        algorithm 
+        algorithm
           /*
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
@@ -2009,19 +1926,19 @@ Reynolds numbers, i.e., the values at the right ordinate where
           k_inv := (pi*diameter*diameter)^2/(8*zeta);
           m_flow := Modelica_Fluid.Utilities.regRoot2(dp, dp_small, d_a*k_inv, d_b*k_inv);
         end massFlowRate_dp;
-        
-        redeclare function extends pressureLoss_m_flow 
-          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction" 
+
+        redeclare function extends pressureLoss_m_flow
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction"
           import Modelica.Math;
-          
+
           annotation (smoothOrder=1, Documentation(info="<html>
  
 </html>"));
-        protected 
+        protected
           constant Real pi = Modelica.Constants.pi;
           Real zeta;
           Real k;
-        algorithm 
+        algorithm
           /*
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
@@ -2038,10 +1955,10 @@ Reynolds numbers, i.e., the values at the right ordinate where
           dp   := Modelica_Fluid.Utilities.regSquare2(m_flow, m_flow_small, k/d_a, k/d_b);
         end pressureLoss_m_flow;
       end QuadraticTurbulent;
-      
-      package LaminarAndQuadraticTurbulent 
-        "Pipe wall friction in the laminar and quadratic turbulent regime (simple characteristic)" 
-        
+
+      package LaminarAndQuadraticTurbulent
+        "Pipe wall friction in the laminar and quadratic turbulent regime (simple characteristic)"
+
         annotation (Documentation(info="<html>
 <p>
 This component defines the quadratic turbulent regime of wall friction:
@@ -2054,20 +1971,20 @@ smoothly and has a derivative at zero mass flow rate that is
 identical to laminar wall friction.
 </p>
 </html>"));
-        
+
         extends PartialWallFriction(
                   final use_eta = true,
                   final use_roughness = true,
                   final use_dp_small = false,
                   final use_m_flow_small = false);
-        
-        redeclare function extends massFlowRate_dp 
-          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction" 
+
+        redeclare function extends massFlowRate_dp
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
           import Modelica.Math;
           annotation (smoothOrder=1, Documentation(info="<html>
  
 </html>"));
-        protected 
+        protected
           constant Real pi=Modelica.Constants.pi;
           constant Real Re_turbulent = 4000 "Start of turbulent regime";
           Real zeta;
@@ -2075,7 +1992,7 @@ identical to laminar wall friction.
           Real k_inv;
           Real yd0 "Derivative of m_flow=m_flow(dp) at zero";
           SI.AbsolutePressure dp_turbulent;
-        algorithm 
+        algorithm
         /*
 Turbulent region:
    Re = m_flow*(4/pi)/(D_Re*eta)  
@@ -2119,25 +2036,25 @@ Laminar region:
           m_flow := Modelica_Fluid.Utilities.regRoot2(dp, dp_turbulent, d_a*k_inv, d_b*k_inv,
                                                       use_yd0=true, yd0=yd0);
         end massFlowRate_dp;
-        
-        redeclare function extends pressureLoss_m_flow 
-          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction" 
+
+        redeclare function extends pressureLoss_m_flow
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction"
           import Modelica.Math;
-          
+
           annotation (smoothOrder=1, Documentation(info="<html>
  
 </html>"));
-        protected 
+        protected
           constant Real pi=Modelica.Constants.pi;
           constant Real Re_turbulent = 4000 "Start of turbulent regime";
           Real zeta;
           Real k0;
           Real k;
           Real yd0 "Derivative of dp = f(m_flow) at zero";
-          SI.MassFlowRate m_flow_turbulent 
+          SI.MassFlowRate m_flow_turbulent
             "The turbulent region is: |m_flow| >= m_flow_turbulent";
-          
-        algorithm 
+
+        algorithm
         /*
 Turbulent region:
    Re = m_flow*(4/pi)/(D_Re*eta)  
@@ -2179,10 +2096,10 @@ Laminar region:
                                                    use_yd0=true, yd0=yd0);
         end pressureLoss_m_flow;
       end LaminarAndQuadraticTurbulent;
-      
-      package Detailed 
-        "Pipe wall friction in the whole regime (detailed characteristic)" 
-        
+
+      package Detailed
+        "Pipe wall friction in the whole regime (detailed characteristic)"
+
         annotation (Documentation(info="<html>
 <p>
 This component defines the complete regime of wall friction.
@@ -2199,31 +2116,31 @@ solving a non-linear equation.
  
 <img src=\"../Images/Components/PipeFriction1.png\">
 </html>"));
-        
+
         extends PartialWallFriction(
                   final use_eta = true,
                   final use_roughness = false,
                   final use_dp_small = false,
                   final use_m_flow_small = false);
-        
-        redeclare function extends massFlowRate_dp 
-          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction" 
+
+        redeclare function extends massFlowRate_dp
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
           import Modelica.Math;
                   annotation (smoothOrder=1, Documentation(info="<html>
  
 </html>"));
-        protected 
+        protected
           constant Real pi = Modelica.Constants.pi;
           Real Delta = roughness/diameter "Relative roughness";
-          SI.ReynoldsNumber Re1 = (745*Math.exp(if Delta <= 0.0065 then 1 else 0.0065/Delta))^0.97 
+          SI.ReynoldsNumber Re1 = (745*Math.exp(if Delta <= 0.0065 then 1 else 0.0065/Delta))^0.97
             "Re leaving laminar curve";
           SI.ReynoldsNumber Re2 = 4000 "Re entering turbulent curve";
           SI.DynamicViscosity eta "Upstream viscosity";
           SI.Density d "Upstream density";
           SI.ReynoldsNumber Re "Reynolds number";
           Real lambda2 "Modified friction coefficient (= lambda*Re^2)";
-          
-          function interpolateInRegion2 
+
+          function interpolateInRegion2
              input Real Re_turbulent;
              input SI.ReynoldsNumber Re1;
              input SI.ReynoldsNumber Re2;
@@ -2232,11 +2149,11 @@ solving a non-linear equation.
              output SI.ReynoldsNumber Re;
              annotation(smoothOrder=1);
             // point lg(lambda2(Re1)) with derivative at lg(Re1)
-          protected 
+          protected
             Real x1=Math.log10(64*Re1);
             Real y1=Math.log10(Re1);
             Real yd1=1;
-            
+
             // Point lg(lambda2(Re2)) with derivative at lg(Re2)
             Real aux1=(0.5/Math.log(10))*5.74*0.9;
             Real aux2=Delta/3.7 + 5.74/Re2^0.9;
@@ -2247,7 +2164,7 @@ solving a non-linear equation.
             Real x2=Math.log10(L2);
             Real y2=Math.log10(aux5);
             Real yd2=0.5 + (2.51/Math.log(10))/(aux5*aux4);
-            
+
             // Constants: Cubic polynomial between lg(Re1) and lg(Re2)
             Real diff_x=x2 - x1;
             Real m=(y2 - y1)/diff_x;
@@ -2255,20 +2172,20 @@ solving a non-linear equation.
             Real c3=(yd1 + yd2 - 2*m)/(diff_x*diff_x);
             Real lambda2_1=64*Re1;
             Real dx;
-          algorithm 
+          algorithm
              dx := Math.log10(lambda2/lambda2_1);
              Re := Re1*(lambda2/lambda2_1)^(1 + dx*(c2 + dx*c3));
           end interpolateInRegion2;
-          
-        algorithm 
+
+        algorithm
           // Determine upstream density, upstream viscosity, and lambda2
           d       := if dp >= 0 then d_a else d_b;
           eta     := if dp >= 0 then eta_a else eta_b;
           lambda2 := abs(dp)*2*diameter^3*d/(length*eta*eta);
-          
+
           // Determine Re under the assumption of laminar flow
           Re := lambda2/64;
-          
+
           // Modify Re, if turbulent flow
           if Re > Re1 then
              Re :=-2*sqrt(lambda2)*Math.log10(2.51/sqrt(lambda2) + 0.27*Delta);
@@ -2276,29 +2193,29 @@ solving a non-linear equation.
                 Re := interpolateInRegion2(Re, Re1, Re2, Delta, lambda2);
              end if;
           end if;
-          
+
           // Determine mass flow rate
           m_flow := (pi*diameter/4)*eta*(if dp >= 0 then Re else -Re);
         end massFlowRate_dp;
-        
-        redeclare function extends pressureLoss_m_flow 
-          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction" 
+
+        redeclare function extends pressureLoss_m_flow
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction"
           import Modelica.Math;
                   annotation (smoothOrder=1, Documentation(info="<html>
  
 </html>"));
-        protected 
+        protected
           constant Real pi = Modelica.Constants.pi;
           Real Delta = roughness/diameter "Relative roughness";
-          SI.ReynoldsNumber Re1 = 745*Math.exp(if Delta <= 0.0065 then 1 else 0.0065/Delta) 
+          SI.ReynoldsNumber Re1 = 745*Math.exp(if Delta <= 0.0065 then 1 else 0.0065/Delta)
             "Re leaving laminar curve";
           SI.ReynoldsNumber Re2 = 4000 "Re entering turbulent curve";
           SI.DynamicViscosity eta "Upstream viscosity";
           SI.Density d "Upstream density";
           SI.ReynoldsNumber Re "Reynolds number";
           Real lambda2 "Modified friction coefficient (= lambda*Re^2)";
-          
-          function interpolateInRegion2 
+
+          function interpolateInRegion2
              input SI.ReynoldsNumber Re;
              input SI.ReynoldsNumber Re1;
              input SI.ReynoldsNumber Re2;
@@ -2306,11 +2223,11 @@ solving a non-linear equation.
              output Real lambda2;
              annotation(smoothOrder=1);
             // point lg(lambda2(Re1)) with derivative at lg(Re1)
-          protected 
+          protected
             Real x1 = Math.log10(Re1);
             Real y1 = Math.log10(64*Re1);
             Real yd1=1;
-            
+
             // Point lg(lambda2(Re2)) with derivative at lg(Re2)
             Real aux1=(0.5/Math.log(10))*5.74*0.9;
             Real aux2=Delta/3.7 + 5.74/Re2^0.9;
@@ -2321,22 +2238,22 @@ solving a non-linear equation.
             Real x2 =  Math.log10(Re2);
             Real y2 =  Math.log10(L2);
             Real yd2 = 2 + 4*aux1/(aux2*aux3*(Re2)^0.9);
-            
+
             // Constants: Cubic polynomial between lg(Re1) and lg(Re2)
             Real diff_x=x2 - x1;
             Real m=(y2 - y1)/diff_x;
             Real c2=(3*m - 2*yd1 - yd2)/diff_x;
             Real c3=(yd1 + yd2 - 2*m)/(diff_x*diff_x);
             Real dx;
-          algorithm 
+          algorithm
              dx := Math.log10(Re/Re1);
              lambda2 := 64*Re1*(Re/Re1)^(1 + dx*(c2 + dx*c3));
           end interpolateInRegion2;
-        algorithm 
+        algorithm
           // Determine upstream density and upstream viscosity
           d       :=if m_flow >= 0 then d_a else d_b;
           eta     :=if m_flow >= 0 then eta_a else eta_b;
-          
+
           // Determine Re, lambda2 and pressure drop
           Re :=(4/pi)*abs(m_flow)/(diameter*eta);
           lambda2 := if Re <= Re1 then 64*Re else 
@@ -2347,68 +2264,72 @@ solving a non-linear equation.
         end pressureLoss_m_flow;
       end Detailed;
     end WallFriction;
-    
-    function lossConstant_D_zeta "Return the loss constant 8*zeta/(pi^2*D^4)" 
+
+    function lossConstant_D_zeta "Return the loss constant 8*zeta/(pi^2*D^4)"
           extends Modelica.Icons.Function;
-      
+
       input SI.Diameter D "Diameter at port_a or port_b";
-      input Real zeta 
+      input Real zeta
         "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
       output Real k "Loss constant (= 8*zeta/(pi^2*D^4))";
-      
+
       annotation (Documentation(info="<html>
  
 </html>"));
-    algorithm 
+    algorithm
       k :=8*zeta/(Modelica.Constants.pi*Modelica.Constants.pi*D*D*D*D);
     end lossConstant_D_zeta;
-    
-  partial model PartialTwoPortTransport 
-      "Partial element transporting fluid between two ports without storing mass or energy" 
+
+  partial model PartialTwoPortTransport
+      "Partial element transporting fluid between two ports without storing mass or energy"
     import Modelica.Constants;
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
                                                                          annotation (
         choicesAllMatching =                                                                            true);
-      
+
     //Initialization
     parameter Modelica_Fluid.Types.FlowDirection.Temp flowDirection=
-        Modelica_Fluid.Types.FlowDirection.Bidirectional 
+        Modelica_Fluid.Types.FlowDirection.Bidirectional
         "Unidirectional (port_a -> port_b) or bidirectional flow" 
        annotation(Dialog(tab="Advanced"));
-    parameter Boolean compute_T = true 
+    parameter Boolean compute_T = true
         "= true, if temperatures at port_a and port_b are computed" 
       annotation(Dialog(tab="Advanced"), choices(__Dymola_checkBox=true));
-    parameter Medium.AbsolutePressure dp_start = 0 
+    parameter Medium.AbsolutePressure dp_start = 0
         "Guess value of dp = port_a.p - port_b.p" 
       annotation(Dialog(tab = "Advanced"));
-    parameter Medium.MassFlowRate m_flow_start = 0 
+    parameter Medium.MassFlowRate m_flow_start = 0
         "Guess value of m_flow = port_a.m_flow" 
       annotation(Dialog(tab = "Advanced"));
-    parameter Medium.MassFlowRate reg_m_flow_small = 0.01 
+    parameter Medium.MassFlowRate reg_m_flow_small = 0.01
         "Small mass flow rate that is used to regularize port_a_T and V_flow_a"
       annotation(Dialog(tab = "Advanced"));
-      
+
     Modelica_Fluid.Interfaces.FluidPort_a port_a(
                                   redeclare package Medium = Medium,
-                       m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+                       m_flow(min=if allowFlowReversal then -Constants.inf else 0))
         "Fluid connector a (positive design flow direction is from port_a to port_b)"
-      annotation (extent=[-110,-10; -90,10]);
+      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+              rotation=0)));
     Modelica_Fluid.Interfaces.FluidPort_b port_b(
                                   redeclare package Medium = Medium,
-                       m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
+                       m_flow(max=if allowFlowReversal then +Constants.inf else 0))
         "Fluid connector b (positive design flow direction is from port_a to port_b)"
-      annotation (extent=[110,-10; 90,10]);
-    Medium.MassFlowRate m_flow(start=m_flow_start) 
+      annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation
+              =0)));
+    Medium.MassFlowRate m_flow(start=m_flow_start)
         "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
-    Modelica.SIunits.VolumeFlowRate V_flow 
+    Modelica.SIunits.VolumeFlowRate V_flow
         "Volume flow rate at inflowing port (positive when flow from port_a to port_b)";
-    Modelica.SIunits.Pressure dp(start=dp_start) 
+    Modelica.SIunits.Pressure dp(start=dp_start)
         "Pressure difference between port_a and port_b (= port_a.p - port_b.p)";
-      
+
     annotation (
-      Coordsys(grid=[1, 1], component=[20, 20]),
-      Diagram,
+      Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics),
       Documentation(info="<html>
 <p>
 This component transports fluid between its two ports, without
@@ -2420,57 +2341,60 @@ balance has to be added by specifying a relationship
 between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 </p>
 </html>"),
-      Icon,
+      Icon(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics),
       uses(Modelica_Fluid(version="1.0 Streams Beta 1"), Modelica(version="2.2.2")));
-    Medium.Temperature port_a_T 
+    Medium.Temperature port_a_T
         "Temperature close to port_a, if compute_T = true";
-    Medium.Temperature port_b_T 
+    Medium.Temperature port_b_T
         "Temperature close to port_b, if compute_T = true";
-    Medium.ThermodynamicState port_a_state_inflow 
+    Medium.ThermodynamicState port_a_state_inflow
         "Medium state close to port_a for inflowing mass flow";
-    Medium.ThermodynamicState port_b_state_inflow 
+    Medium.ThermodynamicState port_b_state_inflow
         "Medium state close to port_b for inflowing mass flow";
-    protected 
+    protected
       parameter Boolean allowFlowReversal=
-       flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
+       flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
        annotation(Evaluate=true, Hide=true);
-    Medium.Density port_a_d_inflow 
+    Medium.Density port_a_d_inflow
         "Density close to port_a for inflowing mass flow";
-    Medium.Density port_b_d_inflow 
+    Medium.Density port_b_d_inflow
         "Density close to port_b for inflowing mass flow";
-  equation 
+  equation
     // Isenthalpic state transformation (no storage and no loss of energy)
     port_a.h_outflow = inflow(port_b.h_outflow);
     port_b.h_outflow = inflow(port_a.h_outflow);
-      
+
     port_a.Xi_outflow = inflow(port_b.Xi_outflow);
     port_b.Xi_outflow = inflow(port_a.Xi_outflow);
-      
+
     port_a.C_outflow = inflow(port_b.C_outflow);
     port_b.C_outflow = inflow(port_a.C_outflow);
-      
+
     // Medium states close to the ports when mass flows in to the respective port
     port_a_state_inflow = Medium.setState_phX(port_a.p, port_b.h_outflow, port_b.Xi_outflow);
     port_b_state_inflow = Medium.setState_phX(port_b.p, port_a.h_outflow, port_a.Xi_outflow);
-      
+
     // Densities close to the parts when mass flows in to the respective port
     port_a_d_inflow = Medium.density(port_a_state_inflow);
     port_b_d_inflow = Medium.density(port_b_state_inflow);
-      
+
     // Mass balance
     port_a.m_flow + port_b.m_flow = 0;
-      
+
     // Design direction of mass flow rate
     m_flow = port_a.m_flow;
-      
+
     // Pressure difference between ports
     dp = port_a.p - port_b.p;
-      
+
     // Computation of Volume flow rate, just for plotting
     V_flow = m_flow/Modelica_Fluid.Utilities.regStep(
                      m_flow, port_a_d_inflow, port_b_d_inflow, reg_m_flow_small);
-      
+
     // Computation of temperature, just for plotting
     if compute_T then
        port_a_T = Modelica_Fluid.Utilities.regStep(port_a.m_flow,

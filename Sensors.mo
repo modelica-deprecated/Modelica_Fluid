@@ -1,8 +1,8 @@
 within Modelica_Fluid;
-package Sensors 
-  "Ideal sensor components (provide the variables in a fluid connector as signals)" 
+package Sensors
+  "Ideal sensor components (provide the variables in a fluid connector as signals)"
   extends Modelica_Fluid.Icons.VariantLibrary;
-  
+
   annotation (preferedView="info", Documentation(info="<html>
 <p align = justify>
 Package <b>Sensors</b> consists of idealized sensor components that
@@ -32,59 +32,69 @@ The <b>one port</b> sensors have the advantage of easily introducing them to and
        updated sensor models, included one and two port sensors for thermodynamic state variables</li>
 </ul>
 </html>"));
-  
-  model Pressure "Ideal pressure sensor" 
+
+  model Pressure "Ideal pressure sensor"
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput p(final quantity="Pressure",
                                             final unit="Pa",
                                             displayUnit="bar",
                                             min=0) "Pressure at port" 
-      annotation (extent=[100,-10; 120,10]);
+      annotation (Placement(transformation(extent={{100,-10},{120,10}},
+            rotation=0)));
     annotation (
-    Diagram(
-        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127})),
-        Line(points=[0,-70; 0,-100], style(color=69))),
-    Icon(
-        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127})),
-        Line(points=[0,-70; 0,-100], style(color=69)),
-        Text(extent=[-150,80; 150,120], string="%name"),
-        Text(
-          extent=[212,-51; 52,-103],
-          style(color=0),
-          string="p")),
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={Line(points={{70,0},{100,0}}, color={0,0,127}), 
+            Line(points={{0,-70},{0,-100}}, color={0,127,255})}),
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Line(points={{70,0},{100,0}}, color={0,0,127}),
+          Line(points={{0,-70},{0,-100}}, color={0,127,255}),
+          Text(extent={{-150,80},{150,120}}, textString=
+                                               "%name"),
+          Text(
+            extent={{212,-51},{52,-103}},
+            lineColor={0,0,0},
+            textString=
+                 "p")}),
       Documentation(info="<HTML>
 <p>
 This component monitors the absolute pressure at its fluid port. The sensor is 
 ideal, i.e., it does not influence the fluid.
 </p>
 </HTML>
-"),   Coordsys(grid=[1,1], component=[20,20]));
-  equation 
+"));
+  equation
     p = port.p;
   end Pressure;
-  
-  model DensityOnePort "Ideal one port density sensor" 
+
+  model DensityOnePort "Ideal one port density sensor"
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput d(final quantity="Density",
                                             final unit="kg/m3",
                                             displayUnit="g/cm3",
                                             min=0) "Density in port medium" 
-      annotation (extent=[100,-10; 120,10],   rotation=0);
-    
+      annotation (Placement(transformation(extent={{100,-10},{120,10}},
+            rotation=0)));
+
   annotation (defaultComponentName="density",
-    Diagram(
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
-    Icon(
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Text(extent=[-150,80; 150,120], string="%name"),
-        Text(
-          extent=[170,-53; 10,-105],
-          style(color=0),
-          string="d"),
-        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
+    Diagram(graphics={Line(points={{0,-70},{0,-100}}, color={0,0,127}), Line(
+              points={{70,0},{100,0}}, color={0,0,127})}),
+    Icon(graphics={
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Text(extent={{-150,80},{150,120}}, textString=
+                                               "%name"),
+          Text(
+            extent={{170,-53},{10,-105}},
+            lineColor={0,0,0},
+            textString=
+                 "d"),
+          Line(points={{70,0},{100,0}}, color={0,0,127})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the density of the medium in the flow
@@ -95,36 +105,41 @@ ideal, i.e., it does not influence the fluid.
  
 </HTML>
 "));
-  equation 
+  equation
     d = Medium.density(Medium.setState_phX(port.p, inflow(port.h_outflow), inflow(port.Xi_outflow)));
   end DensityOnePort;
-  
-  model DensityTwoPort "Ideal two port density sensor" 
+
+  model DensityTwoPort "Ideal two port density sensor"
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput d(final quantity="Density",
                                             final unit="kg/m3",
                                             displayUnit="g/cm3",
-                                            min=0) 
+                                            min=0)
       "Density of the passing fluid" 
-      annotation (extent=[-10,-120; 10,-100], rotation=-90);
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      annotation (Placement(transformation(
+          origin={0,-110},
+          extent={{-10,-10},{10,10}},
+          rotation=270)));
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
   annotation (defaultComponentName="density",
-    Diagram(
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
-    Icon(
-      Text(extent=[-150,80; 150,120],   string="%name"),
-        Text(
-          extent=[168,-71; 8,-123],
-          style(color=0),
-          string="d"),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255}))),
+    Diagram(graphics={
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Icon(graphics={
+          Text(extent={{-150,80},{150,120}}, textString=
+                                               "%name"),
+          Text(
+            extent={{168,-71},{8,-123}},
+            lineColor={0,0,0},
+            textString=
+                 "d"),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the volume flow rate flowing from port_a to port_b. 
@@ -132,11 +147,11 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
-  protected 
+  protected
     Medium.Density d_a_inflow "Density of inflowing fluid at port_a";
-    Medium.Density d_b_inflow 
+    Medium.Density d_b_inflow
       "Density of inflowing fluid at port_b or d_a_inflow, if uni-directional flow";
-  equation 
+  equation
     if allowFlowReversal then
        d_a_inflow = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
        d_b_inflow = Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
@@ -147,50 +162,83 @@ The sensor is ideal, i.e. it does not influence the fluid.
        d_b_inflow = d;
     end if;
   end DensityTwoPort;
-  
-  model TemperatureOnePort "Ideal one port temperature sensor" 
+
+  model TemperatureOnePort "Ideal one port temperature sensor"
       extends Sensors.BaseClasses.PartialAbsoluteSensor;
-    
+
     Modelica.Blocks.Interfaces.RealOutput T(final quantity="ThermodynamicTemperature",
-                                            final unit = "K", displayUnit = "degC", min=0) 
+                                            final unit = "K", displayUnit = "degC", min=0)
       "Temperature in port medium" 
-      annotation (extent=[60,-10; 80,10],     rotation=0);
-    
+      annotation (Placement(transformation(extent={{60,-10},{80,10}}, rotation=
+              0)));
+
   annotation (defaultComponentName="temperature",
-    Diagram(
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Ellipse(extent=[-20, -98; 20, -60], style(
-            color=0,
-            thickness=2,
-            fillColor=42)),
-        Rectangle(extent=[-12, 40; 12, -68], style(color=42, fillColor=42)),
-        Polygon(points=[-12, 40; -12, 80; -10, 86; -6, 88; 0, 90; 6, 88; 10, 86;
-               12, 80; 12, 40; -12, 40], style(color=0, thickness=2)),
-        Line(points=[-12, 40; -12, -64], style(color=0, thickness=2)),
-        Line(points=[12, 40; 12, -64], style(color=0, thickness=2)),
-        Line(points=[-40, -20; -12, -20], style(color=0)),
-        Line(points=[-40, 20; -12, 20], style(color=0)),
-        Line(points=[-40, 60; -12, 60], style(color=0)),
-        Line(points=[12,0; 60,0], style(color=74, rgbcolor={0,0,127}))),
-      Icon(
-        Ellipse(extent=[-20,-88; 20,-50],   style(
-            color=0,
-            thickness=2,
-            fillColor=42)),
-        Rectangle(extent=[-12,50; 12,-58],   style(color=42, fillColor=42)),
-        Polygon(points=[-12,50; -12,90; -10,96; -6,98; 0,100; 6,98; 10,96; 12,
-              90; 12,50; -12,50],        style(color=0, thickness=2)),
-        Line(points=[-12,50; -12,-54],   style(color=0, thickness=2)),
-        Line(points=[12,50; 12,-54],   style(color=0, thickness=2)),
-        Line(points=[-40,-10; -12,-10],   style(color=0)),
-        Line(points=[-40,30; -12,30],   style(color=0)),
-        Line(points=[-40,70; -12,70],   style(color=0)),
-        Text(
-          extent=[120,-40; 0,-90],
-          style(color=0),
-          string="T"),
-        Text(extent=[-150,110; 150,150],   string="%name"),
-        Line(points=[12,0; 60,0], style(color=74, rgbcolor={0,0,127}))),
+    Diagram(graphics={
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Ellipse(
+            extent={{-20,-98},{20,-60}},
+            lineColor={0,0,0},
+            lineThickness=0.5,
+            fillColor={191,0,0},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-12,40},{12,-68}},
+            lineColor={191,0,0},
+            fillColor={191,0,0},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{-12,40},{-12,80},{-10,86},{-6,88},{0,90},{6,88},{10,86},{
+                12,80},{12,40},{-12,40}},
+            lineColor={0,0,0},
+            lineThickness=0.5),
+          Line(
+            points={{-12,40},{-12,-64}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(
+            points={{12,40},{12,-64}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(points={{-40,-20},{-12,-20}}, color={0,0,0}),
+          Line(points={{-40,20},{-12,20}}, color={0,0,0}),
+          Line(points={{-40,60},{-12,60}}, color={0,0,0}),
+          Line(points={{12,0},{60,0}}, color={0,0,127})}),
+      Icon(graphics={
+          Ellipse(
+            extent={{-20,-88},{20,-50}},
+            lineColor={0,0,0},
+            lineThickness=0.5,
+            fillColor={191,0,0},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-12,50},{12,-58}},
+            lineColor={191,0,0},
+            fillColor={191,0,0},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},{
+                12,90},{12,50},{-12,50}},
+            lineColor={0,0,0},
+            lineThickness=0.5),
+          Line(
+            points={{-12,50},{-12,-54}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(
+            points={{12,50},{12,-54}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(points={{-40,-10},{-12,-10}}, color={0,0,0}),
+          Line(points={{-40,30},{-12,30}}, color={0,0,0}),
+          Line(points={{-40,70},{-12,70}}, color={0,0,0}),
+          Text(
+            extent={{120,-40},{0,-90}},
+            lineColor={0,0,0},
+            textString=
+                 "T"),
+          Text(extent={{-150,110},{150,150}}, textString=
+                                                  "%name"),
+          Line(points={{12,0},{60,0}}, color={0,0,127})}),
       Documentation(info="<HTML>
 <p>
 This component monitors the temperature of the medium in the flow
@@ -199,45 +247,65 @@ ideal, i.e., it does not influence the fluid.
 </p>
 </HTML>
 "));
-  equation 
+  equation
     T = Medium.temperature(Medium.setState_phX(port.p, inflow(port.h_outflow), inflow(port.Xi_outflow)));
   end TemperatureOnePort;
-  
-  model TemperatureTwoPort "Ideal two port temperature sensor" 
+
+  model TemperatureTwoPort "Ideal two port temperature sensor"
     extends Sensors.BaseClasses.PartialFlowSensor;
-    
+
     Modelica.Blocks.Interfaces.RealOutput T( final quantity="ThermodynamicTemperature",
                                              final unit="K",
                                              min = 0,
-                                             displayUnit="degC") 
+                                             displayUnit="degC")
       "Temperature of the passing fluid" 
-      annotation (extent=[-10,-120; 10,-100], rotation=-90);
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      annotation (Placement(transformation(
+          origin={0,-110},
+          extent={{-10,-10},{10,10}},
+          rotation=270)));
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, temperature is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
-    
+
   annotation (defaultComponentName="temperature",
-    Diagram,
-    Icon(
-      Text(extent=[-150,110; 150,150],   string="%name"),
-        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127})),
-        Line(points=[-92,0; 100,0],style(color=69, rgbcolor={0,128,255})),
-        Ellipse(extent=[-20,-88; 20,-50],   style(
-            color=0,
-            thickness=2,
-            fillColor=42)),
-        Rectangle(extent=[-12,50; 12,-58],   style(color=42, fillColor=42)),
-        Polygon(points=[-12,50; -12,90; -10,96; -6,98; 0,100; 6,98; 10,96; 12,90;
-              12,50; -12,50],            style(color=0, thickness=2)),
-        Line(points=[-12,50; -12,-54],   style(color=0, thickness=2)),
-        Line(points=[12,50; 12,-54],   style(color=0, thickness=2)),
-        Line(points=[-40,-10; -12,-10],   style(color=0)),
-        Line(points=[-40,30; -12,30],   style(color=0)),
-        Line(points=[-40,70; -12,70],   style(color=0)),
-        Text(
-          extent=[120,-40; 0,-90],
-          style(color=0),
-          string="T")),
+    Diagram(graphics),
+    Icon(graphics={
+          Text(extent={{-150,110},{150,150}}, textString=
+                                                "%name"),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{-92,0},{100,0}}, color={0,128,255}),
+          Ellipse(
+            extent={{-20,-88},{20,-50}},
+            lineColor={0,0,0},
+            lineThickness=0.5,
+            fillColor={191,0,0},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-12,50},{12,-58}},
+            lineColor={191,0,0},
+            fillColor={191,0,0},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},{
+                12,90},{12,50},{-12,50}},
+            lineColor={0,0,0},
+            lineThickness=0.5),
+          Line(
+            points={{-12,50},{-12,-54}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(
+            points={{12,50},{12,-54}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(points={{-40,-10},{-12,-10}}, color={0,0,0}),
+          Line(points={{-40,30},{-12,30}}, color={0,0,0}),
+          Line(points={{-40,70},{-12,70}}, color={0,0,0}),
+          Text(
+            extent={{120,-40},{0,-90}},
+            lineColor={0,0,0},
+            textString=
+                 "T")}),
     Documentation(info="<HTML>
 <p>
 This component monitors the temperature of the passing fluid. 
@@ -245,11 +313,11 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
-  protected 
+  protected
     Medium.Temperature T_a_inflow "Temperature of inflowing fluid at port_a";
-    Medium.Temperature T_b_inflow 
+    Medium.Temperature T_b_inflow
       "Temperature of inflowing fluid at port_b or T_a_inflow, if uni-directional flow";
-  equation 
+  equation
     if allowFlowReversal then
        T_a_inflow = Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
        T_b_inflow = Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
@@ -260,27 +328,29 @@ The sensor is ideal, i.e. it does not influence the fluid.
        T_b_inflow = T;
     end if;
   end TemperatureTwoPort;
-  
-  model SpecificEnthalpyOnePort "Ideal one port specific enthalphy sensor" 
+
+  model SpecificEnthalpyOnePort "Ideal one port specific enthalphy sensor"
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput h_out(final quantity="SpecificEnergy",
-                                                final unit="J/kg") 
+                                                final unit="J/kg")
       "Specific enthalpy in port medium" 
-      annotation (extent=[100,-10; 120,10],   rotation=0);
-    
+      annotation (Placement(transformation(extent={{100,-10},{120,10}},
+            rotation=0)));
+
   annotation (defaultComponentName="specificEnthalpy",
-    Diagram(
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
-    Icon(
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Text(extent=[-150,80; 150,120], string="%name"),
-        Text(
-          extent=[212,-51; 52,-103],
-          style(color=0),
-          string="h"),
-        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
+    Diagram(graphics={Line(points={{0,-70},{0,-100}}, color={0,0,127}), Line(
+              points={{70,0},{100,0}}, color={0,0,127})}),
+    Icon(graphics={
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Text(extent={{-150,80},{150,120}}, textString=
+                                               "%name"),
+          Text(
+            extent={{212,-51},{52,-103}},
+            lineColor={0,0,0},
+            textString=
+                 "h"),
+          Line(points={{70,0},{100,0}}, color={0,0,127})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific enthalphy of the medium in the flow
@@ -288,37 +358,42 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 </p>
 </HTML>
 "));
-  equation 
+  equation
     h_out = inflow(port.h_outflow);
   end SpecificEnthalpyOnePort;
-  
-  model SpecificEnthalpyTwoPort 
-    "Ideal two port sensor for the specific enthalpy" 
+
+  model SpecificEnthalpyTwoPort
+    "Ideal two port sensor for the specific enthalpy"
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput h_out(final quantity="SpecificEnergy",
-                                                final unit="J/kg") 
+                                                final unit="J/kg")
       "Specific enthalpy of the passing fluid" 
-      annotation (extent=[-10,-120; 10,-100], rotation=-90);
-    
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      annotation (Placement(transformation(
+          origin={0,-110},
+          extent={{-10,-10},{10,10}},
+          rotation=270)));
+
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, specific enthalpy is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
-    
+
   annotation (defaultComponentName="specificEnthalpy",
-    Diagram(
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127}))),
-    Icon(
-      Text(extent=[-150,80; 150,120],   string="%name"),
-        Text(
-          extent=[168,-71; 8,-123],
-          style(color=0),
-          string="h"),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255}))),
+    Diagram(graphics={
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Icon(graphics={
+          Text(extent={{-150,80},{150,120}}, textString=
+                                               "%name"),
+          Text(
+            extent={{168,-71},{8,-123}},
+            lineColor={0,0,0},
+            textString=
+                 "h"),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific enthalpy of passing fluid. 
@@ -326,34 +401,36 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
-  equation 
+  equation
     if allowFlowReversal then
        h_out = Modelica_Fluid.Utilities.regStep(port_a.m_flow, port_b.h_outflow, port_a.h_outflow, m_flow_small);
     else
        h_out = port_b.h_outflow;
     end if;
   end SpecificEnthalpyTwoPort;
-  
-  model SpecificEntropyOnePort "Ideal one port specific entropy sensor" 
+
+  model SpecificEntropyOnePort "Ideal one port specific entropy sensor"
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput s(final quantity="SpecificEntropy",
-                                            final unit="J/(kg.K)") 
+                                            final unit="J/(kg.K)")
       "Specific entropy in port medium" 
-      annotation (extent=[100,-10; 120,10],   rotation=0);
-    
+      annotation (Placement(transformation(extent={{100,-10},{120,10}},
+            rotation=0)));
+
   annotation (defaultComponentName="specificEntropy",
-    Diagram(
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
-    Icon(
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127})),
-        Text(extent=[-150,80; 150,120], string="%name"),
-        Text(
-          extent=[170,-55; 10,-107],
-          style(color=0),
-          string="s"),
-        Line(points=[70,0; 100,0], style(color=74, rgbcolor={0,0,127}))),
+    Diagram(graphics={Line(points={{0,-70},{0,-100}}, color={0,0,127}), Line(
+              points={{70,0},{100,0}}, color={0,0,127})}),
+    Icon(graphics={
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Text(extent={{-150,80},{150,120}}, textString=
+                                               "%name"),
+          Text(
+            extent={{170,-55},{10,-107}},
+            lineColor={0,0,0},
+            textString=
+                 "s"),
+          Line(points={{70,0},{100,0}}, color={0,0,127})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific enthalphy of the medium in the flow
@@ -361,35 +438,40 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 </p>
 </HTML>
 "));
-  equation 
+  equation
     s = Medium.specificEntropy(Medium.setState_phX(port.p, inflow(port.h_outflow), inflow(port.Xi_outflow)));
   end SpecificEntropyOnePort;
-  
-  model SpecificEntropyTwoPort "Ideal two port sensor for the specific entropy" 
+
+  model SpecificEntropyTwoPort "Ideal two port sensor for the specific entropy"
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput s(final quantity="SpecificEntropy",
-                                            final unit="J/(kg.K)") 
+                                            final unit="J/(kg.K)")
       "Specific entropy of the passing fluid" 
-      annotation (extent=[-10,-120; 10,-100], rotation=-90);
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      annotation (Placement(transformation(
+          origin={0,-110},
+          extent={{-10,-10},{10,10}},
+          rotation=270)));
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, specific entropy is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
-    
+
   annotation (defaultComponentName="specificEntropy",
-    Diagram(
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
-    Icon(
-      Text(extent=[-150,80; 150,120],   string="%name"),
-        Text(
-          extent=[168,-71; 8,-123],
-          style(color=0),
-          string="s"),
-        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127})),
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255}))),
+    Diagram(graphics={
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Icon(graphics={
+          Text(extent={{-150,80},{150,120}}, textString=
+                                               "%name"),
+          Text(
+            extent={{168,-71},{8,-123}},
+            lineColor={0,0,0},
+            textString=
+                 "s"),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific entropy of the passing fluid. 
@@ -397,12 +479,12 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
-  protected 
-    Medium.SpecificEntropy s_a_inflow 
+  protected
+    Medium.SpecificEntropy s_a_inflow
       "Specific entropy of inflowing fluid at port_a";
-    Medium.SpecificEntropy s_b_inflow 
+    Medium.SpecificEntropy s_b_inflow
       "Specific entropy of inflowing fluid at port_b or s_a_inflow, if uni-directional flow";
-  equation 
+  equation
     if allowFlowReversal then
        s_a_inflow = Medium.specificEntropy(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
        s_b_inflow = Medium.specificEntropy(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
@@ -413,29 +495,34 @@ The sensor is ideal, i.e. it does not influence the fluid.
        s_b_inflow = s;
     end if;
   end SpecificEntropyTwoPort;
-  
-  model MassFlowRate "Ideal sensor for mass flow rate" 
+
+  model MassFlowRate "Ideal sensor for mass flow rate"
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput m_flow(quantity="MassFlowRate",
-                                                 final unit="kg/s") 
-      "Mass flow rate from port_a to port_b" annotation (extent=[-10,-120; 10,
-          -100], rotation=-90);
-    
+                                                 final unit="kg/s")
+      "Mass flow rate from port_a to port_b" annotation (Placement(
+          transformation(
+          origin={0,-110},
+          extent={{-10,-10},{10,10}},
+          rotation=270)));
+
   annotation (
-    Diagram(
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
-    Icon(
-      Text(extent=[-150,80; 150,120],   string="%name"),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
-        Text(
-          extent=[178,-81; 18,-133],
-          style(color=0),
-          string="m_flow"),
-        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127})),
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255}))),
+    Diagram(graphics={
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Icon(graphics={
+          Text(extent={{-150,80},{150,120}}, textString=
+                                               "%name"),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Text(
+            extent={{178,-81},{18,-133}},
+            lineColor={0,0,0},
+            textString=
+                 "m_flow"),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{-100,0},{-70,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the mass flow rate flowing from port_a to port_b. 
@@ -443,35 +530,40 @@ The sensor is ideal, i.e., it does not influence the fluid.
 </p>
 </HTML>
 "));
-  equation 
+  equation
     m_flow = port_a.m_flow;
   end MassFlowRate;
-  
-  model VolumeFlowRate "Ideal sensor for volume flow rate" 
+
+  model VolumeFlowRate "Ideal sensor for volume flow rate"
     extends Sensors.BaseClasses.PartialFlowSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput V_flow(final quantity="VolumeFlowRate",
-                                                 final unit="m3/s") 
+                                                 final unit="m3/s")
       "Volume flow rate from port_a to port_b" 
-      annotation (extent=[-10,-120; 10,-100], rotation=-90);
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4 
+      annotation (Placement(transformation(
+          origin={0,-110},
+          extent={{-10,-10},{10,10}},
+          rotation=270)));
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
-    
+
   annotation (
-    Diagram(
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[0,-70; 0,-100], style(rgbcolor={0,0,127}))),
-    Icon(
-      Text(extent=[-150,80; 150,120],   string="%name"),
-        Text(
-          extent=[188,-71; 28,-123],
-          style(color=0),
-          string="V_flow"),
-        Line(points=[0,-70; 0,-100], style(color=74, rgbcolor={0,0,127})),
-        Line(points=[-100,0; -70,0], style(color=69, rgbcolor={0,128,255})),
-        Line(points=[70,0; 100,0], style(color=69, rgbcolor={0,128,255}))),
+    Diagram(graphics={
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Icon(graphics={
+          Text(extent={{-150,80},{150,120}}, textString=
+                                               "%name"),
+          Text(
+            extent={{188,-71},{28,-123}},
+            lineColor={0,0,0},
+            textString=
+                 "V_flow"),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the volume flow rate flowing from port_a to port_b. 
@@ -479,12 +571,12 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
-  protected 
+  protected
     Medium.Density d_a_inflow "Density of inflowing fluid at port_a";
-    Medium.Density d_b_inflow 
+    Medium.Density d_b_inflow
       "Density of inflowing fluid at port_b or d_a_inflow, if uni-directional flow";
     Medium.Density d "Density of the passing fluid";
-  equation 
+  equation
     if allowFlowReversal then
        d_a_inflow = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
        d_b_inflow = Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
@@ -496,42 +588,50 @@ The sensor is ideal, i.e. it does not influence the fluid.
     end if;
     V_flow = port_a.m_flow/d;
   end VolumeFlowRate;
-  
-  model RelativePressure "Ideal relative pressure sensor" 
+
+  model RelativePressure "Ideal relative pressure sensor"
     extends Modelica.Icons.TranslationalSensor;
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
-    
+
     Modelica_Fluid.Interfaces.FluidPort_a port_a(m_flow(min=0),
                                   redeclare package Medium = Medium) 
-      annotation (extent=[-110,-10; -90,10]);
+      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+            rotation=0)));
     Modelica_Fluid.Interfaces.FluidPort_b port_b(m_flow(min=0),
                                   redeclare package Medium = Medium) 
-      annotation (extent=[110,-12; 90,8]);
-    
+      annotation (Placement(transformation(extent={{110,-12},{90,8}}, rotation=
+              0)));
+
     Modelica.Blocks.Interfaces.RealOutput p_rel(final quantity="Pressure",
                                                 final unit="Pa",
-                                                displayUnit="bar") 
-      "Relative pressure signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
+                                                displayUnit="bar")
+      "Relative pressure signal" annotation (Placement(transformation(
+          origin={0,-90},
+          extent={{10,-10},{-10,10}},
+          rotation=90)));
     annotation (
-      Icon(
-        Line(points=[-100, 0; -70, 0], style(color=69)),
-        Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(color=74, rgbcolor={0,0,127})),
-        Text(extent=[-150,40; 150,80], string="%name"),
-        Text(
-          extent=[92, -62; 34, -122],
-          string="p_rel",
-          style(color=0))),
-      Diagram(
-        Line(points=[-100, 0; -70, 0], style(color=69)),
-        Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(color=74, rgbcolor={0,0,127})),
-        Text(
-          extent=[64, -74; 32, -102],
-          string="p_rel",
-          style(color=0))),
+      Icon(graphics={
+          Line(points={{-100,0},{-70,0}}, color={0,127,255}),
+          Line(points={{70,0},{100,0}}, color={0,127,255}),
+          Line(points={{0,-30},{0,-80}}, color={0,0,127}),
+          Text(extent={{-150,40},{150,80}}, textString=
+                                              "%name"),
+          Text(
+            extent={{92,-62},{34,-122}},
+            lineColor={0,0,0},
+            textString=
+                 "p_rel")}),
+      Diagram(graphics={
+          Line(points={{-100,0},{-70,0}}, color={0,127,255}),
+          Line(points={{70,0},{100,0}}, color={0,127,255}),
+          Line(points={{0,-30},{0,-80}}, color={0,0,127}),
+          Text(
+            extent={{64,-74},{32,-102}},
+            lineColor={0,0,0},
+            textString=
+                 "p_rel")}),
       Documentation(info="<HTML>
 <p>
 The relative pressure \"port_a.p - port_b.p\" is determined between
@@ -541,11 +641,11 @@ through the sensor is allowed.
 </p>
 </HTML>
 "));
-  equation 
+  equation
     // Zero flow equations for connectors
     port_a.m_flow = 0;
     port_b.m_flow = 0;
-    
+
     // No contribution of specific quantities
     port_a.h_outflow = 0;
     port_b.h_outflow = 0;
@@ -553,44 +653,53 @@ through the sensor is allowed.
     port_b.Xi_outflow = zeros(Medium.nXi);
     port_a.C_outflow  = zeros(Medium.nC);
     port_b.C_outflow  = zeros(Medium.nC);
-    
-    // Relative pressure  
+
+    // Relative pressure
     p_rel = port_a.p - port_b.p;
   end RelativePressure;
-  
-  model RelativeTemperature "Ideal relative temperature sensor" 
+
+  model RelativeTemperature "Ideal relative temperature sensor"
     extends Modelica.Icons.TranslationalSensor;
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
     Modelica_Fluid.Interfaces.FluidPort_a port_a(m_flow(min=0),
                                   redeclare package Medium = Medium) 
-      annotation (extent=[-110,-10; -90,10]);
+      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+            rotation=0)));
     Modelica_Fluid.Interfaces.FluidPort_b port_b(m_flow(min=0),
                                   redeclare package Medium = Medium) 
-      annotation (extent=[110,-10; 90,10]);
-    
+      annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation
+            =0)));
+
     Modelica.Blocks.Interfaces.RealOutput T_rel(final quantity="ThermodynamicTemperature",
-                                                final unit = "K", displayUnit = "degC", min=0) 
-      "Relative temperature signal"                                                                               annotation (extent=[-10, -80; 10, -100], rotation=90);
+                                                final unit = "K", displayUnit = "degC", min=0)
+      "Relative temperature signal"                                                                               annotation (Placement(
+          transformation(
+          origin={0,-90},
+          extent={{10,-10},{-10,10}},
+          rotation=90)));
     annotation (
-      Icon(
-        Line(points=[-100, 0; -70, 0], style(color=69)),
-        Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(color=74, rgbcolor={0,0,127})),
-        Text(extent=[-150,40; 150,80], string="%name"),
-        Text(
-          extent=[92, -62; 34, -122],
-          string="p_rel",
-          style(color=0))),
-      Diagram(
-        Line(points=[-100, 0; -70, 0], style(color=69)),
-        Line(points=[70, 0; 100, 0], style(color=69)),
-        Line(points=[0, -30; 0, -80], style(color=74, rgbcolor={0,0,127})),
-        Text(
-          extent=[64, -74; 32, -102],
-          style(color=0),
-          string="T_rel")),
+      Icon(graphics={
+          Line(points={{-100,0},{-70,0}}, color={0,127,255}),
+          Line(points={{70,0},{100,0}}, color={0,127,255}),
+          Line(points={{0,-30},{0,-80}}, color={0,0,127}),
+          Text(extent={{-150,40},{150,80}}, textString=
+                                              "%name"),
+          Text(
+            extent={{92,-62},{34,-122}},
+            lineColor={0,0,0},
+            textString=
+                 "p_rel")}),
+      Diagram(graphics={
+          Line(points={{-100,0},{-70,0}}, color={0,127,255}),
+          Line(points={{70,0},{100,0}}, color={0,127,255}),
+          Line(points={{0,-30},{0,-80}}, color={0,0,127}),
+          Text(
+            extent={{64,-74},{32,-102}},
+            lineColor={0,0,0},
+            textString=
+                 "T_rel")}),
       Documentation(info="<HTML>
 <p>
 The relative temperature \"port_a.T - port_b.T\" is determined between
@@ -600,11 +709,11 @@ through the sensor is allowed.
 </p>
 </HTML>
 "));
-  equation 
+  equation
     // Zero flow equations for connectors
     port_a.m_flow = 0;
     port_b.m_flow = 0;
-    
+
     // No contribution of specific quantities
     port_a.h_outflow = 0;
     port_b.h_outflow = 0;
@@ -612,12 +721,12 @@ through the sensor is allowed.
     port_b.Xi_outflow = zeros(Medium.nXi);
     port_a.C_outflow  = zeros(Medium.nC);
     port_b.C_outflow  = zeros(Medium.nC);
-    
+
     // Relative temperature
     T_rel = Medium.temperature(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) -
             Medium.temperature(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow)));
   end RelativeTemperature;
-  
+
 /*
   model SpecificInternalEnergy "Ideal specific internal energy sensor" 
     extends BaseClasses.Sensors.PartialSensor;
@@ -816,20 +925,23 @@ the two ports of this component and is provided as output signal.
     u_rel = medium_a.u - medium_b.u;
   end RelSpecificInternalEnergy;
 */
-  
-  package BaseClasses 
+
+  package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
-    
-    partial model PartialAbsoluteSensor 
-      "Partial component to model a sensor that measures a potential variable" 
-      
-      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
+
+    partial model PartialAbsoluteSensor
+      "Partial component to model a sensor that measures a potential variable"
+
+      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
         "Medium in the sensor" 
         annotation(choicesAllMatching=true);
-      
+
       Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium=Medium, m_flow(min=0)) 
-        annotation (extent=[-10,-110; 10,-90],rotation=90);
-      
+        annotation (Placement(transformation(
+            origin={0,-100},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+
       annotation (Documentation(info="<html>
 <p>
 Partial component to model an <b>absolute sensor</b>. Can be used for pressure sensor models.
@@ -837,38 +949,45 @@ Use for other properties such as temperature or density is discouraged, because 
 as signal.
 </p>
 </html>"),
-        Diagram,
-        Coordsys(grid=[1,1], scale=0),
-        Icon);
-    equation 
+        Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics),
+        Icon(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics));
+    equation
       port.m_flow = 0;
       port.h_outflow = 0;
       port.Xi_outflow = zeros(Medium.nXi);
       port.C_outflow = zeros(Medium.nC);
     end PartialAbsoluteSensor;
-    
-    partial model PartialFlowSensor 
-      "Partial component to model sensors that measure flow properties" 
+
+    partial model PartialFlowSensor
+      "Partial component to model sensors that measure flow properties"
       import Modelica.Constants;
       import Modelica_Fluid.Types.FlowDirection;
-      
-      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
+
+      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
         "Medium in the sensor" 
         annotation(choicesAllMatching=true);
-      
+
       Modelica_Fluid.Interfaces.FluidPort_a port_a(
         redeclare package Medium=Medium,
         m_flow(min=if allowFlowReversal then -Constants.inf else 0.0)) 
-        annotation (extent=[-110,-10; -90,10]);
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+              rotation=0)));
       Modelica_Fluid.Interfaces.FluidPort_b port_b(
         redeclare package Medium=Medium,
         m_flow(max=if allowFlowReversal then +Constants.inf else 0.0)) 
-        annotation (extent=[110,-10; 90,10]);
-      
-      parameter FlowDirection.Temp flowDirection=FlowDirection.Bidirectional 
+        annotation (Placement(transformation(extent={{110,-10},{90,10}},
+              rotation=0)));
+
+      parameter FlowDirection.Temp flowDirection=FlowDirection.Bidirectional
         "Unidirectional (port_a -> port_b) or bidirectional flow component" 
          annotation(Dialog(tab="Advanced"));
-      
+
       annotation (Documentation(info="<html>
 <p>
 Partial component to model a <b>sensor</b> that measures any intensive properties
@@ -878,31 +997,33 @@ The model includes zero-volume balance equations. Sensor models inheriting from
 this partial class should add a medium instance to calculate the measured property.
 </p>
 </html>"),
-        Diagram,
-        Coordsys(grid=[1,1], scale=0));
-      
-    protected 
+        Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics));
+
+    protected
       parameter Boolean allowFlowReversal=
-         flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional 
+         flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
          annotation(Evaluate=true, Hide=true);
-    equation 
+    equation
       // mass balance
       0 = port_a.m_flow + port_b.m_flow;
-      
+
       // momentum equation (no pressure loss)
       port_a.p = port_b.p;
-      
+
       // isenthalpic state transformation (no storage and no loss of energy)
       port_a.h_outflow = inflow(port_b.h_outflow);
       port_b.h_outflow = inflow(port_a.h_outflow);
-      
+
       port_a.Xi_outflow = inflow(port_b.Xi_outflow);
       port_b.Xi_outflow = inflow(port_a.Xi_outflow);
-      
+
       port_a.C_outflow = inflow(port_b.C_outflow);
       port_b.C_outflow = inflow(port_a.C_outflow);
     end PartialFlowSensor;
-    
+
   end BaseClasses;
 end Sensors;
