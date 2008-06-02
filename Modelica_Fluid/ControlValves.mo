@@ -29,18 +29,18 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
 </html>"));
     initial equation
       if CvData == CvTypes.OpPoint then
-          m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom)
+          m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*Utilities.regRoot(dp_nom, delta*dp_nom)
         "Determination of Av by the operating point";
       end if;
 
     equation
       if CheckValve then
           m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
-                      smooth(0,if dp>=0 then sqrtR(dp) else 0);
+                      smooth(0,if dp>=0 then Utilities.regRoot(dp, delta*dp_nom) else 0);
       else
         // m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dp);
-        m_flow = flowCharacteristic(modifiedStemPosition)*Av*
-                      Modelica_Fluid.Utilities.regRoot2(dp, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
+        m_flow = flowCharacteristic(modifiedStemPosition)*Av^sqrt(port_a_d_inflow)*
+          Utilities.regRoot(dp, delta*dp_nom);
       end if;
     end ValveIncompressible;
 
@@ -67,7 +67,9 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
       Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}),
            graphics),
-      Diagram(graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+              graphics),
       Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid at the inlet, and possibly two-phase fluid at the outlet, with resulting choked flow conditions. <p>
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).<p>
@@ -85,10 +87,7 @@ The model operating range includes choked flow operation, which takes place for 
 </ul>
 </html>"));
   initial equation
-    if CvData == CvTypes.OpPoint then
-      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*sqrtR(dp_nom)
-        "Determination of Av by the operating point";
-    end if;
+    assert(not CvData == CvTypes.OpPoint, "OpPoint option not supported for vaporizing valve");
   equation
     pin = port_a.p;
     pout = port_b.p;
@@ -100,12 +99,12 @@ The model operating range includes choked flow operation, which takes place for 
       "Effective pressure drop, accounting for possible choked conditions";
     if CheckValve then
        m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
-           (if dpEff>=0 then sqrtR(dpEff) else 0);
+           smooth(0,if dpEff>=0 then sqrtR(dpEff) else 0);
      else
        // m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dpEff);
-       m_flow = flowCharacteristic(modifiedStemPosition)*Av*
-                    Modelica_Fluid.Utilities.regRoot2(dpEff, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
+       m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*sqrtR(dpEff);
     end if;
+    assert(m_flow > -0.1 * m_flow_nom, "Too big backflow");
   end ValveVaporizing;
 
   model ValveCompressible
@@ -135,7 +134,9 @@ The model operating range includes choked flow operation, which takes place for 
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}),
          graphics),
-    Diagram(graphics),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+            graphics),
     Documentation(info="<HTML>
 <p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid, no phase change, including choked conditions. <p>
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
@@ -402,8 +403,6 @@ it is open.
        Adapted from the ThermoPower library.</li>
 </ul>
 </html>"));
-    protected
-      function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
     initial equation
     if CvData == CvTypes.Kv then
       Av = 2.7778e-5*Kv "Unit conversion";
