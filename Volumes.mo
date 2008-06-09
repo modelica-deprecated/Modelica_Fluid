@@ -4,30 +4,31 @@ package Volumes "Generic volume, tank and other volume type components"
 
     model MixingVolume
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)"
-    extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolume(
+      extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolume(
                                                           V_lumped=V, Ws_flow=0);
-    parameter SI.Volume V "Volume";
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort
+      parameter SI.Volume V "Volume";
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort
       "Thermal port" 
-      annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation
-            =0)));
-    annotation (
-      Icon(graphics={Ellipse(
+        annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
+      annotation (
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
             fillColor={170,213,255}), Text(
             extent={{-130,-108},{144,-150}},
             lineColor={0,0,0},
-            textString=
-                 "V=%V")}),
+            textString="V=%V")}),
       Documentation(info="<html>
 Ideally mixed volume of constant size with two fluid ports and one medium model. The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. The thermal port temperature is equal to the medium temperature.
 </html>"),
-      Diagram(graphics));
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+              graphics));
     equation
-    thermalPort.T = medium.T;
-    Qs_flow = thermalPort.Q_flow;
+      thermalPort.T = medium.T;
+      Qs_flow = thermalPort.Q_flow;
     end MixingVolume;
 
   model SweptVolume
@@ -36,7 +37,8 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     parameter SI.Area pistonCrossArea "cross sectional area of pistion";
     parameter SI.Volume clearance "remaining volume at zero piston stroke";
     annotation (Diagram(graphics),
-                         Icon(graphics={
+                         Icon(coordinateSystem(preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}}), graphics={
           Rectangle(
             extent={{-44,62},{44,-30}},
             lineColor={0,0,255},
@@ -232,8 +234,8 @@ equation
 //Determine port properties
     p_static = level*ambient.g*medium.d + p_ambient;
     for i in 1:n_ports loop
-       H_flow[i] = semiLinear(ports[i].m_flow, inflow(ports[i].h_outflow), medium.h);
-       mXi_flow[i,:] = semiLinear(ports[i].m_flow, inflow(ports[i].Xi_outflow), medium.Xi);
+       H_flow[i] = semiLinear(ports[i].m_flow, inStream(ports[i].h_outflow), medium.h);
+       mXi_flow[i,:] = semiLinear(ports[i].m_flow, inStream(ports[i].Xi_outflow), medium.Xi);
        if p_static_at_port then
          ports[i].p = p_static;
        else
@@ -275,8 +277,8 @@ initial equation
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
           Rectangle(
-            extent=DynamicSelect({{-100,-100},{100,10}}, {{-100,-100},{100, (-100
-               + 200*level/height)}}),
+            extent=DynamicSelect({{-100,-100},{100,10}}, {{-100,-100},{100,(-100
+                 + 200*level/height)}}),
             lineColor={0,127,255},
             fillColor={85,170,255},
             fillPattern=FillPattern.Solid),
@@ -285,21 +287,18 @@ initial equation
           Text(
             extent={{-95,90},{95,60}},
             lineColor={0,0,255},
-            textString=
-                 "%name"),
+            textString="%name"),
           Text(
             extent={{-129,53},{130,39}},
             lineColor={0,0,0},
-            textString=
-               "start = %level_start m"),
+            textString="start = %level_start m"),
           Text(
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
-            textString=DynamicSelect(
-                               " ", realString(
-              level,
-              1,
-              integer(precision)))),
+            textString=DynamicSelect(" ", realString(
+                level, 
+                1, 
+                integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -488,8 +487,8 @@ equation
   // Properties at top ports
     for i in 1:nTopPorts loop
        // It is assumed that fluid flows only from one of the top ports in to the tank and never vice versa
-       H_flow_top[i]     = semiLinear(topPorts[i].m_flow, inflow(topPorts[i].h_outflow), h_start);
-       mXi_flow_top[i,:] = semiLinear(topPorts[i].m_flow, inflow(topPorts[i].Xi_outflow), X_start[1:Medium.nXi]);
+       H_flow_top[i]     = semiLinear(topPorts[i].m_flow, inStream(topPorts[i].h_outflow), h_start);
+       mXi_flow_top[i,:] = semiLinear(topPorts[i].m_flow, inStream(topPorts[i].Xi_outflow), X_start[1:Medium.nXi]);
        topPorts[i].p     = p_ambient;
        topPorts[i].h_outflow = h_start;
 /*
@@ -500,8 +499,8 @@ equation
 
   // Properties at bottom ports
     for i in 1:nPorts loop
-       port_b_H_flowottom[i] = semiLinear(ports[i].m_flow, inflow(ports[i].h_outflow), medium.h);
-       port_b_mXi_flowottom[i,:] = semiLinear(ports[i].m_flow, inflow(ports[i].Xi_outflow), medium.Xi);
+       port_b_H_flowottom[i] = semiLinear(ports[i].m_flow, inStream(ports[i].h_outflow), medium.h);
+       port_b_mXi_flowottom[i,:] = semiLinear(ports[i].m_flow, inStream(ports[i].Xi_outflow), medium.Xi);
        aboveLevel[i] = level >= (portsData[i].portLevel + ports_emptyPipeHysteresis[i])
                        or pre(aboveLevel[i]) and level >= (portsData[i].portLevel - ports_emptyPipeHysteresis[i]);
        levelAbovePort[i] = if aboveLevel[i] then level - portsData[i].portLevel else 0;
@@ -571,7 +570,7 @@ initial equation
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
           Rectangle(
-            extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,   (-100
+            extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
                  + 200*level/levelMax)}}),
             lineColor={0,127,255},
             fillColor={85,170,255},
@@ -579,8 +578,10 @@ initial equation
           Text(
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
-            textString=DynamicSelect(
-                             " ", realString(level, 1, 3))),
+            textString=DynamicSelect(" ", realString(
+                level, 
+                1, 
+                3))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -588,22 +589,19 @@ initial equation
           Text(
             extent={{-94,90},{95,60}},
             lineColor={0,0,255},
-            textString=
-                 "%name"),
+            textString="%name"),
           Text(
             extent={{-95,-85},{95,-65}},
             lineColor={0,0,0},
-            textString=
-                 "%level_start"),
+            textString="%level_start"),
           Text(
             extent={{-95,-55},{95,-35}},
             lineColor={0,0,0},
-            textString=
-                 "level_start ="),
+            textString="level_start ="),
           Text(
             extent={{-95,50},{95,30}},
             lineColor={0,0,0},
-            textString =                  "level ="),
+            textString="level ="),
           Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
                 0})}),
       Documentation(info="<HTML>
@@ -743,37 +741,46 @@ end Tank;
         "Heat flow across boundaries or energy source/sink";
         SI.Power Ws_flow "Work flow across boundaries or source term";
         annotation (
-          Icon(graphics={Text(extent={{-150,110},{150,150}}, textString=
-                                                       "%name"), Text(
+          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}}), graphics={Text(extent={{-150,110},{150,150}},
+                textString="%name"), Text(
               extent={{-130,-108},{144,-150}},
               lineColor={0,0,0},
-              textString=
-                     "V=%V")}),
+              textString="V=%V")}),
           Documentation(info="<html>
 Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
 <ul>
 <li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
 </ul>
 The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
-</html>"),Diagram(graphics));
+</html>"),Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
+                  graphics));
 
       equation
-      // Boundary conditions
+        // Boundary conditions
         port_a.p = medium.p;
         port_b.p = medium.p;
+
         port_a.h_outflow = medium.h;
         port_b.h_outflow = medium.h;
 
-      // Total quantities
+        port_a.Xi_outflow = medium.Xi;
+        port_b.Xi_outflow = medium.Xi;
+
+        // Total quantities
         m = V_lumped*medium.d;
         mXi = m*medium.Xi;
         U = m*medium.u;
 
-      // Mass and energy balance
+        // Dynamic mass and energy balances
         der(m) = port_a.m_flow + port_b.m_flow;
-        der(mXi) = streamFlow(port_a.Xi_outflow) + streamFlow(port_b.Xi_outflow);
-        der(U) = streamFlow(port_a.h_outflow) + streamFlow(port_b.h_outflow) + Qs_flow + Ws_flow;
-        zeros(Medium.nC) = streamFlow(port_a.C_outflow) + streamFlow(port_b.C_outflow);
+        der(mXi) = port_a.m_flow*actualStream(port_a.Xi_outflow) + port_b.m_flow*actualStream(port_b.Xi_outflow);
+        der(U) = port_a.m_flow*actualStream(port_a.h_outflow) + port_b.m_flow*actualStream(port_b.h_outflow) + Qs_flow + Ws_flow;
+
+        // Steady-state composition balance
+        port_a.C_outflow = inStream(port_b.C_outflow);
+        port_b.C_outflow = inStream(port_a.C_outflow);
 
       initial equation
       // Initial conditions

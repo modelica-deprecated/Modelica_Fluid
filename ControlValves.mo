@@ -307,56 +307,58 @@ it is open.
     partial model PartialValve "Base model for valves"
 
       import Modelica_Fluid.Types.CvTypes;
-    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
-            dp_start = dp_nom, m_flow_start = m_flow_nom);
-    parameter CvTypes CvData = CvTypes.Av "Selection of flow coefficient" 
+      extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
+          dp_start=dp_nom, m_flow_start=m_flow_nom);
+      parameter CvTypes CvData=CvTypes.Av "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
-    parameter SI.Area Av(fixed = if CvData==CvTypes.Av then true else false,
-                         start = m_flow_nom/(sqrt(d_nom*dp_nom))*
-                                             flowCharacteristic(stemPosition_nom)) = 0
-        "Av (metric) flow coefficient" 
+      parameter SI.Area Av(
+        fixed=if CvData == CvTypes.Av then true else false,
+        start=m_flow_nom/(sqrt(d_nom*dp_nom))*flowCharacteristic(
+            stemPosition_nom)) = 0 "Av (metric) flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient",
                          enable = (CvData==CvTypes.Av)));
-    parameter Real Kv(unit="m3/h")=0 "Kv (metric) flow coefficient" 
+      parameter Real Kv(unit="m3/h") = 0 "Kv (metric) flow coefficient" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Kv)));
-    parameter Real Cv(unit="USG/min")=0 "Cv (US) flow coefficient" 
+      parameter Real Cv(unit="USG/min") = 0 "Cv (US) flow coefficient" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Cv)));
-    parameter SI.Pressure dp_nom "Nominal pressure drop" 
+      parameter SI.Pressure dp_nom "Nominal pressure drop" 
       annotation(Dialog(group="Nominal operating point"));
-    parameter Medium.MassFlowRate m_flow_nom "Nominal mass flowrate" 
+      parameter Medium.MassFlowRate m_flow_nom "Nominal mass flowrate" 
       annotation(Dialog(group="Nominal operating point"));
-    parameter Medium.Density d_nom = 1000 "Nominal inlet density" 
+      parameter Medium.Density d_nom=1000 "Nominal inlet density" 
       annotation(Dialog(group="Nominal operating point"));
-    parameter Real stemPosition_nom = 1 "Nominal stem position" 
+      parameter Real stemPosition_nom=1 "Nominal stem position" 
       annotation(Dialog(group="Nominal operating point"));
-    parameter Boolean CheckValve=false "Reverse flow stopped";
+      parameter Boolean CheckValve=false "Reverse flow stopped";
 
-    replaceable function flowCharacteristic = 
-        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.linear 
+      replaceable function flowCharacteristic =
+          Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.linear
         constrainedby
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun
         "Inherent flow characteristic" 
-      annotation(choicesAllMatching=true);
+        annotation(choicesAllMatching=true);
 
-    parameter Real delta=0.01 "Regularisation factor" annotation(Dialog(tab="Advanced"));
+      parameter Real delta=0.01 "Regularisation factor" 
+                                                      annotation(Dialog(tab="Advanced"));
 
-    Modelica.Blocks.Interfaces.RealInput stemPosition(min=-1e-10, max=1)
+      Modelica.Blocks.Interfaces.RealInput stemPosition(min=-1e-10, max=1)
         "Stem position in the range 0-1" 
                                        annotation (Placement(transformation(
             origin={0,90},
             extent={{-20,-20},{20,20}},
             rotation=270)));
 
-      parameter Real minStemPosition(min=0, max=0.1)=0
-        "Minimum stemPosition (leckage flow to improve numerics)" 
+      parameter Real minStemPosition(
+        min=0,
+        max=0.1) = 0 "Minimum stemPosition (leckage flow to improve numerics)" 
       annotation(Dialog(tab="Advanced"));
       Real modifiedStemPosition
         "Modified, actually used stemPosition, so that the valve is not completely closed to improve numerics";
 
-    annotation (
-      Icon(coordinateSystem(
+      annotation (
+        Icon(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics={
@@ -378,11 +380,11 @@ it is open.
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid)}),
-      Diagram(coordinateSystem(
+        Diagram(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics),
-      Documentation(info="<HTML>
+        Documentation(info="<HTML>
 <p>This is the base model for the <tt>ValveIncompressible</tt>, <tt>ValveVaporizing</tt>, and <tt>ValveCompressible</tt> valve models. The model is based on the IEC 534 / ISA S.75 standards for valve sizing.
 <p>The model optionally supports reverse flow conditions (assuming symmetrical behaviour) or check valve operation, and has been suitably modified to avoid numerical singularities at zero pressure drop. 
 <p><b>Modelling options</b></p>
@@ -395,8 +397,7 @@ it is open.
 <p>The nominal pressure drop <tt>dp_nom</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dp_nom</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical problems occur in valves with very low pressure drops.
 <p>If <tt>CheckValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place.
 <p>The inherent flow characteristic <tt>flowCharacteristic</tt>, linear by default, can be replaced by any user-defined function (e.g. equal percentage, quick opening, etc.).
-</HTML>",
-        revisions="<html>
+</HTML>", revisions="<html>
 <ul>
 <li><i>2 Nov 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
@@ -404,14 +405,15 @@ it is open.
 </ul>
 </html>"));
     initial equation
-    if CvData == CvTypes.Kv then
-      Av = 2.7778e-5*Kv "Unit conversion";
-    elseif CvData == CvTypes.Cv then
-      Av = 2.4027e-5*Cv "Unit conversion";
-    end if;
+      if CvData == CvTypes.Kv then
+        Av = 2.7778e-5*Kv "Unit conversion";
+      elseif CvData == CvTypes.Cv then
+        Av = 2.4027e-5*Cv "Unit conversion";
+      end if;
 
     equation
-      modifiedStemPosition = noEvent(if stemPosition > minStemPosition then stemPosition else minStemPosition);
+      modifiedStemPosition = noEvent(if stemPosition > minStemPosition then
+        stemPosition else minStemPosition);
     end PartialValve;
 
   package ValveCharacteristics "Functions for valve characteristics"

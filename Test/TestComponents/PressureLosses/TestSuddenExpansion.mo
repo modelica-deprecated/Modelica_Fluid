@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.PressureLosses;
 model TestSuddenExpansion
   extends Modelica.Icons.Example;
   replaceable package Medium = 
-      Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater 
+      Modelica.Media.Water.ConstantPropertyLiquidWater 
     constrainedby Modelica.Media.Interfaces.PartialMedium
     "Medium in all components"                        annotation (
     choicesAllMatching =                                                                            true);
@@ -45,7 +45,7 @@ model TestSuddenExpansion
     D_a=0.1,
     D_b=0.2,
     from_dp=false,
-    use_Re=false) annotation (Placement(transformation(extent={{0,10},{20,30}}, 
+    use_Re=false) annotation (Placement(transformation(extent={{0,10},{20,30}},
           rotation=0)));
 
   inner Modelica_Fluid.Ambient ambient 

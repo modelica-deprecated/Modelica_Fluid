@@ -7,132 +7,128 @@ package HeatExchangers "Evaporators and condensor components"
     import Modelica.Constants;
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.FlowDirection;
-  replaceable package Medium = Modelica.Media.Water.StandardWater 
-    constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium
+    replaceable package Medium = Modelica.Media.Water.StandardWater 
+      constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium
       "Medium model" 
-      annotation (choicesAllMatching=true);
-  parameter SI.Mass m_D "mass of surrounding drum metal";
-  parameter Medium.SpecificHeatCapacity cp_D
+        annotation (choicesAllMatching=true);
+    parameter SI.Mass m_D "mass of surrounding drum metal";
+    parameter Medium.SpecificHeatCapacity cp_D
       "specific heat capacity of drum metal";
-  parameter SI.Volume V_t "total volume inside drum";
-  parameter Types.Init initType=
-            Types.Init.NoInit "Initialization option" 
+    parameter SI.Volume V_t "total volume inside drum";
+    parameter Types.Init initType=Types.Init.NoInit "Initialization option" 
     annotation(Dialog(tab = "Initialization"));
-  parameter Medium.AbsolutePressure p_start = Medium.p_default
+    parameter Medium.AbsolutePressure p_start=Medium.p_default
       "Start value of pressure" 
     annotation(Dialog(tab = "Initialization"));
-  parameter SI.Volume V_l_start = V_t/2
+    parameter SI.Volume V_l_start=V_t/2
       "Start value of liquid volumeStart value of volume" 
     annotation(Dialog(tab = "Initialization"));
 
-  parameter FlowDirection flowDirection=
-            FlowDirection.Bidirectional
+    parameter FlowDirection flowDirection=FlowDirection.Bidirectional
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
 
-  Modelica_Fluid.Interfaces.FluidPort_a feedwater(
-                                   redeclare package Medium = Medium,
-                     m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
-    annotation (Placement(transformation(extent={{-110,-10},{-90,10}}, rotation
-            =0)));
-  Modelica_Fluid.Interfaces.FluidPort_b steam(
-                               redeclare package Medium = Medium,
-                     m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
+    Modelica_Fluid.Interfaces.FluidPort_a feedwater(redeclare package Medium = 
+          Medium, m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
+    annotation (Placement(transformation(extent={{-110,-10},{-90,10}}, rotation=
+             0)));
+    Modelica_Fluid.Interfaces.FluidPort_b steam(redeclare package Medium = Medium,
+        m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
     annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation=0)));
-  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
-    annotation (Placement(transformation(extent={{-10,-110},{10,-90}}, rotation
-            =0)));
-  Modelica.Blocks.Interfaces.RealOutput V "liquid volume" 
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
+    annotation (Placement(transformation(extent={{-10,-110},{10,-90}}, rotation=
+             0)));
+    Modelica.Blocks.Interfaces.RealOutput V "liquid volume" 
     annotation (Placement(transformation(
           origin={100,110},
           extent={{-10,-10},{10,10}},
           rotation=90)));
 
-  Medium.SaturationProperties sat
+    Medium.SaturationProperties sat
       "State vector to compute saturation properties";
-  Medium.AbsolutePressure p(start=p_start, stateSelect=StateSelect.prefer)
+    Medium.AbsolutePressure p(start=p_start, stateSelect=StateSelect.prefer)
       "pressure inside drum boiler";
-  Medium.Temperature T "temperature inside drum boiler";
-  SI.Volume V_v "volume of vapour phase";
-  SI.Volume V_l(start=V_l_start, stateSelect=StateSelect.prefer)
+    Medium.Temperature T "temperature inside drum boiler";
+    SI.Volume V_v "volume of vapour phase";
+    SI.Volume V_l(start=V_l_start, stateSelect=StateSelect.prefer)
       "volumes of liquid phase";
-  Medium.SpecificEnthalpy h_v=Medium.dewEnthalpy(sat)
+    Medium.SpecificEnthalpy h_v=Medium.dewEnthalpy(sat)
       "specific enthalpy of vapour";
-  Medium.SpecificEnthalpy h_l=Medium.bubbleEnthalpy(sat)
+    Medium.SpecificEnthalpy h_l=Medium.bubbleEnthalpy(sat)
       "specific enthalpy of liquid";
-  Medium.Density rho_v=Medium.dewDensity(sat) "density in vapour phase";
-  Medium.Density rho_l=Medium.bubbleDensity(sat) "density in liquid phase";
-  SI.Mass m "total mass of drum boiler";
-  SI.Energy U "internal energy";
-  Medium.Temperature T_D=heatPort.T "temperature of drum";
-  SI.HeatFlowRate q_F=heatPort.Q_flow "heat flow rate from furnace";
-  Medium.SpecificEnthalpy h_W=inflow(feedwater.h_outflow)
+    Medium.Density rho_v=Medium.dewDensity(sat) "density in vapour phase";
+    Medium.Density rho_l=Medium.bubbleDensity(sat) "density in liquid phase";
+    SI.Mass m "total mass of drum boiler";
+    SI.Energy U "internal energy";
+    Medium.Temperature T_D=heatPort.T "temperature of drum";
+    SI.HeatFlowRate q_F=heatPort.Q_flow "heat flow rate from furnace";
+    Medium.SpecificEnthalpy h_W=inStream(feedwater.h_outflow)
       "Feed water enthalpy (specific enthalpy close to feedwater port when mass flows in to the boiler)";
-  Medium.SpecificEnthalpy h_S=inflow(steam.h_outflow)
-      "steam enthalpy (specific enthalpy close to steam port when mass flows in to the boiler";
-  SI.MassFlowRate qm_W=feedwater.m_flow "feed water mass flow rate";
-  SI.MassFlowRate qm_S=steam.m_flow "steam mass flow rate";
+    Medium.SpecificEnthalpy h_S=inStream(steam.h_outflow)
+      "steam enthalpy (specific enthalpy close to steam port when mass flows in to the boiler)";
+    SI.MassFlowRate qm_W=feedwater.m_flow "feed water mass flow rate";
+    SI.MassFlowRate qm_S=steam.m_flow "steam mass flow rate";
   /*outer Modelica_Fluid.Components.FluidOptions fluidOptions 
     "Global default options";*/
   protected
-  parameter Boolean allowFlowReversal=
-     flowDirection == FlowDirection.Bidirectional
+    parameter Boolean allowFlowReversal=flowDirection == FlowDirection.Bidirectional
       "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
      annotation(Evaluate=true, Hide=true);
   equation
   // balance equations
-  m = rho_v*V_v + rho_l*V_l + m_D "Total mass";
-  U = rho_v*V_v*h_v + rho_l*V_l*h_l - p*V_t + m_D*cp_D*T_D "Total energy";
-  der(m) = qm_W + qm_S "Mass balance";
-  der(U) = q_F + semiLinear(qm_W, h_W, h_l) + semiLinear(qm_S, h_S, h_v)
-      "Energy balance";
-  V_t = V_l + V_v;
+    m = rho_v*V_v + rho_l*V_l + m_D "Total mass";
+    U = rho_v*V_v*h_v + rho_l*V_l*h_l - p*V_t + m_D*cp_D*T_D "Total energy";
+    der(m) = qm_W + qm_S "Mass balance";
+    der(U) = q_F
+              + feedwater.m_flow*actualStream(feedwater.h_outflow)
+              + steam.m_flow*actualStream(steam.h_outflow) "Energy balance";
+    V_t = V_l + V_v;
 
   // Properties of saturated liquid and steam
-  sat.psat = p;
-  sat.Tsat = T;
-  sat.Tsat = Medium.saturationTemperature(p);
+    sat.psat = p;
+    sat.Tsat = T;
+    sat.Tsat = Medium.saturationTemperature(p);
 
   // ideal heat transfer between metal and water
-  T_D = T;
+    T_D = T;
 
   // boundary conditions at the ports
-  feedwater.p = p;
-  feedwater.h_outflow = h_l;
+    feedwater.p = p;
+    feedwater.h_outflow = h_l;
   // feedwater.H_flow = semiLinear(feedwater.m_flow, feedwater.h, h_l);
-  steam.p = p;
-  steam.h_outflow = h_v;
+    steam.p = p;
+    steam.h_outflow = h_v;
   //steam.H_flow = semiLinear(steam.m_flow, steam.h, h_v);
 
   // liquid volume
-  V = V_l;
+    V = V_l;
 
   // Check that two-phase equilibrium is actually possible
-  assert(p<Medium.fluidConstants[1].criticalPressure-10000,
-         "Evaporator model requires subcritical pressure");
+    assert(p < Medium.fluidConstants[1].criticalPressure - 10000,
+      "Evaporator model requires subcritical pressure");
   initial equation
   // Initial conditions
-  if initType == Types.Init.NoInit then
+    if initType == Types.Init.NoInit then
     // no initial equations
-  elseif initType == Types.Init.InitialValues then
-   p = p_start;
-   V_l = V_l_start;
-  elseif initType == Types.Init.SteadyState then
-    der(p) = 0;
-    der(V_l) = 0;
-  elseif initType == Types.Init.SteadyStateHydraulic then
-    der(p) = 0;
-    V_l = V_l_start;
-  else
-    assert(false, "Unsupported initialization option");
-  end if;
+    elseif initType == Types.Init.InitialValues then
+      p = p_start;
+      V_l = V_l_start;
+    elseif initType == Types.Init.SteadyState then
+      der(p) = 0;
+      der(V_l) = 0;
+    elseif initType == Types.Init.SteadyStateHydraulic then
+      der(p) = 0;
+      V_l = V_l_start;
+    else
+      assert(false, "Unsupported initialization option");
+    end if;
 
-  annotation (
-    Diagram(coordinateSystem(
+    annotation (
+      Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics),
-    Icon(coordinateSystem(
+      Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
@@ -205,11 +201,10 @@ package HeatExchangers "Evaporators and condensor components"
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-               "%name"),
+            textString="%name"),
           Line(points={{0,-60},{0,-100}}, color={191,0,0}),
           Line(points={{100,100},{100,60}}, color={0,0,127})}),
-    Documentation(revisions="<html>
+      Documentation(revisions="<html>
 <ul>
 <li><i>2 Nov 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
@@ -217,8 +212,7 @@ package HeatExchangers "Evaporators and condensor components"
 <li><i>6 Sep 2005</i><br>
     Model by Ruediger Franke modified after the 45th Design Meeting</li>
 </ul>
-</html>",
-        info="<html>
+</html>",   info="<html>
 Model of a simple evaporator with two states. The model assumes two-phase equilibrium inside the component; saturated steam goes out of the steam outlet.
 <p>
 References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
@@ -399,10 +393,11 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       use_eta_nominal=use_eta_nominal,
       eta_nominal=eta_nominal_M2,
       show_Re=false) 
-                annotation (Placement(transformation(extent={{-40,88},{20,28}}, 
+                annotation (Placement(transformation(extent={{-40,88},{20,28}},
             rotation=0)));
     annotation (Diagram(graphics),
-                         Icon(graphics={
+                         Icon(coordinateSystem(preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}}), graphics={
           Rectangle(
             extent={{-100,-26},{100,-30}},
             lineColor={0,0,0},
@@ -431,8 +426,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
           Text(
             extent={{-100,-60},{100,-100}},
             lineColor={0,0,255},
-            textString=
-                 "%name")}),
+            textString="%name")}),
       Documentation(info="<html>
 Simple model of a heat exchanger consisting of two pipes and one wall in between. For both fluids geometry parameters, such as heat transfer area and cross section as well as heat transfer and pressure drop correlations may be chosen. The flow scheme be cocurrent or counterflow, defined by the respective flow directions of the fluids entering the component.
 </html>"));
@@ -459,8 +453,8 @@ Simple model of a heat exchanger consisting of two pipes and one wall in between
       s=s_wall,
       area_h=(Ah_1 + Ah_2)/2,
       initType=initType) 
-      annotation (Placement(transformation(extent={{-28,-14},{10,44}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-28,-14},{10,44}}, rotation=
+             0)));
 
   equation
     Q_flow_1 = sum(pipe_1.heatTransfer.Q_flow);
