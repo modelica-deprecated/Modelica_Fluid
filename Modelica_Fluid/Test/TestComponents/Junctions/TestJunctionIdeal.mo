@@ -5,7 +5,9 @@ model TestJunctionIdeal
   Modelica_Fluid.Junctions.JunctionIdeal junction(redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa)      annotation (Placement(
         transformation(extent={{20,-30},{40,-10}}, rotation=0)));
-  annotation (Diagram(graphics));
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -100},{100,100}}),
+                      graphics));
   Modelica_Fluid.Sources.FixedBoundary_pTX source2(
     T=278.15,
     p=5e5,
@@ -23,18 +25,18 @@ model TestJunctionIdeal
         extent={{-10,-10},{10,10}},
         rotation=270)));
   inner Modelica_Fluid.Ambient ambient 
-    annotation (Placement(transformation(extent={{-100,80},{-80,100}}, rotation
-          =0)));
+    annotation (Placement(transformation(extent={{-100,80},{-80,100}}, rotation=
+           0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(          p=5e5,
       redeclare package Medium = Modelica.Media.Air.DryAirNasa,
     T=ambient.default_T_ambient,
     usePressureInput=true) 
-    annotation (Placement(transformation(extent={{-40,-30},{-20,-10}}, rotation
-          =0)));
+    annotation (Placement(transformation(extent={{-40,-30},{-20,-10}}, rotation=
+           0)));
   Modelica.Blocks.Sources.Ramp ramp(
     duration=1,
     height=-6.5e5,
-    offset=7e5) annotation (Placement(transformation(extent={{-90,-24},{-70,-4}}, 
+    offset=7e5) annotation (Placement(transformation(extent={{-90,-24},{-70,-4}},
           rotation=0)));
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
     redeclare package Medium = Modelica.Media.Air.DryAirNasa,
@@ -64,7 +66,7 @@ equation
           -20}}, color={0,127,255}));
   connect(pipe1.port_b, junction.port_1) 
     annotation (Line(points={{8,-20},{20,-20}}, color={0,127,255}));
-  connect(pipe2.port_b, source2.port) annotation (Line(points={{70,-20},{80,-20}}, 
+  connect(pipe2.port_b, source2.port) annotation (Line(points={{70,-20},{80,-20}},
         color={0,127,255}));
   connect(junction.port_2,pipe2. port_a) annotation (Line(points={{40,-20},{50,
           -20}}, color={0,127,255}));

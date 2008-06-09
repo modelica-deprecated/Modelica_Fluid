@@ -12,7 +12,8 @@ model StaticHead
     annotation(Dialog(tab="Advanced"));
   Medium.Density d "Density of the passing fluid";
   outer Modelica_Fluid.Ambient ambient "Ambient conditions";
-  annotation (Icon(graphics={
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}), graphics={
           Rectangle(
             extent={{-100,60},{100,-60}},
             lineColor={0,0,0},
@@ -28,8 +29,7 @@ model StaticHead
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-               "%name")}),                 Documentation(info="<html>
+            textString="%name")}),         Documentation(info="<html>
 <p>
 This model describes the static head due to the relative height between the two connectors. No mass, energy and momentum storage, and no pressure drop due to friction are considered.
 </p>
@@ -85,8 +85,7 @@ model SimpleGenericOrifice
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-               "%name"),
+            textString="%name"),
           Line(
             points={{-60,-50},{-60,50},{60,-50},{60,50}},
             color={0,0,0},
@@ -96,8 +95,7 @@ model SimpleGenericOrifice
           Text(
             extent={{-168,-92},{180,-134}},
             lineColor={0,0,0},
-            textString=
-                 "zeta=%zeta"),
+            textString="zeta=%zeta"),
           Line(points={{-50,-70},{50,-70}}, color={0,128,255}),
           Polygon(
             points={{24,-60},{24,-80},{50,-70},{24,-60}},
@@ -215,8 +213,7 @@ end SimpleGenericOrifice;
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-                 "%name")}),                 Documentation(info="<html>
+            textString="%name")}),           Documentation(info="<html>
 <p>
 This model describes pressure losses due to <b>wall friction</b> in a pipe
 and due to gravity.
@@ -359,14 +356,14 @@ model SuddenExpansion
             fillPattern=FillPattern.Solid,
             textString=
                "D_b")}),
-    Icon(graphics={
+    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Text(
             extent={{-150,90},{150,130}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-               "%name"),
+            textString="%name"),
           Rectangle(
             extent={{-100,80},{100,-80}},
             lineColor={0,0,0},
@@ -400,14 +397,14 @@ model SharpEdgedOrifice
   annotation (defaultComponentName="orifice",
     Documentation(info="<html>
 </html>"),
-    Icon(graphics={
+    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Text(
             extent={{-150,90},{150,130}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-               "%name"),
+            textString="%name"),
           Rectangle(
             extent={{-100,80},{100,-80}},
             lineColor={0,0,0},
@@ -1517,7 +1514,9 @@ Laminar region:
 
         annotation (
           Diagram(graphics),
-          Icon(graphics),
+          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                  {100,100}}),
+               graphics),
           Documentation(info="<html>
 <p>
 This model computes the pressure loss of a pipe
@@ -2316,8 +2315,8 @@ solving a non-linear equation.
                                   redeclare package Medium = Medium,
                        m_flow(max=if allowFlowReversal then +Constants.inf else 0))
         "Fluid connector b (positive design flow direction is from port_a to port_b)"
-      annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation
-              =0)));
+      annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation=
+               0)));
     Medium.MassFlowRate m_flow(start=m_flow_start)
         "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
     Modelica.SIunits.VolumeFlowRate V_flow
@@ -2344,8 +2343,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
       Icon(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics),
-      uses(Modelica_Fluid(version="1.0 Streams Beta 1"), Modelica(version="2.2.2")));
+            grid={1,1})));
     Medium.Temperature port_a_T
         "Temperature close to port_a, if compute_T = true";
     Medium.Temperature port_b_T
@@ -2355,26 +2353,26 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     Medium.ThermodynamicState port_b_state_inflow
         "Medium state close to port_b for inflowing mass flow";
     protected
-      parameter Boolean allowFlowReversal=
-       flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
+    parameter Boolean allowFlowReversal=
+      flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
         "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-       annotation(Evaluate=true, Hide=true);
+      annotation(Evaluate=true, Hide=true);
     Medium.Density port_a_d_inflow
         "Density close to port_a for inflowing mass flow";
     Medium.Density port_b_d_inflow
         "Density close to port_b for inflowing mass flow";
   equation
     // Isenthalpic state transformation (no storage and no loss of energy)
-    port_a.h_outflow = inflow(port_b.h_outflow);
-    port_b.h_outflow = inflow(port_a.h_outflow);
+    port_a.h_outflow = inStream(port_b.h_outflow);
+    port_b.h_outflow = inStream(port_a.h_outflow);
 
-    port_a.Xi_outflow = inflow(port_b.Xi_outflow);
-    port_b.Xi_outflow = inflow(port_a.Xi_outflow);
+    port_a.Xi_outflow = inStream(port_b.Xi_outflow);
+    port_b.Xi_outflow = inStream(port_a.Xi_outflow);
 
-    port_a.C_outflow = inflow(port_b.C_outflow);
-    port_b.C_outflow = inflow(port_a.C_outflow);
+    port_a.C_outflow = inStream(port_b.C_outflow);
+    port_b.C_outflow = inStream(port_a.C_outflow);
 
-    // Medium states close to the ports when mass flows in to the respective port
+    // Medium states close to the ports when mass flows into the respective port
     port_a_state_inflow = Medium.setState_phX(port_a.p, port_b.h_outflow, port_b.Xi_outflow);
     port_b_state_inflow = Medium.setState_phX(port_b.p, port_a.h_outflow, port_a.Xi_outflow);
 

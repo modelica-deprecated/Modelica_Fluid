@@ -7,7 +7,7 @@ model TestSimpleGenericOrifice
   parameter Real zeta =  (1 - A_rel)^2;
 
   replaceable package Medium = 
-      Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater 
+      Modelica.Media.Water.ConstantPropertyLiquidWater 
     constrainedby Modelica.Media.Interfaces.PartialMedium
     "Medium in all components"                        annotation (
     choicesAllMatching =                                                                            true);
@@ -48,7 +48,7 @@ model TestSimpleGenericOrifice
     redeclare package Medium = Medium,
     from_dp=false,
     zeta=zeta,
-    diameter=D_a) annotation (Placement(transformation(extent={{0,10},{20,30}}, 
+    diameter=D_a) annotation (Placement(transformation(extent={{0,10},{20,30}},
           rotation=0)));
 
   Modelica_Fluid.PressureLosses.SuddenExpansion expansion3(

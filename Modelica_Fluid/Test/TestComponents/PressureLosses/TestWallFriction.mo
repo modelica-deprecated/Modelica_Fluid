@@ -4,7 +4,7 @@ model TestWallFriction
   extends Modelica.Icons.Example;
   // Modelica.Media.Water.WaterIF97_ph
   replaceable package Medium = 
-      Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater 
+      Modelica.Media.Water.ConstantPropertyLiquidWater 
     constrainedby Modelica.Media.Interfaces.PartialMedium
     "Medium in all components"                        annotation (
     choicesAllMatching =                                                                            true);
@@ -106,7 +106,7 @@ equation
                                     annotation (Line(points={{-59,50},{-52,50},
           {-52,56},{-40,56}}, color={0,0,127}));
   connect(ambient_a.port, pipe1.port_a) 
-                                      annotation (Line(points={{-18,50},{0,50}}, 
+                                      annotation (Line(points={{-18,50},{0,50}},
         color={0,127,255}));
   connect(pipe1.port_b, ambient_p1.port) 
     annotation (Line(points={{20,50},{42,50}}, color={0,127,255}));

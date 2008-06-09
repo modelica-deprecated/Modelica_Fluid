@@ -263,8 +263,8 @@ pipe wall/environment).
 
   protected
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-       use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[1].state) else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) else Medium.dynamicViscosity(medium[1].state))));
-   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))) else Medium.dynamicViscosity(medium[n].state))));
+       use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[1].state) else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))) else Medium.dynamicViscosity(medium[1].state))));
+   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))) else Medium.dynamicViscosity(medium[n].state))));
 
    annotation (
      Icon(graphics={
@@ -457,8 +457,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
   protected
   SI.Pressure[n+1] dp_stat;
   SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) else eta[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))) else eta[n])));
+      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))) else eta[1])));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))) else eta[n])));
   SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
 
@@ -681,8 +681,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
   protected
   SI.Pressure[n] dp_stat;
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) else eta[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))) else eta[n])));
+      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))) else eta[1])));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))) else eta[n])));
  SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
 
@@ -881,8 +881,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
   protected
   SI.Pressure[n] dp_stat;
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) else eta[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))) else eta[n])));
+      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))) else eta[1])));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))) else eta[n])));
   SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
 
@@ -1168,8 +1168,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
     final parameter SI.Pressure[np] dp0=fill(dp_start/np,np);
     SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
-    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, inflow(port_a.h_outflow), port_a.Xi_outflow) else d[1]));
-    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, inflow(port_b.h_outflow), port_b.Xi_outflow)));
+    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, inStream(port_a.h_outflow), port_a.Xi_outflow) else d[1]));
+    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), port_b.Xi_outflow)));
 
   equation
     // Boundary conditions
@@ -1177,8 +1177,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     port_b.h_outflow = medium[n].h;
     port_a.m_flow    = m_flow[1];
     port_b.m_flow    = -m_flow[n + 1];
-    port_a.C_outflow = inflow(port_b.C_outflow);
-    port_b.C_outflow = inflow(port_a.C_outflow);
+    port_a.C_outflow = inStream(port_b.C_outflow);
+    port_b.C_outflow = inStream(port_a.C_outflow);
 
     // Distributed flow quantities, upwind discretization
     for i in 2:n loop
@@ -1186,10 +1186,10 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       mXi_flow[i, :] = semiLinear(m_flow[i], medium[i - 1].Xi, medium[i].Xi);
       v[i] = m_flow[i]/(medium[i - 1].d + medium[i].d)*2/area;
     end for;
-    H_flow[1] = semiLinear(port_a.m_flow, inflow(port_a.h_outflow), medium[1].h);
-    H_flow[n + 1] = -semiLinear(port_b.m_flow, inflow(port_b.h_outflow), medium[n].h);
-    mXi_flow[1, :] = semiLinear(port_a.m_flow, inflow(port_a.Xi_outflow), medium[1].Xi);
-    mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inflow(port_b.Xi_outflow), medium[n].Xi);
+    H_flow[1] = semiLinear(port_a.m_flow, inStream(port_a.h_outflow), medium[1].h);
+    H_flow[n + 1] = -semiLinear(port_b.m_flow, inStream(port_b.h_outflow), medium[n].h);
+    mXi_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.Xi_outflow), medium[1].Xi);
+    mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.Xi_outflow), medium[n].Xi);
     v[1] = m_flow[1]/d_a/area;
     v[n + 1] = m_flow[n + 1]/d_b/area;
 
@@ -1447,16 +1447,16 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     final parameter SI.Pressure[np] dp0=fill(dp_start,np)
         "pressure difference start values";
     SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
-    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow)) else d[1]));
-    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow))));
+    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)) else d[1]));
+    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))));
   equation
     // Boundary conditions
     port_a.h_outflow = medium[1].h;
     port_b.h_outflow = medium[n].h;
     port_a.m_flow    = m_flow[1];
     port_b.m_flow    = -m_flow[n + 1];
-    port_a.C_outflow = inflow(port_b.C_outflow);
-    port_b.C_outflow = inflow(port_a.C_outflow);
+    port_a.C_outflow = inStream(port_b.C_outflow);
+    port_b.C_outflow = inStream(port_a.C_outflow);
 
     // Distributed flow quantities, upwind discretization
     for i in 2:n loop
@@ -1464,10 +1464,10 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       mXi_flow[i, :] = semiLinear(m_flow[i], medium[i - 1].Xi, medium[i].Xi);
       v[i] = m_flow[i]/(medium[i - 1].d + medium[i].d)*2/area;
     end for;
-    H_flow[1] = semiLinear(port_a.m_flow, inflow(port_a.h_outflow), medium[1].h);
-    H_flow[n + 1] = -semiLinear(port_b.m_flow, inflow(port_b.h_outflow), medium[n].h);
-    mXi_flow[1, :] = semiLinear(port_a.m_flow, inflow(port_a.Xi_outflow), medium[1].Xi);
-    mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inflow(port_b.Xi_outflow), medium[n].Xi);
+    H_flow[1] = semiLinear(port_a.m_flow, inStream(port_a.h_outflow), medium[1].h);
+    H_flow[n + 1] = -semiLinear(port_b.m_flow, inStream(port_b.h_outflow), medium[n].h);
+    mXi_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.Xi_outflow), medium[1].Xi);
+    mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.Xi_outflow), medium[n].Xi);
     v[1] = m_flow[1]/d_a/area;
     v[n + 1] = m_flow[n + 1]/d_b/area;
 

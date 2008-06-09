@@ -3,20 +3,20 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP1(
-                                               p=10e5,
-  redeclare package Medium = Medium,
-    T=ambient.default_T_ambient) 
+    T=ambient.default_T_ambient,
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    p=1000000) 
   annotation (Placement(transformation(extent={{-100,26},{-80,46}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP2(
-                                               p=8e5,
-  redeclare package Medium = Medium,
-    T=ambient.default_T_ambient) 
+    T=ambient.default_T_ambient,
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    p=800000) 
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
             0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP1(
-                                             p=1e5,
-  redeclare package Medium = Medium,
-    T=ambient.default_T_ambient) 
+    T=ambient.default_T_ambient,
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    p=100000) 
   annotation (Placement(transformation(extent={{82,-4},{62,16}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V1(
     dp_nom=9e5,
@@ -55,23 +55,26 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
           rotation=0)));
 
 annotation (
-  Diagram(graphics),
+  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+            100}}),
+          graphics),
   experiment(StopTime=4, Tolerance=1e-006),
   Documentation(info=""));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP2(
-                                             p=1e5,
-  redeclare package Medium = Medium,
-    T=ambient.default_T_ambient) 
+    T=ambient.default_T_ambient,
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    p=100000) 
   annotation (Placement(transformation(extent={{4,58},{-16,78}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP3(
-                                             p=1e5, redeclare package Medium = Medium,
-    T=ambient.default_T_ambient) 
+    T=ambient.default_T_ambient,
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    p=100000) 
   annotation (Placement(transformation(extent={{26,-78},{6,-58}}, rotation=0)));
   Modelica.Blocks.Sources.Ramp CloseLoad(
     duration=1,
     offset=1,
     startTime=1,
-    height=-0.99) annotation (Placement(transformation(extent={{8,26},{28,46}}, 
+    height=-0.99) annotation (Placement(transformation(extent={{8,26},{28,46}},
           rotation=0)));
   Modelica.Blocks.Sources.Ramp OpenRelief(
     duration=2,
@@ -98,7 +101,7 @@ equation
                                    annotation (Line(points={{-80,36},{-68,36},{
           -68,68},{-50,68}}, color={0,127,255}));
   connect(SourceP1.port, V2.port_a) 
-                                   annotation (Line(points={{-80,36},{-38,36}}, 
+                                   annotation (Line(points={{-80,36},{-38,36}},
         color={0,127,255}));
   connect(V2.port_b, V5.port_a) 
                              annotation (Line(points={{-18,36},{5,36},{5,6},{30,

@@ -4,7 +4,7 @@ package ControlledTankSystem
   model ControlledTanks
     "Demonstrating the controller of a tank filling/emptying system"
     extends Modelica.Icons.Example;
-    package Medium = Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater;
+    package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater;
 
     Modelica_Fluid.Examples.ControlledTankSystem.Utilities.TankController
       tankController(
@@ -40,7 +40,7 @@ package ControlledTankSystem
 With this example, the controller of a tank filling/emptying system
 is demonstrated. 
 </p>
-
+ 
 <p>
 The basic operation is to fill and empty the two tanks:
 </p>
@@ -87,11 +87,11 @@ The demo-run uses the following button presses:
 <li> Button <b>shut</b> pressed at 700 s </li>
 <li> Simulate for 900 s</li>
 </ul>
-
+ 
 <p>
 This example is based on
 </p>
-
+ 
 <dl>
 <dt>Dressler I. (2004):</dt>
 <dd> <b>Code Generation From JGrafchart to Modelica</b>.
@@ -184,7 +184,8 @@ This example is based on
     connect(level2.y, tankController.level2) annotation (Line(points={{-31.15,
             -70},{-28,-70},{-28,-22}}, color={0,0,127}));
     connect(source.port, valve1.port_b) 
-      annotation (Line(points={{20,70},{20,60}}, color={0,127,255}));
+      annotation (Line(points={{20,70},{20,65},{20,65},{20,60}},
+                                                 color={0,127,255}));
     connect(valve1.port_a, tank1.topPorts[1]) 
       annotation (Line(points={{20,40},{20,31}}, color={0,127,255}));
     connect(tank1.ports[1], valve2.port_b) annotation (Line(points={{20,-11},{
@@ -219,15 +220,15 @@ This example is based on
                                      annotation (Placement(transformation(
               extent={{-50,50},{-30,30}}, rotation=0)));
       Modelica.StateGraph.Transition T2(condition=level2 < minLevel) 
-        annotation (Placement(transformation(extent={{27,50},{47,30}}, rotation
-              =0)));
+        annotation (Placement(transformation(extent={{27,50},{47,30}}, rotation=
+               0)));
       Modelica.StateGraph.Transition T3(condition=stop) 
         annotation (Placement(transformation(
             origin={-23,-1},
             extent={{-10,-10},{10,10}},
             rotation=270)));
       Modelica.StateGraph.Step s2(nOut=2) 
-              annotation (Placement(transformation(extent={{-50,-60},{-30,-40}}, 
+              annotation (Placement(transformation(extent={{-50,-60},{-30,-40}},
               rotation=0)));
       Modelica.StateGraph.Transition T4(condition=start) 
         annotation (Placement(transformation(
@@ -235,8 +236,8 @@ This example is based on
             extent={{-10,-10},{10,10}},
             rotation=90)));
       Modelica.StateGraph.Transition T5(condition=shut) 
-                                    annotation (Placement(transformation(extent
-              ={{-6,-60},{14,-40}}, rotation=0)));
+                                    annotation (Placement(transformation(extent=
+               {{-6,-60},{14,-40}}, rotation=0)));
       Modelica.StateGraph.Step emptyTanks 
                       annotation (Placement(transformation(extent={{20,-60},{40,
                 -40}}, rotation=0)));
@@ -274,8 +275,8 @@ This example is based on
               rotation=0)));
       Modelica.Blocks.Sources.BooleanExpression setValve1(y=normal.fillTank1.
             active) 
-        annotation (Placement(transformation(extent={{20,73},{80,92}}, rotation
-              =0)));
+        annotation (Placement(transformation(extent={{20,73},{80,92}}, rotation=
+               0)));
       Modelica.Blocks.Sources.BooleanExpression setValve2(y=normal.fillTank2.
             active or emptyTanks.active and level1 > minLevel) 
         annotation (Placement(transformation(extent={{-40,-85},{80,-64}},
@@ -301,57 +302,49 @@ This example is based on
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "start"),
+              textString="start"),
             Text(
               extent={{-99,6},{-14,-9}},
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "stop"),
+              textString="stop"),
             Text(
               extent={{-99,-54},{-14,-69}},
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "shut"),
+              textString="shut"),
             Text(
               extent={{-94,-82},{-9,-96}},
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "level1"),
+              textString="level1"),
             Text(
               extent={{11,-83},{96,-98}},
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "level2"),
+              textString="level2"),
             Text(
               extent={{10,68},{99,54}},
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "valve1"),
+              textString="valve1"),
             Text(
               extent={{7,10},{101,-5}},
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "valve2"),
+              textString="valve2"),
             Text(
               extent={{2,-51},{102,-67}},
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "valve3")}));
+              textString="valve3")}));
       connect(s1.outPort[1], T1.inPort) 
                                      annotation (Line(points={{-51.5,40},{-44,
               40}}, color={0,0,0}));
@@ -423,13 +416,13 @@ This example is based on
                       annotation (Placement(transformation(extent={{120,-10},{
                 140,10}}, rotation=0)));
       Modelica.StateGraph.Step wait1 
-                 annotation (Placement(transformation(extent={{-80,-10},{-60,10}}, 
+                 annotation (Placement(transformation(extent={{-80,-10},{-60,10}},
               rotation=0)));
       Modelica.StateGraph.Transition T2(enableTimer=true, waitTime=waitTime) 
         annotation (Placement(transformation(extent={{-50,-10},{-30,10}},
               rotation=0)));
       Modelica.StateGraph.Step wait2 
-                 annotation (Placement(transformation(extent={{54,-10},{74,10}}, 
+                 annotation (Placement(transformation(extent={{54,-10},{74,10}},
               rotation=0)));
       Modelica.StateGraph.Transition T4(enableTimer=true, waitTime=waitTime) 
         annotation (Placement(transformation(extent={{82,-10},{102,10}},
@@ -457,7 +450,7 @@ This example is based on
                                         annotation (Line(points={{-98.5,0},{-81,
               0}}, color={0,0,0}));
       connect(wait2.outPort[1], T4.inPort) 
-                                        annotation (Line(points={{74.5,0},{88,0}}, 
+                                        annotation (Line(points={{74.5,0},{88,0}},
             color={0,0,0}));
       connect(T3.outPort, wait2.inPort[1]) 
         annotation (Line(points={{31.5,0},{53,0}}, color={0,0,0}));
@@ -475,20 +468,21 @@ This example is based on
         "Reset button to false, if an element of reset becomes true" 
         annotation (Dialog(group="Time varying expressions"));
 
-      annotation (Icon(graphics={Rectangle(
+      annotation (Icon(
+          coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+                100}}),
+          graphics={Rectangle(
               extent={{-100,-100},{100,100}},
-              fillColor=DynamicSelect({192,192,192}, if 
-                                            on > 0.5 then {0,255,0} else {192,
-                  192,192}),
-              fillPattern=DynamicSelect(FillPattern.Solid, if 
-                                               on > 0.5 then FillPattern.Solid
-                   else FillPattern.Solid),
+              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0}
+                   else {192,192,192}),
+              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then
+                  FillPattern.Solid else FillPattern.Solid),
               lineColor={128,128,128},
               lineThickness=0.5), Text(
               extent={{-80,-40},{80,40}},
               lineColor={0,0,0},
-              textString=
-                   "%name")}, interaction={OnMouseDownSetBoolean(
+              textString="%name")},
+                              interaction={OnMouseDownSetBoolean(
                               on, true)}),
                               Diagram(graphics),
           Documentation(info="<html>

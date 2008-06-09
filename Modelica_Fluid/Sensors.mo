@@ -106,7 +106,7 @@ ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation
-    d = Medium.density(Medium.setState_phX(port.p, inflow(port.h_outflow), inflow(port.Xi_outflow)));
+    d = Medium.density(Medium.setState_phX(port.p, inStream(port.h_outflow), inStream(port.Xi_outflow)));
   end DensityOnePort;
 
   model DensityTwoPort "Ideal two port density sensor"
@@ -249,7 +249,7 @@ ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation
-    T = Medium.temperature(Medium.setState_phX(port.p, inflow(port.h_outflow), inflow(port.Xi_outflow)));
+    T = Medium.temperature(Medium.setState_phX(port.p, inStream(port.h_outflow), inStream(port.Xi_outflow)));
   end TemperatureOnePort;
 
   model TemperatureTwoPort "Ideal two port temperature sensor"
@@ -360,7 +360,7 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation
-    h_out = inflow(port.h_outflow);
+    h_out = inStream(port.h_outflow);
   end SpecificEnthalpyOnePort;
 
   model SpecificEnthalpyTwoPort
@@ -440,7 +440,7 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 </HTML>
 "));
   equation
-    s = Medium.specificEntropy(Medium.setState_phX(port.p, inflow(port.h_outflow), inflow(port.Xi_outflow)));
+    s = Medium.specificEntropy(Medium.setState_phX(port.p, inStream(port.h_outflow), inStream(port.Xi_outflow)));
   end SpecificEntropyOnePort;
 
   model SpecificEntropyTwoPort "Ideal two port sensor for the specific entropy"
@@ -724,8 +724,8 @@ through the sensor is allowed.
     port_b.C_outflow  = zeros(Medium.nC);
 
     // Relative temperature
-    T_rel = Medium.temperature(Medium.setState_phX(port_a.p, inflow(port_a.h_outflow), inflow(port_a.Xi_outflow))) -
-            Medium.temperature(Medium.setState_phX(port_b.p, inflow(port_b.h_outflow), inflow(port_b.Xi_outflow)));
+    T_rel = Medium.temperature(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))) -
+            Medium.temperature(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)));
   end RelativeTemperature;
 
 /*
@@ -1016,14 +1016,14 @@ this partial class should add a medium instance to calculate the measured proper
       port_a.p = port_b.p;
 
       // isenthalpic state transformation (no storage and no loss of energy)
-      port_a.h_outflow = inflow(port_b.h_outflow);
-      port_b.h_outflow = inflow(port_a.h_outflow);
+      port_a.h_outflow = inStream(port_b.h_outflow);
+      port_b.h_outflow = inStream(port_a.h_outflow);
 
-      port_a.Xi_outflow = inflow(port_b.Xi_outflow);
-      port_b.Xi_outflow = inflow(port_a.Xi_outflow);
+      port_a.Xi_outflow = inStream(port_b.Xi_outflow);
+      port_b.Xi_outflow = inStream(port_a.Xi_outflow);
 
-      port_a.C_outflow = inflow(port_b.C_outflow);
-      port_b.C_outflow = inflow(port_a.C_outflow);
+      port_a.C_outflow = inStream(port_b.C_outflow);
+      port_b.C_outflow = inStream(port_a.C_outflow);
     end PartialFlowSensor;
 
   end BaseClasses;

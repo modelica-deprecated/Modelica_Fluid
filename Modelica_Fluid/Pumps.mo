@@ -254,13 +254,13 @@ package Pumps "Pump components"
     inlet.m_flow + outlet.m_flow = 0 "Mass balance";
     inlet.h_outflow   = h_out;
     outlet.h_outflow  = h_out;
-    inlet.Xi_outflow  = inflow(outlet.Xi_outflow);
-    outlet.Xi_outflow = inflow(inlet.Xi_outflow);
-    inlet.C_outflow = inflow(outlet.C_outflow);
-    outlet.C_outflow = inflow(inlet.C_outflow);
-    inlet_H_flow=semiLinear(inlet.m_flow, inflow(inlet.h_outflow), h_out)
+    inlet.Xi_outflow  = inStream(outlet.Xi_outflow);
+    outlet.Xi_outflow = inStream(inlet.Xi_outflow);
+    inlet.C_outflow = inStream(outlet.C_outflow);
+    outlet.C_outflow = inStream(inlet.C_outflow);
+    inlet_H_flow=semiLinear(inlet.m_flow, inStream(inlet.h_outflow), h_out)
         "Enthalpy flow at the inlet";
-    outlet_H_flow=semiLinear(outlet.m_flow, inflow(outlet.h_outflow), h_out)
+    outlet_H_flow=semiLinear(outlet.m_flow, inStream(outlet.h_outflow), h_out)
         "Enthalpy flow at the outlet";
     if M > 0 then
       // M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single

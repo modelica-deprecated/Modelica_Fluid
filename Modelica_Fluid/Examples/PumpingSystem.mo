@@ -3,7 +3,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
   extends Modelica.Icons.Example;
   Modelica_Fluid.Sources.FixedBoundary source(
     redeclare package Medium = 
-        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     use_T=true,
     T=Modelica.SIunits.Conversions.from_degC(20),
     p=ambient.default_p_ambient) 
@@ -12,7 +12,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
 
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(
     redeclare package Medium = 
-        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
     diameter=1,
     length=100,
@@ -28,7 +28,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
   Pumps.Pump pumps(
     checkValve=true,
     redeclare package Medium = 
-        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     N_nom=1200,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
@@ -37,13 +37,13 @@ model PumpingSystem "Model of a pumping system for drinking water"
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_N_input=true,
     Np=1) 
-    annotation (Placement(transformation(extent={{-74,-88},{-48,-62}}, rotation
-          =0)));
+    annotation (Placement(transformation(extent={{-74,-88},{-48,-62}}, rotation=
+           0)));
 
   Modelica_Fluid.Volumes.OpenTank reservoir(
     initType=Modelica_Fluid.Types.Init.InitialValues,
     redeclare package Medium = 
-        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     p_static_at_port=false,
     pipe_diameters={1},
@@ -54,13 +54,13 @@ model PumpingSystem "Model of a pumping system for drinking water"
 
   Modelica_Fluid.ControlValves.ValveLinear userValve(
                                                  redeclare package Medium = 
-        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     flowDirection= Modelica_Fluid.Types.FlowDirection.Unidirectional,
     Kv=400/2e5) 
     annotation (Placement(transformation(extent={{58,-38},{74,-22}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary sink(
                                        redeclare package Medium = 
-        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater,
+        Modelica.Media.Water.ConstantPropertyLiquidWater,
     p=ambient.default_p_ambient,
     T=ambient.default_T_ambient) 
     annotation (Placement(transformation(extent={{100,-40},{80,-20}}, rotation=
@@ -78,12 +78,12 @@ model PumpingSystem "Model of a pumping system for drinking water"
     rising=3,
     falling=3,
     amplitude=1200,
-    offset=0.001) annotation (Placement(transformation(extent={{0,60},{20,80}}, 
+    offset=0.001) annotation (Placement(transformation(extent={{0,60},{20,80}},
           rotation=0)));
   Modelica_Fluid.Sensors.RelativePressure reservoirPressure(
                                                         redeclare package
       Medium = 
-        Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater) 
+        Modelica.Media.Water.ConstantPropertyLiquidWater) 
     annotation (Placement(transformation(extent={{10,-12},{30,-32}}, rotation=0)));
   Modelica.Blocks.Continuous.FirstOrder PT1(
     T=2,
@@ -92,7 +92,9 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(graphics),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+            100,100}}),
+            graphics),
     Documentation(info="<html>
 Water is pumped from a source by a pump (fitted with check valves), through a pipe whose outlet is 50 m higher than the source, into a reservoir. The users are represented by an equivalent valve, connected to the reservoir.
 <p>
