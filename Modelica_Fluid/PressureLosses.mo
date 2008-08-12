@@ -184,17 +184,69 @@ end SimpleGenericOrifice;
       " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
       annotation (Evaluate=true, Dialog(tab="Advanced"));
     parameter SI.AbsolutePressure dp_small = 1
-      "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
+      "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
       annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
     parameter SI.MassFlowRate m_flow_small = reg_m_flow_small
-      "Turbulent flow if |m_flow| >= m_flow_small (used if WallFriction=QuadraticTurbulent)"
+      "Within regularizatio if |m_flow| < m_flow_small (may be wider for large discontinuities in static head)"
       annotation(Dialog(tab="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
-    SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, (eta_a+eta_b)/2, diameter) if show_Re
+    SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, noEvent(if m_flow>0 then eta_a else eta_b), diameter) if show_Re
       "Reynolds number of pipe";
 
     outer Modelica_Fluid.Ambient ambient "Ambient conditions";
 
-    annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
+  protected
+    SI.DynamicViscosity eta_a = if not WallFriction.use_eta then 1.e-10 else 
+                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(port_a_state_inflow));
+    SI.DynamicViscosity eta_b = if not WallFriction.use_eta then 1.e-10 else 
+                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(port_b_state_inflow));
+    SI.Density d_a = if use_nominal then d_nominal else port_a_d_inflow;
+    SI.Density d_b = if use_nominal then d_nominal else port_b_d_inflow;
+
+    Real g_times_height_ab(final unit="m2/s2") = ambient.g*height_ab
+      "Gravitiy times height_ab = dp_grav/d";
+
+    SI.AbsolutePressure dp_small_staticHead = noEvent(max(dp_small, 0.015*abs(g_times_height_ab*(d_a-d_b))))
+      "Heuristic for large discontinuities in static head";
+    SI.MassFlowRate m_flow_small_staticHead = noEvent(max(m_flow_small, (-5.55e-7*(d_a+d_b)/2+5.5e-4)*abs(g_times_height_ab*(d_a-d_b))))
+      "Heuristic for large discontinuities in static head";
+    parameter Boolean use_x_small_staticHead = abs(height_ab)>0
+      "Use dp_/m_flow_small_staticHead only if static head actually exists" annotation(Evaluate=true);
+  equation
+    if from_dp and not WallFriction.dp_is_zero then
+      m_flow = WallFriction.massFlowRate_dp_staticHead(dp, d_a, d_b, eta_a, eta_b, length, diameter,
+        g_times_height_ab, roughness, if use_x_small_staticHead then dp_small_staticHead else dp_small);
+    else
+      dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
+        g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
+    end if;
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    // Old approach without pressure loss correlations properly addressing static head //
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    /* Density is currently not handled correctly. The correct formula:
+        d = if port_a.m_flow>0 then d_a else d_b
+     leads to a non-linear system of equations that mays have an infinite number of
+     solutions and also no solution may exist for small flow rates.
+     Most likely, this can only be correctly handled with a dynamic momentum balance.
+  */
+    if allowFlowReversal then
+       d = (d_a + d_b)/2
+        "temporary solution that must be improved (BUT NOT WITH if port_a.m_flow>0 then d_a else d_b)";
+    else
+       d = d_a;
+    end if;
+  /*
+  if from_dp and not WallFriction.dp_is_zero then
+     m_flow = WallFriction.massFlowRate_dp(dp-height_ab*ambient.g*d,
+                                           d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
+  else
+     dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
+          + height_ab*ambient.g*d;
+  end if;
+*/
+
+      annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
@@ -269,8 +321,7 @@ simulation and/or might give a more robust simulation.
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "diameter"),
+            textString="diameter"),
           Line(
             points={{-100,74},{100,74}},
             color={0,0,255},
@@ -280,35 +331,7 @@ simulation and/or might give a more robust simulation.
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "length")}));
-  protected
-    SI.DynamicViscosity eta_a = if not WallFriction.use_eta then 1.e-10 else 
-                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(port_a_state_inflow));
-    SI.DynamicViscosity eta_b = if not WallFriction.use_eta then 1.e-10 else 
-                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(port_b_state_inflow));
-    SI.Density d_a = if use_nominal then d_nominal else port_a_d_inflow;
-    SI.Density d_b = if use_nominal then d_nominal else port_b_d_inflow;
-  equation
-    /* Density is currently not handled correctly. The correct formula:
-        d = if port_a.m_flow>0 then d_a else d_b
-     leads to a non-linear system of equations that mays have an infinite number of
-     solutions and also no solution may exist for small flow rates.
-     Most likely, this can only be correctly handled with a dynamic momentum balance.
-  */
-    if allowFlowReversal then
-       d = (d_a + d_b)/2
-        "temporary solution that must be improved (BUT NOT WITH if port_a.m_flow>0 then d_a else d_b)";
-    else
-       d = d_a;
-    end if;
-    if from_dp and not WallFriction.dp_is_zero then
-       m_flow = WallFriction.massFlowRate_dp(dp-height_ab*ambient.g*d,
-                                             d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
-    else
-       dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
-            + height_ab*ambient.g*d;
-    end if;
+            textString="length")}));
   end WallFrictionAndGravity;
 
 model SuddenExpansion
@@ -425,7 +448,8 @@ model SharpEdgedOrifice
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Backward)}),
-    Diagram(graphics={
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={
           Rectangle(
             extent={{-100,60},{100,-60}},
             lineColor={0,0,0},
@@ -450,8 +474,7 @@ model SharpEdgedOrifice
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString=
-               "D_pipe"),
+            textString="D_pipe"),
           Line(
             points={{-30,-10},{-30,12}},
             color={0,0,255},
@@ -461,15 +484,13 @@ model SharpEdgedOrifice
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString=
-               "D_min"),
+            textString="D_min"),
           Text(
             extent={{-20,84},{18,70}},
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString=
-               "L"),
+            textString="L"),
           Line(
             points={{30,68},{-30,68}},
             color={0,0,255},
@@ -483,8 +504,7 @@ model SharpEdgedOrifice
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Backward,
-            textString=
-               "alpha")}));
+            textString="alpha")}));
 end SharpEdgedOrifice;
 
   annotation (Documentation(info="<html>
@@ -1513,7 +1533,9 @@ Laminar region:
           annotation(Dialog(tab="Advanced", enable=not use_Re and not from_dp));
 
         annotation (
-          Diagram(graphics),
+          Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}}),
+                  graphics),
           Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                   {100,100}}),
                graphics),
@@ -1656,14 +1678,14 @@ The used sufficient criteria for monotonicity follows from:
           "Absolute roughness of pipe (> 0 required, details see info layer)";
       annotation (
         Diagram(graphics),
-        Icon(graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+                  100,100}}), graphics={
               Text(
                 extent={{-150,80},{150,120}},
                 lineColor={0,0,0},
                 fillPattern=FillPattern.HorizontalCylinder,
                 fillColor={0,127,255},
-                textString=
-                   "%name"),
+                textString="%name"),
               Rectangle(
                 extent={{-100,60},{100,-60}},
                 lineColor={0,0,0},
@@ -1677,8 +1699,7 @@ The used sufficient criteria for monotonicity follows from:
               Text(
                 extent={{-134,-66},{130,-92}},
                 lineColor={0,0,0},
-                textString=
-                     "quad. turbulent")}),
+                textString="quad. turbulent")}),
           Documentation(info="<html>
  
 </html>"));
@@ -1709,7 +1730,7 @@ The used sufficient criteria for monotonicity follows from:
       // pressure loss characteristic functions
         replaceable partial function massFlowRate_dp
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
-                  extends Modelica.Icons.Function;
+          extends Icons.ObsoleteFunction;
 
           input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
           input SI.Density d_a "Density at port_a";
@@ -1731,9 +1752,35 @@ The used sufficient criteria for monotonicity follows from:
 </html>"));
         end massFlowRate_dp;
 
+        replaceable partial function massFlowRate_dp_staticHead
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction and static head"
+          extends Modelica.Icons.Function;
+
+          input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
+          input SI.Density d_a "Density at port_a";
+          input SI.Density d_b "Density at port_b";
+          input SI.DynamicViscosity eta_a
+            "Dynamic viscosity at port_a (dummy if use_eta = false)";
+          input SI.DynamicViscosity eta_b
+            "Dynamic viscosity at port_b (dummy if use_eta = false)";
+          input SI.Length length "Length of pipe";
+          input SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+          input Real g_times_height_ab
+            "Gravity times (Height(port_b) - Height(port_a))";
+          input SI.Length roughness(min=0) = 2.5e-5
+            "Absolute roughness of pipe, with a default for a smooth steel pipe (dummy if use_roughness = false)";
+          input SI.AbsolutePressure dp_small=1
+            "Turbulent flow if |dp| >= dp_small (dummy if use_dp_small = false)";
+
+          output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+          annotation (Documentation(info="<html>
+ 
+</html>"));
+        end massFlowRate_dp_staticHead;
+
         replaceable partial function pressureLoss_m_flow
           "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction"
-                  extends Modelica.Icons.Function;
+          extends Icons.ObsoleteFunction;
 
           input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
           input SI.Density d_a "Density at port_a";
@@ -1755,6 +1802,31 @@ The used sufficient criteria for monotonicity follows from:
 </html>"));
         end pressureLoss_m_flow;
 
+        replaceable partial function pressureLoss_m_flow_staticHead
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction and static head"
+                  extends Modelica.Icons.Function;
+
+          input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+          input SI.Density d_a "Density at port_a";
+          input SI.Density d_b "Density at port_b";
+          input SI.DynamicViscosity eta_a
+            "Dynamic viscosity at port_a (dummy if use_eta = false)";
+          input SI.DynamicViscosity eta_b
+            "Dynamic viscosity at port_b (dummy if use_eta = false)";
+          input SI.Length length "Length of pipe";
+          input SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+          input Real g_times_height_ab
+            "Gravity times (Height(port_b) - Height(port_a))";
+          input SI.Length roughness(min=0) = 2.5e-5
+            "Absolute roughness of pipe, with a default for a smooth steel pipe (dummy if use_roughness = false)";
+          input SI.MassFlowRate m_flow_small = 0.01
+            "Turbulent flow if |m_flow| >= m_flow_small (dummy if use_m_flow_small = false)";
+          output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
+
+        annotation (Documentation(info="<html>
+ 
+</html>"));
+        end pressureLoss_m_flow_staticHead;
       end PartialWallFriction;
 
       annotation (Documentation(info="<html>
@@ -1869,6 +1941,83 @@ This component describes only the \"light blue curve\" called
         algorithm
           dp := m_flow*128*length*(eta_a + eta_b)/(Modelica.Constants.pi*diameter^4*(d_a + d_b));
         end pressureLoss_m_flow;
+
+        redeclare function extends massFlowRate_dp_staticHead
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction and static head"
+
+          annotation (Documentation(info="<html>
+ 
+</html>"));
+        protected
+          Real k0inv = Modelica.Constants.pi*diameter^4/(128*length)
+            "Constant factor";
+
+          Real dp_grav_a = g_times_height_ab*d_a
+            "Static head if mass flows in design direction (a to b)";
+          Real dp_grav_b = g_times_height_ab*d_b
+            "Static head if mass flows against design direction (b to a)";
+
+          Real dm_flow_ddp_a = k0inv*d_a/eta_a
+            "Slope of mass flow rate over dp if flow in design direction (a to b)";
+          Real dm_flow_ddp_b = k0inv*d_b/eta_b
+            "Slope of mass flow rate over dp if flow against design direction (b to a)";
+
+          Real dp_a=max(dp_grav_a,dp_grav_b)+dp_small
+            "Upper end of regularization domain of the m_flow(dp) relation";
+          Real dp_b=min(dp_grav_a,dp_grav_b)-dp_small
+            "Lower end of regularization domain of the m_flow(dp) relation";
+        algorithm
+        /*
+  dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
+     = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*eta)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
+     = 0.5 * c0*(pi/4)*(D_Re*eta) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
+     = 2*c0/(pi*D_Re^3) * eta/d * m_flow
+     = k0 * eta/d * m_flow
+  k0 = 2*c0/(pi*D_Re^3)
+*/
+          m_flow := if dp<dp_b then dm_flow_ddp_b*(dp-dp_grav_b) else 
+                      (if dp>dp_a then dm_flow_ddp_a*(dp-dp_grav_a) else 
+                        Modelica_Fluid.Utilities.regFun3(dp, dp_b, dp_a, dm_flow_ddp_b*(dp_b - dp_grav_b), dm_flow_ddp_a*(dp_a - dp_grav_a), dm_flow_ddp_b, dm_flow_ddp_a));
+        end massFlowRate_dp_staticHead;
+
+        redeclare function extends pressureLoss_m_flow_staticHead
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction and static head"
+
+          annotation (Documentation(info="<html>
+ 
+</html>"));
+        protected
+          Real k0 = 128*length/(Modelica.Constants.pi*diameter^4)
+            "Constant factor";
+
+          Real dp_grav_a = g_times_height_ab*d_a
+            "Static head if mass flows in design direction (a to b)";
+          Real dp_grav_b = g_times_height_ab*d_b
+            "Static head if mass flows against design direction (b to a)";
+
+          Real ddp_dm_flow_a = k0*eta_a/d_a
+            "Slope of dp over mass flow rate if flow in design direction (a to b)";
+          Real ddp_dm_flow_b = k0*eta_b/d_b
+            "Slope of dp over mass flow rate if flow against design direction (b to a)";
+
+          Real m_flow_a=if dp_grav_a >= dp_grav_b then m_flow_small else m_flow_small + (dp_grav_b-dp_grav_a)/ddp_dm_flow_a
+            "Upper end of regularization domain of the dp(m_flow) relation";
+          Real m_flow_b=if dp_grav_a >= dp_grav_b then -m_flow_small else -m_flow_small - (dp_grav_b - dp_grav_a)/ddp_dm_flow_b
+            "Lower end of regularization domain of the dp(m_flow) relation";
+        algorithm
+        /*
+  dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
+     = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*eta)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
+     = 0.5 * c0*(pi/4)*(D_Re*eta) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
+     = 2*c0/(pi*D_Re^3) * eta/d * m_flow
+     = k0 * eta/d * m_flow
+  k0 = 2*c0/(pi*D_Re^3)
+*/
+          dp := if m_flow <= m_flow_b then (ddp_dm_flow_b*m_flow + dp_grav_b) else 
+                 (if m_flow >= m_flow_a then (ddp_dm_flow_a*m_flow + dp_grav_a) else 
+                 Modelica_Fluid.Utilities.regFun3(m_flow, m_flow_b, m_flow_a,
+                   ddp_dm_flow_b*m_flow_b + dp_grav_b, ddp_dm_flow_a*m_flow_a + dp_grav_a, ddp_dm_flow_b, ddp_dm_flow_a));
+        end pressureLoss_m_flow_staticHead;
       end Laminar;
 
       package QuadraticTurbulent
@@ -1953,6 +2102,93 @@ Reynolds numbers, i.e., the values at the right ordinate where
           k    := 8*zeta/(pi*diameter*diameter)^2;
           dp   := Modelica_Fluid.Utilities.regSquare2(m_flow, m_flow_small, k/d_a, k/d_b);
         end pressureLoss_m_flow;
+
+        redeclare function extends massFlowRate_dp_staticHead
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction and static head"
+          import Modelica.Math;
+          annotation (smoothOrder=1, Documentation(info="<html>
+ 
+</html>"));
+        protected
+          constant Real pi = Modelica.Constants.pi;
+          Real zeta = (length/diameter)/(2*Math.log10(3.7 /(roughness/diameter)))^2;
+          Real k_inv = (pi*diameter*diameter)^2/(8*zeta);
+
+          SI.Pressure dp_grav_a = g_times_height_ab*d_a
+            "Static head if mass flows in design direction (a to b)";
+          SI.Pressure dp_grav_b = g_times_height_ab*d_b
+            "Static head if mass flows against design direction (b to a)";
+
+          Real k1 = d_a*k_inv "Factor in m_flow =  sqrt(k1*(dp-dp_grav_a))";
+          Real k2 = d_b*k_inv "Factor in m_flow = -sqrt(k2*|dp-dp_grav_b|)";
+
+          Real dp_a=max(dp_grav_a,dp_grav_b)+dp_small
+            "Upper end of regularization domain of the m_flow(dp) relation";
+          Real dp_b=min(dp_grav_a,dp_grav_b)-dp_small
+            "Lower end of regularization domain of the m_flow(dp) relation";
+
+        algorithm
+          /*
+   dp = 0.5*zeta*d*v*|v|
+      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
+      = k/d * m_flow * |m_flow| 
+   k  = 0.5*zeta/A^2
+      = 0.5*zeta/(pi*(D/2)^2)^2
+      = 8*zeta/(pi*D^2)^2
+  */
+          assert(roughness > 1.e-10,
+                 "roughness > 0 required for quadratic turbulent wall friction characteristic");
+
+          m_flow := if dp<dp_b then -sqrt(k2*abs(dp-dp_grav_b)) else 
+            (if dp>dp_a then sqrt(k1*(dp-dp_grav_a)) else 
+            Utilities.regFun3(dp, dp_b, dp_a, -sqrt(k2*abs(dp_b - dp_grav_b)), sqrt(k1*(dp_a - dp_grav_a)),
+              if abs(dp_b - dp_grav_b)>0 then k2/(2*sqrt(k2*abs(dp_b - dp_grav_b))) else Modelica.Constants.inf,
+              if abs(dp_a - dp_grav_a)>0 then k1/(2*sqrt(k1*(dp_a - dp_grav_a))) else  Modelica.Constants.inf));
+        end massFlowRate_dp_staticHead;
+
+        redeclare function extends pressureLoss_m_flow_staticHead
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction and static head"
+          import Modelica.Math;
+          annotation (smoothOrder=1, Documentation(info="<html>
+ 
+</html>"));
+        protected
+          constant Real pi = Modelica.Constants.pi;
+          Real zeta = (length/diameter)/(2*Math.log10(3.7 /(roughness/diameter)))^2;
+          Real k = 8*zeta/(pi*diameter*diameter)^2;
+
+          SI.Pressure dp_grav_a = g_times_height_ab*d_a
+            "Static head if mass flows in design direction (a to b)";
+          SI.Pressure dp_grav_b = g_times_height_ab*d_b
+            "Static head if mass flows against design direction (b to a)";
+
+          Real k1 = k/d_a "If m_flow >= 0 then dp = k1*m_flow^2 + dp_grav_a";
+          Real k2 = k/d_b "If m_flow < 0 then dp = -k2*m_flow^2 + dp_grav_b";
+
+          Real m_flow_a=if dp_grav_a >= dp_grav_b then m_flow_small else m_flow_small + sqrt((dp_grav_b - dp_grav_a)/k1)
+            "Upper end of regularization domain of the dp(m_flow) relation";
+          Real m_flow_b=if dp_grav_a >= dp_grav_b then -m_flow_small else -m_flow_small - sqrt((dp_grav_b - dp_grav_a)/k2)
+            "Lower end of regularization domain of the dp(m_flow) relation";
+
+        algorithm
+          /*
+   dp = 0.5*zeta*d*v*|v|
+      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
+      = k/d * m_flow * |m_flow| 
+   k  = 0.5*zeta/A^2
+      = 0.5*zeta/(pi*(D/2)^2)^2
+      = 8*zeta/(pi*D^2)^2
+  */
+          assert(roughness > 1.e-10,
+                 "roughness > 0 required for quadratic turbulent wall friction characteristic");
+
+          dp := if m_flow <= m_flow_b then (-k2*m_flow^2 + dp_grav_b) else 
+            (if m_flow >= m_flow_a then (k1*m_flow^2 + dp_grav_a) else 
+            Utilities.regFun3(m_flow, m_flow_b, m_flow_a, -k2*m_flow_b^2 + dp_grav_b, k1*m_flow_a^2 + dp_grav_a,
+              -2*k2*m_flow_b, 2*k1*m_flow_a));
+        end pressureLoss_m_flow_staticHead;
       end QuadraticTurbulent;
 
       package LaminarAndQuadraticTurbulent
@@ -1974,8 +2210,13 @@ identical to laminar wall friction.
         extends PartialWallFriction(
                   final use_eta = true,
                   final use_roughness = true,
-                  final use_dp_small = false,
-                  final use_m_flow_small = false);
+                  final use_dp_small = true,
+                  final use_m_flow_small = true);
+
+        import ln = Modelica.Math.log "Logarithm, base e";
+        import Modelica.Math.log10 "Logarithm, base 10";
+        import Modelica.Math.exp "Exponential function";
+        import Modelica.Constants.pi;
 
         redeclare function extends massFlowRate_dp
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
@@ -2094,6 +2335,303 @@ Laminar region:
           dp :=Modelica_Fluid.Utilities.regSquare2(m_flow, m_flow_turbulent, k/d_a, k/d_b,
                                                    use_yd0=true, yd0=yd0);
         end pressureLoss_m_flow;
+
+        redeclare function extends massFlowRate_dp_staticHead
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction and static head"
+          import Modelica.Math;
+          annotation (smoothOrder=1, Documentation(info="<html>
+ 
+</html>"));
+
+        protected
+          Real Delta = roughness/diameter "Relative roughness";
+          SI.ReynoldsNumber Re1 = 745*exp(min(1,0.0065/Delta))
+            "Boundary between laminar regime and transition";
+          constant SI.ReynoldsNumber Re2 = 4000
+            "Boundary between transition and turbulent regime";
+
+          SI.Pressure dp_a
+            "Upper end of regularization domain of the m_flow(dp) relation";
+          SI.Pressure dp_b
+            "Lower end of regularization domain of the m_flow(dp) relation";
+
+          SI.MassFlowRate m_flow_a
+            "Value at upper end of regularization domain";
+          SI.MassFlowRate m_flow_b
+            "Value at lower end of regularization domain";
+
+          SI.MassFlowRate dm_flow_ddp_fric_a
+            "Derivative at upper end of regularization domain";
+          SI.MassFlowRate dm_flow_ddp_fric_b
+            "Derivative at lower end of regularization domain";
+
+          SI.Pressure dp_grav_a = g_times_height_ab*d_a
+            "Static head if mass flows in design direction (a to b)";
+          SI.Pressure dp_grav_b = g_times_height_ab*d_b
+            "Static head if mass flows against design direction (b to a)";
+
+        algorithm
+          assert(roughness > 1.e-10,
+            "roughness > 0 required for quadratic turbulent wall friction characteristic");
+
+          dp_a := max(dp_grav_a, dp_grav_b)+dp_small;
+          dp_b := min(dp_grav_a, dp_grav_b)-dp_small;
+
+          if dp>=dp_a then
+            // Positive flow outside regularization
+            m_flow := Internal.m_flow_of_dp_fric(dp - dp_grav_a, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+          elseif dp<=dp_b then
+            // Negative flow outside regularization
+            m_flow := Internal.m_flow_of_dp_fric(dp-dp_grav_b, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+          else
+            // Regularization parameters
+            (m_flow_a, dm_flow_ddp_fric_a) := Internal.m_flow_of_dp_fric(dp_a-dp_grav_a, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+            (m_flow_b, dm_flow_ddp_fric_b) := Internal.m_flow_of_dp_fric(dp_b-dp_grav_b, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+            // Do regularization
+            m_flow := Utilities.regFun3(dp, dp_b, dp_a, m_flow_b, m_flow_a, dm_flow_ddp_fric_b, dm_flow_ddp_fric_a);
+          end if;
+        end massFlowRate_dp_staticHead;
+
+        redeclare function extends pressureLoss_m_flow_staticHead
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction and static head"
+          import Modelica.Math;
+          annotation (smoothOrder=1, Documentation(info="<html>
+ 
+</html>"));
+
+        protected
+          Real Delta = roughness/diameter "Relative roughness";
+          SI.ReynoldsNumber Re1 = 745*exp(min(1,0.0065/Delta))
+            "Boundary between laminar regime and transition";
+          constant SI.ReynoldsNumber Re2 = 4000
+            "Boundary between transition and turbulent regime";
+
+          SI.MassFlowRate m_flow_a
+            "Upper end of regularization domain of the dp(m_flow) relation";
+          SI.MassFlowRate m_flow_b
+            "Lower end of regularization domain of the dp(m_flow) relation";
+
+          SI.Pressure dp_a "Value at upper end of regularization domain";
+          SI.Pressure dp_b "Value at lower end of regularization domain";
+
+          SI.Pressure dp_grav_a = g_times_height_ab*d_a
+            "Static head if mass flows in design direction (a to b)";
+          SI.Pressure dp_grav_b = g_times_height_ab*d_b
+            "Static head if mass flows against design direction (b to a)";
+
+          Real ddp_dm_flow_a
+            "Derivative of pressure drop with mass flow rate at m_flow_a";
+          Real ddp_dm_flow_b
+            "Derivative of pressure drop with mass flow rate at m_flow_b";
+
+        algorithm
+          assert(roughness > 1.e-10,
+            "roughness > 0 required for quadratic turbulent wall friction characteristic");
+
+          m_flow_a := if dp_grav_a<dp_grav_b then 
+            Internal.m_flow_of_dp_fric(dp_grav_b - dp_grav_a, d_a, d_b, eta_a, eta_b, length, diameter,  Re1, Re2, Delta)+m_flow_small else 
+            m_flow_small;
+          m_flow_b := if dp_grav_a<dp_grav_b then 
+            Internal.m_flow_of_dp_fric(dp_grav_a - dp_grav_b, d_a, d_b, eta_a, eta_b, length, diameter,  Re1, Re2, Delta)-m_flow_small else 
+            -m_flow_small;
+
+          if m_flow>=m_flow_a then
+            // Positive flow outside regularization
+            dp := Internal.dp_fric_of_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta) + dp_grav_a;
+          elseif m_flow<=m_flow_b then
+            // Negative flow outside regularization
+            dp := Internal.dp_fric_of_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta) + dp_grav_b;
+          else
+            // Regularization parameters
+            (dp_a, ddp_dm_flow_a) := Internal.dp_fric_of_m_flow(m_flow_a, d_a, d_b, eta_a, eta_b, length, diameter,  Re1, Re2, Delta);
+            dp_a := dp_a + dp_grav_a "Adding dp_grav to dp_fric to get dp";
+            (dp_b, ddp_dm_flow_b) := Internal.dp_fric_of_m_flow(m_flow_b, d_a, d_b, eta_a, eta_b, length, diameter,  Re1, Re2, Delta);
+            dp_b := dp_b + dp_grav_b "Adding dp_grav to dp_fric to get dp";
+            // Do regularization
+            dp := Utilities.regFun3(m_flow, m_flow_b, m_flow_a, dp_b, dp_a, ddp_dm_flow_b, ddp_dm_flow_a);
+          end if;
+        end pressureLoss_m_flow_staticHead;
+
+        package Internal
+          "Functions to calculate mass flow rate from friction pressure drop and vice versa"
+          function m_flow_of_dp_fric
+            "Calculate mass flow rate as function of pressure drop due to friction"
+
+            input SI.Pressure dp_fric
+              "Pressure drop due to friction (dp = port_a.p - port_b.p)";
+            input SI.Density d_a "Density at port_a";
+            input SI.Density d_b "Density at port_b";
+            input SI.DynamicViscosity eta_a
+              "Dynamic viscosity at port_a (dummy if use_eta = false)";
+            input SI.DynamicViscosity eta_b
+              "Dynamic viscosity at port_b (dummy if use_eta = false)";
+            input SI.Length length "Length of pipe";
+            input SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+            input SI.ReynoldsNumber Re1
+              "Boundary between laminar regime and transition";
+            input SI.ReynoldsNumber Re2
+              "Boundary between transition and turbulent regime";
+            input Real Delta "Relative roughness";
+            output SI.MassFlowRate m_flow
+              "Mass flow rate from port_a to port_b";
+            output Real dm_flow_ddp_fric
+              "Derivative of mass flow rate with dp_fric";
+            annotation (smoothOrder=1);
+          protected
+            SI.DynamicViscosity eta "Upstream viscosity";
+            SI.Density d "Upstream density";
+
+            Real zeta;
+            Real k0;
+            Real k_inv;
+            Real dm_flow_ddp_laminar
+              "Derivative of m_flow=m_flow(dp) in laminar regime";
+            SI.AbsolutePressure dp_fric_turbulent
+              "The turbulent region is: |dp_fric| >= dp_fric_turbulent, simple quadratic correlation";
+            SI.AbsolutePressure dp_fric_laminar
+              "The laminar region is: |dp_fric| <= dp_fric_laminar";
+          algorithm
+          /*
+Turbulent region:
+   Re = m_flow*(4/pi)/(D_Re*eta)  
+   dp = 0.5*zeta*d*v*|v|
+      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
+      = k/d * m_flow * |m_flow| 
+   k  = 0.5*zeta/A^2
+      = 0.5*zeta/(pi*(D/2)^2)^2
+      = 8*zeta/(pi*D^2)^2
+   dp_fric_turbulent     =  k/d *(D_Re*eta*pi/4)^2 * Re_turbulent^2  
+ 
+Laminar region:
+   dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
+      = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*eta)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
+      = 0.5 * c0*(pi/4)*(D_Re*eta) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
+      = 2*c0/(pi*D_Re^3) * eta/d * m_flow
+      = k0 * eta/d * m_flow
+   k0 = 2*c0/(pi*D_Re^3)
+*/
+            // Determine upstream density and upstream viscosity
+            if dp_fric >= 0 then
+              d := d_a;
+              eta := eta_a;
+            else
+              d := d_b;
+              eta := eta_b;
+            end if;
+            // Quadratic turbulent
+            zeta := (length/diameter)/(2*log10(3.7/(Delta)))^2;
+            k_inv := (pi*diameter*diameter)^2/(8*zeta);
+            dp_fric_turbulent := sign(dp_fric)*(eta*diameter*pi/4)^2*Re2^2/(k_inv*d);
+
+            // Laminar
+            k0 := 128*length/(pi*diameter^4);
+            dm_flow_ddp_laminar := d/(k0*eta);
+            dp_fric_laminar := sign(dp_fric)*pi*k0*eta^2/d*diameter/4*Re1;
+
+            if abs(dp_fric) > abs(dp_fric_turbulent) then
+              m_flow := sign(dp_fric)*sqrt(d*k_inv*abs(dp_fric));
+              dm_flow_ddp_fric := 0.5*d*k_inv*(d*k_inv*abs(dp_fric))^(-0.5);
+            elseif abs(dp_fric) < abs(dp_fric_laminar) then
+              m_flow := dm_flow_ddp_laminar*dp_fric;
+              dm_flow_ddp_fric := dm_flow_ddp_laminar;
+            else
+              // Preliminary testing seems to indicate that the log-log transform is not required here
+              (m_flow,dm_flow_ddp_fric) := Utilities.cubicHermite_withDerivative(
+                dp_fric, dp_fric_laminar, dp_fric_turbulent, dm_flow_ddp_laminar*dp_fric_laminar,
+                sign(dp_fric_turbulent)*sqrt(d*k_inv*abs(dp_fric_turbulent)), dm_flow_ddp_laminar,
+                if abs(dp_fric_turbulent)>0 then 0.5*d*k_inv*(d*k_inv*abs(dp_fric_turbulent))^(-0.5) else Modelica.Constants.inf);
+            end if;
+          end m_flow_of_dp_fric;
+
+          function dp_fric_of_m_flow
+            "Calculate pressure drop due to friction as function of mass flow rate"
+
+            input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+            input SI.Density d_a "Density at port_a";
+            input SI.Density d_b "Density at port_b";
+            input SI.DynamicViscosity eta_a
+              "Dynamic viscosity at port_a (dummy if use_eta = false)";
+            input SI.DynamicViscosity eta_b
+              "Dynamic viscosity at port_b (dummy if use_eta = false)";
+            input SI.Length length "Length of pipe";
+            input SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+            input SI.ReynoldsNumber Re1
+              "Boundary between laminar regime and transition";
+            input SI.ReynoldsNumber Re2
+              "Boundary between transition and turbulent regime";
+            input Real Delta "Relative roughness";
+            output SI.Pressure dp_fric
+              "Pressure drop due to friction (dp_fric = port_a.p - port_b.p - dp_grav)";
+            output Real ddp_fric_dm_flow
+              "Derivative of pressure drop with mass flow rate";
+            annotation (smoothOrder=1);
+          protected
+            SI.DynamicViscosity eta "Upstream viscosity";
+            SI.Density d "Upstream density";
+            Real zeta;
+            Real k0;
+            Real k;
+            Real ddp_fric_dm_flow_laminar
+              "Derivative of dp_fric = f(m_flow) at zero";
+            SI.MassFlowRate m_flow_turbulent
+              "The turbulent region is: |m_flow| >= m_flow_turbulent";
+            SI.MassFlowRate m_flow_laminar
+              "The laminar region is: |m_flow| <= m_flow_laminar";
+          algorithm
+          /*
+Turbulent region:
+   Re = m_flow*(4/pi)/(D_Re*eta)  
+   dp = 0.5*zeta*d*v*|v|
+      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
+      = k/d * m_flow * |m_flow| 
+   k  = 0.5*zeta/A^2
+      = 0.5*zeta/(pi*(D/2)^2)^2
+      = 8*zeta/(pi*D^2)^2
+   m_flow_turbulent = (pi/4)*D_Re*eta*Re_turbulent
+ 
+Laminar region:
+   dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
+      = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*eta)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
+      = 0.5 * c0*(pi/4)*(D_Re*eta) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
+      = 2*c0/(pi*D_Re^3) * eta/d * m_flow
+      = k0 * eta/d * m_flow
+   k0 = 2*c0/(pi*D_Re^3)
+*/
+            // Determine upstream density and upstream viscosity
+            if m_flow >= 0 then
+              d := d_a;
+              eta := eta_a;
+            else
+              d := d_b;
+              eta := eta_b;
+            end if;
+
+            // Turbulent
+            zeta := (length/diameter)/(2*log10(3.7/(Delta)))^2;
+            k := 8*zeta/(pi*diameter*diameter)^2;
+            m_flow_turbulent := sign(m_flow)*(pi/4)*diameter*eta*Re2;
+
+            // Laminar
+            k0 := 128*length/(pi*diameter^4);
+            ddp_fric_dm_flow_laminar := k0*eta/d;
+            m_flow_laminar := sign(m_flow)*(pi/4)*diameter*eta*Re1;
+
+            if abs(m_flow) > abs(m_flow_turbulent) then
+              dp_fric := k/d*m_flow*abs(m_flow);
+              ddp_fric_dm_flow := 2*k/d*abs(m_flow);
+            elseif abs(m_flow) < abs(m_flow_laminar) then
+              dp_fric := ddp_fric_dm_flow_laminar*m_flow;
+              ddp_fric_dm_flow := ddp_fric_dm_flow_laminar;
+            else
+              // Preliminary testing seems to indicate that the log-log transform is not required here
+              (dp_fric,ddp_fric_dm_flow) := Utilities.cubicHermite_withDerivative(
+                m_flow, m_flow_laminar, m_flow_turbulent, ddp_fric_dm_flow_laminar*m_flow_laminar,
+                k/d*m_flow_turbulent*abs(m_flow_turbulent), ddp_fric_dm_flow_laminar, 2*k/d*abs(m_flow_turbulent));
+            end if;
+          end dp_fric_of_m_flow;
+        end Internal;
       end LaminarAndQuadraticTurbulent;
 
       package Detailed
@@ -2118,9 +2656,14 @@ solving a non-linear equation.
 
         extends PartialWallFriction(
                   final use_eta = true,
-                  final use_roughness = false,
-                  final use_dp_small = false,
-                  final use_m_flow_small = false);
+                  final use_roughness = true,
+                  final use_dp_small = true,
+                  final use_m_flow_small = true);
+
+        import ln = Modelica.Math.log "Logarithm, base e";
+        import Modelica.Math.log10 "Logarithm, base 10";
+        import Modelica.Math.exp "Exponential function";
+        import Modelica.Constants.pi;
 
         redeclare function extends massFlowRate_dp
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
@@ -2261,6 +2804,336 @@ solving a non-linear equation.
           dp :=length*eta*eta/(2*d*diameter*diameter*diameter)*
                (if m_flow >= 0 then lambda2 else -lambda2);
         end pressureLoss_m_flow;
+
+        redeclare function extends massFlowRate_dp_staticHead
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction and static head"
+          annotation (smoothOrder=1);
+
+        protected
+          Real Delta = roughness/diameter "Relative roughness";
+          SI.ReynoldsNumber Re "Reynolds number";
+          SI.ReynoldsNumber Re1 = (745*exp(min(1,0.0065/Delta)))^0.97
+            "Boundary between laminar regime and transition";
+          constant SI.ReynoldsNumber Re2 = 4000
+            "Boundary between transition and turbulent regime";
+          SI.Pressure dp_a
+            "Upper end of regularization domain of the m_flow(dp) relation";
+          SI.Pressure dp_b
+            "Lower end of regularization domain of the m_flow(dp) relation";
+          SI.MassFlowRate m_flow_a
+            "Value at upper end of regularization domain";
+          SI.MassFlowRate m_flow_b
+            "Value at lower end of regularization domain";
+
+          SI.MassFlowRate dm_flow_ddp_fric_a
+            "Derivative at upper end of regularization domain";
+          SI.MassFlowRate dm_flow_ddp_fric_b
+            "Derivative at lower end of regularization domain";
+
+          SI.Pressure dp_grav_a = g_times_height_ab*d_a
+            "Static head if mass flows in design direction (a to b)";
+          SI.Pressure dp_grav_b = g_times_height_ab*d_b
+            "Static head if mass flows against design direction (b to a)";
+
+        algorithm
+          dp_a := max(dp_grav_a, dp_grav_b)+dp_small;
+          dp_b := min(dp_grav_a, dp_grav_b)-dp_small;
+
+          if dp>=dp_a then
+            // Positive flow outside regularization
+            m_flow := Internal.m_flow_of_dp_fric(dp-dp_grav_a, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+          elseif dp<=dp_b then
+            // Negative flow outside regularization
+            m_flow := Internal.m_flow_of_dp_fric(dp-dp_grav_b, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+          else
+            // Regularization parameters
+            (m_flow_a, dm_flow_ddp_fric_a) := Internal.m_flow_of_dp_fric(dp_a-dp_grav_a, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+            (m_flow_b, dm_flow_ddp_fric_b) := Internal.m_flow_of_dp_fric(dp_b-dp_grav_b, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+            // Do regularization
+            m_flow := Utilities.regFun3(dp, dp_b, dp_a, m_flow_b, m_flow_a, dm_flow_ddp_fric_b, dm_flow_ddp_fric_a);
+          end if;
+        end massFlowRate_dp_staticHead;
+
+        redeclare function extends pressureLoss_m_flow_staticHead
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction and static head"
+          annotation (smoothOrder=1);
+
+        protected
+          Real Delta = roughness/diameter "Relative roughness";
+          SI.ReynoldsNumber Re1 = 745*exp(min(1,0.0065/Delta))
+            "Boundary between laminar regime and transition";
+          constant SI.ReynoldsNumber Re2 = 4000
+            "Boundary between transition and turbulent regime";
+
+          SI.MassFlowRate m_flow_a
+            "Upper end of regularization domain of the dp(m_flow) relation";
+          SI.MassFlowRate m_flow_b
+            "Lower end of regularization domain of the dp(m_flow) relation";
+
+          SI.Pressure dp_a "Value at upper end of regularization domain";
+          SI.Pressure dp_b "Value at lower end of regularization domain";
+
+          SI.Pressure dp_grav_a = g_times_height_ab*d_a
+            "Static head if mass flows in design direction (a to b)";
+          SI.Pressure dp_grav_b = g_times_height_ab*d_b
+            "Static head if mass flows against design direction (b to a)";
+
+          Real ddp_dm_flow_a
+            "Derivative of pressure drop with mass flow rate at m_flow_a";
+          Real ddp_dm_flow_b
+            "Derivative of pressure drop with mass flow rate at m_flow_b";
+
+        algorithm
+          m_flow_a := if dp_grav_a<dp_grav_b then 
+            Internal.m_flow_of_dp_fric(dp_grav_b - dp_grav_a, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta)+m_flow_small else 
+            m_flow_small;
+          m_flow_b := if dp_grav_a<dp_grav_b then 
+            Internal.m_flow_of_dp_fric(dp_grav_a - dp_grav_b, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta)-m_flow_small else 
+            -m_flow_small;
+
+          if m_flow>=m_flow_a then
+            // Positive flow outside regularization
+            dp := Internal.dp_fric_of_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta) + dp_grav_a;
+          elseif m_flow<=m_flow_b then
+            // Negative flow outside regularization
+            dp := Internal.dp_fric_of_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta) + dp_grav_b;
+          else
+            // Regularization parameters
+            (dp_a, ddp_dm_flow_a) := Internal.dp_fric_of_m_flow(m_flow_a, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+            dp_a := dp_a + dp_grav_a "Adding dp_grav to dp_fric to get dp";
+            (dp_b, ddp_dm_flow_b) := Internal.dp_fric_of_m_flow(m_flow_b, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+            dp_b := dp_b + dp_grav_b "Adding dp_grav to dp_fric to get dp";
+            // Do regularization
+            dp := Utilities.regFun3(m_flow, m_flow_b, m_flow_a, dp_b, dp_a, ddp_dm_flow_b, ddp_dm_flow_a);
+          end if;
+        end pressureLoss_m_flow_staticHead;
+
+      package Internal
+          "Functions to calculate mass flow rate from friction pressure drop and vice versa"
+        function m_flow_of_dp_fric
+            "Calculate mass flow rate as function of pressure drop due to friction"
+
+          input SI.Pressure dp_fric
+              "Pressure drop due to friction (dp = port_a.p - port_b.p)";
+          input SI.Density d_a "Density at port_a";
+          input SI.Density d_b "Density at port_b";
+          input SI.DynamicViscosity eta_a
+              "Dynamic viscosity at port_a (dummy if use_eta = false)";
+          input SI.DynamicViscosity eta_b
+              "Dynamic viscosity at port_b (dummy if use_eta = false)";
+          input SI.Length length "Length of pipe";
+          input SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+          input SI.ReynoldsNumber Re1
+              "Boundary between laminar regime and transition";
+          input SI.ReynoldsNumber Re2
+              "Boundary between transition and turbulent regime";
+          input Real Delta "Relative roughness";
+          output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+          output Real dm_flow_ddp_fric
+              "Derivative of mass flow rate with dp_fric";
+          annotation(smoothOrder=1);
+
+          protected
+          function interpolateInRegion2_withDerivative
+              "Interpolation in log-log space using a cubic Hermite polynomial, where x=log10(lambda2), y=log10(Re)"
+
+            input Real lambda2 "Known independent variable";
+            input SI.ReynoldsNumber Re1
+                "Boundary between laminar regime and transition";
+            input SI.ReynoldsNumber Re2
+                "Boundary between transition and turbulent regime";
+            input Real Delta "Relative roughness";
+            input SI.Pressure dp_fric
+                "Pressure drop due to friction (dp = port_a.p - port_b.p)";
+            output SI.ReynoldsNumber Re "Unknown return variable";
+            output Real dRe_ddp "Derivative of return value";
+            annotation (smoothOrder=1);
+            // point lg(lambda2(Re1)) with derivative at lg(Re1)
+            protected
+            Real x1=log10(64*Re1);
+            Real y1=log10(Re1);
+            Real y1d=1;
+
+            // Point lg(lambda2(Re2)) with derivative at lg(Re2)
+            Real aux2=Delta/3.7 + 5.74/Re2^0.9;
+            Real aux3=log10(aux2);
+            Real L2=0.25*(Re2/aux3)^2;
+            Real aux4=2.51/sqrt(L2) + 0.27*Delta;
+            Real aux5=-2*sqrt(L2)*log10(aux4);
+            Real x2=log10(L2);
+            Real y2=log10(aux5);
+            Real y2d=0.5 + (2.51/ln(10))/(aux5*aux4);
+
+            // Point of interest in transformed space
+            Real x=log10(lambda2);
+            Real y;
+            Real dy_dx "Derivative in transformed space";
+          algorithm
+            // Interpolation
+            (y, dy_dx) := Utilities.cubicHermite_withDerivative(x, x1, x2, y1, y2, y1d, y2d);
+
+            // Return value
+            Re := 10^y;
+
+            // Derivative of return value
+            dRe_ddp := Re/abs(dp_fric)*dy_dx;
+          end interpolateInRegion2_withDerivative;
+
+          SI.DynamicViscosity eta "Upstream viscosity";
+          SI.Density d "Upstream density";
+          Real lambda2 "Modified friction coefficient (= lambda*Re^2)";
+          SI.ReynoldsNumber Re "Reynolds number";
+          Real dRe_ddp "dRe/ddp";
+          Real aux1;
+          Real aux2;
+
+        algorithm
+          // Determine upstream density and upstream viscosity
+          if dp_fric >= 0 then
+            d := d_a;
+            eta := eta_a;
+          else
+            d := d_b;
+            eta := eta_b;
+          end if;
+
+          // Positive mass flow rate
+          lambda2 := abs(dp_fric)*2*diameter^3*d/(length*eta*eta)
+              "Known as lambda2=f(dp)";
+
+          aux1:=(2*diameter^3*d)/(length*eta^2);
+
+          // Determine Re and dRe/ddp under the assumption of laminar flow
+          Re := lambda2/64 "Hagen-Poiseuille";
+          dRe_ddp := aux1/64 "Hagen-Poiseuille";
+
+          // Modify Re, if turbulent flow
+          if Re > Re1 then
+            Re :=-2*sqrt(lambda2)*log10(2.51/sqrt(lambda2) + 0.27*Delta)
+                "Colebrook-White";
+            aux2 := sqrt(aux1*abs(dp_fric));
+            dRe_ddp := 1/ln(10)*(-2*ln(2.51/aux2+0.27*Delta)*aux1/(2*aux2)+2*2.51/(2*abs(dp_fric)*(2.51/aux2+0.27*Delta)));
+            if Re < Re2 then
+              (Re, dRe_ddp) := interpolateInRegion2_withDerivative(lambda2, Re1, Re2, Delta, dp_fric);
+            end if;
+          end if;
+
+          // Determine mass flow rate
+          m_flow := (pi*diameter/4)*eta*(if dp_fric >= 0 then Re else -Re);
+          // Determine derivative of mass flow rate with dp_fric
+          dm_flow_ddp_fric := (pi*diameter*eta)/4*dRe_ddp;
+        end m_flow_of_dp_fric;
+
+        function dp_fric_of_m_flow
+            "Calculate pressure drop due to friction as function of mass flow rate"
+
+          input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+          input SI.Density d_a "Density at port_a";
+          input SI.Density d_b "Density at port_b";
+          input SI.DynamicViscosity eta_a
+              "Dynamic viscosity at port_a (dummy if use_eta = false)";
+          input SI.DynamicViscosity eta_b
+              "Dynamic viscosity at port_b (dummy if use_eta = false)";
+          input SI.Length length "Length of pipe";
+          input SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+          input SI.ReynoldsNumber Re1
+              "Boundary between laminar regime and transition";
+          input SI.ReynoldsNumber Re2
+              "Boundary between transition and turbulent regime";
+          input Real Delta "Relative roughness";
+          output SI.Pressure dp_fric
+              "Pressure drop due to friction (dp_fric = port_a.p - port_b.p - dp_grav)";
+          output Real ddp_fric_dm_flow
+              "Derivative of pressure drop with mass flow rate";
+          annotation(smoothOrder=1);
+
+          protected
+          function interpolateInRegion2
+              "Interpolation in log-log space using a cubic Hermite polynomial, where x=log10(Re), y=log10(lambda2)"
+
+            input SI.ReynoldsNumber Re "Known independent variable";
+            input SI.ReynoldsNumber Re1
+                "Boundary between laminar regime and transition";
+            input SI.ReynoldsNumber Re2
+                "Boundary between transition and turbulent regime";
+            input Real Delta "Relative roughness";
+            input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+            output Real lambda2 "Unknown return value";
+            output Real dlambda2_dm_flow "Derivative of return value";
+            annotation(smoothOrder=1);
+            // point lg(lambda2(Re1)) with derivative at lg(Re1)
+            protected
+            Real x1 = log10(Re1);
+            Real y1 = log10(64*Re1);
+            Real y1d = 1;
+
+            // Point lg(lambda2(Re2)) with derivative at lg(Re2)
+            Real aux2 = Delta/3.7 + 5.74/Re2^0.9;
+            Real aux3 = log10(aux2);
+            Real L2 = 0.25*(Re2/aux3)^2;
+            Real x2 = log10(Re2);
+            Real y2 = log10(L2);
+            Real y2d = 2+(2*5.74*0.9)/(ln(aux2)*Re2^0.9*aux2);
+
+            // Point of interest in transformed space
+            Real x=log10(Re);
+            Real y;
+            Real dy_dx "Derivative in transformed space";
+          algorithm
+            // Interpolation
+            (y, dy_dx) := Utilities.cubicHermite_withDerivative(x, x1, x2, y1, y2, y1d, y2d);
+
+            // Return value
+            lambda2 := 10^y;
+
+            // Derivative of return value
+            dlambda2_dm_flow := lambda2/abs(m_flow)*dy_dx;
+          end interpolateInRegion2;
+
+          SI.DynamicViscosity eta "Upstream viscosity";
+          SI.Density d "Upstream density";
+          SI.ReynoldsNumber Re "Reynolds number";
+          Real lambda2 "Modified friction coefficient (= lambda*Re^2)";
+          Real dlambda2_dm_flow "dlambda2/dm_flow";
+          Real aux1;
+          Real aux2;
+
+        algorithm
+          // Determine upstream density and upstream viscosity
+          if m_flow >= 0 then
+            d := d_a;
+            eta := eta_a;
+          else
+            d := d_b;
+            eta := eta_b;
+          end if;
+
+          // Determine Reynolds number
+          Re :=(4/pi)*abs(m_flow)/(diameter*eta);
+
+          aux1 := 4/(pi*diameter*eta);
+
+          // Use correlation for lambda2 depending on actual conditions
+          if Re <= Re1 then
+            lambda2 := 64*Re "Hagen-Poiseuille";
+            dlambda2_dm_flow := 64*aux1 "Hagen-Poiseuille";
+          elseif Re >= Re2 then
+            lambda2 := 0.25*(Re/log10(Delta/3.7 + 5.74/Re^0.9))^2 "Swamee-Jain";
+            aux2 := Delta/3.7+5.74/((aux1*abs(m_flow))^0.9);
+            dlambda2_dm_flow := 0.5*aux1*Re*ln(10)^2*(1/(ln(aux2)^2)+(5.74*0.9)/(ln(aux2)^3*Re^0.9*aux2))
+                "Swamee-Jain";
+          else
+            (lambda2, dlambda2_dm_flow) := interpolateInRegion2(Re, Re1, Re2, Delta, m_flow);
+          end if;
+
+          // Compute pressure drop from lambda2
+          dp_fric :=length*eta*eta/(2*d*diameter*diameter*diameter)*
+               (if m_flow >= 0 then lambda2 else -lambda2);
+
+          // Compute derivative from dlambda2/dm_flow
+          ddp_fric_dm_flow := (length*eta^2)/(2*diameter^3*d)*dlambda2_dm_flow;
+        end dp_fric_of_m_flow;
+      end Internal;
       end Detailed;
     end WallFriction;
 

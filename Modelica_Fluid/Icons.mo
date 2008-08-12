@@ -26,8 +26,7 @@ package Icons "Library of resuable icons"
           Text(
             extent={{-125,158},{115,103}},
             lineColor={255,0,0},
-            textString=
-                 "%name")}));
+            textString="%name")}));
   end VariantLibrary;
 
   partial package BaseClassLibrary "Icon for library"
@@ -54,19 +53,41 @@ package Icons "Library of resuable icons"
           Text(
             extent={{-94,15},{73,-16}},
             lineColor={0,0,255},
-            textString=
-                 "Library of"),
+            textString="Library of"),
           Text(
             extent={{-120,122},{120,73}},
             lineColor={255,0,0},
-            textString=
-                 "%name"),
+            textString="%name"),
           Text(
             extent={{-92,-44},{73,-72}},
             lineColor={0,0,255},
-            textString=
-                 "Base classes")}));
+            textString="Base classes")}));
   end BaseClassLibrary;
+
+  partial class ObsoleteFunction "Icon for an interal function"
+
+  annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+              -100},{100,100}}), graphics={
+          Text(
+            extent={{-140,162},{136,102}},
+            textString="%name",
+            lineColor={0,0,255}),
+          Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={255,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Text(
+            extent={{-100,100},{100,-100}},
+            lineColor={255,0,0},
+            textString="f")}),
+                      Documentation(info="<html>
+<p>
+This icon is designed for a <b>function</b>
+</p>
+</html>"));
+
+  end ObsoleteFunction;
   annotation (Documentation(info="<html>
  
 </html>"));
