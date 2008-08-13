@@ -39,7 +39,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
                       smooth(0,if dp>=0 then Utilities.regRoot(dp, delta*dp_nom) else 0);
       else
         // m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dp);
-        m_flow = flowCharacteristic(modifiedStemPosition)*Av^sqrt(port_a_d_inflow)*
+        m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
           Utilities.regRoot(dp, delta*dp_nom);
       end if;
     end ValveIncompressible;
