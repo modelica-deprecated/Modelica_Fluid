@@ -699,8 +699,12 @@ The second graph shows the continous derivative of this regularization function:
       y := y0; // == y1
     else
       // Points (x0,y0) and (x1,y1) not on horizonzal line
-      xstar :=1/3*(-3*x0*y0d - 3*x0*y1d + 6*x0*Delta0 - 2*h0*y0d - h0*y1d + 3*h0*
-        Delta0)/(-y0d - y1d + 2*Delta0);
+      if abs(y1d+y0d-2*Delta0)<100*Modelica.Constants.eps then
+        xstar := (x1-x0)*(2*y0d+y1d-3*Delta0)*(if (y0d+y1d-2*Delta0)>=0 then 1 else -1)*Modelica.Constants.inf;
+      else
+        xstar :=1/3*(-3*x0*y0d - 3*x0*y1d + 6*x0*Delta0 - 2*h0*y0d - h0*y1d + 3*h0*
+          Delta0)/(-y0d - y1d + 2*Delta0);
+      end if;
       mu :=xstar - x0;
       eta :=x1 - xstar;
       omega :=3*(y0d + y1d - 2*Delta0)*(xstar - x0)^2/h0^2 + 2*(-2*y0d - y1d + 3*
@@ -708,7 +712,19 @@ The second graph shows the continous derivative of this regularization function:
 
       aux01 := 0.25 * sign(Delta0) * min(abs(omega), abs(Delta0))
         "Slope c if not using plain cubic S0";
-      aux02 := -1/3*(6*y1d*y0*x1+y0d*y1d*x1^2-6*y0d*x0*y0+y0d^2*x0^2+y0d^2*x1^2+y1d^2*x1^2+y1d^2*x0^2-2*y0d*x0*y1d*x1-2*x0*y0d^2*x1+y0d*y1d*x0^2+6*y0d*x0*y1-6*y0d*y1*x1+6*y0d*y0*x1-2*x0*y1d^2*x1-6*y1d*y1*x1+6*y1d*x0*y1-6*y1d*x0*y0-18*y1*y0+9*y1^2+9*y0^2)/(y0d*x1^2-2*x0*y0d*x1+y1d*x1^2-2*x0*y1d*x1-2*y1*x1+2*y0*x1+y0d*x0^2+y1d*x0^2+2*x0*y1-2*x0*y0);
+      if abs(y0d-y1d)<=100*Modelica.Constants.eps then
+        // y0 == y1 (value and sign equal) -> resolve indefinite 0/0
+        aux02 := y0d;
+      elseif abs(y1d+y0d-2*Delta0)<100*Modelica.Constants.eps then
+        // (y1d+y0d-2*Delta0) approximately 0 -> avoid division by 0
+        aux02 := (6*Delta0*(y1d+y0d-3/2*Delta0)-y1d*y0d-y1d^2-y0d^2)*(if (y1d+y0d-2*Delta0)>=0 then 1 else -1)*Modelica.Constants.inf;
+      else
+        // Okay, no guarding necessary
+        aux02 := (6*Delta0*(y1d+y0d-3/2*Delta0)-y1d*y0d-y1d^2-y0d^2)/(3*(y1d+y0d-2*Delta0));
+      end if;
+
+      //aux02 := -1/3*(y0d^2+y0d*y1d-6*y0d*Delta0+y1d^2-6*y1d*Delta0+9*Delta0^2)/(y0d+y1d-2*Delta0);
+      //aux02 := -1/3*(6*y1d*y0*x1+y0d*y1d*x1^2-6*y0d*x0*y0+y0d^2*x0^2+y0d^2*x1^2+y1d^2*x1^2+y1d^2*x0^2-2*y0d*x0*y1d*x1-2*x0*y0d^2*x1+y0d*y1d*x0^2+6*y0d*x0*y1-6*y0d*y1*x1+6*y0d*y0*x1-2*x0*y1d^2*x1-6*y1d*y1*x1+6*y1d*x0*y1-6*y1d*x0*y0-18*y1*y0+9*y1^2+9*y0^2)/(y0d*x1^2-2*x0*y0d*x1+y1d*x1^2-2*x0*y1d*x1-2*y1*x1+2*y0*x1+y0d*x0^2+y1d*x0^2+2*x0*y1-2*x0*y0);
 
       // Test criteria (also used to avoid saddle points that lead to integrator contraction):
       //
@@ -735,6 +751,10 @@ The second graph shows the continous derivative of this regularization function:
           c := 0.1*Delta0;
         end if;
         theta0 := (y0d*mu + y1d*eta)/h0;
+        if abs(theta0 - c)<1e-6 then
+          // Slightly reduce c in order to avoid ill-posed problem
+          c := (1-1e-6)*theta0;
+        end if;
         rho := 3*(Delta0 - c)/(theta0 - c);
         mu_tilde := rho * mu;
         eta_tilde := rho * eta;
