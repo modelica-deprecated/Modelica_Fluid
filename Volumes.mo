@@ -4,8 +4,7 @@ package Volumes "Generic volume, tank and other volume type components"
 
     model MixingVolume
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)"
-      extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolume(
-                                                          V_lumped=V, Ws_flow=0);
+      extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolume;
       parameter SI.Volume V "Volume";
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort
       "Thermal port" 
@@ -29,6 +28,8 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     equation
       thermalPort.T = medium.T;
       Qs_flow = thermalPort.Q_flow;
+      Ws_flow = 0;
+      V = V_lumped;
     end MixingVolume;
 
   model SweptVolume
@@ -36,7 +37,9 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     extends BaseClasses.PartialLumpedVolume;
     parameter SI.Area pistonCrossArea "cross sectional area of pistion";
     parameter SI.Volume clearance "remaining volume at zero piston stroke";
-    annotation (Diagram(graphics),
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+              -100,-100},{100,100}}),
+                        graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false,
             extent={{-100,-100},{100,100}}), graphics={
           Rectangle(
@@ -659,7 +662,7 @@ of the diagram animation in Dymola can be set via command
 </ul>
 </html>"),
       Diagram(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1},
           initialScale=0.2), graphics),
