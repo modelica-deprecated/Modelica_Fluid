@@ -25,8 +25,8 @@ model TestSpecificEnthalpy
     annotation (Placement(transformation(extent={{-10,-30},{10,-10}}, rotation=
             0)));
   Modelica.Blocks.Sources.Sine sine1(amplitude=1600e3, offset=1800e3) 
-                                    annotation (Placement(transformation(extent
-          ={{-80,-10},{-60,10}}, rotation=0)));
+                                    annotation (Placement(transformation(extent=
+           {{-80,-10},{-60,10}}, rotation=0)));
 equation
   connect(boundary_prescribed_1.port, specificEnthalpy.port) annotation (Line(
       points={{-20,20},{0,20}},

@@ -7,19 +7,21 @@ package Sources
     parameter Boolean use_p=true "select p or d" 
       annotation (Evaluate = true,
                   Dialog(group = "Boundary pressure or Boundary density"));
-    parameter Medium.AbsolutePressure p "Boundary pressure" 
+    parameter Medium.AbsolutePressure p=Medium.p_default "Boundary pressure" 
       annotation (Dialog(group = "Boundary pressure or Boundary density",
                          enable = use_p));
-    parameter Medium.Density d=1000 "Boundary density" 
+    parameter Medium.Density d=Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+      "Boundary density" 
       annotation (Dialog(group = "Boundary pressure or Boundary density",
                          enable=not use_p));
     parameter Boolean use_T=true "select T or h" 
       annotation (Evaluate = true,
                   Dialog(group = "Boundary temperature or Boundary specific enthalpy"));
-    parameter Medium.Temperature T "Boundary temperature" 
+    parameter Medium.Temperature T=Medium.T_default "Boundary temperature" 
       annotation (Dialog(group = "Boundary temperature or Boundary specific enthalpy",
                          enable = use_T));
-    parameter Medium.SpecificEnthalpy h "Boundary specific enthalpy" 
+    parameter Medium.SpecificEnthalpy h=Medium.h_default
+      "Boundary specific enthalpy" 
       annotation (Dialog(group="Boundary temperature or Boundary specific enthalpy",
                   enable = not use_T));
     parameter Medium.MassFraction X[Medium.nX](
@@ -180,11 +182,11 @@ to define fixed or prescribed ambient conditions.
     parameter Boolean useCompositionInput = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Medium.AbsolutePressure p = Medium.reference_p
+    parameter Medium.AbsolutePressure p = Medium.p_default
       "Fixed value of pressure" 
       annotation (Evaluate = true,
                   Dialog(enable = not usePressureInput));
-    parameter Medium.Temperature T = Medium.reference_T
+    parameter Medium.Temperature T = Medium.T_default
       "Fixed value of temperature" 
       annotation (Evaluate = true,
                   Dialog(enable = not useTemperatureInput));
@@ -299,7 +301,7 @@ with exception of boundary pressure, do not have an effect.
     parameter Boolean useCompositionInput = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Medium.AbsolutePressure p = Medium.reference_p
+    parameter Medium.AbsolutePressure p = Medium.p_default
       "Fixed value of pressure" 
       annotation (Evaluate = true,
                   Dialog(enable = not usePressureInput));
@@ -412,7 +414,7 @@ with exception of boundary pressure, do not have an effect.
       "Fixed mass flow rate going out of the fluid port" 
       annotation (Evaluate = true,
                   Dialog(enable = not useFlowRateInput));
-    parameter Medium.Temperature T = Medium.reference_T
+    parameter Medium.Temperature T = Medium.T_default
       "Fixed value of temperature" 
       annotation (Evaluate = true,
                   Dialog(enable = not useTemperatureInput));
@@ -696,7 +698,7 @@ with exception of boundary flow rate, do not have an effect.
     extends Modelica_Fluid.Icons.BaseClassLibrary;
   partial model PartialSource
       "Partial component source with one fluid connector"
-    import Modelica.Constants;
+      import Modelica.Constants;
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium
         "Medium model within the source" 

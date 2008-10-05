@@ -149,7 +149,7 @@ package TestCriticalCases
       m_flow_nom=1,
       d_nom=1000,
       dp_nom=200000) 
-                  annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+                  annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
@@ -157,7 +157,7 @@ package TestCriticalCases
       m_flow_nom=1,
       d_nom=1000,
       dp_nom=200000) 
-                  annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+                  annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -207,7 +207,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-72,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-72,6}},
           color={0,127,255}));
     connect(valveIncompressible1.port_b, sink.port) annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
@@ -251,14 +251,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+      d_nom=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+      d_nom=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -303,7 +303,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-72,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-72,6}},
           color={0,127,255}));
     connect(valveIncompressible1.port_b, sink.port) annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
@@ -347,14 +347,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+      d_nom=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+      d_nom=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -404,7 +404,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           extent={{-6,-7},{6,7}},
           rotation=90)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-80,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-80,6}},
           color={0,127,255}));
     connect(valveIncompressible1.port_b, sink.port) annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
@@ -450,14 +450,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+      d_nom=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+      d_nom=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -510,7 +510,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
           extent={{-6,-7},{6,7}},
           rotation=90)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-80,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-80,6}},
           color={0,127,255}));
     connect(valveIncompressible1.port_b, sink.port) annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
@@ -607,7 +607,7 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
             extent={{16,-10},{36,10}}, rotation=0)));
 
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,0},{-76,0}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,0},{-76,0}},
           color={0,127,255}));
     connect(valveIncompressible.port_b, sink.port) 
       annotation (Line(points={{72,0},{82,0}}, color={0,127,255}));
@@ -700,16 +700,7 @@ fails for zero flow rate.
       diameter=2.5e-2,
       redeclare package Medium = Medium,
       length=2)                          annotation (Placement(transformation(
-            extent={{-8,-46},{12,-26}}, rotation=0)));
-    Modelica_Fluid.Pipes.LumpedPipe pipe5(
-      p_a_start=5.0e5,
-      use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
-      diameter=2.5e-2,
-      redeclare package Medium = Medium,
-      length=20)                         annotation (Placement(transformation(
-            extent={{26,-60},{46,-40}}, rotation=0)));
+            extent={{-16,-46},{4,-26}}, rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe6(
       p_a_start=5.0e5,
       use_T_start=true,
@@ -726,7 +717,7 @@ fails for zero flow rate.
       d_nom=1000,
       dp_nom=30000,
       minStemPosition=0.01) 
-                  annotation (Placement(transformation(extent={{-40,48},{-26,64}}, 
+                  annotation (Placement(transformation(extent={{-40,48},{-26,64}},
             rotation=0)));
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
@@ -753,7 +744,7 @@ fails for zero flow rate.
       d_nom=1000,
       dp_nom=30000,
       minStemPosition=0.01) 
-                  annotation (Placement(transformation(extent={{62,2},{76,18}}, 
+                  annotation (Placement(transformation(extent={{62,2},{76,18}},
             rotation=0)));
     Sources.FixedBoundary_pTX sink(
       redeclare package Medium = Medium,
@@ -776,7 +767,7 @@ fails for zero flow rate.
     Modelica.Blocks.Sources.Step valveOpening3(
       height=-0.2,
       offset=1,
-      startTime=2) annotation (Placement(transformation(extent={{8,68},{28,88}}, 
+      startTime=2) annotation (Placement(transformation(extent={{8,68},{28,88}},
             rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe8(
       p_a_start=5.0e5,
@@ -786,7 +777,7 @@ fails for zero flow rate.
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
-          origin={8,30},
+          origin={10,30},
           extent={{-10,-10},{10,10}},
           rotation=270)));
     Modelica_Fluid.Pipes.LumpedPipe pipe9(
@@ -797,7 +788,7 @@ fails for zero flow rate.
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
-            extent={{12,46},{32,66}}, rotation=0)));
+            extent={{16,46},{36,66}}, rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe10(
       p_a_start=5.0e5,
       use_T_start=true,
@@ -807,33 +798,39 @@ fails for zero flow rate.
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{18,-4},{38,16}}, rotation=0)));
+    Modelica_Fluid.Pipes.LumpedPipe pipe5(
+      p_a_start=5.0e5,
+      use_T_start=true,
+      redeclare package WallFriction = 
+          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      diameter=2.5e-2,
+      redeclare package Medium = Medium,
+      length=20)                         annotation (Placement(transformation(
+            extent={{24,-60},{44,-40}}, rotation=0)));
   equation
     connect(source.port, pipe1.port_a) annotation (Line(points={{-86,10},{-78,
             10}}, color={0,127,255}));
-    annotation (Diagram(graphics),
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{
+              -100,-100},{100,100}}),
+                        graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false));
     connect(pipe1.port_b, pipe3.port_a) annotation (Line(points={{-58,10},{-50,
             10},{-50,-6}}, color={0,127,255}));
     connect(pipe1.port_b, pipe2.port_a) annotation (Line(points={{-58,10},{-50,
             10},{-50,26}}, color={0,127,255}));
-    connect(pipe4.port_b, pipe5.port_a) annotation (Line(points={{12,-36},{18,
-            -36},{18,-50},{26,-50}}, color={0,127,255}));
-    connect(pipe4.port_b, pipe6.port_a) annotation (Line(points={{12,-36},{18,
-            -36},{18,-22},{26,-22}}, color={0,127,255}));
     connect(pipe2.port_b, valve1.port_a) annotation (Line(points={{-50,46},{-50,
             56},{-40,56}}, color={0,127,255}));
-    connect(valve2.port_b, pipe4.port_a) annotation (Line(points={{-26,-36},{-8,
-            -36}}, color={0,127,255}));
+    connect(valve2.port_b, pipe4.port_a) annotation (Line(points={{-26,-36},{
+            -16,-36}},
+                   color={0,127,255}));
     connect(pipe3.port_b, valve2.port_a) annotation (Line(points={{-50,-26},{
             -50,-36},{-40,-36}}, color={0,127,255}));
     connect(valve1.port_b, pipe7.port_a) annotation (Line(points={{-26,56},{-18,
             56}}, color={0,127,255}));
     connect(pipe6.port_b, valve3.port_a) annotation (Line(points={{46,-22},{54,
             -22},{54,10},{62,10}}, color={0,127,255}));
-    connect(pipe5.port_b, valve3.port_a) annotation (Line(points={{46,-50},{54,
-            -50},{54,10},{62,10}}, color={0,127,255}));
-    connect(valve3.port_b, sink.port) annotation (Line(points={{76,10},{86,10}}, 
+    connect(valve3.port_b, sink.port) annotation (Line(points={{76,10},{86,10}},
           color={0,127,255}));
     connect(valveOpening1.y, valve1.stemPosition) annotation (Line(points={{-45,
             90},{-33,90},{-33,63.2}}, color={0,0,127}));
@@ -842,17 +839,32 @@ fails for zero flow rate.
     connect(valveOpening3.y, valve3.stemPosition) annotation (Line(points={{29,
             78},{69,78},{69,17.2}}, color={0,0,127}));
     connect(pipe7.port_b, pipe9.port_a) 
-      annotation (Line(points={{2,56},{12,56}}, color={0,127,255}));
-    connect(pipe7.port_b, pipe8.port_a) annotation (Line(points={{2,56},{8,56},
-            {8,40}}, color={0,127,255}));
-    connect(pipe9.port_b, valve3.port_a) annotation (Line(points={{32,56},{62,
-            56},{62,10}}, color={0,127,255}));
-    connect(pipe8.port_b, pipe10.port_a) annotation (Line(points={{8,20},{8,6},
+      annotation (Line(points={{2,56},{16,56}}, color={0,127,255}));
+    connect(pipe7.port_b, pipe8.port_a) annotation (Line(points={{2,56},{10,56},
+            {10,40}},color={0,127,255}));
+    connect(pipe9.port_b, valve3.port_a) annotation (Line(points={{36,56},{54,
+            56},{54,10},{62,10}},
+                          color={0,127,255}));
+    connect(pipe8.port_b, pipe10.port_a) annotation (Line(points={{10,20},{10,6},
             {18,6}}, color={0,127,255}));
-    connect(pipe8.port_b, pipe4.port_b) annotation (Line(points={{8,20},{8,-20},
-            {12,-20},{12,-36}}, color={0,127,255}));
     connect(pipe10.port_b, valve3.port_a) annotation (Line(points={{38,6},{50,6},
             {50,10},{62,10}}, color={0,127,255}));
+    connect(pipe4.port_b, pipe6.port_a) annotation (Line(
+        points={{4,-36},{10,-36},{10,-22},{26,-22}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipe8.port_b, pipe4.port_b) annotation (Line(
+        points={{10,20},{10,-36},{4,-36}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipe5.port_a, pipe4.port_b) annotation (Line(
+        points={{24,-50},{10,-50},{10,-36},{4,-36}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipe5.port_b, valve3.port_a) annotation (Line(
+        points={{44,-50},{54,-50},{54,10},{62,10}},
+        color={0,127,255},
+        smooth=Smooth.None));
   end IncompressibleFluidNetwork1;
 
   model BranchingPipes12
@@ -879,14 +891,14 @@ fails for zero flow rate.
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+      d_nom=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+      d_nom=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -932,7 +944,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},
           color={0,127,255}));
     connect(valveIncompressible1.port_b, sink.port) annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
@@ -979,7 +991,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       d_nom=5,
       dp_nom=400000,
       minStemPosition=0.001) 
-                  annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+                  annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
@@ -988,7 +1000,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       d_nom=5,
       dp_nom=400000,
       minStemPosition=0.001) 
-                  annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+                  annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -1039,7 +1051,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},
           color={0,127,255}));
     connect(valveIncompressible1.port_b, sink.port) annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
@@ -1086,14 +1098,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
        dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+      d_nom=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -1150,7 +1162,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},
           color={0,127,255}));
     connect(valve2.port_b, sink.port)               annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
@@ -1199,14 +1211,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+      d_nom=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -1265,7 +1277,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},
           color={0,127,255}));
     connect(valve2.port_b, sink.port)               annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
@@ -1314,14 +1326,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+      d_nom=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -1378,7 +1390,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},
           color={0,127,255}));
     connect(valve2.port_b, sink.port)               annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
@@ -1429,14 +1441,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       m_flow_nom=1,
       d_nom=5,
       dp(start=10)) 
-                  annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+                  annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -1498,7 +1510,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           extent={{-10,10},{10,-10}},
           rotation=90)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},
           color={0,127,255}));
     connect(pipe3.port_b, valve2.port_a)               annotation (Line(points=
             {{-10,-40},{8,-40}}, color={0,127,255}));
@@ -1549,14 +1561,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (Placement(transformation(extent={{10,36},{30,56}}, 
+      d_nom=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nom=4.0e5,
       m_flow_nom=1,
-      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+      d_nom=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -1618,7 +1630,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           extent={{-10,10},{10,-10}},
           rotation=90)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},
           color={0,127,255}));
     connect(pipe3.port_b, valve2.port_a)               annotation (Line(points=
             {{-10,-40},{8,-40}}, color={0,127,255}));
@@ -1670,7 +1682,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       minStemPosition=0.001,
       dp(start=400000),
       dp_nom=400000) 
-                  annotation (Placement(transformation(extent={{8,-50},{28,-30}}, 
+                  annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -1706,7 +1718,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
   equation
-    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}}, 
+    connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},
           color={0,127,255}));
     connect(valveIncompressible1.port_b, sink.port) annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));

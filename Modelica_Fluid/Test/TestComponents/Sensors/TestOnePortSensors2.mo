@@ -9,7 +9,7 @@ model TestOnePortSensors2
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
-    h_start=1e5) annotation (Placement(transformation(extent={{-34,30},{-14,50}}, 
+    h_start=1e5) annotation (Placement(transformation(extent={{-34,30},{-14,50}},
           rotation=0)));
 
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
@@ -24,7 +24,7 @@ model TestOnePortSensors2
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1.5e5) 
-                 annotation (Placement(transformation(extent={{32,30},{52,50}}, 
+                 annotation (Placement(transformation(extent={{32,30},{52,50}},
           rotation=0)));
   Modelica_Fluid.Sensors.TemperatureOnePort Tmix1(redeclare package Medium = 
         Medium) 
@@ -41,7 +41,7 @@ model TestOnePortSensors2
     height=2,
     offset=-1,
     duration=10) 
-               annotation (Placement(transformation(extent={{-100,30},{-80,50}}, 
+               annotation (Placement(transformation(extent={{-100,30},{-80,50}},
           rotation=0)));
   Modelica_Fluid.Volumes.MixingVolume MixingVolume3(
     V=1e-3,
@@ -61,7 +61,7 @@ model TestOnePortSensors2
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1.5e5) 
-                 annotation (Placement(transformation(extent={{32,-30},{52,-10}}, 
+                 annotation (Placement(transformation(extent={{32,-30},{52,-10}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_phX Sink1(             redeclare package
       Medium = Medium,
@@ -70,7 +70,7 @@ model TestOnePortSensors2
     annotation (Placement(transformation(extent={{100,-30},{80,-10}}, rotation=
             0)));
   Modelica_Fluid.Sensors.TemperatureTwoPort Tmix2(redeclare package Medium = 
-        Medium) annotation (Placement(transformation(extent={{0,-30},{20,-10}}, 
+        Medium) annotation (Placement(transformation(extent={{0,-30},{20,-10}},
           rotation=0)));
 equation
   connect(FlowSource2.port, MixingVolume1.port_a) annotation (Line(points={{-48,

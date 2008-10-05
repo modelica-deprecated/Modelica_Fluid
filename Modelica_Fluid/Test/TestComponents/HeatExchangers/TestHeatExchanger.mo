@@ -56,13 +56,13 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     useFlowRateInput=true,
     useTemperatureInput=false,
     useCompositionInput=false) 
-                annotation (Placement(transformation(extent={{-66,24},{-46,44}}, 
+                annotation (Placement(transformation(extent={{-66,24},{-46,44}},
           rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate1(
     T=300,
     m_flow=0.5,
     redeclare package Medium = Medium) 
-                 annotation (Placement(transformation(extent={{-66,-10},{-46,10}}, 
+                 annotation (Placement(transformation(extent={{-66,-10},{-46,10}},
           rotation=0)));
   annotation (Diagram(graphics),
                        experiment(StopTime=100, Tolerance=1e-005));

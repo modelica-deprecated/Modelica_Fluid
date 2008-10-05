@@ -92,8 +92,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-                 "%name"),
+            textString="%name"),
           Ellipse(
             extent={{-11,10},{9,-10}},
             lineColor={0,0,0},
@@ -143,8 +142,8 @@ pipe wall/environment).
       T_start=T_start,
       h_start=h_start,
       X_start=X_start) 
-      annotation (Placement(transformation(extent={{-10,-10},{10,10}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-10,-10},{10,10}}, rotation=
+             0)));
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction2(
       redeclare package Medium = Medium,
       flowDirection=flowDirection,
@@ -161,8 +160,8 @@ pipe wall/environment).
       show_Re=false,
       dp_start = (p_a_start - p_b_start)/2,
       m_flow_start = m_flow_start,
-      compute_T=false)              annotation (Placement(transformation(extent
-            ={{40,-10},{60,10}}, rotation=0)));
+      compute_T=false)              annotation (Placement(transformation(extent=
+             {{40,-10},{60,10}}, rotation=0)));
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
       annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=
               0)));
@@ -267,7 +266,8 @@ pipe wall/environment).
    SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))) else Medium.dynamicViscosity(medium[n].state))));
 
    annotation (
-     Icon(graphics={
+     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -303,8 +303,7 @@ pipe wall/environment).
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-                "%name")}),
+            textString="%name")}),
      Diagram(graphics),
      Documentation(info="<html>
 Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow_pLumped\">PartialDistributedFlow_pLumped</a>. Source terms in mass and energy balances are set to zero. The total volume is a paramter. The number of momentum balances is reduced to two, one on each side of the hydraulic state, which corresponds to a constant pressure along the entire pipe with pressure drop and gravitational forces lumped at the ports.<The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. .
@@ -407,7 +406,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
     annotation(Dialog(tab="General", group="Pressure loss",enable=WallFriction.use_roughness));
   parameter Boolean use_eta_nominal=false
       "= true, if eta_nominal is used, otherwise computed from medium"                          annotation(Dialog(tab="General", group="Pressure loss"),Evaluate=true);
-  parameter SI.DynamicViscosity eta_nominal
+  parameter SI.DynamicViscosity eta_nominal=Medium.dynamicViscosity(Medium.setState_pTX(Medium.p_default, Medium.T_default, Medium.X_default))
       "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
                                                                           annotation(Dialog(tab="General", group="Pressure loss",enable=use_nominal));
   parameter Boolean show_Re=false
@@ -463,7 +462,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       Medium.dynamicViscosity(medium.state));
 
     annotation (
-  Icon(graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+          graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -499,9 +499,10 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-             "%name")}),
-  Diagram(graphics),
+            textString="%name")}),
+  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}),
+          graphics),
   Documentation(info="<html>
 <p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>.</p>
 <p>Pressure drop correlations (algebraic and possibly non-linear flow model) correlate the pressure in the first control volume with the pressure in port_a and the pressures of port_b and the nth control volume, respectively.</p>
@@ -631,7 +632,7 @@ model DistributedPipeSb "Distributed pipe model"
     annotation(Dialog(tab="General", group="Pressure loss",enable=WallFriction.use_roughness));
   parameter Boolean use_eta_nominal=false
       "= true, if eta_nominal is used, otherwise computed from medium"                          annotation(Dialog(tab="General", group="Pressure loss"),Evaluate=true);
-  parameter SI.DynamicViscosity eta_nominal
+  parameter SI.DynamicViscosity eta_nominal=Medium.dynamicViscosity(Medium.setState_pTX(Medium.p_default, Medium.T_default, Medium.X_default))
       "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
                                                                           annotation(Dialog(tab="General", group="Pressure loss",enable=use_nominal));
   parameter Boolean show_Re=false
@@ -687,7 +688,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+          graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -723,9 +725,10 @@ annotation (
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-             "%name")}),
-  Diagram(graphics),
+            textString="%name")}),
+  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}),
+          graphics),
   Documentation(info="<html>
 Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. 
 </html>",
@@ -831,7 +834,7 @@ model DistributedPipeSa "Distributed pipe model"
     annotation(Dialog(tab="General", group="Pressure loss",enable=WallFriction.use_roughness));
   parameter Boolean use_eta_nominal=false
       "= true, if eta_nominal is used, otherwise computed from medium"                          annotation(Dialog(tab="General", group="Pressure loss"),Evaluate=true);
-  parameter SI.DynamicViscosity eta_nominal
+  parameter SI.DynamicViscosity eta_nominal=Medium.dynamicViscosity(Medium.setState_pTX(Medium.p_default, Medium.T_default, Medium.X_default))
       "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
                                                                           annotation(Dialog(tab="General", group="Pressure loss",enable=use_nominal));
   parameter Boolean show_Re=false
@@ -887,7 +890,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+          graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -923,9 +927,10 @@ annotation (
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString=
-             "%name")}),
-  Diagram(graphics),
+            textString="%name")}),
+  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}),
+          graphics),
   Documentation(info="<html>
 Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. 
 </html>",
@@ -1089,7 +1094,7 @@ end DistributedPipeSa;
         "Enthalpy flow rates of fluid across segment boundaries";
    parameter Boolean use_d_nominal=false
         "= true, if d_nominal is used, otherwise computed from medium"                              annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
-   parameter SI.Density d_nominal=0.01
+   parameter SI.Density d_nominal=Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
                                                                annotation(Dialog(tab="Advanced", group="Momentum balance",enable=use_nominal));
 
@@ -1115,8 +1120,11 @@ end DistributedPipeSa;
       each T(start=T_start),
       each Xi(start=X_start[1:Medium.nXi]));
 
-     annotation (Diagram(graphics),
-                          Icon(graphics={Rectangle(
+     annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+                -100,-100},{100,100}}),
+                         graphics),
+                          Icon(coordinateSystem(preserveAspectRatio=false,
+              extent={{-100,-100},{100,100}}), graphics={Rectangle(
               extent={{-100,40},{100,-40}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
@@ -1366,7 +1374,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         "Enthalpy flow rates of fluid across segment boundaries";
    parameter Boolean use_d_nominal=false
         "= true, if d_nominal is used, otherwise computed from medium"                              annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
-   parameter SI.Density d_nominal
+   parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
                                                                annotation(Dialog(tab="Advanced", group="Momentum balance",enable=use_d_nominal));
    SI.Pressure[np] dp(start=dp0) "pressure difference across staggered grid";
@@ -1385,8 +1393,11 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       each T(start=T_start),
       each Xi(start=X_start[1:Medium.nXi]));
 
-     annotation (Diagram(graphics),
-                          Icon(graphics={Rectangle(
+     annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+                -100,-100},{100,100}}),
+                         graphics),
+                          Icon(coordinateSystem(preserveAspectRatio=false,
+              extent={{-100,-100},{100,100}}), graphics={Rectangle(
               extent={{-100,40},{100,-40}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
@@ -1611,7 +1622,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       input SI.Temperature[n] T;
     equation
 
-      annotation (Icon(graphics={Ellipse(
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
+                  -100,-100},{100,100}}), graphics={Ellipse(
                 extent={{-60,64},{60,-56}},
                 lineColor={0,0,0},
                 fillPattern=FillPattern.Sphere,
@@ -1620,8 +1632,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
                 lineColor={0,0,0},
                 fillPattern=FillPattern.Sphere,
                 fillColor={232,0,0},
-                textString=
-                   "%name")}),Documentation(info="<html>
+                textString="%name")}),
+                              Documentation(info="<html>
 Base class for heat transfer models that can be used in distributed pipe models.
 </html>"));
     end PartialPipeHeatTransfer;

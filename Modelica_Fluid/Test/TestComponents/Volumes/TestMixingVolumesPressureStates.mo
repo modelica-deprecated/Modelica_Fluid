@@ -13,7 +13,7 @@ model TestMixingVolumesPressureStates
     use_T_start=true,
     T_start=ambient.default_T_ambient,
     initType=Modelica_Fluid.Types.Init.SteadyState) 
-                 annotation (Placement(transformation(extent={{-30,30},{-10,50}}, 
+                 annotation (Placement(transformation(extent={{-30,30},{-10,50}},
           rotation=0)));
 
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
@@ -29,7 +29,7 @@ model TestMixingVolumesPressureStates
     h_start=1e5,
     redeclare package Medium = Medium,
     initType=Modelica_Fluid.Types.Init.NoInit) 
-                 annotation (Placement(transformation(extent={{10,30},{30,50}}, 
+                 annotation (Placement(transformation(extent={{10,30},{30,50}},
           rotation=0)));
   Modelica_Fluid.Sensors.TemperatureOnePort Tmix_in(
                                          redeclare package Medium = Medium) 

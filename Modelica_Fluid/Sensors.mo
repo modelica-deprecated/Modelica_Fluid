@@ -46,7 +46,7 @@ The <b>one port</b> sensors have the advantage of easily introducing them to and
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={Line(points={{70,0},{100,0}}, color={0,0,127}), 
+          grid={1,1}), graphics={Line(points={{70,0},{100,0}}, color={0,0,127}),
             Line(points={{0,-70},{0,-100}}, color={0,127,255})}),
     Icon(coordinateSystem(
           preserveAspectRatio=false,
@@ -670,8 +670,8 @@ through the sensor is allowed.
             rotation=0)));
     Modelica_Fluid.Interfaces.FluidPort_b port_b(m_flow(min=0),
                                   redeclare package Medium = Medium) 
-      annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation=
+             0)));
 
     Modelica.Blocks.Interfaces.RealOutput T_rel(final quantity="ThermodynamicTemperature",
                                                 final unit = "K", displayUnit = "degC", min=0)

@@ -28,7 +28,9 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
             annotation (Placement(transformation(extent={{-34,38},{-14,58}},
           rotation=0)));
 
-  annotation (Diagram(graphics),
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -100},{100,100}}),
+                      graphics),
                        experiment(StopTime=20, Tolerance=1e-005),
     experimentSetupOutput,
     Documentation(info="<html>
@@ -230,7 +232,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     startTime=5,
     duration=0,
     height=0.4e5) 
-                annotation (Placement(transformation(extent={{100,-20},{80,0}}, 
+                annotation (Placement(transformation(extent={{100,-20},{80,0}},
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe8(
     redeclare package Medium=Medium,
@@ -265,23 +267,23 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(pipe1.port_b, junction1.ports_a[1]) annotation (Line(
-      points={{-68,34},{-65.5,34},{-65.5,32},{-63,32}},
+      points={{-68,34},{-65.5,34},{-64,34}},
       color={0,127,255},
       thickness=0.5));
   connect(junction1.ports_b[1], pipe2.port_a) annotation (Line(
-      points={{-45,31.5},{-40,31.5},{-40,48},{-34,48}},
+      points={{-44,36},{-40,36},{-40,48},{-34,48}},
       color={0,127,255},
       thickness=0.5));
   connect(junction1.ports_b[2], pipe4.port_a) annotation (Line(
-      points={{-45,32.5},{-40,32.5},{-40,18},{-34,18}},
+      points={{-44,32},{-40,32},{-40,18},{-34,18}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe2.port_b, junction2.ports_a[1]) annotation (Line(
-      points={{-14,48},{-8,48},{-8,32.5},{1,32.5}},
+      points={{-14,48},{-8,48},{-8,36},{0,36}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe4.port_b, junction2.ports_a[2]) annotation (Line(
-      points={{-14,18},{-8,18},{-8,31.5},{1,31.5}},
+      points={{-14,18},{-8,18},{-8,32},{0,32}},
       color={0,127,255},
       thickness=0.5));
   connect(ramp.y, boundary2.p_in) annotation (Line(
@@ -293,7 +295,7 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(junction2.ports_b[1], pipe3.port_a) annotation (Line(
-      points={{19,32},{23.5,32},{23.5,34},{28,34}},
+      points={{20,34},{23.5,34},{23.5,34},{28,34}},
       color={0,127,255},
       thickness=0.5));
   connect(heat.port, pipe2.thermalPort) annotation (Line(

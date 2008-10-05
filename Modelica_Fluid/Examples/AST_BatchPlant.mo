@@ -101,8 +101,8 @@ present that are regulated by a central control system.
         waitTime=300))       annotation (Placement(transformation(extent={{80,
               60},{120,100}}, rotation=0)));
 
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-              -300,-300},{300,300}}), graphics),
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-300,
+              -300},{300,300}}),      graphics),
       experiment(StopTime=3100),
       experimentSetupOutput,
       Commands(file=
@@ -112,8 +112,8 @@ present that are regulated by a central control system.
       m_flow_small=0,
       Kv=0.01,
       redeclare package Medium = BatchMedium) 
-      annotation (Placement(transformation(extent={{-60,78},{-40,98}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-60,78},{-40,98}}, rotation=
+             0)));
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V8(
       Kv=0.01,
       redeclare package Medium = BatchMedium,
@@ -140,8 +140,8 @@ present that are regulated by a central control system.
       m_flow_small=0,
       Kv=0.01,
       redeclare package Medium = BatchMedium) 
-      annotation (Placement(transformation(extent={{50,230},{30,250}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{50,230},{30,250}}, rotation=
+             0)));
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V3(
       Kv=0.01,
       redeclare package Medium = BatchMedium,
@@ -300,7 +300,7 @@ present that are regulated by a central control system.
     Junctions.JunctionVolume portVolume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (Placement(transformation(extent={{50,-260},{70,-240}}, 
+      V=0.001) annotation (Placement(transformation(extent={{50,-260},{70,-240}},
             rotation=0)));
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V18(
       Kv=0.01,
@@ -427,8 +427,8 @@ present that are regulated by a central control system.
       m_flow_small=1,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
-      annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
+             0)));
     PressureLosses.WallFrictionAndGravity pipeB1B1(
       redeclare package Medium = BatchMedium,
       length=1,
@@ -550,25 +550,29 @@ present that are regulated by a central control system.
             -252}}, color={0,127,255}));
     connect(V24.port_b, P2.inlet) annotation (Line(points={{104,-250},{106,-250},
             {106,-248},{114,-248}}, color={0,127,255}));
-    connect(V15.port_a, B5.BottomFluidPort[1]) annotation (Line(points={{-80,
-            -72},{-80,-60.4}}, color={0,127,255}));
+    connect(V15.port_a, B5.BottomFluidPort[1]) annotation (Line(points={{-80,-72},
+            {-80,-60.4}},      color={0,127,255}));
     connect(V3.port_a, B1.topPorts[1]) annotation (Line(points={{-114,220},{
-            -106,220},{-106,230},{-80,230},{-80,221}}, color={0,127,255}));
-    connect(B1.ports[1], V8.port_b) annotation (Line(points={{-80,179},{-80,172}}, 
+            -106,220},{-106,230},{-79,230},{-79,220}}, color={0,127,255}));
+    connect(B1.ports[1], V8.port_b) annotation (Line(points={{-81,180},{-81,176},
+            {-80,176},{-80,172}},
           color={0,127,255}));
     connect(P1_on.y, P1.N_in) annotation (Line(points={{-137,-224},{-135.4,-224},
             {-135.4,-245.6}}, color={0,0,127}));
     connect(P2_on.y, P2.N_in) annotation (Line(points={{111,-218},{119.4,-218},
             {119.4,-241.6}}, color={0,0,127}));
-    connect(B2.topPorts[1], V6.port_a) annotation (Line(points={{80,221},{80,
+    connect(B2.topPorts[1], V6.port_a) annotation (Line(points={{81,220},{81,
             228},{106,228},{106,220},{112,220}}, color={0,127,255}));
-    connect(B2.ports[1], V9.port_b) annotation (Line(points={{80,179},{80,172}}, 
+    connect(B2.ports[1], V9.port_b) annotation (Line(points={{79,180},{79,176},
+            {80,176},{80,172}},
           color={0,127,255}));
-    connect(V11.port_b, B3.ports[1]) annotation (Line(points={{-40,88},{0,88},{
-            0,99}}, color={0,127,255}));
+    connect(V11.port_b, B3.ports[1]) annotation (Line(points={{-40,88},{-1,88},
+            {-1,100}},
+                    color={0,127,255}));
     connect(V10.port_b, B3.ports[2]) annotation (Line(points={{20,80},{20,88},{
-            0,88},{0,99}}, color={0,127,255}));
-    connect(B4.ports[1], V12.port_b) annotation (Line(points={{-80,30},{-80,12}}, 
+            -1,88},{-1,100}},
+                           color={0,127,255}));
+    connect(B4.ports[1], V12.port_b) annotation (Line(points={{-80,30},{-80,12}},
           color={0,127,255}));
     connect(CoolingB7.port, B7.heatPort) annotation (Line(points={{-120,-120},{
             -100,-120}}, color={191,0,0}));
@@ -579,9 +583,9 @@ present that are regulated by a central control system.
     connect(pipeB1B3.port_b, V8.port_a) annotation (Line(points={{-62,144},{-80,
             144},{-80,152}}, color={0,127,255}));
     connect(pipeB1B3.port_a, B3.topPorts[1]) annotation (Line(points={{-42,144},
-            {0,144},{0,139}}, color={0,127,255}));
+            {1,144},{1,138}}, color={0,127,255}));
     connect(pipeB2B3.port_a, B3.topPorts[2]) annotation (Line(points={{36,144},
-            {0,144},{0,143}}, color={0,127,255}));
+            {1,144},{1,142}}, color={0,127,255}));
     connect(pipeB2B3.port_b, V9.port_a) annotation (Line(points={{56,144},{80,
             144},{80,152}}, color={0,127,255}));
     connect(V11.port_a, B4.topPorts[1]) annotation (Line(points={{-60,88},{-80,
@@ -724,8 +728,7 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
-
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -738,11 +741,11 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
                 color={255,0,255})}),
-        Diagram(graphics={
-            Line(points={{-80,-20},{-60,-20},{-30,40},{8,40},{40,-20},{60,-20}}), 
-
+        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}}), graphics={
+            Line(points={{-80,-20},{-60,-20},{-30,40},{8,40},{40,-20},{60,-20}}),
             Line(points={{-90,-70},{82,-70}}, color={0,0,0}),
             Line(points={{-80,68},{-80,-80}}, color={0,0,0}),
             Polygon(
@@ -755,7 +758,7 @@ present that are regulated by a central control system.
               lineColor={0,0,0},
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-68},{-60,-68},{-60,-42},{8,-42},{8,-68},{60,-68}}, 
+            Line(points={{-80,-68},{-60,-68},{-60,-42},{8,-42},{8,-68},{60,-68}},
                 color={255,0,255}),
             Line(
               points={{-60,40},{-60,-42}},
@@ -774,15 +777,13 @@ present that are regulated by a central control system.
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "rising"),
+              textString="rising"),
             Text(
               extent={{24,-10},{24,-20}},
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "falling"),
+              textString="falling"),
             Polygon(
               points={{-58,40},{-54,42},{-54,38},{-58,40}},
               lineColor={0,0,0},
@@ -833,8 +834,7 @@ present that are regulated by a central control system.
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "amplitude"),
+              textString="amplitude"),
             Rectangle(
               extent={{-40,-48},{0,-58}},
               lineColor={255,255,255},
@@ -845,23 +845,19 @@ present that are regulated by a central control system.
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "offset"),
+              textString="offset"),
             Text(
               extent={{60,-82},{94,-92}},
               lineColor={0,0,0},
-              textString=
-                   "time"),
+              textString="time"),
             Text(
               extent={{-88,-4},{-54,-14}},
               lineColor={0,0,0},
-              textString=
-                   "y"),
+              textString="y"),
             Text(
               extent={{-88,-46},{-54,-56}},
               lineColor={0,0,0},
-              textString=
-                   "u"),
+              textString="u"),
             Polygon(
               points={{40,60},{36,62},{36,58},{40,60}},
               lineColor={0,0,0},
@@ -878,8 +874,7 @@ present that are regulated by a central control system.
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "y_high")}),
+              textString="y_high")}),
         Documentation(info="<HTML>
 <p>The block TriggeredTrapezoid has a boolean input and a real
 output signal and requires the parameters <i>amplitude</i>,
@@ -898,6 +893,7 @@ during <i>falling</i> to a value of <i>offset</i>.
 handled properly.</p>
 </HTML>
 "));
+
     protected
       discrete Real endValue "Value of y at time of recent edge";
       discrete Real rate "Current rising/falling rate";
@@ -956,9 +952,8 @@ handled properly.</p>
               lineColor={0,0,0},
               fillColor={0,255,0},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "%u"),
-            Text(extent={{-150,90},{140,50}}, textString =               "%name")}),
+              textString="%u"),
+            Text(extent={{-150,90},{140,50}}, textString="%name")}),
         Diagram(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
@@ -1012,14 +1007,11 @@ handled properly.</p>
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid),
-            Text(extent={{-145,-58},{146,-98}}, textString=
-                                                       "%name"),
+            Text(extent={{-145,-58},{146,-98}}, textString="%name"),
             Polygon(
-              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}}, 
-
-              fillColor=DynamicSelect({255,255,255}, if 
-                                            open > 0.5 then {0,255,0} else {255,
-                  255,255}),
+              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
+              fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,
+                  0} else {255,255,255}),
               lineColor={0,0,0})}),
       Diagram(coordinateSystem(
             preserveAspectRatio=false,
@@ -1036,8 +1028,9 @@ handled properly.</p>
        Adapted from the ThermoPower library.</li>
 </ul>
 </html>"));
+
     equation
-      connect(trapezoid.u, open) annotation (Line(points={{-7.34788e-016,62},{0,
+      connect(trapezoid.u, open) annotation (Line(points={{2.20436e-015,62},{0,
               62},{0,84}}, color={255,0,255}));
       connect(m_flow_trapezoid.y, set.u) annotation (Line(points={{46.5,-30},{
               60,-30},{60,-40},{68,-40}}, color={0,0,127}));
@@ -1066,7 +1059,7 @@ handled properly.</p>
       parameter Real top_heights[n_TopPorts]=fill(height, n_TopPorts);
       parameter SI.Height level_start(min=0) "Initial tank level" 
         annotation(Dialog(tab="Initialization"));
-      parameter Modelica_Fluid.Types.Init.Temp initType=NoInit
+      parameter Modelica_Fluid.Types.Init initType=NoInit
         "Initialization option" 
         annotation(Dialog(tab = "Initialization"));
       parameter Boolean use_T_start=true
@@ -1121,24 +1114,21 @@ handled properly.</p>
     // Connectors and InnerTanks
       Modelica_Fluid.Interfaces.FluidPort_b BottomFluidPort[n_BottomPorts](
         redeclare package Medium = Medium,
-        m_flow(each start=0),
-        mXi_flow(each start=0)) 
+        m_flow(each start=0)) 
         annotation (Placement(transformation(
             origin={-100,-102},
             extent={{-10,-10},{10,10}},
             rotation=90)));
       Modelica_Fluid.Interfaces.FluidPort_a TopFluidPort[n_TopPorts](
         redeclare package Medium = Medium,
-        m_flow(each start=0),
-        mXi_flow(each start=0)) 
+        m_flow(each start=0)) 
         annotation (Placement(transformation(extent={{-110,92},{-90,112}},
               rotation=0)));
       Modelica_Fluid.Interfaces.FluidPort_b SideFluidPort[n_SidePorts](
         redeclare package Medium = Medium,
-        m_flow(each start=0),
-        mXi_flow(each start=0)) 
-        annotation (Placement(transformation(extent={{0,-10},{20,10}}, rotation
-              =0)));
+        m_flow(each start=0)) 
+        annotation (Placement(transformation(extent={{0,-10},{20,10}}, rotation=
+               0)));
       Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.InnerTank InnerTankTop[n_TopPorts](
         each h=medium.h,
         each p_ambient=p_ambient,
@@ -1221,8 +1211,8 @@ handled properly.</p>
               points={{-70,-81},{-70,-102},{-100,-102}}, color={0,0,255}));
       end for;
       for i in 1:n_TopPorts loop
-        connect(InnerTankTop[i].port, TopFluidPort[i])  annotation (Line(points
-              ={{-130,59},{-92,59},{-92,102},{-100,102}}, color={0,0,255}));
+        connect(InnerTankTop[i].port, TopFluidPort[i])  annotation (Line(points=
+               {{-130,59},{-92,59},{-92,102},{-100,102}}, color={0,0,255}));
       end for;
       for i in 1:n_SidePorts loop
         connect(InnerTankSide[i].port, SideFluidPort[i])  annotation (Line(
@@ -1326,30 +1316,26 @@ handled properly.</p>
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
             Rectangle(
-              extent=DynamicSelect({{-200,-100},{0,0}}, {{-200,-100},{0,     (-100
-                     + 200*level/levelMax)}}),
+              extent=DynamicSelect({{-200,-100},{0,0}}, {{-200,-100},{0,(-100
+                   + 200*level/levelMax)}}),
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
               fillColor={0,127,255},
               fillPattern=FillPattern.Solid,
-              textString=
-                   "%name"),
+              textString="%name"),
             Text(
               extent={{-184,-64},{-14,-86}},
               lineColor={0,0,0},
-              textString=
-                   "%level_start"),
+              textString="%level_start"),
             Text(
               extent={{-192,-34},{-12,-54}},
               lineColor={0,0,0},
-              textString=
-                   "level_start ="),
+              textString="level_start ="),
             Line(
               points={{-200,100},{0,100}},
               color={0,0,0},
@@ -1382,7 +1368,6 @@ Full steady state initialization is not supported, because the corresponding int
 </HTML>"),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
                 {200,100}}), graphics));
-    equation
 
     end TankWith3InletOutletArraysWithEvaporatorCondensor;
 
@@ -1399,7 +1384,7 @@ Full steady state initialization is not supported, because the corresponding int
             rotation=90)));
         Boolean m_flow_negative( start = true) "true= massflow out of tank";
         constant Modelica.SIunits.Acceleration g=Modelica.Constants.g_n;
-       input Real aboveLevel;
+        input Real aboveLevel;
         input Real d;
         input Real p_ambient;
         input Real h;
@@ -1438,8 +1423,8 @@ Full steady state initialization is not supported, because the corresponding int
         sensors 
         annotation (Placement(transformation(extent={{-280,-40},{-200,40}},
               rotation=0)));
-      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-                -200,-200},{200,200}}), graphics),
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,
+                -200},{200,200}}),      graphics),
         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},{
                 200,200}}), graphics={
             Rectangle(
@@ -1450,8 +1435,7 @@ Full steady state initialization is not supported, because the corresponding int
             Text(
               extent={{-288,286},{262,208}},
               lineColor={0,0,255},
-              textString=
-                   "%name"),
+              textString="%name"),
             Line(points={{-48,0},{0,0}}, color={0,0,0}),
             Rectangle(extent={{-170,60},{-50,-60}}, lineColor={0,0,0}),
             Line(points={{0,40},{0,-40}}, color={0,0,0}),
@@ -1746,8 +1730,8 @@ Full steady state initialization is not supported, because the corresponding int
                   -50,10},{-10,50}}, rotation=0)));
         Block_Recipe_TBD Recipe2 annotation (Placement(transformation(extent={{
                   10,10},{50,50}}, rotation=0)));
-        Adapter_Inference Inference annotation (Placement(transformation(extent
-                ={{-50,-50},{-10,-10}}, rotation=0)));
+        Adapter_Inference Inference annotation (Placement(transformation(extent=
+                 {{-50,-50},{-10,-10}}, rotation=0)));
         Adapter_Superposition Superposition annotation (Placement(
               transformation(extent={{10,-50},{50,-10}}, rotation=0)));
       end BlockMain;
@@ -1803,13 +1787,16 @@ Full steady state initialization is not supported, because the corresponding int
         output Boolean V24;
         output Boolean V25;
 
-        annotation (Icon(graphics={Polygon(
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
+                  -100,-100},{100,100}}), graphics={Polygon(
                 points={{-100,100},{100,0},{-100,-100},{-100,100}},
                 lineColor={0,0,0},
                 lineThickness=0.5,
                 fillColor={255,255,255},
                 fillPattern=FillPattern.Solid)}),
-                                               Diagram(graphics={Polygon(
+                                               Diagram(coordinateSystem(
+                preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+              graphics={Polygon(
                 points={{0,50},{100,0},{0,-50},{0,50}},
                 lineColor={0,0,0},
                 lineThickness=0.5,
@@ -1832,13 +1819,16 @@ Full steady state initialization is not supported, because the corresponding int
         input Real TIS_602;
         input Real LIS_701;
         input Real TIS_702;
-        annotation (Icon(graphics={Polygon(
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
+                  -100,-100},{100,100}}), graphics={Polygon(
                 points={{-100,100},{-100,-100},{100,0},{-100,100}},
                 lineColor={0,0,0},
                 lineThickness=0.5,
                 fillColor={215,215,215},
                 fillPattern=FillPattern.Solid)}),
-                                               Diagram(graphics={Polygon(
+                                               Diagram(coordinateSystem(
+                preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+              graphics={Polygon(
                 points={{0,50},{0,-50},{100,0},{0,50}},
                 lineColor={0,0,0},
                 lineThickness=0.5,
@@ -1872,19 +1862,17 @@ Full steady state initialization is not supported, because the corresponding int
 
       Modelica_Fluid.Interfaces.FluidPort_a topPorts[nTopPorts](
       redeclare package Medium = Medium,
-      m_flow(each start=0, each min=0),
-      mXi_flow(each start=0, each min=0)) if   nTopPorts > 0
+      m_flow(each start=0, each min=0)) if   nTopPorts > 0
         "Inlet ports over levelMax at top of tank (fluid flows only from the port in to the tank)"
-      annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation
-              =0)));
+      annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
+               0)));
 
       parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0)}
         "Data of inlet/outlet ports at side and bottom of tank";
 
       Modelica_Fluid.Interfaces.FluidPort_b ports[size(portsData,1)](
       redeclare package Medium = Medium,
-      m_flow(each start=0),
-      mXi_flow(each start=0))
+      m_flow(each start=0))
         "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
       annotation (Placement(transformation(extent={{-10,-110},{10,-90}},
               rotation=0)));
@@ -1905,7 +1893,7 @@ Full steady state initialization is not supported, because the corresponding int
       annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
 
   //Initialization
-      parameter Types.Init.Temp initType=Types.Init.InitialValues
+      parameter Types.Init initType=Types.Init.InitialValues
         "Initialization option" 
       annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
       parameter SI.Height level_start(min=0) "Start value of tank level" 
@@ -2072,7 +2060,7 @@ Full steady state initialization is not supported, because the corresponding int
             Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
                   0,0}),
             Rectangle(
-              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,   (-100
+              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
                    + 200*level/levelMax)}}),
               lineColor={0,127,255},
               fillColor={85,170,255},
@@ -2080,8 +2068,10 @@ Full steady state initialization is not supported, because the corresponding int
             Text(
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
-              textString=DynamicSelect(
-                               " ", realString(level, 1, 3))),
+              textString=DynamicSelect(" ", realString(
+                    level,
+                    1,
+                    3))),
             Line(
               points={{-100,100},{100,100}},
               color={0,0,0},
@@ -2089,22 +2079,19 @@ Full steady state initialization is not supported, because the corresponding int
             Text(
               extent={{-94,90},{95,60}},
               lineColor={0,0,255},
-              textString=
-                   "%name"),
+              textString="%name"),
             Text(
               extent={{-95,-85},{95,-65}},
               lineColor={0,0,0},
-              textString=
-                   "%level_start"),
+              textString="%level_start"),
             Text(
               extent={{-95,-55},{95,-35}},
               lineColor={0,0,0},
-              textString=
-                   "level_start ="),
+              textString="level_start ="),
             Text(
               extent={{-95,50},{95,30}},
               lineColor={0,0,0},
-              textString =                  "level =")}),
+              textString="level =")}),
         Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the environment at the fixed pressure

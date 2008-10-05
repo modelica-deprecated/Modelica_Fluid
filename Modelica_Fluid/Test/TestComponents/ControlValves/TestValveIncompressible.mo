@@ -85,7 +85,7 @@ equation
   connect(Opening.y, V1.stemPosition) 
   annotation (Line(points={{-71,84},{-40,84},{-40,49}}, color={0,0,255}));
   connect(SourceP1.port, V1.port_a) 
-                                   annotation (Line(points={{-80,40},{-50,40}}, 
+                                   annotation (Line(points={{-80,40},{-50,40}},
         color={0,127,255}));
   connect(Opening.y, V2.stemPosition) annotation (Line(points={{-71,84},{-64,84},
           {-64,20},{-40,20},{-40,9}}, color={0,0,127}));
@@ -95,7 +95,7 @@ equation
     annotation (Line(points={{-80,0},{-50,0}}, color={0,127,255}));
   connect(V2.port_b, SinkP1.port) annotation (Line(points={{-30,0},{2,0}},
         color={0,127,255}));
-  connect(SourceP3.port, V3.port_a) annotation (Line(points={{-80,-40},{-50,-40}}, 
+  connect(SourceP3.port, V3.port_a) annotation (Line(points={{-80,-40},{-50,-40}},
         color={0,127,255}));
   connect(V3.port_b, SinkP3.port) annotation (Line(points={{-30,-40},{2,-40}},
         color={0,127,255}));

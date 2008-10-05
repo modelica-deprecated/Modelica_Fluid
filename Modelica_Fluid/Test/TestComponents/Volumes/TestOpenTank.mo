@@ -16,8 +16,8 @@ model TestOpenTank
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow=0.2,
     useFlowRateInput=true) 
-    annotation (Placement(transformation(extent={{-60,-40},{-40,-20}}, rotation
-          =0)));
+    annotation (Placement(transformation(extent={{-60,-40},{-40,-20}}, rotation=
+           0)));
   annotation (Diagram(coordinateSystem(
         preserveAspectRatio=false,
         extent={{-160,-120},{100,120}},
@@ -63,8 +63,8 @@ model TestOpenTank
   Modelica.Blocks.Logical.Switch switch1 annotation (Placement(transformation(
           extent={{-100,-30},{-80,-10}}, rotation=0)));
   Modelica.Blocks.Sources.Constant m_flow_off(k=0) 
-    annotation (Placement(transformation(extent={{-140,10},{-120,30}}, rotation
-          =0)));
+    annotation (Placement(transformation(extent={{-140,10},{-120,30}}, rotation=
+           0)));
   Modelica.Blocks.Sources.Constant m_flow_on(k=2) 
     annotation (Placement(transformation(extent={{-140,-60},{-120,-40}},
           rotation=0)));

@@ -43,20 +43,20 @@ model TestTemperatureSensor "Test and compare case for the difference between us
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     useFlowRateInput=true,
-    T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent
-          ={{-60,30},{-40,50}}, rotation=0)));
+    T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
+           {{-60,30},{-40,50}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate2(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     useFlowRateInput=true,
-    T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent
-          ={{-60,-20},{-40,0}}, rotation=0)));
+    T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
+           {{-60,-20},{-40,0}}, rotation=0)));
   annotation (Diagram(graphics),
                        Documentation(info="<html>
 <p align = justify>In that test model the behaviour of one port temperature sensors with and without explicit junction models and two port temperature sensor are compared. Therefor each sensor is connected to two tanks with different temperatures and a flow source with changing flow direction.<p>
 <p align = justify>The one port sensor with explicit junction model and the two port sensor are showing the same expected results. The one port sensor without explicit junction model shows a different and unexpected behaviour. That test case shows that in all case where more are the sensor is between more than two components connected the one port sensor with explicit junction model or the two port sensor should be used!</p>
 </html>"));
-  Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent
-          ={{-100,10},{-80,30}}, rotation=0)));
+  Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent=
+           {{-100,10},{-80,30}}, rotation=0)));
   Modelica_Fluid.Sensors.TemperatureOnePort temperatureOnePortJunction(
       redeclare package Medium = Modelica.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{-20,-80},{0,-60}}, rotation=0)));
@@ -78,8 +78,8 @@ model TestTemperatureSensor "Test and compare case for the difference between us
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate3(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     useFlowRateInput=true,
-    T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent
-          ={{-60,-90},{-40,-70}}, rotation=0)));
+    T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
+           {{-60,-90},{-40,-70}}, rotation=0)));
   Modelica_Fluid.Junctions.JunctionIdeal junctionIdeal(redeclare package Medium
       = Modelica.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{20,-90},{40,-70}}, rotation=0)));
@@ -120,8 +120,8 @@ equation
         points={{-10,40},{30,40},{30,39.5},{70,39.5}}, color={0,127,255}));
   connect(temperatureTwoPort.port_b, openTankHot2.ports[1]) annotation (Line(
         points={{0,-10},{34,-10},{34,-20.5},{70,-20.5}}, color={0,127,255}));
-  connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (Line(points
-        ={{30,-70},{30,-60.5}}, color={0,127,255}));
+  connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (Line(points=
+         {{30,-70},{30,-60.5}}, color={0,127,255}));
   connect(junctionIdeal.port_2, openTankHot3.ports[1]) annotation (Line(points=
           {{40,-80},{55.5,-80},{55.5,-80.5},{70,-80.5}}, color={0,127,255}));
 end TestTemperatureSensor;

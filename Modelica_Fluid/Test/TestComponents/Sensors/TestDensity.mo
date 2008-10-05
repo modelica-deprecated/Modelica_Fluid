@@ -13,20 +13,20 @@ model TestDensity
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
-    diameter=0.1) annotation (Placement(transformation(extent={{20,-30},{40,-10}}, 
+    diameter=0.1) annotation (Placement(transformation(extent={{20,-30},{40,-10}},
           rotation=0)));
   Modelica.Blocks.Sources.Sine sine1 
-                                    annotation (Placement(transformation(extent
-          ={{-100,-20},{-80,0}}, rotation=0)));
+                                    annotation (Placement(transformation(extent=
+           {{-100,-20},{-80,0}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX massFlowRate2(
     useFlowRateInput=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    h=3200e3)                       annotation (Placement(transformation(extent
-          ={{-60,-20},{-40,0}}, rotation=0)));
+    h=3200e3)                       annotation (Placement(transformation(extent=
+           {{-60,-20},{-40,0}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_phX boundary_fixed1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=ambient.default_p_ambient,
-    h=3000e3) annotation (Placement(transformation(extent={{100,-30},{80,-10}}, 
+    h=3000e3) annotation (Placement(transformation(extent={{100,-30},{80,-10}},
           rotation=0)));
   Modelica_Fluid.Sensors.DensityTwoPort density2_2(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
@@ -37,15 +37,15 @@ model TestDensity
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
-    diameter=0.1) annotation (Placement(transformation(extent={{20,40},{40,60}}, 
+    diameter=0.1) annotation (Placement(transformation(extent={{20,40},{40,60}},
           rotation=0)));
-  Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent
-          ={{-100,50},{-80,70}}, rotation=0)));
+  Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent=
+           {{-100,50},{-80,70}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX massFlowRate1(
     useFlowRateInput=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    h=3200e3)                       annotation (Placement(transformation(extent
-          ={{-60,50},{-40,70}}, rotation=0)));
+    h=3200e3)                       annotation (Placement(transformation(extent=
+           {{-60,50},{-40,70}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_phX boundary_fixed(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=ambient.default_p_ambient,

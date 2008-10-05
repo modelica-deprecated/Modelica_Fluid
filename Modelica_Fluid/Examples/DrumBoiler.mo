@@ -7,10 +7,10 @@ package DrumBoiler
     DrumBoiler drumBoiler            annotation (Placement(transformation(
             extent={{-20,-40},{40,20}}, rotation=0)));
     Modelica.Blocks.Sources.TimeTable q_F_Tab(table=[0, 0; 3600, 400; 7210,
-          400]) annotation (Placement(transformation(extent={{-80,0},{-60,20}}, 
+          400]) annotation (Placement(transformation(extent={{-80,0},{-60,20}},
             rotation=0)));
     Modelica.Blocks.Sources.TimeTable Y_Valve_Tab(table=[0, 1; 3600, 1; 7210,
-           1]) annotation (Placement(transformation(extent={{-80,-40},{-60,-20}}, 
+           1]) annotation (Placement(transformation(extent={{-80,-40},{-60,-20}},
             rotation=0)));
     annotation (
       Diagram(graphics),
@@ -117,8 +117,8 @@ Simulate for 7200 seconds.
           Modelica.Media.Water.StandardWater) 
       annotation (Placement(transformation(extent={{10,14},{30,34}}, rotation=0)));
     Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
-      annotation (Placement(transformation(extent={{-51,23},{-65,37}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-51,23},{-65,37}}, rotation=
+             0)));
     Modelica_Fluid.Sources.PrescribedMassFlowRate_hX pump(
                                              h=5e5, redeclare package Medium = 
           Modelica.Media.Water.StandardWater,
@@ -126,23 +126,23 @@ Simulate for 7200 seconds.
       annotation (Placement(transformation(extent={{-80,-30},{-60,-10}},
             rotation=0)));
     Modelica.Blocks.Math.Feedback feedback 
-      annotation (Placement(transformation(extent={{-26,20},{-46,40}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-26,20},{-46,40}}, rotation=
+             0)));
     Modelica.Blocks.Sources.Constant levelSetPoint(k=67) 
-      annotation (Placement(transformation(extent={{-43,50},{-30,63}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-43,50},{-30,63}}, rotation=
+             0)));
     Modelica.Blocks.Interfaces.RealOutput T_S 
-      annotation (Placement(transformation(extent={{100,56},{108,64}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{100,56},{108,64}}, rotation=
+             0)));
     Modelica.Blocks.Interfaces.RealOutput p_S 
-      annotation (Placement(transformation(extent={{100,20},{108,28}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{100,20},{108,28}}, rotation=
+             0)));
     Modelica.Blocks.Interfaces.RealOutput qm_S 
       annotation (Placement(transformation(extent={{100,-4},{108,4}}, rotation=
               0)));
     Modelica.Blocks.Interfaces.RealOutput V_l 
-      annotation (Placement(transformation(extent={{100,88},{108,96}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{100,88},{108,96}}, rotation=
+             0)));
   public
     Modelica.Blocks.Math.Gain MW2W(k=1e6) 
       annotation (Placement(transformation(extent={{-95,-75.5},{-85,-64.5}},
@@ -159,8 +159,8 @@ Simulate for 7200 seconds.
     Modelica_Fluid.ControlValves.ValveLinear SteamValve(           redeclare
         package Medium = 
           Modelica.Media.Water.StandardWater, Kv=2e-5) 
-      annotation (Placement(transformation(extent={{50,-10},{70,-30}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{50,-10},{70,-30}}, rotation=
+             0)));
 
   equation
     connect(furnace.port, evaporator.heatPort) 

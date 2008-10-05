@@ -17,7 +17,7 @@ model TestOnePortSensors1
     h_start=1e5,
     initType=Modelica_Fluid.Types.Init.InitialValues,
     p_start=101325) 
-                 annotation (Placement(transformation(extent={{-30,30},{-10,50}}, 
+                 annotation (Placement(transformation(extent={{-30,30},{-10,50}},
           rotation=0)));
 
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
@@ -41,7 +41,7 @@ model TestOnePortSensors1
   Modelica.Blocks.Sources.Ramp ramp(
     height=2,
     duration=20,
-    offset=-1) annotation (Placement(transformation(extent={{-100,30},{-80,50}}, 
+    offset=-1) annotation (Placement(transformation(extent={{-100,30},{-80,50}},
           rotation=0)));
   Modelica_Fluid.Volumes.MixingVolume volume2(
     V=1e-3,
@@ -66,7 +66,7 @@ model TestOnePortSensors1
     annotation (Placement(transformation(extent={{100,-30},{80,-10}}, rotation=
             0)));
   Modelica_Fluid.Sensors.TemperatureTwoPort Tmix2(redeclare package Medium = 
-        Medium) annotation (Placement(transformation(extent={{0,-30},{20,-10}}, 
+        Medium) annotation (Placement(transformation(extent={{0,-30},{20,-10}},
           rotation=0)));
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice orifice1(
     redeclare package Medium = Medium,
@@ -76,7 +76,7 @@ model TestOnePortSensors1
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice orifice2(
     redeclare package Medium = Medium,
     zeta=zeta,
-    diameter=D_a) annotation (Placement(transformation(extent={{40,-30},{60,-10}}, 
+    diameter=D_a) annotation (Placement(transformation(extent={{40,-30},{60,-10}},
           rotation=0)));
 equation
   connect(FlowSource2.port, volume1.port_a)       annotation (Line(points={{-48,

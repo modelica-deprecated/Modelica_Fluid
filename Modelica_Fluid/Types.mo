@@ -60,7 +60,6 @@ Integer type that can have the following values
       Bidirectional "No restrictions on fluid flow (flow reversal possible)")
     "Enumeration to define whether flow reversal is allowed";
 
-
   type CvTypes = enumeration(
       Av "Av (metric) flow coefficient",
       Kv "Kv (metric) flow coefficient",
