@@ -58,12 +58,13 @@ package Tanks "Library demonstrating the usage of the tank model"
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
-    connect(flowSource.port, tank.topPorts[1])  annotation (Line(points={{-32,
-            80},{-20,80},{-20,69}}, color={0,127,255}));
+    connect(flowSource.port, tank.topPorts[1])  annotation (Line(points={{-32,80},
+            {-19,80},{-19,68}},     color={0,127,255}));
     connect(ambient_fixed.port, pipe.port_a) annotation (Line(points={{-34,-10},
             {-20,-10},{-20,0}}, color={0,127,255}));
     connect(pipe.port_b, tank.ports[1]) annotation (Line(points={{-20,20},{-20,
-            27}}, color={0,127,255}));
+            24},{-20,28},{-21,28}},
+                  color={0,127,255}));
   end OneTank;
 
   model TwoTanks
@@ -112,10 +113,10 @@ package Tanks "Library demonstrating the usage of the tank model"
       diameter=0.1)  annotation (Placement(transformation(extent={{-30,-30},{
               -10,-10}}, rotation=0)));
   equation
-    connect(tank1.ports[1], pipe.port_a) annotation (Line(points={{-60,-1},{-60,
+    connect(tank1.ports[1], pipe.port_a) annotation (Line(points={{-61,0},{-61,
             -20},{-30,-20}}, color={0,127,255}));
-    connect(pipe.port_b, tank2.ports[1]) annotation (Line(points={{-10,-20},{20,
-            -20},{20,-1}}, color={0,127,255}));
+    connect(pipe.port_b, tank2.ports[1]) annotation (Line(points={{-10,-20},{19,
+            -20},{19,0}},  color={0,127,255}));
   end TwoTanks;
 
   model TankWithEmptyingPipe1
@@ -192,10 +193,11 @@ package Tanks "Library demonstrating the usage of the tank model"
             -50}}, color={255,0,255}));
     connect(flowSource.port, pipe.port_b) annotation (Line(points={{0,50},{40,
             50},{40,20}}, color={0,127,255}));
-    connect(valveDiscrete.port_b, tank1.ports[1]) annotation (Line(points={{-20,
-            -40},{-20,-21}}, color={0,127,255}));
+    connect(valveDiscrete.port_b, tank1.ports[1]) annotation (Line(points={{-20,-40},
+            {-20,-30},{-20,-20},{-21,-20}},
+                             color={0,127,255}));
     connect(pipe.port_a, tank1.ports[2]) annotation (Line(points={{40,0},{40,
-            -28},{-18,-28},{-18,-20},{-20,-20},{-20,-21}}, color={0,127,255}));
+            -28},{-18,-28},{-18,-20},{-21,-20},{-21,-20}}, color={0,127,255}));
   end TankWithEmptyingPipe1;
 
   model TankWithEmptyingPipe2
@@ -267,12 +269,13 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (Placement(transformation(extent={{0,-100},{20,-80}}, rotation=
              0)));
   equation
-    connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-20,-21},{
-            -20,-50}}, color={0,127,255}));
+    connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-21,-20},{
+            -21,-35},{-20,-35},{-20,-50}},
+                       color={0,127,255}));
     connect(ambient_fixed.port, pipe1.port_a) annotation (Line(points={{-40,-90},
             {-20,-90},{-20,-70}}, color={0,127,255}));
-    connect(tank1.ports[2], pipe2.port_b) annotation (Line(points={{-20,-21},{
-            -18,-21},{-18,-40},{30,-40},{30,-50}}, color={0,127,255}));
+    connect(tank1.ports[2], pipe2.port_b) annotation (Line(points={{-21,-20},{
+            -18,-20},{-18,-40},{30,-40},{30,-50}}, color={0,127,255}));
     connect(ambient_fixed1.port, pipe2.port_a) annotation (Line(points={{20,-90},
             {30,-90},{30,-70}}, color={0,127,255}));
   end TankWithEmptyingPipe2;
@@ -370,20 +373,22 @@ package Tanks "Library demonstrating the usage of the tank model"
                    annotation (Placement(transformation(extent={{-20,10},{0,30}},
             rotation=0)));
   equation
-    connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-60,-1},{
-            -60,-30}}, color={0,127,255}));
+    connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-61,0},{-61,
+            -15},{-60,-15},{-60,-30}},
+                       color={0,127,255}));
     connect(ambient_fixed1.port, pipe1.port_a) 
                                               annotation (Line(points={{-80,-70},
             {-60,-70},{-60,-50}}, color={0,127,255}));
     connect(ambient_fixed2.port, pipe2.port_a) annotation (Line(points={{20,-70},
             {40,-70},{40,-50}}, color={0,127,255}));
     connect(tank2.ports[1], pipe2.port_b) 
-      annotation (Line(points={{40,-1},{40,-30}}, color={0,127,255}));
+      annotation (Line(points={{39,0},{39,-15},{40,-15},{40,-30}},
+                                                  color={0,127,255}));
     connect(pipe3.port_a, tank1.ports[2]) annotation (Line(points={{-20,20},{
-            -30,20},{-30,-10},{-58,-10},{-58,0},{-60,0},{-60,-1}}, color={0,127,
+            -30,20},{-30,-10},{-58,-10},{-58,0},{-61,0},{-61,0}},  color={0,127,
             255}));
     connect(pipe3.port_b, tank2.ports[2]) annotation (Line(points={{0,20},{10,
-            20},{10,-8},{38,-8},{38,0},{40,0},{40,-1}}, color={0,127,255}));
+            20},{10,-8},{38,-8},{38,0},{39,0},{39,0}},  color={0,127,255}));
   end TanksWithEmptyingPipe1;
 
   model TanksWithEmptyingPipe2
@@ -396,7 +401,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
 
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}}),
                         graphics),
       experiment(StopTime=300),
@@ -468,7 +473,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           rotation=90)));
     PressureLosses.StaticHead pipe2(redeclare package Medium = Medium,
         height_ab=2) annotation (Placement(transformation(
-          origin={0,-24},
+          origin={0,-22},
           extent={{-10,-10},{10,10}},
           rotation=90)));
     PressureLosses.StaticHead pipe3(redeclare package Medium = Medium,
@@ -481,23 +486,29 @@ package Tanks "Library demonstrating the usage of the tank model"
             {-36,-92},{-60,-92},{-60,-88}}, color={0,127,255}));
     connect(open.y, valveDiscrete.open) annotation (Line(points={{-77,-78},{-68,
             -78}}, color={255,0,255}));
-    connect(valveDiscrete.port_b,tank3. ports[1]) annotation (Line(points={{-60,
-            -68},{-60,-51}}, color={0,127,255}));
+    connect(valveDiscrete.port_b,tank3. ports[1]) annotation (Line(points={{-60,-68},
+            {-60,-59},{-60,-50},{-61,-50}},
+                             color={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{70,40},{70,
-            49}}, color={0,127,255}));
-    connect(pipe2.port_b, tank2.ports[2]) annotation (Line(points={{
-            6.12323e-016,-14},{6.12323e-016,-10},{0,-10},{0,9}}, color={0,127,
-            255}));
+            45},{70,50},{69,50}},
+                  color={0,127,255}));
     connect(pipe2.port_a, tank3.ports[2]) annotation (Line(points={{
-            -6.12323e-016,-34},{-6.12323e-016,-48},{0,-60},{-58,-60},{-58,-51},
-            {-60,-51}}, color={0,127,255}));
+            -6.12323e-016,-32},{-6.12323e-016,-48},{0,-60},{-58,-60},{-58,-50},
+            {-61,-50}}, color={0,127,255}));
     connect(pipe3.port_a, tank3.topPorts[1]) 
                                             annotation (Line(points={{-60,0},{
-            -60,-9}}, color={0,127,255}));
+            -60,-5},{-60,-10},{-59,-10}},
+                      color={0,127,255}));
     connect(pipe3.port_b, tank2.ports[1]) annotation (Line(points={{-60,20},{
-            -60,26},{-30,26},{-30,0},{-2,0},{-2,9},{0,9}}, color={0,127,255}));
+            -60,26},{-30,26},{-30,0},{-2,0},{-2,10},{-1,10}},
+                                                           color={0,127,255}));
     connect(pipe1.port_a, tank2.ports[3]) annotation (Line(points={{70,20},{70,
-            0},{2,0},{2,9},{0,9}}, color={0,127,255}));
+            0},{2,0},{2,10},{-1,10}},
+                                   color={0,127,255}));
+    connect(pipe2.port_b, tank2.ports[2]) annotation (Line(
+        points={{6.12323e-016,-12},{0,-12},{0,10},{-1,10}},
+        color={0,127,255},
+        smooth=Smooth.None));
   end TanksWithEmptyingPipe2;
 
   model ThreeOpenTanks "Demonstrating the usage of OpenTank"
@@ -533,7 +544,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       pipe_diameters={0.1}) 
                      annotation (Placement(transformation(extent={{-20,20},{20,
               60}}, rotation=0)));
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}}),
                         graphics),
       experiment(StopTime=100),
@@ -582,12 +593,16 @@ package Tanks "Library demonstrating the usage of the tank model"
             -40},{-6.12323e-016,-40},{-6.12323e-016,-20}}, color={0,127,255}));
     connect(pipe2.port_a, pipe3.port_a) annotation (Line(points={{-6.12323e-016,
             -20},{0,-20},{0,-40},{60,-40},{60,-20}}, color={0,127,255}));
-    connect(pipe2.port_b, tank2.ports[1]) annotation (Line(points={{
-            6.12323e-016,0},{6.12323e-016,10},{0,10},{0,19}}, color={0,127,255}));
     connect(pipe3.port_b, tank3.ports[1]) 
-      annotation (Line(points={{60,0},{60,19}}, color={0,127,255}));
+      annotation (Line(points={{60,0},{60,10},{60,20},{59,20}},
+                                                color={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{-60,0},{-60,
-            19}}, color={0,127,255}));
+            10},{-60,20},{-61,20}},
+                  color={0,127,255}));
+    connect(pipe2.port_b, tank2.ports[1]) annotation (Line(
+        points={{6.12323e-016,0},{-1,0},{-1,20}},
+        color={0,127,255},
+        smooth=Smooth.None));
   end ThreeOpenTanks;
 
   model TestEmptyOpenTank "Test whether an empty tank is properly handeled"
@@ -637,9 +652,10 @@ package Tanks "Library demonstrating the usage of the tank model"
             extent={{56,58},{76,78}}, rotation=0)));
   equation
     connect(pipe.port_b, tank1.ports[1]) annotation (Line(points={{1.83697e-015,
-            0},{0,0},{0,19}}, color={0,127,255}));
+            0},{-1,0},{-1,20}},
+                              color={0,127,255}));
     connect(pipe.port_a, tank2.topPorts[1]) annotation (Line(points={{
-            -1.83697e-015,-20},{0,-20},{0,-39}}, color={0,127,255}));
+            -1.83697e-015,-20},{1,-20},{1,-40}}, color={0,127,255}));
   end TestEmptyOpenTank;
 
 end Tanks;

@@ -237,8 +237,8 @@ equation
 //Determine port properties
     p_static = level*ambient.g*medium.d + p_ambient;
     for i in 1:n_ports loop
-       H_flow[i] = semiLinear(ports[i].m_flow, inStream(ports[i].h_outflow), medium.h);
-       mXi_flow[i,:] = semiLinear(ports[i].m_flow, inStream(ports[i].Xi_outflow), medium.Xi);
+       H_flow[i]     = ports[i].m_flow*actualStream(ports[i].h_outflow);
+       mXi_flow[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
        if p_static_at_port then
          ports[i].p = p_static;
        else
@@ -299,8 +299,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -383,7 +383,7 @@ model Tank
         rotation=90,
         origin={0,100})));
 
-    parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0.1)}
+    parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0.0001)}
       "Data of inlet/outlet ports at side and bottom of tank";
 
     Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
@@ -450,7 +450,7 @@ model Tank
       "Masses of independent components in the fluid";
     Medium.EnthalpyFlowRate H_flow_top[nTopPorts]
       "Enthalpy flow rates from the top ports in to the tank";
-    Medium.EnthalpyFlowRate port_b_H_flowottom[nPorts]
+    Medium.EnthalpyFlowRate port_b_H_flow_bottom[nPorts]
       "Enthalpy flow rates from the bottom ports in to the tank";
     Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi]
       "Substance mass flow rates from the top ports in to the tank";
@@ -482,17 +482,17 @@ equation
 
   // Energy balance
     if Medium.singleState then
-      der(U) = sum(H_flow_top) + sum(port_b_H_flowottom)
+      der(U) = sum(H_flow_top) + sum(port_b_H_flow_bottom)
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
     else
-      der(U) = sum(H_flow_top) + sum(port_b_H_flowottom) - p_ambient*der(V);
+      der(U) = sum(H_flow_top) + sum(port_b_H_flow_bottom) - p_ambient*der(V);
     end if;
 
   // Properties at top ports
     for i in 1:nTopPorts loop
        // It is assumed that fluid flows only from one of the top ports in to the tank and never vice versa
-       H_flow_top[i]     = semiLinear(topPorts[i].m_flow, inStream(topPorts[i].h_outflow), h_start);
-       mXi_flow_top[i,:] = semiLinear(topPorts[i].m_flow, inStream(topPorts[i].Xi_outflow), X_start[1:Medium.nXi]);
+       H_flow_top[i]     = topPorts[i].m_flow*inStream(topPorts[i].h_outflow);
+       mXi_flow_top[i,:] = topPorts[i].m_flow*inStream(topPorts[i].Xi_outflow);
        topPorts[i].p     = p_ambient;
        topPorts[i].h_outflow = h_start;
 /*
@@ -503,14 +503,14 @@ equation
 
   // Properties at bottom ports
     for i in 1:nPorts loop
-       port_b_H_flowottom[i] = semiLinear(ports[i].m_flow, inStream(ports[i].h_outflow), medium.h);
-       port_b_mXi_flowottom[i,:] = semiLinear(ports[i].m_flow, inStream(ports[i].Xi_outflow), medium.Xi);
+       port_b_H_flow_bottom[i]   = ports[i].m_flow*actualStream(ports[i].h_outflow);
+       port_b_mXi_flowottom[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
        aboveLevel[i] = level >= (portsData[i].portLevel + ports_emptyPipeHysteresis[i])
                        or pre(aboveLevel[i]) and level >= (portsData[i].portLevel - ports_emptyPipeHysteresis[i]);
        levelAbovePort[i] = if aboveLevel[i] then level - portsData[i].portLevel else 0;
-
        ports[i].h_outflow = medium.h;
        ports[i].Xi_outflow = medium.Xi;
+
        if stiffCharacteristicForEmptyPort then
           // If port is above fluid level, use large zeta if fluid flows out of port (= small mass flow rate)
           zeta_out[i] = 1 + (if aboveLevel[i] then 0 else zetaLarge);
@@ -583,8 +583,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 3))),
           Line(
             points={{-100,100},{100,100}},
