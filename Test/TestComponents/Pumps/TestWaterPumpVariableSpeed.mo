@@ -40,12 +40,12 @@ annotation (
     duration=5,
     height=-500,
     offset=1500) 
-                annotation (Placement(transformation(extent={{-100,62},{-80,82}}, 
+                annotation (Placement(transformation(extent={{-100,62},{-80,82}},
           rotation=0)));
 equation
   connect(Constant1.y, Valve.opening)     annotation (Line(points={{-19,90},{-7,
           90},{-7,45}}, color={0,0,127}));
-  connect(Valve.port_b, Sink.port)       annotation (Line(points={{2,36},{14,36}}, 
+  connect(Valve.port_b, Sink.port)       annotation (Line(points={{2,36},{14,36}},
         color={0,127,255}));
   connect(Valve.port_a, Pump1.outlet)     annotation (Line(points={{-16,36},{
           -26,36},{-26,39.8},{-40.4,39.8}}, color={0,127,255}));

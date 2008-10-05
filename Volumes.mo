@@ -158,9 +158,9 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     redeclare package Medium = Medium,
     m_flow(each start=0)) 
     annotation (Placement(transformation(
-          origin={0,-105},
-          extent={{-20,-5},{20,5}},
-          rotation=90)));
+        extent={{0,-20},{-10,20}},
+        rotation=90,
+        origin={0,-100})));
 
 //Ambient
     parameter Medium.AbsolutePressure p_ambient=ambient.default_p_ambient
@@ -299,8 +299,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -342,11 +342,12 @@ Adapted to the new fluid library interfaces:
 </ul>
 </html>"),
       Diagram(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+
 end OpenTank;
 
 model Tank
@@ -378,9 +379,9 @@ model Tank
     m_flow(each start=0, each min=0))
       "Inlet ports over levelMax at top of tank (fluid flows only from the port in to the tank)"
     annotation (Placement(transformation(
-          origin={0,105},
-          extent={{-20,-5},{20,5}},
-          rotation=90)));
+        extent={{0,-20},{10,20}},
+        rotation=90,
+        origin={0,100})));
 
     parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0.1)}
       "Data of inlet/outlet ports at side and bottom of tank";
@@ -390,9 +391,9 @@ model Tank
     m_flow(each start=0))
       "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
     annotation (Placement(transformation(
-          origin={0,-105},
-          extent={{-20,-5},{20,5}},
-          rotation=90)));
+        extent={{0,-20},{-10,20}},
+        rotation=90,
+        origin={0,-100})));
 
 //Ambient
    outer Modelica_Fluid.Ambient ambient "Ambient conditions";
@@ -582,8 +583,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 3))),
           Line(
             points={{-100,100},{100,100}},

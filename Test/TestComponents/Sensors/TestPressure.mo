@@ -7,19 +7,19 @@ model TestPressure
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
-    diameter=0.1) annotation (Placement(transformation(extent={{20,-10},{40,10}}, 
+    diameter=0.1) annotation (Placement(transformation(extent={{20,-10},{40,10}},
           rotation=0)));
   Modelica_Fluid.Sensors.RelativePressure relativePressure(redeclare package
       Medium = Modelica.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{20,34},{40,54}}, rotation=0)));
-  Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent
-          ={{-100,0},{-80,20}}, rotation=0)));
+  Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent=
+           {{-100,0},{-80,20}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate1(
     useFlowRateInput=true,
     T=SI.Conversions.from_degC(50),
     redeclare package Medium = Modelica.Media.Water.StandardWater) 
-                                    annotation (Placement(transformation(extent
-          ={{-60,0},{-40,20}}, rotation=0)));
+                                    annotation (Placement(transformation(extent=
+           {{-60,0},{-40,20}}, rotation=0)));
   annotation (
     Diagram(graphics),
     experiment(Tolerance=1e-006),

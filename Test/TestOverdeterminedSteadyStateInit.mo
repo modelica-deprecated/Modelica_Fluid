@@ -5,7 +5,7 @@ package TestOverdeterminedSteadyStateInit
      replaceable package Medium = Modelica.Media.Water.StandardWater 
        constrainedby Modelica.Media.Interfaces.PartialMedium;
     annotation (Diagram(graphics),
-                         Icon(graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+                         Icon(graphics={Rectangle(extent={{-100,100},{100,-100}},
               lineColor={0,0,255}), Text(
             extent={{-60,60},{60,-60}},
             lineColor={0,0,255},
@@ -20,7 +20,7 @@ package TestOverdeterminedSteadyStateInit
       initType=Modelica_Fluid.Types.Init.InitialValues,
       height=2,
       level_start=1) 
-                annotation (Placement(transformation(extent={{-76,6},{-54,28}}, 
+                annotation (Placement(transformation(extent={{-76,6},{-54,28}},
             rotation=0)));
     Pumps.Pump pump(
       redeclare package Medium = Medium,
@@ -35,8 +35,8 @@ package TestOverdeterminedSteadyStateInit
             head_nom={60.0,0}, q_nom={0.0,0.02e-3}),
       m_flow_start=0.01,
       checkValve=false) 
-      annotation (Placement(transformation(extent={{-58,-16},{-38,4}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-58,-16},{-38,4}}, rotation=
+             0)));
     ControlValves.ValveIncompressible valve(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
@@ -50,12 +50,12 @@ package TestOverdeterminedSteadyStateInit
       annotation (Placement(transformation(extent={{88,12},{108,32}}, rotation=
               0)));
     Sensors.MassFlowRate massFlowRate(redeclare package Medium = Medium) 
-      annotation (Placement(transformation(extent={{-34,6},{-14,-14}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-34,6},{-14,-14}}, rotation=
+             0)));
     Modelica.Thermal.HeatTransfer.Sources.FixedTemperature ambientTemperature(
                                                                       T=ambient.default_T_ambient) 
-      annotation (Placement(transformation(extent={{-12,-40},{2,-26}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-12,-40},{2,-26}}, rotation=
+             0)));
     Modelica.Thermal.HeatTransfer.Components.ThermalConductor thermalConductor1
       (                                                              G=1.6e3/20) 
       annotation (Placement(transformation(
@@ -97,15 +97,15 @@ package TestOverdeterminedSteadyStateInit
               0)));
 
     Modelica.Blocks.Interfaces.RealOutput hotWaterTemperature 
-      annotation (Placement(transformation(extent={{88,-28},{108,-8}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{88,-28},{108,-8}}, rotation=
+             0)));
     Modelica.Blocks.Interfaces.RealOutput coldWaterTemperature 
       annotation (Placement(transformation(extent={{88,-78},{108,-58}},
             rotation=0)));
     Modelica_Fluid.Sensors.TemperatureOnePort sensor_T_1(
                                    redeclare package Medium = Medium) 
-      annotation (Placement(transformation(extent={{56,-56},{36,-36}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{56,-56},{36,-36}}, rotation=
+             0)));
     Modelica_Fluid.Sensors.TemperatureOnePort sensor_T_2(
                                    redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{-16,-56},{-36,-36}},
@@ -114,8 +114,8 @@ package TestOverdeterminedSteadyStateInit
                                    annotation (Placement(transformation(extent=
               {{90,60},{110,80}}, rotation=0)));
     Modelica.Blocks.Sources.RealExpression realExpression 
-      annotation (Placement(transformation(extent={{-74,22},{-54,42}}, rotation
-            =0)));
+      annotation (Placement(transformation(extent={{-74,22},{-54,42}}, rotation=
+             0)));
   equation
   tankLevel = tank.level;
     connect(valvePosition, valve.stemPosition) annotation (Line(points={{-108,0},
@@ -126,7 +126,7 @@ package TestOverdeterminedSteadyStateInit
             7},{-24,38},{36,38},{36,22},{98,22}}, color={0,0,127}));
     connect(massFlowRate.port_b, pipe.port_a) annotation (Line(points={{-14,-4},
             {12,-4}}, color={0,127,255}));
-    connect(pipe.port_b, valve.port_a) annotation (Line(points={{32,-4},{42,-4}}, 
+    connect(pipe.port_b, valve.port_a) annotation (Line(points={{32,-4},{42,-4}},
           color={0,127,255}));
     connect(thermalConductor1.port_b, radiator.thermalPort) annotation (Line(
           points={{18,-56},{18,-60.6}}, color={191,0,0}));

@@ -13,7 +13,7 @@ model TestSweptVolume
   Modelica.Blocks.Sources.Sine sine(
     phase=Modelica.Constants.pi/2,
     amplitude=0.1,
-    offset=0.1) annotation (Placement(transformation(extent={{-80,-40},{-60,-20}}, 
+    offset=0.1) annotation (Placement(transformation(extent={{-80,-40},{-60,-20}},
           rotation=0)));
   inner Modelica_Fluid.Ambient ambient annotation (Placement(transformation(
           extent={{80,-40},{100,-20}}, rotation=0)));

@@ -44,11 +44,11 @@ annotation (
 equation
   connect(Constant1.y, Valve.opening)     annotation (Line(points={{-39,70},{-7,
           70},{-7,45}}, color={0,0,127}));
-  connect(Valve.port_b, Sink.port)       annotation (Line(points={{2,36},{14,36}}, 
+  connect(Valve.port_b, Sink.port)       annotation (Line(points={{2,36},{14,36}},
         color={0,127,255}));
   connect(Valve.port_a, Pump1.outlet)     annotation (Line(points={{-16,36},{
           -26,36},{-26,37.8},{-40.4,37.8}}, color={0,127,255}));
-  connect(Pump1.inlet, Source.port) annotation (Line(points={{-62.8,30},{-80,30}}, 
+  connect(Pump1.inlet, Source.port) annotation (Line(points={{-62.8,30},{-80,30}},
         color={0,127,255}));
   connect(Ramp1.y, Sink.p_in)   annotation (Line(points={{25,84},{58,84},{58,42},
           {36,42}}, color={0,0,127}));

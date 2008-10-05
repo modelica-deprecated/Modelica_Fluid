@@ -3,6 +3,83 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 2: One-dimensional ther
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+annotation (
+  version="1.0 Streams Beta 2",
+  versionBuild="$Rev$",
+  versionDate="$Date::                            $",
+  preferedView="info",
+  Settings(NewStateSelection=true),
+  uses(Modelica(version="3.0")),
+  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
+      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
+  Documentation(info="<html>
+<p>
+Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
+components describing
+<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
+component equations and the media models are decoupled.
+All components are implemented such that they can be used for
+media from the Modelica.Media library. This means especially that an
+incompressible or compressible medium, a single or a multiple
+substance medium with one or more phases might be used.
+The goal is to include 
+the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
+</p>
+ 
+<p>
+This is version <b>1.0 Streams Beta 2</b> of the Modelica_Fluid library.
+With respect to previous versions of the Modelica_Fluid library, the design
+of the connectors has been changed, using the recently developed concept
+with streams connectors. This requires an extension to the Modelica specification
+and it is planned to include this extension in Modelica 3.1.
+This new concept is supported in Dymola 7.1.
+The essential benefit of this new concept is that the equation systems become
+more well behaved and the models can be more reliably simulated.
+Please, read the section
+<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
+in the Users Guide before using this library.
+</p>
+ 
+<p>
+A typical example model of the Modelica_Fluid library
+is shown in the next figure (drum boiler):
+</p>
+<p align=\"center\">
+<img src=\"../Images/UsersGuide/DrumBoiler.png\">
+</p>
+<p>
+An example of a tank system that is controlled by a control system
+and where some of the components have built-in diagram animation
+is shown in the next figure:
+</p>
+<p align=\"center\">
+<img src=\"../Images/Examples/ControlledTanks1.png\">
+</p>
+<p>
+The following parts are useful, when newly starting with this library:
+</p>
+<ul>
+<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
+<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
+     summarizes the changes of the library releases.</li>
+<li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
+     contains examples that demonstrate the usage of this library.</li>
+</ul>
+ 
+ 
+<p><b>Copyright &copy; 2002-2008, Modelica Association.</b></p>
+<p><i>
+This Modelica package is <b>free</b> software; it can be redistributed and/or modified
+under the terms of the <b>Modelica license</b>, see the license conditions
+and the accompanying <b>disclaimer</b> in the documentation of package
+Modelica in file \"Modelica/package.mo\".
+</i></p>
+ 
+ 
+</html>"),
+    conversion(from(version="0.795", script=
+            "../ConvertFromModelica_Fluid_0.795.mos")));
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -1133,6 +1210,136 @@ ambiguity is removed by rule 2.</i></p>
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
+
+<h3><font color=\"#008000\">Version 1.0 Streams Beta 2, 2008-10-05</font></h3>
+
+<p>
+Modelica_Fluid was transformed to Modelica 3 and to Modelica Standard
+library 3.0 (by automatic conversion). Further changes:
+</p>
+
+<ul>
+<li> Emulated enumerations changed to real enumerations.</li>
+<li> Improved ControlValves code</li>
+<li> Introduced stream connectors with stream keyword (was previously an annotation)</li>
+<li> Introduced inStream() instead of inflow() </li>
+<li> Introduced m_flow*actualStream(h_outflow) instead of
+     streamFlow() or semiLinear(m_flow, inStream(h_outflow), medium.h)</li>
+<li> Removed Modelica_Fluid.Media and all references to it (since now available
+     in Modelica.Media of MSL3.0).</li>
+<li> Fixed PartialLumpedVolume for media with multiple substances</li>
+<li> New function \"Utilities.RegFun3\" for regularization with static head</li>
+<li> Fix density in static head models with the new RegFun3 functions
+     (ticket 7)</li>
+<li> Minor bug in MixingVolume corrected:<br>
+     V_lumped and Ws_flow have been set as modifiers when extending from PartialLumpedVolume,
+     although they are not declared as input. This is not allowed in Modelica 3.
+     Fixed by replacing the modifiers by equations.</li>
+<li> Modelica_Fluid.Sources.FixedBoundary<br>
+     Introduced p_default, T_default, h_default as default values, since
+     otherwise warnings will always be printed because parameter value is missing.</li>
+<li> Modelica_Fluid.Sources.PrescribedBoundary_pTX<br>
+     Modelica_Fluid.Sources.PrescribedBoundary_phX<br>
+     Modelica_Fluid.Sources.PrescribedMassFlowRate_TX<br>
+     Changed default values of parameters reference_p, reference_T to 
+     p_default, T_default (some have been xx_default, some reference_xx,
+     it seems best to always use the same approach)</li>
+<li> Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow<br>
+     Added default value for parameter \"d_nominal\" =
+     Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+     in order to avoid unnecessary warning messages.
+     Should be replaced by \"Medium.d_default\", once available.</li>
+<li> Modelica_Fluid.Pipes.DistributedPipe<br>
+     Modelica_Fluid.Pipes.DistributedPipeSb<br>
+     Modelica_Fluid.Pipes.DistributedPipeSa<br>
+     Added default value for parameter \"eta_nominal\"
+    (computed with default values of p,T,X from dynamicViscosity(..))</li>
+<li> Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlowLumpedPressure<br>
+     Replaced default value \"d_nominal=0.01\" by
+     Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)</li>
+<li> Modelica_Fluid.Volumes.OpenTank<br>
+     Modelica_Fluid.Volumes.Tank<br>
+     Corrected icons of ports (wrongly sized by automatic conversion from
+     Modelica 2 to Modelica 3).</li>
+</ul>
+
+
+<h3><font color=\"#008000\">Version 1.0 Streams Beta 1, 2008-05-02</font></h3>
+
+<p>
+Changed connectors to stream connectors and adapted the following sublibraries:
+</p>
+
+<ul>
+<li> Volumes</li>
+<li> PressureLosses </li>
+<li> Sensors </li>
+<li> Sources </li>
+<li> ControlValves </li>
+<li> HeatExchangers </li>
+<li> Junctions </li>
+<li> Pipes </li>
+<li> Pumps </li>
+<li> Test and Exampleas (most of the examples and tests are simulating)</li>
+</ul>
+
+<p>
+Other changes:
+</p>
+
+<ul>
+<li> Introduced HeatPorts with vectorized icon in Modelica_Fluid.Interfaces</li>
+<li> Deleted Modelica_Fluid.WorkInProgress since it seems to be too much work
+     to convert it to stream connectors</li>
+<li> Added Modelica_Fluid.Media (contains ConstantLiquidWater
+     medium because functions are missing in Modelica.Media),<lI>
+<li> Added two additional test cases with LumpedPipes
+    (to identify problems with hierarchically connected stream connectors).</li>
+<li> Deleted TestPortVolumes since PortVolumes can no longer be implemented with
+     stream connectors</li>
+<li> Leakage flow introduced for valves</li>
+<li> Drumboiler Example corrected</li>
+<li> Regularization for sensors (T,h,...), in order that no discontinuity
+     for bi-directional flow</li>
+<li> Density computation in static head corrected</li>
+<li> New functions Utilities.regUnitStep, regStep</li>
+<li> New components (TestComponents.Sensors.TestOnePortSensors1/.TestOnePortSensors2l,
+     TestRegStep)</li>
+<li> PartialTwoPortTransport<br>
+     <ul>
+     <li> Introduced port_a.T, port_b.T (for plotting)</li>
+     <li> Removed initialization menu</li>
+     <li> Introduced dp_start, m_flow_start</li>
+     <li> Removed previous start values of PartialTwoPortTransport in all models</li>
+     </ul></li>
+<li> PartialPump: Removed p_nom, since no longer needed (only dp_nom)</li>
+<li> Made \"%name\" in the icons of all components unified (and better looking)</li>
+<li> Changed default value of leackage flow of valves to zero.</li>
+<li> Fixed Modelica_Fluid.Junctions.MassFlowRatio so that it compiles
+     (inflow(..) currently only supported for scalars, not for vectors)</li>
+<li> Added script libraryinfo.mos, in order that Modelica_Fluid appears in the
+     Dymola library window automatically (provided library is in MODELICAPATH)</li>
+<li> Replaced semiLinear(..) by streamFlow(..) (not yet at all places)</li>
+<li> Introduced check-boxes in parameter menu of Sources (is more convenient to use)</li>
+<li> TwoPortTransport<br>
+     Computation of V_flow and optionally port_a_T, port_b_T.
+     Error in temperature calculation corrected</li>
+<li> Tank:<br>
+     Default of bottom pipe diameter changed from 0 to 0.1, since
+     otherwise a division by zero (if not connected and not changed).</li>
+<li> Modelica_Fluid.ControlValves.ValveVaporizing:<br>
+     Due to changes in PartialTwoPortTransport, port_a_T_inflow does no longer exist
+     and the usage to it is removed.
+     </li>
+<li> Modelica_Fluid.Test.TestComponents.Sensors.TestTemperatureSensor:<br>
+     Due to changes in PartialTwoPortTransport,
+     p_start does no longer exist and the usage to it is removed.</li>
+<li> VersionBuild introduced, as well as automatic update of
+     VersionBuild/VersionDate</li>
+</ul>
+
+
+
 <h3><font color=\"#008000\">Version 1.0 Beta 4, 2008-04-26</font></h3>
  
 <p>
@@ -1323,87 +1530,4 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
-annotation (
-  version="1.0 Streams Beta 2",
-  versionBuild="$Rev$",
-  versionDate="$Date::                            $",
-  preferedView="info",
-  Settings(NewStateSelection=true),
-  uses(Modelica(version="3.0")),
-  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
-      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
-  Documentation(info="<html>
-<p>
-Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
-components describing
-<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models are decoupled.
-All components are implemented such that they can be used for
-media from the Modelica.Media library. This means especially that an
-incompressible or compressible medium, a single or a multiple
-substance medium with one or more phases might be used.
-The goal is to include 
-the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
-</p>
- 
-<p>
-This is version <b>1.0 Streams Beta 1</b> of the Modelica_Fluid library.
-With respect to previous versions of the Modelica_Fluid library, the design
-of the connectors has been changed, using the recently developed concept
-with streams connectors. This requires an extension to the Modelica specification
-and it is planned to include this extension in Modelica 3.1.
-There is a Dymola prototype that supports this new concept.
-The essential benefit of this new concept is that the equation systems become
-more well behaved and the models can be more reliably simulated.
-Please, read the section
-<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
-in the Users Guide before using this library.
-</p>
- 
-<p>
-A typical example model of the Modelica_Fluid library
-is shown in the next figure (drum boiler):
-</p>
-<p align=\"center\">
-<img src=\"../Images/UsersGuide/DrumBoiler.png\">
-</p>
-<p>
-An example of a tank system that is controlled by a control system
-and where some of the components have built-in diagram animation
-is shown in the next figure:
-</p>
-<p align=\"center\">
-<img src=\"../Images/Examples/ControlledTanks1.png\">
-</p>
-<p>
-The following parts are useful, when newly starting with this library:
-</p>
-<ul>
-<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
-<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
-     summarizes the changes of the library releases.</li>
-<li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
-     contains examples that demonstrate the usage of this library.</li>
-</ul>
- 
-<p>
-Note, Modelica_Fluid does <b>not</b> work with
-version 2.2 of the Modelica standard library. 
-The reason is that some additional functions have been
-added to Modelica.Media in 2.2.1 that are accessed in Modelica_Fluid.
-</p>
- 
-<p><b>Copyright &copy; 2002-2008, Modelica Association.</b></p>
-<p><i>
-This Modelica package is <b>free</b> software; it can be redistributed and/or modified
-under the terms of the <b>Modelica license</b>, see the license conditions
-and the accompanying <b>disclaimer</b> in the documentation of package
-Modelica in file \"Modelica/package.mo\".
-</i></p>
- 
- 
-</html>"),
-    conversion(from(version="0.795", script=
-            "../ConvertFromModelica_Fluid_0.795.mos")));
 end Modelica_Fluid;

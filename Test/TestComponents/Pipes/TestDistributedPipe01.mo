@@ -100,7 +100,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     startTime=5,
     duration=0,
     height=1.0e5) 
-                annotation (Placement(transformation(extent={{104,64},{92,76}}, 
+                annotation (Placement(transformation(extent={{104,64},{92,76}},
           rotation=0)));
 
   Modelica_Fluid.Pipes.DistributedPipe pipe4(
@@ -339,7 +339,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     startTime=5,
     duration=0,
     height=1.0e5) 
-                annotation (Placement(transformation(extent={{92,-52},{80,-40}}, 
+                annotation (Placement(transformation(extent={{92,-52},{80,-40}},
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe12(
     redeclare package Medium=Medium,
@@ -367,8 +367,8 @@ Test of different distributed pipe models. The first system uses explicit juncti
                                               pipe2.n] heat2(each Q_flow=200,
       each alpha=10000,
       each T_ref=350) 
-    annotation (Placement(transformation(extent={{-74,-38},{-54,-18}}, rotation
-          =0)));
+    annotation (Placement(transformation(extent={{-74,-38},{-54,-18}}, rotation=
+           0)));
 equation
   connect(boundary1.port, pipe1.port_a) annotation (Line(
       points={{-88,64},{-82,64}},
