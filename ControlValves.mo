@@ -249,7 +249,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
     parameter Modelica_Fluid.Types.HydraulicConductance Kv
       "Hydraulic conductance for open valve (m_flow = Kv*dp)";
-    parameter Real Kv_small_rel(min=0, max=0.1) = 0.001
+    parameter Real Kv_small_rel(min=0, max=0.1) = 0
       "Relative hydraulic conductance for closed valve (m_flow = Kv_small_rel*Kv*dp)";
     Modelica.Blocks.Interfaces.BooleanInput open 
     annotation (Placement(transformation(
@@ -273,8 +273,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
           Text(extent={{-150,-60},{150,-100}}, textString="%name"),
           Polygon(
             points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
-            fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,0} else 
-                      {255,255,255}),
+            fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,0}
+                 else {255,255,255}),
             lineColor={0,0,0})}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
