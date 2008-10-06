@@ -464,15 +464,14 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     sum(ports_a_H_flow) + sum(ports_b_H_flow) = der(U) "Energy balance";
 
     for i in 1:Medium.nXi loop
-      sum(ports_a_mXi_flow[i,:])+sum(ports_b_mXi_flow[i,:]) = der(mXi[i])
+      sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]) = der(mXi[i])
         "Substance mass balance";
     end for;
 
-  /*
-  for i in 1:Medium.nC loop
-    sum(ports_a_mC_flow[i,:])+sum(ports_b_mC_flow[i,:]) = 0 "Trace substance mass balance";
-  end for;
-*/
+    for i in 1:Medium.nC loop
+      sum(ports_a_mC_flow[:,i])+sum(ports_b_mC_flow[:,i]) = 0
+        "Trace substance mass balance";
+    end for;
 
     for i in 1:n_a loop
       ports_a[i].h_outflow  = medium.h;
