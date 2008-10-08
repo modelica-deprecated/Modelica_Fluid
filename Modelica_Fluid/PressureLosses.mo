@@ -170,10 +170,14 @@ end SimpleGenericOrifice;
     parameter Boolean use_nominal = false
       "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
                                                                                                     annotation(Evaluate=true);
-    parameter SI.DynamicViscosity eta_nominal = 0.01
+    parameter SI.DynamicViscosity eta_nominal = Medium.dynamicViscosity(
+                                                   Medium.setState_pTX(
+                                                       Medium.p_default, Medium.T_default, Medium.X_default))
       "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
                                                                               annotation(Dialog(enable=use_nominal));
-    parameter SI.Density d_nominal = 0.01
+    parameter SI.Density d_nominal = Medium.density(
+                                       Medium.setState_pTX(
+                                          Medium.p_default, Medium.T_default, Medium.X_default))
       "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
                                                                annotation(Dialog(enable=use_nominal));
 
@@ -212,13 +216,16 @@ end SimpleGenericOrifice;
     parameter Boolean use_x_small_staticHead = abs(height_ab)>0
       "Use dp_/m_flow_small_staticHead only if static head actually exists" annotation(Evaluate=true);
   equation
-    if from_dp and not WallFriction.dp_is_zero then
-      m_flow = WallFriction.massFlowRate_dp_staticHead(dp, d_a, d_b, eta_a, eta_b, length, diameter,
-        g_times_height_ab, roughness, if use_x_small_staticHead then dp_small_staticHead else dp_small);
-    else
-      dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
-        g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
-    end if;
+  /* Modelica_Fluid.Examples.PumpingSystem fails, if this regularization is used:
+
+  if from_dp and not WallFriction.dp_is_zero then
+    m_flow = WallFriction.massFlowRate_dp_staticHead(dp, d_a, d_b, eta_a, eta_b, length, diameter,
+      g_times_height_ab, roughness, if use_x_small_staticHead then dp_small_staticHead else dp_small);
+  else
+    dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
+      g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
+  end if;
+*/
 
     /////////////////////////////////////////////////////////////////////////////////////
     // Old approach without pressure loss correlations properly addressing static head //
@@ -236,15 +243,14 @@ end SimpleGenericOrifice;
     else
        d = d_a;
     end if;
-  /*
-  if from_dp and not WallFriction.dp_is_zero then
-     m_flow = WallFriction.massFlowRate_dp(dp-height_ab*ambient.g*d,
-                                           d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
-  else
-     dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
-          + height_ab*ambient.g*d;
-  end if;
-*/
+
+    if from_dp and not WallFriction.dp_is_zero then
+       m_flow = WallFriction.massFlowRate_dp(dp-height_ab*ambient.g*d,
+                                             d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
+    else
+       dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
+            + height_ab*ambient.g*d;
+    end if;
 
       annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
           preserveAspectRatio=false,
