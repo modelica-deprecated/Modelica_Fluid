@@ -3298,8 +3298,8 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
                     Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)),
                     reg_m_flow_small);
     else
-       port_a_T = 0;
-       port_b_T = 0;
+       port_a_T = Medium.reference_T;
+       port_b_T = Medium.reference_T;
     end if;
   end PartialTwoPortTransport;
   end BaseClasses;
