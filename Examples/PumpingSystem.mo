@@ -18,7 +18,6 @@ model PumpingSystem "Model of a pumping system for drinking water"
     length=100,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
-    use_nominal=false,
     height_ab=50) 
     annotation (Placement(transformation(
         origin={-42,-47},
@@ -92,7 +91,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
             100,100}}),
             graphics),
     Documentation(info="<html>
@@ -147,11 +146,12 @@ equation
   connect(pipe.port_a, pumps.outlet)         annotation (Line(points={{-42,-58},
           {-42,-70},{-54,-70},{-53.2,-70.84}}, color={0,127,255}));
   connect(pipe.port_b, reservoir.ports[1]) annotation (Line(points={{-42,-36},{
-          -42,-30},{-4,-30},{-4,-16.5}}, color={0,127,255}));
-  connect(userValve.port_a, reservoir.ports[1]) annotation (Line(points={{58,
-          -30},{-4,-30},{-4,-16.5}}, color={0,127,255}));
+          -42,-30},{-4.5,-30},{-4.5,-16}},
+                                         color={0,127,255}));
+  connect(userValve.port_a, reservoir.ports[1]) annotation (Line(points={{58,-30},
+          {-4.5,-30},{-4.5,-16}},    color={0,127,255}));
   connect(reservoir.ports[1], reservoirPressure.port_a) annotation (Line(
-      points={{-4,-16.5},{-4,-22},{10,-22}},
+      points={{-4.5,-16},{-4.5,-22},{10,-22}},
       color={0,0,255},
       pattern=LinePattern.Dot));
 end PumpingSystem;
