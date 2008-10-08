@@ -317,10 +317,12 @@ it is open.
             stemPosition_nom)) = 0 "Av (metric) flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient",
                          enable = (CvData==CvTypes.Av)));
-      parameter Real Kv(unit="m3/h") = 0 "Kv (metric) flow coefficient" 
+      parameter SI.VolumeFlowRate Kv(displayUnit="m3/h") = 0
+        "Kv (metric) flow coefficient" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Kv)));
-      parameter Real Cv(unit="USG/min") = 0 "Cv (US) flow coefficient" 
+      parameter SI.VolumeFlowRate Cv(displayUnit="USG/min") = 0
+        "Cv (US) flow coefficient" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Cv)));
       parameter SI.Pressure dp_nom "Nominal pressure drop" 
@@ -404,11 +406,14 @@ it is open.
        Adapted from the ThermoPower library.</li>
 </ul>
 </html>"));
+    protected
+      function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
+
     initial equation
       if CvData == CvTypes.Kv then
-        Av = 2.7778e-5*Kv "Unit conversion";
+        Av = 2.7778e-5*Kv*(60*60) "Unit conversion";
       elseif CvData == CvTypes.Cv then
-        Av = 2.4027e-5*Cv "Unit conversion";
+        Av = 2.4027e-5*Cv*(60/4e-3) "Unit conversion";
       end if;
 
     equation

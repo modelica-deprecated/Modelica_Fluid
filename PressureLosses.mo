@@ -342,7 +342,8 @@ model SuddenExpansion
   parameter SI.Diameter D_b "Inner diameter of pipe at port_b";
 
   annotation (
-    Diagram(graphics={
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={
           Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,-100},
                 {100,100},{0,100},{0,40}}, color={0,0,0}),
           Rectangle(
@@ -366,8 +367,7 @@ model SuddenExpansion
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString=
-               "D_a"),
+            textString="D_a"),
           Line(
             points={{34,-100},{34,100}},
             color={0,0,255},
@@ -377,8 +377,7 @@ model SuddenExpansion
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString=
-               "D_b")}),
+            textString="D_b")}),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
           Text(
@@ -1506,7 +1505,7 @@ Laminar region:
                                                  data.zetaLaminarKnown, yd0);
       end pressureLoss_m_flow_and_Re;
 
-      model BaseModel
+      partial model BaseModel
         "Generic pressure drop component with constant turbulent loss factor data and without an icon"
 
         extends
