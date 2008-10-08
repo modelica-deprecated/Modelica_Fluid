@@ -28,7 +28,9 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
             annotation (Placement(transformation(extent={{-28,68},{-8,88}},
           rotation=0)));
 
-  annotation (Diagram(graphics),
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -100},{100,100}}),
+                      graphics),
                        experiment(StopTime=20, Tolerance=1e-005),
     experimentSetupOutput,
     Documentation(info="<html>
@@ -130,17 +132,21 @@ Test of different distributed pipe models. The first system uses explicit juncti
     annotation (Placement(transformation(extent={{72,-94},{92,-74}}, rotation=0)));
   Modelica_Fluid.Junctions.GenericJunction junction1(
     n_b=2,
-    p_start=1e5,
-    T_start=300,
     redeclare package Medium = Medium,
-    V=0.0001)                          annotation (Placement(transformation(
+    V=0.0001,
+    dp_nom=100000,
+    mflow_nom=0.01,
+    p_start=100000,
+    T_start=300)                       annotation (Placement(transformation(
           extent={{-58,54},{-38,74}}, rotation=0)));
   Modelica_Fluid.Junctions.GenericJunction junction2(
     n_a=2,
-    p_start=1e5,
-    T_start=300,
     redeclare package Medium = Medium,
-    V=0.00001)                         annotation (Placement(transformation(
+    V=0.00001,
+    dp_nom=100000,
+    mflow_nom=0.01,
+    p_start=100000,
+    T_start=300)                       annotation (Placement(transformation(
           extent={{6,54},{26,74}}, rotation=0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow[
                                               pipe2.n] heat(each Q_flow=200,
@@ -375,23 +381,23 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(pipe1.port_b, junction1.ports_a[1]) annotation (Line(
-      points={{-62,64},{-59.5,64},{-59.5,64},{-58,64}},
+      points={{-62,64},{-59.5,64},{-58,64}},
       color={0,127,255},
       thickness=0.5));
   connect(junction1.ports_b[1], pipe2.port_a) annotation (Line(
-      points={{-38,62},{-34,62},{-34,78},{-28,78}},
+      points={{-38,66},{-34,66},{-34,78},{-28,78}},
       color={0,127,255},
       thickness=0.5));
   connect(junction1.ports_b[2], pipe4.port_a) annotation (Line(
-      points={{-38,66},{-34,66},{-34,48},{-28,48}},
+      points={{-38,62},{-34,62},{-34,48},{-28,48}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe2.port_b, junction2.ports_a[1]) annotation (Line(
-      points={{-8,78},{-2,78},{-2,62},{6,62}},
+      points={{-8,78},{-2,78},{-2,66},{6,66}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe4.port_b, junction2.ports_a[2]) annotation (Line(
-      points={{-8,48},{-2,48},{-2,66},{6,66}},
+      points={{-8,48},{-2,48},{-2,62},{6,62}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe3.port_b, boundary2.port) annotation (Line(
@@ -399,7 +405,7 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(junction2.ports_b[1], pipe3.port_a) annotation (Line(
-      points={{26,64},{29.5,64},{29.5,64},{34,64}},
+      points={{26,64},{29.5,64},{34,64}},
       color={0,127,255},
       thickness=0.5));
   connect(heat.port, pipe2.thermalPort) annotation (Line(

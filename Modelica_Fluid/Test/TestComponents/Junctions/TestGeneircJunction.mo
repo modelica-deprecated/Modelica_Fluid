@@ -9,9 +9,10 @@ model TestGeneircJunction
     initType=Modelica_Fluid.Types.Init.SteadyState,
     n_a=1,
     n_b=2,
-    p_start=100000,
-    modelStructure=Modelica_Fluid.Types.ModelStructure.avb) 
-                                            annotation (Placement(
+    modelStructure=Modelica_Fluid.Types.ModelStructure.avb,
+    dp_nom=100000,
+    mflow_nom=0.01,
+    p_start=100000)                         annotation (Placement(
         transformation(extent={{10,-30},{30,-10}}, rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}}),

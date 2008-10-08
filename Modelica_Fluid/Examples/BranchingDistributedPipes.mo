@@ -135,17 +135,21 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
             0)));
   Modelica_Fluid.Junctions.GenericJunction junction1(
     n_b=2,
-    p_start=1e5,
-    T_start=300,
     redeclare package Medium = Medium,
-    V=0.0001)                          annotation (Placement(transformation(
+    V=0.0001,
+    dp_nom=100000,
+    mflow_nom=0.01,
+    p_start=100000,
+    T_start=300)                       annotation (Placement(transformation(
           extent={{-64,24},{-44,44}}, rotation=0)));
   Modelica_Fluid.Junctions.GenericJunction junction2(
     n_a=2,
-    p_start=1e5,
-    T_start=300,
     redeclare package Medium = Medium,
-    V=0.00001)                         annotation (Placement(transformation(
+    V=0.00001,
+    dp_nom=100000,
+    mflow_nom=0.01,
+    p_start=100000,
+    T_start=300)                       annotation (Placement(transformation(
           extent={{0,24},{20,44}}, rotation=0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow[
                                               pipe2.n] heat(each Q_flow=200,
@@ -295,7 +299,7 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(junction2.ports_b[1], pipe3.port_a) annotation (Line(
-      points={{20,34},{23.5,34},{23.5,34},{28,34}},
+      points={{20,34},{23.5,34},{28,34}},
       color={0,127,255},
       thickness=0.5));
   connect(heat.port, pipe2.thermalPort) annotation (Line(
