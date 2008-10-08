@@ -413,7 +413,7 @@ it is open.
       if CvData == CvTypes.Kv then
         Av = 2.7778e-5*Kv*(60*60) "Unit conversion";
       elseif CvData == CvTypes.Cv then
-        Av = 2.4027e-5*Cv*(60/4e-3) "Unit conversion";
+        Av = 2.4027e-5*Cv*(60/3.785411784e-3) "Unit conversion";
       end if;
 
     equation
