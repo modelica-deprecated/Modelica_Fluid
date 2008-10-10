@@ -1204,8 +1204,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     H_flow[n + 1] = -semiLinear(port_b.m_flow, inStream(port_b.h_outflow), medium[n].h);
     mXi_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.Xi_outflow), medium[1].Xi);
     mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.Xi_outflow), medium[n].Xi);
-    v[1] = m_flow[1]/d_a/area;
-    v[n + 1] = m_flow[n + 1]/d_b/area;
+    v[1] = m_flow[1]/(d_a + d[1])*2/area;
+    v[n + 1] = m_flow[n + 1]/(d[n] + d_b)*2/area;
 
     // Total quantities
     for i in 1:n loop
@@ -1485,8 +1485,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     H_flow[n + 1] = -semiLinear(port_b.m_flow, inStream(port_b.h_outflow), medium[n].h);
     mXi_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.Xi_outflow), medium[1].Xi);
     mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.Xi_outflow), medium[n].Xi);
-    v[1] = m_flow[1]/d_a/area;
-    v[n + 1] = m_flow[n + 1]/d_b/area;
+    v[1] = m_flow[1]/(d_a + d[1])*2/area;
+    v[n + 1] = m_flow[n + 1]/(d[n] + d_b)*2/area;
 
     // Total quantities
     for i in 1:n loop
