@@ -46,7 +46,7 @@ annotation (
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
-    redeclare function flowCharacteristic = 
+    redeclare function valveCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.equalPercentage)
             annotation (Placement(transformation(extent={{-50,-10},{-30,10}},
           rotation=0)));
@@ -68,7 +68,7 @@ annotation (
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
-    redeclare function flowCharacteristic = 
+    redeclare function valveCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.equalPercentage
         (                                                                              rangeability=10)) 
             annotation (Placement(transformation(extent={{-50,-50},{-30,-30}},

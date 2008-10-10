@@ -29,17 +29,17 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
 </html>"));
     initial equation
       if CvData == CvTypes.OpPoint then
-          m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*Utilities.regRoot(dp_nom, delta*dp_nom)
+          m_flow_nom = valveCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*Utilities.regRoot(dp_nom, delta*dp_nom)
         "Determination of Av by the operating point";
       end if;
 
     equation
       if CheckValve then
-          m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
+          m_flow = valveCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
                       smooth(0,if dp>=0 then Utilities.regRoot(dp, delta*dp_nom) else 0);
       else
-        // m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dp);
-        m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
+        // m_flow = valveCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dp);
+        m_flow = valveCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
           Utilities.regRoot(dp, delta*dp_nom);
       end if;
     end ValveIncompressible;
@@ -98,11 +98,11 @@ The model operating range includes choked flow operation, which takes place for 
               Fl^2*(pin - Ff*pv) else dp
       "Effective pressure drop, accounting for possible choked conditions";
     if CheckValve then
-       m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
+       m_flow = valveCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
            smooth(0,if dpEff>=0 then sqrtR(dpEff) else 0);
      else
-       // m_flow = flowCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dpEff);
-       m_flow = flowCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*sqrtR(dpEff);
+       // m_flow = valveCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dpEff);
+       m_flow = valveCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*sqrtR(dpEff);
     end if;
     assert(m_flow > -0.1 * m_flow_nom, "Too big backflow");
   end ValveVaporizing;
@@ -160,7 +160,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
       x_nom = dp_nom/p_nom;
       xs_nom = smooth(0, if x_nom > Fxt_nom then Fxt_nom else x_nom);
       Y_nom = 1 - abs(xs_nom)/(3*Fxt_nom);
-      m_flow_nom = flowCharacteristic(stemPosition_nom)*Av*Y_nom*sqrt(d_nom)*sqrtR(p_nom*xs_nom);
+      m_flow_nom = valveCharacteristic(stemPosition_nom)*Av*Y_nom*sqrt(d_nom)*sqrtR(p_nom*xs_nom);
     else
       // Dummy values
       Fxt_nom = 0;
@@ -176,11 +176,11 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     xs = smooth(0, if x < -Fxt then -Fxt else if x > Fxt then Fxt else x);
     Y = 1 - abs(xs)/(3*Fxt);
     if CheckValve then
-      m_flow = flowCharacteristic(modifiedStemPosition)*Av*Y*sqrt(port_a_d_inflow)*
+      m_flow = valveCharacteristic(modifiedStemPosition)*Av*Y*sqrt(port_a_d_inflow)*
         smooth(0,if xs>=0 then sqrtR(p*xs) else 0);
     else
-      // m_flow = flowCharacteristic(stemPosition)*Av*Y*sqrt(d)*sqrtR(p*xs);
-      m_flow = flowCharacteristic(modifiedStemPosition)*Av*Y*
+      // m_flow = valveCharacteristic(stemPosition)*Av*Y*sqrt(d)*sqrtR(p*xs);
+      m_flow = valveCharacteristic(modifiedStemPosition)*Av*Y*
                     Modelica_Fluid.Utilities.regRoot2(p*xs, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
     end if;
   end ValveCompressible;
@@ -313,7 +313,7 @@ it is open.
        annotation(Dialog(group = "Flow Coefficient"));
       parameter SI.Area Av(
         fixed=if CvData == CvTypes.Av then true else false,
-        start=m_flow_nom/(sqrt(d_nom*dp_nom))*flowCharacteristic(
+        start=m_flow_nom/(sqrt(d_nom*dp_nom))*valveCharacteristic(
             stemPosition_nom)) = 0 "Av (metric) flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient",
                          enable = (CvData==Modelica_Fluid.Types.CvTypes.Av)));
@@ -333,7 +333,7 @@ it is open.
       annotation(Dialog(group="Nominal operating point"));
       parameter Boolean CheckValve=false "Reverse flow stopped";
 
-      replaceable function flowCharacteristic = 
+      replaceable function valveCharacteristic = 
           Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.linear 
         constrainedby
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun
@@ -398,8 +398,8 @@ it is open.
 <li><tt>CvData = Modelica_Fluid.Types.CvTypes.OpPoint</tt>: the flow is computed from the nominal operating point specified by <tt>p_nom</tt>, <tt>dp_nom</tt>, <tt>m_flow_nom</tt>, <tt>d_nom</tt>, <tt>stemPosition_nom</tt>.
 </ul>
 <p>The nominal pressure drop <tt>dp_nom</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dp_nom</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical problems occur in valves with very low pressure drops.
-<p>If <tt>CheckValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place.
-<p>The inherent flow characteristic <tt>flowCharacteristic</tt>, linear by default, can be replaced by any user-defined function (e.g. equal percentage, quick opening, etc.).
+<p>If <tt>CheckValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place. Use this option only when neede, as it increases the numerical complexity of the problem.
+<p>The valve opening characteristic <tt>valveCharacteristic</tt>, linear by default, can be replaced by any user-defined function. Quadratic and equal percentage with customizable rangeability are already provided by the library.
 </HTML>", revisions="<html>
 <ul>
 <li><i>2 Nov 2005</i>
