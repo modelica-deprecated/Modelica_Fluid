@@ -2,6 +2,10 @@ within Modelica_Fluid;
 package Pipes "Lumped, distributed and thermal pipe components"
     extends Modelica_Fluid.Icons.VariantLibrary;
 
+  model StaticPipe "Basic pipe flow model without storage of mass or energy"
+    extends PressureLosses.WallFrictionAndGravity;
+  end StaticPipe;
+
   model LumpedPipe
     "Short pipe with one volume, wall friction and gravity effect"
     replaceable package Medium = 
@@ -262,8 +266,8 @@ pipe wall/environment).
 
   protected
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-       use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[1].state) else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))) else Medium.dynamicViscosity(medium[1].state))));
-   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))) else Medium.dynamicViscosity(medium[n].state))));
+       use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[1].state) else Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)))));
+   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
 
    annotation (
      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
@@ -304,7 +308,9 @@ pipe wall/environment).
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
             textString="%name")}),
-     Diagram(graphics),
+     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+             graphics),
      Documentation(info="<html>
 Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow_pLumped\">PartialDistributedFlow_pLumped</a>. Source terms in mass and energy balances are set to zero. The total volume is a paramter. The number of momentum balances is reduced to two, one on each side of the hydraulic state, which corresponds to a constant pressure along the entire pipe with pressure drop and gravitational forces lumped at the ports.<The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. .
 </html>",  revisions="<html>
@@ -456,13 +462,13 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
   protected
   SI.Pressure[n+1] dp_stat;
   SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))) else eta[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))) else eta[n])));
+      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)))));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
   SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
 
     annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
           graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
@@ -682,13 +688,13 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
   protected
   SI.Pressure[n] dp_stat;
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))) else eta[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))) else eta[n])));
+      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)))));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
  SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
           graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
@@ -884,13 +890,13 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
   protected
   SI.Pressure[n] dp_stat;
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else (if m_flow[1]>=0 then Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))) else eta[1])));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else (if m_flow[1]<0 then Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))) else eta[n])));
+      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)))));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
   SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
           graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
@@ -1120,8 +1126,8 @@ end DistributedPipeSa;
       each T(start=T_start),
       each Xi(start=X_start[1:Medium.nXi]));
 
-     annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-                -100,-100},{100,100}}),
+     annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
                          graphics),
                           Icon(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}}), graphics={Rectangle(
@@ -1176,8 +1182,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
     final parameter SI.Pressure[np] dp0=fill(dp_start/np,np);
     SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
-    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, inStream(port_a.h_outflow), port_a.Xi_outflow) else d[1]));
-    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), port_b.Xi_outflow)));
+    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else Medium.density_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)));
+    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)));
 
   equation
     // Boundary conditions
@@ -1393,8 +1399,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       each T(start=T_start),
       each Xi(start=X_start[1:Medium.nXi]));
 
-     annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-                -100,-100},{100,100}}),
+     annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
                          graphics),
                           Icon(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}}), graphics={Rectangle(
@@ -1458,8 +1464,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     final parameter SI.Pressure[np] dp0=fill(dp_start,np)
         "pressure difference start values";
     SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
-    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else (if m_flow[1]>=0 then Medium.density_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)) else d[1]));
-    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else (if m_flow[n+1]>=0 then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))));
+    SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else Medium.density_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)));
+    SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)));
   equation
     // Boundary conditions
     port_a.h_outflow = medium[1].h;
@@ -1622,8 +1628,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       input SI.Temperature[n] T;
     equation
 
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
-                  -100,-100},{100,100}}), graphics={Ellipse(
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}}), graphics={Ellipse(
                 extent={{-60,64},{60,-56}},
                 lineColor={0,0,0},
                 fillPattern=FillPattern.Sphere,
