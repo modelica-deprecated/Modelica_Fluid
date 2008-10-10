@@ -13,7 +13,9 @@ package DrumBoiler
            1]) annotation (Placement(transformation(extent={{-80,-40},{-60,-20}},
             rotation=0)));
     annotation (
-      Diagram(graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+              graphics),
       experiment(StopTime=7200),
       Documentation(info="<HTML>
 <p>
@@ -24,8 +26,8 @@ Simulate for 7200 seconds.
   equation
     connect(q_F_Tab.y, drumBoiler.q_F)       annotation (Line(points={{-59,10},
             {-40,10},{-40,-31},{-21.35,-31}}, color={0,0,127}));
-    connect(Y_Valve_Tab.y, drumBoiler.Y_Valve)       annotation (Line(points={{
-            -59,-30},{-44,-30},{-44,-37},{-21.35,-37}}, color={0,0,127}));
+    connect(Y_Valve_Tab.y, drumBoiler.Y_Valve)       annotation (Line(points={{-59,-30},
+            {-44,-30},{-44,-37},{-21.35,-37}},          color={0,0,127}));
   end DrumBoilerSimulation;
 
   model DrumBoiler
@@ -64,22 +66,19 @@ Simulate for 7200 seconds.
             lineColor={0,0,255},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "%name"),
+            textString="%name"),
           Text(
             extent={{-79,67},{67,21}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "drum"),
+            textString="drum"),
           Text(
             extent={{-90,-14},{88,-64}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString=
-                 "boiler")}));
+            textString="boiler")}));
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow furnace 
       annotation (Placement(transformation(
           origin={-36,-53},
@@ -158,7 +157,9 @@ Simulate for 7200 seconds.
           rotation=180)));
     Modelica_Fluid.ControlValves.ValveLinear SteamValve(           redeclare
         package Medium = 
-          Modelica.Media.Water.StandardWater, Kv=2e-5) 
+          Modelica.Media.Water.StandardWater,
+      dp_nom=9000000,
+      m_flow_nom=180) 
       annotation (Placement(transformation(extent={{50,-10},{70,-30}}, rotation=
              0)));
 
@@ -168,13 +169,13 @@ Simulate for 7200 seconds.
     connect(controller.u,feedback.y) 
       annotation (Line(points={{-49.6,30},{-45,30}}, color={0,0,127}));
     connect(feedback.u2,      evaporator.V) 
-      annotation (Line(points={{-36,22},{-36,-9},{-32,-9}}, color={0,0,127}));
+      annotation (Line(points={{-36,22},{-36,-9},{-26,-9}}, color={0,0,127}));
     connect(levelSetPoint.y,feedback.u1)             annotation (Line(points={{
             -29.35,56.5},{-22,56.5},{-22,30},{-28,30}}, color={0,0,127}));
     connect(massFlowRate.m_flow, qm_S) 
       annotation (Line(points={{30,-9},{30,0},{104,0}}, color={0,0,127}));
     connect(evaporator.V, V_l) 
-      annotation (Line(points={{-32,-9},{-32,11},{-15,11},{-15,92},{104,92}},
+      annotation (Line(points={{-26,-9},{-26,11},{-15,11},{-15,92},{104,92}},
           color={0,0,127}));
     connect(MW2W.y,furnace.Q_flow)       annotation (Line(points={{-84.5,-70},{
             -36,-70},{-36,-63}}, color={0,0,127}));
@@ -204,7 +205,7 @@ Simulate for 7200 seconds.
             -90},{-104.5,-90}}, color={0,0,127}));
     connect(evaporator.steam, massFlowRate.port_a) annotation (Line(points={{
             -26,-20},{20,-20}}, color={0,127,255}));
-    connect(evaporator.steam, temperature.port) annotation (Line(points={{-26,
-            -20},{-3,-20},{-3,-11}}, color={0,127,255}));
+    connect(evaporator.steam, temperature.port) annotation (Line(points={{-26,-20},
+            {-3,-20},{-3,-11}},      color={0,127,255}));
   end DrumBoiler;
 end DrumBoiler;
