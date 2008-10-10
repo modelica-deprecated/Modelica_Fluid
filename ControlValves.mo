@@ -49,7 +49,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     import Modelica_Fluid.Types.CvTypes;
     extends BaseClasses.PartialValve(
       final compute_T = true,
-      redeclare replaceable package Medium = Modelica.Media.Water.WaterIF97_ph constrainedby
+      redeclare replaceable package Medium = 
+          Modelica.Media.Water.WaterIF97_ph                                    constrainedby
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     parameter Real Fl_nom=0.9 "Liquid pressure recovery factor";
     replaceable function FlCharacteristic = 
@@ -187,7 +188,10 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
 
   model ValveLinear "Valve for water/steam flows with linear pressure drop"
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-    parameter Types.HydraulicConductance Kv
+    parameter SI.Pressure dp_nom "Nominal pressure drop at full opening";
+    parameter Medium.MassFlowRate m_flow_nom
+      "Nominal mass flowrate at full opening";
+    final parameter Types.HydraulicConductance Kv = m_flow_nom/dp_nom
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening(min=0,max=1)
       "=1: completely open, =0: completely closed" 
@@ -196,7 +200,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
           extent={{-20,-20},{20,20}},
           rotation=270)));
     parameter Real minOpening(min=0, max=0.1)=0
-      "Minimum position of opening (leckage flow to improve numerics)" 
+      "Minimum position of opening (leakage flow to improve numerics)" 
     annotation(Dialog(tab="Advanced"));
     Real modifiedOpening
       "Modified, actually used opening, so that the valve is not completely closed to improve numerics";
@@ -247,8 +251,11 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
 
   model ValveDiscrete "Valve for water/steam flows with linear pressure drop"
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-    parameter Modelica_Fluid.Types.HydraulicConductance Kv
-      "Hydraulic conductance for open valve (m_flow = Kv*dp)";
+    parameter SI.Pressure dp_nom "Nominal pressure drop at full opening";
+    parameter Medium.MassFlowRate m_flow_nom
+      "Nominal mass flowrate at full opening";
+    final parameter Types.HydraulicConductance Kv = m_flow_nom/dp_nom
+      "Hydraulic conductance at full opening";
     parameter Real Kv_small_rel(min=0, max=0.1) = 0
       "Relative hydraulic conductance for closed valve (m_flow = Kv_small_rel*Kv*dp)";
     Modelica.Blocks.Interfaces.BooleanInput open 
@@ -300,6 +307,7 @@ it is open.
     by Katja Poschlad (based on ValveLinear).</li>
 </ul>
 </html>"));
+
   end ValveDiscrete;
 
   package BaseClasses
