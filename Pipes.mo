@@ -234,9 +234,9 @@ pipe wall/environment).
       "Turbulent flow if |m_flow| >= m_flow_small (only used if WallFriction=QuadraticTurbulent)"
     annotation(Dialog(tab="Advanced",group="Pressure loss", enable=not from_dp and WallFriction.use_m_flow_small));
 
-   SI.ReynoldsNumber[n] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
+   SI.ReynoldsNumber[n+1] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
        m_flow,
-       (eta_a + eta_b)/2,
+       (cat(1, {eta_a}, eta) + cat(1, eta, {eta_b}))*0.5,
        diameter) if                                                                                              show_Re
       "Reynolds number of pipe flow";
    inner Medium.ThermodynamicState[n] state;
@@ -429,9 +429,9 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       "Turbulent flow if |m_flow| >= m_flow_small (only used if WallFriction=QuadraticTurbulent)"
   annotation(Dialog(tab="Advanced",group="Pressure loss", enable=not from_dp and WallFriction.use_m_flow_small));
 
-  SI.ReynoldsNumber[n] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
+  SI.ReynoldsNumber[n+1] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
     m_flow,
-    (eta_a + eta_b)/2,
+    (cat(1, {eta_a}, eta) + cat(1, eta, {eta_b}))*0.5,
     diameter) if                                                                                               show_Re
       "Reynolds number of pipe flow";
   inner Medium.ThermodynamicState[n] state;
@@ -655,9 +655,9 @@ model DistributedPipeSb "Distributed pipe model"
       "Turbulent flow if |m_flow| >= m_flow_small (only used if WallFriction=QuadraticTurbulent)"
   annotation(Dialog(tab="Advanced",group="Pressure loss", enable=not from_dp and WallFriction.use_m_flow_small));
 
-  SI.ReynoldsNumber[n] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
+  SI.ReynoldsNumber[n+1] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
     m_flow,
-    (eta_a + eta_b)/2,
+    (cat(1, {eta_a}, eta) + cat(1, eta, {eta_b}))*0.5,
     diameter) if                                                                                               show_Re
       "Reynolds number of pipe flow";
   inner Medium.ThermodynamicState[n] state;
@@ -857,9 +857,9 @@ model DistributedPipeSa "Distributed pipe model"
       "Turbulent flow if |m_flow| >= m_flow_small (only used if WallFriction=QuadraticTurbulent)"
   annotation(Dialog(tab="Advanced",group="Pressure loss", enable=not from_dp and WallFriction.use_m_flow_small));
 
-  SI.ReynoldsNumber[n] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
+  SI.ReynoldsNumber[n+1] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
     m_flow,
-    (eta_a + eta_b)/2,
+    (cat(1, {eta_a}, eta) + cat(1, eta, {eta_b}))*0.5,
     diameter) if                                                                                               show_Re
       "Reynolds number of pipe flow";
   inner Medium.ThermodynamicState[n] state;
