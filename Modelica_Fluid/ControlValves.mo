@@ -316,13 +316,11 @@ it is open.
         start=m_flow_nom/(sqrt(d_nom*dp_nom))*flowCharacteristic(
             stemPosition_nom)) = 0 "Av (metric) flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient",
-                         enable = (CvData==CvTypes.Av)));
-      parameter SI.VolumeFlowRate Kv(displayUnit="m3/h") = 0
-        "Kv (metric) flow coefficient" 
+                         enable = (CvData==Modelica_Fluid.Types.CvTypes.Av)));
+      parameter Real Kv = 0 "Kv (metric) flow coefficient [m3/h]" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Kv)));
-      parameter SI.VolumeFlowRate Cv(displayUnit="USG/min") = 0
-        "Cv (US) flow coefficient" 
+      parameter Real Cv = 0 "Cv (US) flow coefficient [USG/min]" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Cv)));
       parameter SI.Pressure dp_nom "Nominal pressure drop" 
@@ -344,6 +342,9 @@ it is open.
 
       parameter Real delta=0.01 "Regularisation factor" 
                                                       annotation(Dialog(tab="Advanced"));
+
+      constant SI.Area Kv2Av = 27.7e-6 "Conversion factor";
+      constant SI.Area Cv2Av = 24.0e-6 "Conversion factor";
 
       Modelica.Blocks.Interfaces.RealInput stemPosition(min=-1e-10, max=1)
         "Stem position in the range 0-1" 
@@ -411,9 +412,9 @@ it is open.
 
     initial equation
       if CvData == CvTypes.Kv then
-        Av = 2.7778e-5*Kv*(60*60) "Unit conversion";
+        Av = Kv*Kv2Av "Unit conversion";
       elseif CvData == CvTypes.Cv then
-        Av = 2.4027e-5*Cv*(60/3.785411784e-3) "Unit conversion";
+        Av = Cv*Cv2Av "Unit conversion";
       end if;
 
     equation

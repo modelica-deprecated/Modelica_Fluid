@@ -44,18 +44,6 @@ in the Users Guide before using this library.
 </p>
 
 <p>
-When using Dymola 7.1, add the following two lines in file
-\"Dymola/insert/displayunit.mos\" in order that some display units used in the
-Modelica_Fluid library are available in the menus of the valves:
-</p>
-
-<pre>
-   defineUnitConversion(\"m3/s\", \"m3/h\"   , 60*60);
-   defineUnitConversion(\"m3/s\", \"USG/min\", 1e3*60/3.785411784);
-</pre>
-
- 
-<p>
 A typical example model of the Modelica_Fluid library
 is shown in the next figure (drum boiler):
 </p>
