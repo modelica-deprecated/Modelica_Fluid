@@ -20,7 +20,7 @@ model TestWaterPumpPowerCharacteristic
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
           q_nom={0,0.001,0.0015}, head_nom={100,50,0}),
     usePowerCharacteristic=true,
-    redeclare function powerCharacteristic =
+    redeclare function powerCharacteristic = 
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticPower (
           q_nom={0,0.001,0.0015}, W_nom={550,650,800}),
     M=0.1,

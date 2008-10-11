@@ -1,5 +1,5 @@
 within Modelica_Fluid.Test.TestComponents.Pumps;
-model TestWaterPumpDefault "Test case for WaterPump with default options"
+model TestWaterPumpDefault "Test pump with default options"
   extends Modelica.Icons.Example;
 annotation (
   Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
