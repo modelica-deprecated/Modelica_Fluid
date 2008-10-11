@@ -9,9 +9,9 @@ model TestMixingVolumesPressureStates
   Modelica_Fluid.Volumes.MixingVolume MixingVolume1(
     V=1e-3,
     redeclare package Medium = Medium,
-    p_start=ambient.default_p_ambient,
+    p_start=system.p_ambient,
     use_T_start=true,
-    T_start=ambient.default_T_ambient,
+    T_start=system.T_ambient,
     initType=Modelica_Fluid.Types.Init.SteadyState) 
                  annotation (Placement(transformation(extent={{-30,30},{-10,50}},
           rotation=0)));
@@ -24,7 +24,7 @@ model TestMixingVolumesPressureStates
             50}}, rotation=0)));
   Modelica_Fluid.Volumes.MixingVolume MixingVolume2(
     V=1e-3,
-    p_start=ambient.default_p_ambient,
+    p_start=system.p_ambient,
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
@@ -41,7 +41,7 @@ model TestMixingVolumesPressureStates
       Medium = Medium,
     h=Medium.h_default) 
     annotation (Placement(transformation(extent={{100,30},{80,50}}, rotation=0)));
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}},
           rotation=0)));
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity simpleGenericOrifice2(

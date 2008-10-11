@@ -10,8 +10,8 @@ package Volumes "Generic volume, tank and other volume type components"
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={Ellipse(
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+              {100,100}}), graphics={Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
@@ -50,8 +50,8 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
             fillColor={170,213,255},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-40,60},{-40,44},{-44,44},{-44,64},{44,64},{44,44},{40,44},
-                {40,60},{-40,60}},
+            points={{-40,60},{-40,44},{-44,44},{-44,64},{44,64},{44,44},{40,
+                44},{40,60},{-40,60}},
             lineColor={95,95,95},
             smooth=Smooth.None,
             fillColor={135,135,135},
@@ -111,7 +111,7 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort
       "Thermal port" 
     annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
-    outer Modelica_Fluid.Ambient ambient "Ambient conditions";
+    outer Modelica_Fluid.System system "System properties";
 
   equation
     assert(flange.s >= 0, "Piston stroke (given by flange.s) must not be smaller than zero!");
@@ -119,7 +119,7 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     // volume size
     V_lumped = clearance + flange.s * pistonCrossArea;
 
-    flange.f = (medium.p - ambient.default_p_ambient) * pistonCrossArea;
+    flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
     thermalPort.T = medium.T;
 
     // energy balances
@@ -163,13 +163,13 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
         origin={0,-100})));
 
 //Ambient
-    parameter Medium.AbsolutePressure p_ambient=ambient.default_p_ambient
+    parameter Medium.AbsolutePressure p_ambient=system.p_ambient
       "Tank surface pressure" 
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-    parameter Medium.Temperature T_ambient=ambient.default_T_ambient
+    parameter Medium.Temperature T_ambient=system.T_ambient
       "Tank surface Temperature" 
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-    outer Modelica_Fluid.Ambient ambient;
+    outer Modelica_Fluid.System system;
 
 //Initialization
     parameter Types.Init initType=Types.Init.InitialValues
@@ -235,7 +235,7 @@ equation
     assert(level > 0, "Tank is empty (level = 0), tank model is not designed to allow air flow through ports");
 
 //Determine port properties
-    p_static = level*ambient.g*medium.d + p_ambient;
+    p_static = level*system.g*medium.d + p_ambient;
     for i in 1:n_ports loop
        H_flow[i]     = ports[i].m_flow*actualStream(ports[i].h_outflow);
        mXi_flow[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
@@ -396,11 +396,11 @@ model Tank
         origin={0,-100})));
 
 //Ambient
-   outer Modelica_Fluid.Ambient ambient "Ambient conditions";
-   parameter Medium.AbsolutePressure p_ambient=ambient.default_p_ambient
+   outer Modelica_Fluid.System system "System properties";
+   parameter Medium.AbsolutePressure p_ambient=system.p_ambient
       "Tank surface pressure" 
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-   parameter Medium.Temperature T_ambient=ambient.default_T_ambient
+   parameter Medium.Temperature T_ambient=system.T_ambient
       "Tank surface Temperature" 
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
 
@@ -514,7 +514,7 @@ equation
        if stiffCharacteristicForEmptyPort then
           // If port is above fluid level, use large zeta if fluid flows out of port (= small mass flow rate)
           zeta_out[i] = 1 + (if aboveLevel[i] then 0 else zetaLarge);
-          ports[i].p = p_ambient + levelAbovePort[i]*ambient.g*medium.d
+          ports[i].p = p_ambient + levelAbovePort[i]*system.g*medium.d
                                + Modelica_Fluid.Utilities.regSquare2(ports[i].m_flow, m_flow_small,
                                      lossConstant_D_zeta(portsData[i].diameter, 0.01)/medium.d,
                                      lossConstant_D_zeta(portsData[i].diameter, zeta_out[i])/medium.d);
@@ -525,7 +525,7 @@ equation
           ports_m_flow_out[i] = (pre(ports_m_flow_out[i]) and not ports[i].p>p_ambient)
                                      or ports[i].m_flow < -1e-6;
          if aboveLevel[i] then
-             ports[i].p = p_ambient + levelAbovePort[i]*ambient.g*medium.d -
+             ports[i].p = p_ambient + levelAbovePort[i]*system.g*medium.d -
                                smooth(2,noEvent(if ports[i].m_flow < 0 then ports[i].m_flow^2/
                                      (2*medium.d*bottomArea[i]^2) else 0));
          else
@@ -583,9 +583,9 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
-                3))),
+                  level,
+                  1,
+                  3))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -606,8 +606,8 @@ initial equation
             extent={{-95,50},{95,30}},
             lineColor={0,0,0},
             textString="level ="),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
-                0})}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
+                0,0})}),
       Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the environment at the fixed pressure

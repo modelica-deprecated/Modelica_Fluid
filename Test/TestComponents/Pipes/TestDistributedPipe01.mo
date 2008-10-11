@@ -128,7 +128,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
             annotation (Placement(transformation(extent={{-28,38},{-8,58}},
           rotation=0)));
 
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{72,-94},{92,-74}}, rotation=0)));
   Modelica_Fluid.Junctions.GenericJunction junction1(
     n_b=2,

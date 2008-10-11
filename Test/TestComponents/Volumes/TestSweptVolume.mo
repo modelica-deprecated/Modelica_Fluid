@@ -15,7 +15,7 @@ model TestSweptVolume
     amplitude=0.1,
     offset=0.1) annotation (Placement(transformation(extent={{-80,-40},{-60,-20}},
           rotation=0)));
-  inner Modelica_Fluid.Ambient ambient annotation (Placement(transformation(
+  inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{80,-40},{100,-20}}, rotation=0)));
 
   annotation (Diagram(graphics={Text(

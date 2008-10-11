@@ -26,8 +26,8 @@ package Pumps "Pump components"
     end if;
     N = N_in_internal "Rotational speed";
     annotation (
-      Icon(graphics={Text(extent={{-58,58},{-30,38}}, textString=
-                                             "n")}),
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={Text(extent={{-58,58},{-30,38}}, textString="n")}),
       Diagram(graphics),
       Documentation(info="<HTML>
 <p>This model describes a centrifugal pump (or a group of <tt>Np</tt> pumps in parallel) with controlled speed, either fixed or provided by an external signal.
@@ -96,7 +96,7 @@ package Pumps "Pump components"
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Model added to the Fluid library</li>
 </ul>
-
+ 
 </html>"));
   end PumpNPSH;
 
@@ -168,8 +168,8 @@ package Pumps "Pump components"
     parameter SI.MassFlowRate m_flow_start = 0
         "Guess value for mass flow rate (total)" 
       annotation(Dialog(tab="Initialization"));
-    outer Modelica_Fluid.Ambient ambient "Ambient conditions";
-    parameter SI.Acceleration g=ambient.g;
+    outer Modelica_Fluid.System system "System properties";
+    parameter SI.Acceleration g=system.g;
   //  parameter Choices.Init.Options initOpt=Choices.Init.Options.noInit
   //    "Initialisation option";
     Modelica_Fluid.Interfaces.FluidPort_a inlet(
@@ -284,7 +284,8 @@ initial equation
 */
 
     annotation (
-      Icon(graphics={
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+                100}}), graphics={
             Polygon(
               points={{-40,-64},{-60,-100},{60,-100},{40,-64},{-40,-64}},
               lineColor={0,0,255},
@@ -301,10 +302,8 @@ initial equation
               pattern=LinePattern.None,
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={255,255,255}),
-            Text(extent={{-100,-110},{100,-136}}, textString=
-                                                  "%name"),
-            Text(extent={{-10,60},{18,40}}, textString=
-                                             "Np")}),
+            Text(extent={{-100,-110},{100,-136}}, textString="%name"),
+            Text(extent={{-10,60},{18,40}}, textString="Np")}),
       Diagram(graphics),
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>Pump</tt> and <tt>

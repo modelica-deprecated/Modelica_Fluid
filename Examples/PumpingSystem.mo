@@ -6,7 +6,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     use_T=true,
     T=Modelica.SIunits.Conversions.from_degC(20),
-    p=ambient.default_p_ambient) 
+    p=system.p_ambient) 
     annotation (Placement(transformation(extent={{-100,-88},{-80,-68}},
           rotation=0)));
 
@@ -55,13 +55,14 @@ model PumpingSystem "Model of a pumping system for drinking water"
                                                  redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     flowDirection= Modelica_Fluid.Types.FlowDirection.Unidirectional,
-    Kv=400/2e5) 
+    dp_nom=200000,
+    m_flow_nom=400) 
     annotation (Placement(transformation(extent={{58,-38},{74,-22}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary sink(
                                        redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
-    p=ambient.default_p_ambient,
-    T=ambient.default_T_ambient) 
+    p=system.p_ambient,
+    T=system.T_ambient) 
     annotation (Placement(transformation(extent={{100,-40},{80,-20}}, rotation=
             0)));
   Modelica.Blocks.Sources.Step valveOpening(startTime=200, offset=1e-6) 
@@ -118,7 +119,7 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
       NumberOfIntervals=5000,
       Tolerance=1e-006),
     experimentSetupOutput(equdistant=false));
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent=
             {{60,-96},{80,-76}}, rotation=0)));
 equation

@@ -11,7 +11,7 @@ model StaticHead
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
     annotation(Dialog(tab="Advanced"));
   Medium.Density d "Density of the passing fluid";
-  outer Modelica_Fluid.Ambient ambient "Ambient conditions";
+  outer Modelica_Fluid.System system "System properties";
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics={
           Rectangle(
@@ -58,7 +58,7 @@ equation
   else
      d = port_a_d_inflow;
   end if;
-  dp = height_ab*ambient.g*d;
+  dp = height_ab*system.g*d;
 end StaticHead;
 
 model SimpleGenericOrifice
@@ -196,7 +196,7 @@ end SimpleGenericOrifice;
     SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, noEvent(if m_flow>0 then eta_a else eta_b), diameter) if show_Re
       "Reynolds number of pipe";
 
-    outer Modelica_Fluid.Ambient ambient "Ambient conditions";
+    outer Modelica_Fluid.System system "System properties";
 
   protected
     SI.DynamicViscosity eta_a = if not WallFriction.use_eta then 1.e-10 else 
@@ -206,7 +206,7 @@ end SimpleGenericOrifice;
     SI.Density d_a = if use_nominal then d_nominal else port_a_d_inflow;
     SI.Density d_b = if use_nominal then d_nominal else port_b_d_inflow;
 
-    Real g_times_height_ab(final unit="m2/s2") = ambient.g*height_ab
+    Real g_times_height_ab(final unit="m2/s2") = system.g*height_ab
       "Gravitiy times height_ab = dp_grav/d";
 
     SI.AbsolutePressure dp_small_staticHead = noEvent(max(dp_small, 0.015*abs(g_times_height_ab*(d_a-d_b))))
@@ -217,7 +217,7 @@ end SimpleGenericOrifice;
       "Use dp_/m_flow_small_staticHead only if static head actually exists" annotation(Evaluate=true);
   equation
   /* Modelica_Fluid.Examples.PumpingSystem fails, if this regularization is used:
-
+ 
   if from_dp and not WallFriction.dp_is_zero then
     m_flow = WallFriction.massFlowRate_dp_staticHead(dp, d_a, d_b, eta_a, eta_b, length, diameter,
       g_times_height_ab, roughness, if use_x_small_staticHead then dp_small_staticHead else dp_small);
@@ -245,11 +245,11 @@ end SimpleGenericOrifice;
     end if;
 
     if from_dp and not WallFriction.dp_is_zero then
-       m_flow = WallFriction.massFlowRate_dp(dp-height_ab*ambient.g*d,
+       m_flow = WallFriction.massFlowRate_dp(dp-height_ab*system.g*d,
                                              d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
     else
        dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
-            + height_ab*ambient.g*d;
+            + height_ab*system.g*d;
     end if;
 
       annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
@@ -2657,22 +2657,22 @@ solving a non-linear equation.
 </p>
  
 <img src=\"../Images/Components/PipeFriction1.png\">
-
+ 
 <p>
 Additionally to wall friction, this component properly implements static
 head. With respect to the latter, two cases can be distuinguised. In the case
 shown next, the change of elevation with the path from a to b has the opposite
 sign of the change of density.</p>
-
+ 
 <img src=\"../Images/Components/PipeFrictionStaticHead_case-a.PNG\">
-
+ 
 <p>
 In the case illustrated second, the change of elevation with the path from a to 
 b has the same sign of the change of density.</p>
-
+ 
 <img src=\"../Images/Components/PipeFrictionStaticHead_case-b.PNG\">
-
-
+ 
+ 
 </html>"));
 
         extends PartialWallFriction(

@@ -8,7 +8,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
   Modelica_Fluid.Sensors.TemperatureTwoPort temperatureTwoPort(redeclare
       package Medium = Modelica.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{-20,-20},{0,0}}, rotation=0)));
-  inner Modelica_Fluid.Ambient ambient annotation (Placement(transformation(
+  inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
   Modelica_Fluid.Volumes.OpenTank openTankCold2(
     level_start=1,

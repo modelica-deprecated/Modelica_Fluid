@@ -130,7 +130,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
             annotation (Placement(transformation(extent={{-34,8},{-14,28}},
           rotation=0)));
 
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{70,-100},{90,-80}}, rotation=
             0)));
   Modelica_Fluid.Junctions.GenericJunction junction1(

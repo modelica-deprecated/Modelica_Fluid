@@ -28,7 +28,7 @@ model TestOpenTank
 <p><b>Test case for open tank</b></p>
 <p align=justify>The mass flow rate to the upper tank is controlled by the static pressure at the bootom of the upper tank. The fluid flows from the upper to the lower tank forced by pressure difference between the bootoms of both tanks. Increasing the simulation time leads to an error message, due to a full lower tank.</p>
 </html>"));
-  inner Modelica_Fluid.Ambient ambient annotation (Placement(transformation(
+  inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-160,-120},{-140,-100}}, rotation=0)));
   Modelica_Fluid.Sensors.Pressure pressure(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(

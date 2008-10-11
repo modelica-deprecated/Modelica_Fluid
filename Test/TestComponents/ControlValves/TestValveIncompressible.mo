@@ -5,7 +5,7 @@ model TestValveIncompressible "Test case with different valve characteristics"
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP1(
                                                p=10e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    T=ambient.default_T_ambient) 
+    T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,30},{-80,50}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V1(
     d_nom=1000,
@@ -24,7 +24,7 @@ annotation (
   Documentation(info=""));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    T=ambient.default_T_ambient,
+    T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{22,30},{2,50}}, rotation=0)));
   Modelica.Blocks.Sources.Ramp Opening(
@@ -37,7 +37,7 @@ annotation (
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP2(
                                                p=10e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    T=ambient.default_T_ambient) 
+    T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,-10},{-80,10}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V2(
     d_nom=1000,
@@ -52,13 +52,13 @@ annotation (
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP2(
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    T=ambient.default_T_ambient,
+    T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{22,-10},{2,10}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP3(
                                                p=10e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    T=ambient.default_T_ambient) 
+    T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
             0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V3(
@@ -76,10 +76,10 @@ annotation (
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP3(
                                              p=1e5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    T=ambient.default_T_ambient) 
+    T=system.T_ambient) 
   annotation (Placement(transformation(extent={{22,-50},{2,-30}}, rotation=0)));
 
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent=
             {{58,72},{78,92}}, rotation=0)));
 equation

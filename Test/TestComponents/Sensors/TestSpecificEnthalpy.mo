@@ -5,12 +5,12 @@ model TestSpecificEnthalpy
     Diagram(graphics),
     experiment(Tolerance=1e-006),
     experimentSetupOutput);
-  inner Modelica_Fluid.Ambient ambient annotation (Placement(transformation(
+  inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_phX boundary_prescribed_1(
     useEnthalpyInput=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    p=ambient.default_p_ambient) annotation (Placement(transformation(extent={{
+    p=system.p_ambient) annotation (Placement(transformation(extent={{
             -40,10},{-20,30}}, rotation=0)));
   Modelica_Fluid.Sensors.SpecificEnthalpyOnePort specificEnthalpy(redeclare
       package Medium = Modelica.Media.Water.StandardWater) 
@@ -18,7 +18,7 @@ model TestSpecificEnthalpy
   Modelica_Fluid.Sources.PrescribedBoundary_phX boundary_prescribed_2(
     useEnthalpyInput=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    p=ambient.default_p_ambient) annotation (Placement(transformation(extent={{
+    p=system.p_ambient) annotation (Placement(transformation(extent={{
             -40,-30},{-20,-10}}, rotation=0)));
   Modelica_Fluid.Sensors.SpecificEnthalpyTwoPort specificEnthalpy1(redeclare
       package Medium = Modelica.Media.Water.StandardWater) 

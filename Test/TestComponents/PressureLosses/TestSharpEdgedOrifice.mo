@@ -18,8 +18,8 @@ model TestSharpEdgedOrifice
   Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient_p(
                                                      redeclare package Medium
       = Medium,
-    p=ambient.default_p_ambient,
-    T=ambient.default_T_ambient,
+    p=system.p_ambient,
+    T=system.T_ambient,
     usePressureInput=true) 
     annotation (Placement(transformation(extent={{-40,40},{-20,60}}, rotation=0)));
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.1e5; 10,2e5]) 
@@ -53,7 +53,7 @@ model TestSharpEdgedOrifice
     L=0.005) annotation (Placement(transformation(extent={{0,10},{20,30}},
           rotation=0)));
 
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{60,-68},{80,-48}}, rotation=0)));
 equation
   connect(p_table.y, ambient_p.p_in) 

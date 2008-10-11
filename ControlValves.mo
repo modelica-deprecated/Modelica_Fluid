@@ -280,8 +280,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
           Text(extent={{-150,-60},{150,-100}}, textString="%name"),
           Polygon(
             points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
-            fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,0}
-                 else {255,255,255}),
+            fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,0} else 
+                      {255,255,255}),
             lineColor={0,0,0})}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,

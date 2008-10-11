@@ -53,7 +53,7 @@ package TestOverdeterminedSteadyStateInit
       annotation (Placement(transformation(extent={{-34,6},{-14,-14}}, rotation=
              0)));
     Modelica.Thermal.HeatTransfer.Sources.FixedTemperature ambientTemperature(
-                                                                      T=ambient.default_T_ambient) 
+                                                                      T=system.T_ambient) 
       annotation (Placement(transformation(extent={{-12,-40},{2,-26}}, rotation=
              0)));
     Modelica.Thermal.HeatTransfer.Components.ThermalConductor thermalConductor1
@@ -65,7 +65,8 @@ package TestOverdeterminedSteadyStateInit
     Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow burner(
                                                        Q_flow=1.6e3) 
       annotation (Placement(transformation(extent={{-2,12},{18,32}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,80},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,80},
               {-80,100}}, rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe(
       redeclare package Medium = Medium,

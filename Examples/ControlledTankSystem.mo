@@ -149,8 +149,8 @@ This example is based on
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient1(
                                                      redeclare package Medium
         = Medium,
-      p=ambient.default_p_ambient,
-      T=ambient.default_T_ambient) 
+      p=system.p_ambient,
+      T=system.T_ambient) 
       annotation (Placement(transformation(extent={{10,-100},{30,-80}},
             rotation=0)));
     Modelica.Blocks.Sources.RealExpression level2(y=tank2.level) 
@@ -159,12 +159,13 @@ This example is based on
     Modelica_Fluid.Sources.FixedBoundary_pTX source(
                                                    redeclare package Medium = 
           Medium, p=2.5e6,
-      T=ambient.default_T_ambient) 
+      T=system.T_ambient) 
       annotation (Placement(transformation(
           origin={20,80},
           extent={{-10,-10},{10,10}},
           rotation=270)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-90,70},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-90,70},
               {-70,90}}, rotation=0)));
   equation
     connect(shut.on, tankController.shut) annotation (Line(points={{-79,-30},{
@@ -187,13 +188,16 @@ This example is based on
       annotation (Line(points={{20,70},{20,65},{20,65},{20,60}},
                                                  color={0,127,255}));
     connect(valve1.port_a, tank1.topPorts[1]) 
-      annotation (Line(points={{20,40},{20,31}}, color={0,127,255}));
-    connect(tank1.ports[1], valve2.port_b) annotation (Line(points={{20,-11},{
-            20,-20}}, color={0,127,255}));
+      annotation (Line(points={{20,40},{20,35},{20,30},{21,30}},
+                                                 color={0,127,255}));
+    connect(tank1.ports[1], valve2.port_b) annotation (Line(points={{19,-10},{
+            19,-15},{20,-15},{20,-20}},
+                      color={0,127,255}));
     connect(valve2.port_a, tank2.topPorts[1]) annotation (Line(points={{20,-40},
-            {20,-50},{50,-50},{50,2},{80,2},{80,-9}}, color={0,127,255}));
-    connect(tank2.ports[1], valve3.port_b) annotation (Line(points={{80,-51},{
-            80,-60}}, color={0,127,255}));
+            {20,-50},{50,-50},{50,2},{81,2},{81,-10}},color={0,127,255}));
+    connect(tank2.ports[1], valve3.port_b) annotation (Line(points={{79,-50},{
+            79,-55},{80,-55},{80,-60}},
+                      color={0,127,255}));
     connect(valve3.port_a, ambient1.port) annotation (Line(points={{80,-80},{80,
             -90},{30,-90}}, color={0,127,255}));
 

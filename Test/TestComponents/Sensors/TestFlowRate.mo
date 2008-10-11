@@ -20,10 +20,10 @@ model TestFlowRate
     experimentSetupOutput);
   Modelica_Fluid.Sources.FixedBoundary_phX boundary_fixed(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    p=ambient.default_p_ambient,
+    p=system.p_ambient,
     h=3000e3) annotation (Placement(transformation(extent={{100,-10},{80,10}},
           rotation=0)));
-  inner Modelica_Fluid.Ambient ambient annotation (Placement(transformation(
+  inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
   Modelica_Fluid.Sensors.MassFlowRate massFlowRate(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(

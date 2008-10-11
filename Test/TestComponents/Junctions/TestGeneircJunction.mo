@@ -33,12 +33,12 @@ model TestGeneircJunction
         origin={40,70},
         extent={{-10,-10},{10,10}},
         rotation=270)));
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,80},{-80,100}}, rotation=
            0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(          p=5e5,
       redeclare package Medium = Modelica.Media.Air.DryAirNasa,
-    T=ambient.default_T_ambient,
+    T=system.T_ambient,
     usePressureInput=true) 
     annotation (Placement(transformation(extent={{-60,-30},{-40,-10}}, rotation=
            0)));

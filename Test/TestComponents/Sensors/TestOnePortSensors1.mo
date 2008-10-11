@@ -35,7 +35,7 @@ model TestOnePortSensors1
     h=5e4,
     p=101325) 
     annotation (Placement(transformation(extent={{100,30},{80,50}}, rotation=0)));
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}},
           rotation=0)));
   Modelica.Blocks.Sources.Ramp ramp(
