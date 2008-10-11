@@ -1744,4 +1744,58 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(pipe1.port_b, pipe3.port_a) annotation (Line(points={{-58,6},{-44,6},
             {-44,-40},{-30,-40}}, color={0,127,255}));
   end BranchingPipes131;
+
+  model DistributedPipeClosingValve "This test demonstrates the importance of smooth regularization of fluid properties for reversing flow.
+ A DistributedPipe model with switching port densities and viscosities generates tons of events as the valve closes at time 2."
+
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,
+            extent={{-100,-100},{100,100}}), graphics),
+      experiment(StopTime=3));
+    Modelica_Fluid.Sources.FixedBoundary source(redeclare package Medium = 
+          Modelica.Media.Water.StandardWater, p=200000) 
+      annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
+    Modelica_Fluid.Pipes.DistributedPipe pipe(
+      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      length=1,
+      diameter=0.32,
+      initType=Modelica_Fluid.Types.Init.SteadyState,
+      use_T_start=false,
+      p_a_start=200000,
+      p_b_start=200000) 
+      annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
+    Modelica_Fluid.ControlValves.ValveIncompressible valve(
+      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      m_flow_nom=10,
+      Av=1e-3,
+      dp_nom=100000) 
+      annotation (Placement(transformation(extent={{0,-10},{20,10}})));
+    Modelica_Fluid.Sources.FixedBoundary sink(redeclare package Medium = 
+          Modelica.Media.Water.StandardWater, p=100000) 
+                annotation (Placement(transformation(extent={{60,-10},{40,10}})));
+    Modelica.Blocks.Sources.Ramp ramp(
+      height=-1,
+      offset=1,
+      duration=1,
+      startTime=1) 
+                annotation (Placement(transformation(extent={{46,30},{26,50}})));
+    inner System system
+      annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
+  equation
+    connect(source.port, pipe.port_a)         annotation (Line(
+        points={{-60,0},{-40,0}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipe.port_b, valve.port_a)               annotation (Line(
+        points={{-20,0},{0,0}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(valve.port_b, sink.port)                          annotation (Line(
+        points={{20,0},{40,0}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(ramp.y, valve.stemPosition)               annotation (Line(
+        points={{25,40},{10,40},{10,9}},
+        color={0,0,127},
+        smooth=Smooth.None));
+  end DistributedPipeClosingValve;
 end TestCriticalCases;
