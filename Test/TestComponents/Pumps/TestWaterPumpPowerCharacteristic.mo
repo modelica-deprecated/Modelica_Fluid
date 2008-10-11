@@ -1,13 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Pumps;
-model TestWaterPumpNPSH "Test case for WaterPump"
+model TestWaterPumpPowerCharacteristic
+  "Test pump with power consumption characteristic"
   extends Modelica.Icons.Example;
-annotation (
-  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-            100}}),
-          graphics),
-  experiment(StopTime=10, Tolerance=1e-006),
-  Documentation(info=""));
-
   Modelica_Fluid.Sources.FixedBoundary_pTX Source(
                                              redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=1e5,
@@ -19,12 +13,17 @@ annotation (
     T=system.T_ambient,
     usePressureInput=true) 
   annotation (Placement(transformation(extent={{34,26},{14,46}}, rotation=0)));
-  Modelica_Fluid.Pumps.PumpNPSH pump(
+  Modelica_Fluid.Pumps.Pump pump(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_start=1,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
           q_nom={0,0.001,0.0015}, head_nom={100,50,0}),
+    usePowerCharacteristic=true,
+    redeclare function powerCharacteristic =
+        Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticPower (
+          q_nom={0,0.001,0.0015}, W_nom={550,650,800}),
+    M=0.1,
     pin_start=100000,
     pout_start=700000)     annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));
@@ -58,4 +57,5 @@ equation
   connect(downstreamPressure.y, Sink.p_in) 
                                 annotation (Line(points={{25,84},{58,84},{58,42},
           {36,42}}, color={0,0,127}));
-end TestWaterPumpNPSH;
+  annotation (experiment(StopTime=10));
+end TestWaterPumpPowerCharacteristic;
