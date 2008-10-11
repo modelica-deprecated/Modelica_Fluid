@@ -25,7 +25,9 @@ model TestWaterPumpPowerCharacteristic
           q_nom={0,0.001,0.0015}, W_nom={550,650,800}),
     M=0.1,
     pin_start=100000,
-    pout_start=700000)     annotation (Placement(transformation(extent={{-66,20},
+    pout_start=700000,
+    initType=Modelica_Fluid.Types.Init.SteadyState) 
+                           annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));
   Modelica.Blocks.Sources.Constant valveOpening(k=1) 
   annotation (Placement(transformation(extent={{-60,60},{-40,80}}, rotation=0)));
