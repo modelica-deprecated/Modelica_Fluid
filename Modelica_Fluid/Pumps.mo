@@ -8,7 +8,7 @@ package Pumps "Pump components"
       "Constant rotational speed" annotation(Dialog(enable = not use_N_input));
     parameter Boolean use_N_input = false
       "Get the rotational speed from the input connector";
-    Modelica.Blocks.Interfaces.RealInput N_in if                          use_N_input
+    Modelica.Blocks.Interfaces.RealInput N_in if use_N_input
       "Prescribed rotational speed" 
       annotation (Placement(transformation(
           origin={-26,44},
@@ -24,11 +24,14 @@ package Pumps "Pump components"
     if not use_N_input then
       N_in_internal = N_const;
     end if;
-    N = N_in_internal "Rotational speed";
+    // Set N with a lower limit to avoid singularities at zero speed
+    N = max(N_in_internal,1e-3) "Rotational speed";
     annotation (
       Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={Text(extent={{-58,58},{-30,38}}, textString="n")}),
-      Diagram(graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+              graphics),
       Documentation(info="<HTML>
 <p>This model describes a centrifugal pump (or a group of <tt>Np</tt> pumps in parallel) with controlled speed, either fixed or provided by an external signal.
 <p>The model extends <tt>PartialPump</tt>
@@ -48,19 +51,23 @@ package Pumps "Pump components"
     SI.Angle phi "Shaft angle";
     SI.AngularVelocity omega "Shaft angular velocity";
     Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft 
-    annotation (Placement(transformation(extent={{80,4},{110,32}}, rotation=0)));
+    annotation (Placement(transformation(extent={{80,4},{110,32}}, rotation=0),
+          iconTransformation(extent={{80,-34},{110,-6}})));
   equation
     phi = shaft.phi;
     omega = der(phi);
     N = Modelica.SIunits.Conversions.to_rpm(omega);
     W_single = omega*shaft.tau;
   annotation (
-    Icon(graphics={Rectangle(
-            extent={{60,26},{84,12}},
+    Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
+              100}}), graphics={Rectangle(
+            extent={{60,-12},{84,-26}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={95,95,95})}),
-    Diagram(graphics),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+            graphics),
     Documentation(info="<HTML>
 <p>This model describes a centrifugal pump (or a group of <tt>Np</tt> pumps in parallel) with a mechanical rotational connector for the shaft, to be used when the pump drive has to be modelled explicitly. In the case of <tt>Np</tt> pumps in parallel, the mechanical connector is relative to a single pump.
 <p>The model extends <tt>PartialPump</tt>
@@ -88,7 +95,7 @@ package Pumps "Pump components"
     NPSHa = (inlet.p-pv)/(d*Modelica.Constants.g_n);
 
     // Check for cavitation
-    assert(inlet.p >= pv, "Cavitation occurs at the inlet (propably a valve is closed or a tank/reservoir is empty)");
+    assert(inlet.p >= pv, "Cavitation occurs at the inlet");
     annotation (Documentation(info="<html>Same as the Pump model, with added computation of Net Positive Suction Head available. Requires a two-phase medium model.
 </html>", revisions="<html>
 <ul>
@@ -109,11 +116,6 @@ package Pumps "Pump components"
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
         "Medium model" 
                      annotation(choicesAllMatching=true);
-
-  /*
-  Medium.BaseProperties fluid(p(start=pin_start),h(start=h_start)) 
-    "Fluid properties at the inlet";
-*/
     replaceable function flowCharacteristic = 
         PumpCharacteristics.baseFlow
         "Head vs. q_flow characteristic at nominal speed and density" 
@@ -221,11 +223,9 @@ package Pumps "Pump components"
   equation
     // Flow equations
     if noEvent(s > 0 or (not checkValve)) then
-      // Flow characteristics when check valve is open
-      // q_flow_single = s;
+      // Flow characteristics when check valve is open or with no check valve
+      head = (N/N_nom)^2*flowCharacteristic(q_flow_single*(N_nom/N));
       q_flow_single = s*unitMassFlowRate/d;
-      // head = (N/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-6)));
-      head = noEvent((((if abs(N) > 1e-6 then N else 1e-6))/N_nom)^2*flowCharacteristic(q_flow_single*N_nom/((if abs(N) > 1e-6 then N else 1e-6))));
     else
       // Flow characteristics when check valve is closed
       head = (N/N_nom)^2*flowCharacteristic(0) - s*unitHead;
@@ -234,15 +234,17 @@ package Pumps "Pump components"
 
     // Power consumption
     if usePowerCharacteristic then
-      W_single = (N/N_nom)^3*(d/d_nom)*powerCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-6)))
+      W_single = (N/N_nom)^3*(d/d_nom)*powerCharacteristic(q_flow_single*(N_nom/N))
           "Power consumption (single pump)";
       eta = (dp*q_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
     else
-      eta = efficiencyCharacteristic(q_flow_single*N_nom/(noEvent(if abs(N) > 1e-6 then N else 1e-10)));
+      eta = efficiencyCharacteristic(q_flow_single*(N_nom/N));
       W_single = dp*q_flow/eta;
     end if;
 
     // Medium states close to the ports when mass flows in to the respective port
+    // The inlet inflow state is used also in case of flow reversal, to avoid
+    // discontinuities.
     inlet_state_inflow = Medium.setState_phX(inlet.p, inlet.h_outflow, inlet.Xi_outflow);
     // outlet_state_inflow = Medium.setState_phX(outlet.p, outlet.h_outflow, outlet.Xi_outflow);
 
@@ -252,12 +254,13 @@ package Pumps "Pump components"
 
     // Mass and energy balances
     inlet.m_flow + outlet.m_flow = 0 "Mass balance";
-    inlet.h_outflow   = h_out;
-    outlet.h_outflow  = h_out;
     inlet.Xi_outflow  = inStream(outlet.Xi_outflow);
     outlet.Xi_outflow = inStream(inlet.Xi_outflow);
     inlet.C_outflow = inStream(outlet.C_outflow);
     outlet.C_outflow = inStream(inlet.C_outflow);
+
+    inlet.h_outflow   = h_out;
+    outlet.h_outflow  = h_out;
     inlet_H_flow=semiLinear(inlet.m_flow, inStream(inlet.h_outflow), h_out)
         "Enthalpy flow at the inlet";
     outlet_H_flow=semiLinear(outlet.m_flow, inStream(outlet.h_outflow), h_out)
@@ -302,9 +305,10 @@ initial equation
               pattern=LinePattern.None,
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={255,255,255}),
-            Text(extent={{-100,-110},{100,-136}}, textString="%name"),
-            Text(extent={{-10,60},{18,40}}, textString="Np")}),
-      Diagram(graphics),
+            Text(extent={{-100,-110},{100,-136}}, textString="%name")}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+                100,100}}),
+              graphics),
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>Pump</tt> and <tt>
 PumpMech</tt> pump models.
