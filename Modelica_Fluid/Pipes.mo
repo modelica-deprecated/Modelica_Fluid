@@ -270,8 +270,8 @@ pipe wall/environment).
    SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
 
    annotation (
-     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={
+     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -694,8 +694,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
+          graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -896,8 +896,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
+          graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -1045,7 +1045,7 @@ end DistributedPipeSa;
       parameter Medium.AbsolutePressure p_a_start=Medium.p_default
         "Port a pressure start value" 
       annotation(Dialog(tab = "Initialization"));
-      parameter Medium.AbsolutePressure p_b_start=Medium.p_default
+      parameter Medium.AbsolutePressure p_b_start=p_a_start
         "Port b pressure start value" 
       annotation(Dialog(tab = "Initialization"));
       final parameter Medium.AbsolutePressure[n] p_start=if n > 1 then linspace(
@@ -1325,12 +1325,12 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       parameter Medium.AbsolutePressure p_a_start=Medium.p_default
         "Start value of pressure at port a" 
       annotation(Dialog(tab = "Initialization"));
-      parameter Medium.AbsolutePressure p_b_start=Medium.p_default
+      parameter Medium.AbsolutePressure p_b_start=p_a_start
         "Start value of pressure at port b" 
       annotation(Dialog(tab = "Initialization"));
       final parameter Medium.AbsolutePressure[n] p_start=if n > 1 then linspace(
-          p_a_start,
-          p_b_start + (p_a_start - p_b_start)/n,
+          p_a_start - (p_a_start - p_b_start)/(2*n),
+          p_b_start + (p_a_start - p_b_start)/(2*n),
           n) else {(p_a_start + p_b_start)/2} "Start value of pressure";
       parameter Medium.Temperature T_start=if use_T_start then Medium.T_default else 
                 Medium.temperature_phX(
