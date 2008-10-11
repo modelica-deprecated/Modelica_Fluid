@@ -468,8 +468,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       Medium.dynamicViscosity(medium.state));
 
     annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
+          graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},

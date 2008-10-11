@@ -155,7 +155,9 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (Placement(transformation(extent={{-60,-100},{-40,-80}},
             rotation=0)));
     ControlValves.ValveDiscrete valveDiscrete(redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, Kv=100) 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      dp_nom(displayUnit="Pa") = 1,
+      m_flow_nom=100) 
       annotation (Placement(transformation(
           origin={-20,-50},
           extent={{-10,-10},{10,10}},
@@ -426,7 +428,9 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (Placement(transformation(extent={{-16,-102},{-36,-82}},
             rotation=0)));
     ControlValves.ValveDiscrete valveDiscrete(redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, Kv=100) 
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
+      dp_nom(displayUnit="Pa") = 1,
+      m_flow_nom=100) 
       annotation (Placement(transformation(
           origin={-60,-78},
           extent={{-10,-10},{10,10}},

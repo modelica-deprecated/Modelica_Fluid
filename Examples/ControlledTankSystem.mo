@@ -105,8 +105,10 @@ This example is based on
             "../Scripts/Examples/ControlledTanks/plot level and ports.m_flow.mos"
           "plot level and ports.m_flow"));
     ControlValves.ValveDiscrete valve1(                             redeclare
-        package Medium = Medium, Kv=4e-4,
-      Kv_small_rel=0) 
+        package Medium = Medium,
+      Kv_small_rel=0,
+      dp_nom=100000,
+      m_flow_nom=40) 
       annotation (Placement(transformation(
           origin={20,50},
           extent={{-10,-10},{10,10}},
@@ -124,15 +126,19 @@ This example is based on
       annotation (Placement(transformation(extent={{-90,-60},{-55,-40}},
             rotation=0)));
     ControlValves.ValveDiscrete valve2(                redeclare package Medium
-        = Medium, Kv=100,
-      Kv_small_rel=0) 
+        = Medium,
+      Kv_small_rel=0,
+      dp_nom(displayUnit="Pa") = 1,
+      m_flow_nom=100) 
       annotation (Placement(transformation(
           origin={20,-30},
           extent={{-10,-10},{10,10}},
           rotation=90)));
     ControlValves.ValveDiscrete valve3(                redeclare package Medium
-        = Medium, Kv=10,
-      Kv_small_rel=0) 
+        = Medium,
+      Kv_small_rel=0,
+      dp_nom(displayUnit="Pa") = 1,
+      m_flow_nom=10) 
       annotation (Placement(transformation(
           origin={80,-70},
           extent={{-10,-10},{10,10}},
@@ -185,7 +191,7 @@ This example is based on
     connect(level2.y, tankController.level2) annotation (Line(points={{-31.15,
             -70},{-28,-70},{-28,-22}}, color={0,0,127}));
     connect(source.port, valve1.port_b) 
-      annotation (Line(points={{20,70},{20,65},{20,65},{20,60}},
+      annotation (Line(points={{20,70},{20,65},{20,60}},
                                                  color={0,127,255}));
     connect(valve1.port_a, tank1.topPorts[1]) 
       annotation (Line(points={{20,40},{20,35},{20,30},{21,30}},
@@ -477,9 +483,9 @@ This example is based on
                 100}}),
           graphics={Rectangle(
               extent={{-100,-100},{100,100}},
-              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0} else 
-                        {192,192,192}),
-              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then 
+              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0}
+                   else {192,192,192}),
+              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then
                   FillPattern.Solid else FillPattern.Solid),
               lineColor={128,128,128},
               lineThickness=0.5), Text(
