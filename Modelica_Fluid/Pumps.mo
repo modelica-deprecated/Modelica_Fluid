@@ -155,7 +155,6 @@ package Pumps "Pump components"
     parameter Boolean use_T_start = true
         "Use T_start if true, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate = true);
-
     parameter Medium.Temperature T_start=
       if use_T_start then Medium.T_default else Medium.temperature_phX(pin_start,h_start,X_start)
         "Guess value for temperature" 
@@ -172,8 +171,9 @@ package Pumps "Pump components"
       annotation(Dialog(tab="Initialization"));
     outer Modelica_Fluid.System system "System properties";
     parameter SI.Acceleration g=system.g;
-  //  parameter Choices.Init.Options initOpt=Choices.Init.Options.noInit
-  //    "Initialisation option";
+    parameter Types.Init initType=
+              Types.Init.NoInit "Initialization option" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization"));
     Modelica_Fluid.Interfaces.FluidPort_a inlet(
                                  redeclare package Medium = Medium,
         p(start=pin_start),
@@ -206,9 +206,6 @@ package Pumps "Pump components"
     Real eta "Global Efficiency";
     Real s(start = m_flow_start)
         "Curvilinear abscissa for the flow curve in parametric form (either mass flow rate or head)";
-  //  outer Modelica_Fluid.Components.FluidOptions fluidOptions
-  //    "Global default options";
-
     Medium.ThermodynamicState inlet_state_inflow
         "Medium state close to inlet for inflowing mass flow";
     Medium.EnthalpyFlowRate inlet_H_flow;
@@ -252,13 +249,14 @@ package Pumps "Pump components"
     d = Medium.density(inlet_state_inflow);
     Tin = Medium.temperature(inlet_state_inflow);
 
-    // Mass and energy balances
+    // Mass balances
     inlet.m_flow + outlet.m_flow = 0 "Mass balance";
     inlet.Xi_outflow  = inStream(outlet.Xi_outflow);
     outlet.Xi_outflow = inStream(inlet.Xi_outflow);
     inlet.C_outflow = inStream(outlet.C_outflow);
     outlet.C_outflow = inStream(inlet.C_outflow);
 
+    // Energy balances
     inlet.h_outflow   = h_out;
     outlet.h_outflow  = h_out;
     inlet_H_flow=semiLinear(inlet.m_flow, inStream(inlet.h_outflow), h_out)
@@ -273,19 +271,16 @@ package Pumps "Pump components"
       inlet_H_flow + outlet_H_flow + W_tot = 0 "Static energy balance";
     end if;
 
-  /*
-initial equation 
-  if initOpt == Choices.Init.Options.noInit then
-    // do nothing
-  elseif initOpt == Choices.Init.Options.steadyState then
-    if ThermalCapacity then
-      der(h)=0;
+  initial equation
+    if initType == Types.Init.NoInit or not M > 0 then
+    // no initial equations
+    elseif initType == Types.Init.InitialValues then
+      h_out = h_start;
+    elseif initType == Types.Init.SteadyState then
+      der(h_out) = 0;
+    else
+      assert(false, "Unsupported initialization option");
     end if;
-  else
-    assert(false, "Unsupported initialisation option");
-  end if;
-*/
-
     annotation (
       Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
                 100}}), graphics={
@@ -334,6 +329,7 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
        Model added to the Fluid library</li>
 </ul>
 </html>"));
+  equation
 
   end PartialPump;
 
