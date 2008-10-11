@@ -1,5 +1,5 @@
 within Modelica_Fluid.Test.TestComponents.Pumps;
-model TestWaterPumpNPSH "Test case for WaterPump"
+model TestWaterPumpNPSH "Test PumpNPSH"
   extends Modelica.Icons.Example;
 annotation (
   Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,

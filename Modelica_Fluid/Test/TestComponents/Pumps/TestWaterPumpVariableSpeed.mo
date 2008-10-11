@@ -1,5 +1,6 @@
 within Modelica_Fluid.Test.TestComponents.Pumps;
-model TestWaterPumpVariableSpeed "Test case for WaterPump, variable speed"
+model TestWaterPumpVariableSpeed
+  "Test pump with variable speed (including zero)"
   extends Modelica.Icons.Example;
 annotation (
   Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
