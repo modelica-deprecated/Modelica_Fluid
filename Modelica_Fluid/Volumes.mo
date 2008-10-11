@@ -583,9 +583,9 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                  level,
-                  1,
-                  3))),
+                level, 
+                1, 
+                3))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -606,8 +606,8 @@ initial equation
             extent={{-95,50},{95,30}},
             lineColor={0,0,0},
             textString="level ="),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                0,0})}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
+                0})}),
       Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the environment at the fixed pressure
