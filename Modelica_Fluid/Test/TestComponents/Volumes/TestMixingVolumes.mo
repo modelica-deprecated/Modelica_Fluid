@@ -38,7 +38,7 @@ model TestMixingVolumes
       Medium = Medium,
     h=Medium.h_default) 
     annotation (Placement(transformation(extent={{100,30},{80,50}}, rotation=0)));
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}},
           rotation=0)));
 equation

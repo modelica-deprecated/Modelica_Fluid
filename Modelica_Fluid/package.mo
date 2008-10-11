@@ -3,88 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 2: One-dimensional ther
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
-annotation (
-  version="1.0 Streams Beta 2",
-  versionBuild="$Rev$",
-  versionDate="$Date::                            $",
-  preferedView="info",
-  Settings(NewStateSelection=true),
-  uses(Modelica(version="3.0")),
-  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
-      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
-  Documentation(info="<html>
-<p>
-Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
-components describing
-<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models are decoupled.
-All components are implemented such that they can be used for
-media from the Modelica.Media library. This means especially that an
-incompressible or compressible medium, a single or a multiple
-substance medium with one or more phases might be used.
-The goal is to include 
-the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
-</p>
- 
-<p>
-This is version <b>1.0 Streams Beta 2</b> of the Modelica_Fluid library.
-With respect to previous versions of the Modelica_Fluid library, the design
-of the connectors has been changed, using the recently developed concept
-with streams connectors (see an overview and a rational 
-<a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rational.pdf\">here</a>).
-This requires an extension to the Modelica specification
-and it is planned to include this extension in Modelica 3.1.
-This new concept is supported in Dymola 7.1.
-The essential benefit of this new concept is that the equation systems become
-more well behaved and the models can be more reliably simulated.
-Please, read the section
-<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
-in the Users Guide before using this library.
-</p>
-
-<p>
-A typical example model of the Modelica_Fluid library
-is shown in the next figure (drum boiler):
-</p>
-<p align=\"center\">
-<img src=\"../Images/UsersGuide/DrumBoiler.png\">
-</p>
-<p>
-An example of a tank system that is controlled by a control system
-and where some of the components have built-in diagram animation
-is shown in the next figure:
-</p>
-<p align=\"center\">
-<img src=\"../Images/Examples/ControlledTanks1.png\">
-</p>
-<p>
-The following parts are useful, when newly starting with this library:
-</p>
-<ul>
-<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
-<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
-     summarizes the changes of the library releases.</li>
-<li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
-     contains examples that demonstrate the usage of this library.</li>
-</ul>
- 
- 
-<p><b>Copyright &copy; 2002-2008, Modelica Association.</b></p>
-<p><i>
-This Modelica package is <b>free</b> software; it can be redistributed and/or modified
-under the terms of the <b>Modelica license</b>, see the license conditions
-and the accompanying <b>disclaimer</b> in the documentation of package
-Modelica in file \"Modelica/package.mo\".
-</i></p>
- 
- 
-</html>"),
-    conversion(from(version="0.795", script=
-            "../ConvertFromModelica_Fluid_0.795.mos")));
-
-
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -107,7 +25,7 @@ class KnownLimitations "Known limitations"
 
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Known limitations</font></h3>
-
+ 
 <p>
 This public release of the Modelica_Fluid library is
 still a Beta-Version. The goal is to improve it and we are
@@ -115,7 +33,7 @@ interested in your feedback, i.e., bug reports and
 improvement suggestions. Please, send your emails to
 the fluid development group at <b>Modelica-design@Modelica.org</b>.
 </p>
-
+ 
 <p>
 The Modelica_Fluid library has quite ambitious goals, especially,
 that every component can be connected in an arbitrary way,
@@ -127,7 +45,7 @@ every new approach, it takes some time that everything works
 as expected. We are aware of the following limitations of the current
 version:
 </p>
-
+ 
 <ul>
 <li> The medium has to be defined in <b>every</b> component
      separately. The user would like to define the medium
@@ -142,13 +60,13 @@ version:
      mouse and select \"parameters\". Then select the desired medium
      and this medium will be used in all selected components.<br><br>
     </li>
-
+ 
 <li> When clicking on the <b>Medium</b> parameter, a very long list
      of media is displayed. We would like to have better control for
      the end user what is shown or at least display it hierarchically.
      It is not yet clear how this should be improved, but we work on it.
      </li>
-
+ 
 </ul>
 </html>"));
 end KnownLimitations;
@@ -299,7 +217,7 @@ model has to be used in the connection point.
 For a single substance medium, the connector definition in
 Modelica_Fluid.Interfaces.FluidPort reduces to
 </p>
-
+ 
 <pre>
   <b>connector</b> FluidPort 
      <b>replaceable package</b> Medium = Modelica.Media.Interfaces.PartialMedium;
@@ -376,12 +294,12 @@ the \"energy balance 2\":
       <td> <img src=\"../Images/UsersGuide/energyBalance2.png\"></td>
   </tr>
 </table>
-
+ 
 <p>
 <b>??? The text below is no longer correct. Needs to be adapted for the
    streams connector concept ???</b>
 </p>
-
+ 
 <p>
 This equation is much simpler because all terms depending
 on the velocity v are removed, especially the kinetic
@@ -391,10 +309,10 @@ via the (mechanical) momentum equation and that the \"thermal\" part
 of the energy balance remains. <b>All components</b> of the
 Fluid library use the <b>energy balance 2</b> equation.
 </p>
-
+ 
 <p>
-
-
+ 
+ 
 Assume that 3 components are connected together at one infinitesimal
 small control volume and that thermal conduction
 is neglected. Under the assumption of ideal mixing,
@@ -518,27 +436,27 @@ with the following code fragment
   
     Interfaces.FluidPort_a port_a(<b>redeclare package</b> Medium = Medium); 
     Interfaces.FluidPort_b port_b(<b>redeclare package</b> Medium = Medium); 
-
+ 
     Medium.ThermodynamicState port_a_state_inflow 
                     \"Medium state close to port_a for inflowing mass flow\";
     Medium.ThermodynamicState port_b_state_inflow 
                     \"Medium state close to port_b for inflowing mass flow\";
-
+ 
   <b>equation</b> 
     // Isenthalpic state transformation (no storage and no loss of energy)
     port_a.h_outflow  = <b>inStream</b>(port_b.h_outflow);
     port_b.h_outflow  = <b>inStream</b>(port_a.h_outflow);
-
+ 
     port_a.Xi_outflow = <b>inStream</b>(port_b.Xi_outflow);
     port_b.Xi_outflow = <b>inStream</b>(port_a.Xi_outflow);
-
+ 
     // Mass balance
     port_a.m_flow + port_b.m_flow = 0;
-
+ 
     // Medium states for inflowing medium
     port_a_state_inflow = Medium.setState_phX(port_a.p, port_b.h_outflow, port_b.Xi_outflow);
     port_b_state_inflow = Medium.setState_phX(port_b.p, port_a.h_outflow, port_a.Xi_outflow);
-
+ 
     // Densities close to the parts when mass flows in to the respective port
     port_a_d_inflow = Medium.density(port_a_state_inflow);
     port_b_d_inflow = Medium.density(port_b_state_inflow);
@@ -553,13 +471,13 @@ The medium states for inflowing media can be used to compute density and dynamic
 viscosity which in turn can be use to formulate the pressure drop equation.
 The standard pressure drop equation 
 </p>
-
+ 
 <pre>
    dp = port_a - port_b;
    m_flow = sqrt(2/(zeta*diameter))*if dp >= 0 then  sqrt(dp)
                                                else -sqrt(-dp)
 </pre>
-
+ 
 <p>
 cannot be used, since the function has an infinite derivative at dp=0.
 Instead the region around zero mass flow rate must be regularized using
@@ -568,7 +486,7 @@ This requires to have density and/or other medium properties for both
 flow directions at the same time. These media properties can be computed
 from the medium states of the inflowing fluid at the two ports.
 </p>
-
+ 
 <p>
 If the above component is connected between two volumes, i.e.,
 the independent medium variables in port_a and port_b are
@@ -580,7 +498,7 @@ Zero or reversed mass flow rate does not pose any problems because
 the medium properties are always computed for both flow directions
 and are then used in the regularization function.
 </p>
-
+ 
 <p>
 If 3 or more components are connected together, it can be shown
 that a system of non-linear algebraic equations appear.
@@ -1022,14 +940,14 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-
+ 
 <h3><font color=\"#008000\">Version 1.0 Streams Beta 2, 2008-10-08</font></h3>
-
+ 
 <p>
 Modelica_Fluid was transformed to Modelica 3 and to Modelica Standard
 library 3.0 (by automatic conversion). Further changes:
 </p>
-
+ 
 <ul>
 <li> Emulated enumerations changed to real enumerations.</li>
 <li> Improved ControlValves code</li>
@@ -1084,14 +1002,14 @@ library 3.0 (by automatic conversion). Further changes:
      No default or start values for \"parameter LossFactorData data\"
      Changed the model to \"partial model\" to avoid warning messages</li>
 </ul>
-
-
+ 
+ 
 <h3><font color=\"#008000\">Version 1.0 Streams Beta 1, 2008-05-02</font></h3>
-
+ 
 <p>
 Changed connectors to stream connectors and adapted the following sublibraries:
 </p>
-
+ 
 <ul>
 <li> Volumes</li>
 <li> PressureLosses </li>
@@ -1104,11 +1022,11 @@ Changed connectors to stream connectors and adapted the following sublibraries:
 <li> Pumps </li>
 <li> Test and Exampleas (most of the examples and tests are simulating)</li>
 </ul>
-
+ 
 <p>
 Other changes:
 </p>
-
+ 
 <ul>
 <li> Introduced HeatPorts with vectorized icon in Modelica_Fluid.Interfaces</li>
 <li> Deleted Modelica_Fluid.WorkInProgress since it seems to be too much work
@@ -1159,9 +1077,9 @@ Other changes:
 <li> VersionBuild introduced, as well as automatic update of
      VersionBuild/VersionDate</li>
 </ul>
-
-
-
+ 
+ 
+ 
 <h3><font color=\"#008000\">Version 1.0 Beta 4, 2008-04-26</font></h3>
  
 <p>
@@ -1170,8 +1088,8 @@ last beta version. This version is used to \"freeze\" the current
 development, in order to change to a version with a new
 connector design using stream variables.
 </p>
-
-
+ 
+ 
 <h3><font color=\"#008000\">Version 1.0 Beta 3, 2007-06-05</font></h3>
  
 <p>
@@ -1182,16 +1100,16 @@ improved tank component, moved test models from Examples to
 new package Test, many more test models, etc.
 This version is slightly non-backward compatible to version 1.0 Beta 2.
 </p>
-
-
+ 
+ 
 <h3><font color=\"#008000\">Version 1.0 Beta 2, 2006-08-28</font></h3>
  
 <p>
 Package considerably restructured and some new components added.
 New examples (ControlledTankSystem, AST_BatchPlant).
 </p>
-
-
+ 
+ 
 <h3><font color=\"#008000\">Version 0.96, 2006-01-08</font></h3>
  
 <ul>
@@ -1358,4 +1276,82 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
+annotation (
+  version="1.0 Streams Beta 2",
+  versionBuild="$Rev$",
+  versionDate="$Date::                            $",
+  preferedView="info",
+  Settings(NewStateSelection=true),
+  uses(Modelica(version="3.0")),
+  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
+      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
+  Documentation(info="<html>
+<p>
+Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
+components describing
+<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
+component equations and the media models are decoupled.
+All components are implemented such that they can be used for
+media from the Modelica.Media library. This means especially that an
+incompressible or compressible medium, a single or a multiple
+substance medium with one or more phases might be used.
+The goal is to include 
+the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
+</p>
+ 
+<p>
+This is version <b>1.0 Streams Beta 2</b> of the Modelica_Fluid library.
+With respect to previous versions of the Modelica_Fluid library, the design
+of the connectors has been changed, using the recently developed concept
+with streams connectors (see an overview and a rational 
+<a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rational.pdf\">here</a>).
+This requires an extension to the Modelica specification
+and it is planned to include this extension in Modelica 3.1.
+This new concept is supported in Dymola 7.1.
+The essential benefit of this new concept is that the equation systems become
+more well behaved and the models can be more reliably simulated.
+Please, read the section
+<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
+in the Users Guide before using this library.
+</p>
+ 
+<p>
+A typical example model of the Modelica_Fluid library
+is shown in the next figure (drum boiler):
+</p>
+<p align=\"center\">
+<img src=\"../Images/UsersGuide/DrumBoiler.png\">
+</p>
+<p>
+An example of a tank system that is controlled by a control system
+and where some of the components have built-in diagram animation
+is shown in the next figure:
+</p>
+<p align=\"center\">
+<img src=\"../Images/Examples/ControlledTanks1.png\">
+</p>
+<p>
+The following parts are useful, when newly starting with this library:
+</p>
+<ul>
+<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
+<li> <a href=\"Modelica:Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
+     summarizes the changes of the library releases.</li>
+<li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
+     contains examples that demonstrate the usage of this library.</li>
+</ul>
+ 
+ 
+<p><b>Copyright &copy; 2002-2008, Modelica Association.</b></p>
+<p><i>
+This Modelica package is <b>free</b> software; it can be redistributed and/or modified
+under the terms of the <b>Modelica license</b>, see the license conditions
+and the accompanying <b>disclaimer</b> in the documentation of package
+Modelica in file \"Modelica/package.mo\".
+</i></p>
+ 
+ 
+</html>"),
+    conversion(from(version="0.795", script=
+            "../ConvertFromModelica_Fluid_0.795.mos")));
 end Modelica_Fluid;

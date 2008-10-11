@@ -76,7 +76,8 @@ package TestCriticalCases
           origin={0,70},
           extent={{10,-10},{-10,10}},
           rotation=90)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-88,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-88,60},
               {-68,80}}, rotation=0)));
     Sensors.TemperatureOnePort temperature(redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{-10,-60},{10,-80}},
@@ -204,7 +205,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           2.01,0; 100,0]) 
                        annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
   equation
     connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-72,6}},
@@ -300,7 +302,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,0; 2,0;
           2,1; 100,1]) annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
   equation
     connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-72,6}},
@@ -396,7 +399,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,0; 2,0;
           2,1; 100,1]) annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
     Junctions.JunctionIdeal splitter(redeclare package Medium = Medium) 
       annotation (Placement(transformation(
@@ -499,7 +503,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,0; 2,0;
           2,1; 100,1]) annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
     Junctions.JunctionVolume splitter(redeclare package Medium = Medium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
@@ -587,7 +592,8 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
           1,0; 100,0]) annotation (Placement(transformation(extent={{-20,70},{0,
               90}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
     PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
       zeta=0.4,
@@ -752,7 +758,8 @@ fails for zero flow rate.
       p=1.0e5) 
              annotation (Placement(transformation(extent={{98,4},{86,16}},
             rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-98,80},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-98,80},
               {-78,100}}, rotation=0)));
     Modelica.Blocks.Sources.Step valveOpening1(
       height=-0.2,
@@ -941,7 +948,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           2.01,1e-6; 100,0]) 
                        annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
   equation
     connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},
@@ -1043,7 +1051,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           2.01,1e-6; 100,0]) 
                        annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
     Junctions.JunctionIdeal junctionIdeal(redeclare package Medium = Medium) 
       annotation (Placement(transformation(
@@ -1149,7 +1158,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           4,1e-2; 100,1e-2]) 
                        annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
     Junctions.JunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
@@ -1264,7 +1274,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           1e-3; 100,1e-3]) 
                        annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
     Junctions.JunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
@@ -1377,7 +1388,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 3,1;
           4,0; 100,0]) annotation (Placement(transformation(extent={{-20,-12},{
               0,8}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
     Junctions.JunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
@@ -1492,7 +1504,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 3,1;
           4,0; 100,0]) annotation (Placement(transformation(extent={{-18,-12},{
               2,8}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
     Junctions.JunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
@@ -1612,7 +1625,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 3,1; 4,
           0; 100,0])   annotation (Placement(transformation(extent={{-18,-12},{
               2,8}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
     Junctions.JunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
@@ -1715,7 +1729,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           2.01,1e-6; 100,0]) 
                        annotation (Placement(transformation(extent={{-20,-8},{0,
               12}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
   equation
     connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-78,6}},

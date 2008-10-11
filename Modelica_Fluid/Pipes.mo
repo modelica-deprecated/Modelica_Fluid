@@ -262,7 +262,7 @@ pipe wall/environment).
    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
       "Thermal port" 
  annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
-   outer Modelica_Fluid.Ambient ambient "Ambient conditions";
+   outer Modelica_Fluid.System system "System properties";
 
   protected
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
@@ -270,8 +270,8 @@ pipe wall/environment).
    SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
 
    annotation (
-     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -326,7 +326,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
 
  if from_dp and not WallFriction.dp_is_zero then
      m_flow[1] = WallFriction.massFlowRate_dp(
-       dp[1] - ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*ambient.g*(d[1]+d[n])
+       dp[1] - ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*system.g*(d[1]+d[n])
          /2,
        d_a,
        d_b,
@@ -337,7 +337,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        roughness,
        dp_small);
      m_flow[n + 1] = WallFriction.massFlowRate_dp(
-       dp[2] - (2*n - (integer(n/2) + 1)*2 + 1)/(2*n)*height_ab*ambient.g*(d[1]+d[n])/2,
+       dp[2] - (2*n - (integer(n/2) + 1)*2 + 1)/(2*n)*height_ab*system.g*(d[1]+d[n])/2,
        d_a,
        d_b,
        eta_a,
@@ -356,7 +356,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        ((integer(n/2) + 1)*2 - 1)/(2*n)*length,
        d_h,
        roughness,
-       m_flow_small) + ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*ambient.g*(
+       m_flow_small) + ((integer(n/2) + 1)*2 - 1)/(2*n)*height_ab*system.g*(
        d[1]+d[n])/2);
      dp[2] = (WallFriction.pressureLoss_m_flow(
        m_flow[n+1],
@@ -368,7 +368,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        d_h,
        roughness,
        m_flow_small) + (2*n - (integer(n/2) + 1)*2 + 1)/(2*n)*height_ab*
-       ambient.g*(d[1]+d[n])/2);
+       system.g*(d[1]+d[n])/2);
  end if;
 
    connect(thermalPort, heatTransfer.thermalPort) 
@@ -457,7 +457,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
       "Thermal port" annotation (Placement(transformation(extent={{-10,44},{10,
               64}}, rotation=0)));
-  outer Modelica_Fluid.Ambient ambient "Ambient conditions";
+  outer Modelica_Fluid.System system "System properties";
 
   protected
   SI.Pressure[n+1] dp_stat;
@@ -468,8 +468,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       Medium.dynamicViscosity(medium.state));
 
     annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
-          graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -530,7 +530,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
   //Pressure drop and gravity
     if from_dp and not WallFriction.dp_is_zero then
     m_flow[1] = WallFriction.massFlowRate_dp(
-      dp_stat[1] - height_ab/2/n*ambient.g*d[1],
+      dp_stat[1] - height_ab/2/n*system.g*d[1],
       d_a,
       d[1],
       eta_a,
@@ -541,7 +541,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       dp_small);
     for i in 2:n loop
       m_flow[i] = WallFriction.massFlowRate_dp(
-        dp_stat[i] - height_ab/n*ambient.g*(d[i-1] + d[i])/2,
+        dp_stat[i] - height_ab/n*system.g*(d[i-1] + d[i])/2,
         d[i - 1],
         d[i],
         eta[i - 1],
@@ -552,7 +552,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
         dp_small);
     end for;
     m_flow[n + 1] = WallFriction.massFlowRate_dp(
-      dp_stat[n+1] - height_ab/n/2*ambient.g*d[n],
+      dp_stat[n+1] - height_ab/n/2*system.g*d[n],
       d[n],
       d_b,
       eta[n],
@@ -572,7 +572,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
         length/n/2,
         d_h,
         roughness,
-        m_flow_small) + height_ab/n*ambient.g*d[1]/2;
+        m_flow_small) + height_ab/n*system.g*d[1]/2;
     for i in 2:n loop
       dp_stat[i] = WallFriction.pressureLoss_m_flow(
         m_flow[i],
@@ -583,7 +583,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
         length/n,
         d_h,
         roughness,
-        m_flow_small) + height_ab/n*ambient.g*(d[i - 1] + d[i])/2;
+        m_flow_small) + height_ab/n*system.g*(d[i - 1] + d[i])/2;
     end for;
     dp_stat[n] = WallFriction.pressureLoss_m_flow(
       m_flow[n+1],
@@ -594,7 +594,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       length/n/2,
       d_h,
       roughness,
-      m_flow_small) + height_ab/n/2*ambient.g*d[n];
+      m_flow_small) + height_ab/n/2*system.g*d[n];
 
     end if;
     connect(thermalPort, heatTransfer.thermalPort) 
@@ -683,7 +683,7 @@ model DistributedPipeSb "Distributed pipe model"
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
       "Thermal port" 
 annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
-  outer Modelica_Fluid.Ambient ambient "Ambient conditions";
+  outer Modelica_Fluid.System system "System properties";
 
   protected
   SI.Pressure[n] dp_stat;
@@ -694,8 +694,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
-          graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -754,7 +754,7 @@ dp=dp_stat;
   //Pressure drop and gravity
 if from_dp and not WallFriction.dp_is_zero then
     m_flow[1] = WallFriction.massFlowRate_dp(
-      dp_stat[1] - height_ab/n*ambient.g*d[1],
+      dp_stat[1] - height_ab/n*system.g*d[1],
       d_a,
       d[1],
       eta_a,
@@ -765,7 +765,7 @@ if from_dp and not WallFriction.dp_is_zero then
       dp_small);
     for i in 2:n loop
       m_flow[i] = WallFriction.massFlowRate_dp(
-        dp_stat[i] - height_ab/n*ambient.g*(d[i-1] + d[i])/2,
+        dp_stat[i] - height_ab/n*system.g*(d[i-1] + d[i])/2,
         d[i - 1],
         d[i],
         eta[i - 1],
@@ -785,7 +785,7 @@ else
         length/n,
         d_h,
         roughness,
-        m_flow_small) + height_ab/n*ambient.g*d[1];
+        m_flow_small) + height_ab/n*system.g*d[1];
     for i in 2:n loop
       dp_stat[i] = WallFriction.pressureLoss_m_flow(
         m_flow[i],
@@ -796,7 +796,7 @@ else
         length/n,
         d_h,
         roughness,
-        m_flow_small) + height_ab/n*ambient.g*(d[i - 1] + d[i])/2;
+        m_flow_small) + height_ab/n*system.g*(d[i - 1] + d[i])/2;
     end for;
 end if;
 connect(thermalPort, heatTransfer.thermalPort) 
@@ -885,7 +885,7 @@ model DistributedPipeSa "Distributed pipe model"
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
       "Thermal port" 
 annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
-  outer Modelica_Fluid.Ambient ambient "Ambient conditions";
+  outer Modelica_Fluid.System system "System properties";
 
   protected
   SI.Pressure[n] dp_stat;
@@ -896,8 +896,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
-          graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -957,7 +957,7 @@ dp=dp_stat;
 if from_dp and not WallFriction.dp_is_zero then
     for i in 1:n-1 loop
       m_flow[i+1] = WallFriction.massFlowRate_dp(
-        dp_stat[i] - height_ab/n*ambient.g*(d[i] + d[i+1])/2,
+        dp_stat[i] - height_ab/n*system.g*(d[i] + d[i+1])/2,
         d[i],
         d[i+1],
         eta[i],
@@ -968,7 +968,7 @@ if from_dp and not WallFriction.dp_is_zero then
         dp_small);
     end for;
     m_flow[n+1] = WallFriction.massFlowRate_dp(
-      dp_stat[n] - height_ab/n*ambient.g*d[n],
+      dp_stat[n] - height_ab/n*system.g*d[n],
       d[n],
       d_b,
       eta[n],
@@ -989,7 +989,7 @@ else
         length/n,
         d_h,
         roughness,
-        m_flow_small) + height_ab/n*ambient.g*(d[i] + d[i+1])/2;
+        m_flow_small) + height_ab/n*system.g*(d[i] + d[i+1])/2;
     end for;
     dp_stat[n] = WallFriction.pressureLoss_m_flow(
       m_flow[n+1],
@@ -1000,7 +1000,7 @@ else
       length/n,
       d_h,
       roughness,
-      m_flow_small) + height_ab/n*ambient.g*d[n];
+      m_flow_small) + height_ab/n*system.g*d[n];
 end if;
 connect(thermalPort, heatTransfer.thermalPort) 
   annotation (Line(points={{0,54},{0,14}}, color={191,0,0}));

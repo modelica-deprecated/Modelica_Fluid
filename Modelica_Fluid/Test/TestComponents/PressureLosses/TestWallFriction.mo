@@ -32,8 +32,8 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
   Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient_a(
                                                      redeclare package Medium
       = Medium,
-    p=ambient.default_p_ambient,
-    T=ambient.default_T_ambient,
+    p=system.p_ambient,
+    T=system.T_ambient,
     usePressureInput=true) 
     annotation (Placement(transformation(extent={{-38,40},{-18,60}}, rotation=0)));
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.99999e5; 10,1.00001e5]) 
@@ -99,7 +99,7 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     roughness=roughness) annotation (Placement(transformation(extent={{0,-50},{
             20,-30}}, rotation=0)));
 
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{68,74},{88,94}}, rotation=0)));
 equation
   connect(p_table.y, ambient_a.p_in) 

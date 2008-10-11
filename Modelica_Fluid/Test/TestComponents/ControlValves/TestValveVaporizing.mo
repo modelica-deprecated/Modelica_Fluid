@@ -27,7 +27,7 @@ model TestValveVaporizing "Test case for vaporizing fluid valve"
               annotation (Placement(transformation(extent={{-78,22},{
             -58,42}},
           rotation=0)));
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent={{64,60},
             {84,80}},          rotation=0)));
   Modelica.Blocks.Sources.Ramp downstreamPressure(

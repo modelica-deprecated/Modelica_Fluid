@@ -16,8 +16,8 @@ model TestSuddenExpansion
   Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient_a(
                                                      redeclare package Medium
       = Medium,
-    p=ambient.default_p_ambient,
-    T=ambient.default_T_ambient,
+    p=system.p_ambient,
+    T=system.T_ambient,
     usePressureInput=true) 
     annotation (Placement(transformation(extent={{-40,40},{-20,60}}, rotation=0)));
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 
@@ -48,7 +48,7 @@ model TestSuddenExpansion
     use_Re=false) annotation (Placement(transformation(extent={{0,10},{20,30}},
           rotation=0)));
 
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent=
             {{66,-42},{86,-22}}, rotation=0)));
 equation

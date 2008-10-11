@@ -22,12 +22,12 @@ model TestTank
   annotation (Diagram(graphics),
     experiment(StopTime=5000, Tolerance=1e-005),
     experimentSetupOutput(equdistant=false));
-  inner Modelica_Fluid.Ambient ambient annotation (Placement(transformation(
+  inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary Boundary_fixed(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    p=ambient.default_p_ambient,
-    T=ambient.default_T_ambient) 
+    p=system.p_ambient,
+    T=system.T_ambient) 
     annotation (Placement(transformation(extent={{100,-90},{80,-70}}, rotation=
             0)));
   Modelica_Fluid.Sensors.MassFlowRate mFlow_9m(redeclare package Medium = 

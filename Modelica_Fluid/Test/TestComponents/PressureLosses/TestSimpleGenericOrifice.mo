@@ -21,8 +21,8 @@ model TestSimpleGenericOrifice
   Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient_a(
                                                      redeclare package Medium
       = Medium,
-    p=ambient.default_p_ambient,
-    T=ambient.default_T_ambient,
+    p=system.p_ambient,
+    T=system.T_ambient,
     usePressureInput=true) 
     annotation (Placement(transformation(extent={{-40,40},{-20,60}}, rotation=0)));
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 
@@ -75,7 +75,7 @@ model TestSimpleGenericOrifice
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (Placement(transformation(extent={{60,-60},{40,-40}}, rotation=0)));
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent=
             {{-82,-90},{-62,-70}}, rotation=0)));
 equation

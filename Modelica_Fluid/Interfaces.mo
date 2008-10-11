@@ -119,15 +119,15 @@ package Interfaces
     "Fluid connector at design inlet with potential pressure state"
     extends FluidPort;
     annotation (defaultComponentName="port_a",
-                Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-              -100,-100},{100,100}}), graphics={Ellipse(
+                Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}), graphics={Ellipse(
             extent={{-40,40},{40,-40}},
             lineColor={0,0,255},
             fillColor={0,127,255},
             fillPattern=FillPattern.Solid), Text(extent={{-150,110},{150,50}},
               textString="%name")}),
-         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={
+         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+              {100,100}}), graphics={
           Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,127,255},
@@ -149,7 +149,8 @@ package Interfaces
     "Fluid connector at design outlet with potential pressure state"
    extends FluidPort;
     annotation (defaultComponentName="port_b",
-                Diagram(graphics={
+                Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}), graphics={
           Ellipse(
             extent={{-40,40},{40,-40}},
             lineColor={0,0,255},
@@ -160,9 +161,9 @@ package Interfaces
             lineColor={0,127,255},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
-          Text(extent={{-150,110},{150,50}}, textString=               "%name")}),
-         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={
+          Text(extent={{-150,110},{150,50}}, textString="%name")}),
+         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+              {100,100}}), graphics={
           Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,127,255},
@@ -194,7 +195,7 @@ package Interfaces
           extent={{-50,-200},{50,200}},
           grid={1,1},
           initialScale=0.2), graphics={
-          Text(extent={{-75,130},{75,100}}, textString=               "%name"),
+          Text(extent={{-75,130},{75,100}}, textString="%name"),
           Rectangle(
             extent={{-25,100},{25,-100}},
             lineColor={0,127,255},
@@ -251,7 +252,7 @@ package Interfaces
           extent={{-50,-200},{50,200}},
           grid={1,1},
           initialScale=0.2), graphics={
-          Text(extent={{-75,130},{75,100}}, textString=               "%name"),
+          Text(extent={{-75,130},{75,100}}, textString="%name"),
           Rectangle(
             extent={{-25,100},{25,-100}},
             lineColor={0,0,0},
@@ -338,7 +339,7 @@ package Interfaces
           extent={{-50,-200},{50,200}},
           grid={1,1},
           initialScale=0.2), graphics={
-          Text(extent={{-75,130},{75,100}}, textString=               "%name"),
+          Text(extent={{-75,130},{75,100}}, textString="%name"),
           Rectangle(
             extent={{-25,100},{25,-100}},
             lineColor={0,127,255},
@@ -410,7 +411,7 @@ package Interfaces
           extent={{-50,-200},{50,200}},
           grid={1,1},
           initialScale=0.2), graphics={
-          Text(extent={{-75,130},{75,100}}, textString=               "%name"),
+          Text(extent={{-75,130},{75,100}}, textString="%name"),
           Rectangle(
             extent={{-25,100},{25,-100}},
             lineColor={0,127,255},

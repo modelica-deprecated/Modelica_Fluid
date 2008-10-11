@@ -54,13 +54,11 @@ The <b>one port</b> sensors have the advantage of easily introducing them to and
           grid={1,1}), graphics={
           Line(points={{70,0},{100,0}}, color={0,0,127}),
           Line(points={{0,-70},{0,-100}}, color={0,127,255}),
-          Text(extent={{-150,80},{150,120}}, textString=
-                                               "%name"),
+          Text(extent={{-150,80},{150,120}}, textString="%name"),
           Text(
             extent={{212,-51},{52,-103}},
             lineColor={0,0,0},
-            textString=
-                 "p")}),
+            textString="p")}),
       Documentation(info="<HTML>
 <p>
 This component monitors the absolute pressure at its fluid port. The sensor is 
@@ -203,8 +201,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{-40,20},{-12,20}}, color={0,0,0}),
           Line(points={{-40,60},{-12,60}}, color={0,0,0}),
           Line(points={{12,0},{60,0}}, color={0,0,127})}),
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={
           Ellipse(
             extent={{-20,-88},{20,-50}},
             lineColor={0,0,0},
@@ -217,8 +215,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
             fillColor={191,0,0},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},{
-                12,90},{12,50},{-12,50}},
+            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},
+                {12,90},{12,50},{-12,50}},
             lineColor={0,0,0},
             lineThickness=0.5),
           Line(
@@ -235,10 +233,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Text(
             extent={{120,-40},{0,-90}},
             lineColor={0,0,0},
-            textString=
-                 "T"),
-          Text(extent={{-150,110},{150,150}}, textString=
-                                                  "%name"),
+            textString="T"),
+          Text(extent={{-150,110},{150,150}}, textString="%name"),
           Line(points={{12,0},{60,0}}, color={0,0,127})}),
       Documentation(info="<HTML>
 <p>
@@ -513,15 +509,14 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
           Line(points={{70,0},{100,0}}, color={0,128,255}),
           Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
-    Icon(graphics={
-          Text(extent={{-150,80},{150,120}}, textString=
-                                               "%name"),
+    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
+          Text(extent={{-150,80},{150,120}}, textString="%name"),
           Line(points={{70,0},{100,0}}, color={0,128,255}),
           Text(
             extent={{178,-81},{18,-133}},
             lineColor={0,0,0},
-            textString=
-                 "m_flow"),
+            textString="m_flow"),
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
@@ -617,13 +612,11 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{-100,0},{-70,0}}, color={0,127,255}),
           Line(points={{70,0},{100,0}}, color={0,127,255}),
           Line(points={{0,-30},{0,-80}}, color={0,0,127}),
-          Text(extent={{-150,40},{150,80}}, textString=
-                                              "%name"),
+          Text(extent={{-150,40},{150,80}}, textString="%name"),
           Text(
             extent={{92,-62},{34,-122}},
             lineColor={0,0,0},
-            textString=
-                 "p_rel")}),
+            textString="p_rel")}),
       Diagram(graphics={
           Line(points={{-100,0},{-70,0}}, color={0,127,255}),
           Line(points={{70,0},{100,0}}, color={0,127,255}),

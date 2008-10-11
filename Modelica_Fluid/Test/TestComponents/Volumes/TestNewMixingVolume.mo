@@ -17,7 +17,7 @@ model TestNewMixingVolume
   Modelica_Fluid.Sources.FixedBoundary_pTX Sink(
                                            redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=101325,
-    T=ambient.default_T_ambient) 
+    T=system.T_ambient) 
     annotation (Placement(transformation(extent={{60,0},{40,20}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveLinear Valve(
                                              redeclare package Medium = 
@@ -30,7 +30,7 @@ model TestNewMixingVolume
     height=-0.5,
     offset=1) annotation (Placement(transformation(extent={{-40,48},{-20,68}},
           rotation=0)));
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}},
           rotation=0)));
 equation

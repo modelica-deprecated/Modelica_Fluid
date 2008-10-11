@@ -39,7 +39,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     T=300)   annotation (Placement(transformation(extent={{56,4},{44,16}},
           rotation=0)));
 
-  inner Ambient ambient annotation (Placement(transformation(extent={{-100,60},
+  inner Modelica_Fluid.System system 
+                        annotation (Placement(transformation(extent={{-100,60},
             {-80,80}}, rotation=0)));
 equation
   connect(source.port, pipe1.port_a) annotation (Line(points={{-64,10},{-20,10}},

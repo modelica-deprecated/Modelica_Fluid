@@ -72,7 +72,7 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     height=-1,
     offset=0.5)   annotation (Placement(transformation(extent={{-100,24},{-80,
             44}}, rotation=0)));
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent=
             {{60,70},{80,90}}, rotation=0)));
 equation

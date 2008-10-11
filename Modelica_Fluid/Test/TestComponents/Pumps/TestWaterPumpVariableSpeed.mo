@@ -10,12 +10,12 @@ annotation (
   Modelica_Fluid.Sources.FixedBoundary_pTX Source(
                                              redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=1e5,
-    T=ambient.default_T_ambient) 
+    T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,20},{-80,40}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX Sink(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=5e5,
-    T=ambient.default_T_ambient) 
+    T=system.T_ambient) 
   annotation (Placement(transformation(extent={{34,26},{14,46}}, rotation=0)));
   Modelica_Fluid.Pumps.Pump Pump1(
     pin_start=1e5,
@@ -32,7 +32,7 @@ annotation (
         Modelica.Media.Water.StandardWater, Kv=1e-5) 
   annotation (Placement(transformation(extent={{-16,26},{2,46}}, rotation=0)));
 
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent=
             {{64,-4},{84,16}}, rotation=0)));
   Modelica.Blocks.Sources.Ramp N_pump(

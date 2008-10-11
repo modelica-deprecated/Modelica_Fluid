@@ -5,7 +5,7 @@ model TestDensity
     Diagram(graphics),
     experiment(Tolerance=1e-006),
     experimentSetupOutput);
-  inner Modelica_Fluid.Ambient ambient annotation (Placement(transformation(
+  inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
   Modelica_Fluid.Sensors.DensityTwoPort density2_1(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
@@ -25,7 +25,7 @@ model TestDensity
            {{-60,-20},{-40,0}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_phX boundary_fixed1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    p=ambient.default_p_ambient,
+    p=system.p_ambient,
     h=3000e3) annotation (Placement(transformation(extent={{100,-30},{80,-10}},
           rotation=0)));
   Modelica_Fluid.Sensors.DensityTwoPort density2_2(redeclare package Medium = 
@@ -48,7 +48,7 @@ model TestDensity
            {{-60,50},{-40,70}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_phX boundary_fixed(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    p=ambient.default_p_ambient,
+    p=system.p_ambient,
     h=3000e3) annotation (Placement(transformation(extent={{100,40},{80,60}},
           rotation=0)));
   Modelica_Fluid.Sensors.DensityOnePort density1_2(redeclare package Medium = 

@@ -3,19 +3,22 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP1(
-    T=ambient.default_T_ambient,
-    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    T=system.T_ambient,
+    redeclare package Medium = 
+        Modelica.Media.Water.StandardWaterOnePhase,
     p=1000000) 
   annotation (Placement(transformation(extent={{-100,26},{-80,46}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP2(
-    T=ambient.default_T_ambient,
-    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    T=system.T_ambient,
+    redeclare package Medium = 
+        Modelica.Media.Water.StandardWaterOnePhase,
     p=800000) 
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
             0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP1(
-    T=ambient.default_T_ambient,
-    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    T=system.T_ambient,
+    redeclare package Medium = 
+        Modelica.Media.Water.StandardWaterOnePhase,
     p=100000) 
   annotation (Placement(transformation(extent={{82,-4},{62,16}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V1(
@@ -61,13 +64,15 @@ annotation (
   experiment(StopTime=4, Tolerance=1e-006),
   Documentation(info=""));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP2(
-    T=ambient.default_T_ambient,
-    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    T=system.T_ambient,
+    redeclare package Medium = 
+        Modelica.Media.Water.StandardWaterOnePhase,
     p=100000) 
   annotation (Placement(transformation(extent={{4,58},{-16,78}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP3(
-    T=ambient.default_T_ambient,
-    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    T=system.T_ambient,
+    redeclare package Medium = 
+        Modelica.Media.Water.StandardWaterOnePhase,
     p=100000) 
   annotation (Placement(transformation(extent={{26,-78},{6,-58}}, rotation=0)));
   Modelica.Blocks.Sources.Ramp CloseLoad(
@@ -91,7 +96,7 @@ annotation (
               annotation (Placement(transformation(extent={{-96,-12},{-76,8}},
           rotation=0)));
 
-  inner Modelica_Fluid.Ambient ambient 
+  inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent=
             {{60,68},{80,88}}, rotation=0)));
 equation

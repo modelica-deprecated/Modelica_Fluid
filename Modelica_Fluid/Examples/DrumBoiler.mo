@@ -94,7 +94,7 @@ Simulate for 7200 seconds.
       redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
       T=500) 
       annotation (Placement(transformation(
-          origin={90,-21},
+          origin={90,-20},
           extent={{-10,-10},{10,10}},
           rotation=180)));
     Modelica_Fluid.Sensors.MassFlowRate massFlowRate(           redeclare
@@ -163,6 +163,8 @@ Simulate for 7200 seconds.
       annotation (Placement(transformation(extent={{50,-10},{70,-30}}, rotation=
              0)));
 
+    inner Modelica_Fluid.System system 
+      annotation (Placement(transformation(extent={{-90,70},{-70,90}})));
   equation
     connect(furnace.port, evaporator.heatPort) 
       annotation (Line(points={{-36,-43},{-36,-30}}, color={191,0,0}));
@@ -191,8 +193,8 @@ Simulate for 7200 seconds.
             30}}, color={0,0,127}));
     connect(limiter.y, pump.m_flow_in) annotation (Line(points={{-85.7,30},{-90,
             30},{-90,-14},{-79.3,-14}}, color={0,0,127}));
-    connect(temperature.T, K2degC.Kelvin) annotation (Line(points={{-10,-1},{
-            -10,60},{37,60}}, color={0,0,127}));
+    connect(temperature.T, K2degC.Kelvin) annotation (Line(points={{-10,-1},
+            {-10,60},{37,60}},color={0,0,127}));
     connect(pressure.port, massFlowRate.port_a) annotation (Line(points={{20,14},
             {20,-20}}, color={0,127,255}));
     connect(pump.port, evaporator.feedwater) annotation (Line(points={{-60,-20},
@@ -200,7 +202,7 @@ Simulate for 7200 seconds.
     connect(massFlowRate.port_b, SteamValve.port_a) annotation (Line(points={{
             40,-20},{50,-20}}, color={0,127,255}));
     connect(SteamValve.port_b, sink.port) annotation (Line(points={{70,-20},{75,
-            -20},{75,-21},{80,-21}}, color={0,127,255}));
+            -20},{80,-20}},          color={0,127,255}));
     connect(SteamValve.opening, Y_Valve) annotation (Line(points={{60,-29},{60,
             -90},{-104.5,-90}}, color={0,0,127}));
     connect(evaporator.steam, massFlowRate.port_a) annotation (Line(points={{

@@ -1,6 +1,7 @@
 within Modelica_Fluid.Examples;
 package AST_BatchPlant
   "Model of the experimental batch plant at Process Control Laboratory at University of Dortmund (Prof. Engell)"
+
   annotation (preferedView="info",Documentation(info="<html>
 <p>
 The process under consideration is an evaporation plant for a 
@@ -15,7 +16,7 @@ below.
 <p align=\"center\">
 <img src=\"../Images/Examples/AST_BatchPlant1.jpg\">
 </p>
-
+ 
 <p>
 The flow sheet diagram is shown in the next figure.
 </p>
@@ -23,7 +24,7 @@ The flow sheet diagram is shown in the next figure.
 <p align=\"center\">
 <img src=\"../Images/Examples/AST_BatchPlant2.png\">
 </p>
-
+ 
 <p>
 Pure water from tank B1 and concentrated sodium chloride 
 solution from tank B2 are mixed in a mixing tank B3. 
@@ -349,7 +350,8 @@ present that are regulated by a central control system.
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)}) annotation (Placement(transformation(extent={{-100,180},
               {-60,220}}, rotation=0)));
-    inner Ambient ambient annotation (Placement(transformation(extent={{-172,
+    inner Modelica_Fluid.System system 
+                          annotation (Placement(transformation(extent={{-172,
               250},{-152,270}}, rotation=0)));
     Modelica.Blocks.Logical.TriggeredTrapezoid P1_on(amplitude=100, rising=0) 
       annotation (Placement(transformation(extent={{-158,-234},{-138,-214}},
@@ -1368,6 +1370,7 @@ Full steady state initialization is not supported, because the corresponding int
 </HTML>"),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
                 {200,100}}), graphics));
+    equation
 
     end TankWith3InletOutletArraysWithEvaporatorCondensor;
 
@@ -1787,8 +1790,8 @@ Full steady state initialization is not supported, because the corresponding int
         output Boolean V24;
         output Boolean V25;
 
-        annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
-                  -100,-100},{100,100}}), graphics={Polygon(
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}}), graphics={Polygon(
                 points={{-100,100},{100,0},{-100,-100},{-100,100}},
                 lineColor={0,0,0},
                 lineThickness=0.5,
@@ -1819,8 +1822,8 @@ Full steady state initialization is not supported, because the corresponding int
         input Real TIS_602;
         input Real LIS_701;
         input Real TIS_702;
-        annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
-                  -100,-100},{100,100}}), graphics={Polygon(
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}}), graphics={Polygon(
                 points={{-100,100},{-100,-100},{100,0},{-100,100}},
                 lineColor={0,0,0},
                 lineThickness=0.5,
@@ -1884,11 +1887,11 @@ Full steady state initialization is not supported, because the corresponding int
             transformation(extent={{-110,-10},{-90,10}}, rotation=0)));
 
   //Ambient
-     outer Modelica_Fluid.Ambient ambient "Ambient conditions";
-     parameter Medium.AbsolutePressure p_ambient=ambient.default_p_ambient
+     outer Modelica_Fluid.System system "System properties";
+     parameter Medium.AbsolutePressure p_ambient=system.p_ambient
         "Tank surface pressure" 
       annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-     parameter Medium.Temperature T_ambient=ambient.default_T_ambient
+     parameter Medium.Temperature T_ambient=system.T_ambient
         "Tank surface Temperature" 
       annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
 
@@ -1999,7 +2002,7 @@ Full steady state initialization is not supported, because the corresponding int
          if stiffCharacteristicForEmptyPort then
             // If port is above fluid level, use large zeta if fluid flows out of port (= small mass flow rate)
             zeta_out[i] = 1 + (if aboveLevel[i] then 0 else zetaLarge);
-            ports[i].p = p_ambient + levelAbovePort[i]*ambient.g*medium.d
+            ports[i].p = p_ambient + levelAbovePort[i]*system.g*medium.d
                                  + Modelica_Fluid.Utilities.regSquare2(ports[i].m_flow, m_flow_small,
                                     0, lossConstant_D_zeta(portsData[i].diameter, zeta_out[i])/medium.d);
             ports_m_flow_out[i] = false;
@@ -2009,7 +2012,7 @@ Full steady state initialization is not supported, because the corresponding int
             ports_m_flow_out[i] = (pre(ports_m_flow_out[i]) and not ports[i].p>p_ambient)
                                        or ports[i].m_flow < -1e-6;
            if aboveLevel[i] then
-               ports[i].p = p_ambient + levelAbovePort[i]*ambient.g*medium.d -
+               ports[i].p = p_ambient + levelAbovePort[i]*system.g*medium.d -
                                  smooth(2,noEvent(if ports[i].m_flow < 0 then ports[i].m_flow^2/
                                        (2*medium.d*bottomArea[i]^2) else 0));
            else
