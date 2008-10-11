@@ -370,7 +370,7 @@ it is open.
 
       annotation (
         Icon(coordinateSystem(
-            preserveAspectRatio=false,
+            preserveAspectRatio=true,
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics={
             Text(extent={{-150,-60},{150,-100}}, textString="%name"),
@@ -390,7 +390,22 @@ it is open.
               extent={{-20,70},{20,50}},
               lineColor={0,0,0},
               fillColor={0,0,0},
-              fillPattern=FillPattern.Solid)}),
+              fillPattern=FillPattern.Solid),
+            Line(
+              points={{-24,-32},{30,-32}},
+              color={0,0,0},
+              smooth=Smooth.None,
+              thickness=0.5),
+            Line(
+              points={{8,-20},{30,-32}},
+              color={0,0,0},
+              smooth=Smooth.None,
+              thickness=0.5),
+            Line(
+              points={{30,-32},{8,-44}},
+              color={0,0,0},
+              smooth=Smooth.None,
+              thickness=0.5)}),
         Diagram(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
