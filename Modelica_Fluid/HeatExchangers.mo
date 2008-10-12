@@ -7,6 +7,7 @@ package HeatExchangers "Evaporators and condensor components"
     import Modelica.Constants;
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.FlowDirection;
+    outer Modelica_Fluid.System system "System properties";
     replaceable package Medium = Modelica.Media.Water.StandardWater 
       constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium
       "Medium model" 
@@ -24,7 +25,7 @@ package HeatExchangers "Evaporators and condensor components"
       "Start value of liquid volumeStart value of volume" 
     annotation(Dialog(tab = "Initialization"));
 
-    parameter FlowDirection flowDirection=FlowDirection.Bidirectional
+    parameter FlowDirection flowDirection=system.flowDirection
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
      annotation(Dialog(tab="Advanced"));
 
@@ -395,7 +396,9 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       show_Re=false) 
                 annotation (Placement(transformation(extent={{-40,88},{20,28}},
             rotation=0)));
-    annotation (Diagram(graphics),
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+              -100,-100},{100,100}}),
+                        graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false,
             extent={{-100,-100},{100,100}}), graphics={
           Rectangle(
@@ -475,9 +478,9 @@ Simple model of a heat exchanger consisting of two pipes and one wall in between
         points={{-40,58},{-76,58},{-76,46},{-110,46}},
         color={0,127,255},
         thickness=0.5));
-    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (Line(points={{
-            -10,41.8},{-10,29.5},{-9,29.5}}, color={191,0,0}));
-    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (Line(points={{
-            -9,0.5},{-9,-7.75},{-10,-7.75},{-10,-13.8}}, color={191,0,0}));
+    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (Line(points={{-10,
+            41.8},{-10,29.5},{-9,29.5}},     color={191,0,0}));
+    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (Line(points={{-9,0.5},
+            {-9,-7.75},{-10,-7.75},{-10,-13.8}},         color={191,0,0}));
   end BasicHX;
 end HeatExchangers;

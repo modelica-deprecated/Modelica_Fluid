@@ -3176,6 +3176,7 @@ b has the same sign of the change of density.</p>
   partial model PartialTwoPortTransport
       "Partial element transporting fluid between two ports without storing mass or energy"
       import Modelica.Constants;
+    outer Modelica_Fluid.System system "System properties";
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
                                                                          annotation (
@@ -3183,7 +3184,7 @@ b has the same sign of the change of density.</p>
 
     //Initialization
     parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-        Modelica_Fluid.Types.FlowDirection.Bidirectional
+        system.flowDirection
         "Unidirectional (port_a -> port_b) or bidirectional flow" 
        annotation(Dialog(tab="Advanced"));
     parameter Boolean compute_T = true

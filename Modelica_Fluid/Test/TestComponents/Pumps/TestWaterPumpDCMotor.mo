@@ -66,7 +66,7 @@ annotation (
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={32,8})));
-  Modelica.Electrical.Analog.Basic.Ground ground
+  Modelica.Electrical.Analog.Basic.Ground ground 
     annotation (Placement(transformation(extent={{22,-30},{42,-8}})));
 equation
   connect(Valve.port_b,Sink. port)       annotation (Line(points={{2,60},{14,60}},

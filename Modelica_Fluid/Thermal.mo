@@ -49,7 +49,8 @@ equation
   end for;
   Ta=thermalPort_a.T;
   Tb=thermalPort_b.T;
-    annotation (Icon(graphics={Rectangle(
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
+              -100,-100},{100,100}}), graphics={Rectangle(
             extent={{-100,40},{100,-40}},
             lineColor={0,0,0},
             fillColor={95,95,95},
@@ -58,8 +59,8 @@ equation
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Forward,
-            textString=
-               "%name")}),  Documentation(revisions="<html>
+            textString="%name")}),
+                            Documentation(revisions="<html>
 <ul>
 <li><i>04 Mar 2006</i>
     by Katrin Pr&ouml;l&szlig;:<br>
