@@ -11,7 +11,7 @@ model System "System properties and default values"
     "Constant gravity acceleration"                                                  annotation(Dialog(group="Environment"));
   parameter Modelica_Fluid.Types.FlowDirection flowDirection=
       Modelica_Fluid.Types.FlowDirection.Bidirectional
-    "Default for unidirectional (port_a -> port_b) or bidirectional flow" 
+    "Default for bidirectional or unidirectional (Port_a -> Port_b) flow" 
      annotation(Dialog(tab="Advanced"));
   parameter Types.Init initType=
             Types.Init.NoInit "Default initialization option" 
