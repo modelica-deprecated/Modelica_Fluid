@@ -39,7 +39,6 @@ annotation (
     N_nom=1500,
     use_N_input=true,
     checkValve=true,
-    M=0.1,
     pin_start=100000,
     pout_start=700000)     annotation (Placement(transformation(extent={{-46,-40},
             {-14,-10}},rotation=0)));
@@ -50,7 +49,7 @@ annotation (
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nom=1,
-    dp_nom=800000)
+    dp_nom=800000) 
     annotation (Placement(transformation(extent={{0,-30},{22,-10}})));
   Modelica.Blocks.Sources.Constant valveOpening(k=1) 
                 annotation (Placement(transformation(extent={{-38,32},{-18,52}},

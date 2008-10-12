@@ -1,8 +1,9 @@
 within Modelica_Fluid.Test.TestComponents.Pumps;
 model TestWaterPumpDefault "Test pump with default options"
+  import Modelica_Fluid;
   extends Modelica.Icons.Example;
 annotation (
-  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
             100}}),
           graphics),
   experiment(StopTime=10, Tolerance=1e-006),
@@ -29,10 +30,11 @@ annotation (
             {-34,50}}, rotation=0)));
   Modelica.Blocks.Sources.Constant valveOpening(k=1) 
   annotation (Placement(transformation(extent={{-60,60},{-40,80}}, rotation=0)));
-  Modelica_Fluid.ControlValves.ValveLinear Valve(
+  Modelica_Fluid.ControlValves.ValveIncompressible Valve(
                                              redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
     m_flow_nom=1,
+    CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     dp_nom=20000) 
   annotation (Placement(transformation(extent={{-16,26},{2,46}}, rotation=0)));
   Modelica.Blocks.Sources.Ramp downstreamPressure(
@@ -47,8 +49,6 @@ annotation (
                                    annotation (Placement(transformation(extent=
             {{64,-4},{84,16}}, rotation=0)));
 equation
-  connect(valveOpening.y, Valve.opening)  annotation (Line(points={{-39,70},{-7,
-          70},{-7,45}}, color={0,0,127}));
   connect(Valve.port_b, Sink.port)       annotation (Line(points={{2,36},{14,36}},
         color={0,127,255}));
   connect(Valve.port_a, pump.outlet)      annotation (Line(points={{-16,36},{
@@ -58,4 +58,8 @@ equation
   connect(downstreamPressure.y, Sink.p_in) 
                                 annotation (Line(points={{25,84},{58,84},{58,42},
           {36,42}}, color={0,0,127}));
+  connect(valveOpening.y, Valve.stemPosition) annotation (Line(
+      points={{-39,70},{-7,70},{-7,45}},
+      color={0,0,127},
+      smooth=Smooth.None));
 end TestWaterPumpDefault;
