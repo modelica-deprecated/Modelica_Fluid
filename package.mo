@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 3: One-dimensional ther
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -933,6 +934,75 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
 "));
   end WallFriction;
 
+  class ValveCharacteristics "Valve characteristics"
+
+    annotation (Documentation(info="<html>
+<h3><font color=\"#008000\" size=5>Pump characteristics</font></h3>
+ 
+<p>
+The control valves in 
+<a href=\"Modelica://Modelica_Fluid.Pumps\">Modelica_Fluid.ControlValves</a>
+have parameters <b>Kv</b> and <b>Cv</b>. They are defined
+as unit-less variables, but in the description text a unit
+is given. The reason for this definition is the following:
+</p>
+
+<p>
+The basic equation for valves is:
+</p>
+
+<pre>
+  q = Av*sqrt(dp/rho)
+</pre>
+
+<p>
+In SI units, [q] is m3/s, [dp] is Pascal, [rho] is [kg/m3], and Av is an area, thus [Av] = m2. Basically, the equation stems from Bernoulli's law. Av is roughly 1.4 times the area of the valve throat. Now, usually valves aren't so big that their throat area is of the order of magnitude of square meters - depending on the applications it is from a few square millimeters to a few square centimeters. Therefore, in the common engineering practice, the following equations are used:
+</p>
+
+<p>
+Europe:
+</p>
+
+<pre>
+  q = Kv sqrt(dp/(rho/rho0)) , with [q] = m3/h, [dp] = bar
+</p>
+
+<p>
+US:
+</p>
+
+<pre>
+  q = Cv sqrt(dp/(rho/rho0)) , with [q] = USG/min, [dp] = psi
+</p>
+
+<p>
+In both cases rho0 is the density of cold water at 4 °C, 999 kg/m3. Note that these equations use relative, not absolute densities.
+</p>
+
+<p>
+It turns out that Kv = 1e6/27.7*Av and Cv = 1e6/24*Av, so both US and EU engineers get more or less the same numbers (just by sheer luck), with a range between a few units and a few hundred units for typical industrial applications, and everybody is happy.
+</p>
+
+<p>
+Now, we've got two problems here. First, depending on the unit, we change the equation: with SI units, we use the density, with non-SI units, we use the relative density. So the quantities (not only the units!) of Av and Cv/Kv are different.
+</p>
+
+<p>
+Second, the units of Kv and Cv are usually labelled \"m3/h\" and \"USG/min\", but as a matter of fact they are different, as can be seen from the equations above: they are actually
+m3/(h*sqrt(bar)) and USG/(min*sqrt(psi)). If I have a valve with Kv = 10 m3/h, it means I get 10 m3/h \"for a pressure drop of 1 bar\". Unfortunately, this is not correct from the point of view of strict dimensional analysis, but nobody uses sqrt(Pa) or sqrt(bar).
+</p>
+
+<p>
+You might think this is crazy (it is, expecially when you try to explain it), but as a matter of fact the valve coefficient is <b>never</b> given in square meters in any catalog or datasheet; Cv is still the most used (even in Europe), followed by Kv. So, it will be very inconvenient for users to type in Av in square meters.
+</p>
+
+<p>
+The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fact that m3/h and USG/min are not the real units of Cv and Kv, so we can't use the general unit conversion mechanism, put them just as mnemonic labels in the comment, use non-dimensional coefficients in the interface, and then define properly dimensioned unit conversion within the model
+</p>
+
+</html>
+"));
+  end ValveCharacteristics;
   end ComponentDefinition;
 
   class ReleaseNotes "Release notes"
@@ -1275,6 +1345,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0 Streams Beta 3",

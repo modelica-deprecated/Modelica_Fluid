@@ -19,6 +19,13 @@ package ControlValves "Various variants of valve components"
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
 <p>This model can be used with any low compressibility fluids, such as liquids or gases at very low pressure drops.</p>
 <p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
+
+<p>
+The treatment of parameters <b>Kv</b> and <b>Cv</b> is
+explained in detail in the 
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.ValveCharacteristics\">Users Guide</a>.
+</p>
+
 </html>",
       revisions="<html>
 <ul>
@@ -79,6 +86,12 @@ The model operating range includes choked flow operation, which takes place for 
 <p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Fl_nom</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by replacing the <tt>FlCharacteristic</tt> function.
 <p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
  
+<p>
+The treatment of parameters <b>Kv</b> and <b>Cv</b> is
+explained in detail in the 
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.ValveCharacteristics\">Users Guide</a>.
+</p>
+
 </HTML>",
         revisions="<html>
 <ul>
@@ -146,6 +159,12 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
 <p>The product Fk*xt is given by the parameter <tt>Fxt_full</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by replacing the <tt>xtCharacteristic</tt> function.
 <p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
  
+<p>
+The treatment of parameters <b>Kv</b> and <b>Cv</b> is
+explained in detail in the 
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.ValveCharacteristics\">Users Guide</a>.
+</p>
+
 </HTML>",
       revisions="<html>
 <ul>
@@ -453,6 +472,14 @@ it is open.
 <p>The nominal pressure drop <tt>dp_nom</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dp_nom</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical problems occur in valves with very low pressure drops.
 <p>If <tt>CheckValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place. Use this option only when neede, as it increases the numerical complexity of the problem.
 <p>The valve opening characteristic <tt>valveCharacteristic</tt>, linear by default, can be replaced by any user-defined function. Quadratic and equal percentage with customizable rangeability are already provided by the library.
+</p>
+
+<p>
+The treatment of parameters <b>Kv</b> and <b>Cv</b> is
+explained in detail in the 
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.ValveCharacteristics\">Users Guide</a>.
+</p>
+
 </HTML>", revisions="<html>
 <ul>
 <li><i>2 Nov 2005</i>
