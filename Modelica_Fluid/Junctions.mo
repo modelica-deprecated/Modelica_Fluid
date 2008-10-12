@@ -162,7 +162,7 @@ package Junctions "Junction components"
      annotation(Dialog(tab="Advanced"));
 
     annotation (Icon(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Rectangle(
@@ -216,6 +216,26 @@ package Junctions "Junction components"
     end if;
 
   equation
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+    assert(cardinality(port_1) <= 1,"
+port_1 of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+    assert(cardinality(port_2) <= 1,"
+port_2 of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+    assert(cardinality(port_3) <= 1,"
+port_3 of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+
     // Boundary conditions
     port_1.h_outflow = medium.h;
     port_2.h_outflow = medium.h;
@@ -420,7 +440,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     Medium.ExtraPropertyFlowRate ports_b_mC_flow[n_b,Medium.nC];
 
     annotation (Icon(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Ellipse(
@@ -472,6 +492,25 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     end if;
 
   equation
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+  for i in 1:n_a loop
+    assert(cardinality(ports_a[i]) <= 1,"
+ports_a["   + String(i) + "] of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+  end for;
+
+  for i in 1:n_b loop
+    assert(cardinality(ports_b[i]) <= 1,"
+ports_a["   + String(i) + "] of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+  end for;
+
     thermalPort.T = medium.T;
 
     sum(ports_a.m_flow)+sum(ports_b.m_flow)=der(m) "Mass balance";

@@ -1011,6 +1011,125 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
  
+<h3><font color=\"#008000\">Version 1.0 Streams Beta 3, 2008-10-12</font></h3>
+
+<p>
+Modelica_Fluid was further improved:
+</p>
+
+<ul>
+<li> Volumes, tanks, junctions<br>
+     Added asserts to require that ports are connected at most once.
+     If a user would perform more than one connection, ideal mixing 
+     takes place for the connected components and this is nearly never
+     what the user would like to have </li>
+
+<li> Ambient<br> 
+     Renamed Ambient to System, including adaptation of models.<br>
+     Introduced default values system.flowDirection and 
+     as a comment system.initType. system.flowDirection is used in 
+     two port components as default.</li>
+
+<li> GenericJunction<br>
+     Corrected specification of flowDirection.<br>
+     Added a HeatPort.</li>
+
+<li> PartialDistributedFlow models<br>
+     Adapted determination of velocities to usage of 
+     upstream properties at ports.<br>
+     Corrected and unified initialization of p_start[*] values.<li>
+
+<li> DistributedPipe models<br>
+     Changed treatment of port densities and viscosities
+     to the treatment of the lumped pipe model. This way events are
+     avoided if the mass flow rate crosses or approaches zero.<br>
+     Correct determination of Reynolds numbers.<br>
+     Added test model DistributedPipeClosingValve.</li>
+
+<li> ControlValves<br>
+     Changed flowCharacteristic into valveCharacteristic<br>
+     Removed parameter Kv and added dp_nom, m_flow_nom from linear
+     and discrete valve interfaces. Added test cases.<br>
+     Adapted Examples to new LinearValve and DiscreteValve,
+     using nominal values instead of Kv. <br>
+     Changed default flow coefficient selection to OpPoint<li>
+
+<li> Fixed units for Kv and Cv in control valve models.</li>
+
+<li> Updated tests for valves.</li>
+
+<li> Bug in Modelica_Fluid.Test.TestComponents.Pumps.TestWaterPump2 corrected
+     (complicated redeclaration issue).</li>
+
+<li> Adapted AST_BatchPlant so that \"Check\" is sucessful.
+     Simulation fails after 600 s.</li>
+
+<li> Introduced
+     density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+     as default value for nominal densities (previously it was a literal
+     such as 1000).</li>
+
+<li> Pumps<br>
+     Updated energy balance equations for pumps (no division by zero anymore,
+     fixed several bugs related to Np).<br>
+     Added two more test cases for pumps.<br>
+     Fixed pump initialization options.</li>
+
+<li> PartialPump<br>
+     Explanation for the energy balanced added as comment<br>
+     \"h=0\" replaced by \"h=Medium.h_default\" since otherwise an assert is triggered 
+     if \"h=0\" is not in the medium range.<br>
+     Fluid ports positioned in the middle line 
+     and using the same size as for all other components.</li>
+
+<li> Pumps.Pump <br>
+     Resized input connector, so that it has the same size as the 
+     standard input connectors.<br>
+     Changed icon text to input connector to \"N_in [rpm]\".<br>
+     Added unit 1/min to the external and internal input connector.</li>
+
+<li> PartialValve<br>
+     fillcolor=white added to icon<br>
+     made line Thickness = Single, 
+     since icon does not look nice sometimes</li>
+
+<li> All components<br>
+     Changed %name color from black to blue
+     (is a conversion bug, since Modelica 2 has blue as default
+     color whereas Modelica 3 has black and Dymola is not 
+     taking care off this).</li>
+
+<li> Sources<br>
+     Made icon elements unvisible, if corresponding input is disabled.</li>
+
+<li> Valves, Pipes, PressureLosses, HeatExchangers, two port senors<br>
+     Added an arrow in the icon for the \"design flow direction\" from 
+     port_a to port_b.</li>
+
+<li> Moved default initialization in \"System\" in to a comment, since no effect yet</li>
+
+<li> Added the explanation from Francesco for Kv, Cv for valves in the 
+     users guide and added links in the corresponding valves to this description</li>
+</ul>
+
+<p>
+\"Check\" for the library is successful. \"Check with Simulation\" 
+(i.e., simulating all test models in the library) is successful
+with the exceptions:
+</p>
+
+<ul>
+<li> Examples.AST_BatchPlant.BatchPlant_StandardWater<br>
+     Need to be fixed in a later release (requires quite a lot of work).</li>
+<li> Test.TestOverdeterminedSteadyStateInit.Test5<br>
+     Test.TestOverdeterminedSteadyStateInit.Test6<br>
+     These are test cases where too much initial conditions are given.
+     The goal is to work on methods how this can be handled.
+     So, this is a principal problem that these models do not simulate.</li>
+</ul>
+
+
+
 <h3><font color=\"#008000\">Version 1.0 Streams Beta 2, 2008-10-08</font></h3>
  
 <p>
@@ -1061,8 +1180,6 @@ library 3.0 (by automatic conversion). Further changes:
      Modelica_Fluid.Volumes.Tank<br>
      Corrected icons of ports (wrongly sized by automatic conversion from
      Modelica 2 to Modelica 3).</li>
-<li> ControlValves.BaseClasses.PartialValve<br>
-     Changed unit of Kv and Cv to m3/s and used the previous unit as displayUnit.</li>
 <li> Examples.BranchingDistributedPipes<br>
      Modelica_Fluid.Test.TestComponents.Junctions.TestGenericJunction<br>
      Modelica_Fluid.Test.TestComponents.Pipes.TestDistributedPipe01<br>

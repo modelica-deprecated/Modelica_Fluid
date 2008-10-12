@@ -19,7 +19,7 @@ model TestOpenTank
     annotation (Placement(transformation(extent={{-60,-40},{-40,-20}}, rotation=
            0)));
   annotation (Diagram(coordinateSystem(
-        preserveAspectRatio=false,
+        preserveAspectRatio=true,
         extent={{-160,-120},{100,120}},
         initialScale=0.1), graphics),
     experiment(StopTime=20000, Tolerance=1e-005),
@@ -70,15 +70,11 @@ model TestOpenTank
           rotation=0)));
 equation
   connect(massFlowRate.port, upperTank.ports[1]) annotation (Line(
-      points={{-40,-30},{-20,-30},{-20,17}},
+      points={{-40,-30},{-21,-30},{-21,18}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(upperTank.ports[2], pipe.port_b) annotation (Line(
-      points={{-20,21},{-18,21},{-18,0},{6.12323e-016,0}},
-      color={0,0,255},
-      smooth=Smooth.None));
   connect(pipe.port_a, lowerTank.ports[1]) annotation (Line(
-      points={{-6.12323e-016,-20},{-6.12323e-016,-70},{60,-70},{60,-61}},
+      points={{-6.12323e-016,-20},{-6.12323e-016,-70},{59,-70},{59,-60}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe.port_b, pressure.port) annotation (Line(
@@ -104,5 +100,9 @@ equation
   connect(switch1.y, massFlowRate.m_flow_in) annotation (Line(
       points={{-79,-20},{-70,-20},{-70,-24},{-59.3,-24}},
       color={0,0,127},
+      smooth=Smooth.None));
+  connect(pipe.port_b, upperTank.ports[2]) annotation (Line(
+      points={{6.12323e-016,0},{-18,0},{-18,20},{-21,22}},
+      color={0,127,255},
       smooth=Smooth.None));
 end TestOpenTank;

@@ -144,7 +144,7 @@ package TestCriticalCases
       T_start=300)      annotation (Placement(transformation(extent={{-72,-4},{
               -52,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valveIncompressible(
+    ControlValves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
@@ -152,7 +152,7 @@ package TestCriticalCases
       dp_nom=200000) 
                   annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valveIncompressible1(
+    ControlValves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nom=1,
@@ -161,7 +161,9 @@ package TestCriticalCases
                   annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+              graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
       Documentation(info="<html>
@@ -211,22 +213,22 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   equation
     connect(source.port, pipe1.port_a) annotation (Line(points={{-88,6},{-72,6}},
           color={0,127,255}));
-    connect(valveIncompressible1.port_b, sink.port) annotation (Line(points={{
+    connect(valve2.port_b, sink.port)               annotation (Line(points={{
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
-    connect(valveIncompressible.port_b, sink.port) annotation (Line(points={{30,
+    connect(valve1.port_b, sink.port)              annotation (Line(points={{30,
             46},{46,46},{46,-14},{62,-14}}, color={0,127,255}));
-    connect(pipe3.port_b, valveIncompressible1.port_a) annotation (Line(points=
+    connect(pipe3.port_b, valve2.port_a)               annotation (Line(points=
             {{-20,-40},{8,-40}}, color={0,127,255}));
-    connect(pipe2.port_b, valveIncompressible.port_a) annotation (Line(points={
+    connect(pipe2.port_b, valve1.port_a)              annotation (Line(points={
             {-20,46},{10,46}}, color={0,127,255}));
     connect(pipe2.port_a, pipe1.port_b) annotation (Line(points={{-40,46},{-46,
             46},{-46,6},{-52,6}}, color={0,127,255}));
     connect(pipe1.port_b, pipe3.port_a) annotation (Line(points={{-52,6},{-46,6},
             {-46,-40},{-40,-40}}, color={0,127,255}));
-    connect(valveOpening1.y, valveIncompressible.stemPosition) annotation (Line(
-          points={{1,80},{20,80},{20,55}}, color={0,0,127}));
-    connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (Line(
-          points={{1,0},{18,0},{18,-31}}, color={0,0,127}));
+    connect(valveOpening1.y, valve1.stemPosition)              annotation (Line(
+          points={{1,80},{20,80},{20,54}}, color={0,0,127}));
+    connect(valveOpening2.y, valve2.stemPosition)               annotation (Line(
+          points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
   end BranchingPipes1;
 
   model BranchingPipes2

@@ -128,20 +128,32 @@ ideal, i.e., it does not influence the fluid.
       annotation(Dialog(tab="Advanced"));
   annotation (defaultComponentName="density",
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics),
+              100,100}},
+          grid={1,1}),    graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+              100}},
+          grid={1,1}), graphics={
           Text(
             extent={{-150,80},{150,120}},
             textString="%name",
             lineColor={0,0,255}),
           Text(
-            extent={{168,-71},{8,-123}},
+            extent={{146,-80},{-14,-132}},
             lineColor={0,0,0},
             textString="d"),
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255})}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(
+            points={{30,-19},{-60,-19}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-4},{60,-19},{20,-34},{20,-4}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
     Documentation(info="<HTML>
 <p>
 This component monitors the volume flow rate flowing from port_a to port_b. 
@@ -274,10 +286,12 @@ ideal, i.e., it does not influence the fluid.
 
   annotation (defaultComponentName="temperature",
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
+              100,100}},
+          grid={1,1}),
             graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+              100}},
+          grid={1,1}), graphics={
           Text(
             extent={{-150,110},{150,150}},
             textString="%name",
@@ -314,7 +328,17 @@ ideal, i.e., it does not influence the fluid.
           Text(
             extent={{120,-40},{0,-90}},
             lineColor={0,0,0},
-            textString="T")}),
+            textString="T"),
+          Line(
+            points={{40,80},{-50,80}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{30,95},{70,80},{30,65},{30,95}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
     Documentation(info="<HTML>
 <p>
 This component monitors the temperature of the passing fluid. 
@@ -404,7 +428,17 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
             textString="h"),
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255})}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(
+            points={{28,-15},{-62,-15}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{18,0},{58,-15},{18,-30},{18,0}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific enthalpy of passing fluid. 
@@ -484,7 +518,17 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
             textString="s"),
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255})}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(
+            points={{30,-19},{-60,-19}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-4},{60,-19},{20,-34},{20,-4}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific entropy of the passing fluid. 
@@ -535,7 +579,17 @@ The sensor is ideal, i.e. it does not influence the fluid.
             lineColor={0,0,0},
             textString="m_flow"),
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
-          Line(points={{-100,0},{-70,0}}, color={0,128,255})}),
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(
+            points={{32,-21},{-58,-21}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{22,-6},{62,-21},{22,-36},{22,-6}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
     Documentation(info="<HTML>
 <p>
 This component monitors the mass flow rate flowing from port_a to port_b. 
@@ -576,7 +630,17 @@ The sensor is ideal, i.e., it does not influence the fluid.
             textString="V_flow"),
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255})}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(
+            points={{30,-27},{-60,-27}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-12},{60,-27},{20,-42},{20,-12}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
     Documentation(info="<HTML>
 <p>
 This component monitors the volume flow rate flowing from port_a to port_b. 
@@ -636,7 +700,17 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Text(
             extent={{92,-62},{34,-122}},
             lineColor={0,0,0},
-            textString="p_rel")}),
+            textString="p_rel"),
+          Line(
+            points={{32,3},{-58,3}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{22,18},{62,3},{22,-12},{22,18}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
       Diagram(graphics),
       Documentation(info="<HTML>
 <p>
@@ -697,7 +771,17 @@ through the sensor is allowed.
           Text(
             extent={{92,-62},{34,-122}},
             lineColor={0,0,0},
-            textString="p_rel")}),
+            textString="p_rel"),
+          Line(
+            points={{34,3},{-56,3}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{24,18},{64,3},{24,-12},{24,18}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
       Diagram(graphics),
       Documentation(info="<HTML>
 <p>
