@@ -27,11 +27,10 @@ package Pumps "Pump components"
     // Set N with a lower limit to avoid singularities at zero speed
     N = max(N_in_internal,1e-3) "Rotational speed";
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={Text(extent={{-58,58},{-30,38}},
-              textString="n")}),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={Text(extent={{-58,58},{-30,38}}, textString="n")}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       Documentation(info="<HTML>
 <p>This model describes a centrifugal pump (or a group of <tt>Np</tt> pumps in parallel) with controlled speed, either fixed or provided by an external signal.
@@ -105,7 +104,8 @@ package Pumps "Pump components"
        Model added to the Fluid library</li>
 </ul>
  
-</html>"));
+</html>"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}), graphics));
   end PumpNPSH;
 
   package BaseClasses "Base classes for Turbomachinery components"
@@ -138,7 +138,8 @@ package Pumps "Pump components"
                  choicesAllMatching=true);
     parameter AngularVelocity_rpm N_nom = 1500 "Nominal rotational speed" 
       annotation(Dialog(group="Characteristics"));
-    parameter Medium.Density d_nom = 1000 "Nominal fluid density" 
+    parameter Medium.Density d_nom = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+        "Nominal fluid density" 
       annotation(Dialog(group="Characteristics"));
     parameter Integer Np(min=1) = 1 "Number of pumps in parallel";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
@@ -280,8 +281,8 @@ package Pumps "Pump components"
       assert(false, "Unsupported initialization option");
     end if;
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-                100,100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+                100}}), graphics={
             Polygon(
               points={{-40,-64},{-60,-100},{60,-100},{40,-64},{-40,-64}},
               lineColor={0,0,255},
@@ -299,8 +300,8 @@ package Pumps "Pump components"
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={255,255,255}),
             Text(extent={{-100,-110},{100,-136}}, textString="%name")}),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+                100,100}}),
               graphics),
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>Pump</tt> and <tt>

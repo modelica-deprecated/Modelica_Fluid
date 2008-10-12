@@ -1,6 +1,6 @@
 within Modelica_Fluid.Examples;
 package AST_BatchPlant
-  "Model of the experimental batch plant at Process Control Laboratory at University of Dortmund (Prof. Engell)"
+  "(Does not yet simulate) Model of the experimental batch plant at Process Control Laboratory at University of Dortmund (Prof. Engell)"
 
   annotation (preferedView="info",Documentation(info="<html>
 <p>
@@ -54,7 +54,7 @@ present that are regulated by a central control system.
     BaseClasses.TankWith3InletOutletArraysWithEvaporatorCondensor B5(
       redeclare package Medium = BatchMedium,
       height=0.5,
-      n_SidePorts=0,
+      n_SidePorts=1,
       V0=0.001,
       n_BottomPorts=1,
       bottom_pipeArea={0.0001},
@@ -64,7 +64,7 @@ present that are regulated by a central control system.
       level_start=0.0009,
       area=0.05,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      side_pipeArea=fill(0, 0)) 
+      side_pipeArea={0.0001}) 
       annotation (Placement(transformation(extent={{-100,-60},{-20,-20}},
             rotation=0)));
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V12(
@@ -102,7 +102,7 @@ present that are regulated by a central control system.
         waitTime=300))       annotation (Placement(transformation(extent={{80,
               60},{120,100}}, rotation=0)));
 
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-300,
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-300,
               -300},{300,300}}),      graphics),
       experiment(StopTime=3100),
       experimentSetupOutput,
@@ -151,7 +151,7 @@ present that are regulated by a central control system.
       finiteRiseTime=false) 
       annotation (Placement(transformation(extent={{-114,210},{-134,230}},
             rotation=0)));
-    Junctions.JunctionVolume portVolume2(
+    Junctions.JunctionVolume volume2(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(
@@ -164,7 +164,7 @@ present that are regulated by a central control system.
       m_flow_small=0) 
       annotation (Placement(transformation(extent={{112,210},{132,230}},
             rotation=0)));
-    Junctions.JunctionVolume portVolume8(
+    Junctions.JunctionVolume volume8(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(
@@ -181,7 +181,7 @@ present that are regulated by a central control system.
           origin={-106,-252},
           extent={{-10,10},{10,-10}},
           rotation=180)));
-    Volumes.MixingVolume portVolume3(
+    Volumes.MixingVolume volume3(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{-170,-260},{-190,
@@ -206,7 +206,7 @@ present that are regulated by a central control system.
           origin={-180,-56},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Volumes.MixingVolume portVolume1(
+    Volumes.MixingVolume volume1(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(
@@ -241,12 +241,12 @@ present that are regulated by a central control system.
           origin={160,-20},
           extent={{10,-10},{-10,10}},
           rotation=270)));
-    Volumes.MixingVolume portVolume6(
+    Volumes.MixingVolume volume6(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{150,-258},{170,
               -238}}, rotation=0)));
-    Volumes.MixingVolume portVolume7(
+    Volumes.MixingVolume volume7(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(
@@ -273,12 +273,15 @@ present that are regulated by a central control system.
           origin={-8,-200},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Junctions.GenericJunction portVolume4(
+    Junctions.GenericJunction volume4(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001,
       n_a=2,
-      n_b=3)   annotation (Placement(transformation(extent={{-38,-260},{-18,
+      n_b=3,
+      dp_nom=10000,
+      mflow_nom=1) 
+               annotation (Placement(transformation(extent={{-38,-260},{-18,
               -240}}, rotation=0)));
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V10(
       m_flow_small=0,
@@ -298,7 +301,7 @@ present that are regulated by a central control system.
           origin={34,-250},
           extent={{10,10},{-10,-10}},
           rotation=180)));
-    Junctions.JunctionVolume portVolume5(
+    Junctions.JunctionVolume volume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{50,-260},{70,-240}},
@@ -618,91 +621,91 @@ present that are regulated by a central control system.
             60,-116}}, color={0,127,255}));
     connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-114,-40},{-102,
             -40}}, color={191,0,0}));
-    connect(V1.port_a, portVolume1.port_b) annotation (Line(
+    connect(V1.port_a, volume1.port_b)     annotation (Line(
         points={{-180,100},{-180,80}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume1.port_a, pipePump1B1.port_b) annotation (Line(
+    connect(volume1.port_a, pipePump1B1.port_b)     annotation (Line(
         points={{-180,59.8},{-180,6}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume2.port_3, V3.port_b) annotation (Line(
+    connect(volume2.port_3, V3.port_b)     annotation (Line(
         points={{-170,220},{-134,220}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(V1.port_b, portVolume2.port_1) annotation (Line(
+    connect(V1.port_b, volume2.port_1)     annotation (Line(
         points={{-180,120},{-180,210}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume2.port_2, V2.port_b) annotation (Line(
+    connect(volume2.port_2, V2.port_b)     annotation (Line(
         points={{-180,230},{-180,240},{-50,240}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(V6.port_b, portVolume8.port_3) annotation (Line(
+    connect(V6.port_b, volume8.port_3)     annotation (Line(
         points={{132,220},{150,220}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume8.port_2, V4.port_a) annotation (Line(
+    connect(volume8.port_2, V4.port_a)     annotation (Line(
         points={{160,230},{160,240},{50,240}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume8.port_1, V5.port_b) annotation (Line(
+    connect(volume8.port_1, V5.port_b)     annotation (Line(
         points={{160,210},{160,120}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume7.port_a, pipePump2B2.port_b) annotation (Line(
+    connect(volume7.port_a, pipePump2B2.port_b)     annotation (Line(
         points={{160,49.8},{160,20},{160,20}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume7.port_b, V5.port_a) annotation (Line(
+    connect(volume7.port_b, V5.port_a)     annotation (Line(
         points={{160,70},{160,100}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(P2.outlet, portVolume6.port_a) annotation (Line(
+    connect(P2.outlet, volume6.port_a)     annotation (Line(
         points={{128,-242.8},{138,-242.8},{138,-248},{149.8,-248}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume6.port_b, V25.port_a) annotation (Line(
+    connect(volume6.port_b, V25.port_a)     annotation (Line(
         points={{170,-248},{188,-248},{188,-200},{160,-200},{160,-30}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume5.port_1, V21.port_b) annotation (Line(
+    connect(volume5.port_1, V21.port_b)     annotation (Line(
         points={{50,-250},{44,-250}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume5.port_2, V24.port_a) annotation (Line(
+    connect(volume5.port_2, V24.port_a)     annotation (Line(
         points={{70,-250},{84,-250}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume5.port_3, V20.port_a) annotation (Line(
+    connect(volume5.port_3, V20.port_a)     annotation (Line(
         points={{60,-240},{60,-210}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(V23.port_a, portVolume4.ports_a[2]) annotation (Line(
+    connect(V23.port_a, volume4.ports_a[2])     annotation (Line(
         points={{-96,-252},{-38,-252}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume4.ports_a[1], V18.port_a) annotation (Line(
+    connect(volume4.ports_a[1], V18.port_a)     annotation (Line(
         points={{-38,-248},{-60,-248},{-60,-246},{-80,-246},{-80,-242}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume4.ports_b[1], V19.port_a) annotation (Line(
+    connect(volume4.ports_b[1], V19.port_a)     annotation (Line(
         points={{-18,-247.333},{-8,-247.333},{-8,-210}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume4.ports_b[2], V21.port_a) annotation (Line(
-        points={{-18,-250},{3,-250},{3,-250},{24,-250}},
+    connect(volume4.ports_b[2], V21.port_a)     annotation (Line(
+        points={{-18,-250},{24,-250}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(pipeB1B1.port_a, portVolume4.ports_b[3]) annotation (Line(
+    connect(pipeB1B1.port_a, volume4.ports_b[3])     annotation (Line(
         points={{20,20},{20,0},{12,0},{12,-252},{-18,-252},{-18,-252.667}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume3.port_a, P1.outlet) annotation (Line(
+    connect(volume3.port_a, P1.outlet)     annotation (Line(
         points={{-169.8,-250},{-156,-250},{-156,-246.8},{-144,-246.8}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(portVolume3.port_b, V22.port_a) annotation (Line(
+    connect(volume3.port_b, V22.port_a)     annotation (Line(
         points={{-190,-250},{-212,-250},{-212,-80},{-180,-80},{-180,-66}},
         color={0,127,255},
         smooth=Smooth.None));
@@ -730,7 +733,8 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
+
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -743,11 +747,12 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
-            Line(points={{-80,-20},{-60,-20},{-30,40},{8,40},{40,-20},{60,-20}}),
+            Line(points={{-80,-20},{-60,-20},{-30,40},{8,40},{40,-20},{60,-20}}), 
+
             Line(points={{-90,-70},{82,-70}}, color={0,0,0}),
             Line(points={{-80,68},{-80,-80}}, color={0,0,0}),
             Polygon(
@@ -760,7 +765,7 @@ present that are regulated by a central control system.
               lineColor={0,0,0},
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-68},{-60,-68},{-60,-42},{8,-42},{8,-68},{60,-68}},
+            Line(points={{-80,-68},{-60,-68},{-60,-42},{8,-42},{8,-68},{60,-68}}, 
                 color={255,0,255}),
             Line(
               points={{-60,40},{-60,-42}},
@@ -1011,7 +1016,8 @@ handled properly.</p>
               fillPattern=FillPattern.Solid),
             Text(extent={{-145,-58},{146,-98}}, textString="%name"),
             Polygon(
-              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
+              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}}, 
+
               fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,
                   0} else {255,255,255}),
               lineColor={0,0,0})}),
@@ -1043,7 +1049,7 @@ handled properly.</p>
     model TankWith3InletOutletArraysWithEvaporatorCondensor
       "Tank with Heating and Evaporation"
       import Modelica.SIunits.Conversions.*;
-      import Modelica_Fluid.Types.Init.*;
+      import Modelica_Fluid.Types.Init;
       replaceable package Medium = Modelica.Media.Water.WaterIF97_ph 
         constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium
         "Medium in the component" 
@@ -1061,7 +1067,7 @@ handled properly.</p>
       parameter Real top_heights[n_TopPorts]=fill(height, n_TopPorts);
       parameter SI.Height level_start(min=0) "Initial tank level" 
         annotation(Dialog(tab="Initialization"));
-      parameter Modelica_Fluid.Types.Init initType=NoInit
+      parameter Modelica_Fluid.Types.Init initType=Init.NoInit
         "Initialization option" 
         annotation(Dialog(tab = "Initialization"));
       parameter Boolean use_T_start=true
@@ -1110,7 +1116,7 @@ handled properly.</p>
       Real m_flow_TopPorts_pos[n_TopPorts];
       Real m_flow_pos;
       Medium.MassFlowRate mXi_flow_topPorts[n_TopPorts,Medium.nXi];
-      Medium.MassFlowRate port_b_mXi_flowottomPorts[n_BottomPorts,Medium.nXi];
+      Medium.MassFlowRate mXi_flowBottomPorts[n_BottomPorts,Medium.nXi];
       Medium.MassFlowRate mXi_flow_sidePorts[n_SidePorts,Medium.nXi];
 
     // Connectors and InnerTanks
@@ -1136,9 +1142,6 @@ handled properly.</p>
         each p_ambient=p_ambient,
         each d=medium.d,
         each Xi = medium.Xi,
-        H_flow=H_flow_TopPorts,
-        m_flow=m_flow_TopPorts,
-        mXi_flow=mXi_flow_topPorts,
         aboveLevel={level - top_heights[i] for i in 1:n_TopPorts},
         pipeArea={top_pipeArea[i] for i in 1:n_TopPorts},
         redeclare package Medium = Medium) 
@@ -1150,9 +1153,6 @@ handled properly.</p>
         each p_ambient=p_ambient,
         each d=medium.d,
         each Xi = medium.Xi,
-        H_flow=H_flow_SidePorts,
-        m_flow=m_flow_SidePorts,
-        mXi_flow=mXi_flow_sidePorts,
         aboveLevel={level - side_heights[i] for i in 1:n_SidePorts},
         pipeArea={side_pipeArea[i] for i in 1:n_SidePorts},
         redeclare package Medium = Medium) 
@@ -1164,9 +1164,6 @@ handled properly.</p>
         each p_ambient=p_ambient,
         each d=medium.d,
         each Xi = medium.Xi,
-        H_flow=H_flow_BottomPorts,
-        m_flow=m_flow_BottomPorts,
-        mXi_flow=port_b_mXi_flowottomPorts,
         aboveLevel={level - bottom_heights[i] for i in 1:n_BottomPorts},
         pipeArea={bottom_pipeArea[i] for i in 1:n_BottomPorts},
         redeclare package Medium = Medium) 
@@ -1196,6 +1193,18 @@ handled properly.</p>
       Medium.Density rho "'is' density in liquid phase";
 
     equation
+      H_flow_TopPorts   = InnerTankTop.H_flow;
+      m_flow_TopPorts   = InnerTankTop.m_flow;
+      mXi_flow_topPorts = InnerTankTop.mXi_flow;
+
+      H_flow_SidePorts   = InnerTankSide.H_flow;
+      m_flow_SidePorts   = InnerTankSide.m_flow;
+      mXi_flow_sidePorts = InnerTankSide.mXi_flow;
+
+      H_flow_BottomPorts  = InnerTankBottom.H_flow;
+      m_flow_BottomPorts  = InnerTankBottom.m_flow;
+      mXi_flowBottomPorts = InnerTankBottom.mXi_flow;
+
       for i in 1:n_BottomPorts loop
         m_flow_BottomPorts_pos[i] = (if m_flow_BottomPorts[i] > 0 then 
           m_flow_BottomPorts[i] else 0);
@@ -1240,14 +1249,14 @@ handled properly.</p>
       if noEvent(medium.T < sat.Tsat) then
         if Medium.singleState then
           der(U) = sum(H_flow_BottomPorts) + sum(H_flow_SidePorts) + sum(
-            H_flow_TopPorts) + Condensed.H_flow + HeatPort.Q_flow + Q_lost
+            H_flow_TopPorts) + Condensed.m_flow*actualStream(Condensed.h_outflow) + HeatPort.Q_flow + Q_lost
             "Mechanical work is neglected";
         else
           der(U) = sum(H_flow_BottomPorts) + sum(H_flow_SidePorts) + sum(
-            H_flow_TopPorts) + Condensed.H_flow - p_ambient*der(V) + Q_lost +
+            H_flow_TopPorts) + Condensed.m_flow*actualStream(Condensed.h_outflow) - p_ambient*der(V) + Q_lost +
             HeatPort.Q_flow;
         end if;
-        Condensed.H_flow = 0;
+        Condensed.h_outflow = h;
         Condensed.m_flow = 0;
         rho = medium.d;
         h = medium.h;
@@ -1255,12 +1264,13 @@ handled properly.</p>
         if Medium.singleState then
                                  //Q_flow cooling = - (HeatPort.Q_flow-Q_lost)
           der(U) = sum(H_flow_BottomPorts) + sum(H_flow_SidePorts) + sum(H_flow_TopPorts)
-             + Condensed.H_flow "Mechanical work is neglected";
+             + Condensed.m_flow*actualStream(Condensed.h_outflow)
+            "Mechanical work is neglected";
         else
           der(U) = sum(H_flow_BottomPorts) + sum(H_flow_SidePorts) + sum(
-            H_flow_TopPorts) + Condensed.H_flow - p_ambient*der(V);
+            H_flow_TopPorts) + Condensed.m_flow*actualStream(Condensed.h_outflow) - p_ambient*der(V);
         end if;
-        Condensed.H_flow = Condensed.m_flow*medium.h;
+        Condensed.h_outflow = h;
         Condensed.m_flow = -(HeatPort.Q_flow - Q_lost)/(h_v - h_l);
         rho = rho_l;//Density = liquid Densety
         h = h_l;    //Enthalpy = liquid Enthalpy
@@ -1274,7 +1284,7 @@ handled properly.</p>
         m_flow_BottomPorts_pos);
 
       for i in 1:Medium.nXi loop
-           der(mXi[i]) = sum(port_b_mXi_flowottomPorts[:,i]) +
+           der(mXi[i]) = sum(mXi_flowBottomPorts[:,i]) +
                          sum(mXi_flow_sidePorts[:,i]) +
                          sum(mXi_flow_topPorts[:,i]);
       end for;
@@ -1288,9 +1298,9 @@ handled properly.</p>
   ");
 
     initial equation
-      if initType == NoInit then
+      if initType == Init.NoInit then
         // no initial equations
-      elseif initType == InitialValues then
+      elseif initType == Init.InitialValues then
         level = level_start;
         if use_T_start then
           medium.T = T_start;
@@ -1298,7 +1308,7 @@ handled properly.</p>
           medium.h = h_start;
         end if;
         medium.Xi = X_start[1:Medium.nXi];
-      elseif initType == SteadyStateHydraulic then
+      elseif initType == Init.SteadyStateHydraulic then
         der(level) = 0;
         if use_T_start then
           medium.T = T_start;
@@ -1323,7 +1333,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1391,7 +1402,7 @@ Full steady state initialization is not supported, because the corresponding int
         input Real d;
         input Real p_ambient;
         input Real h;
-      input Medium.MassFraction Xi[Medium.nXi]
+        input Medium.MassFraction Xi[Medium.nXi]
         "Actual mass fractions of fluid in tank"                    annotation(Dialog);
         input Real pipeArea;
         output Real H_flow;
@@ -1412,12 +1423,11 @@ Full steady state initialization is not supported, because the corresponding int
       end if;
     end if;
 
-      H_flow = port.H_flow;
+      H_flow = port.m_flow*actualStream(port.h_outflow);
       m_flow = port.m_flow;
-      mXi_flow = port.mXi_flow;
-      port.H_flow = semiLinear(port.m_flow, port.h, h);
-        port.mXi_flow = semiLinear(port.m_flow, port.Xi, Xi);
-
+      mXi_flow = port.m_flow*actualStream(port.Xi_outflow);
+      port.h_outflow = h;
+      port.Xi_outflow = Xi;
     end InnerTank;
 
     model Controller
@@ -1951,40 +1961,27 @@ Full steady state initialization is not supported, because the corresponding int
       Boolean aboveLevel[nPorts] "= true, if level >= ports[i].portLevel";
       Real zeta_out[nPorts];
 
+      Medium.EnthalpyFlowRate H_flow_top[nTopPorts]
+        "Enthalpy flow rates from the top ports in to the tank";
+      Medium.EnthalpyFlowRate H_flow_port[nPorts]
+        "Enthalpy flow rates from the ports in to the tank";
+      Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi]
+        "Substance mass flow rates from the top ports in to the tank";
+      Medium.MassFlowRate mXi_flow_port[nPorts, Medium.nXi]
+        "Substance mass flow rates from the ports in to the tank";
+
   equation
     assert(level <= levelMax, "Tank starts to overflow (level = levelMax = " + String(level) + ")");
     assert(m>=0, "Mass in tank is zero");
 
-    // Total quantities
-      medium.T = heatPort.T;
-      medium.p = p_ambient;
-      V = area*level + V0 "Volume of fluid";
-      m = V*medium.d "Mass of fluid";
-      mXi = m*medium.Xi "Mass of fluid components";
-      U = m*medium.u "Internal energy of fluid";
-      Q_lost = -alpha0*(area+2*sqrt(area*Modelica.Constants.pi)*level)*(medium.T-T_ambient)
-        "Q=-k*A*dT";
-
-    // Mass balances
-      der(m) = sum(topPorts.m_flow) + sum(ports.m_flow);
-      for i in 1:Medium.nXi loop
-        der(mXi[i]) = sum(topPorts.mXi_flow[i]) + sum(ports.mXi_flow[i]);
-      end for;
-
-    // Energy balance
-      if Medium.singleState then
-        der(U) = sum(topPorts.H_flow) + sum(ports.H_flow) + Q_lost + heatPort.Q_flow;
-                                 //Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)
-      else
-        der(U) = sum(topPorts.H_flow) + sum(ports.H_flow) - p_ambient*der(V) + Q_lost + heatPort.Q_flow;
-      end if;
-
     // Properties at top ports
       for i in 1:nTopPorts loop
-         // It is assumed that fluid flows only into one of the top ports and never out of it
-         topPorts[i].H_flow   = semiLinear(topPorts[i].m_flow, topPorts[i].h, h_start);
-         topPorts[i].mXi_flow = semiLinear(topPorts[i].m_flow, topPorts[i].Xi, X_start[1:Medium.nXi]);
-         topPorts[i].p        = p_ambient;
+         // It is assumed that fluid flows only from one of the top ports in to the tank and never vice versa
+         H_flow_top[i]     = topPorts[i].m_flow*actualStream(topPorts[i].h_outflow);
+         mXi_flow_top[i,:] = topPorts[i].m_flow*actualStream(topPorts[i].Xi_outflow);
+         topPorts[i].p     = p_ambient;
+         topPorts[i].h_outflow = h_start;
+         topPorts[i].Xi_outflow = X_start[1:Medium.nXi];
   /*
        assert(topPorts[i].m_flow > -1, "Mass flows out of tank via topPorts[" + String(i) + "]\n" +
                                          "This indicates a wrong model");
@@ -1993,8 +1990,10 @@ Full steady state initialization is not supported, because the corresponding int
 
     // Properties at bottom ports
       for i in 1:nPorts loop
-         ports[i].H_flow = semiLinear(ports[i].m_flow, ports[i].h, medium.h);
-         ports[i].mXi_flow = semiLinear(ports[i].m_flow, ports[i].Xi, medium.Xi);
+         H_flow_port[i]     = ports[i].m_flow*actualStream(ports[i].h_outflow);
+         mXi_flow_port[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
+         ports[i].h_outflow = medium.h;
+         ports[i].Xi_outflow = medium.Xi;
          aboveLevel[i] = level >= (portsData[i].portLevel + ports_emptyPipeHysteresis[i])
                          or pre(aboveLevel[i]) and level >= (portsData[i].portLevel - ports_emptyPipeHysteresis[i]);
          levelAbovePort[i] = if aboveLevel[i] then level - portsData[i].portLevel else 0;
@@ -2024,7 +2023,31 @@ Full steady state initialization is not supported, because the corresponding int
            end if;
             zeta_out[i] =0;
          end if;
-       end for;
+      end for;
+
+    // Total quantities
+      medium.T = heatPort.T;
+      medium.p = p_ambient;
+      V = area*level + V0 "Volume of fluid";
+      m = V*medium.d "Mass of fluid";
+      mXi = m*medium.Xi "Mass of fluid components";
+      U = m*medium.u "Internal energy of fluid";
+      Q_lost = -alpha0*(area+2*sqrt(area*Modelica.Constants.pi)*level)*(medium.T-T_ambient)
+        "Q=-k*A*dT";
+
+    // Mass balances
+      der(m) = sum(topPorts.m_flow) + sum(ports.m_flow);
+      for i in 1:Medium.nXi loop
+        der(mXi[i]) = sum(mXi_flow_top[:,i]) + sum(mXi_flow_port[:,i]);
+      end for;
+
+    // Energy balance
+      if Medium.singleState then
+        der(U) = sum(H_flow_top) + sum(H_flow_port) + Q_lost + heatPort.Q_flow;
+                                 //Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)
+      else
+        der(U) = sum(H_flow_top) + sum(H_flow_port) - p_ambient*der(V) + Q_lost + heatPort.Q_flow;
+      end if;
 
   initial equation
       for i in 1:nPorts loop
@@ -2072,8 +2095,8 @@ Full steady state initialization is not supported, because the corresponding int
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
               textString=DynamicSelect(" ", realString(
-                    level,
-                    1,
+                    level, 
+                    1, 
                     3))),
             Line(
               points={{-100,100},{100,100}},

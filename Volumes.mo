@@ -10,8 +10,8 @@ package Volumes "Generic volume, tank and other volume type components"
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}), graphics={Ellipse(
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
@@ -50,8 +50,8 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
             fillColor={170,213,255},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-40,60},{-40,44},{-44,44},{-44,64},{44,64},{44,44},{40,
-                44},{40,60},{-40,60}},
+            points={{-40,60},{-40,44},{-44,44},{-44,64},{44,64},{44,44},{40,44},
+                {40,60},{-40,60}},
             lineColor={95,95,95},
             smooth=Smooth.None,
             fillColor={135,135,135},
@@ -285,8 +285,8 @@ initial equation
             lineColor={0,127,255},
             fillColor={85,170,255},
             fillPattern=FillPattern.Solid),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                0,0}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
+                0}),
           Text(
             extent={{-95,90},{95,60}},
             lineColor={0,0,255},
@@ -299,9 +299,9 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                  level,
-                  1,
-                  integer(precision)))),
+                level, 
+                1, 
+                integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -491,8 +491,8 @@ equation
   // Properties at top ports
     for i in 1:nTopPorts loop
        // It is assumed that fluid flows only from one of the top ports in to the tank and never vice versa
-       H_flow_top[i]     = topPorts[i].m_flow*inStream(topPorts[i].h_outflow);
-       mXi_flow_top[i,:] = topPorts[i].m_flow*inStream(topPorts[i].Xi_outflow);
+       H_flow_top[i]     = topPorts[i].m_flow*actualStream(topPorts[i].h_outflow);
+       mXi_flow_top[i,:] = topPorts[i].m_flow*actualStream(topPorts[i].Xi_outflow);
        topPorts[i].p     = p_ambient;
        topPorts[i].h_outflow = h_start;
 /*
@@ -583,9 +583,9 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                  level,
-                  1,
-                  3))),
+                level, 
+                1, 
+                3))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -606,8 +606,8 @@ initial equation
             extent={{-95,50},{95,30}},
             lineColor={0,0,0},
             textString="level ="),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                0,0})}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
+                0})}),
       Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the environment at the fixed pressure
