@@ -3,7 +3,7 @@ package Pumps "Pump components"
   extends Modelica_Fluid.Icons.VariantLibrary;
   model Pump "Centrifugal pump with ideally controlled speed"
     extends Modelica_Fluid.Pumps.BaseClasses.PartialPump;
-    parameter Boolean use_N_input = true
+    parameter Boolean use_N_input = false
       "Get the rotational speed from the input connector";
     parameter Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm
       N_const =                                                                     N_nom
