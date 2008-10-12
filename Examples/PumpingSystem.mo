@@ -7,7 +7,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     use_T=true,
     T=Modelica.SIunits.Conversions.from_degC(20),
     p=system.p_ambient) 
-    annotation (Placement(transformation(extent={{-100,-88},{-80,-68}},
+    annotation (Placement(transformation(extent={{-100,-80},{-80,-60}},
           rotation=0)));
 
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(
@@ -20,7 +20,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
     height_ab=50) 
     annotation (Placement(transformation(
-        origin={-42,-47},
+        origin={-28,-45},
         extent={{-11,-10},{11,10}},
         rotation=90)));
 
@@ -36,7 +36,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_N_input=true,
     Np=1) 
-    annotation (Placement(transformation(extent={{-74,-88},{-48,-62}}, rotation=
+    annotation (Placement(transformation(extent={{-68,-80},{-48,-60}}, rotation=
            0)));
 
   Modelica_Fluid.Volumes.OpenTank reservoir(
@@ -125,10 +125,10 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
 equation
   connect(userValve.port_b, sink.port)     annotation (Line(points={{74,-30},{
           80,-30}}, color={0,127,255}));
-  connect(source.port, pumps.inlet) annotation (Line(points={{-80,-78},{-73.2,
-          -78},{-73.2,-77.6},{-71.4,-77.6}}, color={0,127,255}));
+  connect(source.port, pumps.inlet) annotation (Line(points={{-80,-70},{-66,-70}},
+                                             color={0,127,255}));
   connect(valveOpening.y, userValve.opening) annotation (Line(points={{77,10},{
-          98,10},{98,-12},{66,-12},{66,-22.8}}, color={0,0,127}));
+          98,10},{98,-12},{66,-12},{66,-23.6}}, color={0,0,127}));
   connect(RelativePressureSetPoint.y, controller.reference) 
                                                     annotation (Line(points={{
           -79,70},{-60,70},{-60,76},{-42,76}}, color={0,0,127}));
@@ -137,17 +137,17 @@ equation
   connect(reservoirPressure.p_rel, controller.u) annotation (Line(points={{20,
           -13},{20,50},{-52,50},{-52,64},{-42,64}}, color={0,0,127}));
   connect(reservoirPressure.port_b, sink.port)    annotation (Line(
-      points={{30,-21.8},{44,-21.8},{44,-48},{80,-48},{80,-30}},
+      points={{30,-22},{44,-22},{44,-48},{80,-48},{80,-30}},
       color={0,127,255},
       pattern=LinePattern.Dot));
   connect(PumpRPMGenerator.y, PT1.u) 
     annotation (Line(points={{21,70},{38,70}}, color={0,0,127}));
   connect(PT1.y, pumps.N_in) annotation (Line(points={{61,70},{74,70},{74,30},{
-          -64.38,30},{-64.38,-69.28}}, color={0,0,127}));
-  connect(pipe.port_a, pumps.outlet)         annotation (Line(points={{-42,-58},
-          {-42,-70},{-54,-70},{-53.2,-70.84}}, color={0,127,255}));
-  connect(pipe.port_b, reservoir.ports[1]) annotation (Line(points={{-42,-36},{
-          -42,-30},{-4.5,-30},{-4.5,-16}},
+          -58,30},{-58,-60}},          color={0,0,127}));
+  connect(pipe.port_a, pumps.outlet)         annotation (Line(points={{-28,-56},
+          {-28,-70},{-50,-70}},                color={0,127,255}));
+  connect(pipe.port_b, reservoir.ports[1]) annotation (Line(points={{-28,-34},{
+          -28,-30},{-4.5,-30},{-4.5,-16}},
                                          color={0,127,255}));
   connect(userValve.port_a, reservoir.ports[1]) annotation (Line(points={{58,-30},
           {-4.5,-30},{-4.5,-16}},    color={0,127,255}));

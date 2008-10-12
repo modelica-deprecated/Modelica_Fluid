@@ -21,7 +21,7 @@ package Pumps "Pump components"
       Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
               100}}), graphics={Text(
             visible=use_N_input,
-            extent={{22,120},{172,104}},
+            extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
       Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics),

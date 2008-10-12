@@ -1,5 +1,6 @@
 within Modelica_Fluid;
-model System "System properties and default values"
+model System
+  "System properties and default values (ambient, flow direction, initialization)"
 
   parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p_ambient=
                 101325 "Default ambient pressure" 
@@ -11,17 +12,25 @@ model System "System properties and default values"
     "Constant gravity acceleration"                                                  annotation(Dialog(group="Environment"));
   parameter Modelica_Fluid.Types.FlowDirection flowDirection=
       Modelica_Fluid.Types.FlowDirection.Bidirectional
-    "Default for bidirectional or unidirectional (Port_a -> Port_b) flow" 
+    "Default for bidirectional or unidirectional (port_a -> port_b) flow" 
      annotation(Dialog(tab="Advanced"));
+
+/* Temporarily disabled, because no effect
   parameter Types.Init initType=
             Types.Init.NoInit "Default initialization option" 
     annotation(Evaluate=true, Dialog(tab = "Advanced"));
+*/
 
   annotation (
     defaultComponentName="system",
     defaultComponentPrefixes="inner",
-    missingInnerMessage="Your model is using an outer \"system\" component. An inner \"system\" component is not defined. For simulation drag Modelica_Fluid.System into your model to specify system properties.",
-    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+    missingInnerMessage="
+Your model is using an outer \"system\" component but
+an inner \"system\" component is not defined.
+For simulation drag Modelica_Fluid.System into your model
+to specify system properties. The default System setting
+is used for the current simulation.
+",  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
             100}}), graphics={
         Rectangle(
           extent={{-100,100},{100,-100}},
