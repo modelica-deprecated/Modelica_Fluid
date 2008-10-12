@@ -353,9 +353,10 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
 
   model GenericJunction
     "Branching component with balances for a dynamic control volume"
+    import Modelica.Constants;
     import Modelica_Fluid.Types;
-    import Modelica_Fluid.Types.PortFlowDirection;
     import Modelica_Fluid.Types.ModelStructure;
+    outer Modelica_Fluid.System system "System properties";
     parameter Integer n_a=1 "Number of ports on side a";
     parameter Integer n_b=1 "Number of ports on side b";
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
@@ -371,13 +372,15 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
 
     Interfaces.FluidStatePorts_a[n_a] ports_a(
       redeclare each package Medium=Medium,
-      m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (Placement(
+      m_flow(each min=if allowFlowReversal then -Constants.inf else 0))
+      "Fluid connectors a (positive design flow direction is from ports_a to ports_b)"
+      annotation (Placement(
           transformation(extent={{-110,40},{-90,-40}}, rotation=0)));
     Interfaces.FluidStatePorts_b[n_b] ports_b(
       redeclare each package Medium=Medium,
-      m_flow(each min=if (portFlowDirection==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      each max=if (portFlowDirection==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf))  annotation (Placement(
+      m_flow(each max=if allowFlowReversal then +Constants.inf else 0))
+      "Fluid connectors b (positive design flow direction is from ports_a to ports_b)"
+      annotation (Placement(
           transformation(extent={{90,40},{110,-40}}, rotation=0)));
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
@@ -400,9 +403,10 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
 
-    parameter PortFlowDirection portFlowDirection=PortFlowDirection.Bidirectional
-      "Allowed flow direction for ports" 
-     annotation(Dialog(tab="Advanced"));
+    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
+        system.flowDirection
+      "Unidirectional (ports_a -> ports_b) or bidirectional flow" 
+       annotation(Dialog(tab="Advanced"));
     parameter ModelStructure modelStructure=ModelStructure.avb annotation(Evaluate=true);
 
     Medium.EnthalpyFlowRate ports_a_H_flow[n_a];
@@ -441,6 +445,12 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
+  protected
+    parameter Boolean allowFlowReversal=
+      flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
+      "= false, if flow only from ports_a to ports_b, otherwise reversing flow allowed"
+      annotation(Evaluate=true, Hide=true);
+
   initial equation
     // Initial conditions
     if initType == Types.Init.NoInit then
