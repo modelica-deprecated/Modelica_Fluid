@@ -1778,7 +1778,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       duration=1,
       startTime=1) 
                 annotation (Placement(transformation(extent={{46,30},{26,50}})));
-    inner System system
+    inner System system 
       annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
   equation
     connect(source.port, pipe.port_a)         annotation (Line(

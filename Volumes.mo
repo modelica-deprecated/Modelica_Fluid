@@ -22,8 +22,8 @@ package Volumes "Generic volume, tank and other volume type components"
       Documentation(info="<html>
 Ideally mixed volume of constant size with two fluid ports and one medium model. The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. The thermal port temperature is equal to the medium temperature.
 </html>"),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+              {100,100}}),
               graphics));
     equation
       thermalPort.T = medium.T;
@@ -169,7 +169,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     parameter Medium.Temperature T_ambient=system.T_ambient
       "Tank surface Temperature" 
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-    outer Modelica_Fluid.System system;
+    outer Modelica_Fluid.System system "System properties";
 
 //Initialization
     parameter Types.Init initType=Types.Init.InitialValues
@@ -285,8 +285,8 @@ initial equation
             lineColor={0,127,255},
             fillColor={85,170,255},
             fillPattern=FillPattern.Solid),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
-                0}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
+                0,0}),
           Text(
             extent={{-95,90},{95,60}},
             lineColor={0,0,255},
@@ -299,9 +299,9 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
-                integer(precision)))),
+                  level,
+                  1,
+                  integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -583,9 +583,9 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
-                3))),
+                  level,
+                  1,
+                  3))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -606,8 +606,8 @@ initial equation
             extent={{-95,50},{95,30}},
             lineColor={0,0,0},
             textString="level ="),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
-                0})}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
+                0,0})}),
       Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the environment at the fixed pressure
@@ -685,7 +685,8 @@ end Tank;
 
       partial model PartialLumpedVolume
       "Mixing volume with inlet and outlet ports (flow reversal is allowed)"
-      import Modelica_Fluid.Types;
+        import Modelica_Fluid.Types;
+        outer Modelica_Fluid.System system "System properties";
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation (choicesAllMatching = true);
@@ -710,8 +711,7 @@ end Tank;
         "Start value of mass fractions m_i/m" 
           annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
 
-        parameter Types.FlowDirection flowDirection=Types.FlowDirection.
-            Bidirectional
+        parameter Types.FlowDirection flowDirection=system.flowDirection
         "Unidirectional (port_a -> port_b) or bidirectional flow component" 
          annotation(Dialog(tab="Advanced"));
          final parameter Boolean allowFlowReversal=flowDirection == Types.FlowDirection.

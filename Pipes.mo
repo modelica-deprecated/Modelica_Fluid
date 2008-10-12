@@ -8,6 +8,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
 
   model LumpedPipe
     "Short pipe with one volume, wall friction and gravity effect"
+    outer Modelica_Fluid.System system "System properties";
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
@@ -59,7 +60,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
     parameter Modelica.SIunits.Density d_nominal=0.01
       "Nominal density (for wall friction computation)" annotation(Dialog(enable=use_nominal));
     parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-        Modelica_Fluid.Types.FlowDirection.Bidirectional
+        system.flowDirection
       "Unidirectional (port_a -> port_b) or bidirectional flow component" 
        annotation(Dialog(tab="Advanced"));
     parameter Modelica.SIunits.AbsolutePressure dp_small=1
@@ -270,8 +271,8 @@ pipe wall/environment).
    SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
 
    annotation (
-     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -506,8 +507,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
             textString="%name")}),
-  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}),
+  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
           graphics),
   Documentation(info="<html>
 <p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>.</p>
@@ -694,8 +695,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
-          graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
@@ -896,8 +897,8 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}), 
-          graphics={
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
             lineColor={0,0,0},
