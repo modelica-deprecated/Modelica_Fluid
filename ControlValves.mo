@@ -188,7 +188,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
 
   model ValveLinear "Valve for water/steam flows with linear pressure drop"
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-    parameter SI.Pressure dp_nom "Nominal pressure drop at full opening";
+    parameter SI.AbsolutePressure dp_nom
+      "Nominal pressure drop at full opening";
     parameter Medium.MassFlowRate m_flow_nom
       "Nominal mass flowrate at full opening";
     final parameter Types.HydraulicConductance Kv = m_flow_nom/dp_nom
@@ -206,7 +207,7 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
       "Modified, actually used opening, so that the valve is not completely closed to improve numerics";
 
   equation
-    modifiedOpening = noEvent(if opening > minOpening then opening else minOpening);
+    modifiedOpening = smooth(0,noEvent(if opening > minOpening then opening else minOpening));
     m_flow = Kv*modifiedOpening*dp;
 
   annotation (

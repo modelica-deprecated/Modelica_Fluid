@@ -1,5 +1,5 @@
 within ;
-package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 2: One-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 3.0)"
+package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 3: One-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 3.0 and Dymola 7.1)"
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
@@ -1279,13 +1279,13 @@ end UsersGuide;
 
 
 annotation (
-  version="1.0 Streams Beta 2",
+  version="1.0 Streams Beta 3",
   versionBuild="$Rev$",
   versionDate="$Date::                            $",
   preferedView="info",
   Settings(NewStateSelection=true),
   uses(Modelica(version="3.0")),
-  classOrder={"UsersGuide","Examples","Ambient", "ControlValves","Flowmachines","HeatExchangers","Junctions",
+  classOrder={"UsersGuide","Examples","System", "ControlValves","Flowmachines","HeatExchangers","Junctions",
       "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
   Documentation(info="<html>
 <p>
@@ -1302,16 +1302,17 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
  
 <p>
-This is version <b>1.0 Streams Beta 2</b> of the Modelica_Fluid library.
+This is version <b>1.0 Streams Beta 3</b> of the Modelica_Fluid library.
 With respect to previous versions of the Modelica_Fluid library, the design
 of the connectors has been changed, using the recently developed concept
 with streams connectors (see an overview and a rational 
 <a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rational.pdf\">here</a>).
-This requires an extension to the Modelica specification
-and it is planned to include this extension in Modelica 3.1.
-This new concept is supported in Dymola 7.1.
+This requires an extension to the Modelica specification which will
+be included in Modelica 3.1.
+This new concept is supported in Dymola 7.1 and therefore Dymola 7.1
+is required for this Modelica_Fluid version.
 The essential benefit of this new concept is that the equation systems become
-more well behaved and the models can be more reliably simulated.
+more well behaved and the models can be much more reliably simulated.
 Please, read the section
 <a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
 in the Users Guide before using this library.
