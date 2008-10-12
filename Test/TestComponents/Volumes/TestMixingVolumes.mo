@@ -3,7 +3,7 @@ model TestMixingVolumes
   extends Modelica.Icons.Example;
   // package Medium = Modelica.Media.Water.StandardWater;
   package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater;
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}),
                       graphics),
                        experiment(StopTime=10));
@@ -50,6 +50,8 @@ equation
           -50,40},{-50,50}}, color={0,127,255}));
   connect(MixingVolume2.port_b, Sink2.port) annotation (Line(points={{30,40},{
           80,40}}, color={0,127,255}));
-  connect(MixingVolume2.port_b, Tmix_out.port) annotation (Line(points={{30,40},
-          {50,40},{50,50}}, color={0,127,255}));
+  connect(Tmix_out.port, Sink2.port) annotation (Line(
+      points={{50,50},{50,40},{80,40}},
+      color={0,127,255},
+      smooth=Smooth.None));
 end TestMixingVolumes;

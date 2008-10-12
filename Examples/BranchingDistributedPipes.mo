@@ -175,7 +175,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     use_eta_nominal=false,
     use_approxPortProperties=true,
     heatTransfer(alpha0=500)) 
-            annotation (Placement(transformation(extent={{-28,-56},{-8,-36}},
+            annotation (Placement(transformation(extent={{-28,-50},{-8,-30}},
           rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary4(
     redeclare package Medium = Medium,
@@ -203,7 +203,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     p_a_start=1.0e5,
     use_eta_nominal=false,
     use_approxPortProperties=true) 
-            annotation (Placement(transformation(extent={{16,-72},{36,-52}},
+            annotation (Placement(transformation(extent={{16,-70},{36,-50}},
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe7(
     redeclare package Medium=Medium,
@@ -224,7 +224,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     length=0.4,
     use_eta_nominal=false,
     use_approxPortProperties=true) 
-            annotation (Placement(transformation(extent={{-66,-72},{-46,-52}},
+            annotation (Placement(transformation(extent={{-66,-70},{-46,-50}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX boundary3(
     T=280,
@@ -258,7 +258,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     heatTransfer(alpha0=1000),
     use_eta_nominal=false,
     use_approxPortProperties=true) 
-            annotation (Placement(transformation(extent={{-28,-94},{-8,-74}},
+            annotation (Placement(transformation(extent={{-28,-90},{-8,-70}},
           rotation=0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow[
                                               pipe2.n] heat1(each Q_flow=200,
@@ -311,31 +311,31 @@ equation
       color={0,0,127},
       thickness=0.5));
   connect(boundary3.port, pipe7.port_a) annotation (Line(
-      points={{-90,-60},{-80,-60},{-80,-62},{-66,-62}},
+      points={{-90,-60},{-80,-60},{-66,-60}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe7.port_b, pipe5.port_a) annotation (Line(
-      points={{-46,-62},{-40,-62},{-40,-46},{-28,-46}},
+      points={{-46,-60},{-40,-60},{-40,-40},{-28,-40}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe7.port_b, pipe8.port_a) annotation (Line(
-      points={{-46,-62},{-40,-62},{-40,-84},{-28,-84}},
+      points={{-46,-60},{-40,-60},{-40,-80},{-28,-80}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe5.port_b, pipe6.port_a) annotation (Line(
-      points={{-8,-46},{4,-46},{4,-62},{16,-62}},
+      points={{-8,-40},{4,-40},{4,-60},{16,-60}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe8.port_b, pipe6.port_a) annotation (Line(
-      points={{-8,-84},{4,-84},{4,-62},{16,-62}},
+      points={{-8,-80},{4,-80},{4,-60},{16,-60}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe6.port_b, boundary4.port) annotation (Line(
-      points={{36,-62},{44,-62},{44,-60},{50,-60}},
+      points={{36,-60},{44,-60},{50,-60}},
       color={0,127,255},
       thickness=0.5));
   connect(heat1.port, pipe5.thermalPort) annotation (Line(
-      points={{-42,-14},{-18,-14},{-18,-40.6}},
+      points={{-42,-14},{-18,-14},{-18,-34.6}},
       color={191,0,0},
       thickness=0.5));
 end BranchingDistributedPipes;

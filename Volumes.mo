@@ -219,6 +219,16 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
         i]^2 for i in 1:n_ports};
 
 equation
+  // Only one connection allowed to a port to avoid unwanted ideal mixing
+for i in 1:n_ports loop
+  assert(cardinality(ports[i]) <= 1,"
+ports[" + String(i) + "] of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+end for;
+
   //Total quantities
     V = area*level + V0 "Volume of fluid";
     m = V*medium.d "Mass of fluid";
@@ -278,7 +288,7 @@ initial equation
     end if;
     annotation (
       Icon(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1},
           initialScale=0.2), graphics={
@@ -475,6 +485,25 @@ equation
   assert(level <= levelMax, "Tank starts to overflow (level = levelMax = " + String(level) + ")");
   assert(m>=0, "Mass in tank is zero");
 
+  // Only one connection allowed to a port to avoid unwanted ideal mixing
+for i in 1:nTopPorts loop
+  assert(cardinality(topPorts[i]) <= 1,"
+topPorts[" + String(i) + "] of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+end for;
+
+for i in 1:nPorts loop
+  assert(cardinality(ports[i]) <= 1,"
+ports[" + String(i) + "] of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+end for;
+
   // Total quantities
     medium.p = p_ambient;
     V = area*level + V0 "Volume of fluid";
@@ -572,7 +601,7 @@ initial equation
 
     annotation (
       Icon(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1},
           initialScale=0.2), graphics={
@@ -772,6 +801,20 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
                   graphics));
 
       equation
+        // Only one connection allowed to a port to avoid unwanted ideal mixing
+        assert(cardinality(port_a) <= 1,"
+port_a of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+        assert(cardinality(port_b) <= 1,"
+port_b of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+
         // Boundary conditions
         port_a.p = medium.p;
         port_b.p = medium.p;
