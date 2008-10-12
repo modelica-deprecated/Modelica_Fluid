@@ -382,6 +382,9 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
       "Fluid connectors b (positive design flow direction is from ports_a to ports_b)"
       annotation (Placement(
           transformation(extent={{90,40},{110,-40}}, rotation=0)));
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort
+      "Thermal port" 
+      annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=0)));
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
 
@@ -469,9 +472,12 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     end if;
 
   equation
+    thermalPort.T = medium.T;
+
     sum(ports_a.m_flow)+sum(ports_b.m_flow)=der(m) "Mass balance";
 
-    sum(ports_a_H_flow) + sum(ports_b_H_flow) = der(U) "Energy balance";
+    sum(ports_a_H_flow) + sum(ports_b_H_flow) + thermalPort.Q_flow = der(U)
+      "Energy balance";
 
     for i in 1:Medium.nXi loop
       sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]) = der(mXi[i])
