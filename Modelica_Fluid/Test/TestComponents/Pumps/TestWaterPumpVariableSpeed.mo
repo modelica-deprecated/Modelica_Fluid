@@ -39,7 +39,11 @@ annotation (
     pout_start=700000,
     use_N_input=true)      annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));
-  Modelica.Blocks.Sources.Constant valveOpening(k=1) 
+  Modelica.Blocks.Sources.Ramp valveOpening(
+    height=-1,
+    duration=1,
+    offset=1,
+    startTime=8) 
   annotation (Placement(transformation(extent={{-40,64},{-20,84}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible Valve(
                                              redeclare package Medium = 

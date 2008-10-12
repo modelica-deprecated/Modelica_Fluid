@@ -235,7 +235,7 @@ package Pumps "Pump components"
       eta = (dp*q_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
     else
       eta = efficiencyCharacteristic(q_flow_single*(N_nom/N));
-      W_single = dp*q_flow/eta;
+      W_single = dp*q_flow_single/eta;
     end if;
 
     // Medium states close to the ports when mass flows in to the respective port
@@ -259,14 +259,14 @@ package Pumps "Pump components"
     if M > 0 then
        // Dynamic energy balance
        // mass variations and p/d are neglected
-       M*der(h) = inlet.m_flow*actualStream(inlet.h_outflow) +
-                  outlet.m_flow*actualStream(outlet.h_outflow) +
-                  W_single;
+       Np*M*der(h) = inlet.m_flow*actualStream(inlet.h_outflow) +
+                     outlet.m_flow*actualStream(outlet.h_outflow) +
+                     W_tot;
        outlet.h_outflow  = h;
        inlet.h_outflow   = h;
     else
-      outlet.h_outflow  = inStream(inlet.h_outflow) + W_tot/m_flow;
-      inlet.h_outflow  = inStream(outlet.h_outflow) + W_tot/m_flow;
+      outlet.h_outflow  = inStream(inlet.h_outflow) + dp/(d*eta);
+      inlet.h_outflow  = inStream(outlet.h_outflow) + dp/(d*eta);
       h = 0 "Unused";
     end if;
 
