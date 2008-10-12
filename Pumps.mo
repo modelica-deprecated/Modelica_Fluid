@@ -190,8 +190,8 @@ package Pumps "Pump components"
     SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
     Medium.Density d "Liquid density at the inlet";
-    Medium.SpecificEnthalpy h_out(start=h_start)
-        "Enthalpy of the liquid flowing out of the pump";
+    Medium.SpecificEnthalpy h(start=h_start)
+        "Enthalpy of the liquid stored in the pump if M>0";
     Medium.Temperature Tin "Liquid inlet temperature";
     SI.MassFlowRate m_flow = inlet.m_flow "Mass flow rate (total)";
     SI.MassFlowRate m_flow_single = m_flow/Np "Mass flow rate (single pump)";
@@ -208,8 +208,6 @@ package Pumps "Pump components"
         "Curvilinear abscissa for the flow curve in parametric form (either mass flow rate or head)";
     Medium.ThermodynamicState inlet_state_inflow
         "Medium state close to inlet for inflowing mass flow";
-    Medium.EnthalpyFlowRate inlet_H_flow;
-    Medium.EnthalpyFlowRate outlet_H_flow;
     protected
    parameter Boolean allowFlowReversal=
        flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
@@ -257,27 +255,43 @@ package Pumps "Pump components"
     outlet.C_outflow = inStream(inlet.C_outflow);
 
     // Energy balances
-    inlet.h_outflow   = h_out;
-    outlet.h_outflow  = h_out;
-    inlet_H_flow=semiLinear(inlet.m_flow, inStream(inlet.h_outflow), h_out)
-        "Enthalpy flow at the inlet";
-    outlet_H_flow=semiLinear(outlet.m_flow, inStream(outlet.h_outflow), h_out)
-        "Enthalpy flow at the outlet";
     if M > 0 then
-      // M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single
-         M * der(h_out) = (inlet_H_flow + outlet_H_flow + W_tot)/Np
-          "Dynamic energy balance (density variations neglected)";
+       // Dynamic energy balance
+       // mass variations and p/d are neglected
+       M*der(h) = inlet.m_flow*actualStream(inlet.h_outflow) +
+                  outlet.m_flow*actualStream(outlet.h_outflow) +
+                  W_single;
+       outlet.h_outflow  = h;
+       inlet.h_outflow   = h;
     else
-      inlet_H_flow + outlet_H_flow + W_tot = 0 "Static energy balance";
+      outlet.h_outflow  = inStream(inlet.h_outflow) + W_tot/m_flow;
+      inlet.h_outflow  = inStream(outlet.h_outflow) + W_tot/m_flow;
+      h = 0 "Unused";
     end if;
+
+  /*
+  inlet.h_outflow   = h_out;
+  outlet.h_outflow  = h_out;
+  inlet_H_flow=semiLinear(inlet.m_flow, inStream(inlet.h_outflow), h_out) 
+    "Enthalpy flow at the inlet";
+  outlet_H_flow=semiLinear(outlet.m_flow, inStream(outlet.h_outflow), h_out) 
+    "Enthalpy flow at the outlet";
+  if M > 0 then
+    // M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single
+       M * der(h_out) = (inlet_H_flow + outlet_H_flow + W_tot)/Np 
+      "Dynamic energy balance (density variations neglected)";
+  else
+    inlet_H_flow + outlet_H_flow + W_tot = 0 "Static energy balance";
+  end if;
+*/
 
   initial equation
     if initType == Types.Init.NoInit or not M > 0 then
     // no initial equations
     elseif initType == Types.Init.InitialValues then
-      h_out = h_start;
+      h = h_start;
     elseif initType == Types.Init.SteadyState then
-      der(h_out) = 0;
+      der(h) = 0;
     else
       assert(false, "Unsupported initialization option");
     end if;

@@ -38,11 +38,10 @@ annotation (
           q_nom={0,0.001,0.0015}, head_nom={100,50,0}),
     N_nom=1500,
     use_N_input=true,
+    initType=Modelica_Fluid.Types.Init.InitialValues,
     M=0.1,
     pin_start=100000,
-    pout_start=700000,
-    initType=Modelica_Fluid.Types.Init.InitialValues) 
-                           annotation (Placement(transformation(extent={{-46,-40},
+    pout_start=700000)     annotation (Placement(transformation(extent={{-46,-40},
             {-14,-10}},rotation=0)));
   inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent={{80,60},
@@ -51,13 +50,13 @@ annotation (
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nom=1,
-    dp_nom=800000)
+    dp_nom=800000) 
     annotation (Placement(transformation(extent={{-28,6},{-50,26}})));
   Modelica_Fluid.ControlValves.ValveIncompressible V2(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nom=1,
-    dp_nom=800000)
+    dp_nom=800000) 
     annotation (Placement(transformation(extent={{0,-30},{22,-10}})));
   Modelica.Blocks.Sources.Ramp V1_Opening(
     duration=1,
