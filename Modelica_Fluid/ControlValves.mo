@@ -317,7 +317,7 @@ it is open.
       import Modelica_Fluid.Types.CvTypes;
       extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
           dp_start=dp_nom, m_flow_start=m_flow_nom);
-      parameter CvTypes CvData=CvTypes.Av "Selection of flow coefficient" 
+      parameter CvTypes CvData=CvTypes.OpPoint "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
       parameter SI.Area Av(
         fixed=if CvData == CvTypes.Av then true else false,
