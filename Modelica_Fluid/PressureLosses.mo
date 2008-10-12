@@ -26,10 +26,21 @@ model StaticHead
             fillColor={0,127,255}),
           Text(
             extent={{-150,80},{150,120}},
-            lineColor={0,0,0},
+            lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString="%name")}),         Documentation(info="<html>
+            textString="%name"),
+          Line(
+            points={{30,-90},{-60,-90}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-76},{60,-90},{20,-104},{20,-76}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
+                                           Documentation(info="<html>
 <p>
 This model describes the static head due to the relative height between the two connectors. No mass, energy and momentum storage, and no pressure drop due to friction are considered.
 </p>
@@ -82,7 +93,7 @@ model SimpleGenericOrifice
           grid={1,1}), graphics={
           Text(
             extent={{-150,60},{150,100}},
-            lineColor={0,0,0},
+            lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
             textString="%name"),
@@ -93,13 +104,17 @@ model SimpleGenericOrifice
           Line(points={{-60,0},{-100,0}}, color={0,127,255}),
           Line(points={{60,0},{100,0}}, color={0,127,255}),
           Text(
-            extent={{-168,-92},{180,-134}},
+            extent={{-168,-96},{180,-138}},
             lineColor={0,0,0},
             textString="zeta=%zeta"),
-          Line(points={{-50,-70},{50,-70}}, color={0,128,255}),
+          Line(
+            points={{30,-70},{-60,-70}},
+            color={0,128,255},
+            smooth=Smooth.None),
           Polygon(
-            points={{24,-60},{24,-80},{50,-70},{24,-60}},
+            points={{20,-56},{60,-70},{20,-84},{20,-56}},
             lineColor={0,128,255},
+            smooth=Smooth.None,
             fillColor={0,128,255},
             fillPattern=FillPattern.Solid)}),
     Documentation(info="<html>
@@ -266,10 +281,20 @@ end SimpleGenericOrifice;
             fillColor={0,127,255}),
           Text(
             extent={{-150,80},{150,120}},
-            lineColor={0,0,0},
+            lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString="%name")}),           Documentation(info="<html>
+            textString="%name"),
+          Line(
+            points={{30,-85},{-60,-85}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-70},{60,-85},{20,-100},{20,-70}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),Documentation(info="<html>
 <p>
 This model describes pressure losses due to <b>wall friction</b> in a pipe
 and due to gravity.
@@ -347,7 +372,8 @@ model SuddenExpansion
 
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={
+              100,100}},
+          grid={1,1}), graphics={
           Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,-100},
                 {100,100},{0,100},{0,40}}, color={0,0,0}),
           Rectangle(
@@ -383,10 +409,11 @@ model SuddenExpansion
             fillPattern=FillPattern.Solid,
             textString="D_b")}),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+              100}},
+          grid={1,1}), graphics={
           Text(
             extent={{-150,90},{150,130}},
-            lineColor={0,0,0},
+            lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
             textString="%name"),
@@ -404,7 +431,17 @@ model SuddenExpansion
             extent={{0,60},{100,-60}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255})}),
+            fillColor={0,127,255}),
+          Line(
+            points={{30,-100},{-60,-100}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-85},{60,-100},{20,-115},{20,-85}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
       Documentation(info="<html>
  
 </html>"));
@@ -424,10 +461,11 @@ model SharpEdgedOrifice
     Documentation(info="<html>
 </html>"),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+              100}},
+          grid={1,1}), graphics={
           Text(
             extent={{-150,90},{150,130}},
-            lineColor={0,0,0},
+            lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
             textString="%name"),
@@ -450,9 +488,20 @@ model SharpEdgedOrifice
             points={{-22,-10},{-22,-60},{38,-60},{38,-50},{-22,-10}},
             lineColor={0,0,0},
             fillColor={255,255,255},
-            fillPattern=FillPattern.Backward)}),
+            fillPattern=FillPattern.Backward),
+          Line(
+            points={{40,-100},{-50,-100}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{30,-85},{70,-100},{30,-115},{30,-85}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={
+              100,100}},
+          grid={1,1}), graphics={
           Rectangle(
             extent={{-100,60},{100,-60}},
             lineColor={0,0,0},

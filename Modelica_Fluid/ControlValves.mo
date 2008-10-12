@@ -65,8 +65,8 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     Medium.AbsolutePressure pin "Inlet pressure";
     Medium.AbsolutePressure pout "Outlet pressure";
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}),
            graphics),
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
               100,100}}),
@@ -199,7 +199,10 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     annotation (Placement(transformation(
           origin={0,90},
           extent={{-20,-20},{20,20}},
-          rotation=270)));
+          rotation=270), iconTransformation(
+          extent={{-20,-20},{20,20}},
+          rotation=270,
+          origin={0,80})));
     parameter Real minOpening(min=0, max=0.1)=0
       "Minimum position of opening (leakage flow to improve numerics)" 
     annotation(Dialog(tab="Advanced"));
@@ -212,27 +215,39 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
 
   annotation (
     Icon(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Polygon(
             points={{-100,50},{-100,-50},{0,0},{-100,50}},
             lineColor={0,0,0},
-            lineThickness=0.5),
-          Line(
-            points={{0,60},{0,0}},
-            color={0,0,0},
-            thickness=0.5),
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Line(points={{0,50},{0,0}}, color={0,0,0}),
           Rectangle(
-            extent={{-20,70},{20,50}},
+            extent={{-20,60},{20,50}},
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid),
           Polygon(
             points={{100,50},{0,0},{100,-50},{100,50}},
             lineColor={0,0,0},
-            lineThickness=0.5),
-          Text(extent={{-153,-60},{150,-100}}, textString="%name")}),
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Line(
+            points={{30,-50},{-60,-50}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-36},{60,-50},{20,-64},{20,-36}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid),
+          Text(
+            extent={{-150,-80},{150,-120}},
+            textString="%name",
+            lineColor={0,0,255})}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -271,23 +286,36 @@ Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corre
     Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
+          grid={2,2}), graphics={
           Line(points={{0,50},{0,0}}, color={0,0,0}),
           Rectangle(
             extent={{-20,60},{20,50}},
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid),
-          Text(extent={{-150,-60},{150,-100}}, textString="%name"),
           Polygon(
             points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
-            fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,
-                0} else {255,255,255}),
-            lineColor={0,0,0})}),
+            fillColor={255,255,255},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.Solid),
+          Line(
+            points={{30,-50},{-60,-50}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-36},{60,-50},{20,-64},{20,-36}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid),
+          Text(
+            extent={{-150,-80},{150,-120}},
+            textString="%name",
+            lineColor={0,0,255})}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics),
+          grid={2,2}), graphics),
     Documentation(info="<HTML>
 <
 <p>
@@ -361,7 +389,10 @@ it is open.
                                        annotation (Placement(transformation(
             origin={0,90},
             extent={{-20,-20},{20,20}},
-            rotation=270)));
+            rotation=270), iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=270,
+            origin={0,80})));
 
       parameter Real minStemPosition(
         min=0,
@@ -375,39 +406,36 @@ it is open.
             preserveAspectRatio=true,
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics={
-            Text(extent={{-150,-60},{150,-100}}, textString="%name"),
-            Line(
-              points={{0,60},{0,0}},
-              color={0,0,0},
-              thickness=0.5),
+            Text(
+              extent={{-150,-78},{150,-118}},
+              textString="%name",
+              lineColor={0,0,255}),
+            Line(points={{0,52},{0,0}}, color={0,0,0}),
             Polygon(
               points={{-100,50},{-100,-50},{0,0},{-100,50}},
               lineColor={0,0,0},
-              lineThickness=0.5),
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
             Polygon(
               points={{100,50},{0,0},{100,-50},{100,50}},
               lineColor={0,0,0},
-              lineThickness=0.5),
+              fillPattern=FillPattern.Solid,
+              fillColor={255,255,255}),
             Rectangle(
-              extent={{-20,70},{20,50}},
+              extent={{-20,60},{20,52}},
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid),
-            Line(
-              points={{-24,-32},{30,-32}},
-              color={0,0,0},
+            Polygon(
+              points={{20,-36},{60,-50},{20,-64},{20,-36}},
+              lineColor={0,128,255},
               smooth=Smooth.None,
-              thickness=0.5),
+              fillColor={0,128,255},
+              fillPattern=FillPattern.Solid),
             Line(
-              points={{8,-20},{30,-32}},
-              color={0,0,0},
-              smooth=Smooth.None,
-              thickness=0.5),
-            Line(
-              points={{30,-32},{8,-44}},
-              color={0,0,0},
-              smooth=Smooth.None,
-              thickness=0.5)}),
+              points={{30,-50},{-60,-50}},
+              color={0,128,255},
+              smooth=Smooth.None)}),
         Diagram(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},

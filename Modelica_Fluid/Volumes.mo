@@ -10,20 +10,28 @@ package Volumes "Generic volume, tank and other volume type components"
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={Ellipse(
+        Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics={
+          Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
-            fillColor={170,213,255}), Text(
-            extent={{-130,-108},{144,-150}},
-            lineColor={0,0,0},
-            textString="V=%V")}),
+            fillColor={170,213,255}),
+          Line(
+            points={{36,-1},{-54,-1}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{26,14},{66,-1},{26,-16},{26,14}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
       Documentation(info="<html>
 Ideally mixed volume of constant size with two fluid ports and one medium model. The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. The thermal port temperature is equal to the medium temperature.
 </html>"),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics));
     equation
       thermalPort.T = medium.T;
@@ -37,8 +45,8 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     extends BaseClasses.PartialLumpedVolume;
     parameter SI.Area pistonCrossArea "cross sectional area of pistion";
     parameter SI.Volume clearance "remaining volume at zero piston stroke";
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-              -100,-100},{100,100}}),
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}),
                         graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false,
             extent={{-100,-100},{100,100}}), graphics={
@@ -80,11 +88,11 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
             fillPattern=FillPattern.Forward),
           Line(
             points={{-102,0},{-70,0},{-70,40},{-44,40}},
-            color={170,213,255},
+            color={0,128,255},
             smooth=Smooth.None),
           Line(
             points={{44,40},{70,40},{70,0},{100,0}},
-            color={170,213,255},
+            color={0,128,255},
             smooth=Smooth.None)}),
       Documentation(info="<html>
 <p> Mixing volume with varying size. The size of the volume is given by:</p>
@@ -746,9 +754,11 @@ end Tank;
         SI.Power Ws_flow "Work flow across boundaries or source term";
         annotation (
           Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                {100,100}}), graphics={Text(extent={{-150,110},{150,150}},
-                textString="%name"), Text(
-              extent={{-130,-108},{144,-150}},
+                {100,100}}), graphics={Text(
+              extent={{-150,110},{150,150}},
+              textString="%name",
+              lineColor={0,0,255}), Text(
+              extent={{-150,-110},{150,-140}},
               lineColor={0,0,0},
               textString="V=%V")}),
           Documentation(info="<html>

@@ -46,15 +46,17 @@ The <b>one port</b> sensors have the advantage of easily introducing them to and
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={Line(points={{70,0},{100,0}}, color={0,0,127}),
-            Line(points={{0,-70},{0,-100}}, color={0,127,255})}),
+          grid={1,1}), graphics),
     Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Line(points={{70,0},{100,0}}, color={0,0,127}),
           Line(points={{0,-70},{0,-100}}, color={0,127,255}),
-          Text(extent={{-150,80},{150,120}}, textString="%name"),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{212,-51},{52,-103}},
             lineColor={0,0,0},
@@ -81,12 +83,15 @@ ideal, i.e., it does not influence the fluid.
             rotation=0)));
 
   annotation (defaultComponentName="density",
-    Diagram(graphics={Line(points={{0,-70},{0,-100}}, color={0,0,127}), Line(
-              points={{70,0},{100,0}}, color={0,0,127})}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
-          Text(extent={{-150,80},{150,120}}, textString="%name"),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{170,-53},{10,-105}},
             lineColor={0,0,0},
@@ -122,13 +127,14 @@ ideal, i.e., it does not influence the fluid.
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
   annotation (defaultComponentName="density",
-    Diagram(graphics={
-          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
-          Text(extent={{-150,80},{150,120}}, textString="%name"),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{168,-71},{8,-123}},
             lineColor={0,0,0},
@@ -169,7 +175,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
               0)));
 
   annotation (defaultComponentName="temperature",
-    Diagram(graphics={
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
           Ellipse(
             extent={{-20,-98},{20,-60}},
@@ -199,8 +206,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{-40,20},{-12,20}}, color={0,0,0}),
           Line(points={{-40,60},{-12,60}}, color={0,0,0}),
           Line(points={{12,0},{60,0}}, color={0,0,127})}),
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Ellipse(
             extent={{-20,-88},{20,-50}},
             lineColor={0,0,0},
@@ -213,8 +220,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
             fillColor={191,0,0},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},
-                {12,90},{12,50},{-12,50}},
+            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},{
+                12,90},{12,50},{-12,50}},
             lineColor={0,0,0},
             lineThickness=0.5),
           Line(
@@ -232,7 +239,10 @@ The sensor is ideal, i.e. it does not influence the fluid.
             extent={{120,-40},{0,-90}},
             lineColor={0,0,0},
             textString="T"),
-          Text(extent={{-150,110},{150,150}}, textString="%name"),
+          Text(
+            extent={{-150,110},{150,150}},
+            textString="%name",
+            lineColor={0,0,255}),
           Line(points={{12,0},{60,0}}, color={0,0,127})}),
       Documentation(info="<HTML>
 <p>
@@ -263,10 +273,15 @@ ideal, i.e., it does not influence the fluid.
       annotation(Dialog(tab="Advanced"));
 
   annotation (defaultComponentName="temperature",
-    Diagram(graphics),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+            graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
-          Text(extent={{-150,110},{150,150}}, textString="%name"),
+          Text(
+            extent={{-150,110},{150,150}},
+            textString="%name",
+            lineColor={0,0,255}),
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
           Line(points={{-92,0},{100,0}}, color={0,128,255}),
           Ellipse(
@@ -281,8 +296,8 @@ ideal, i.e., it does not influence the fluid.
             fillColor={191,0,0},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},
-                {12,90},{12,50},{-12,50}},
+            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},{
+                12,90},{12,50},{-12,50}},
             lineColor={0,0,0},
             lineThickness=0.5),
           Line(
@@ -333,12 +348,15 @@ The sensor is ideal, i.e. it does not influence the fluid.
             rotation=0)));
 
   annotation (defaultComponentName="specificEnthalpy",
-    Diagram(graphics={Line(points={{0,-70},{0,-100}}, color={0,0,127}), Line(
-              points={{70,0},{100,0}}, color={0,0,127})}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
-          Text(extent={{-150,80},{150,120}}, textString="%name"),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{212,-51},{52,-103}},
             lineColor={0,0,0},
@@ -372,13 +390,14 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
       annotation(Dialog(tab="Advanced"));
 
   annotation (defaultComponentName="specificEnthalpy",
-    Diagram(graphics={
-          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
-          Text(extent={{-150,80},{150,120}}, textString="%name"),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{168,-71},{8,-123}},
             lineColor={0,0,0},
@@ -411,12 +430,15 @@ The sensor is ideal, i.e. it does not influence the fluid.
             rotation=0)));
 
   annotation (defaultComponentName="specificEntropy",
-    Diagram(graphics={Line(points={{0,-70},{0,-100}}, color={0,0,127}), Line(
-              points={{70,0},{100,0}}, color={0,0,127})}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
-          Text(extent={{-150,80},{150,120}}, textString="%name"),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{170,-55},{10,-107}},
             lineColor={0,0,0},
@@ -448,13 +470,14 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
       annotation(Dialog(tab="Advanced"));
 
   annotation (defaultComponentName="specificEntropy",
-    Diagram(graphics={
-          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
-          Text(extent={{-150,80},{150,120}}, textString="%name"),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{168,-71},{8,-123}},
             lineColor={0,0,0},
@@ -498,13 +521,14 @@ The sensor is ideal, i.e. it does not influence the fluid.
           rotation=270)));
 
   annotation (
-    Diagram(graphics={
-          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
-          Text(extent={{-150,80},{150,120}}, textString="%name"),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
           Line(points={{70,0},{100,0}}, color={0,128,255}),
           Text(
             extent={{178,-81},{18,-133}},
@@ -538,13 +562,14 @@ The sensor is ideal, i.e., it does not influence the fluid.
       annotation(Dialog(tab="Advanced"));
 
   annotation (
-    Diagram(graphics={
-          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127})}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
-          Text(extent={{-150,80},{150,120}}, textString="%name"),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{188,-71},{28,-123}},
             lineColor={0,0,0},
@@ -590,7 +615,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
     Modelica_Fluid.Interfaces.FluidPort_b port_b(m_flow(min=0),
                                   redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{110,-12},{90,8}}, rotation=
-              0)));
+              0), iconTransformation(extent={{110,-10},{90,10}})));
 
     Modelica.Blocks.Interfaces.RealOutput p_rel(final quantity="Pressure",
                                                 final unit="Pa",
@@ -604,20 +629,15 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{-100,0},{-70,0}}, color={0,127,255}),
           Line(points={{70,0},{100,0}}, color={0,127,255}),
           Line(points={{0,-30},{0,-80}}, color={0,0,127}),
-          Text(extent={{-150,40},{150,80}}, textString="%name"),
+          Text(
+            extent={{-150,40},{150,80}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{92,-62},{34,-122}},
             lineColor={0,0,0},
             textString="p_rel")}),
-      Diagram(graphics={
-          Line(points={{-100,0},{-70,0}}, color={0,127,255}),
-          Line(points={{70,0},{100,0}}, color={0,127,255}),
-          Line(points={{0,-30},{0,-80}}, color={0,0,127}),
-          Text(
-            extent={{64,-74},{32,-102}},
-            lineColor={0,0,0},
-            textString=
-                 "p_rel")}),
+      Diagram(graphics),
       Documentation(info="<HTML>
 <p>
 The relative pressure \"port_a.p - port_b.p\" is determined between
@@ -670,20 +690,15 @@ through the sensor is allowed.
           Line(points={{-100,0},{-70,0}}, color={0,127,255}),
           Line(points={{70,0},{100,0}}, color={0,127,255}),
           Line(points={{0,-30},{0,-80}}, color={0,0,127}),
-          Text(extent={{-150,40},{150,80}}, textString="%name"),
+          Text(
+            extent={{-150,40},{150,80}},
+            textString="%name",
+            lineColor={0,0,255}),
           Text(
             extent={{92,-62},{34,-122}},
             lineColor={0,0,0},
             textString="p_rel")}),
-      Diagram(graphics={
-          Line(points={{-100,0},{-70,0}}, color={0,127,255}),
-          Line(points={{70,0},{100,0}}, color={0,127,255}),
-          Line(points={{0,-30},{0,-80}}, color={0,0,127}),
-          Text(
-            extent={{64,-74},{32,-102}},
-            lineColor={0,0,0},
-            textString=
-                 "T_rel")}),
+      Diagram(graphics),
       Documentation(info="<HTML>
 <p>
 The relative temperature \"port_a.T - port_b.T\" is determined between

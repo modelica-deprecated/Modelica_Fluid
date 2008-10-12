@@ -199,12 +199,22 @@ package HeatExchangers "Evaporators and condensor components"
             fillPattern=FillPattern.Solid),
           Text(
             extent={{-150,70},{150,110}},
-            lineColor={0,0,0},
+            lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
             textString="%name"),
-          Line(points={{0,-60},{0,-100}}, color={191,0,0}),
-          Line(points={{100,100},{100,60}}, color={0,0,127})}),
+          Line(points={{0,-61},{0,-100}}, color={191,0,0}),
+          Line(points={{100,100},{100,60}}, color={0,0,127}),
+          Line(
+            points={{30,-80},{-60,-80}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-65},{60,-80},{20,-95},{20,-65}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
       Documentation(revisions="<html>
 <ul>
 <li><i>2 Nov 2005</i>
@@ -396,11 +406,12 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       show_Re=false) 
                 annotation (Placement(transformation(extent={{-40,88},{20,28}},
             rotation=0)));
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-              -100,-100},{100,100}}),
-                        graphics),
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}},
+          grid={1,1}),  graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}}), graphics={
+            extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
           Rectangle(
             extent={{-100,-26},{100,-30}},
             lineColor={0,0,0},
@@ -427,9 +438,19 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,128,255}),
           Text(
-            extent={{-100,-60},{100,-100}},
+            extent={{-150,110},{150,70}},
             lineColor={0,0,255},
-            textString="%name")}),
+            textString="%name"),
+          Line(
+            points={{30,-85},{-60,-85}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-70},{60,-85},{20,-100},{20,-70}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
       Documentation(info="<html>
 Simple model of a heat exchanger consisting of two pipes and one wall in between. For both fluids geometry parameters, such as heat transfer area and cross section as well as heat transfer and pressure drop correlations may be chosen. The flow scheme be cocurrent or counterflow, defined by the respective flow directions of the fluids entering the component.
 </html>"));
