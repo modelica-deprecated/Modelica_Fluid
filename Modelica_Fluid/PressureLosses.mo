@@ -175,9 +175,7 @@ end SimpleGenericOrifice;
                                                        Medium.p_default, Medium.T_default, Medium.X_default))
       "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
                                                                               annotation(Dialog(enable=use_nominal));
-    parameter SI.Density d_nominal = Medium.density(
-                                       Medium.setState_pTX(
-                                          Medium.p_default, Medium.T_default, Medium.X_default))
+    parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
       "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
                                                                annotation(Dialog(enable=use_nominal));
 

@@ -336,7 +336,8 @@ it is open.
       annotation(Dialog(group="Nominal operating point"));
       parameter Medium.MassFlowRate m_flow_nom "Nominal mass flowrate" 
       annotation(Dialog(group="Nominal operating point"));
-      parameter Medium.Density d_nom=1000 "Nominal inlet density" 
+      parameter Medium.Density d_nom=Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+        "Nominal inlet density" 
       annotation(Dialog(group="Nominal operating point"));
       parameter Real stemPosition_nom=1 "Nominal stem position" 
       annotation(Dialog(group="Nominal operating point"));
