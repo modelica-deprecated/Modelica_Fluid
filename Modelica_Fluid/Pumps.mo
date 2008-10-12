@@ -269,22 +269,6 @@ package Pumps "Pump components"
       h = 0 "Unused";
     end if;
 
-  /*
-  inlet.h_outflow   = h_out;
-  outlet.h_outflow  = h_out;
-  inlet_H_flow=semiLinear(inlet.m_flow, inStream(inlet.h_outflow), h_out) 
-    "Enthalpy flow at the inlet";
-  outlet_H_flow=semiLinear(outlet.m_flow, inStream(outlet.h_outflow), h_out) 
-    "Enthalpy flow at the outlet";
-  if M > 0 then
-    // M * der(h_out) = m_flow_single*(inlet.h - outlet.h) + W_single
-       M * der(h_out) = (inlet_H_flow + outlet_H_flow + W_tot)/Np 
-      "Dynamic energy balance (density variations neglected)";
-  else
-    inlet_H_flow + outlet_H_flow + W_tot = 0 "Static energy balance";
-  end if;
-*/
-
   initial equation
     if initType == Types.Init.NoInit or not M > 0 then
     // no initial equations
