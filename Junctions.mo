@@ -440,7 +440,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
             fillPattern=FillPattern.Solid),
           Text(
             extent={{-150,150},{150,110}},
-            lineColor={0,0,0},
+            lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
             textString="%name")}),

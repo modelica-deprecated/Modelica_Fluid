@@ -3,35 +3,28 @@ package Pumps "Pump components"
   extends Modelica_Fluid.Icons.VariantLibrary;
   model Pump "Centrifugal pump with ideally controlled speed"
     extends Modelica_Fluid.Pumps.BaseClasses.PartialPump;
+    parameter Boolean use_N_input = true
+      "Get the rotational speed from the input connector";
     parameter Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm
       N_const =                                                                     N_nom
       "Constant rotational speed" annotation(Dialog(enable = not use_N_input));
-    parameter Boolean use_N_input = false
-      "Get the rotational speed from the input connector";
-    Modelica.Blocks.Interfaces.RealInput N_in if use_N_input
+    Modelica.Blocks.Interfaces.RealInput N_in(unit="1/min") if use_N_input
       "Prescribed rotational speed" 
       annotation (Placement(transformation(
-          origin={-26,44},
-          extent={{-10,-10},{10,10}},
-          rotation=270)));
-  protected
-    Modelica.Blocks.Interfaces.RealInput N_in_internal
-      "Needed to connect to conditional connector";
-  equation
-    // Connect statement active only if usePressureInput = true
-    connect(N_in, N_in_internal);
-    // Internal connector value when usePressureInput = false
-    if not use_N_input then
-      N_in_internal = N_const;
-    end if;
-    // Set N with a lower limit to avoid singularities at zero speed
-    N = max(N_in_internal,1e-3) "Rotational speed";
+          extent={{-20,-20},{20,20}},
+          rotation=-90,
+          origin={0,100}), iconTransformation(
+          extent={{-20,-20},{20,20}},
+          rotation=-90,
+          origin={0,100})));
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={Text(extent={{-58,58},{-30,38}}, textString="n")}),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
-              graphics),
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
+            visible=use_N_input,
+            extent={{22,120},{172,104}},
+            textString="N_in [rpm]")}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics),
       Documentation(info="<HTML>
 <p>This model describes a centrifugal pump (or a group of <tt>Np</tt> pumps in parallel) with controlled speed, either fixed or provided by an external signal.
 <p>The model extends <tt>PartialPump</tt>
@@ -44,6 +37,20 @@ package Pumps "Pump components"
        Model added to the Fluid library</li>
 </ul>
 </html>"));
+
+  protected
+    Modelica.Blocks.Interfaces.RealInput N_in_internal(unit="1/min")
+      "Needed to connect to conditional connector";
+  equation
+    // Connect statement active only if usePressureInput = true
+    connect(N_in, N_in_internal);
+    // Internal connector value when usePressureInput = false
+    if not use_N_input then
+      N_in_internal = N_const;
+    end if;
+    // Set N with a lower limit to avoid singularities at zero speed
+    N = max(N_in_internal,1e-3) "Rotational speed";
+
   end Pump;
 
   model PumpShaft "Centrifugal pump with mechanical connector for the shaft"
@@ -176,18 +183,19 @@ package Pumps "Pump components"
               Types.Init.NoInit "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
     Modelica_Fluid.Interfaces.FluidPort_a inlet(
-                                 redeclare package Medium = Medium,
+        redeclare package Medium = Medium,
         p(start=pin_start),
         m_flow(start = m_flow_start,
                min = if allowFlowReversal and not checkValve then -Constants.inf else 0)) 
-    annotation (Placement(transformation(extent={{-100,-40},{-60,0}}, rotation=
-                0)));
+    annotation (Placement(transformation(extent={{
+              -90,-10},{-70,10}}), iconTransformation(extent={{-90,-10},{-70,10}})));
     Modelica_Fluid.Interfaces.FluidPort_b outlet(
                                   redeclare package Medium = Medium,
         p(start=pout_start),
         m_flow(start = -m_flow_start,
                max = if allowFlowReversal and not checkValve then +Constants.inf else 0)) 
-    annotation (Placement(transformation(extent={{40,12},{80,52}}, rotation=0)));
+    annotation(Placement(transformation(extent={{
+              70,-10},{90,10}}), iconTransformation(extent={{70,-10},{90,10}})));
     SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
     Medium.Density d "Liquid density at the inlet";
@@ -265,9 +273,17 @@ package Pumps "Pump components"
        outlet.h_outflow  = h;
        inlet.h_outflow   = h;
     else
+      /* In the following two equations the extra term W_tot/m_flow is
+       present where a 0/0 term appears if m_flow = 0. In order to avoid
+       numerical problems, this term is analytically simplified:
+         W_tot/m_flow = Np*W_single/(d*q_flow_single*Np)
+                      = Np*dp*q_flow_single/(eta*d*q_flow_single*Np)
+                      = dp/(eta*d)
+    */
       outlet.h_outflow  = inStream(inlet.h_outflow) + dp/(d*eta);
       inlet.h_outflow  = inStream(outlet.h_outflow) + dp/(d*eta);
-      h = 0 "Unused";
+      h = Medium.h_default
+          "Unused (set to an arbitrary value within the medium region)";
     end if;
 
   initial equation
@@ -281,7 +297,7 @@ package Pumps "Pump components"
       assert(false, "Unsupported initialization option");
     end if;
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
                 100}}), graphics={
             Polygon(
               points={{-40,-64},{-60,-100},{60,-100},{40,-64},{-40,-64}},
@@ -290,17 +306,20 @@ package Pumps "Pump components"
               fillColor={0,0,191},
               fillPattern=FillPattern.Solid),
             Ellipse(
-              extent={{-60,40},{60,-80}},
+              extent={{-80,80},{80,-80}},
               lineColor={0,0,0},
               fillPattern=FillPattern.Sphere),
             Polygon(
-              points={{-30,12},{-30,-48},{48,-20},{-30,12}},
+              points={{-28,30},{-28,-30},{50,-2},{-28,30}},
               lineColor={0,0,0},
               pattern=LinePattern.None,
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={255,255,255}),
-            Text(extent={{-100,-110},{100,-136}}, textString="%name")}),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+            Text(
+              extent={{-148,-110},{152,-150}},
+              textString="%name",
+              lineColor={0,0,255})}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
                 100,100}}),
               graphics),
       Documentation(info="<HTML>

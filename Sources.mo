@@ -37,8 +37,10 @@ package Sources
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
-            fillColor={0,127,255}), Text(extent={{-150,110},{150,150}},
-              textString="%name")}),
+            fillColor={0,127,255}), Text(
+            extent={{-150,110},{150,150}},
+            textString="%name",
+            lineColor={0,0,255})}),
       Documentation(info="<html>
 <p>
 Model <b>FixedBoundary</b> defines constant values for boundary conditions:
@@ -93,8 +95,10 @@ with exception of boundary pressure, do not have an effect.
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
-            fillColor={0,127,255}), Text(extent={{-150,110},{150,150}},
-              textString="%name")}),
+            fillColor={0,127,255}), Text(
+            extent={{-150,110},{150,150}},
+            textString="%name",
+            lineColor={0,0,255})}),
       Documentation(info="<html>
 <p>
 Defines constant values for boundary conditions:
@@ -137,8 +141,10 @@ with exception of boundary pressure, do not have an effect.
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
-            fillColor={0,127,255}), Text(extent={{-150,110},{150,150}},
-              textString="%name")}),
+            fillColor={0,127,255}), Text(
+            extent={{-150,110},{150,150}},
+            textString="%name",
+            lineColor={0,0,255})}),
       Documentation(info="<html>
 <p>
 Defines constant values for boundary conditions:
@@ -224,22 +230,34 @@ to define fixed or prescribed ambient conditions.
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
             fillColor={0,127,255}),
-          Text(extent={{-150,110},{150,150}}, textString="%name"),
-          Line(points={{-100,60},{-80,60}}, color={0,0,255}),
-          Line(points={{-100,-60},{-80,-60}}, color={0,0,255}),
           Text(
+            extent={{-150,110},{150,150}},
+            textString="%name",
+            lineColor={0,0,255}),
+          Line(
+            visible=usePressureInput,
+            points={{-100,60},{-80,60}},
+            color={0,0,255}),
+          Line(
+            visible=useCompositionInput,
+            points={{-100,-60},{-80,-60}},
+            color={0,0,255}),
+          Text(
+            visible=usePressureInput,
             extent={{-146,110},{-62,70}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="p"),
           Text(
+            visible=useCompositionInput,
             extent={{-160,-22},{-58,-62}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="X"),
           Text(
+            visible=useTemperatureInput,
             extent={{-158,44},{-56,4}},
             lineColor={0,0,0},
             fillColor={255,255,255},
@@ -336,21 +354,39 @@ with exception of boundary pressure, do not have an effect.
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
             fillColor={0,127,255}),
-          Text(extent={{-150,110},{150,150}}, textString="%name"),
-          Line(points={{-100,60},{-66,60}}, color={0,0,255}),
-          Line(points={{-100,-60},{-66,-60}}, color={0,0,255}),
           Text(
+            extent={{-150,110},{150,150}},
+            textString="%name",
+            lineColor={0,0,255}),
+          Line(
+            visible=usePressureInput,
+            points={{-100,60},{-66,60}},
+            color={0,0,255}),
+          Line(
+            visible=useCompositionInput,
+            points={{-100,-60},{-66,-60}},
+            color={0,0,255}),
+          Text(
+            visible=usePressureInput,
             extent={{-148,120},{-70,80}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="p"),
           Text(
-            extent={{-152,-86},{-50,-126}},
+            visible=useEnthalpyInput,
+            extent={{-100,20},{2,-20}},
+            lineColor={255,255,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            textString="h"),
+          Text(
+            visible=useCompositionInput,
+            extent={{-140,-86},{-38,-126}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString="h")}),
+            textString="X")}),
       Documentation(info="<html>
 <p>
 Defines prescribed values for boundary conditions:
@@ -473,25 +509,31 @@ with exception of boundary pressure, do not have an effect.
             fillColor={255,0,0},
             fillPattern=FillPattern.Solid,
             textString="m"),
-          Text(extent={{-150,110},{150,150}}, textString="%name"),
+          Text(
+            extent={{-150,110},{150,150}},
+            textString="%name",
+            lineColor={0,0,255}),
           Ellipse(
             extent={{-26,30},{-18,22}},
             lineColor={255,0,0},
             fillColor={255,0,0},
             fillPattern=FillPattern.Solid),
           Text(
+            visible=useFlowRateInput,
             extent={{-194,112},{-54,80}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="m_flow"),
           Text(
+            visible=useTemperatureInput,
             extent={{-100,14},{-60,-20}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="T"),
           Text(
+            visible=useCompositionInput,
             extent={{-144,-90},{-24,-118}},
             lineColor={0,0,0},
             fillColor={255,255,255},
@@ -627,24 +669,30 @@ with exception of boundary flow rate, do not have an effect.
             fillColor={255,0,0},
             fillPattern=FillPattern.Solid),
           Text(
+            visible=useFlowRateInput,
             extent={{-194,115},{-54,83}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="m_flow"),
           Text(
+            visible=useEnthalpyInput,
             extent={{-100,15},{-60,-19}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString="T"),
+            textString="h"),
           Text(
+            visible=useCompositionInput,
             extent={{-145,-85},{-25,-113}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="X"),
-          Text(extent={{-150,110},{150,150}}, textString="%name")}),
+          Text(
+            extent={{-150,110},{150,150}},
+            textString="%name",
+            lineColor={0,0,255})}),
       Window(
         x=0.45,
         y=0.01,

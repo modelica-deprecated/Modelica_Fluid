@@ -15,10 +15,9 @@ model System "System properties and default values"
      annotation(Dialog(tab="Advanced"));
   parameter Types.Init initType=
             Types.Init.NoInit "Default initialization option" 
-    annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    annotation(Evaluate=true, Dialog(tab = "Advanced"));
 
   annotation (
-    preferedView="info",
     defaultComponentName="system",
     defaultComponentPrefixes="inner",
     missingInnerMessage="Your model is using an outer \"system\" component. An inner \"system\" component is not defined. For simulation drag Modelica_Fluid.System into your model to specify system properties.",
