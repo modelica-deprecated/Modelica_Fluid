@@ -20,8 +20,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
     height_ab=50) 
     annotation (Placement(transformation(
-        origin={-28,-45},
-        extent={{-11,-10},{11,10}},
+        origin={-30,-51},
+        extent={{-9,-10},{11,10}},
         rotation=90)));
 
   Pumps.Pump pumps(
@@ -49,7 +49,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     area=50,
     level_start=2.2,
     height=3) 
-    annotation (Placement(transformation(extent={{-14,-16},{6,4}}, rotation=0)));
+    annotation (Placement(transformation(extent={{-20,-16},{0,4}}, rotation=0)));
 
   Modelica_Fluid.ControlValves.ValveLinear userValve(
                                                  redeclare package Medium = 
@@ -93,7 +93,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
 
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-            100,100}}),
+            100,100}},
+        grid={1,1}),
             graphics),
     Documentation(info="<html>
 Water is pumped from a source by a pump (fitted with check valves), through a pipe whose outlet is 50 m higher than the source, into a reservoir. The users are represented by an equivalent valve, connected to the reservoir.
@@ -118,7 +119,11 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
       StopTime=2000,
       NumberOfIntervals=5000,
       Tolerance=1e-006),
-    experimentSetupOutput(equdistant=false));
+    experimentSetupOutput(equdistant=false),
+    Icon(coordinateSystem(
+        preserveAspectRatio=true,
+        extent={{-100,-100},{100,100}},
+        grid={1,1})));
   inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent=
             {{60,-96},{80,-76}}, rotation=0)));
@@ -144,15 +149,19 @@ equation
     annotation (Line(points={{21,70},{38,70}}, color={0,0,127}));
   connect(PT1.y, pumps.N_in) annotation (Line(points={{61,70},{74,70},{74,30},{
           -58,30},{-58,-60}},          color={0,0,127}));
-  connect(pipe.port_a, pumps.outlet)         annotation (Line(points={{-28,-56},
-          {-28,-70},{-50,-70}},                color={0,127,255}));
-  connect(pipe.port_b, reservoir.ports[1]) annotation (Line(points={{-28,-34},{
-          -28,-30},{-4.5,-30},{-4.5,-16}},
-                                         color={0,127,255}));
-  connect(userValve.port_a, reservoir.ports[1]) annotation (Line(points={{58,-30},
-          {-4.5,-30},{-4.5,-16}},    color={0,127,255}));
-  connect(reservoir.ports[1], reservoirPressure.port_a) annotation (Line(
-      points={{-4.5,-16},{-4.5,-22},{10,-22}},
-      color={0,0,255},
+  connect(pipe.port_a, pumps.outlet)         annotation (Line(points={{-30,-60},
+          {-30,-70},{-50,-70}},                color={0,127,255}));
+  connect(pipe.port_b, userValve.port_a) annotation (Line(
+      points={{-30,-40},{-30,-30},{58,-30}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(reservoirPressure.port_a, pipe.port_b) annotation (Line(
+      points={{10,-22},{-10,-22},{-10,-30},{-30,-30},{-30,-40}},
+      color={0,127,255},
+      smooth=Smooth.None,
       pattern=LinePattern.Dot));
+  connect(reservoir.ports[1], pipe.port_b) annotation (Line(
+      points={{-10.5,-16},{-10.5,-30},{-30,-30},{-30,-40}},
+      color={0,127,255},
+      smooth=Smooth.None));
 end PumpingSystem;
