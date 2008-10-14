@@ -1,4 +1,4 @@
-within ; 
+within ;  
 package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 3: One-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 3.0 and Dymola 7.1)"
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
