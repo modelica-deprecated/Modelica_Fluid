@@ -2,7 +2,9 @@ within Modelica_Fluid.Test.TestComponents.Sensors;
 model TestOnePortSensors2
   import Modelica_Fluid;
   package Medium = Modelica.Media.Water.StandardWater;
-  annotation (Diagram(graphics),
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -100},{100,100}}),
+                      graphics),
                        experiment(StopTime=15, Algorithm="Euler"),
     experimentSetupOutput);
   Modelica_Fluid.Volumes.MixingVolume MixingVolume1(
@@ -26,9 +28,6 @@ model TestOnePortSensors2
     h_start=1.5e5) 
                  annotation (Placement(transformation(extent={{32,30},{52,50}},
           rotation=0)));
-  Modelica_Fluid.Sensors.TemperatureOnePort Tmix1(redeclare package Medium = 
-        Medium) 
-    annotation (Placement(transformation(extent={{0,60},{20,80}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_phX Sink2(             redeclare package
       Medium = Medium,
     p=101325,
@@ -79,10 +78,6 @@ equation
           80,40}}, color={0,127,255}));
   connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (Line(
       points={{-14,40},{31.8,40}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(Tmix1.port, MixingVolume1.port_b) annotation (Line(
-      points={{10,60},{10,40},{-14,40}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(ramp.y, FlowSource2.m_flow_in) annotation (Line(
