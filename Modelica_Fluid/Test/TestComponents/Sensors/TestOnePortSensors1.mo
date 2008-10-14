@@ -7,7 +7,9 @@ model TestOnePortSensors1
   parameter Real A_rel = (D_a/D_b)^2;
   parameter Real zeta =  (1 - A_rel)^2;
 
-  annotation (Diagram(graphics),
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+            -100},{100,100}}),
+                      graphics),
                        experiment(StopTime=25, Algorithm="Dassl"),
     experimentSetupOutput);
   Modelica_Fluid.Volumes.MixingVolume volume1(
@@ -79,12 +81,8 @@ model TestOnePortSensors1
     diameter=D_a) annotation (Placement(transformation(extent={{40,-30},{60,-10}},
           rotation=0)));
 equation
-  connect(FlowSource2.port, volume1.port_a)       annotation (Line(points={{-48,
-          40},{-30.2,40}}, color={0,127,255}));
-  connect(Tmix1.port, volume1.port_b) annotation (Line(
-      points={{10,60},{10,40},{-10,40}},
-      color={0,127,255},
-      smooth=Smooth.None));
+  connect(FlowSource2.port, volume1.port_a)       annotation (Line(points={{-48,40},
+          {-30.2,40}},     color={0,127,255}));
   connect(ramp.y, FlowSource2.m_flow_in) annotation (Line(
       points={{-79,40},{-74,40},{-74,46},{-67.3,46}},
       color={0,0,127},
@@ -113,6 +111,10 @@ equation
       smooth=Smooth.None));
   connect(orifice2.port_b,sink2. port) annotation (Line(
       points={{60,-20},{80,-20}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(Tmix1.port, orifice1.port_a) annotation (Line(
+      points={{10,60},{10,40},{40,40}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestOnePortSensors1;
