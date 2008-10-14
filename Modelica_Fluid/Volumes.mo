@@ -220,6 +220,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
 
 equation
   // Only one connection allowed to a port to avoid unwanted ideal mixing
+/*
 for i in 1:n_ports loop
   assert(cardinality(ports[i]) <= 1,"
 ports[" + String(i) + "] of volume can at most be connected to one component.
@@ -228,6 +229,7 @@ place with these connections which is usually not the intention
 of the modeller.
 ");
 end for;
+*/
 
   //Total quantities
     V = area*level + V0 "Volume of fluid";
@@ -365,6 +367,7 @@ Adapted to the new fluid library interfaces:
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+equation
 
 end OpenTank;
 
@@ -486,6 +489,7 @@ equation
   assert(m>=0, "Mass in tank is zero");
 
   // Only one connection allowed to a port to avoid unwanted ideal mixing
+/*
 for i in 1:nTopPorts loop
   assert(cardinality(topPorts[i]) <= 1,"
 topPorts[" + String(i) + "] of volume can at most be connected to one component.
@@ -494,7 +498,7 @@ place with these connections which is usually not the intention
 of the modeller.
 ");
 end for;
-
+ 
 for i in 1:nPorts loop
   assert(cardinality(ports[i]) <= 1,"
 ports[" + String(i) + "] of volume can at most be connected to one component.
@@ -503,6 +507,7 @@ place with these connections which is usually not the intention
 of the modeller.
 ");
 end for;
+*/
 
   // Total quantities
     medium.p = p_ambient;
