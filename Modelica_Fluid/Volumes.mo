@@ -807,18 +807,20 @@ The component volume <tt>V_lumped</tt> is also a variable which needs to be set 
 
       equation
         // Only one connection allowed to a port to avoid unwanted ideal mixing
-        assert(cardinality(port_a) <= 1,"
+      /*
+  assert(cardinality(port_a) <= 1,"
 port_a of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
-        assert(cardinality(port_b) <= 1,"
+  assert(cardinality(port_b) <= 1,"
 port_b of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
+*/
 
         // Boundary conditions
         port_a.p = medium.p;
