@@ -217,24 +217,26 @@ package Junctions "Junction components"
 
   equation
     // Only one connection allowed to a port to avoid unwanted ideal mixing
-    assert(cardinality(port_1) <= 1,"
+  /*
+  assert(cardinality(port_1) <= 1,"
 port_1 of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
-    assert(cardinality(port_2) <= 1,"
+  assert(cardinality(port_2) <= 1,"
 port_2 of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
-    assert(cardinality(port_3) <= 1,"
+  assert(cardinality(port_3) <= 1,"
 port_3 of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
+*/
 
     // Boundary conditions
     port_1.h_outflow = medium.h;
@@ -493,23 +495,25 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
 
   equation
     // Only one connection allowed to a port to avoid unwanted ideal mixing
-  for i in 1:n_a loop
-    assert(cardinality(ports_a[i]) <= 1,"
-ports_a["   + String(i) + "] of volume can at most be connected to one component.
+  /*
+for i in 1:n_a loop
+  assert(cardinality(ports_a[i]) <= 1,"
+ports_a[" + String(i) + "] of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
-  end for;
-
-  for i in 1:n_b loop
-    assert(cardinality(ports_b[i]) <= 1,"
-ports_a["   + String(i) + "] of volume can at most be connected to one component.
+end for;
+ 
+for i in 1:n_b loop
+  assert(cardinality(ports_b[i]) <= 1,"
+ports_a[" + String(i) + "] of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
-  end for;
+end for;
+*/
 
     thermalPort.T = medium.T;
 
