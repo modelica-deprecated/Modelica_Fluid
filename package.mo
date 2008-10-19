@@ -4,7 +4,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 3: One-dimensional ther
   import SI = Modelica.SIunits;
 
 
-package UsersGuide "Users Guide"
+package UsersGuide "Users Guide" 
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Users guide of package Modelica_Fluid</font></h3>
