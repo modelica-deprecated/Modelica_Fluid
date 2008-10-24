@@ -601,14 +601,16 @@ k1=1, k2=3 is shown in the next figure:
   function regFun3 "Co-monotonic and C1 smooth regularization function"
 
     input Real x "Abszissa value";
-    input Real x0 "Lower ordinate value";
-    input Real x1 "Upper ordinate value";
-    input Real y0 "Abszissa value at lower ordinate value";
-    input Real y1 "Abszissa value at upper ordinate value";
-    input Real y0d "Derivative at lower ordinate value";
-    input Real y1d "Derivative at upper ordinate value";
+    input Real x0 "Lower abszissa value";
+    input Real x1 "Upper abszissa value";
+    input Real y0 "Ordinate value at lower ordinate value";
+    input Real y1 "Ordinate value at upper ordinate value";
+    input Real y0d "Derivative at lower abszissa value";
+    input Real y1d "Derivative at upper abszissa value";
 
     output Real y "Ordinate value";
+    output Real c
+      "Slope of linear section between two cubic polynomials or dummy linear section slope if single cubic is used";
     annotation(smoothOrder=1, Documentation(revisions="<html>
 <ul>
 <li><i>May 2008</i>
@@ -674,7 +676,6 @@ The second graph shows the continous derivative of this regularization function:
     Real mu "Distance of inflection point and left limit x0";
     Real eta "Distance of right limit x1 and inflection point";
     Real omega "Slope of subic polynomial S0 at inflection point";
-    Real c "Slope of linear section between two cubic polynomials";
     Real rho "Weighting factor of eta and eta_tilde, mu and mu_tilde";
     Real theta0 "Slope metric";
     Real mu_tilde "Distance of start of linear section and left limit x0";
@@ -687,6 +688,8 @@ The second graph shows the continous derivative of this regularization function:
     Real const3 "Integration constant of right cubic";
     Real aux01;
     Real aux02;
+    Boolean useSingleCubicPolynomial = false
+      "Indicate to override further logic and use single cubic";
   algorithm
     assert(x0<x1, "regFun3(): Data points not sorted appropriately (x0 = "+String(x0)+" > x1 = "+String(x1)+"). Please flip arguments.");
 
@@ -715,6 +718,12 @@ The second graph shows the continous derivative of this regularization function:
       if abs(y0d-y1d)<=100*Modelica.Constants.eps then
         // y0 == y1 (value and sign equal) -> resolve indefinite 0/0
         aux02 := y0d;
+        if y1 > y0 + y0d*(x1-x0) then
+          // If y1 is above the linear extension through (x0/y0)
+          // with slope y0d (when slopes are identical)
+          //  -> then always used single cubic polynomial
+          useSingleCubicPolynomial := true;
+        end if;
       elseif abs(y1d+y0d-2*Delta0)<100*Modelica.Constants.eps then
         // (y1d+y0d-2*Delta0) approximately 0 -> avoid division by 0
         aux02 := (6*Delta0*(y1d+y0d-3/2*Delta0)-y1d*y0d-y1d^2-y0d^2)*(if (y1d+y0d-2*Delta0)>=0 then 1 else -1)*Modelica.Constants.inf;
@@ -740,7 +749,9 @@ The second graph shows the continous derivative of this regularization function:
       //     is too close to zero (less than 1/10 of Delta0).
       //       (c < Delta0 / 10)
       //
-      if ((mu > 0) and (eta < h0) and (Delta0*omega <= 0)) or (abs(aux01)<abs(aux02) and aux02*Delta0>=0) or (abs(aux01)<abs(0.1*Delta0)) then
+      if (((mu > 0) and (eta < h0) and (Delta0*omega <= 0))
+          or (abs(aux01)<abs(aux02) and aux02*Delta0>=0)
+          or (abs(aux01)<abs(0.1*Delta0))) and not useSingleCubicPolynomial then
         // NOT monotonic using plain cubic S0, use piecewise function S0 tilde instead
         c := aux01;
         // Avoid saddle points that are co-monotonic but lead to integrator contraction
@@ -760,8 +771,8 @@ The second graph shows the continous derivative of this regularization function:
         eta_tilde := rho * eta;
         xi1 := x0 + mu_tilde;
         xi2 := x1 - eta_tilde;
-        a1 := (y0d - c)/mu_tilde^2;
-        a2 := (y1d - c)/eta_tilde^2;
+        a1 := (y0d - c)/max(mu_tilde^2, 100*Modelica.Constants.eps);
+        a2 := (y1d - c)/max(eta_tilde^2, 100*Modelica.Constants.eps);
         const12 := y0 - a1/3*(x0 - xi1)^3 - c*x0;
         const3 := y1 - a2/3*(x1 - xi2)^3 - c*x1;
         // Do actual interpolation
@@ -775,6 +786,9 @@ The second graph shows the continous derivative of this regularization function:
       else
         // Cubic S0 is monotonic, use it as is
         y := (y0d+y1d-2*Delta0)*(x-x0)^3/h0^2+(-2*y0d-y1d+3*Delta0)*(x-x0)^2/h0+y0d*(x-x0)+y0;
+        // Provide a "dummy linear section slope" as the slope of the cubic at x:=(x0+x1)/2
+        aux01 := (x0+x1)/2;
+        c := 3*(y0d+y1d-2*Delta0)*(aux01-x0)^2/h0^2+2*(-2*y0d-y1d+3*Delta0)*(aux01-x0)/h0+y0d;
       end if;
     end if;
 
