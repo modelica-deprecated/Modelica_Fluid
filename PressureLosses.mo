@@ -222,23 +222,23 @@ end SimpleGenericOrifice;
     Real g_times_height_ab(final unit="m2/s2") = system.g*height_ab
       "Gravitiy times height_ab = dp_grav/d";
 
+    // Currently not in use (means to widen the regularization domain in case of large difference in static head)
+    final parameter Boolean use_x_small_staticHead = false
+      "Use dp_/m_flow_small_staticHead only if static head actually exists" annotation(Evaluate=true);
+                                                           /*abs(height_ab)>0*/
     SI.AbsolutePressure dp_small_staticHead = noEvent(max(dp_small, 0.015*abs(g_times_height_ab*(d_a-d_b))))
       "Heuristic for large discontinuities in static head";
     SI.MassFlowRate m_flow_small_staticHead = noEvent(max(m_flow_small, (-5.55e-7*(d_a+d_b)/2+5.5e-4)*abs(g_times_height_ab*(d_a-d_b))))
       "Heuristic for large discontinuities in static head";
-    parameter Boolean use_x_small_staticHead = abs(height_ab)>0
-      "Use dp_/m_flow_small_staticHead only if static head actually exists" annotation(Evaluate=true);
+
   equation
-  /* Modelica_Fluid.Examples.PumpingSystem fails, if this regularization is used:
- 
-  if from_dp and not WallFriction.dp_is_zero then
-    m_flow = WallFriction.massFlowRate_dp_staticHead(dp, d_a, d_b, eta_a, eta_b, length, diameter,
-      g_times_height_ab, roughness, if use_x_small_staticHead then dp_small_staticHead else dp_small);
-  else
-    dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
-      g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
-  end if;
-*/
+    if from_dp and not WallFriction.dp_is_zero then
+      m_flow = WallFriction.massFlowRate_dp_staticHead(dp, d_a, d_b, eta_a, eta_b, length, diameter,
+        g_times_height_ab, roughness, if use_x_small_staticHead then dp_small_staticHead else dp_small);
+    else
+      dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
+        g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
+    end if;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // Old approach without pressure loss correlations properly addressing static head //
@@ -257,13 +257,15 @@ end SimpleGenericOrifice;
        d = d_a;
     end if;
 
-    if from_dp and not WallFriction.dp_is_zero then
-       m_flow = WallFriction.massFlowRate_dp(dp-height_ab*system.g*d,
-                                             d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
-    else
-       dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
-            + height_ab*system.g*d;
-    end if;
+  /*
+  if from_dp and not WallFriction.dp_is_zero then
+     m_flow = WallFriction.massFlowRate_dp(dp-height_ab*system.g*d,
+                                           d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
+  else
+     dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
+          + height_ab*system.g*d;
+  end if;
+*/
 
       annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
           preserveAspectRatio=false,
@@ -2009,15 +2011,25 @@ This component describes only the \"light blue curve\" called
           Real dp_grav_b = g_times_height_ab*d_b
             "Static head if mass flows against design direction (b to a)";
 
-          Real dm_flow_ddp_a = k0inv*d_a/eta_a
+          Real dm_flow_ddp_fric_a = k0inv*d_a/eta_a
             "Slope of mass flow rate over dp if flow in design direction (a to b)";
-          Real dm_flow_ddp_b = k0inv*d_b/eta_b
+          Real dm_flow_ddp_fric_b = k0inv*d_b/eta_b
             "Slope of mass flow rate over dp if flow against design direction (b to a)";
 
           Real dp_a=max(dp_grav_a,dp_grav_b)+dp_small
             "Upper end of regularization domain of the m_flow(dp) relation";
           Real dp_b=min(dp_grav_a,dp_grav_b)-dp_small
             "Lower end of regularization domain of the m_flow(dp) relation";
+
+          SI.MassFlowRate m_flow_a
+            "Value at upper end of regularization domain";
+          SI.MassFlowRate m_flow_b
+            "Value at lower end of regularization domain";
+
+          // Properly define zero mass flow conditions
+          SI.MassFlowRate m_flow_zero = 0;
+          SI.Pressure dp_zero = (dp_grav_a + dp_grav_b)/2;
+          Real dm_flow_ddp_fric_zero;
         algorithm
         /*
   dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
@@ -2027,9 +2039,32 @@ This component describes only the \"light blue curve\" called
      = k0 * eta/d * m_flow
   k0 = 2*c0/(pi*D_Re^3)
 */
-          m_flow := if dp<dp_b then dm_flow_ddp_b*(dp-dp_grav_b) else 
-                      (if dp>dp_a then dm_flow_ddp_a*(dp-dp_grav_a) else 
-                        Modelica_Fluid.Utilities.regFun3(dp, dp_b, dp_a, dm_flow_ddp_b*(dp_b - dp_grav_b), dm_flow_ddp_a*(dp_a - dp_grav_a), dm_flow_ddp_b, dm_flow_ddp_a));
+
+          if dp>=dp_a then
+            // Positive flow outside regularization
+            m_flow := dm_flow_ddp_fric_a*(dp-dp_grav_a);
+          elseif dp<=dp_b then
+            // Negative flow outside regularization
+            m_flow := dm_flow_ddp_fric_b*(dp-dp_grav_b);
+          else
+            m_flow_a := dm_flow_ddp_fric_a*(dp_a - dp_grav_a);
+            m_flow_b := dm_flow_ddp_fric_b*(dp_b - dp_grav_b);
+
+            // Include a properly defined zero mass flow point
+            // Obtain a suitable slope from the linear section slope c (value of m_flow is overwritten later)
+            (m_flow, dm_flow_ddp_fric_zero) := Utilities.regFun3(dp_zero, dp_b, dp_a, m_flow_b, m_flow_a, dm_flow_ddp_fric_b, dm_flow_ddp_fric_a);
+            // Do regularization
+            if dp>dp_zero then
+              m_flow := Utilities.regFun3(dp, dp_zero, dp_a, m_flow_zero, m_flow_a, dm_flow_ddp_fric_zero, dm_flow_ddp_fric_a);
+            else
+              m_flow := Utilities.regFun3(dp, dp_b, dp_zero, m_flow_b, m_flow_zero, dm_flow_ddp_fric_b, dm_flow_ddp_fric_zero);
+            end if;
+          end if;
+        /*
+  m_flow := if dp<dp_b then dm_flow_ddp_b*(dp-dp_grav_b) else 
+              (if dp>dp_a then dm_flow_ddp_a*(dp-dp_grav_a) else 
+                Modelica_Fluid.Utilities.regFun3(dp, dp_b, dp_a, dm_flow_ddp_b*(dp_b - dp_grav_b), dm_flow_ddp_a*(dp_a - dp_grav_a), dm_flow_ddp_b, dm_flow_ddp_a));
+*/
         end massFlowRate_dp_staticHead;
 
         redeclare function extends pressureLoss_m_flow_staticHead
@@ -2056,6 +2091,14 @@ This component describes only the \"light blue curve\" called
             "Upper end of regularization domain of the dp(m_flow) relation";
           Real m_flow_b=if dp_grav_a >= dp_grav_b then -m_flow_small else -m_flow_small - (dp_grav_b - dp_grav_a)/ddp_dm_flow_b
             "Lower end of regularization domain of the dp(m_flow) relation";
+
+          SI.Pressure dp_a "Value at upper end of regularization domain";
+          SI.Pressure dp_b "Value at lower end of regularization domain";
+
+          // Properly define zero mass flow conditions
+          SI.MassFlowRate m_flow_zero = 0;
+          SI.Pressure dp_zero = (dp_grav_a + dp_grav_b)/2;
+          Real ddp_dm_flow_zero;
         algorithm
         /*
   dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
@@ -2065,10 +2108,27 @@ This component describes only the \"light blue curve\" called
      = k0 * eta/d * m_flow
   k0 = 2*c0/(pi*D_Re^3)
 */
-          dp := if m_flow <= m_flow_b then (ddp_dm_flow_b*m_flow + dp_grav_b) else 
-                 (if m_flow >= m_flow_a then (ddp_dm_flow_a*m_flow + dp_grav_a) else 
-                 Modelica_Fluid.Utilities.regFun3(m_flow, m_flow_b, m_flow_a,
-                   ddp_dm_flow_b*m_flow_b + dp_grav_b, ddp_dm_flow_a*m_flow_a + dp_grav_a, ddp_dm_flow_b, ddp_dm_flow_a));
+
+          if m_flow>=m_flow_a then
+            // Positive flow outside regularization
+            dp := (ddp_dm_flow_a*m_flow + dp_grav_a);
+          elseif m_flow<=m_flow_b then
+            // Negative flow outside regularization
+            dp := (ddp_dm_flow_b*m_flow + dp_grav_b);
+          else
+            // Regularization parameters
+            dp_a := ddp_dm_flow_a*m_flow_a + dp_grav_a;
+            dp_b := ddp_dm_flow_b*m_flow_b + dp_grav_b;
+            // Include a properly defined zero mass flow point
+            // Obtain a suitable slope from the linear section slope c (value of dp is overwritten later)
+            (dp, ddp_dm_flow_zero) := Utilities.regFun3(m_flow_zero, m_flow_b, m_flow_a, dp_b, dp_a, ddp_dm_flow_b, ddp_dm_flow_a);
+            // Do regularization
+            if m_flow>m_flow_zero then
+              dp := Utilities.regFun3(m_flow, m_flow_zero, m_flow_a, dp_zero, dp_a, ddp_dm_flow_zero, ddp_dm_flow_a);
+            else
+              dp := Utilities.regFun3(m_flow, m_flow_b, m_flow_zero, dp_b, dp_zero, ddp_dm_flow_b, ddp_dm_flow_zero);
+            end if;
+          end if;
         end pressureLoss_m_flow_staticHead;
       end Laminar;
 
@@ -2179,6 +2239,20 @@ Reynolds numbers, i.e., the values at the right ordinate where
           Real dp_b=min(dp_grav_a,dp_grav_b)-dp_small
             "Lower end of regularization domain of the m_flow(dp) relation";
 
+          SI.MassFlowRate m_flow_a
+            "Value at upper end of regularization domain";
+          SI.MassFlowRate m_flow_b
+            "Value at lower end of regularization domain";
+
+          SI.MassFlowRate dm_flow_ddp_fric_a
+            "Derivative at upper end of regularization domain";
+          SI.MassFlowRate dm_flow_ddp_fric_b
+            "Derivative at lower end of regularization domain";
+
+          // Properly define zero mass flow conditions
+          SI.MassFlowRate m_flow_zero = 0;
+          SI.Pressure dp_zero = (dp_grav_a + dp_grav_b)/2;
+          Real dm_flow_ddp_fric_zero;
         algorithm
           /*
    dp = 0.5*zeta*d*v*|v|
@@ -2192,11 +2266,31 @@ Reynolds numbers, i.e., the values at the right ordinate where
           assert(roughness > 1.e-10,
                  "roughness > 0 required for quadratic turbulent wall friction characteristic");
 
-          m_flow := if dp<dp_b then -sqrt(k2*abs(dp-dp_grav_b)) else 
-            (if dp>dp_a then sqrt(k1*(dp-dp_grav_a)) else 
-            Utilities.regFun3(dp, dp_b, dp_a, -sqrt(k2*abs(dp_b - dp_grav_b)), sqrt(k1*(dp_a - dp_grav_a)),
-              if abs(dp_b - dp_grav_b)>0 then k2/(2*sqrt(k2*abs(dp_b - dp_grav_b))) else Modelica.Constants.inf,
-              if abs(dp_a - dp_grav_a)>0 then k1/(2*sqrt(k1*(dp_a - dp_grav_a))) else  Modelica.Constants.inf));
+          if dp>=dp_a then
+            // Positive flow outside regularization
+            m_flow := sqrt(k1*(dp-dp_grav_a));
+          elseif dp<=dp_b then
+            // Negative flow outside regularization
+            m_flow := -sqrt(k2*abs(dp-dp_grav_b));
+          else
+            m_flow_a := sqrt(k1*(dp_a - dp_grav_a));
+            m_flow_b := -sqrt(k2*abs(dp_b - dp_grav_b));
+
+            dm_flow_ddp_fric_a := k1/(2*sqrt(k1*(dp_a - dp_grav_a)));
+            dm_flow_ddp_fric_b := k2/(2*sqrt(k2*abs(dp_b - dp_grav_b)));
+        /*  dm_flow_ddp_fric_a := if abs(dp_a - dp_grav_a)>0 then k1/(2*sqrt(k1*(dp_a - dp_grav_a))) else  Modelica.Constants.inf);
+    dm_flow_ddp_fric_b := if abs(dp_b - dp_grav_b)>0 then k2/(2*sqrt(k2*abs(dp_b - dp_grav_b))) else Modelica.Constants.inf; */
+
+            // Include a properly defined zero mass flow point
+            // Obtain a suitable slope from the linear section slope c (value of m_flow is overwritten later)
+            (m_flow, dm_flow_ddp_fric_zero) := Utilities.regFun3(dp_zero, dp_b, dp_a, m_flow_b, m_flow_a, dm_flow_ddp_fric_b, dm_flow_ddp_fric_a);
+            // Do regularization
+            if dp>dp_zero then
+              m_flow := Utilities.regFun3(dp, dp_zero, dp_a, m_flow_zero, m_flow_a, dm_flow_ddp_fric_zero, dm_flow_ddp_fric_a);
+            else
+              m_flow := Utilities.regFun3(dp, dp_b, dp_zero, m_flow_b, m_flow_zero, dm_flow_ddp_fric_b, dm_flow_ddp_fric_zero);
+            end if;
+          end if;
         end massFlowRate_dp_staticHead;
 
         redeclare function extends pressureLoss_m_flow_staticHead
@@ -2223,6 +2317,19 @@ Reynolds numbers, i.e., the values at the right ordinate where
           Real m_flow_b=if dp_grav_a >= dp_grav_b then -m_flow_small else -m_flow_small - sqrt((dp_grav_b - dp_grav_a)/k2)
             "Lower end of regularization domain of the dp(m_flow) relation";
 
+          SI.Pressure dp_a "Value at upper end of regularization domain";
+          SI.Pressure dp_b "Value at lower end of regularization domain";
+
+          Real ddp_dm_flow_a
+            "Derivative of pressure drop with mass flow rate at m_flow_a";
+          Real ddp_dm_flow_b
+            "Derivative of pressure drop with mass flow rate at m_flow_b";
+
+          // Properly define zero mass flow conditions
+          SI.MassFlowRate m_flow_zero = 0;
+          SI.Pressure dp_zero = (dp_grav_a + dp_grav_b)/2;
+          Real ddp_dm_flow_zero;
+
         algorithm
           /*
    dp = 0.5*zeta*d*v*|v|
@@ -2236,10 +2343,29 @@ Reynolds numbers, i.e., the values at the right ordinate where
           assert(roughness > 1.e-10,
                  "roughness > 0 required for quadratic turbulent wall friction characteristic");
 
-          dp := if m_flow <= m_flow_b then (-k2*m_flow^2 + dp_grav_b) else 
-            (if m_flow >= m_flow_a then (k1*m_flow^2 + dp_grav_a) else 
-            Utilities.regFun3(m_flow, m_flow_b, m_flow_a, -k2*m_flow_b^2 + dp_grav_b, k1*m_flow_a^2 + dp_grav_a,
-              -2*k2*m_flow_b, 2*k1*m_flow_a));
+          if m_flow>=m_flow_a then
+            // Positive flow outside regularization
+            dp := (k1*m_flow^2 + dp_grav_a);
+          elseif m_flow<=m_flow_b then
+            // Negative flow outside regularization
+            dp := (-k2*m_flow^2 + dp_grav_b);
+          else
+            // Regularization parameters
+            dp_a := k1*m_flow_a^2 + dp_grav_a;
+            ddp_dm_flow_a := 2*k1*m_flow_a;
+            dp_b := -k2*m_flow_b^2 + dp_grav_b;
+            ddp_dm_flow_b := -2*k2*m_flow_b;
+            // Include a properly defined zero mass flow point
+            // Obtain a suitable slope from the linear section slope c (value of dp is overwritten later)
+            (dp, ddp_dm_flow_zero) := Utilities.regFun3(m_flow_zero, m_flow_b, m_flow_a, dp_b, dp_a, ddp_dm_flow_b, ddp_dm_flow_a);
+            // Do regularization
+            if m_flow>m_flow_zero then
+              dp := Utilities.regFun3(m_flow, m_flow_zero, m_flow_a, dp_zero, dp_a, ddp_dm_flow_zero, ddp_dm_flow_a);
+            else
+              dp := Utilities.regFun3(m_flow, m_flow_b, m_flow_zero, dp_b, dp_zero, ddp_dm_flow_b, ddp_dm_flow_zero);
+            end if;
+          end if;
+
         end pressureLoss_m_flow_staticHead;
       end QuadraticTurbulent;
 
@@ -2422,6 +2548,10 @@ Laminar region:
           SI.Pressure dp_grav_b = g_times_height_ab*d_b
             "Static head if mass flows against design direction (b to a)";
 
+          // Properly define zero mass flow conditions
+          SI.MassFlowRate m_flow_zero = 0;
+          SI.Pressure dp_zero = (dp_grav_a + dp_grav_b)/2;
+          Real dm_flow_ddp_fric_zero;
         algorithm
           assert(roughness > 1.e-10,
             "roughness > 0 required for quadratic turbulent wall friction characteristic");
@@ -2439,8 +2569,15 @@ Laminar region:
             // Regularization parameters
             (m_flow_a, dm_flow_ddp_fric_a) := Internal.m_flow_of_dp_fric(dp_a-dp_grav_a, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
             (m_flow_b, dm_flow_ddp_fric_b) := Internal.m_flow_of_dp_fric(dp_b-dp_grav_b, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+            // Include a properly defined zero mass flow point
+            // Obtain a suitable slope from the linear section slope c (value of m_flow is overwritten later)
+            (m_flow, dm_flow_ddp_fric_zero) := Utilities.regFun3(dp_zero, dp_b, dp_a, m_flow_b, m_flow_a, dm_flow_ddp_fric_b, dm_flow_ddp_fric_a);
             // Do regularization
-            m_flow := Utilities.regFun3(dp, dp_b, dp_a, m_flow_b, m_flow_a, dm_flow_ddp_fric_b, dm_flow_ddp_fric_a);
+            if dp>dp_zero then
+              m_flow := Utilities.regFun3(dp, dp_zero, dp_a, m_flow_zero, m_flow_a, dm_flow_ddp_fric_zero, dm_flow_ddp_fric_a);
+            else
+              m_flow := Utilities.regFun3(dp, dp_b, dp_zero, m_flow_b, m_flow_zero, dm_flow_ddp_fric_b, dm_flow_ddp_fric_zero);
+            end if;
           end if;
         end massFlowRate_dp_staticHead;
 
@@ -2476,6 +2613,11 @@ Laminar region:
           Real ddp_dm_flow_b
             "Derivative of pressure drop with mass flow rate at m_flow_b";
 
+          // Properly define zero mass flow conditions
+          SI.MassFlowRate m_flow_zero = 0;
+          SI.Pressure dp_zero = (dp_grav_a + dp_grav_b)/2;
+          Real ddp_dm_flow_zero;
+
         algorithm
           assert(roughness > 1.e-10,
             "roughness > 0 required for quadratic turbulent wall friction characteristic");
@@ -2499,8 +2641,15 @@ Laminar region:
             dp_a := dp_a + dp_grav_a "Adding dp_grav to dp_fric to get dp";
             (dp_b, ddp_dm_flow_b) := Internal.dp_fric_of_m_flow(m_flow_b, d_a, d_b, eta_a, eta_b, length, diameter,  Re1, Re2, Delta);
             dp_b := dp_b + dp_grav_b "Adding dp_grav to dp_fric to get dp";
+            // Include a properly defined zero mass flow point
+            // Obtain a suitable slope from the linear section slope c (value of dp is overwritten later)
+            (dp, ddp_dm_flow_zero) := Utilities.regFun3(m_flow_zero, m_flow_b, m_flow_a, dp_b, dp_a, ddp_dm_flow_b, ddp_dm_flow_a);
             // Do regularization
-            dp := Utilities.regFun3(m_flow, m_flow_b, m_flow_a, dp_b, dp_a, ddp_dm_flow_b, ddp_dm_flow_a);
+            if m_flow>m_flow_zero then
+              dp := Utilities.regFun3(m_flow, m_flow_zero, m_flow_a, dp_zero, dp_a, ddp_dm_flow_zero, ddp_dm_flow_a);
+            else
+              dp := Utilities.regFun3(m_flow, m_flow_b, m_flow_zero, dp_b, dp_zero, ddp_dm_flow_b, ddp_dm_flow_zero);
+            end if;
           end if;
         end pressureLoss_m_flow_staticHead;
 
@@ -2903,6 +3052,11 @@ b has the same sign of the change of density.</p>
           SI.Pressure dp_grav_b = g_times_height_ab*d_b
             "Static head if mass flows against design direction (b to a)";
 
+          // Properly define zero mass flow conditions
+          SI.MassFlowRate m_flow_zero = 0;
+          SI.Pressure dp_zero = (dp_grav_a + dp_grav_b)/2;
+          Real dm_flow_ddp_fric_zero;
+
         algorithm
           dp_a := max(dp_grav_a, dp_grav_b)+dp_small;
           dp_b := min(dp_grav_a, dp_grav_b)-dp_small;
@@ -2917,8 +3071,15 @@ b has the same sign of the change of density.</p>
             // Regularization parameters
             (m_flow_a, dm_flow_ddp_fric_a) := Internal.m_flow_of_dp_fric(dp_a-dp_grav_a, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
             (m_flow_b, dm_flow_ddp_fric_b) := Internal.m_flow_of_dp_fric(dp_b-dp_grav_b, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
+            // Include a properly defined zero mass flow point
+            // Obtain a suitable slope from the linear section slope c (value of m_flow is overwritten later)
+            (m_flow, dm_flow_ddp_fric_zero) := Utilities.regFun3(dp_zero, dp_b, dp_a, m_flow_b, m_flow_a, dm_flow_ddp_fric_b, dm_flow_ddp_fric_a);
             // Do regularization
-            m_flow := Utilities.regFun3(dp, dp_b, dp_a, m_flow_b, m_flow_a, dm_flow_ddp_fric_b, dm_flow_ddp_fric_a);
+            if dp>dp_zero then
+              m_flow := Utilities.regFun3(dp, dp_zero, dp_a, m_flow_zero, m_flow_a, dm_flow_ddp_fric_zero, dm_flow_ddp_fric_a);
+            else
+              m_flow := Utilities.regFun3(dp, dp_b, dp_zero, m_flow_b, m_flow_zero, dm_flow_ddp_fric_b, dm_flow_ddp_fric_zero);
+            end if;
           end if;
         end massFlowRate_dp_staticHead;
 
@@ -2951,6 +3112,11 @@ b has the same sign of the change of density.</p>
           Real ddp_dm_flow_b
             "Derivative of pressure drop with mass flow rate at m_flow_b";
 
+          // Properly define zero mass flow conditions
+          SI.MassFlowRate m_flow_zero = 0;
+          SI.Pressure dp_zero = (dp_grav_a + dp_grav_b)/2;
+          Real ddp_dm_flow_zero;
+
         algorithm
           m_flow_a := if dp_grav_a<dp_grav_b then 
             Internal.m_flow_of_dp_fric(dp_grav_b - dp_grav_a, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta)+m_flow_small else 
@@ -2971,8 +3137,15 @@ b has the same sign of the change of density.</p>
             dp_a := dp_a + dp_grav_a "Adding dp_grav to dp_fric to get dp";
             (dp_b, ddp_dm_flow_b) := Internal.dp_fric_of_m_flow(m_flow_b, d_a, d_b, eta_a, eta_b, length, diameter, Re1, Re2, Delta);
             dp_b := dp_b + dp_grav_b "Adding dp_grav to dp_fric to get dp";
+            // Include a properly defined zero mass flow point
+            // Obtain a suitable slope from the linear section slope c (value of dp is overwritten later)
+            (dp, ddp_dm_flow_zero) := Utilities.regFun3(m_flow_zero, m_flow_b, m_flow_a, dp_b, dp_a, ddp_dm_flow_b, ddp_dm_flow_a);
             // Do regularization
-            dp := Utilities.regFun3(m_flow, m_flow_b, m_flow_a, dp_b, dp_a, ddp_dm_flow_b, ddp_dm_flow_a);
+            if m_flow>m_flow_zero then
+              dp := Utilities.regFun3(m_flow, m_flow_zero, m_flow_a, dp_zero, dp_a, ddp_dm_flow_zero, ddp_dm_flow_a);
+            else
+              dp := Utilities.regFun3(m_flow, m_flow_b, m_flow_zero, dp_b, dp_zero, ddp_dm_flow_b, ddp_dm_flow_zero);
+            end if;
           end if;
         end pressureLoss_m_flow_staticHead;
 
