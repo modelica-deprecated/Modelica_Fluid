@@ -256,8 +256,7 @@ end SimpleGenericOrifice;
     else
        d = d_a;
     end if;
-
-  /*
+  /* 
   if from_dp and not WallFriction.dp_is_zero then
      m_flow = WallFriction.massFlowRate_dp(dp-height_ab*system.g*d,
                                            d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
@@ -2554,7 +2553,7 @@ Laminar region:
 
         protected
           Real Delta = roughness/diameter "Relative roughness";
-          SI.ReynoldsNumber Re1 = 745*exp(min(1,0.0065/Delta))
+          SI.ReynoldsNumber Re1 = 745*exp(if Delta <= 0.0065 then 1 else 0.0065/Delta)
             "Boundary between laminar regime and transition";
           constant SI.ReynoldsNumber Re2 = 4000
             "Boundary between transition and turbulent regime";
@@ -2621,7 +2620,7 @@ Laminar region:
 
         protected
           Real Delta = roughness/diameter "Relative roughness";
-          SI.ReynoldsNumber Re1 = 745*exp(min(1,0.0065/Delta))
+          SI.ReynoldsNumber Re1 = 745*exp(if Delta <= 0.0065 then 1 else 0.0065/Delta)
             "Boundary between laminar regime and transition";
           constant SI.ReynoldsNumber Re2 = 4000
             "Boundary between transition and turbulent regime";
@@ -3060,7 +3059,7 @@ b has the same sign of the change of density.</p>
         protected
           Real Delta = roughness/diameter "Relative roughness";
           SI.ReynoldsNumber Re "Reynolds number";
-          SI.ReynoldsNumber Re1 = (745*exp(min(1,0.0065/Delta)))^0.97
+          SI.ReynoldsNumber Re1 = (745*exp(if Delta <= 0.0065 then 1 else 0.0065/Delta))^0.97
             "Boundary between laminar regime and transition";
           constant SI.ReynoldsNumber Re2 = 4000
             "Boundary between transition and turbulent regime";
@@ -3120,7 +3119,7 @@ b has the same sign of the change of density.</p>
 
         protected
           Real Delta = roughness/diameter "Relative roughness";
-          SI.ReynoldsNumber Re1 = 745*exp(min(1,0.0065/Delta))
+          SI.ReynoldsNumber Re1 = 745*exp(if Delta <= 0.0065 then 1 else 0.0065/Delta)
             "Boundary between laminar regime and transition";
           constant SI.ReynoldsNumber Re2 = 4000
             "Boundary between transition and turbulent regime";
