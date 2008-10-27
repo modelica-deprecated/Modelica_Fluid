@@ -7,7 +7,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
 
  Modelica_Fluid.Pipes.DistributedPipe pipe2(
     redeclare package Medium = Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=280,
@@ -47,7 +46,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
         transformation(extent={{78,24},{58,44}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe3(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     T_start=340,
     length=1,
     use_T_start=true,
@@ -69,7 +67,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
 
   Modelica_Fluid.Pipes.DistributedPipe pipe1(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=300,
@@ -109,7 +106,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
 
   Modelica_Fluid.Pipes.DistributedPipe pipe4(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     length=1,
     use_T_start=true,
     from_dp=true,
@@ -157,7 +153,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     annotation (Placement(transformation(extent={{-60,72},{-40,92}}, rotation=0)));
  Modelica_Fluid.Pipes.DistributedPipe pipe5(
     redeclare package Medium = Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=280,
@@ -186,7 +181,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
         transformation(extent={{70,-70},{50,-50}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe6(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     T_start=340,
     length=1,
     use_T_start=true,
@@ -207,7 +201,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe7(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=300,
@@ -240,7 +233,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe8(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     length=1,
     use_T_start=true,
     from_dp=true,
