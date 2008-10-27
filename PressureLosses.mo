@@ -1906,7 +1906,7 @@ in the next figure:
 <img src=\"../Images/Components/PipeFriction1.png\">
  
 </html>"));
-      package NoFriction "No pipe wall friction"
+      package NoFriction "No pipe wall friction, no static head"
 
         annotation (Documentation(info="<html>
 <p>
@@ -1943,6 +1943,37 @@ function pressureLoss_m_flow (option: from_dp=false)");
         algorithm
           dp := 0;
         end pressureLoss_m_flow;
+
+        redeclare function extends massFlowRate_dp_staticHead
+          "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction and static head"
+
+          annotation (Documentation(info="<html>
+ 
+</html>"));
+
+        algorithm
+          assert(false, "function massFlowRate_dp (option: from_dp=true)
+cannot be used for WallFriction.NoFriction. Use instead
+function pressureLoss_m_flow (option: from_dp=false)");
+        end massFlowRate_dp_staticHead;
+
+        redeclare function extends pressureLoss_m_flow_staticHead
+          "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction and static head"
+
+          annotation (Documentation(info="<html>
+ 
+</html>"));
+        /* To include only static head:
+protected 
+  Real dp_grav_a = g_times_height_ab*d_a 
+    "Static head if mass flows in design direction (a to b)";
+  Real dp_grav_b = g_times_height_ab*d_b 
+    "Static head if mass flows against design direction (b to a)";
+*/
+        algorithm
+        //  dp := Utilities.regStep(m_flow, dp_grav_a, dp_grav_a, m_flow_small);
+          dp := 0;
+        end pressureLoss_m_flow_staticHead;
       end NoFriction;
 
       package Laminar
