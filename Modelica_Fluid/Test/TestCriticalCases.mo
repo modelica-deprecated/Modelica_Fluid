@@ -1796,7 +1796,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         color={0,127,255},
         smooth=Smooth.None));
     connect(ramp.y, valve.stemPosition)               annotation (Line(
-        points={{25,40},{10,40},{10,9}},
+        points={{25,40},{10,40},{10,8}},
         color={0,0,127},
         smooth=Smooth.None));
   end DistributedPipeClosingValve;

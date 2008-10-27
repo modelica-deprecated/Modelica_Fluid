@@ -491,8 +491,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       Medium.dynamicViscosity(medium.state));
 
     annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}, 
-
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
@@ -556,8 +555,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        Model added to the Fluid library</li>
 </ul>
 </html>"));
-  equation
 
+  equation
     //Pressure difference in momentum balance
     dp = dp_stat;
   state=medium.state;
@@ -729,8 +728,7 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}, 
-
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
@@ -792,8 +790,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        Model added to the Fluid library</li>
 </ul>
 </html>"));
-equation
 
+equation
 //Pressure difference in momentum balance
 dp=dp_stat;
   state=medium.state;
@@ -943,8 +941,7 @@ annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}, 
-
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
@@ -1006,8 +1003,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        Model added to the Fluid library</li>
 </ul>
 </html>"));
-equation
 
+equation
 //Pressure difference in momentum balance
 dp=dp_stat;
   state=medium.state;
@@ -1070,8 +1067,9 @@ end DistributedPipeSa;
 
   partial model PartialDistributedFlowLumpedPressure
       "Base class for 1D fluid flow with the number of momentum balances reduced to 2"
-      import Modelica_Fluid.Types;
-      import Modelica.Constants.*;
+    import Modelica_Fluid.Types;
+    import Modelica.Constants.*;
+    outer Modelica_Fluid.System system "System properties";
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
         "Fluid medium model" 
         annotation (choicesAllMatching=true);
@@ -1083,9 +1081,10 @@ end DistributedPipeSa;
         "Number of control volume that contains single state"                 annotation(Evaluate=true);
 
   //Advanced model options
-    parameter Boolean allowFlowReversal=true
-        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-                                                                       annotation(Dialog(tab="Advanced", group="Mass and energy balances", enable=not static));
+    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
+        system.flowDirection
+        "Unidirectional (port_a -> port_b) or bidirectional flow" 
+       annotation(Dialog(tab="Advanced", group="Mass and energy balances"));
     parameter Boolean static=false
         "= true, static balances, no mass or energy is stored" 
                                   annotation(Dialog(tab="Advanced", group="Mass and energy balances"),Evaluate=true);
@@ -1232,6 +1231,10 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
     //Source terms, have to be set in inheriting class
     protected
+    parameter Boolean allowFlowReversal=
+      flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
+        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+      annotation(Evaluate=true, Hide=true);
     input Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
     input Medium.MassFlowRate[n,Medium.nXi] msXi_flow
         "Independent mass flow rates, source or sink";
@@ -1350,8 +1353,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
   end PartialDistributedFlowLumpedPressure;
 
   partial model PartialDistributedFlow
-      import Modelica_Fluid.Types;
-
+    import Modelica_Fluid.Types;
+    outer Modelica_Fluid.System system "System properties";
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
         "Fluid medium model" 
         annotation (choicesAllMatching=true);
@@ -1360,9 +1363,10 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     parameter Integer n(min=1)=1 "Number of pipe segments";
 
   //Advanced model options
-    parameter Boolean allowFlowReversal=true
-        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-                                                                       annotation(Dialog(tab="Advanced", group="Mass and energy balances", enable=not static));
+    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
+        system.flowDirection
+        "Unidirectional (port_a -> port_b) or bidirectional flow" 
+       annotation(Dialog(tab="Advanced", group="Mass and energy balances"));
     parameter Boolean static=false
         "= true, static balances, no mass or energy is stored" 
                                   annotation(Dialog(tab="Advanced", group="Mass and energy balances"),Evaluate=true);
@@ -1514,6 +1518,10 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 </html>"));
     //Source terms, have to be set in inheriting class (to zero if not used)
     protected
+    parameter Boolean allowFlowReversal=
+      flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
+        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+      annotation(Evaluate=true, Hide=true);
     input Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
     input Medium.MassFlowRate[n,Medium.nXi] msXi_flow
         "Independent mass flow rates, source or sink";

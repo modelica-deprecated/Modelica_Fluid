@@ -7,7 +7,6 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
 
  Modelica_Fluid.Pipes.DistributedPipe pipe2(
     redeclare package Medium = Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=280,
@@ -45,7 +44,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
         transformation(extent={{84,54},{64,74}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe3(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     T_start=340,
     length=1,
     use_T_start=true,
@@ -67,7 +65,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
 
   Modelica_Fluid.Pipes.DistributedPipe pipe1(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=300,
@@ -107,7 +104,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
 
   Modelica_Fluid.Pipes.DistributedPipe pipe4(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     length=1,
     use_T_start=true,
     from_dp=true,
@@ -156,7 +152,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
             0)));
  Modelica_Fluid.Pipes.DistributedPipe pipe5(
     redeclare package Medium = Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=280,
@@ -185,7 +180,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
         transformation(extent={{68,-2},{48,18}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe6(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     T_start=340,
     length=1,
     use_T_start=true,
@@ -206,7 +200,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe7(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=300,
@@ -239,7 +232,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe8(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     length=1,
     use_T_start=true,
     from_dp=true,
@@ -266,7 +258,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     annotation (Placement(transformation(extent={{-72,22},{-52,42}}, rotation=0)));
  Modelica_Fluid.Pipes.DistributedPipe pipe9(
     redeclare package Medium = Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=280,
@@ -295,7 +286,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
         transformation(extent={{66,-62},{46,-42}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipeSa pipe10(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     T_start=340,
     length=1,
     use_T_start=true,
@@ -316,7 +306,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipeSb pipe11(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     use_T_start=true,
     from_dp=true,
     T_start=300,
@@ -349,7 +338,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe12(
     redeclare package Medium=Medium,
-    allowFlowReversal=true,
     length=1,
     use_T_start=true,
     from_dp=true,
