@@ -10,8 +10,8 @@ package Volumes "Generic volume, tank and other volume type components"
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+              {100,100}}), graphics={
           Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
@@ -305,8 +305,8 @@ initial equation
             lineColor={0,127,255},
             fillColor={85,170,255},
             fillPattern=FillPattern.Solid),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
-                0}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
+                0,0}),
           Text(
             extent={{-95,90},{95,60}},
             lineColor={0,0,255},
@@ -319,9 +319,9 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
-                integer(precision)))),
+                  level,
+                  1,
+                  integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -732,13 +732,9 @@ end Tank;
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation (choicesAllMatching = true);
-        parameter Types.FlowDirection flowDirection=system.flowDirection
-        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
-         annotation(Dialog(tab="Assumptions"));
-        final parameter Boolean allowFlowReversal=flowDirection == Types.FlowDirection.
-            Bidirectional
-        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-         annotation(Evaluate=true, Hide=true);
+        parameter Boolean allowFlowReversal = system.allowFlowReversal
+        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+          annotation(Dialog(tab="Assumptions"), Evaluate=true);
         parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
         "Dynamics option" 
           annotation(Evaluate=true, Dialog(tab = "Assumptions"));

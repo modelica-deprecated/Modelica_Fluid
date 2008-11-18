@@ -1014,9 +1014,10 @@ handled properly.</p>
               fillPattern=FillPattern.Solid),
             Text(extent={{-145,-58},{146,-98}}, textString="%name"),
             Polygon(
-              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
-              fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,
-                  0} else {255,255,255}),
+              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,
+                  50}},
+              fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,
+                  255,0} else {255,255,255}),
               lineColor={0,0,0})}),
       Diagram(coordinateSystem(
             preserveAspectRatio=false,
@@ -1317,8 +1318,8 @@ handled properly.</p>
         assert(false, "Unsupported initialization option");
       end if;
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
-                200,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
+                {200,100}}), graphics={
             Rectangle(
               extent={{-200,100},{0,-90}},
               lineColor={255,255,255},
@@ -1330,7 +1331,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,
+                  0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1355,10 +1357,11 @@ handled properly.</p>
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={0,0,255}),
             Polygon(
-              points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,74},
-                  {130,60},{144,70},{152,60},{168,66},{180,54},{196,74},{190,76},
-                  {180,64},{170,70},{156,66},{148,76},{132,68},{120,80},{100,74},
-                  {88,88},{70,78},{50,92},{32,82},{28,100},{20,98},{20,98}},
+              points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,
+                  74},{130,60},{144,70},{152,60},{168,66},{180,54},{196,74},
+                  {190,76},{180,64},{170,70},{156,66},{148,76},{132,68},{
+                  120,80},{100,74},{88,88},{70,78},{50,92},{32,82},{28,100},
+                  {20,98},{20,98}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={170,255,255})}),
@@ -1433,8 +1436,8 @@ Full steady state initialization is not supported, because the corresponding int
               rotation=0)));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,
                 -200},{200,200}}),      graphics),
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},{
-                200,200}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},
+                {200,200}}), graphics={
             Rectangle(
               extent={{-200,200},{200,-200}},
               lineColor={0,0,255},
@@ -2078,11 +2081,11 @@ Full steady state initialization is not supported, because the corresponding int
               lineColor={255,255,255},
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                  0,0}),
+            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}},
+                color={0,0,0}),
             Rectangle(
-              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
-                   + 200*level/levelMax)}}),
+              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,
+                  (-100 + 200*level/levelMax)}}),
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
@@ -2090,9 +2093,9 @@ Full steady state initialization is not supported, because the corresponding int
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
               textString=DynamicSelect(" ", realString(
-                    level,
-                    1,
-                    3))),
+                        level,
+                        1,
+                        3))),
             Line(
               points={{-100,100},{100,100}},
               color={0,0,0},

@@ -579,21 +579,21 @@ package Tanks "Library demonstrating the usage of the tank model"
               60}}, rotation=0)));
     Modelica_Fluid.PressureLosses.StaticHead pipe1(           redeclare package
         Medium =                                                                       Medium,
-      flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
+      allowFlowReversal=true,
       height_ab=2) annotation (Placement(transformation(
           origin={-60,-10},
           extent={{-10,-10},{10,10}},
           rotation=90)));
     Modelica_Fluid.PressureLosses.StaticHead pipe2(           redeclare package
         Medium =                                                                       Medium,
-      flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
+      allowFlowReversal=true,
       height_ab=2) annotation (Placement(transformation(
           origin={0,-10},
           extent={{-10,-10},{10,10}},
           rotation=90)));
     Modelica_Fluid.PressureLosses.StaticHead pipe3(           redeclare package
         Medium =                                                                       Medium,
-      flowDirection=Modelica_Fluid.Types.FlowDirection.Bidirectional,
+      allowFlowReversal=true,
       height_ab=-1) annotation (Placement(transformation(
           origin={60,-10},
           extent={{-10,-10},{10,10}},

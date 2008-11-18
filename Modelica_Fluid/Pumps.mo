@@ -18,8 +18,8 @@ package Pumps "Pump components"
           rotation=-90,
           origin={0,100})));
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-              100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics={Text(
             visible=use_N_input,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
@@ -151,9 +151,9 @@ package Pumps "Pump components"
     parameter Integer Np(min=1) = 1 "Number of pumps in parallel";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
     parameter Boolean checkValve=false "Reverse flow stopped";
-    parameter Types.FlowDirection flowDirection=system.flowDirection
-        "Unidirectional (inlet -> outlet) or bidirectional flow component" 
-       annotation(Dialog(tab="Advanced"));
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
     parameter Medium.AbsolutePressure pin_start
         "Guess value for inlet pressure" 
       annotation(Dialog(tab="Initialization"));
@@ -218,10 +218,6 @@ package Pumps "Pump components"
     Medium.ThermodynamicState inlet_state_inflow
         "Medium state close to inlet for inflowing mass flow";
     protected
-   parameter Boolean allowFlowReversal=
-       flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
-        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-       annotation(Evaluate=true, Hide=true);
     constant SI.Height unitHead = 1;
     constant SI.MassFlowRate unitMassFlowRate = 1;
   equation
@@ -297,8 +293,8 @@ package Pumps "Pump components"
       assert(false, "Unsupported initialization option");
     end if;
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-                100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+                100,100}}), graphics={
             Polygon(
               points={{-40,-64},{-60,-100},{60,-100},{40,-64},{-40,-64}},
               lineColor={0,0,255},

@@ -3432,11 +3432,11 @@ b has the same sign of the change of density.</p>
                                                                          annotation (
         choicesAllMatching =                                                                            true);
 
+    //Assumptions
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
     //Initialization
-    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-        system.flowDirection
-        "Unidirectional (port_a -> port_b) or bidirectional flow" 
-       annotation(Dialog(tab="Advanced"));
     parameter Boolean compute_T = true
         "= true, if temperatures at port_a and port_b are computed" 
       annotation(Dialog(tab="Advanced"), choices(__Dymola_checkBox=true));
@@ -3498,10 +3498,6 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     Medium.ThermodynamicState port_b_state_inflow
         "Medium state close to port_b for inflowing mass flow";
     protected
-    parameter Boolean allowFlowReversal=
-      flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
-        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-      annotation(Evaluate=true, Hide=true);
     Medium.Density port_a_d_inflow
         "Density close to port_a for inflowing mass flow";
     Medium.Density port_b_d_inflow

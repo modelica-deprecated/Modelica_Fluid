@@ -12,10 +12,9 @@ package Pipes "Lumped, distributed and thermal pipe components"
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
-    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-        system.flowDirection
-      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
-       annotation(Dialog(tab="Assumptions"));
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+      "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
     parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
       "Dynamics option" 
       annotation(Evaluate=true, Dialog(tab = "Assumptions"));
@@ -71,12 +70,12 @@ package Pipes "Lumped, distributed and thermal pipe components"
       annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
 
       Modelica_Fluid.Interfaces.FluidPort_a port_a(
-                                    redeclare package Medium = Medium)
+                                    redeclare package Medium = Medium, m_flow(min=if allowFlowReversal then -Modelica.Constants.inf else 0))
       "Fluid connector a (positive design flow direction is from port_a to port_b)"
         annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
             rotation=0)));
       Modelica_Fluid.Interfaces.FluidPort_b port_b(
-                                    redeclare package Medium = Medium)
+                                    redeclare package Medium = Medium, m_flow(max=if allowFlowReversal then +Modelica.Constants.inf else 0))
       "Fluid connector b (positive design flow direction is from port_a to port_b)"
         annotation (Placement(transformation(extent={{110,-10},{90,10}},
             rotation=0)));
@@ -133,7 +132,7 @@ pipe wall/environment).
       uses(Modelica_Fluid(version="1.0 Beta 2"), Modelica(version="2.2.2")));
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction1(
       redeclare package Medium = Medium,
-      flowDirection=flowDirection,
+      allowFlowReversal=allowFlowReversal,
       redeclare package WallFriction = WallFriction,
       length=length/2,
       diameter=diameter,
@@ -153,7 +152,7 @@ pipe wall/environment).
     Volumes.MixingVolume volume(
       redeclare package Medium = Medium,
       V=Modelica.Constants.pi*(diameter/2)^2*length,
-      flowDirection=flowDirection,
+      allowFlowReversal=allowFlowReversal,
       initType=initType,
       p_start=(p_a_start+p_b_start)/2,
       use_T_start=use_T_start,
@@ -165,7 +164,7 @@ pipe wall/environment).
              0)));
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction2(
       redeclare package Medium = Medium,
-      flowDirection=flowDirection,
+      allowFlowReversal=allowFlowReversal,
       redeclare package WallFriction = WallFriction,
       length=length/2,
       diameter=diameter,
@@ -543,8 +542,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
             smooth=Smooth.None,
             fillColor={0,128,255},
             fillPattern=FillPattern.Solid)}),
-  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}},
+  Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}},
           grid={1,1}),
           graphics),
   Documentation(info="<html>
@@ -1084,10 +1083,9 @@ end DistributedPipeSa;
     final parameter Integer nl=integer(n/2)+1
         "Number of control volume that contains single state"                 annotation(Evaluate=true);
 
-    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-        system.flowDirection
-        "Unidirectional (port_a -> port_b) or bidirectional flow" 
-       annotation(Dialog(tab="Assumptions"));
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
     parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
         "Dynamics option" 
       annotation(Evaluate=true, Dialog(tab = "Assumptions"));
@@ -1238,10 +1236,6 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
     //Source terms, have to be set in inheriting class
     protected
-    parameter Boolean allowFlowReversal=
-      flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
-        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-      annotation(Evaluate=true, Hide=true);
     input Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
     input Medium.MassFlowRate[n,Medium.nXi] msXi_flow
         "Independent mass flow rates, source or sink";
@@ -1378,10 +1372,9 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
   //Discretization
     parameter Integer n(min=1)=1 "Number of pipe segments";
 
-    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-        system.flowDirection
-        "Unidirectional (port_a -> port_b) or bidirectional flow" 
-       annotation(Dialog(tab="Assumptions"));
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
     parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
         "Dynamics option" 
       annotation(Evaluate=true, Dialog(tab = "Assumptions"));
@@ -1536,10 +1529,6 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 </html>"));
     //Source terms, have to be set in inheriting class (to zero if not used)
     protected
-    parameter Boolean allowFlowReversal=
-      flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
-        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-      annotation(Evaluate=true, Hide=true);
     input Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
     input Medium.MassFlowRate[n,Medium.nXi] msXi_flow
         "Independent mass flow rates, source or sink";

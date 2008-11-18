@@ -96,11 +96,6 @@ Integer type that can have the following values
 </table>
 </html>"));
 
-  type FlowDirection = enumeration(
-      Unidirectional "Fluid flows only from port_a to port_b",
-      Bidirectional "No restrictions on fluid flow (flow reversal possible)")
-    "Enumeration to define whether flow reversal is allowed";
-
   type CvTypes = enumeration(
       Av "Av (metric) flow coefficient",
       Kv "Kv (metric) flow coefficient",

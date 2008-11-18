@@ -72,8 +72,8 @@ explained in detail in the
     Medium.AbsolutePressure pin "Inlet pressure";
     Medium.AbsolutePressure pout "Outlet pressure";
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}),
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
            graphics),
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
               100,100}}),
