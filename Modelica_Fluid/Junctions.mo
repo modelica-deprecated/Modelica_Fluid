@@ -410,6 +410,16 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
 
+    // Assumptions
+    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
+        system.flowDirection
+      "Unidirectional (ports_a -> ports_b) or bidirectional flow" 
+       annotation(Dialog(tab="Assumptions"));
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+      "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+
+    // Initialization
     parameter Types.Init initType=Types.Init.NoInit "Initialization option" 
       annotation(Evaluate=true,Dialog(tab="Initialization"));
     parameter Medium.AbsolutePressure p_start "Start value of pressure" 
@@ -428,10 +438,6 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
 
-    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-        system.flowDirection
-      "Unidirectional (ports_a -> ports_b) or bidirectional flow" 
-       annotation(Dialog(tab="Advanced"));
     parameter ModelStructure modelStructure=ModelStructure.avb annotation(Evaluate=true);
 
     Medium.EnthalpyFlowRate ports_a_H_flow[n_a];
@@ -517,15 +523,29 @@ end for;
 
     thermalPort.T = medium.T;
 
-    sum(ports_a.m_flow)+sum(ports_b.m_flow)=der(m) "Mass balance";
+    if dynamicsType < Types.Dynamics.SteadyStateMass then
+      sum(ports_a.m_flow)+sum(ports_b.m_flow) = der(m) "Mass balance";
 
-    sum(ports_a_H_flow) + sum(ports_b_H_flow) + thermalPort.Q_flow = der(U)
-      "Energy balance";
+      for i in 1:Medium.nXi loop
+        sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]) = der(mXi[i])
+          "Substance mass balance";
+      end for;
+    else
+      sum(ports_a.m_flow)+sum(ports_b.m_flow) = 0 "Mass balance";
 
-    for i in 1:Medium.nXi loop
-      sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]) = der(mXi[i])
-        "Substance mass balance";
-    end for;
+      for i in 1:Medium.nXi loop
+        sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]) = 0
+          "Substance mass balance";
+      end for;
+    end if;
+
+    if dynamicsType < Types.Dynamics.SteadyState then
+      sum(ports_a_H_flow) + sum(ports_b_H_flow) + thermalPort.Q_flow = der(U)
+        "Energy balance";
+    else
+      sum(ports_a_H_flow) + sum(ports_b_H_flow) + thermalPort.Q_flow = 0
+        "Energy balance";
+    end if;
 
     for i in 1:Medium.nC loop
       sum(ports_a_mC_flow[:,i])+sum(ports_b_mC_flow[:,i]) = 0

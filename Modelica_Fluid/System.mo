@@ -13,13 +13,13 @@ model System
   parameter Modelica_Fluid.Types.FlowDirection flowDirection=
       Modelica_Fluid.Types.FlowDirection.Bidirectional
     "Default for bidirectional or unidirectional (port_a -> port_b) flow" 
-     annotation(Dialog(tab="Advanced"));
-
-/* Temporarily disabled, because no effect
+     annotation(Dialog(tab="Assumptions"));
+  parameter Types.Dynamics dynamicsType=
+            Types.Dynamics.Dynamic "Default dynamics option" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions"));
   parameter Types.Init initType=
             Types.Init.NoInit "Default initialization option" 
-    annotation(Evaluate=true, Dialog(tab = "Advanced"));
-*/
+    annotation(Evaluate=true, Dialog(tab = "Initialization"));
 
   annotation (
     defaultComponentName="system",
