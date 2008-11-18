@@ -49,8 +49,8 @@ equation
   end for;
   Ta=thermalPort_a.T;
   Tb=thermalPort_b.T;
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
-              -100,-100},{100,100}}), graphics={Rectangle(
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}), graphics={Rectangle(
             extent={{-100,40},{100,-40}},
             lineColor={0,0,0},
             fillColor={95,95,95},

@@ -12,7 +12,14 @@ package Pipes "Lumped, distributed and thermal pipe components"
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
-    parameter Modelica_Fluid.Types.Init initType=Modelica_Fluid.Types.Init.NoInit
+    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
+        system.flowDirection
+      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+       annotation(Dialog(tab="Assumptions"));
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+      "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+    parameter Modelica_Fluid.Types.Init initType=system.initType
       "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_a_start
@@ -59,10 +66,6 @@ package Pipes "Lumped, distributed and thermal pipe components"
       "Nominal dynamic viscosity (for wall friction computation)" annotation(Dialog(enable=use_nominal));
     parameter Modelica.SIunits.Density d_nominal=0.01
       "Nominal density (for wall friction computation)" annotation(Dialog(enable=use_nominal));
-    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-        system.flowDirection
-      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
-       annotation(Dialog(tab="Advanced"));
     parameter Modelica.SIunits.AbsolutePressure dp_small=1
       "Turbulent flow if |dp| >= dp_small (only used if WallFriction=QuadraticTurbulent)"
       annotation(Dialog(tab="Advanced", enable=WallFriction.use_dp_small));
@@ -156,7 +159,8 @@ pipe wall/environment).
       use_T_start=use_T_start,
       T_start=T_start,
       h_start=h_start,
-      X_start=X_start) 
+      X_start=X_start,
+      dynamicsType=dynamicsType) 
       annotation (Placement(transformation(extent={{-10,-10},{10,10}}, rotation=
              0)));
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction2(
@@ -272,7 +276,7 @@ pipe wall/environment).
       Placement(transformation(extent={{-20,-20},{20,20}}, rotation=0)));
    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
       "Thermal port" 
- annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
+ annotation (Placement(transformation(extent={{-20,44},{20,64}}, rotation=0)));
    outer Modelica_Fluid.System system "System properties";
 
   protected
@@ -478,7 +482,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
             annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching,
       Placement(transformation(extent={{-20,-20},{20,20}}, rotation=0)));
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
-      "Thermal port" annotation (Placement(transformation(extent={{-10,44},{10,
+      "Thermal port" annotation (Placement(transformation(extent={{-20,44},{20,
               64}}, rotation=0)));
   outer Modelica_Fluid.System system "System properties";
 
@@ -716,7 +720,7 @@ model DistributedPipeSb "Distributed pipe model"
       Placement(transformation(extent={{-20,-20},{20,20}}, rotation=0)));
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
       "Thermal port" 
-annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
+annotation (Placement(transformation(extent={{-20,44},{20,64}}, rotation=0)));
   outer Modelica_Fluid.System system "System properties";
 
   protected
@@ -929,7 +933,7 @@ model DistributedPipeSa "Distributed pipe model"
       Placement(transformation(extent={{-20,-20},{20,20}}, rotation=0)));
   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
       "Thermal port" 
-annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=0)));
+annotation (Placement(transformation(extent={{-20,44},{20,64}}, rotation=0)));
   outer Modelica_Fluid.System system "System properties";
 
   protected
@@ -1080,18 +1084,16 @@ end DistributedPipeSa;
     final parameter Integer nl=integer(n/2)+1
         "Number of control volume that contains single state"                 annotation(Evaluate=true);
 
-  //Advanced model options
     parameter Modelica_Fluid.Types.FlowDirection flowDirection=
         system.flowDirection
         "Unidirectional (port_a -> port_b) or bidirectional flow" 
-       annotation(Dialog(tab="Advanced", group="Mass and energy balances"));
-    parameter Boolean static=false
+       annotation(Dialog(tab="Assumptions"));
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+        "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+    final parameter Boolean static = dynamicsType == Types.Dynamics.SteadyState
         "= true, static balances, no mass or energy is stored" 
                                   annotation(Dialog(tab="Advanced", group="Mass and energy balances"),Evaluate=true);
-
-    parameter Boolean use_approxPortProperties=false
-        "=true, port properties for pressure drop correlation are taken from neighboring control volume"
-                                                                                                       annotation(Dialog(tab="Advanced", group="Momentum balances"),Evaluate=true);
 
   //Initialization
       parameter Types.Init initType=Types.
@@ -1128,6 +1130,11 @@ end DistributedPipeSa;
       parameter Medium.MassFlowRate mflow_start
         "Start value for mass flow rate"                                       annotation(Evaluate=true, Dialog(tab = "Initialization"));
       final parameter SI.Pressure dp_start=p_a_start - p_b_start;
+
+  //Advanced model options
+    parameter Boolean use_approxPortProperties=false
+        "=true, port properties for pressure drop correlation are taken from neighboring control volume"
+                                                                                                       annotation(Dialog(tab="Advanced", group="Momentum balances"),Evaluate=true);
 
   //Geometry parameters
     parameter Boolean isCircular=true
@@ -1277,25 +1284,34 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     end for;
 
     //Mass and energy balances
-    if static then
-    //steady state mass and energy balances, no numerical states, no flow reversal possible
-      for i in 1:n loop
-        0 = m_flow[i] - m_flow[i + 1] + ms_flow[i];
-        zeros(Medium.nXi) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
-        0 = H_flow[i] - H_flow[i + 1] + Qs_flow[i] + Ws_flow[i];
-      end for;
-    else
-     //dynamic mass and energy balances, n "thermal" states, 1 pressure state
+    if dynamicsType < Types.Dynamics.SteadyStateMass then
+     //dynamic mass balances, n "thermal" states, 1 pressure state
       for i in 1:n loop
         der(m[i]) = m_flow[i] - m_flow[i + 1] + ms_flow[i];
         der(mXi[i, :]) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
+      end for;
+    else
+    //steady state mass balances, no numerical states, no flow reversal possible
+      for i in 1:n loop
+        0 = m_flow[i] - m_flow[i + 1] + ms_flow[i];
+        zeros(Medium.nXi) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
+      end for;
+    end if;
+    if dynamicsType < Types.Dynamics.SteadyState then
+     //dynamic energy balances, n "thermal" states, 1 pressure state
+      for i in 1:n loop
         der(U[i]) = H_flow[i] - H_flow[i + 1] + Qs_flow[i] + Ws_flow[i];
       end for;
-      end if;
+    else
+    //steady state energy balances, no numerical states, no flow reversal possible
       for i in 1:n loop
-        assert((allowFlowReversal and not static) or (m_flow[i] >= 0),
-          "Flow reversal not allowed in distributed pipe");
+        0 = H_flow[i] - H_flow[i + 1] + Qs_flow[i] + Ws_flow[i];
       end for;
+    end if;
+    for i in 1:n loop
+      assert((allowFlowReversal and not static) or (m_flow[i] >= 0),
+        "Flow reversal not allowed in distributed pipe");
+    end for;
 
   //Momentum Balance, dp contains contributions from acceleration, gravitational and friction effects
   //two momentum balances, one on each side of pressure state, dp must be supplied in extending class
@@ -1362,25 +1378,19 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
   //Discretization
     parameter Integer n(min=1)=1 "Number of pipe segments";
 
-  //Advanced model options
     parameter Modelica_Fluid.Types.FlowDirection flowDirection=
         system.flowDirection
         "Unidirectional (port_a -> port_b) or bidirectional flow" 
-       annotation(Dialog(tab="Advanced", group="Mass and energy balances"));
-    parameter Boolean static=false
+       annotation(Dialog(tab="Assumptions"));
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+        "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+    final parameter Boolean static = dynamicsType == Types.Dynamics.SteadyState
         "= true, static balances, no mass or energy is stored" 
-                                  annotation(Dialog(tab="Advanced", group="Mass and energy balances"),Evaluate=true);
-
-    parameter Types.ModelStructure modelStructure=Types.ModelStructure.a_v_b
-        "Determines whether flow model between volume and port is present"                                                                           annotation(Dialog(tab="Advanced", group="Mass and energy balances"),Evaluate=true);
-
-    parameter Boolean use_approxPortProperties=false
-        "=true, port properties for pressure drop correlation are taken from neighboring control volume"
-                                                                                                       annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
+                                  annotation(Dialog(tab="Assumptions"),Evaluate=true);
 
   //Initialization
-      parameter Types.Init initType=Types.
-          Init.NoInit "Initialization option" 
+      parameter Types.Init initType=system.initType "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
       parameter Boolean use_T_start=true
         "Use T_start if true, otherwise h_start" 
@@ -1414,6 +1424,14 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         "Start value for mass flow rate" 
        annotation(Evaluate=true, Dialog(tab = "Initialization"));
       final parameter SI.Pressure dp_start=p_a_start - p_b_start;
+
+  //Advanced model options
+    parameter Types.ModelStructure modelStructure=Types.ModelStructure.a_v_b
+        "Determines whether flow model between volume and port is present"                                                                           annotation(Dialog(tab="Advanced"),Evaluate=true);
+
+    parameter Boolean use_approxPortProperties=false
+        "=true, port properties for pressure drop correlation are taken from neighboring control volume"
+                                                                                                       annotation(Dialog(tab="Advanced", group="Momentum balance"),Evaluate=true);
 
   //Geometry
     parameter Boolean isCircular=true
@@ -1563,19 +1581,28 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     end for;
 
     //Mass and energy balances
-    if static then
-    //steady state mass and energy balances, no numerical states, no flow reversal possible
-      for i in 1:n loop
-        0 = m_flow[i] - m_flow[i + 1] + ms_flow[i];
-        zeros(Medium.nXi) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
-        0 = H_flow[i] - H_flow[i + 1] + Qs_flow[i];
-      end for;
-     else
-    //dynamic mass and energy balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
+    if dynamicsType < Types.Dynamics.SteadyStateMass then
+    //dynamic mass balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
       for i in 1:n loop
         der(m[i]) = m_flow[i] - m_flow[i + 1] + ms_flow[i];
         der(mXi[i, :]) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
+      end for;
+    else
+    //steady state mass balances, no numerical states, no flow reversal possible
+      for i in 1:n loop
+        0 = m_flow[i] - m_flow[i + 1] + ms_flow[i];
+        zeros(Medium.nXi) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
+      end for;
+    end if;
+    if dynamicsType < Types.Dynamics.SteadyState then
+    //dynamic energy balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
+      for i in 1:n loop
         der(U[i]) = H_flow[i] - H_flow[i + 1] + Qs_flow[i];
+      end for;
+    else
+    //steady state energy balances, no numerical states, no flow reversal possible
+      for i in 1:n loop
+        0 = H_flow[i] - H_flow[i + 1] + Qs_flow[i];
       end for;
     end if;
     for i in 1:n loop

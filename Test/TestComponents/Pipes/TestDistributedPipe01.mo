@@ -13,17 +13,16 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     diameter=0.01,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     p_b_start=1.0e5,
     length=2,
     use_eta_nominal=false,
     use_approxPortProperties=true,
-    heatTransfer(alpha0=500)) 
+    heatTransfer(alpha0=500),
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-28,68},{-8,88}},
           rotation=0)));
 
@@ -52,14 +51,13 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     use_eta_nominal=false,
-    use_approxPortProperties=true) 
+    use_approxPortProperties=true,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{34,54},{54,74}},
           rotation=0)));
 
@@ -71,16 +69,15 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     p_b_start=1.0e5,
     length=0.4,
     use_eta_nominal=false,
-    use_approxPortProperties=true) 
+    use_approxPortProperties=true,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-82,54},{-62,74}},
           rotation=0)));
 
@@ -111,16 +108,15 @@ Test of different distributed pipe models. The first system uses explicit juncti
     T_start=360,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
     use_eta_nominal=false,
-    use_approxPortProperties=true) 
+    use_approxPortProperties=true,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-28,38},{-8,58}},
           rotation=0)));
 
@@ -158,17 +154,16 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     p_b_start=1.0e5,
     length=2,
     use_eta_nominal=false,
     use_approxPortProperties=true,
-    heatTransfer(alpha0=500)) 
+    heatTransfer(alpha0=500),
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
           rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary4(
@@ -188,14 +183,13 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     use_eta_nominal=false,
-    use_approxPortProperties=true) 
+    use_approxPortProperties=true,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{10,-2},{30,18}},
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe7(
@@ -206,16 +200,15 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     p_b_start=1.0e5,
     length=0.4,
     use_eta_nominal=false,
-    use_approxPortProperties=true) 
+    use_approxPortProperties=true,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-68,-2},{-48,18}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX boundary3(
@@ -239,16 +232,15 @@ Test of different distributed pipe models. The first system uses explicit juncti
     T_start=360,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
     use_eta_nominal=false,
-    use_approxPortProperties=true) 
+    use_approxPortProperties=true,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,-12},{-10,8}},
           rotation=0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow[
@@ -264,17 +256,16 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     p_b_start=1.0e5,
     length=2,
     use_eta_nominal=false,
     use_approxPortProperties=true,
-    heatTransfer(alpha0=500)) 
+    heatTransfer(alpha0=500),
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-32,-50},{-12,-30}},
           rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary5(
@@ -294,14 +285,13 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     use_eta_nominal=false,
-    use_approxPortProperties=true) 
+    use_approxPortProperties=true,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{8,-62},{28,-42}},
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipeSb pipe11(
@@ -312,16 +302,15 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     p_b_start=1.0e5,
     length=0.4,
     use_eta_nominal=false,
-    use_approxPortProperties=true) 
+    use_approxPortProperties=true,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-70,-62},{-50,-42}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX boundary6(
@@ -345,16 +334,15 @@ Test of different distributed pipe models. The first system uses explicit juncti
     T_start=360,
     use_d_nominal=false,
     n=5,
-    static=false,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     mflow_start=0.1,
-    p_a_start=1.0e5,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
     use_eta_nominal=false,
-    use_approxPortProperties=true) 
+    use_approxPortProperties=true,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-32,-72},{-12,-52}},
           rotation=0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow[

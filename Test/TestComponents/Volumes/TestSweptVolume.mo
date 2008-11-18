@@ -18,11 +18,12 @@ model TestSweptVolume
   inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{80,-40},{100,-20}}, rotation=0)));
 
-  annotation (Diagram(graphics={Text(
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -100},{100,100}}), graphics={Text(
           extent={{-100,80},{100,60}},
           lineColor={0,0,0},
           textString=
-            "Enclosed medium with fixed quantity in an adiabatic volume with varying size")}),
+              "Enclosed medium with fixed quantity in an adiabatic volume with varying size")}),
     experiment(StopTime=10, Tolerance=1e-007),
     experimentSetupOutput);
 

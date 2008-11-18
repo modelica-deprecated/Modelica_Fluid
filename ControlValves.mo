@@ -19,13 +19,13 @@ package ControlValves "Various variants of valve components"
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
 <p>This model can be used with any low compressibility fluids, such as liquids or gases at very low pressure drops.</p>
 <p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
-
+ 
 <p>
 The treatment of parameters <b>Kv</b> and <b>Cv</b> is
 explained in detail in the 
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.ValveCharacteristics\">Users Guide</a>.
 </p>
-
+ 
 </html>",
       revisions="<html>
 <ul>
@@ -91,7 +91,7 @@ The treatment of parameters <b>Kv</b> and <b>Cv</b> is
 explained in detail in the 
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.ValveCharacteristics\">Users Guide</a>.
 </p>
-
+ 
 </HTML>",
         revisions="<html>
 <ul>
@@ -164,7 +164,7 @@ The treatment of parameters <b>Kv</b> and <b>Cv</b> is
 explained in detail in the 
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.ValveCharacteristics\">Users Guide</a>.
 </p>
-
+ 
 </HTML>",
       revisions="<html>
 <ul>
@@ -473,13 +473,13 @@ it is open.
 <p>If <tt>CheckValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place. Use this option only when neede, as it increases the numerical complexity of the problem.
 <p>The valve opening characteristic <tt>valveCharacteristic</tt>, linear by default, can be replaced by any user-defined function. Quadratic and equal percentage with customizable rangeability are already provided by the library.
 </p>
-
+ 
 <p>
 The treatment of parameters <b>Kv</b> and <b>Cv</b> is
 explained in detail in the 
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.ValveCharacteristics\">Users Guide</a>.
 </p>
-
+ 
 </HTML>", revisions="<html>
 <ul>
 <li><i>2 Nov 2005</i>

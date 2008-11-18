@@ -732,8 +732,18 @@ end Tank;
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation (choicesAllMatching = true);
+        parameter Types.FlowDirection flowDirection=system.flowDirection
+        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
+         annotation(Dialog(tab="Assumptions"));
+        final parameter Boolean allowFlowReversal=flowDirection == Types.FlowDirection.
+            Bidirectional
+        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
+         annotation(Evaluate=true, Hide=true);
+        parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+        "Dynamics option" 
+          annotation(Evaluate=true, Dialog(tab = "Assumptions"));
         parameter Types.Init initType=
-                  Types.Init.NoInit "Initialization option" 
+                  system.initType "Initialization option" 
           annotation(Evaluate=true, Dialog(tab = "Initialization"));
         parameter Medium.AbsolutePressure p_start = Medium.p_default
         "Start value of pressure" 
@@ -752,14 +762,6 @@ end Tank;
         parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default
         "Start value of mass fractions m_i/m" 
           annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-
-        parameter Types.FlowDirection flowDirection=system.flowDirection
-        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
-         annotation(Dialog(tab="Advanced"));
-         final parameter Boolean allowFlowReversal=flowDirection == Types.FlowDirection.
-            Bidirectional
-        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-         annotation(Evaluate=true, Hide=true);
 
         Interfaces.FluidStatePort_a port_a(
                                       redeclare package Medium = Medium, m_flow(min=
@@ -837,12 +839,20 @@ of the modeller.
         mXi = m*medium.Xi;
         U = m*medium.u;
 
-        // Dynamic mass and energy balances
-        der(m) = port_a.m_flow + port_b.m_flow;
-        der(mXi) = port_a.m_flow*actualStream(port_a.Xi_outflow) + port_b.m_flow*actualStream(port_b.Xi_outflow);
-        der(U) = port_a.m_flow*actualStream(port_a.h_outflow) + port_b.m_flow*actualStream(port_b.h_outflow) + Qs_flow + Ws_flow;
-
-        // Steady-state composition balance
+        // Mass and energy balances
+        if dynamicsType < Types.Dynamics.SteadyStateMass then
+          der(m) = port_a.m_flow + port_b.m_flow;
+          der(mXi) = port_a.m_flow*actualStream(port_a.Xi_outflow) + port_b.m_flow*actualStream(port_b.Xi_outflow);
+        else
+          0 = port_a.m_flow + port_b.m_flow;
+          zeros(Medium.nXi) = port_a.m_flow*actualStream(port_a.Xi_outflow) + port_b.m_flow*actualStream(port_b.Xi_outflow);
+        end if;
+        if dynamicsType < Types.Dynamics.SteadyState then
+          der(U) = port_a.m_flow*actualStream(port_a.h_outflow) + port_b.m_flow*actualStream(port_b.h_outflow) + Qs_flow + Ws_flow;
+        else
+          0 = port_a.m_flow*actualStream(port_a.h_outflow) + port_b.m_flow*actualStream(port_b.h_outflow) + Qs_flow + Ws_flow;
+        end if;
+        // Steady-state extra composition balance
         port_a.C_outflow = inStream(port_b.C_outflow);
         port_b.C_outflow = inStream(port_a.C_outflow);
 
