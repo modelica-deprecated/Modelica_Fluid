@@ -411,10 +411,9 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
 
     // Assumptions
-    parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-        system.flowDirection
-      "Unidirectional (ports_a -> ports_b) or bidirectional flow" 
-       annotation(Dialog(tab="Assumptions"));
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+      "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
     parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
       "Dynamics option" 
       annotation(Evaluate=true, Dialog(tab = "Assumptions"));
@@ -476,11 +475,6 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
-  protected
-    parameter Boolean allowFlowReversal=
-      flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
-      "= false, if flow only from ports_a to ports_b, otherwise reversing flow allowed"
-      annotation(Evaluate=true, Hide=true);
 
   initial equation
     // Initial conditions

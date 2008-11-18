@@ -1050,7 +1050,6 @@ as signal.
     partial model PartialFlowSensor
       "Partial component to model sensors that measure flow properties"
       import Modelica.Constants;
-      import Modelica_Fluid.Types.FlowDirection;
       outer Modelica_Fluid.System system "System properties";
 
       replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
@@ -1068,9 +1067,9 @@ as signal.
         annotation (Placement(transformation(extent={{110,-10},{90,10}},
               rotation=0)));
 
-      parameter FlowDirection flowDirection=system.flowDirection
-        "Unidirectional (port_a -> port_b) or bidirectional flow component" 
-         annotation(Dialog(tab="Advanced"));
+      parameter Boolean allowFlowReversal = system.allowFlowReversal
+        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+        annotation(Dialog(tab="Assumptions"), Evaluate=true);
 
       annotation (Documentation(info="<html>
 <p>
@@ -1086,11 +1085,6 @@ this partial class should add a medium instance to calculate the measured proper
             extent={{-100,-100},{100,100}},
             grid={1,1}), graphics));
 
-    protected
-      parameter Boolean allowFlowReversal=
-         flowDirection == Modelica_Fluid.Types.FlowDirection.Bidirectional
-        "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-         annotation(Evaluate=true, Hide=true);
     equation
       // mass balance
       0 = port_a.m_flow + port_b.m_flow;

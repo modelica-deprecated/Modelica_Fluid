@@ -10,10 +10,9 @@ model System
       annotation(Dialog(group="Defaults"));
   parameter SI.Acceleration g=Modelica.Constants.g_n
     "Constant gravity acceleration"                                                  annotation(Dialog(group="Environment"));
-  parameter Modelica_Fluid.Types.FlowDirection flowDirection=
-      Modelica_Fluid.Types.FlowDirection.Bidirectional
-    "Default for bidirectional or unidirectional (port_a -> port_b) flow" 
-     annotation(Dialog(tab="Assumptions"));
+  parameter Boolean allowFlowReversal = true
+    "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+    annotation(Dialog(tab="Assumptions"), Evaluate=true);
   parameter Types.Dynamics dynamicsType=
             Types.Dynamics.Dynamic "Default dynamics option" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions"));

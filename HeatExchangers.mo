@@ -6,7 +6,6 @@ package HeatExchangers "Evaporators and condensor components"
     import Modelica.SIunits.Conversions.*;
     import Modelica.Constants;
     import Modelica_Fluid.Types;
-    import Modelica_Fluid.Types.FlowDirection;
     outer Modelica_Fluid.System system "System properties";
     replaceable package Medium = Modelica.Media.Water.StandardWater 
       constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium
@@ -25,9 +24,9 @@ package HeatExchangers "Evaporators and condensor components"
       "Start value of liquid volumeStart value of volume" 
     annotation(Dialog(tab = "Initialization"));
 
-    parameter FlowDirection flowDirection=system.flowDirection
-      "Unidirectional (port_a -> port_b) or bidirectional flow component" 
-     annotation(Dialog(tab="Advanced"));
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+      "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
 
     Modelica_Fluid.Interfaces.FluidPort_a feedwater(redeclare package Medium = 
           Medium, m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
@@ -71,10 +70,6 @@ package HeatExchangers "Evaporators and condensor components"
     SI.MassFlowRate qm_S=steam.m_flow "steam mass flow rate";
   /*outer Modelica_Fluid.Components.FluidOptions fluidOptions 
     "Global default options";*/
-  protected
-    parameter Boolean allowFlowReversal=flowDirection == FlowDirection.Bidirectional
-      "= false, if flow only from port_a to port_b, otherwise reversing flow allowed"
-     annotation(Evaluate=true, Hide=true);
   equation
   // balance equations
     m = rho_v*V_v + rho_l*V_l + m_D "Total mass";
