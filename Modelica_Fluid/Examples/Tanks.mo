@@ -23,8 +23,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       m_flow=20,
-      T=system.T_ambient,
-      flowDirection=Modelica_Fluid.Types.PortFlowDirection.Leaving) 
+      T=system.T_ambient) 
       annotation (Placement(transformation(extent={{-52,70},{-32,90}}, rotation=
              0)));
     annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -43,8 +42,7 @@ package Tanks "Library demonstrating the usage of the tank model"
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
-      T=system.T_ambient,
-      flowDirection=Modelica_Fluid.Types.PortFlowDirection.Entering) 
+      T=system.T_ambient) 
       annotation (Placement(transformation(extent={{-54,-20},{-34,0}}, rotation=
              0)));
     PressureLosses.WallFrictionAndGravity pipe(
@@ -130,8 +128,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       m_flow=50,
-      T=system.T_ambient,
-      flowDirection=Modelica_Fluid.Types.PortFlowDirection.Leaving) 
+      T=system.T_ambient) 
       annotation (Placement(transformation(extent={{-20,40},{0,60}}, rotation=0)));
     annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}),
@@ -150,8 +147,7 @@ package Tanks "Library demonstrating the usage of the tank model"
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
-      T=system.T_ambient,
-      flowDirection=Modelica_Fluid.Types.PortFlowDirection.Entering) 
+      T=system.T_ambient) 
       annotation (Placement(transformation(extent={{-60,-100},{-40,-80}},
             rotation=0)));
     ControlValves.ValveDiscrete valveDiscrete(redeclare package Medium = 
@@ -224,7 +220,6 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.PortFlowDirection.Entering,
       p=system.p_ambient,
       T=system.T_ambient) 
       annotation (Placement(transformation(extent={{-60,-100},{-40,-80}},
@@ -269,7 +264,6 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.PortFlowDirection.Entering,
       p=system.p_ambient,
       T=system.T_ambient) 
       annotation (Placement(transformation(extent={{0,-100},{20,-80}}, rotation=
@@ -305,8 +299,7 @@ package Tanks "Library demonstrating the usage of the tank model"
               {-80,80}}, rotation=0)));
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
                                             redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater, flowDirection=
-          Modelica_Fluid.Types.PortFlowDirection.Entering,
+          Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
       T=system.T_ambient) 
       annotation (Placement(transformation(extent={{-100,-80},{-80,-60}},
@@ -351,7 +344,6 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed2(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.PortFlowDirection.Entering,
       p=system.p_ambient,
       T=system.T_ambient) 
       annotation (Placement(transformation(extent={{0,-80},{20,-60}}, rotation=
@@ -422,7 +414,6 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      flowDirection=Modelica_Fluid.Types.PortFlowDirection.Entering,
       p=system.p_ambient,
       T=system.T_ambient) 
       annotation (Placement(transformation(extent={{-16,-102},{-36,-82}},

@@ -284,8 +284,8 @@ pipe wall/environment).
    SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
 
    annotation (
-     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}},
+     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}},
           grid={1,1}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
@@ -494,7 +494,8 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       Medium.dynamicViscosity(medium.state));
 
     annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}},
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}},
           grid={1,1}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
@@ -731,7 +732,8 @@ annotation (Placement(transformation(extent={{-20,44},{20,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}},
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}},
           grid={1,1}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
@@ -944,7 +946,8 @@ annotation (Placement(transformation(extent={{-20,44},{20,64}}, rotation=0)));
       Medium.dynamicViscosity(medium.state));
 
 annotation (
-  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}},
+  Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}},
           grid={1,1}), graphics={
           Rectangle(
             extent={{-100,44},{100,40}},
