@@ -751,9 +751,6 @@ with exception of boundary flow rate, do not have an effect.
         Modelica.Media.Interfaces.PartialMedium
         "Medium model within the source" 
        annotation (choicesAllMatching=true);
-    parameter Types.PortFlowDirection flowDirection=
-                     Types.PortFlowDirection.Bidirectional
-        "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
 
     Medium.BaseProperties medium "Medium in the source";
     Modelica_Fluid.Interfaces.FluidPort_b port(
@@ -780,6 +777,10 @@ features are:
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
+    protected
+    parameter Types.PortFlowDirection flowDirection=
+                     Types.PortFlowDirection.Bidirectional
+        "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
   equation
     port.p = medium.p;
     port.h_outflow  = medium.h;

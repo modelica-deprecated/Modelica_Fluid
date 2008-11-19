@@ -406,13 +406,13 @@ present that are regulated by a central control system.
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-100,
               -140},{-60,-100}}, rotation=0)));
-    PressureLosses.WallFrictionAndGravity pipeB1B2(
+    Pipes.StaticPipe pipeB1B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
       height_ab=0) annotation (Placement(transformation(extent={{10,230},{-10,
               250}}, rotation=0)));
-    PressureLosses.WallFrictionAndGravity pipeB1B3(
+    Pipes.StaticPipe pipeB1B3(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -423,7 +423,7 @@ present that are regulated by a central control system.
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
             rotation=0)));
-    PressureLosses.WallFrictionAndGravity pipeB2B3(
+    Pipes.StaticPipe pipeB2B3(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -434,7 +434,7 @@ present that are regulated by a central control system.
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
              0)));
-    PressureLosses.WallFrictionAndGravity pipeB1B1(
+    Pipes.StaticPipe pipeB1B1(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -447,7 +447,7 @@ present that are regulated by a central control system.
           origin={20,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    PressureLosses.WallFrictionAndGravity pipeB6Pump(
+    Pipes.StaticPipe pipeB6Pump(
       redeclare package Medium = BatchMedium,
       m_flow_small=1,
       roughness=0,
@@ -461,7 +461,7 @@ present that are regulated by a central control system.
           origin={60,-106},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    PressureLosses.WallFrictionAndGravity pipeB7Pump(
+    Pipes.StaticPipe pipeB7Pump(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -474,7 +474,7 @@ present that are regulated by a central control system.
           origin={-80,-200},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    PressureLosses.WallFrictionAndGravity pipePump1B1(
+    Pipes.StaticPipe pipePump1B1(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -487,7 +487,7 @@ present that are regulated by a central control system.
           origin={-180,-4},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    PressureLosses.WallFrictionAndGravity pipePump2B2(
+    Pipes.StaticPipe pipePump2B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,

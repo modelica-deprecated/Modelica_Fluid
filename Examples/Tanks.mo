@@ -45,7 +45,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       T=system.T_ambient) 
       annotation (Placement(transformation(extent={{-54,-20},{-34,0}}, rotation=
              0)));
-    PressureLosses.WallFrictionAndGravity pipe(
+    Pipes.StaticPipe pipe(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
@@ -104,7 +104,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(
           diameter=0.1, portLevel=0)}) 
       annotation (Placement(transformation(extent={{0,0},{40,40}}, rotation=0)));
-    PressureLosses.WallFrictionAndGravity pipe(
+    Pipes.StaticPipe pipe(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
@@ -176,7 +176,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       nTopPorts=1) 
       annotation (Placement(transformation(extent={{-40,-20},{0,20}}, rotation=
               0)));
-    PressureLosses.WallFrictionAndGravity pipe(
+    Pipes.StaticPipe pipe(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
@@ -238,7 +238,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       stiffCharacteristicForEmptyPort=true) 
       annotation (Placement(transformation(extent={{-40,-20},{0,20}}, rotation=
               0)));
-    PressureLosses.WallFrictionAndGravity pipe1(
+    Pipes.StaticPipe pipe1(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
@@ -250,7 +250,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           extent={{-10,-10},{10,10}},
           rotation=90)));
 
-    PressureLosses.WallFrictionAndGravity pipe2(
+    Pipes.StaticPipe pipe2(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
@@ -318,7 +318,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       stiffCharacteristicForEmptyPort=true) 
       annotation (Placement(transformation(extent={{-80,0},{-40,40}}, rotation=
               0)));
-    PressureLosses.WallFrictionAndGravity pipe1(
+    Pipes.StaticPipe pipe1(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
@@ -330,7 +330,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           extent={{-10,-10},{10,10}},
           rotation=90)));
 
-    PressureLosses.WallFrictionAndGravity pipe2(
+    Pipes.StaticPipe pipe2(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
@@ -361,7 +361,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       level_start=0.1,
       stiffCharacteristicForEmptyPort=true) 
       annotation (Placement(transformation(extent={{20,0},{60,40}}, rotation=0)));
-    PressureLosses.WallFrictionAndGravity pipe3(
+    Pipes.StaticPipe pipe3(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
@@ -619,7 +619,7 @@ package Tanks "Library demonstrating the usage of the tank model"
                               annotation (Placement(transformation(extent={{-20,
               20},{20,60}}, rotation=0)));
 
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe(
+    Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       redeclare package WallFriction = 
