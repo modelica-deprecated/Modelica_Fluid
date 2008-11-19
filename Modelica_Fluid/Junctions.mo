@@ -11,16 +11,6 @@ package Junctions "Junction components"
       "Fluid medium model" 
       annotation (choicesAllMatching=true);
 
-    parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
-      "Flow direction for port_1" 
-     annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
-      "Flow direction for port_2" 
-     annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
-      "Flow direction for port_3" 
-     annotation(Dialog(tab="Advanced"));
-
     Modelica_Fluid.Interfaces.FluidPort_a port_1(redeclare package Medium = 
           Medium, m_flow(min=if (portFlowDirection_1 == PortFlowDirection.Entering) then 
                   0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_1
@@ -83,6 +73,17 @@ package Junctions "Junction components"
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
 
+  protected
+    parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
+      "Flow direction for port_1" 
+     annotation(Dialog(tab="Advanced"));
+    parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
+      "Flow direction for port_2" 
+     annotation(Dialog(tab="Advanced"));
+    parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
+      "Flow direction for port_3" 
+     annotation(Dialog(tab="Advanced"));
+
   equation
     connect(port_1, port_2) annotation (Line(
         points={{-100,0},{100,0}},
@@ -101,11 +102,17 @@ package Junctions "Junction components"
     "Splitting/joining component with static balances for a dynamic control volume"
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.PortFlowDirection;
+    outer Modelica_Fluid.System system "System properties";
 
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
       "Fluid medium model" 
         annotation (choicesAllMatching=true);
     parameter SI.Volume V "Volume";
+
+    // Assumptions
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+      "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
 
     SI.InternalEnergy U "Internal energy";
     SI.Mass m "Total mass";
@@ -133,7 +140,7 @@ package Junctions "Junction components"
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(preferredMediumStates=true);
 
-    parameter Types.Init initType=Types.Init.NoInit "Initialization option" 
+    parameter Types.Init initType=system.initType "Initialization option" 
       annotation(Evaluate=true,Dialog(tab="Initialization"));
     parameter Medium.AbsolutePressure p_start "Start value of pressure" 
       annotation(Dialog(tab="Initialization"));
@@ -151,6 +158,7 @@ package Junctions "Junction components"
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
 
+  protected
     parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
       "Flow direction for port_1" 
      annotation(Dialog(tab="Advanced"));
@@ -253,11 +261,19 @@ of the modeller.
     U   = m*medium.u;
 
     // Mass balances
-    der(m)   = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-    der(mXi) = port_1.m_flow*actualStream(port_1.Xi_outflow)
+    if dynamicsType < Types.Dynamics.SteadyStateMass then
+      der(m)   = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
+      der(mXi) = port_1.m_flow*actualStream(port_1.Xi_outflow)
                 + port_2.m_flow*actualStream(port_2.Xi_outflow)
                 + port_3.m_flow*actualStream(port_3.Xi_outflow)
-      "Component mass balances";
+        "Component mass balances";
+    else
+         0   = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
+      zeros(Medium.nXi) = port_1.m_flow*actualStream(port_1.Xi_outflow)
+                + port_2.m_flow*actualStream(port_2.Xi_outflow)
+                + port_3.m_flow*actualStream(port_3.Xi_outflow)
+        "Component mass balances";
+    end if;
 
   /* 
   zeros(Medium.nC) = port_1.m_flow*actualStream(port_1.C_outflow)
@@ -272,9 +288,15 @@ of the modeller.
     port_3.p = medium.p;
 
     // Energy balance
-    der(U) = port_1.m_flow*actualStream(port_1.h_outflow)
+    if dynamicsType < Types.Dynamics.SteadyState then
+      der(U) = port_1.m_flow*actualStream(port_1.h_outflow)
               + port_2.m_flow*actualStream(port_2.h_outflow)
               + port_3.m_flow*actualStream(port_3.h_outflow);
+    else
+        0  = port_1.m_flow*actualStream(port_1.h_outflow)
+              + port_2.m_flow*actualStream(port_2.h_outflow)
+              + port_3.m_flow*actualStream(port_3.h_outflow);
+    end if;
   end JunctionVolume;
 
   model MassFlowRatio "simple flow multiplier"
