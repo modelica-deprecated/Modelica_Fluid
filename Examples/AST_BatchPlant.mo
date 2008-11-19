@@ -41,7 +41,6 @@ present that are regulated by a central control system.
 </html>"));
 
   model BatchPlant_StandardWater
-    parameter Real riseTime = 0.001;
 
     replaceable package BatchMedium = Modelica.Media.Water.StandardWater constrainedby
       Modelica.Media.Interfaces.PartialTwoPhaseMedium "Component media";
@@ -67,31 +66,31 @@ present that are regulated by a central control system.
       side_pipeArea={0.0001}) 
       annotation (Placement(transformation(extent={{-100,-60},{-20,-20}},
             rotation=0)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V12(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V12(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={-80,2},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V15(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V15(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={-80,-82},
           extent={{10,-10},{-10,10}},
           rotation=90)));
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow HeatB5 
-      annotation (Placement(transformation(extent={{-134,-50},{-114,-30}},
+      annotation (Placement(transformation(extent={{-140,-50},{-120,-30}},
             rotation=0)));
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow CoolingB7 
       annotation (Placement(transformation(extent={{-140,-130},{-120,-110}},
             rotation=0)));
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow CoolingB6 
       annotation (Placement(transformation(
-          origin={102,-60},
+          origin={110,-60},
           extent={{-10,-10},{10,10}},
           rotation=180)));
 
@@ -109,99 +108,84 @@ present that are regulated by a central control system.
       Commands(file=
             "../Scripts/Examples/AST_BatchPlant_StandardWater/plot level.mos"
           "plot level"));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V11(
-      m_flow_small=0,
-      Kv=0.01,
-      redeclare package Medium = BatchMedium) 
+    Modelica_Fluid.ControlValves.ValveDiscrete V11(
+      redeclare package Medium = BatchMedium,
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(extent={{-60,78},{-40,98}}, rotation=
              0)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V8(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V8(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={-80,162},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V9(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V9(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={80,162},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V2(
-      m_flow_small=0,
-      Kv=0.01,
-      redeclare package Medium = BatchMedium) 
+    Modelica_Fluid.ControlValves.ValveDiscrete V2(
+      redeclare package Medium = BatchMedium,
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(extent={{-30,230},{-50,250}},
             rotation=0)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V4(
-      m_flow_small=0,
-      Kv=0.01,
-      redeclare package Medium = BatchMedium) 
+    Modelica_Fluid.ControlValves.ValveDiscrete V4(
+      redeclare package Medium = BatchMedium,
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(extent={{50,230},{30,250}}, rotation=
              0)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V3(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V3(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(extent={{-114,210},{-134,230}},
             rotation=0)));
-    Junctions.JunctionVolume volume2(
-      redeclare package Medium = BatchMedium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (Placement(transformation(
+    Junctions.JunctionIdeal volume2(
+      redeclare package Medium = BatchMedium) 
+               annotation (Placement(transformation(
           origin={-180,220},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V6(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V6(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(extent={{112,210},{132,230}},
             rotation=0)));
-    Junctions.JunctionVolume volume8(
-      redeclare package Medium = BatchMedium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (Placement(transformation(
+    Junctions.JunctionIdeal volume8(
+      redeclare package Medium = BatchMedium) 
+               annotation (Placement(transformation(
           origin={160,220},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V23(
-      m_flow_small=0,
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V23(
       redeclare package Medium = BatchMedium,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={-106,-252},
           extent={{-10,10},{10,-10}},
           rotation=180)));
-    Volumes.MixingVolume volume3(
+    Modelica_Fluid.ControlValves.ValveDiscrete V1(
       redeclare package Medium = BatchMedium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (Placement(transformation(extent={{-170,-260},{-190,
-              -240}}, rotation=0)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V1(
-      m_flow_small=0,
-      Kv=0.01,
-      redeclare package Medium = BatchMedium,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={-180,110},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V22(
-      m_flow_small=0,
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V22(
       redeclare package Medium = BatchMedium,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={-180,-56},
           extent={{-10,10},{10,-10}},
@@ -213,39 +197,30 @@ present that are regulated by a central control system.
           origin={-180,70},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V5(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V5(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={160,110},
           extent={{10,-10},{-10,10}},
           rotation=270)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V24(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V24(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={94,-250},
           extent={{10,10},{-10,-10}},
           rotation=180)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V25(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V25(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={160,-20},
           extent={{10,-10},{-10,10}},
           rotation=270)));
-    Volumes.MixingVolume volume6(
-      redeclare package Medium = BatchMedium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001) annotation (Placement(transformation(extent={{150,-258},{170,
-              -238}}, rotation=0)));
     Volumes.MixingVolume volume7(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
@@ -253,22 +228,18 @@ present that are regulated by a central control system.
           origin={160,60},
           extent={{10,-10},{-10,10}},
           rotation=270)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V20(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V20(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={60,-200},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V19(
-      m_flow_small=0,
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V19(
       redeclare package Medium = BatchMedium,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={-8,-200},
           extent={{-10,10},{10,-10}},
@@ -283,20 +254,18 @@ present that are regulated by a central control system.
       mflow_nom=1) 
                annotation (Placement(transformation(extent={{-38,-260},{-18,
               -240}}, rotation=0)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V10(
-      m_flow_small=0,
-      Kv=0.01,
-      redeclare package Medium = BatchMedium) 
+    Modelica_Fluid.ControlValves.ValveDiscrete V10(
+      redeclare package Medium = BatchMedium,
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={20,70},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V21(
-      m_flow_small=0,
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V21(
       redeclare package Medium = BatchMedium,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={34,-250},
           extent={{10,10},{-10,-10}},
@@ -306,12 +275,10 @@ present that are regulated by a central control system.
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{50,-260},{70,-240}},
             rotation=0)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.ValveDiscrete V18(
-      Kv=0.01,
+    Modelica_Fluid.ControlValves.ValveDiscrete V18(
       redeclare package Medium = BatchMedium,
-      m_flow_small=0,
-      riseTime=riseTime,
-      finiteRiseTime=false) 
+      m_flow_nom = 1,
+      dp_nom = 100) 
       annotation (Placement(transformation(
           origin={-80,-232},
           extent={{-10,10},{10,-10}},
@@ -328,7 +295,7 @@ present that are regulated by a central control system.
       pin_start=100000,
       pout_start=100000,
       use_N_input=true) 
-      annotation (Placement(transformation(extent={{-128,-260},{-148,-240}},
+      annotation (Placement(transformation(extent={{-128,-262},{-148,-242}},
             rotation=0)));
     Pumps.PumpNPSH P2(
       redeclare package Medium = BatchMedium,
@@ -342,7 +309,7 @@ present that are regulated by a central control system.
       pin_start=100000,
       pout_start=100000,
       use_N_input=true) 
-      annotation (Placement(transformation(extent={{112,-256},{132,-236}},
+      annotation (Placement(transformation(extent={{110,-260},{130,-240}},
             rotation=0)));
     Volumes.Tank B1(
       level_start=0.2,
@@ -354,13 +321,13 @@ present that are regulated by a central control system.
           portLevel=0)}) annotation (Placement(transformation(extent={{-100,180},
               {-60,220}}, rotation=0)));
     inner Modelica_Fluid.System system 
-                          annotation (Placement(transformation(extent={{-172,
-              250},{-152,270}}, rotation=0)));
+                          annotation (Placement(transformation(extent={{180,250},
+              {200,270}},       rotation=0)));
     Modelica.Blocks.Logical.TriggeredTrapezoid P1_on(amplitude=100, rising=0) 
-      annotation (Placement(transformation(extent={{-158,-234},{-138,-214}},
+      annotation (Placement(transformation(extent={{-168,-230},{-148,-210}},
             rotation=0)));
     Modelica.Blocks.Logical.TriggeredTrapezoid P2_on(amplitude=50, rising=0) 
-      annotation (Placement(transformation(extent={{90,-228},{110,-208}},
+      annotation (Placement(transformation(extent={{90,-230},{110,-210}},
             rotation=0)));
     Volumes.Tank B2(
       level_start=0.2,
@@ -406,7 +373,7 @@ present that are regulated by a central control system.
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-100,
               -140},{-60,-100}}, rotation=0)));
-    Pipes.StaticPipe pipeB1B2(
+    Pipes.LumpedPipe pipeB1B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -418,7 +385,6 @@ present that are regulated by a central control system.
       diameter=0.1,
       height_ab=0.1,
       from_dp=false,
-      m_flow_small=1,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
@@ -429,7 +395,6 @@ present that are regulated by a central control system.
       diameter=0.1,
       height_ab=0.1,
       from_dp=false,
-      m_flow_small=1,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
@@ -439,7 +404,6 @@ present that are regulated by a central control system.
       length=1,
       diameter=0.1,
       from_dp=false,
-      m_flow_small=1,
       height_ab=0.5,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
@@ -449,7 +413,6 @@ present that are regulated by a central control system.
           rotation=90)));
     Pipes.StaticPipe pipeB6Pump(
       redeclare package Medium = BatchMedium,
-      m_flow_small=1,
       roughness=0,
       from_dp=true,
       length=0.5,
@@ -466,7 +429,6 @@ present that are regulated by a central control system.
       length=1,
       diameter=0.1,
       from_dp=false,
-      m_flow_small=1,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction,
       height_ab=0.1,
@@ -474,12 +436,10 @@ present that are regulated by a central control system.
           origin={-80,-200},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Pipes.StaticPipe pipePump1B1(
+    Pipes.LumpedPipe pipePump1B1(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
-      from_dp=false,
-      m_flow_small=1,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction,
       roughness=0,
@@ -487,12 +447,10 @@ present that are regulated by a central control system.
           origin={-180,-4},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Pipes.StaticPipe pipePump2B2(
+    Pipes.LumpedPipe pipePump2B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
-      from_dp=false,
-      m_flow_small=1,
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction,
       roughness=0,
@@ -553,8 +511,8 @@ present that are regulated by a central control system.
 
     connect(P1.inlet, V23.port_b) annotation (Line(points={{-130,-252},{-116,
             -252}}, color={0,127,255}));
-    connect(V24.port_b, P2.inlet) annotation (Line(points={{104,-250},{106,-250},
-            {106,-248},{114,-248}}, color={0,127,255}));
+    connect(V24.port_b, P2.inlet) annotation (Line(points={{104,-250},{112,-250}},
+                                    color={0,127,255}));
     connect(V15.port_a, B5.BottomFluidPort[1]) annotation (Line(points={{-80,-72},
             {-80,-60.4}},      color={0,127,255}));
     connect(V3.port_a, B1.topPorts[1]) annotation (Line(points={{-114,220},{
@@ -562,10 +520,10 @@ present that are regulated by a central control system.
     connect(B1.ports[1], V8.port_b) annotation (Line(points={{-81,180},{-81,176},
             {-80,176},{-80,172}},
           color={0,127,255}));
-    connect(P1_on.y, P1.N_in) annotation (Line(points={{-137,-224},{-135.4,-224},
-            {-135.4,-245.6}}, color={0,0,127}));
-    connect(P2_on.y, P2.N_in) annotation (Line(points={{111,-218},{119.4,-218},
-            {119.4,-241.6}}, color={0,0,127}));
+    connect(P1_on.y, P1.N_in) annotation (Line(points={{-147,-220},{-138,-220},
+            {-138,-242}},     color={0,0,127}));
+    connect(P2_on.y, P2.N_in) annotation (Line(points={{111,-220},{120,-220},{
+            120,-240}},      color={0,0,127}));
     connect(B2.topPorts[1], V6.port_a) annotation (Line(points={{81,220},{81,
             228},{106,228},{106,220},{112,220}}, color={0,127,255}));
     connect(B2.ports[1], V9.port_b) annotation (Line(points={{79,180},{79,176},
@@ -613,13 +571,13 @@ present that are regulated by a central control system.
             60,-96}}, color={0,127,255}));
     connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{60,-40},{60,
             -28},{-19.6,-28}}, color={0,127,255}));
-    connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{92,-60},{80,
+    connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{100,-60},{80,
             -60}}, color={191,0,0}));
     connect(V19.port_b, pipeB6Pump.port_a) annotation (Line(points={{-8,-190},{
             -8,-140},{60,-140},{60,-116}}, color={0,127,255}));
     connect(V20.port_b, pipeB6Pump.port_a) annotation (Line(points={{60,-190},{
             60,-116}}, color={0,127,255}));
-    connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-114,-40},{-102,
+    connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-120,-40},{-102,
             -40}}, color={191,0,0}));
     connect(V1.port_a, volume1.port_b)     annotation (Line(
         points={{-180,100},{-180,80}},
@@ -654,19 +612,11 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume7.port_a, pipePump2B2.port_b)     annotation (Line(
-        points={{160,49.8},{160,20},{160,20}},
+        points={{160,49.8},{160,20}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume7.port_b, V5.port_a)     annotation (Line(
         points={{160,70},{160,100}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(P2.outlet, volume6.port_a)     annotation (Line(
-        points={{128,-242.8},{138,-242.8},{138,-248},{149.8,-248}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(volume6.port_b, V25.port_a)     annotation (Line(
-        points={{170,-248},{188,-248},{188,-200},{160,-200},{160,-30}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume5.port_1, V21.port_b)     annotation (Line(
@@ -686,7 +636,7 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume4.ports_a[1], V18.port_a)     annotation (Line(
-        points={{-38,-248},{-60,-248},{-60,-246},{-80,-246},{-80,-242}},
+        points={{-38,-248},{-80,-248},{-80,-242}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume4.ports_b[1], V19.port_a)     annotation (Line(
@@ -701,15 +651,16 @@ present that are regulated by a central control system.
         points={{20,20},{20,0},{12,0},{12,-252},{-18,-252},{-18,-252.667}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(volume3.port_a, P1.outlet)     annotation (Line(
-        points={{-169.8,-250},{-156,-250},{-156,-246.8},{-144,-246.8}},
+    connect(P2.outlet, V25.port_a) annotation (Line(
+        points={{128,-250},{160,-250},{160,-30}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(volume3.port_b, V22.port_a)     annotation (Line(
-        points={{-190,-250},{-212,-250},{-212,-80},{-180,-80},{-180,-66}},
+    connect(V22.port_a, P1.outlet) annotation (Line(
+        points={{-180,-66},{-180,-252},{-146,-252}},
         color={0,127,255},
         smooth=Smooth.None));
   end BatchPlant_StandardWater;
+
 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
@@ -1014,10 +965,9 @@ handled properly.</p>
               fillPattern=FillPattern.Solid),
             Text(extent={{-145,-58},{146,-98}}, textString="%name"),
             Polygon(
-              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,
-                  50}},
-              fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,
-                  255,0} else {255,255,255}),
+              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
+              fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,
+                  0} else {255,255,255}),
               lineColor={0,0,0})}),
       Diagram(coordinateSystem(
             preserveAspectRatio=false,
@@ -1318,8 +1268,8 @@ handled properly.</p>
         assert(false, "Unsupported initialization option");
       end if;
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
-                {200,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
+                200,100}}), graphics={
             Rectangle(
               extent={{-200,100},{0,-90}},
               lineColor={255,255,255},
@@ -1331,8 +1281,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,
-                  0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1357,11 +1307,10 @@ handled properly.</p>
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={0,0,255}),
             Polygon(
-              points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,
-                  74},{130,60},{144,70},{152,60},{168,66},{180,54},{196,74},
-                  {190,76},{180,64},{170,70},{156,66},{148,76},{132,68},{
-                  120,80},{100,74},{88,88},{70,78},{50,92},{32,82},{28,100},
-                  {20,98},{20,98}},
+              points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,74},
+                  {130,60},{144,70},{152,60},{168,66},{180,54},{196,74},{190,76},
+                  {180,64},{170,70},{156,66},{148,76},{132,68},{120,80},{100,74},
+                  {88,88},{70,78},{50,92},{32,82},{28,100},{20,98},{20,98}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={170,255,255})}),
@@ -1436,8 +1385,8 @@ Full steady state initialization is not supported, because the corresponding int
               rotation=0)));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,
                 -200},{200,200}}),      graphics),
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},
-                {200,200}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},{
+                200,200}}), graphics={
             Rectangle(
               extent={{-200,200},{200,-200}},
               lineColor={0,0,255},
@@ -2081,11 +2030,11 @@ Full steady state initialization is not supported, because the corresponding int
               lineColor={255,255,255},
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}},
-                color={0,0,0}),
+            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
+                  0,0}),
             Rectangle(
-              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,
-                  (-100 + 200*level/levelMax)}}),
+              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
+                   + 200*level/levelMax)}}),
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
@@ -2093,9 +2042,9 @@ Full steady state initialization is not supported, because the corresponding int
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
               textString=DynamicSelect(" ", realString(
-                        level,
-                        1,
-                        3))),
+                    level, 
+                    1, 
+                    3))),
             Line(
               points={{-100,100},{100,100}},
               color={0,0,0},
