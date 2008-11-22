@@ -8,12 +8,12 @@ model TestValveCoefficients
     p=200000) 
   annotation (Placement(transformation(extent={{-94,18},{-74,38}},  rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V1(
-    d_nom=1000,
+    d_nominal=1000,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    m_flow_nom=1,
+    m_flow_nominal=1,
     CvData=Modelica_Fluid.Types.CvTypes.Av,
     Av=240e-6,
-    dp_nom=100000) 
+    dp_nominal=100000) 
             annotation (Placement(transformation(extent={{-44,18},{-24,38}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP1(
@@ -33,12 +33,12 @@ model TestValveCoefficients
     p=200000) 
   annotation (Placement(transformation(extent={{-94,-18},{-74,2}},  rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V2(
-    d_nom=1000,
+    d_nominal=1000,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Kv,
-    m_flow_nom=1,
+    m_flow_nominal=1,
     Kv=9,
-    dp_nom=100000) 
+    dp_nominal=100000) 
             annotation (Placement(transformation(extent={{-44,-18},{-24,2}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP2(
@@ -52,12 +52,12 @@ model TestValveCoefficients
     p=200000) 
   annotation (Placement(transformation(extent={{-94,-56},{-74,-36}},rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V3(
-    d_nom=1000,
+    d_nominal=1000,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
-    m_flow_nom=1,
-    dp_nom=100000) 
+    m_flow_nominal=1,
+    dp_nominal=100000) 
             annotation (Placement(transformation(extent={{-44,-56},{-24,-36}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP3(
@@ -72,12 +72,12 @@ model TestValveCoefficients
     p=200000) 
   annotation (Placement(transformation(extent={{-94,-88},{-74,-68}},rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V4(
-    d_nom=1000,
+    d_nominal=1000,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     Cv=10,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-    dp_nom=100000,
-    m_flow_nom=2.4) 
+    dp_nominal=100000,
+    m_flow_nominal=2.4) 
             annotation (Placement(transformation(extent={{-44,-88},{-24,-68}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP4(

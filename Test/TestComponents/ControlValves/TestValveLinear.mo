@@ -9,8 +9,8 @@ model TestValveLinear "Test case for linear valve"
   annotation (Placement(transformation(extent={{-76,-22},{-56,-2}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveLinear V1(
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    dp_nom=100000,
-    m_flow_nom=2) 
+    dp_nominal=100000,
+    m_flow_nominal=2) 
             annotation (Placement(transformation(extent={{-26,-22},{-6,
             -2}},
           rotation=0)));

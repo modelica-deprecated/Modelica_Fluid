@@ -28,14 +28,14 @@ model PumpingSystem "Model of a pumping system for drinking water"
     checkValve=true,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
-    N_nom=1200,
+    N_nominal=1200,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
-          q_nom={0,0.25,0.5}, head_nom={100,60,0}),
+          q_nominal={0,0.25,0.5}, head_nominal={100,60,0}),
     M=50,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_N_input=true,
-    Np=1) 
+    nPumps=1) 
     annotation (Placement(transformation(extent={{-68,-80},{-48,-60}}, rotation=
            0)));
 
@@ -55,8 +55,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
                                                  redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     allowFlowReversal=false,
-    dp_nom=200000,
-    m_flow_nom=400) 
+    dp_nominal=200000,
+    m_flow_nominal=400) 
     annotation (Placement(transformation(extent={{58,-38},{74,-22}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary sink(
                                        redeclare package Medium = 

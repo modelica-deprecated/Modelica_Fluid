@@ -8,9 +8,9 @@ model TestValveIncompressible "Test case with different valve characteristics"
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,30},{-80,50}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V1(
-    d_nom=1000,
-    dp_nom=9e5,
-    m_flow_nom=1.5,
+    d_nominal=1000,
+    dp_nominal=9e5,
+    m_flow_nominal=1.5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10)  annotation (Placement(transformation(extent={{-50,30},{-30,50}},
@@ -40,9 +40,9 @@ annotation (
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,-10},{-80,10}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V2(
-    d_nom=1000,
-    dp_nom=9e5,
-    m_flow_nom=1.5,
+    d_nominal=1000,
+    dp_nominal=9e5,
+    m_flow_nominal=1.5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
@@ -62,9 +62,9 @@ annotation (
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
             0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V3(
-    d_nom=1000,
-    dp_nom=9e5,
-    m_flow_nom=1.5,
+    d_nominal=1000,
+    dp_nominal=9e5,
+    m_flow_nominal=1.5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,

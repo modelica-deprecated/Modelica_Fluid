@@ -68,16 +68,16 @@ present that are regulated by a central control system.
             rotation=0)));
     Modelica_Fluid.ControlValves.ValveDiscrete V12(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={-80,2},
           extent={{-10,-10},{10,10}},
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V15(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={-80,-82},
           extent={{10,-10},{-10,10}},
@@ -110,42 +110,42 @@ present that are regulated by a central control system.
           "plot level"));
     Modelica_Fluid.ControlValves.ValveDiscrete V11(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(extent={{-60,78},{-40,98}}, rotation=
              0)));
     Modelica_Fluid.ControlValves.ValveDiscrete V8(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={-80,162},
           extent={{-10,-10},{10,10}},
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V9(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={80,162},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V2(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(extent={{-30,230},{-50,250}},
             rotation=0)));
     Modelica_Fluid.ControlValves.ValveDiscrete V4(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(extent={{50,230},{30,250}}, rotation=
              0)));
     Modelica_Fluid.ControlValves.ValveDiscrete V3(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(extent={{-114,210},{-134,230}},
             rotation=0)));
     Junctions.JunctionIdeal volume2(
@@ -156,8 +156,8 @@ present that are regulated by a central control system.
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V6(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(extent={{112,210},{132,230}},
             rotation=0)));
     Junctions.JunctionIdeal volume8(
@@ -168,24 +168,24 @@ present that are regulated by a central control system.
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V23(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={-106,-252},
           extent={{-10,10},{10,-10}},
           rotation=180)));
     Modelica_Fluid.ControlValves.ValveDiscrete V1(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={-180,110},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V22(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={-180,-56},
           extent={{-10,10},{10,-10}},
@@ -199,24 +199,24 @@ present that are regulated by a central control system.
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V5(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={160,110},
           extent={{10,-10},{-10,10}},
           rotation=270)));
     Modelica_Fluid.ControlValves.ValveDiscrete V24(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={94,-250},
           extent={{10,10},{-10,-10}},
           rotation=180)));
     Modelica_Fluid.ControlValves.ValveDiscrete V25(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={160,-20},
           extent={{10,-10},{-10,10}},
@@ -230,16 +230,16 @@ present that are regulated by a central control system.
           rotation=270)));
     Modelica_Fluid.ControlValves.ValveDiscrete V20(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={60,-200},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V19(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={-8,-200},
           extent={{-10,10},{10,-10}},
@@ -250,22 +250,22 @@ present that are regulated by a central control system.
       V=0.001,
       n_a=2,
       n_b=3,
-      dp_nom=10000,
-      mflow_nom=1) 
+      dp_nominal=10000,
+      mflow_nominal=1) 
                annotation (Placement(transformation(extent={{-38,-260},{-18,
               -240}}, rotation=0)));
     Modelica_Fluid.ControlValves.ValveDiscrete V10(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={20,70},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V21(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={34,-250},
           extent={{10,10},{-10,-10}},
@@ -277,8 +277,8 @@ present that are regulated by a central control system.
             rotation=0)));
     Modelica_Fluid.ControlValves.ValveDiscrete V18(
       redeclare package Medium = BatchMedium,
-      m_flow_nom = 1,
-      dp_nom = 100) 
+      m_flow_nominal = 1,
+      dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={-80,-232},
           extent={{-10,10},{10,-10}},
@@ -288,9 +288,9 @@ present that are regulated by a central control system.
       M=0.01,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
-          Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (q_nom={0,
-              0.001,0.0015}, head_nom={100,50,0}),
-      N_nom=200,
+          Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (q_nominal={0,
+              0.001,0.0015}, head_nominal={100,50,0}),
+      N_nominal=200,
       checkValve=false,
       pin_start=100000,
       pout_start=100000,
@@ -303,9 +303,9 @@ present that are regulated by a central control system.
       checkValve=false,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
-          Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow(q_nom={0,
-              0.001,0.0015}, head_nom={100,50,0}),
-      N_nom=200,
+          Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow(q_nominal={0,
+              0.001,0.0015}, head_nominal={100,50,0}),
+      N_nominal=200,
       pin_start=100000,
       pout_start=100000,
       use_N_input=true) 
@@ -660,7 +660,6 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
   end BatchPlant_StandardWater;
-
 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
@@ -1281,8 +1280,7 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -2042,8 +2040,8 @@ Full steady state initialization is not supported, because the corresponding int
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
               textString=DynamicSelect(" ", realString(
-                    level, 
-                    1, 
+                    level,
+                    1,
                     3))),
             Line(
               points={{-100,100},{100,100}},

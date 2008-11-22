@@ -8,11 +8,11 @@ model TestValveVaporizing "Test case for vaporizing fluid valve"
   annotation (Placement(transformation(extent={{-76,-22},{-56,-2}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveVaporizing V1(
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    m_flow_nom=1,
+    m_flow_nominal=1,
     CvData=Modelica_Fluid.Types.CvTypes.Av,
     Av=240e-6,
-    dp_nom=100000,
-    d_nom=1000) 
+    dp_nominal=100000,
+    d_nominal=1000) 
             annotation (Placement(transformation(extent={{-26,-22},{-6,
             -2}},
           rotation=0)));

@@ -24,7 +24,7 @@ annotation (
     m_flow_start=1,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
-          q_nom={0,0.001,0.0015}, head_nom={100,50,0}),
+          q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     pin_start=100000,
     pout_start=700000)     annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));
@@ -33,9 +33,9 @@ annotation (
   Modelica_Fluid.ControlValves.ValveIncompressible Valve(
                                              redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
-    m_flow_nom=1,
+    m_flow_nominal=1,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-    dp_nom=20000) 
+    dp_nominal=20000) 
   annotation (Placement(transformation(extent={{-16,26},{2,46}}, rotation=0)));
   Modelica.Blocks.Sources.Ramp downstreamPressure(
     startTime=1,

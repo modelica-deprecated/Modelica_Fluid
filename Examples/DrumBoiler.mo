@@ -158,8 +158,8 @@ Simulate for 7200 seconds.
     Modelica_Fluid.ControlValves.ValveLinear SteamValve(           redeclare
         package Medium = 
           Modelica.Media.Water.StandardWater,
-      dp_nom=9000000,
-      m_flow_nom=180) 
+      dp_nominal=9000000,
+      m_flow_nominal=180) 
       annotation (Placement(transformation(extent={{50,-10},{70,-30}}, rotation=
              0)));
 

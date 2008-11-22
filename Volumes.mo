@@ -10,8 +10,8 @@ package Volumes "Generic volume, tank and other volume type components"
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-              {100,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics={
           Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
@@ -741,14 +741,14 @@ end Tank;
         parameter Types.Init initType=
                   system.initType "Initialization option" 
           annotation(Evaluate=true, Dialog(tab = "Initialization"));
-        parameter Medium.AbsolutePressure p_start = Medium.p_default
+        parameter Medium.AbsolutePressure p_start = system.p_start
         "Start value of pressure" 
           annotation(Dialog(tab = "Initialization"));
         parameter Boolean use_T_start = true
         "= true, use T_start, otherwise h_start" 
           annotation(Dialog(tab = "Initialization"), Evaluate=true);
         parameter Medium.Temperature T_start=
-          if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start)
+          if use_T_start then system.T_start else Medium.temperature_phX(p_start,h_start,X_start)
         "Start value of temperature" 
           annotation(Dialog(tab = "Initialization", enable = use_T_start));
         parameter Medium.SpecificEnthalpy h_start=

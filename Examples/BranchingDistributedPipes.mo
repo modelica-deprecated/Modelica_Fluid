@@ -129,8 +129,8 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     n_b=2,
     redeclare package Medium = Medium,
     V=0.0001,
-    dp_nom=100000,
-    mflow_nom=0.01,
+    dp_nominal=100000,
+    mflow_nominal=0.01,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{-64,24},{-44,44}}, rotation=0)));
@@ -138,8 +138,8 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     n_a=2,
     redeclare package Medium = Medium,
     V=0.00001,
-    dp_nom=100000,
-    mflow_nom=0.01,
+    dp_nominal=100000,
+    mflow_nominal=0.01,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{0,24},{20,44}}, rotation=0)));

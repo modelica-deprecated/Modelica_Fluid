@@ -36,18 +36,18 @@ explained in detail in the
 </html>"));
     initial equation
       if CvData == CvTypes.OpPoint then
-          m_flow_nom = valveCharacteristic(stemPosition_nom)*Av*sqrt(d_nom)*Utilities.regRoot(dp_nom, delta*dp_nom)
+          m_flow_nominal = valveCharacteristic(stemPosition_nominal)*Av*sqrt(d_nominal)*Utilities.regRoot(dp_nominal, delta*dp_nominal)
         "Determination of Av by the operating point";
       end if;
 
     equation
       if CheckValve then
           m_flow = valveCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
-                      smooth(0,if dp>=0 then Utilities.regRoot(dp, delta*dp_nom) else 0);
+                      smooth(0,if dp>=0 then Utilities.regRoot(dp, delta*dp_nominal) else 0);
       else
         // m_flow = valveCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dp);
         m_flow = valveCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*
-          Utilities.regRoot(dp, delta*dp_nom);
+          Utilities.regRoot(dp, delta*dp_nominal);
       end if;
     end ValveIncompressible;
 
@@ -59,7 +59,7 @@ explained in detail in the
       redeclare replaceable package Medium = 
           Modelica.Media.Water.WaterIF97_ph                                    constrainedby
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);
-    parameter Real Fl_nom=0.9 "Liquid pressure recovery factor";
+    parameter Real Fl_nominal=0.9 "Liquid pressure recovery factor";
     replaceable function FlCharacteristic = 
         Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.one 
       constrainedby
@@ -72,8 +72,8 @@ explained in detail in the
     Medium.AbsolutePressure pin "Inlet pressure";
     Medium.AbsolutePressure pout "Outlet pressure";
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}),
            graphics),
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
               100,100}}),
@@ -83,7 +83,7 @@ explained in detail in the
 Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).<p>
 The model operating range includes choked flow operation, which takes place for low outlet pressures due to flashing in the vena contracta; otherwise, non-choking conditions are assumed.
 <p>This model must be used with two-phase medium models, to describe the liquid and (possible) two-phase conditions.
-<p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Fl_nom</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by replacing the <tt>FlCharacteristic</tt> function.
+<p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Fl_nominal</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by replacing the <tt>FlCharacteristic</tt> function.
 <p>If <tt>CheckValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
  
 <p>
@@ -107,7 +107,7 @@ explained in detail in the
     pout = port_b.p;
     pv = Medium.saturationPressure(port_a_T);
     Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
-    Fl = Fl_nom*FlCharacteristic(stemPosition);
+    Fl = Fl_nominal*FlCharacteristic(stemPosition);
     dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 
               Fl^2*(pin - Ff*pv) else dp
       "Effective pressure drop, accounting for possible choked conditions";
@@ -118,14 +118,14 @@ explained in detail in the
        // m_flow = valveCharacteristic(stemPosition)*Av*sqrt(d)*sqrtR(dpEff);
        m_flow = valveCharacteristic(modifiedStemPosition)*Av*sqrt(port_a_d_inflow)*sqrtR(dpEff);
     end if;
-    assert(m_flow > -0.1 * m_flow_nom, "Too big backflow");
+    assert(m_flow > -0.1 * m_flow_nominal, "Too big backflow");
   end ValveVaporizing;
 
   model ValveCompressible
     "Valve for compressible fluids, accounts for choked flow conditions"
     extends BaseClasses.PartialValve;
     import Modelica_Fluid.Types.CvTypes;
-    parameter Medium.AbsolutePressure p_nom "Nominal inlet pressure" 
+    parameter Medium.AbsolutePressure p_nominal "Nominal inlet pressure" 
     annotation(Dialog(group="Nominal operating point"));
     parameter Real Fxt_full=0.5 "Fk*xt critical ratio at full opening";
     replaceable function xtCharacteristic = 
@@ -139,10 +139,11 @@ explained in detail in the
     Real Y "Compressibility factor";
     Medium.AbsolutePressure p "Inlet pressure";
   protected
-    parameter Real Fxt_nom(fixed=false) "Nominal Fxt";
-    parameter Real x_nom(fixed=false) "Nominal pressure drop ratio";
-    parameter Real xs_nom(fixed=false) "Nominal saturated pressure drop ratio";
-    parameter Real Y_nom(fixed=false) "Nominal compressibility factor";
+    parameter Real Fxt_nominal(fixed=false) "Nominal Fxt";
+    parameter Real x_nominal(fixed=false) "Nominal pressure drop ratio";
+    parameter Real xs_nominal(fixed=false)
+      "Nominal saturated pressure drop ratio";
+    parameter Real Y_nominal(fixed=false) "Nominal compressibility factor";
 
     annotation (
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
@@ -176,17 +177,17 @@ explained in detail in the
   initial equation
     if CvData == CvTypes.OpPoint then
       // Determination of Av by the nominal operating point conditions
-      Fxt_nom = Fxt_full*xtCharacteristic(stemPosition_nom);
-      x_nom = dp_nom/p_nom;
-      xs_nom = smooth(0, if x_nom > Fxt_nom then Fxt_nom else x_nom);
-      Y_nom = 1 - abs(xs_nom)/(3*Fxt_nom);
-      m_flow_nom = valveCharacteristic(stemPosition_nom)*Av*Y_nom*sqrt(d_nom)*sqrtR(p_nom*xs_nom);
+      Fxt_nominal = Fxt_full*xtCharacteristic(stemPosition_nominal);
+      x_nominal = dp_nominal/p_nominal;
+      xs_nominal = smooth(0, if x_nominal > Fxt_nominal then Fxt_nominal else x_nominal);
+      Y_nominal = 1 - abs(xs_nominal)/(3*Fxt_nominal);
+      m_flow_nominal = valveCharacteristic(stemPosition_nominal)*Av*Y_nominal*sqrt(d_nominal)*sqrtR(p_nominal*xs_nominal);
     else
       // Dummy values
-      Fxt_nom = 0;
-      x_nom = 0;
-      xs_nom = 0;
-      Y_nom = 0;
+      Fxt_nominal = 0;
+      x_nominal = 0;
+      xs_nominal = 0;
+      Y_nominal = 0;
     end if;
 
   equation
@@ -201,17 +202,17 @@ explained in detail in the
     else
       // m_flow = valveCharacteristic(stemPosition)*Av*Y*sqrt(d)*sqrtR(p*xs);
       m_flow = valveCharacteristic(modifiedStemPosition)*Av*Y*
-                    Modelica_Fluid.Utilities.regRoot2(p*xs, delta*dp_nom, port_a_d_inflow, port_b_d_inflow);
+                    Modelica_Fluid.Utilities.regRoot2(p*xs, delta*dp_nominal, port_a_d_inflow, port_b_d_inflow);
     end if;
   end ValveCompressible;
 
   model ValveLinear "Valve for water/steam flows with linear pressure drop"
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-    parameter SI.AbsolutePressure dp_nom
+    parameter SI.AbsolutePressure dp_nominal
       "Nominal pressure drop at full opening";
-    parameter Medium.MassFlowRate m_flow_nom
+    parameter Medium.MassFlowRate m_flow_nominal
       "Nominal mass flowrate at full opening";
-    final parameter Types.HydraulicConductance Kv = m_flow_nom/dp_nom
+    final parameter Types.HydraulicConductance Kv = m_flow_nominal/dp_nominal
       "Hydraulic conductance at full opening";
     Modelica.Blocks.Interfaces.RealInput opening(min=0,max=1)
       "=1: completely open, =0: completely closed" 
@@ -286,10 +287,10 @@ explained in detail in the
 
   model ValveDiscrete "Valve for water/steam flows with linear pressure drop"
     extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-    parameter SI.Pressure dp_nom "Nominal pressure drop at full opening";
-    parameter Medium.MassFlowRate m_flow_nom
+    parameter SI.Pressure dp_nominal "Nominal pressure drop at full opening";
+    parameter Medium.MassFlowRate m_flow_nominal
       "Nominal mass flowrate at full opening";
-    final parameter Types.HydraulicConductance Kv = m_flow_nom/dp_nom
+    final parameter Types.HydraulicConductance Kv = m_flow_nominal/dp_nominal
       "Hydraulic conductance at full opening";
     parameter Real Kv_small_rel(min=0, max=0.1) = 0
       "Relative hydraulic conductance for closed valve (m_flow = Kv_small_rel*Kv*dp)";
@@ -364,13 +365,13 @@ it is open.
 
       import Modelica_Fluid.Types.CvTypes;
       extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport(
-          dp_start=dp_nom, m_flow_start=m_flow_nom);
+          dp_start=dp_nominal, m_flow_start=m_flow_nominal);
       parameter CvTypes CvData=CvTypes.OpPoint "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
       parameter SI.Area Av(
         fixed=if CvData == CvTypes.Av then true else false,
-        start=m_flow_nom/(sqrt(d_nom*dp_nom))*valveCharacteristic(
-            stemPosition_nom)) = 0 "Av (metric) flow coefficient" 
+        start=m_flow_nominal/(sqrt(d_nominal*dp_nominal))*valveCharacteristic(
+            stemPosition_nominal)) = 0 "Av (metric) flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient",
                          enable = (CvData==Modelica_Fluid.Types.CvTypes.Av)));
       parameter Real Kv = 0 "Kv (metric) flow coefficient [m3/h]" 
@@ -379,14 +380,14 @@ it is open.
       parameter Real Cv = 0 "Cv (US) flow coefficient [USG/min]" 
       annotation(Dialog(group = "Flow Coefficient",
                         enable = (CvData==CvTypes.Cv)));
-      parameter SI.Pressure dp_nom "Nominal pressure drop" 
+      parameter SI.Pressure dp_nominal "Nominal pressure drop" 
       annotation(Dialog(group="Nominal operating point"));
-      parameter Medium.MassFlowRate m_flow_nom "Nominal mass flowrate" 
+      parameter Medium.MassFlowRate m_flow_nominal "Nominal mass flowrate" 
       annotation(Dialog(group="Nominal operating point"));
-      parameter Medium.Density d_nom=Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+      parameter Medium.Density d_nominal=Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal inlet density" 
       annotation(Dialog(group="Nominal operating point"));
-      parameter Real stemPosition_nom=1 "Nominal stem position" 
+      parameter Real stemPosition_nominal=1 "Nominal stem position" 
       annotation(Dialog(group="Nominal operating point"));
       parameter Boolean CheckValve=false "Reverse flow stopped";
 
@@ -467,9 +468,9 @@ it is open.
 <ul><li><tt>CvData = Modelica_Fluid.Types.CvTypes.Av</tt>: the flow coefficient is given by the metric <tt>Av</tt> coefficient (m^2).
 <li><tt>CvData = Modelica_Fluid.Types.CvTypes.Kv</tt>: the flow coefficient is given by the metric <tt>Kv</tt> coefficient (m^3/h).
 <li><tt>CvData = Modelica_Fluid.Types.CvTypes.Cv</tt>: the flow coefficient is given by the US <tt>Cv</tt> coefficient (USG/min).
-<li><tt>CvData = Modelica_Fluid.Types.CvTypes.OpPoint</tt>: the flow is computed from the nominal operating point specified by <tt>p_nom</tt>, <tt>dp_nom</tt>, <tt>m_flow_nom</tt>, <tt>d_nom</tt>, <tt>stemPosition_nom</tt>.
+<li><tt>CvData = Modelica_Fluid.Types.CvTypes.OpPoint</tt>: the flow is computed from the nominal operating point specified by <tt>p_nominal</tt>, <tt>dp_nominal</tt>, <tt>m_flow_nominal</tt>, <tt>d_nominal</tt>, <tt>stemPosition_nominal</tt>.
 </ul>
-<p>The nominal pressure drop <tt>dp_nom</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dp_nom</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical problems occur in valves with very low pressure drops.
+<p>The nominal pressure drop <tt>dp_nominal</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dp_nominal</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical problems occur in valves with very low pressure drops.
 <p>If <tt>CheckValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place. Use this option only when neede, as it increases the numerical complexity of the problem.
 <p>The valve opening characteristic <tt>valveCharacteristic</tt>, linear by default, can be replaced by any user-defined function. Quadratic and equal percentage with customizable rangeability are already provided by the library.
 </p>
@@ -488,7 +489,7 @@ explained in detail in the
 </ul>
 </html>"));
     protected
-      function sqrtR = Utilities.regRoot(delta = delta*dp_nom);
+      function sqrtR = Utilities.regRoot(delta = delta*dp_nominal);
 
     initial equation
       if CvData == CvTypes.Kv then

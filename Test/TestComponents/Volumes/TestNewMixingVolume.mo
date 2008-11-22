@@ -22,8 +22,8 @@ model TestNewMixingVolume
   Modelica_Fluid.ControlValves.ValveLinear Valve(
                                              redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
-    dp_nom=10000,
-    m_flow_nom=0.1)                                    annotation (Placement(
+    dp_nominal=10000,
+    m_flow_nominal=0.1)                                    annotation (Placement(
         transformation(extent={{2,0},{22,20}}, rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}),

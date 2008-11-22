@@ -8,12 +8,12 @@ model TestValveCompressible "Test case for incompressible fluid valve"
   annotation (Placement(transformation(extent={{-76,-22},{-56,-2}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveCompressible V1(
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    m_flow_nom=1,
+    m_flow_nominal=1,
     CvData=Modelica_Fluid.Types.CvTypes.Av,
     Av=240e-6,
-    dp_nom=500000,
-    d_nom=3,
-    p_nom=1000000) 
+    dp_nominal=500000,
+    d_nominal=3,
+    p_nominal=1000000) 
             annotation (Placement(transformation(extent={{-26,-22},{-6,-2}},
           rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX SinkP1(
