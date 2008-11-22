@@ -26,10 +26,10 @@ model WallConstProps
   SI.Temperature[n] Ta(each start=T_start-0.5*dT);
   SI.Temperature[n] T(start=ones(n)*T_start, stateSelect=StateSelect.prefer)
       "Wall temperature";
-  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_a
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] heatPort_a
       "Thermal port" 
     annotation (Placement(transformation(extent={{-20,40},{20,60}}, rotation=0)));
-  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort_b
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] heatPort_b
       "Thermal port" 
     annotation (Placement(transformation(extent={{-20,-40},{20,-60}}, rotation=
               0)));
@@ -43,12 +43,12 @@ initial equation
 equation
   for i in 1:n loop
    assert(m[i]>0, "Wall has negative dimensions");
-   c_wall*m[i]*der(T[i]) = thermalPort_a[i].Q_flow + thermalPort_b[i].Q_flow;
-   thermalPort_a[i].Q_flow=k_wall/s*(Ta[i]-T[i])*area_h/n;
-   thermalPort_b[i].Q_flow=k_wall/s*(Tb[i]-T[i])*area_h/n;
+   c_wall*m[i]*der(T[i]) = heatPort_a[i].Q_flow + heatPort_b[i].Q_flow;
+   heatPort_a[i].Q_flow=k_wall/s*(Ta[i]-T[i])*area_h/n;
+   heatPort_b[i].Q_flow=k_wall/s*(Tb[i]-T[i])*area_h/n;
   end for;
-  Ta=thermalPort_a.T;
-  Tb=thermalPort_b.T;
+  Ta=heatPort_a.T;
+  Tb=heatPort_b.T;
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics={Rectangle(
             extent={{-100,40},{100,-40}},

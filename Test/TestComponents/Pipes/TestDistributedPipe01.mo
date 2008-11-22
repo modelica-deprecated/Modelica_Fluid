@@ -384,7 +384,7 @@ equation
       points={{26,64},{29.5,64},{34,64}},
       color={0,127,255},
       thickness=0.5));
-  connect(heat.port, pipe2.thermalPort) annotation (Line(
+  connect(heat.port, pipe2.heatPort) annotation (Line(
       points={{-34,90},{-18,90},{-18,83.4}},
       color={191,0,0},
       thickness=0.5));
@@ -416,7 +416,7 @@ equation
       points={{30,8},{48,8}},
       color={0,127,255},
       thickness=0.5));
-  connect(heat1.port, pipe5.thermalPort) annotation (Line(
+  connect(heat1.port, pipe5.heatPort) annotation (Line(
       points={{-52,32},{-20,32},{-20,25.4}},
       color={191,0,0},
       thickness=0.5));
@@ -452,7 +452,7 @@ equation
       points={{28,-52},{46,-52}},
       color={0,127,255},
       thickness=0.5));
-  connect(heat2.port, pipe9.thermalPort) annotation (Line(
+  connect(heat2.port, pipe9.heatPort) annotation (Line(
       points={{-54,-28},{-22,-28},{-22,-34.6}},
       color={191,0,0},
       thickness=0.5));

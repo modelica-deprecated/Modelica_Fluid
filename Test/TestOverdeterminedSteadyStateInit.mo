@@ -129,9 +129,9 @@ package TestOverdeterminedSteadyStateInit
             {12,-4}}, color={0,127,255}));
     connect(pipe.port_b, valve.port_a) annotation (Line(points={{32,-4},{42,-4}},
           color={0,127,255}));
-    connect(thermalConductor1.port_b, radiator.thermalPort) annotation (Line(
+    connect(thermalConductor1.port_b, radiator.heatPort) annotation (Line(
           points={{18,-56},{18,-60.6}}, color={191,0,0}));
-    connect(burner.port, pipe.thermalPort) annotation (Line(points={{18,22},{22,
+    connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{22,
             22},{22,1.4}}, color={191,0,0}));
     connect(ambientTemperature.port, thermalConductor1.port_a) annotation (Line(
           points={{2,-33},{18,-33},{18,-40}}, color={191,0,0}));
