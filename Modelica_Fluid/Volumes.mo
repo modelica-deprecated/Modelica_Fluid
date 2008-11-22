@@ -6,7 +6,7 @@ package Volumes "Generic volume, tank and other volume type components"
     "Mixing volume with inlet and outlet ports (flow reversal is allowed)"
       extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolume;
       parameter SI.Volume V "Volume";
-      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
       annotation (
@@ -34,8 +34,8 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
               100,100}}),
               graphics));
     equation
-      thermalPort.T = medium.T;
-      Qs_flow = thermalPort.Q_flow;
+      heatPort.T = medium.T;
+      Qs_flow = heatPort.Q_flow;
       Ws_flow = 0;
       V = V_lumped;
     end MixingVolume;
@@ -116,8 +116,7 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     Modelica.Mechanics.Translational.Interfaces.Flange_b flange
       "translation flange for piston" annotation (Placement(transformation(
             extent={{-10,-110},{10,-90}}, rotation=0)));
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort
-      "Thermal port" 
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort "Thermal port"
     annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
     outer Modelica_Fluid.System system "System properties";
 
@@ -128,11 +127,11 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
     V_lumped = clearance + flange.s * pistonCrossArea;
 
     flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
-    thermalPort.T = medium.T;
+    heatPort.T = medium.T;
 
     // energy balances
     Ws_flow = medium.p * pistonCrossArea * (-der(flange.s));
-    Qs_flow = thermalPort.Q_flow;
+    Qs_flow = heatPort.Q_flow;
   end SweptVolume;
 
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
@@ -319,8 +318,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -625,8 +624,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 3))),
           Line(
             points={{-100,100},{100,100}},

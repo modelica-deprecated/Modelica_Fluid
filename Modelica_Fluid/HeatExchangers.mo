@@ -494,9 +494,9 @@ Simple model of a heat exchanger consisting of two pipes and one wall in between
         points={{-40,58},{-76,58},{-76,46},{-110,46}},
         color={0,127,255},
         thickness=0.5));
-    connect(pipe_2.thermalPort, wall.thermalPort_a) annotation (Line(points={{-10,
+    connect(pipe_2.heatPort, wall.heatPort_a) annotation (Line(points={{-10,
             41.8},{-10,29.5},{-9,29.5}},     color={191,0,0}));
-    connect(wall.thermalPort_b, pipe_1.thermalPort) annotation (Line(points={{-9,0.5},
+    connect(wall.heatPort_b, pipe_1.heatPort) annotation (Line(points={{-9,0.5},
             {-9,-7.75},{-10,-7.75},{-10,-13.8}},         color={191,0,0}));
   end BasicHX;
 end HeatExchangers;

@@ -426,8 +426,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
       "Fluid connectors b (positive design flow direction is from ports_a to ports_b)"
       annotation (Placement(
           transformation(extent={{90,40},{110,-40}}, rotation=0)));
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort
-      "Thermal port" 
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort "Thermal port"
       annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=0)));
     Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
@@ -537,7 +536,7 @@ of the modeller.
 end for;
 */
 
-    thermalPort.T = medium.T;
+    heatPort.T = medium.T;
 
     if dynamicsType < Types.Dynamics.SteadyStateMass then
       sum(ports_a.m_flow)+sum(ports_b.m_flow) = der(m) "Mass balance";
@@ -556,10 +555,10 @@ end for;
     end if;
 
     if dynamicsType < Types.Dynamics.SteadyState then
-      sum(ports_a_H_flow) + sum(ports_b_H_flow) + thermalPort.Q_flow = der(U)
+      sum(ports_a_H_flow) + sum(ports_b_H_flow) + heatPort.Q_flow = der(U)
         "Energy balance";
     else
-      sum(ports_a_H_flow) + sum(ports_b_H_flow) + thermalPort.Q_flow = 0
+      sum(ports_a_H_flow) + sum(ports_b_H_flow) + heatPort.Q_flow = 0
         "Energy balance";
     end if;
 

@@ -120,7 +120,7 @@ Simple pipe model consisting of one volume,
 wall friction (with different friction correlations)
 and gravity effect. This model is mostly used to demonstrate how
 to build up more detailed models from the basic components.
-Note, if the \"thermalPort\" is not connected, then the pipe
+Note, if the \"heatPort\" is not connected, then the pipe
 is totally insulated (= no thermal flow from the fluid to the
 pipe wall/environment).
 </p>
@@ -180,7 +180,7 @@ pipe wall/environment).
       m_flow_start = m_flow_start,
       compute_T=false)              annotation (Placement(transformation(extent=
              {{40,-10},{60,10}}, rotation=0)));
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a thermalPort 
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
       annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=
               0)));
   equation
@@ -188,7 +188,7 @@ pipe wall/environment).
       annotation (Line(points={{-60,0},{-100,0}}, color={0,127,255}));
     connect(wallFriction2.port_b, port_b) 
       annotation (Line(points={{60,0},{100,0}}, color={0,127,255}));
-    connect(volume.thermalPort, thermalPort) 
+    connect(volume.heatPort, heatPort) 
       annotation (Line(points={{0,9.8},{0,54}}, color={191,0,0}));
     connect(volume.port_a, wallFriction1.port_b)       annotation (Line(
         points={{-10.2,0},{-40,0}},
@@ -273,7 +273,7 @@ pipe wall/environment).
      T=medium.T) "Convective heat transfer" 
              annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching,
       Placement(transformation(extent={{-20,-20},{20,20}}, rotation=0)));
-   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
+   Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] heatPort
       "Thermal port" 
  annotation (Placement(transformation(extent={{-20,44},{20,64}}, rotation=0)));
    outer Modelica_Fluid.System system "System properties";
@@ -338,7 +338,7 @@ pipe wall/environment).
           grid={1,1}),
              graphics),
      Documentation(info="<html>
-Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow_pLumped\">PartialDistributedFlow_pLumped</a>. Source terms in mass and energy balances are set to zero. The total volume is a paramter. The number of momentum balances is reduced to two, one on each side of the hydraulic state, which corresponds to a constant pressure along the entire pipe with pressure drop and gravitational forces lumped at the ports.<The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. .
+Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow_pLumped\">PartialDistributedFlow_pLumped</a>. Source terms in mass and energy balances are set to zero. The total volume is a paramter. The number of momentum balances is reduced to two, one on each side of the hydraulic state, which corresponds to a constant pressure along the entire pipe with pressure drop and gravitational forces lumped at the ports.<The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. .
 </html>",  revisions="<html>
 <ul>
 <li><i>04 Mar 2006</i>
@@ -397,7 +397,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
        system.g*(d[1]+d[n])/2);
  end if;
 
-   connect(thermalPort, heatTransfer.thermalPort) 
+   connect(heatPort, heatTransfer.heatPort) 
      annotation (Line(points={{0,54},{0,14}}, color={191,0,0}));
  end DistributedPipeLumpedPressure;
 
@@ -480,7 +480,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
     T=medium.T) "Convective heat transfer" 
             annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching,
       Placement(transformation(extent={{-20,-20},{20,20}}, rotation=0)));
-  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] heatPort
       "Thermal port" annotation (Placement(transformation(extent={{-20,44},{20,
               64}}, rotation=0)));
   outer Modelica_Fluid.System system "System properties";
@@ -547,7 +547,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
           grid={1,1}),
           graphics),
   Documentation(info="<html>
-<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>.</p>
+<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>.</p>
 <p>Pressure drop correlations (algebraic and possibly non-linear flow model) correlate the pressure in the first control volume with the pressure in port_a and the pressures of port_b and the nth control volume, respectively.</p>
  
 </html>",
@@ -634,7 +634,7 @@ Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClas
       m_flow_small) + height_ab/n/2*system.g*d[n];
 
     end if;
-    connect(thermalPort, heatTransfer.thermalPort) 
+    connect(heatPort, heatTransfer.heatPort) 
   annotation (Line(points={{0,54},{0,14}}, color={191,0,0}));
   end DistributedPipe;
 
@@ -717,7 +717,7 @@ model DistributedPipeSb "Distributed pipe model"
     T=medium.T) "Convective heat transfer" 
             annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching,
       Placement(transformation(extent={{-20,-20},{20,20}}, rotation=0)));
-  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] heatPort
       "Thermal port" 
 annotation (Placement(transformation(extent={{-20,44},{20,64}}, rotation=0)));
   outer Modelica_Fluid.System system "System properties";
@@ -784,7 +784,7 @@ annotation (
           grid={1,1}),
           graphics),
   Documentation(info="<html>
-Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. 
+Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. 
 </html>",
       revisions="<html>
 <ul>
@@ -847,7 +847,7 @@ else
         m_flow_small) + height_ab/n*system.g*(d[i - 1] + d[i])/2;
     end for;
 end if;
-connect(thermalPort, heatTransfer.thermalPort) 
+connect(heatPort, heatTransfer.heatPort) 
   annotation (Line(points={{0,54},{0,14}}, color={191,0,0}));
 end DistributedPipeSb;
 
@@ -930,7 +930,7 @@ model DistributedPipeSa "Distributed pipe model"
     T=medium.T) "Convective heat transfer" 
             annotation (Dialog(tab="General", group="Heat transfer"),editButton=true,choicesAllMatching,
       Placement(transformation(extent={{-20,-20},{20,20}}, rotation=0)));
-  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] heatPort
       "Thermal port" 
 annotation (Placement(transformation(extent={{-20,44},{20,64}}, rotation=0)));
   outer Modelica_Fluid.System system "System properties";
@@ -997,7 +997,7 @@ annotation (
           grid={1,1}),
           graphics),
   Documentation(info="<html>
-Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>thermalPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. 
+Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. 
 </html>",
       revisions="<html>
 <ul>
@@ -1061,7 +1061,7 @@ else
       roughness,
       m_flow_small) + height_ab/n*system.g*d[n];
 end if;
-connect(thermalPort, heatTransfer.thermalPort) 
+connect(heatPort, heatTransfer.heatPort) 
   annotation (Line(points={{0,54},{0,14}}, color={191,0,0}));
 end DistributedPipeSa;
 
@@ -1704,7 +1704,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       parameter SI.Length d_h "Hydraulic diameter" annotation(Dialog(tab="No input", enable=false));
       parameter SI.Area A_cross "Cross flow area" annotation(Dialog(tab="No input", enable=false));
       parameter SI.Length L "Total pipe length" annotation(Dialog(tab="No input", enable=false));
-      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] thermalPort
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a[n] heatPort
           "Thermal port" 
         annotation (Placement(transformation(extent={{-20,60},{20,80}},
                 rotation=0)));
@@ -1746,9 +1746,9 @@ Base class for heat transfer models that can be used in distributed pipe models.
       Pr = Medium.prandtlNumber(state);
       Re = CharacteristicNumbers.ReynoldsNumber(m_flow[1:n], fill(d_h,n), fill(A_cross, n), eta);
       Nu = CharacteristicNumbers.NusseltNumber(alpha, fill(d_h,n), lambda);
-      thermalPort.Q_flow=Q_flow;
+      heatPort.Q_flow=Q_flow;
       for i in 1:n loop
-        thermalPort[i].Q_flow=alpha[i]*A_h/n*(thermalPort[i].T-T[i]);
+        heatPort[i].Q_flow=alpha[i]*A_h/n*(heatPort[i].T-T[i]);
       end for;
         annotation (Documentation(info="<html>
 Base class for heat transfer models that are expressed in terms of the Nusselt number and which can be used in distributed pipe models.
@@ -1763,9 +1763,9 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
 </html>"));
     equation
       for i in 1:n loop
-        thermalPort[i].Q_flow=alpha0*A_h/n*(thermalPort[i].T-T[i]);
+        heatPort[i].Q_flow=alpha0*A_h/n*(heatPort[i].T-T[i]);
       end for;
-      thermalPort.Q_flow=Q_flow;
+      heatPort.Q_flow=Q_flow;
     end PipeHT_constAlpha;
     annotation (Documentation(info="<html>
 Heat transfer correlations for pipe models
