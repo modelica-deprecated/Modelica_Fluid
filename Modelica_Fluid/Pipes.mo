@@ -34,7 +34,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       "= true, use T_start, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate=true);
     parameter Medium.Temperature T_start=
-      if use_T_start then Medium.T_default else Medium.temperature_phX(p_a_start,h_start,X_start)
+      if use_T_start then system.T_start else Medium.temperature_phX(p_a_start,h_start,X_start)
       "Start value of temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
@@ -1100,7 +1100,7 @@ end DistributedPipeSa;
       parameter Boolean use_T_start=true
         "Use T_start if true, otherwise h_start" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-      parameter Medium.AbsolutePressure p_a_start=Medium.p_default
+      parameter Medium.AbsolutePressure p_a_start=system.p_start
         "Port a pressure start value" 
       annotation(Dialog(tab = "Initialization"));
       parameter Medium.AbsolutePressure p_b_start=p_a_start
@@ -1110,7 +1110,7 @@ end DistributedPipeSa;
           p_a_start - (p_a_start - p_b_start)/(2*n),
           p_b_start + (p_a_start - p_b_start)/(2*n),
           n) else {(p_a_start + p_b_start)/2} "Pressure start values";
-      parameter Medium.Temperature T_start=if use_T_start then Medium.T_default else 
+      parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
                 Medium.temperature_phX(
           (p_a_start + p_b_start)/2,
           h_start,
@@ -1388,7 +1388,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       parameter Boolean use_T_start=true
         "Use T_start if true, otherwise h_start" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-      parameter Medium.AbsolutePressure p_a_start=Medium.p_default
+      parameter Medium.AbsolutePressure p_a_start=system.p_start
         "Start value of pressure at port a" 
       annotation(Dialog(tab = "Initialization"));
       parameter Medium.AbsolutePressure p_b_start=p_a_start
@@ -1398,7 +1398,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
           p_a_start - (p_a_start - p_b_start)/(2*n),
           p_b_start + (p_a_start - p_b_start)/(2*n),
           n) else {(p_a_start + p_b_start)/2} "Start value of pressure";
-      parameter Medium.Temperature T_start=if use_T_start then Medium.T_default else 
+      parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
                 Medium.temperature_phX(
           (p_a_start + p_b_start)/2,
           h_start,

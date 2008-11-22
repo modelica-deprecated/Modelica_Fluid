@@ -147,7 +147,7 @@ package Junctions "Junction components"
     parameter Boolean use_T_start=true "=true, use T_start, otherwise h_start" 
       annotation(Dialog(tab="Initialization"),Evaluate=true);
     parameter Medium.Temperature T_start=
-      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start)
+      if use_T_start then system.T_start else Medium.temperature_phX(p_start,h_start,X_start)
       "Start value of temperature" 
       annotation(Dialog(tab="Initialization",enable=use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
@@ -407,8 +407,8 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
       "Fluid medium model" 
         annotation (choicesAllMatching=true);
     parameter SI.Volume V "Volume";
-    parameter SI.Pressure dp_nom "nominal (linear) pressure drop" annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
-    parameter SI.MassFlowRate mflow_nom "nominal mass flow rate"  annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
+    parameter SI.Pressure dp_nominal "nominal (linear) pressure drop" annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
+    parameter SI.MassFlowRate mflow_nominal "nominal mass flow rate"  annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
 
     SI.InternalEnergy U "Internal energy";
     SI.Mass m "Total mass";
@@ -448,7 +448,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     parameter Boolean use_T_start=true "=true, use T_start, otherwise h_start" 
       annotation(Dialog(tab="Initialization"),Evaluate=true);
     parameter Medium.Temperature T_start=
-      if use_T_start then Medium.T_default else Medium.temperature_phX(p_start,h_start,X_start)
+      if use_T_start then system.T_start else Medium.temperature_phX(p_start,h_start,X_start)
       "Start value of temperature" 
       annotation(Dialog(tab="Initialization",enable=use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
@@ -597,13 +597,13 @@ end for;
     if modelStructure==ModelStructure.avb or modelStructure == ModelStructure.av_b then
       ports_a.p=fill(medium.p, n_a);
     else
-      ports_a.p-fill(medium.p,n_a) = ports_a.m_flow*dp_nom/mflow_nom;
+      ports_a.p-fill(medium.p,n_a) = ports_a.m_flow*dp_nominal/mflow_nominal;
     end if;
 
     if modelStructure==ModelStructure.avb or modelStructure==ModelStructure.a_vb then
       ports_b.p=fill(medium.p,n_b);
     else
-      ports_b.p-fill(medium.p,n_b)=ports_b.m_flow*dp_nom/mflow_nom;
+      ports_b.p-fill(medium.p,n_b)=ports_b.m_flow*dp_nominal/mflow_nominal;
     end if;
 
     U=m*medium.u;

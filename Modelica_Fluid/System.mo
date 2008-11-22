@@ -2,12 +2,15 @@ within Modelica_Fluid;
 model System
   "System properties and default values (ambient, flow direction, initialization)"
 
-  parameter Modelica.Media.Interfaces.PartialMedium.AbsolutePressure p_ambient=
+  replaceable package Medium = 
+    Modelica.Media.Interfaces.PartialMedium "Default Medium model" 
+      annotation (choicesAllMatching = true);
+  parameter Medium.AbsolutePressure p_ambient=
                 101325 "Default ambient pressure" 
-      annotation(Dialog(group="Defaults"));
-  parameter Modelica.Media.Interfaces.PartialMedium.Temperature T_ambient=
+      annotation(Dialog(group="Environment"));
+  parameter Medium.Temperature T_ambient=
                 293.15 "Default ambient temperature" 
-      annotation(Dialog(group="Defaults"));
+      annotation(Dialog(group="Environment"));
   parameter SI.Acceleration g=Modelica.Constants.g_n
     "Constant gravity acceleration"                                                  annotation(Dialog(group="Environment"));
   parameter Boolean allowFlowReversal = true
@@ -19,6 +22,12 @@ model System
   parameter Types.Init initType=
             Types.Init.NoInit "Default initialization option" 
     annotation(Evaluate=true, Dialog(tab = "Initialization"));
+  parameter Medium.AbsolutePressure p_start = Medium.p_default
+    "Default start value for pressures" 
+    annotation(Dialog(tab = "Initialization"));
+  parameter Medium.Temperature T_start = Medium.T_default
+    "Default start value for temperatures" 
+    annotation(Dialog(tab = "Initialization"));
 
   annotation (
     defaultComponentName="system",

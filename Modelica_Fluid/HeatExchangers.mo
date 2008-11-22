@@ -17,7 +17,7 @@ package HeatExchangers "Evaporators and condensor components"
     parameter SI.Volume V_t "total volume inside drum";
     parameter Types.Init initType=Types.Init.NoInit "Initialization option" 
     annotation(Dialog(tab = "Initialization"));
-    parameter Medium.AbsolutePressure p_start=Medium.p_default
+    parameter Medium.AbsolutePressure p_start=system.p_start
       "Start value of pressure" 
     annotation(Dialog(tab = "Initialization"));
     parameter SI.Volume V_l_start=V_t/2

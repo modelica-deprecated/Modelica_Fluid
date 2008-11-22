@@ -126,8 +126,8 @@ Test of different distributed pipe models. The first system uses explicit juncti
     n_b=2,
     redeclare package Medium = Medium,
     V=0.0001,
-    dp_nom=100000,
-    mflow_nom=0.01,
+    dp_nominal=100000,
+    mflow_nominal=0.01,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{-58,54},{-38,74}}, rotation=0)));
@@ -135,8 +135,8 @@ Test of different distributed pipe models. The first system uses explicit juncti
     n_a=2,
     redeclare package Medium = Medium,
     V=0.00001,
-    dp_nom=100000,
-    mflow_nom=0.01,
+    dp_nominal=100000,
+    mflow_nominal=0.01,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{6,54},{26,74}}, rotation=0)));

@@ -107,8 +107,8 @@ This example is based on
     ControlValves.ValveDiscrete valve1(                             redeclare
         package Medium = Medium,
       Kv_small_rel=0,
-      dp_nom=100000,
-      m_flow_nom=40) 
+      dp_nominal=100000,
+      m_flow_nominal=40) 
       annotation (Placement(transformation(
           origin={20,50},
           extent={{-10,-10},{10,10}},
@@ -128,8 +128,8 @@ This example is based on
     ControlValves.ValveDiscrete valve2(                redeclare package Medium
         = Medium,
       Kv_small_rel=0,
-      dp_nom(displayUnit="Pa") = 1,
-      m_flow_nom=100) 
+      dp_nominal(displayUnit="Pa") = 1,
+      m_flow_nominal=100) 
       annotation (Placement(transformation(
           origin={20,-30},
           extent={{-10,-10},{10,10}},
@@ -137,8 +137,8 @@ This example is based on
     ControlValves.ValveDiscrete valve3(                redeclare package Medium
         = Medium,
       Kv_small_rel=0,
-      dp_nom(displayUnit="Pa") = 1,
-      m_flow_nom=10) 
+      dp_nominal(displayUnit="Pa") = 1,
+      m_flow_nominal=10) 
       annotation (Placement(transformation(
           origin={80,-70},
           extent={{-10,-10},{10,10}},
@@ -483,9 +483,9 @@ This example is based on
                 100}}),
           graphics={Rectangle(
               extent={{-100,-100},{100,100}},
-              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0}
-                   else {192,192,192}),
-              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then
+              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0} else 
+                        {192,192,192}),
+              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then 
                   FillPattern.Solid else FillPattern.Solid),
               lineColor={128,128,128},
               lineThickness=0.5), Text(

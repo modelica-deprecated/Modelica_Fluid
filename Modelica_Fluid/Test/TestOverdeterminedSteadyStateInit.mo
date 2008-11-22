@@ -24,7 +24,7 @@ package TestOverdeterminedSteadyStateInit
             rotation=0)));
     Pumps.Pump pump(
       redeclare package Medium = Medium,
-      N_nom=1500,
+      N_nominal=1500,
       N_const=1500,
       pin_start=1.1e5,
       pout_start=4.0e5,
@@ -32,7 +32,7 @@ package TestOverdeterminedSteadyStateInit
       T_start=Modelica.SIunits.Conversions.from_degC(40),
       redeclare function flowCharacteristic = 
           Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.linearFlow (
-            head_nom={60.0,0}, q_nom={0.0,0.02e-3}),
+            head_nominal={60.0,0}, q_nominal={0.0,0.02e-3}),
       m_flow_start=0.01,
       checkValve=false) 
       annotation (Placement(transformation(extent={{-58,-16},{-38,4}}, rotation=
@@ -40,8 +40,8 @@ package TestOverdeterminedSteadyStateInit
     ControlValves.ValveIncompressible valve(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      dp_nom=3e5,
-      m_flow_nom=0.01) 
+      dp_nominal=3e5,
+      m_flow_nominal=0.01) 
       annotation (Placement(transformation(extent={{42,-12},{58,4}}, rotation=0)));
     Modelica.Blocks.Interfaces.RealInput valvePosition 
       annotation (Placement(transformation(extent={{-128,-20},{-88,20}},

@@ -22,36 +22,36 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
     p=100000) 
   annotation (Placement(transformation(extent={{82,-4},{62,16}}, rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V1(
-    dp_nom=9e5,
-    m_flow_nom=1.5,
+    dp_nominal=9e5,
+    m_flow_nominal=1.5,
   redeclare package Medium = Medium,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     Av=0.1) annotation (Placement(transformation(extent={{-50,58},{-30,78}},
           rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V2(
-    dp_nom=5e5,
-    m_flow_nom=1.2,
+    dp_nominal=5e5,
+    m_flow_nominal=1.2,
   redeclare package Medium = Medium,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     Av=0.1) annotation (Placement(transformation(extent={{-38,26},{-18,46}},
           rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V3(
-    dp_nom=3e5,
-    m_flow_nom=1.1,
+    dp_nominal=3e5,
+    m_flow_nominal=1.1,
   redeclare package Medium = Medium,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (Placement(transformation(extent={{-38,-38},{-18,-18}},
           rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V4(
-    dp_nom=8e5,
-    m_flow_nom=1.3,
+    dp_nominal=8e5,
+    m_flow_nominal=1.3,
   redeclare package Medium = Medium,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (Placement(transformation(extent={{-40,-78},{-20,-58}},
           rotation=0)));
   Modelica_Fluid.ControlValves.ValveIncompressible V5(
-    dp_nom=4e5,
-    m_flow_nom=2,
+    dp_nominal=4e5,
+    m_flow_nominal=2,
   redeclare package Medium = Medium,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint) 
             annotation (Placement(transformation(extent={{30,-4},{50,16}},
