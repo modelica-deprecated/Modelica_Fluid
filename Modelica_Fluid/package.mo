@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 3: One-dimensional ther
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -2101,7 +2100,6 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
-
 annotation (
   version="1.0 Streams Beta 3",
   versionBuild="$Rev$",
@@ -2110,7 +2108,7 @@ annotation (
   Settings(NewStateSelection=true),
   uses(Modelica(version="3.0")),
   classOrder={"UsersGuide","Examples","System", "ControlValves","Flowmachines","HeatExchangers","Junctions",
-      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "Thermal", "*"},
+      "Volumes", "Pipes", "PressureLosses", "Pumps", "Sensors", "Sources", "*"},
   Documentation(info="<html>
 <p>
 Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
@@ -2168,12 +2166,12 @@ The following parts are useful, when newly starting with this library:
      contains examples that demonstrate the usage of this library.</li>
 </ul>
  
-
+ 
 <p>
 <b>Licensed by the Modelica Association under the Modelica License 2</b><br>
 Copyright &copy; 2002-2008, ABB, DLR, Dynasim, Modelon, TU Braunschweig, TU Hamburg-Harburg, Politecnico di Milano.
 </p>
-
+ 
 <p>
 <i>This Modelica package is <u>free</u> software and
 the use is completely at <u>your own risk</u>;

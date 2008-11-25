@@ -1840,7 +1840,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       height=-0.5,
       startTime=2) 
                 annotation (Placement(transformation(extent={{46,30},{26,50}})));
-    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.SteadyState)
+    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.SteadyState) 
       annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
     discrete Modelica.SIunits.MassFlowRate m_flow_initial;
   equation
@@ -1908,7 +1908,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       height=-0.5,
       startTime=2) 
                 annotation (Placement(transformation(extent={{46,30},{26,50}})));
-    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.SteadyState)
+    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.SteadyState) 
       annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
     discrete Modelica.SIunits.MassFlowRate m_flow_initial;
   equation
