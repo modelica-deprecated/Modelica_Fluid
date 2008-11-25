@@ -12,7 +12,6 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     n=20,
     length=2,
     mflow_start_1=0.2,
-    static=false,
     mflow_start_2=0.2,
     Twall_start=300,
     redeclare model HeatTransfer_1 = 
@@ -64,7 +63,9 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     redeclare package Medium = Medium) 
                  annotation (Placement(transformation(extent={{-66,-10},{-46,10}},
           rotation=0)));
-  annotation (Diagram(graphics),
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+            -100},{100,100}}),
+                      graphics),
                        experiment(StopTime=100, Tolerance=1e-005));
   Modelica.Blocks.Sources.Ramp Ramp1(
     startTime=50,
@@ -76,14 +77,18 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
                                    annotation (Placement(transformation(extent=
             {{60,70},{80,90}}, rotation=0)));
 equation
-  connect(massFlowRate2.port, HEX.port_a2)            annotation (Line(points={
-          {-46,34},{-40,34},{-40,29.8},{-29,29.8}}, color={0,127,255}));
   connect(massFlowRate1.port, HEX.port_a1)            annotation (Line(points={
           {-46,0},{-40,0},{-40,15.4},{-29,15.4}}, color={0,127,255}));
   connect(HEX.port_b1, ambient1.port)            annotation (Line(points={{37,
           15.4},{48.5,15.4},{48.5,34},{62,34}}, color={0,127,255}));
-  connect(HEX.port_b2, ambient2.port)            annotation (Line(points={{37,
-          2.2},{49.5,2.2},{49.5,-18},{62,-18}}, color={0,127,255}));
   connect(Ramp1.y, massFlowRate2.m_flow_in) annotation (Line(points={{-79,34},{
           -74,34},{-74,40},{-65.3,40}}, color={0,0,127}));
+  connect(massFlowRate2.port, HEX.port_b2) annotation (Line(
+      points={{-46,34},{-40,34},{-40,29.8},{-29,29.8}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(HEX.port_a2, ambient2.port) annotation (Line(
+      points={{37,2.2},{42,2},{50,2},{50,-18},{62,-18}},
+      color={0,127,255},
+      smooth=Smooth.None));
 end TestHeatExchanger;

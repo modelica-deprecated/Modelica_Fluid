@@ -726,7 +726,7 @@ end Tank;
 
       partial model PartialLumpedVolume
       "Mixing volume with inlet and outlet ports (flow reversal is allowed)"
-        import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types;
         outer Modelica_Fluid.System system "System properties";
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 

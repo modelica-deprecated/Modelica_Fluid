@@ -230,7 +230,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
  
 </html>"));
   model BasicHX "Simple heat exchanger model"
-
+    outer Modelica_Fluid.System system "System properties";
     //General
     parameter Integer n(min=1) = 1 "Spatial segmentation";
     replaceable package Medium_1 = Modelica.Media.Water.StandardWater constrainedby
@@ -251,10 +251,19 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     parameter SI.Density d_wall "Density of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
     parameter SI.SpecificHeatCapacity c_wall
       "Specific heat capacity of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
-    final parameter SI.Mass m_wall=sum(wall.m) "Wall mass";
+    final parameter SI.Area area_h=(Ah_1 + Ah_2)/2 "Heat transfer area";
+    final parameter SI.Mass m_wall=d_wall*area_h*s_wall "Wall mass";
     parameter SI.ThermalConductivity k_wall
       "Thermal conductivity of wall material" 
       annotation (Dialog(group="Solid material properties"));
+
+    // Assumptions
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+      "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+      "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
 
     //Initialization pipe 1
     parameter Types.Init initType=Types.Init.InitialValues
@@ -262,7 +271,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter SI.Temperature Twall_start "Start value of wall temperature" 
                                                                           annotation(Dialog(tab="Initialization", group="Wall"));
-    parameter SI.Temperature dT "Start value for port_b.T - port_a.T" 
+    parameter SI.Temperature dT "Start value for pipe_1.T - pipe_2.T" 
       annotation (Dialog(tab="Initialization", group="Wall"));
     parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
@@ -314,10 +323,6 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       annotation (Dialog(tab="Initialization", group = "Fluid 2", enable=Medium_2.nXi>0));
     parameter Medium_2.MassFlowRate mflow_start_2
       "Start value of mass flow rate"    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 2"));
-    //Advanced
-    parameter Boolean static=false
-      "= true, use quasistatic mass and energy balances" 
-                             annotation(Evaluate=true, Dialog(tab="General", group="Model options"));
 
     //Pressure drop and heat transfer
     replaceable package WallFriction = 
@@ -356,7 +361,8 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       isCircular=false,
       diameter=0,
       n=n,
-      static=static,
+      allowFlowReversal=allowFlowReversal,
+      dynamicsType=dynamicsType,
       length=length,
       area_h=Ah_1,
       redeclare HeatTransfer_1 heatTransfer,
@@ -372,13 +378,14 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       roughness=roughness_1,
       use_eta_nominal=use_eta_nominal,
       eta_nominal=eta_nominal_M1) 
-                               annotation (Placement(transformation(extent={{
-              -40,-60},{20,0}}, rotation=0)));
+                               annotation (Placement(transformation(extent={{-40,-80},
+              {20,-20}},        rotation=0)));
 
     Modelica_Fluid.Pipes.DistributedPipe pipe_2(
       redeclare package Medium = Medium_2,
       n=n,
-      static=static,
+      allowFlowReversal=allowFlowReversal,
+      dynamicsType=dynamicsType,
       length=length,
       isCircular=false,
       diameter=0,
@@ -399,9 +406,9 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       use_eta_nominal=use_eta_nominal,
       eta_nominal=eta_nominal_M2,
       show_Re=false) 
-                annotation (Placement(transformation(extent={{-40,88},{20,28}},
+                annotation (Placement(transformation(extent={{20,88},{-40,28}},
             rotation=0)));
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}},
           grid={1,1}),  graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false,
@@ -445,9 +452,22 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
             lineColor={0,128,255},
             smooth=Smooth.None,
             fillColor={0,128,255},
+            fillPattern=FillPattern.Solid),
+          Line(
+            points={{30,77},{-60,77}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{-50,92},{-90,77},{-50,62},{-50,92}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
             fillPattern=FillPattern.Solid)}),
       Documentation(info="<html>
-Simple model of a heat exchanger consisting of two pipes and one wall in between. For both fluids geometry parameters, such as heat transfer area and cross section as well as heat transfer and pressure drop correlations may be chosen. The flow scheme be cocurrent or counterflow, defined by the respective flow directions of the fluids entering the component.
+Simple model of a heat exchanger consisting of two pipes and one wall in between. 
+For both fluids geometry parameters, such as heat transfer area and cross section as well as heat transfer and pressure drop correlations may be chosen. 
+The flow scheme may be concurrent or counterflow, defined by the respective flow directions of the fluids entering the component.
+The design flow direction with positive m_flow variables is counterflow.
 </html>"));
     Modelica_Fluid.Interfaces.FluidPort_b port_b1(redeclare package Medium = 
           Medium_1) annotation (Placement(transformation(extent={{100,-12},{120,
@@ -455,48 +475,68 @@ Simple model of a heat exchanger consisting of two pipes and one wall in between
     Modelica_Fluid.Interfaces.FluidPort_a port_a1(redeclare package Medium = 
           Medium_1) annotation (Placement(transformation(extent={{-120,-12},{
               -100,8}}, rotation=0)));
-    Modelica_Fluid.Interfaces.FluidPort_a port_a2(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_b port_b2(redeclare package Medium = 
           Medium_2) annotation (Placement(transformation(extent={{-120,36},{
               -100,56}}, rotation=0)));
-    Modelica_Fluid.Interfaces.FluidPort_b port_b2(redeclare package Medium = 
+    Modelica_Fluid.Interfaces.FluidPort_a port_a2(redeclare package Medium = 
           Medium_2) annotation (Placement(transformation(extent={{100,-56},{120,
               -36}}, rotation=0)));
 
-    Modelica_Fluid.Thermal.WallConstProps wall(
-      n=n,
-      d_wall=d_wall,
-      c_wall=c_wall,
-      T_start=Twall_start,
-      k_wall=k_wall,
-      dT=dT,
-      s=s_wall,
-      area_h=(Ah_1 + Ah_2)/2,
-      initType=initType) 
-      annotation (Placement(transformation(extent={{-28,-14},{10,44}}, rotation=
-             0)));
+    Modelica.Thermal.HeatTransfer.Components.ThermalConductor[n] wall1(G=2*
+          k_wall/s_wall*area_h/n*ones(n), dT(each start=0.5*dT))           annotation (
+        Placement(transformation(
+          extent={{-10,-10},{10,10}},
+          rotation=90,
+          origin={-10,-10})));
+    Modelica.Thermal.HeatTransfer.Components.ThermalConductor[n] wall2(G=2*
+          k_wall/s_wall*area_h/n*ones(n), dT(each start=0.5*dT)) 
+                                       annotation (
+        Placement(transformation(
+          extent={{-10,-10},{10,10}},
+          rotation=90,
+          origin={-10,20})));
+    Modelica.Thermal.HeatTransfer.Components.HeatCapacitor[n] wall(
+      C=c_wall*m_wall/n*ones(n),
+      T(start=Twall_start*ones(n), each fixed=(initType <> Types.Init.SteadyState)),
+      der_T(start=zeros(n), each fixed=(initType == Types.Init.SteadyState))) if dynamicsType <> Types.Dynamics.SteadyState 
+      annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+          rotation=90,
+          origin={-40,5})));
 
   equation
     Q_flow_1 = sum(pipe_1.heatTransfer.Q_flow);
     Q_flow_2 = sum(pipe_2.heatTransfer.Q_flow);
     connect(pipe_2.port_b, port_b2) annotation (Line(
-        points={{20,58},{60,58},{60,-46},{110,-46}},
-        color={0,127,255},
-        thickness=0.5));
-    connect(pipe_1.port_b, port_b1) annotation (Line(
-        points={{20,-30},{42,-30},{42,-2},{110,-2}},
-        color={0,127,255},
-        thickness=0.5));
-    connect(pipe_1.port_a, port_a1) annotation (Line(
-        points={{-40,-30},{-75.3,-30},{-75.3,-2},{-110,-2}},
-        color={0,127,255},
-        thickness=0.5));
-    connect(pipe_2.port_a, port_a2) annotation (Line(
         points={{-40,58},{-76,58},{-76,46},{-110,46}},
         color={0,127,255},
         thickness=0.5));
-    connect(pipe_2.heatPort, wall.heatPort_a) annotation (Line(points={{-10,
-            41.8},{-10,29.5},{-9,29.5}},     color={191,0,0}));
-    connect(wall.heatPort_b, pipe_1.heatPort) annotation (Line(points={{-9,0.5},
-            {-9,-7.75},{-10,-7.75},{-10,-13.8}},         color={191,0,0}));
+    connect(pipe_1.port_b, port_b1) annotation (Line(
+        points={{20,-50},{42,-50},{42,-2},{110,-2}},
+        color={0,127,255},
+        thickness=0.5));
+    connect(pipe_1.port_a, port_a1) annotation (Line(
+        points={{-40,-50},{-75.3,-50},{-75.3,-2},{-110,-2}},
+        color={0,127,255},
+        thickness=0.5));
+    connect(pipe_2.port_a, port_a2) annotation (Line(
+        points={{20,58},{65,58},{65,-46},{110,-46}},
+        color={0,127,255},
+        thickness=0.5));
+    connect(pipe_1.heatPort, wall1.port_a) annotation (Line(
+        points={{-10,-33.8},{-10,-20}},
+        color={191,0,0},
+        smooth=Smooth.None));
+    connect(wall1.port_b, wall2.port_a) annotation (Line(
+        points={{-10,0},{-10,10}},
+        color={191,0,0},
+        smooth=Smooth.None));
+    connect(wall1.port_b, wall.port) annotation (Line(
+        points={{-10,0},{-10,5},{-30,5}},
+        color={191,0,0},
+        smooth=Smooth.None));
+    connect(wall2[1:n].port_b, pipe_2.heatPort[n:-1:1]) annotation (Line(
+        points={{-10,30},{-10,41.8}},
+        color={191,0,0},
+        smooth=Smooth.None));
   end BasicHX;
 end HeatExchangers;

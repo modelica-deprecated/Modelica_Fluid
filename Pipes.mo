@@ -1070,8 +1070,8 @@ end DistributedPipeSa;
 
   partial model PartialDistributedFlowLumpedPressure
       "Base class for 1D fluid flow with the number of momentum balances reduced to 2"
-    import Modelica_Fluid.Types;
-    import Modelica.Constants.*;
+      import Modelica_Fluid.Types;
+      import Modelica.Constants.*;
     outer Modelica_Fluid.System system "System properties";
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
         "Fluid medium model" 
@@ -1363,7 +1363,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
   end PartialDistributedFlowLumpedPressure;
 
   partial model PartialDistributedFlow
-    import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types;
     outer Modelica_Fluid.System system "System properties";
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
         "Fluid medium model" 
