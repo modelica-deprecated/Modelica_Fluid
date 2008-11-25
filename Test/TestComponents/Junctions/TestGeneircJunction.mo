@@ -11,7 +11,7 @@ model TestGeneircJunction
     n_b=2,
     modelStructure=Modelica_Fluid.Types.ModelStructure.avb,
     dp_nominal=100000,
-    mflow_nominal=0.01,
+    m_flow_nominal=0.01,
     p_start=100000)                         annotation (Placement(
         transformation(extent={{10,-30},{30,-10}}, rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,

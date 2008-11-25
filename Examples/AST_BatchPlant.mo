@@ -251,7 +251,7 @@ present that are regulated by a central control system.
       n_a=2,
       n_b=3,
       dp_nominal=10000,
-      mflow_nominal=1) 
+      m_flow_nominal=1) 
                annotation (Placement(transformation(extent={{-38,-260},{-18,
               -240}}, rotation=0)));
     Modelica_Fluid.ControlValves.ValveDiscrete V10(

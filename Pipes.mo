@@ -1125,7 +1125,7 @@ end DistributedPipeSa;
       parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
         "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-      parameter Medium.MassFlowRate mflow_start
+      parameter Medium.MassFlowRate m_flow_start
         "Start value for mass flow rate"                                       annotation(Evaluate=true, Dialog(tab = "Initialization"));
       final parameter SI.Pressure dp_start=p_a_start - p_b_start;
 
@@ -1154,7 +1154,7 @@ end DistributedPipeSa;
 
   //Flow quantities
     inner Medium.MassFlowRate[n + 1] m_flow(each min=if allowFlowReversal then -inf else 
-                0, each start=mflow_start, each fixed=false)
+                0, each start=m_flow_start, each fixed=false)
         "Mass flow rates of fluid across segment boundaries";
     SI.Velocity[n+1] v "velocity at volume boundaries (for display purposes)";
     Medium.MassFlowRate[n + 1,Medium.nXi] mXi_flow
@@ -1413,7 +1413,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
         "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-      parameter Medium.MassFlowRate mflow_start
+      parameter Medium.MassFlowRate m_flow_start
         "Start value for mass flow rate" 
        annotation(Evaluate=true, Dialog(tab = "Initialization"));
       final parameter SI.Pressure dp_start=p_a_start - p_b_start;
@@ -1445,7 +1445,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
   //Flow quantities
     inner Medium.MassFlowRate[n + 1] m_flow(each min=if allowFlowReversal then -Modelica.Constants.inf else 
-                0, each start=mflow_start, each fixed=false)
+                0, each start=m_flow_start, each fixed=false)
         "Mass flow rates of fluid across segment boundaries";
     SI.Velocity[n+1] v "Velocity at volume boundaries (not used in balances)";
     Medium.MassFlowRate[n + 1,Medium.nXi] mXi_flow

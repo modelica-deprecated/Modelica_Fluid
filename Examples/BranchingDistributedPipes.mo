@@ -15,7 +15,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     n=5,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
     use_eta_nominal=false,
@@ -55,7 +55,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     n=5,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     use_eta_nominal=false,
     use_approxPortProperties=true,
     initType=Modelica_Fluid.Types.Init.NoInit,
@@ -72,7 +72,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     n=5,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     length=0.4,
     use_eta_nominal=false,
     use_approxPortProperties=true,
@@ -112,7 +112,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     n=5,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
     use_eta_nominal=false,
@@ -130,7 +130,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     redeclare package Medium = Medium,
     V=0.0001,
     dp_nominal=100000,
-    mflow_nominal=0.01,
+    m_flow_nominal=0.01,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{-64,24},{-44,44}}, rotation=0)));
@@ -139,7 +139,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     redeclare package Medium = Medium,
     V=0.00001,
     dp_nominal=100000,
-    mflow_nominal=0.01,
+    m_flow_nominal=0.01,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{0,24},{20,44}}, rotation=0)));
@@ -158,7 +158,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
     use_eta_nominal=false,
@@ -187,7 +187,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     use_eta_nominal=false,
     use_approxPortProperties=true,
     p_a_start=100000) 
@@ -204,7 +204,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
     use_eta_nominal=false,
@@ -236,7 +236,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
     use_eta_nominal=false,

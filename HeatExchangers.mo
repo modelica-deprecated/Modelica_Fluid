@@ -296,7 +296,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     parameter Medium_1.MassFraction X_start_1[Medium_1.nX]=Medium_1.X_default
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", group = "Fluid 1", enable=(Medium_1.nXi > 0)));
-    parameter Medium_1.MassFlowRate mflow_start_1
+    parameter Medium_1.MassFlowRate m_flow_start_1
       "Start value of mass flow rate" annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 1"));
     //Initialization pipe 2
 
@@ -321,7 +321,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     parameter Medium_2.MassFraction X_start_2[Medium_2.nX]=Medium_2.X_default
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", group = "Fluid 2", enable=Medium_2.nXi>0));
-    parameter Medium_2.MassFlowRate mflow_start_2
+    parameter Medium_2.MassFlowRate m_flow_start_2
       "Start value of mass flow rate"    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 2"));
 
     //Pressure drop and heat transfer
@@ -371,7 +371,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       T_start=T_start_1,
       h_start=h_start_1,
       X_start=X_start_1,
-      mflow_start=mflow_start_1,
+      m_flow_start=m_flow_start_1,
       perimeter=P_1,
       area=Ac_1,
       redeclare package WallFriction = WallFriction,
@@ -395,7 +395,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       h_start=h_start_2,
       X_start=X_start_2,
       initType=initType,
-      mflow_start=mflow_start_2,
+      m_flow_start=m_flow_start_2,
       perimeter=P_2,
       area=Ac_2,
       area_h=Ah_2,

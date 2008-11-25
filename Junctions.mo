@@ -408,7 +408,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
         annotation (choicesAllMatching=true);
     parameter SI.Volume V "Volume";
     parameter SI.Pressure dp_nominal "nominal (linear) pressure drop" annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
-    parameter SI.MassFlowRate mflow_nominal "nominal mass flow rate"  annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
+    parameter SI.MassFlowRate m_flow_nominal "nominal mass flow rate"  annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
 
     SI.InternalEnergy U "Internal energy";
     SI.Mass m "Total mass";
@@ -596,13 +596,13 @@ end for;
     if modelStructure==ModelStructure.avb or modelStructure == ModelStructure.av_b then
       ports_a.p=fill(medium.p, n_a);
     else
-      ports_a.p-fill(medium.p,n_a) = ports_a.m_flow*dp_nominal/mflow_nominal;
+      ports_a.p-fill(medium.p,n_a) = ports_a.m_flow*dp_nominal/m_flow_nominal;
     end if;
 
     if modelStructure==ModelStructure.avb or modelStructure==ModelStructure.a_vb then
       ports_b.p=fill(medium.p,n_b);
     else
-      ports_b.p-fill(medium.p,n_b)=ports_b.m_flow*dp_nominal/mflow_nominal;
+      ports_b.p-fill(medium.p,n_b)=ports_b.m_flow*dp_nominal/m_flow_nominal;
     end if;
 
     U=m*medium.u;
