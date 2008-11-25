@@ -11,8 +11,8 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     T_start_2=300,
     n=20,
     length=2,
-    mflow_start_1=0.2,
-    mflow_start_2=0.2,
+    m_flow_start_1=0.2,
+    m_flow_start_2=0.2,
     Twall_start=300,
     redeclare model HeatTransfer_1 = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha (

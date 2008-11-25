@@ -16,7 +16,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
     use_eta_nominal=false,
@@ -54,7 +54,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     use_eta_nominal=false,
     use_approxPortProperties=true,
     p_a_start=100000) 
@@ -72,7 +72,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
     use_eta_nominal=false,
@@ -111,7 +111,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
     use_eta_nominal=false,
@@ -127,7 +127,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     redeclare package Medium = Medium,
     V=0.0001,
     dp_nominal=100000,
-    mflow_nominal=0.01,
+    m_flow_nominal=0.01,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{-58,54},{-38,74}}, rotation=0)));
@@ -136,7 +136,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     redeclare package Medium = Medium,
     V=0.00001,
     dp_nominal=100000,
-    mflow_nominal=0.01,
+    m_flow_nominal=0.01,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{6,54},{26,74}}, rotation=0)));
@@ -157,7 +157,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
     use_eta_nominal=false,
@@ -186,7 +186,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     use_eta_nominal=false,
     use_approxPortProperties=true,
     p_a_start=100000) 
@@ -203,7 +203,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
     use_eta_nominal=false,
@@ -235,7 +235,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
     use_eta_nominal=false,
@@ -259,7 +259,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
     use_eta_nominal=false,
@@ -288,7 +288,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     use_eta_nominal=false,
     use_approxPortProperties=true,
     p_a_start=100000) 
@@ -305,7 +305,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
     use_eta_nominal=false,
@@ -337,7 +337,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    mflow_start=0.1,
+    m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
     use_eta_nominal=false,
