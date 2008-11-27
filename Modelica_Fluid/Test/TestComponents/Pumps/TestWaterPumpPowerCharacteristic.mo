@@ -25,8 +25,8 @@ model TestWaterPumpPowerCharacteristic
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticPower (
           q_nominal={0,0.001,0.0015}, W_nominal={550,650,800}),
     M=0.1,
-    pin_start=100000,
-    pout_start=700000,
+    p_a_start=100000,
+    p_b_start=700000,
     initType=Modelica_Fluid.Types.Init.SteadyState) 
                            annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));
@@ -52,9 +52,9 @@ model TestWaterPumpPowerCharacteristic
 equation
   connect(Valve.port_b,Sink. port)       annotation (Line(points={{2,36},{14,36}},
         color={0,127,255}));
-  connect(Valve.port_a,pump. outlet)      annotation (Line(points={{-16,36},{
-          -26,36},{-26,39.8},{-40.4,39.8}}, color={0,127,255}));
-  connect(pump.inlet,Source. port)  annotation (Line(points={{-62.8,32},{-70,32},
+  connect(Valve.port_a,pump.port_b)      annotation (Line(points={{-16,36},{-26,
+          36},{-26,35},{-34,35}},           color={0,127,255}));
+  connect(pump.port_a,Source. port)  annotation (Line(points={{-66,35},{-70,35},
           {-70,30},{-80,30}}, color={0,127,255}));
   connect(downstreamPressure.y, Sink.p_in) 
                                 annotation (Line(points={{25,84},{58,84},{58,42},
@@ -62,7 +62,7 @@ equation
   annotation (experiment(StopTime=10), Diagram(coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics));
   connect(valveOpening.y, Valve.stemPosition) annotation (Line(
-      points={{-39,70},{-7,70},{-7,45}},
+      points={{-39,70},{-7,70},{-7,44}},
       color={0,0,127},
       smooth=Smooth.None));
 end TestWaterPumpPowerCharacteristic;

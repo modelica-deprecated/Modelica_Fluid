@@ -232,7 +232,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
   model BasicHX "Simple heat exchanger model"
     outer Modelica_Fluid.System system "System properties";
     //General
-    parameter Integer n(min=1) = 1 "Spatial segmentation";
+    parameter Integer nNodes(min=1) = 1 "Spatial segmentation";
     replaceable package Medium_1 = Modelica.Media.Water.StandardWater constrainedby
       Modelica.Media.Interfaces.PartialMedium "Fluid 1" 
                                                       annotation(choicesAllMatching, Dialog(tab="General",group="Fluid 1"));
@@ -374,7 +374,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       redeclare package Medium = Medium_1,
       isCircular=false,
       diameter=0,
-      n=n,
+      nNodes=nNodes,
       allowFlowReversal=allowFlowReversal,
       dynamicsType=dynamicsType,
       length=length,
@@ -397,7 +397,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
 
     Modelica_Fluid.Pipes.DistributedPipe pipe_2(
       redeclare package Medium = Medium_2,
-      n=n,
+      nNodes=nNodes,
       allowFlowReversal=allowFlowReversal,
       dynamicsType=dynamicsType,
       length=length,
@@ -497,23 +497,23 @@ The design flow direction with positive m_flow variables is counterflow.
           Medium_2) annotation (Placement(transformation(extent={{100,-56},{120,
               -36}}, rotation=0)));
 
-    Modelica.Thermal.HeatTransfer.Components.ThermalConductor[n] wall1(G=2*
-          k_wall/s_wall*area_h/n*ones(n), dT(each start=0.5*dT))           annotation (
+    Modelica.Thermal.HeatTransfer.Components.ThermalConductor[nNodes] wall1(G=2*
+          k_wall/s_wall*area_h/nNodes*ones(nNodes), dT(each start=0.5*dT))           annotation (
         Placement(transformation(
           extent={{-10,-10},{10,10}},
           rotation=90,
           origin={-10,-10})));
-    Modelica.Thermal.HeatTransfer.Components.ThermalConductor[n] wall2(G=2*
-          k_wall/s_wall*area_h/n*ones(n), dT(each start=0.5*dT)) 
+    Modelica.Thermal.HeatTransfer.Components.ThermalConductor[nNodes] wall2(G=2*
+          k_wall/s_wall*area_h/nNodes*ones(nNodes), dT(each start=0.5*dT)) 
                                        annotation (
         Placement(transformation(
           extent={{-10,-10},{10,10}},
           rotation=90,
           origin={-10,20})));
-    Modelica.Thermal.HeatTransfer.Components.HeatCapacitor[n] wall(
-      C=c_wall*m_wall/n*ones(n),
-      T(start=Twall_start*ones(n), each fixed=(initType <> Types.Init.SteadyState)),
-      der_T(start=zeros(n), each fixed=(initType == Types.Init.SteadyState))) if dynamicsType <> Types.Dynamics.SteadyState 
+    Modelica.Thermal.HeatTransfer.Components.HeatCapacitor[nNodes] wall(
+      C=c_wall*m_wall/nNodes*ones(nNodes),
+      T(start=Twall_start*ones(nNodes), each fixed=(initType <> Types.Init.SteadyState)),
+      der_T(start=zeros(nNodes), each fixed=(initType == Types.Init.SteadyState))) if dynamicsType <> Types.Dynamics.SteadyState 
       annotation (Placement(transformation(extent={{-10,-10},{10,10}},
           rotation=90,
           origin={-40,5})));
@@ -549,7 +549,7 @@ The design flow direction with positive m_flow variables is counterflow.
         points={{-10,0},{-10,5},{-30,5}},
         color={191,0,0},
         smooth=Smooth.None));
-    connect(wall2[1:n].port_b, pipe_2.heatPort[n:-1:1]) annotation (Line(
+    connect(wall2[1:nNodes].port_b, pipe_2.heatPort[nNodes:-1:1]) annotation (Line(
         points={{-10,30},{-10,36.2},{-10,42.4},{-10.3,42.4}},
         color={191,0,0},
         smooth=Smooth.None));

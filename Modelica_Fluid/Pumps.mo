@@ -99,10 +99,10 @@ package Pumps "Pump components"
   equation
     // NPSHa computation
     pv = Medium.saturationPressure(Tin);
-    NPSHa = (inlet.p-pv)/(d*Modelica.Constants.g_n);
+    NPSHa = (port_a.p-pv)/(d*Modelica.Constants.g_n);
 
     // Check for cavitation
-    assert(inlet.p >= pv, "Cavitation occurs at the inlet");
+    assert(port_a.p >= pv, "Cavitation occurs at the inlet");
     annotation (Documentation(info="<html>Same as the Pump model, with added computation of Net Positive Suction Head available. Requires a two-phase medium model.
 </html>", revisions="<html>
 <ul>
@@ -154,21 +154,21 @@ package Pumps "Pump components"
     parameter Boolean allowFlowReversal = system.allowFlowReversal
         "allow flow reversal, false restricts to design direction (port_a -> port_b)"
       annotation(Dialog(tab="Assumptions"), Evaluate=true);
-    parameter Medium.AbsolutePressure pin_start
+    parameter Medium.AbsolutePressure p_a_start
         "Guess value for inlet pressure" 
       annotation(Dialog(tab="Initialization"));
-    parameter Medium.AbsolutePressure pout_start
+    parameter Medium.AbsolutePressure p_b_start
         "Guess value for outlet pressure" 
       annotation(Dialog(tab="Initialization"));
     parameter Boolean use_T_start = true
         "Use T_start if true, otherwise h_start" 
       annotation(Dialog(tab = "Initialization"), Evaluate = true);
     parameter Medium.Temperature T_start=
-      if use_T_start then system.T_start else Medium.temperature_phX(pin_start,h_start,X_start)
+      if use_T_start then system.T_start else Medium.temperature_phX(p_a_start,h_start,X_start)
         "Guess value for temperature" 
       annotation(Dialog(tab = "Initialization", enable = use_T_start));
     parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.specificEnthalpy_pTX(pin_start, T_start, X_start) else Medium.h_default
+      if use_T_start then Medium.specificEnthalpy_pTX(p_a_start, T_start, X_start) else Medium.h_default
         "Guess value for specific enthalpy" 
       annotation(Dialog(tab = "Initialization", enable = not use_T_start));
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default
@@ -182,27 +182,28 @@ package Pumps "Pump components"
     parameter Types.Init initType=
               Types.Init.NoInit "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-    Modelica_Fluid.Interfaces.FluidPort_a inlet(
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(
         redeclare package Medium = Medium,
-        p(start=pin_start),
+        p(start=p_a_start),
         m_flow(start = m_flow_start,
                min = if allowFlowReversal and not checkValve then -Constants.inf else 0)) 
-    annotation (Placement(transformation(extent={{
-              -90,-10},{-70,10}}), iconTransformation(extent={{-90,-10},{-70,10}})));
-    Modelica_Fluid.Interfaces.FluidPort_b outlet(
+    annotation (Placement(transformation(extent={{-110,-10},{-90,10}}),
+                                   iconTransformation(extent={{-110,-10},{-90,
+                10}})));
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(
                                   redeclare package Medium = Medium,
-        p(start=pout_start),
+        p(start=p_b_start),
         m_flow(start = -m_flow_start,
                max = if allowFlowReversal and not checkValve then +Constants.inf else 0)) 
-    annotation(Placement(transformation(extent={{
-              70,-10},{90,10}}), iconTransformation(extent={{70,-10},{90,10}})));
-    SI.Pressure dp = outlet.p - inlet.p "Pressure increase";
+    annotation(Placement(transformation(extent={{90,-10},{110,10}}),
+                                 iconTransformation(extent={{90,-10},{110,10}})));
+    SI.Pressure dp = port_b.p - port_a.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
-    Medium.Density d "Liquid density at the inlet";
+    Medium.Density d "Liquid density at the inlet port_a";
     Medium.SpecificEnthalpy h(start=h_start)
         "Enthalpy of the liquid stored in the pump if M>0";
     Medium.Temperature Tin "Liquid inlet temperature";
-    SI.MassFlowRate m_flow = inlet.m_flow "Mass flow rate (total)";
+    SI.MassFlowRate m_flow = port_a.m_flow "Mass flow rate (total)";
     SI.MassFlowRate m_flow_single = m_flow/nPumps
         "Mass flow rate (single pump)";
     SI.VolumeFlowRate q_flow = m_flow/d "Volume flow rate (total)";
@@ -216,7 +217,7 @@ package Pumps "Pump components"
     Real eta "Global Efficiency";
     Real s(start = m_flow_start)
         "Curvilinear abscissa for the flow curve in parametric form (either mass flow rate or head)";
-    Medium.ThermodynamicState inlet_state_inflow
+    Medium.ThermodynamicState port_a_state_inflow
         "Medium state close to inlet for inflowing mass flow";
     protected
     constant SI.Height unitHead = 1;
@@ -246,29 +247,29 @@ package Pumps "Pump components"
     // Medium states close to the ports when mass flows in to the respective port
     // The inlet inflow state is used also in case of flow reversal, to avoid
     // discontinuities.
-    inlet_state_inflow = Medium.setState_phX(inlet.p, inlet.h_outflow, inlet.Xi_outflow);
-    // outlet_state_inflow = Medium.setState_phX(outlet.p, outlet.h_outflow, outlet.Xi_outflow);
+    port_a_state_inflow = Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow);
+    // port_b_state_inflow = Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow);
 
     // Inflow density and temperature at the inlet port
-    d = Medium.density(inlet_state_inflow);
-    Tin = Medium.temperature(inlet_state_inflow);
+    d = Medium.density(port_a_state_inflow);
+    Tin = Medium.temperature(port_a_state_inflow);
 
     // Mass balances
-    inlet.m_flow + outlet.m_flow = 0 "Mass balance";
-    inlet.Xi_outflow  = inStream(outlet.Xi_outflow);
-    outlet.Xi_outflow = inStream(inlet.Xi_outflow);
-    inlet.C_outflow = inStream(outlet.C_outflow);
-    outlet.C_outflow = inStream(inlet.C_outflow);
+    port_a.m_flow + port_b.m_flow = 0 "Mass balance";
+    port_a.Xi_outflow  = inStream(port_b.Xi_outflow);
+    port_b.Xi_outflow = inStream(port_a.Xi_outflow);
+    port_a.C_outflow = inStream(port_b.C_outflow);
+    port_b.C_outflow = inStream(port_a.C_outflow);
 
     // Energy balances
     if M > 0 then
        // Dynamic energy balance
        // mass variations and p/d are neglected
-       nPumps*M*der(h) = inlet.m_flow*actualStream(inlet.h_outflow) +
-                     outlet.m_flow*actualStream(outlet.h_outflow) +
+       nPumps*M*der(h) = port_a.m_flow*actualStream(port_a.h_outflow) +
+                     port_b.m_flow*actualStream(port_b.h_outflow) +
                      W_tot;
-       outlet.h_outflow  = h;
-       inlet.h_outflow   = h;
+       port_b.h_outflow  = h;
+       port_a.h_outflow   = h;
     else
       /* In the following two equations the extra term W_tot/m_flow is
        present where a 0/0 term appears if m_flow = 0. In order to avoid
@@ -277,8 +278,8 @@ package Pumps "Pump components"
                       = nPumps*dp*q_flow_single/(eta*d*q_flow_single*nPumps)
                       = dp/(eta*d)
     */
-      outlet.h_outflow  = inStream(inlet.h_outflow) + dp/(d*eta);
-      inlet.h_outflow  = inStream(outlet.h_outflow) + dp/(d*eta);
+      port_b.h_outflow  = inStream(port_a.h_outflow) + dp/(d*eta);
+      port_a.h_outflow  = inStream(port_b.h_outflow) + dp/(d*eta);
       h = Medium.h_default
           "Unused (set to an arbitrary value within the medium region)";
     end if;
@@ -315,7 +316,15 @@ package Pumps "Pump components"
             Text(
               extent={{-148,-110},{152,-150}},
               textString="%name",
-              lineColor={0,0,255})}),
+              lineColor={0,0,255}),
+            Line(
+              points={{-80,0},{-100,0}},
+              color={0,128,255},
+              smooth=Smooth.None),
+            Line(
+              points={{100,0},{80,0}},
+              color={0,128,255},
+              smooth=Smooth.None)}),
       Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
                 100,100}}),
               graphics),

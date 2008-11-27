@@ -28,8 +28,8 @@ annotation (
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
           q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     N_nominal=1500,
-    pin_start=100000,
-    pout_start=700000)     annotation (Placement(transformation(extent={{-66,0},
+    p_a_start=100000,
+    p_b_start=700000)     annotation (Placement(transformation(extent={{-66,0},
             {-34,30}}, rotation=0)));
   Modelica.Blocks.Sources.Ramp valveOpening(
     height=-0.5,
@@ -71,12 +71,12 @@ annotation (
 equation
   connect(Valve.port_b,Sink. port)       annotation (Line(points={{2,60},{14,60}},
         color={0,127,255}));
-  connect(Valve.port_a,pump. outlet)      annotation (Line(points={{-16,60},{
-          -40,60},{-40,19.8},{-40.4,19.8}}, color={0,127,255}));
-  connect(pump.inlet,Source. port)  annotation (Line(points={{-62.8,12},{-70,12},
+  connect(Valve.port_a,pump.port_b)      annotation (Line(points={{-16,60},{-34,
+          60},{-34,15}},                    color={0,127,255}));
+  connect(pump.port_a,Source. port)  annotation (Line(points={{-66,15},{-70,15},
           {-80,12}},          color={0,127,255}));
   connect(valveOpening.y, Valve.stemPosition) annotation (Line(
-      points={{-19,84},{-7,84},{-7,69}},
+      points={{-19,84},{-7,84},{-7,68}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(pump.shaft, motor.flange) annotation (Line(

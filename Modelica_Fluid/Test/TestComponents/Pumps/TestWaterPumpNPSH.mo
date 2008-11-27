@@ -26,8 +26,8 @@ annotation (
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
           q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
-    pin_start=100000,
-    pout_start=700000)     annotation (Placement(transformation(extent={{-66,20},
+    p_a_start=100000,
+    p_b_start=700000)     annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));
   Modelica.Blocks.Sources.Constant valveOpening(k=1) 
   annotation (Placement(transformation(extent={{-60,60},{-40,80}}, rotation=0)));
@@ -51,15 +51,15 @@ annotation (
 equation
   connect(Valve.port_b,Sink. port)       annotation (Line(points={{2,36},{14,36}},
         color={0,127,255}));
-  connect(Valve.port_a,pump. outlet)      annotation (Line(points={{-16,36},{
-          -26,36},{-26,39.8},{-40.4,39.8}}, color={0,127,255}));
-  connect(pump.inlet,Source. port)  annotation (Line(points={{-62.8,32},{-70,32},
+  connect(Valve.port_a,pump.port_b)      annotation (Line(points={{-16,36},{-26,
+          36},{-26,35},{-34,35}},           color={0,127,255}));
+  connect(pump.port_a,Source. port)  annotation (Line(points={{-66,35},{-70,35},
           {-70,30},{-80,30}}, color={0,127,255}));
   connect(downstreamPressure.y, Sink.p_in) 
                                 annotation (Line(points={{25,84},{58,84},{58,42},
           {36,42}}, color={0,0,127}));
   connect(valveOpening.y, Valve.stemPosition) annotation (Line(
-      points={{-39,70},{-7,70},{-7,45}},
+      points={{-39,70},{-7,70},{-7,44}},
       color={0,0,127},
       smooth=Smooth.None));
 end TestWaterPumpNPSH;

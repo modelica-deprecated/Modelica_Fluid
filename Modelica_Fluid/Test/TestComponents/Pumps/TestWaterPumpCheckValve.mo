@@ -39,8 +39,8 @@ annotation (
     checkValve=true,
     M=0.1,
     initType=Modelica_Fluid.Types.Init.SteadyState,
-    pin_start=100000,
-    pout_start=700000,
+    p_a_start=100000,
+    p_b_start=700000,
     use_N_input=true)      annotation (Placement(transformation(extent={{-40,-40},
             {-20,-20}},rotation=0)));
   inner Modelica_Fluid.System system 
@@ -56,14 +56,14 @@ annotation (
                 annotation (Placement(transformation(extent={{-38,32},{-18,52}},
           rotation=0)));
 equation
-  connect(pump.inlet,Source. port)  annotation (Line(points={{-38,-30},{-60,-30}},
-                              color={0,127,255}));
+  connect(pump.port_a,Source. port)  annotation (Line(points={{-40,-30},{-60,
+          -30}},              color={0,127,255}));
   connect(N_pump.y, pump.N_in) annotation (Line(
       points={{-59,10},{-30,10},{-30,-20}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(pump.outlet, valve.port_a) annotation (Line(
-      points={{-22,-30},{0,-30}},
+  connect(pump.port_b, valve.port_a) annotation (Line(
+      points={{-20,-30},{0,-30}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(valve.port_b, Sink.port) annotation (Line(

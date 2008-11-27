@@ -292,8 +292,8 @@ present that are regulated by a central control system.
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
       checkValve=false,
-      pin_start=100000,
-      pout_start=100000,
+      p_a_start=100000,
+      p_b_start=100000,
       use_N_input=true) 
       annotation (Placement(transformation(extent={{-128,-262},{-148,-242}},
             rotation=0)));
@@ -306,8 +306,8 @@ present that are regulated by a central control system.
           Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow(q_nominal={0,
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
-      pin_start=100000,
-      pout_start=100000,
+      p_a_start=100000,
+      p_b_start=100000,
       use_N_input=true) 
       annotation (Placement(transformation(extent={{110,-260},{130,-240}},
             rotation=0)));
@@ -511,9 +511,9 @@ present that are regulated by a central control system.
     CoolingB6.Q_flow = if controller.actuators.T6_Cooling then -2000 else 0;
     CoolingB7.Q_flow = if controller.actuators.T7_Cooling then -2000 else 0;
 
-    connect(P1.inlet, V23.port_b) annotation (Line(points={{-130,-252},{-116,
+    connect(P1.port_a, V23.port_b) annotation (Line(points={{-130,-252},{-116,
             -252}}, color={0,127,255}));
-    connect(V24.port_b, P2.inlet) annotation (Line(points={{104,-250},{112,-250}},
+    connect(V24.port_b, P2.port_a) annotation (Line(points={{104,-250},{112,-250}},
                                     color={0,127,255}));
     connect(V15.port_a, B5.BottomFluidPort[1]) annotation (Line(points={{-80,-72},
             {-80,-60.4}},      color={0,127,255}));
@@ -653,11 +653,11 @@ present that are regulated by a central control system.
         points={{20,20},{20,0},{12,0},{12,-252},{-18,-252},{-18,-252.667}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(P2.outlet, V25.port_a) annotation (Line(
+    connect(P2.port_b, V25.port_a) annotation (Line(
         points={{128,-250},{160,-250},{160,-30}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(V22.port_a, P1.outlet) annotation (Line(
+    connect(V22.port_a, P1.port_b) annotation (Line(
         points={{-180,-66},{-180,-252},{-146,-252}},
         color={0,127,255},
         smooth=Smooth.None));
@@ -1282,8 +1282,7 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -2043,8 +2042,8 @@ Full steady state initialization is not supported, because the corresponding int
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
               textString=DynamicSelect(" ", realString(
-                    level, 
-                    1, 
+                    level,
+                    1,
                     3))),
             Line(
               points={{-100,100},{100,100}},

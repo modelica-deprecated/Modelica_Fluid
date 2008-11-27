@@ -8,7 +8,7 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
   Modelica_Fluid.HeatExchangers.BasicHX HEX(
     c_wall=500,
     use_T_start=true,
-    n=20,
+    nNodes=20,
     length=2,
     m_flow_start_1=0.2,
     m_flow_start_2=0.2,
