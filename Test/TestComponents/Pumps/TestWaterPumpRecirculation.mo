@@ -40,8 +40,8 @@ annotation (
     use_N_input=true,
     initType=Modelica_Fluid.Types.Init.InitialValues,
     M=0.1,
-    pin_start=100000,
-    pout_start=700000)     annotation (Placement(transformation(extent={{-46,-40},
+    p_a_start=100000,
+    p_b_start=700000)     annotation (Placement(transformation(extent={{-46,-40},
             {-14,-10}},rotation=0)));
   inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent={{80,60},
@@ -73,22 +73,22 @@ annotation (
                 annotation (Placement(transformation(extent={{-100,70},{-80,90}},
           rotation=0)));
 equation
-  connect(pump.inlet,Source. port)  annotation (Line(points={{-42.8,-28},{-42.8,
-          -28},{-80,-28}},    color={0,127,255}));
+  connect(pump.port_a,Source. port)  annotation (Line(points={{-46,-25},{-46,
+          -25},{-80,-28}},    color={0,127,255}));
   connect(N_pump.y, pump.N_in) annotation (Line(
-      points={{-79,2},{-34.16,2},{-34.16,-18.4}},
+      points={{-79,2},{-30,2},{-30,-10}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(pump.outlet, V1.port_a) annotation (Line(
-      points={{-20.4,-20.2},{-20,14},{-20,16},{-28,16}},
+  connect(pump.port_b, V1.port_a) annotation (Line(
+      points={{-14,-25},{-20,14},{-20,16},{-28,16}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(V1.port_b, pump.inlet) annotation (Line(
-      points={{-50,16},{-60,16},{-60,-28},{-42.8,-28}},
+  connect(V1.port_b, pump.port_a) annotation (Line(
+      points={{-50,16},{-60,16},{-60,-25},{-46,-25}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(pump.outlet, V2.port_a) annotation (Line(
-      points={{-20.4,-20.2},{-10.2,-20.2},{-10.2,-20},{0,-20}},
+  connect(pump.port_b, V2.port_a) annotation (Line(
+      points={{-14,-25},{-10.2,-25},{-10.2,-20},{0,-20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(V2.port_b, Sink.port) annotation (Line(
@@ -96,11 +96,11 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(V1_Opening.y, V1.stemPosition) annotation (Line(
-      points={{-79,50},{-39,50},{-39,25}},
+      points={{-79,50},{-39,50},{-39,24}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(V2_Opening.y, V2.stemPosition) annotation (Line(
-      points={{-79,80},{11,80},{11,-11}},
+      points={{-79,80},{11,80},{11,-12}},
       color={0,0,127},
       smooth=Smooth.None));
 end TestWaterPumpRecirculation;

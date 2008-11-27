@@ -8,7 +8,7 @@ package TestOverdeterminedSteadyStateInit
               -100},{100,100}}),
                         graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
               lineColor={0,0,255}), Text(
             extent={{-60,60},{60,-60}},
             lineColor={0,0,255},
@@ -28,8 +28,8 @@ package TestOverdeterminedSteadyStateInit
       redeclare package Medium = Medium,
       N_nominal=1500,
       N_const=1500,
-      pin_start=1.1e5,
-      pout_start=4.0e5,
+      p_a_start=1.1e5,
+      p_b_start=4.0e5,
       use_T_start=true,
       T_start=Modelica.SIunits.Conversions.from_degC(40),
       redeclare function flowCharacteristic = 
@@ -127,7 +127,7 @@ package TestOverdeterminedSteadyStateInit
   tankLevel = tank.level;
     connect(valvePosition, valve.stemPosition) annotation (Line(points={{-108,0},
             {-86,0},{-86,66},{50,66},{50,2.4}}, color={0,0,127}));
-    connect(pump.outlet, massFlowRate.port_a) annotation (Line(points={{-40,-6},{
+    connect(pump.port_b, massFlowRate.port_a) annotation (Line(points={{-40,-6},{
             -40,-3.4},{-34,-3.4},{-34,-4}},        color={0,127,255}));
     connect(massFlowRate.m_flow, circuitFlowRate) annotation (Line(points={{-24,
             7},{-24,38},{36,38},{36,22},{98,22}}, color={0,0,127}));
@@ -147,13 +147,13 @@ package TestOverdeterminedSteadyStateInit
             -46},{-33,-88},{76,-88},{76,-68},{98,-68}}, color={0,0,127}));
     connect(radiator.port_a, valve.port_b) annotation (Line(points={{28,-66},{
             68,-66},{68,-4},{58,-4}}, color={0,127,255}));
-    connect(pump.inlet, radiator.port_b) annotation (Line(points={{-56,-6},{-56,
+    connect(pump.port_a, radiator.port_b) annotation (Line(points={{-56,-6},{-56,
             -66},{8,-66}}, color={0,127,255}));
     connect(sensor_T_2.port, radiator.port_b) annotation (Line(points={{-26,-56},
             {-26,-66},{8,-66}}, color={0,127,255}));
     connect(radiator.port_a, sensor_T_1.port) annotation (Line(points={{28,-66},
             {46,-66},{46,-56}}, color={0,127,255}));
-    connect(pump.inlet, tank.ports[1]) annotation (Line(points={{-56,-6},{-65.55,
+    connect(pump.port_a, tank.ports[1]) annotation (Line(points={{-56,-6},{-65.55,
             -6},{-65.55,6}}, color={0,127,255}));
   end HeatingSystem;
 
