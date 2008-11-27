@@ -11,17 +11,15 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     from_dp=true,
     T_start=280,
     diameter=0.01,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
-    use_eta_nominal=false,
     use_approxPortProperties=true,
-    heatTransfer(alpha0=500),
+    heatTransfer(each alpha0=500),
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-28,68},{-8,88}},
           rotation=0)));
@@ -49,13 +47,11 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     p_b_start=1e5,
     diameter=0.01,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
-    use_eta_nominal=false,
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{34,54},{54,74}},
@@ -67,15 +63,13 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     T_start=300,
     diameter=0.01,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
-    use_eta_nominal=false,
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-82,54},{-62,74}},
@@ -106,15 +100,13 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     diameter=0.01,
     T_start=360,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
-    heatTransfer(alpha0=1000),
-    use_eta_nominal=false,
+    heatTransfer(each alpha0=1000),
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-28,38},{-8,58}},
@@ -152,17 +144,15 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     T_start=280,
     diameter=0.01,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
-    use_eta_nominal=false,
     use_approxPortProperties=true,
-    heatTransfer(alpha0=500),
+    heatTransfer(each alpha0=500),
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
           rotation=0)));
@@ -181,13 +171,11 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     p_b_start=1e5,
     diameter=0.01,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
-    use_eta_nominal=false,
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{10,-2},{30,18}},
@@ -198,15 +186,13 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     T_start=300,
     diameter=0.01,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
-    use_eta_nominal=false,
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-68,-2},{-48,18}},
@@ -230,15 +216,13 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     diameter=0.01,
     T_start=360,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
-    heatTransfer(alpha0=1000),
-    use_eta_nominal=false,
+    heatTransfer(each alpha0=1000),
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,-12},{-10,8}},
@@ -254,17 +238,15 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     T_start=280,
     diameter=0.01,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
-    use_eta_nominal=false,
     use_approxPortProperties=true,
-    heatTransfer(alpha0=500),
+    heatTransfer(each alpha0=500),
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-32,-50},{-12,-30}},
           rotation=0)));
@@ -275,7 +257,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     usePressureInput=true,
     useTemperatureInput=false)                                      annotation (Placement(
         transformation(extent={{66,-62},{46,-42}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipeSa pipe10(
+  Modelica_Fluid.Pipes.DistributedPipe pipe10(
     redeclare package Medium=Medium,
     T_start=340,
     length=1,
@@ -283,34 +265,32 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     p_b_start=1e5,
     diameter=0.01,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
-    use_eta_nominal=false,
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{8,-62},{28,-42}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipeSb pipe11(
+  Modelica_Fluid.Pipes.DistributedPipe pipe11(
     redeclare package Medium=Medium,
     use_T_start=true,
     from_dp=true,
-    T_start=300,
     diameter=0.01,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
-    p_b_start=1.0e5,
     length=0.4,
-    use_eta_nominal=false,
     use_approxPortProperties=true,
-    p_a_start=100000) 
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=300) 
             annotation (Placement(transformation(extent={{-70,-62},{-50,-42}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX boundary6(
@@ -332,15 +312,13 @@ Test of different distributed pipe models. The first system uses explicit juncti
     from_dp=true,
     diameter=0.01,
     T_start=360,
-    use_d_nominal=false,
-    n=5,
+    nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
-    heatTransfer(alpha0=1000),
-    use_eta_nominal=false,
+    heatTransfer(each alpha0=1000),
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-32,-72},{-12,-52}},
@@ -385,7 +363,7 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(heat.port, pipe2.heatPort) annotation (Line(
-      points={{-34,90},{-18,90},{-18,83.4}},
+      points={{-34,90},{-17.9,90},{-17.9,83.2}},
       color={191,0,0},
       thickness=0.5));
   connect(ramp1.y, boundary4.p_in) annotation (Line(
@@ -417,7 +395,7 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(heat1.port, pipe5.heatPort) annotation (Line(
-      points={{-52,32},{-20,32},{-20,25.4}},
+      points={{-52,32},{-19.9,32},{-19.9,25.2}},
       color={191,0,0},
       thickness=0.5));
   connect(boundary2.p_in, ramp.y) annotation (Line(
@@ -453,7 +431,7 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(heat2.port, pipe9.heatPort) annotation (Line(
-      points={{-54,-28},{-22,-28},{-22,-34.6}},
+      points={{-54,-28},{-21.9,-28},{-21.9,-34.8}},
       color={191,0,0},
       thickness=0.5));
 end TestDistributedPipe01;

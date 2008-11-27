@@ -8,21 +8,15 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
   Modelica_Fluid.HeatExchangers.BasicHX HEX(
     c_wall=500,
     use_T_start=true,
-    T_start_2=300,
     n=20,
     length=2,
     m_flow_start_1=0.2,
     m_flow_start_2=0.2,
-    Twall_start=300,
-    redeclare model HeatTransfer_1 = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha (
-         alpha0=1000),
-    redeclare package WallFriction = 
+    redeclare package WallFriction_1 = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    use_eta_nominal=true,
+    redeclare package WallFriction_2 = 
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     k_wall=100,
-    T_start_1=304,
-    dT=10,
     initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
     s_wall=0.005,
     Ac_1=4.5e-4,
@@ -35,7 +29,17 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     redeclare package Medium_1 = 
         Medium,
     redeclare package Medium_2 = 
-        Medium)                annotation (Placement(transformation(extent={{
+        Medium,
+    redeclare model HeatTransfer_1 = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha (alpha0=
+           1000),
+    Twall_start=300,
+    dT=10,
+    T_start_1=304,
+    T_start_2=300,
+    eta_nominal_1=0.01,
+    eta_nominal_2=0.01,
+    use_eta_nominal=true)       annotation (Placement(transformation(extent={{
             -26,-14},{34,46}}, rotation=0)));
 
   Modelica_Fluid.Sources.FixedBoundary_pTX ambient2(

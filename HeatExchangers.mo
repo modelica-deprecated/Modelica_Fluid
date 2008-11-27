@@ -239,15 +239,28 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     replaceable package Medium_2 = Modelica.Media.Water.StandardWater constrainedby
       Modelica.Media.Interfaces.PartialMedium "Fluid 2" 
                                                       annotation(choicesAllMatching,Dialog(tab="General", group="Fluid 2"));
-    parameter SI.Area Ah_1 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 1"));
-    parameter SI.Area Ah_2 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 2"));
     parameter SI.Area Ac_1 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 1"));
     parameter SI.Area Ac_2 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 2"));
     parameter SI.Length P_1 "Flow channel perimeter" annotation(Dialog(tab="General",group="Fluid 1"));
     parameter SI.Length P_2 "Flow channel perimeter" annotation(Dialog(tab="General",group="Fluid 2"));
     parameter SI.Length length(min=0) "Length of flow path for both fluids";
     parameter SI.Length s_wall(min=0) "Wall thickness";
-    //Wall
+    // Heat transfer
+    replaceable model HeatTransfer_1 = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
+      constrainedby
+      Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
+      "Heat transfer model" annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
+
+    replaceable model HeatTransfer_2 = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
+      constrainedby
+      Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
+      "Heat transfer model" annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
+
+    parameter SI.Area Ah_1 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 1"));
+    parameter SI.Area Ah_2 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 2"));
+   //Wall
     parameter SI.Density d_wall "Density of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
     parameter SI.SpecificHeatCapacity c_wall
       "Specific heat capacity of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
@@ -296,7 +309,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     parameter Medium_1.MassFraction X_start_1[Medium_1.nX]=Medium_1.X_default
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", group = "Fluid 1", enable=(Medium_1.nXi > 0)));
-    parameter Medium_1.MassFlowRate m_flow_start_1
+    parameter Medium_1.MassFlowRate m_flow_start_1 = system.m_flow_start
       "Start value of mass flow rate" annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 1"));
     //Initialization pipe 2
 
@@ -321,37 +334,38 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     parameter Medium_2.MassFraction X_start_2[Medium_2.nX]=Medium_2.X_default
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", group = "Fluid 2", enable=Medium_2.nXi>0));
-    parameter Medium_2.MassFlowRate m_flow_start_2
+    parameter Medium_2.MassFlowRate m_flow_start_2 = system.m_flow_start
       "Start value of mass flow rate"    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 2"));
 
     //Pressure drop and heat transfer
-    replaceable package WallFriction = 
+    replaceable package WallFriction_1 = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
       constrainedby
       Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
-      "Characteristic of wall friction"                                                            annotation(choicesAllMatching, Dialog(tab="General", group="Pressure drop"));
+      "Characteristic of wall friction"                                                            annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
+    replaceable package WallFriction_2 = 
+        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
+      constrainedby
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
+      "Characteristic of wall friction"                                                            annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
     parameter SI.Length roughness_1=2.5e-5
       "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Fluid 1"));
     parameter SI.Length roughness_2=2.5e-5
       "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Fluid 2"));
-    parameter SI.DynamicViscosity eta_nominal_M1=0.01
+    parameter SI.DynamicViscosity eta_nominal_1=Medium_1.dynamicViscosity(Medium_1.setState_pTX(Medium_1.p_default, Medium_1.T_default, Medium_1.X_default))
       "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
-                                                                                             annotation(Dialog(tab="General", group="Fluid 1"));
-    parameter SI.DynamicViscosity eta_nominal_M2=0.01
+                                                                                             annotation(Dialog(tab="Advanced", group="Fluid 1", enable=use_eta_nominal));
+    parameter SI.DynamicViscosity eta_nominal_2=Medium_2.dynamicViscosity(Medium_2.setState_pTX(Medium_2.p_default, Medium_2.T_default, Medium_2.X_default))
       "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
-                                                                                         annotation(Dialog(tab="General", group="Fluid 2"));
+                                                                                         annotation(Dialog(tab="Advanced", group="Fluid 2", enable=use_eta_nominal));
+    parameter SI.Density d_nominal_1 = Medium_1.density_pTX(Medium_1.p_default, Medium_1.T_default, Medium_1.X_default)
+      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+       annotation(Dialog(tab="Advanced", group="Fluid 1", enable=use_eta_nominal));
+    parameter SI.Density d_nominal_2 = Medium_1.density_pTX(Medium_2.p_default, Medium_2.T_default, Medium_2.X_default)
+      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+       annotation(Dialog(tab="Advanced", group="Fluid 2", enable=use_eta_nominal));
     parameter Boolean use_eta_nominal=false
-      "= true, if eta_nominal is used, otherwise computed from medium" annotation(Evaluate=true, Dialog(tab="General", group="Pressure drop"));
-    replaceable model HeatTransfer_1 = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
-      constrainedby
-      Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
-      "Heat transfer model" annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
-    replaceable model HeatTransfer_2 = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
-      constrainedby
-      Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
-      "Heat transfer model" annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
+      "= true, if eta_ and d_nominal are used, otherwise computed from media" annotation(Evaluate=true, Dialog(tab="Advanced", group="Pressure loss"));
     //Display variables
     SI.HeatFlowRate Q_flow_1 "Total heat flow rate of pipe 1";
     SI.HeatFlowRate Q_flow_2 "Total heat flow rate of pipe 2";
@@ -365,7 +379,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       dynamicsType=dynamicsType,
       length=length,
       area_h=Ah_1,
-      redeclare HeatTransfer_1 heatTransfer,
+      redeclare model HeatTransfer = HeatTransfer_1,
       initType=initType,
       use_T_start=use_T_start,
       T_start=T_start_1,
@@ -374,11 +388,11 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       m_flow_start=m_flow_start_1,
       perimeter=P_1,
       area=Ac_1,
-      redeclare package WallFriction = WallFriction,
+      redeclare package WallFriction = WallFriction_1,
       roughness=roughness_1,
       use_eta_nominal=use_eta_nominal,
-      eta_nominal=eta_nominal_M1) 
-                               annotation (Placement(transformation(extent={{-40,-80},
+      eta_nominal=eta_nominal_1,
+      d_nominal=d_nominal_1)   annotation (Placement(transformation(extent={{-40,-80},
               {20,-20}},        rotation=0)));
 
     Modelica_Fluid.Pipes.DistributedPipe pipe_2(
@@ -389,7 +403,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       length=length,
       isCircular=false,
       diameter=0,
-      redeclare HeatTransfer_2 heatTransfer,
+      redeclare model HeatTransfer = HeatTransfer_2,
       use_T_start=use_T_start,
       T_start=T_start_2,
       h_start=h_start_2,
@@ -401,10 +415,11 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       area_h=Ah_2,
       p_a_start=p_a_start1,
       p_b_start=p_b_start2,
-      redeclare package WallFriction = WallFriction,
+      redeclare package WallFriction = WallFriction_2,
       roughness=roughness_2,
       use_eta_nominal=use_eta_nominal,
-      eta_nominal=eta_nominal_M2,
+      eta_nominal=eta_nominal_2,
+      d_nominal=d_nominal_2,
       show_Re=false) 
                 annotation (Placement(transformation(extent={{20,88},{-40,28}},
             rotation=0)));
@@ -523,7 +538,7 @@ The design flow direction with positive m_flow variables is counterflow.
         color={0,127,255},
         thickness=0.5));
     connect(pipe_1.heatPort, wall1.port_a) annotation (Line(
-        points={{-10,-33.8},{-10,-20}},
+        points={{-9.7,-34.4},{-9.7,-27.2},{-10,-27.2},{-10,-20}},
         color={191,0,0},
         smooth=Smooth.None));
     connect(wall1.port_b, wall2.port_a) annotation (Line(
@@ -535,7 +550,7 @@ The design flow direction with positive m_flow variables is counterflow.
         color={191,0,0},
         smooth=Smooth.None));
     connect(wall2[1:n].port_b, pipe_2.heatPort[n:-1:1]) annotation (Line(
-        points={{-10,30},{-10,41.8}},
+        points={{-10,30},{-10,36.2},{-10,42.4},{-10.3,42.4}},
         color={191,0,0},
         smooth=Smooth.None));
   end BasicHX;

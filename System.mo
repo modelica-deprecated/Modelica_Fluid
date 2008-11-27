@@ -25,6 +25,9 @@ model System
   parameter Medium.AbsolutePressure p_start = Medium.p_default
     "Default start value for pressures" 
     annotation(Dialog(tab = "Initialization"));
+  parameter Medium.MassFlowRate m_flow_start = 0
+    "Default start value for mass flow rates" 
+    annotation(Dialog(tab = "Initialization"));
   parameter Medium.Temperature T_start = Medium.T_default
     "Default start value for temperatures" 
     annotation(Dialog(tab = "Initialization"));

@@ -508,54 +508,28 @@ package Interfaces
     "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)"
     extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
     annotation (defaultComponentName="heatPorts_a",
-                Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-50,-200},{50,200}},
-          grid={1,1},
-          initialScale=0.2), graphics={
-          Text(extent={{-75,130},{75,100}}, textString=               "%name"),
-          Rectangle(
-            extent={{-25,100},{25,-100}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-21,89},{22,44}},
-            lineColor={127,0,0},
-            fillColor={127,0,0},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-21,22},{22,-23}},
-            lineColor={127,0,0},
-            fillColor={127,0,0},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-21.5,-43},{21.5,-88}},
-            lineColor={127,0,0},
-            fillColor={127,0,0},
-            fillPattern=FillPattern.Solid)}),
          Icon(coordinateSystem(
           preserveAspectRatio=false,
-          extent={{-50,-200},{50,200}},
+          extent={{-200,-50},{200,50}},
           grid={1,1},
           initialScale=0.2), graphics={
           Rectangle(
-            extent={{-50,200},{50,-200}},
+            extent={{-201,50},{200,-50}},
             lineColor={127,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
           Rectangle(
-            extent={{-44,176},{44,86}},
+            extent={{-171,45},{-83,-45}},
             lineColor={127,0,0},
             fillColor={127,0,0},
             fillPattern=FillPattern.Solid),
           Rectangle(
-            extent={{-43,46},{45,-44}},
+            extent={{-45,45},{43,-45}},
             lineColor={127,0,0},
             fillColor={127,0,0},
             fillPattern=FillPattern.Solid),
           Rectangle(
-            extent={{-44,-86},{44,-176}},
+            extent={{82,45},{170,-45}},
             lineColor={127,0,0},
             fillColor={127,0,0},
             fillPattern=FillPattern.Solid)}));
@@ -565,44 +539,18 @@ package Interfaces
     "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)"
     extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
     annotation (defaultComponentName="heatPorts_b",
-                Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-50,-200},{50,200}},
-          grid={1,1},
-          initialScale=0.2), graphics={
-          Text(extent={{-75,130},{75,100}}, textString="%name"),
-          Rectangle(
-            extent={{-25,100},{25,-100}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-21,88},{22,43}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-21,22},{22,-23}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-21,-43},{22,-88}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid)}),
          Icon(coordinateSystem(
           preserveAspectRatio=false,
-          extent={{-50,-200},{50,200}},
+          extent={{-200,-50},{200,50}},
           grid={1,1},
           initialScale=0.2), graphics={
           Rectangle(
-            extent={{-50,200},{50,-200}},
+            extent={{-200,50},{200,-51}},
             lineColor={127,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
           Rectangle(
-            extent={{-43,175},{45,85}},
+            extent={{-170,44},{-82,-46}},
             lineColor={127,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
@@ -612,9 +560,92 @@ package Interfaces
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
           Rectangle(
-            extent={{-44,-86},{44,-176}},
+            extent={{82,45},{170,-45}},
             lineColor={127,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid)}));
   end HeatPorts_b;
+
+  model PartialTwoPort "Partial component with two ports"
+    import Modelica.Constants;
+    outer Modelica_Fluid.System system "System wide properties";
+    replaceable package Medium = 
+        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
+
+    // Assumptions
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+      "= true to allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
+
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(
+                                  redeclare package Medium = Medium,
+                       m_flow(min=if allowFlowReversal then -Constants.inf else 0))
+      "Fluid connector a (positive design flow direction is from port_a to port_b)"
+      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+              rotation=0)));
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(
+                                  redeclare package Medium = Medium,
+                       m_flow(max=if allowFlowReversal then +Constants.inf else 0))
+      "Fluid connector b (positive design flow direction is from port_a to port_b)"
+      annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation=
+               0), iconTransformation(extent={{110,-10},{90,10}})));
+
+    // Model structure, e.g. used for visualization
+  protected
+    parameter Boolean port_a_exposesState = false
+      "= true if port_a.p exposes a pressure state";
+    parameter Boolean port_b_exposesState = false
+      "= true if port_b.p exposes a pressure state";
+    annotation (
+      Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics),
+      Documentation(info="<html>
+<p>
+This partial model defines an interface for components with two ports. 
+The components may transport fluid and have internal storage. 
+The treatment of design flow direction and flow reversal are predefined.
+</p>
+<p>
+A derived component providing direct access to internal storage of mass or energy through port_a or port_b 
+should redefine the protected parameters port_a_exposesState and port_b_exposesState appropriately. 
+This will be visualized at the port icons, in order to improve the understanding of fluid model diagrams.
+</p>
+</html>"),
+      Icon(coordinateSystem(
+            preserveAspectRatio=true,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics={
+          Polygon(
+            points={{20,-60},{60,-75},{20,-90},{20,-60}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{20,-65},{50,-75},{20,-85},{20,-65}},
+            lineColor={255,255,255},
+            smooth=Smooth.None,
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            visible=allowFlowReversal),
+          Line(
+            points={{55,-75},{-60,-75}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Ellipse(
+            extent={{-110,26},{-90,-24}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid,
+            visible=port_a_exposesState),
+          Ellipse(
+            extent={{90,25},{110,-25}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid,
+            visible=port_b_exposesState)}));
+  end PartialTwoPort;
 end Interfaces;

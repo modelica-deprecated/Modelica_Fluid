@@ -3440,10 +3440,10 @@ b has the same sign of the change of density.</p>
     parameter Boolean compute_T = true
         "= true, if temperatures at port_a and port_b are computed" 
       annotation(Dialog(tab="Advanced"), choices(__Dymola_checkBox=true));
-    parameter Medium.AbsolutePressure dp_start = 0
+    parameter Medium.AbsolutePressure dp_start = 0.01*system.p_start
         "Guess value of dp = port_a.p - port_b.p" 
       annotation(Dialog(tab = "Advanced"));
-    parameter Medium.MassFlowRate m_flow_start = 0
+    parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
         "Guess value of m_flow = port_a.m_flow" 
       annotation(Dialog(tab = "Advanced"));
     parameter Medium.MassFlowRate reg_m_flow_small = 0.01

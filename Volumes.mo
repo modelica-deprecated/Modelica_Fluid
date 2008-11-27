@@ -304,8 +304,8 @@ initial equation
             lineColor={0,127,255},
             fillColor={85,170,255},
             fillPattern=FillPattern.Solid),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
-                0}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
+                0,0}),
           Text(
             extent={{-95,90},{95,60}},
             lineColor={0,0,255},
@@ -318,9 +318,9 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
-                integer(precision)))),
+                  level,
+                  1,
+                  integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -624,8 +624,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 3))),
           Line(
             points={{-100,100},{100,100}},
