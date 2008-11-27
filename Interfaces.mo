@@ -566,7 +566,7 @@ package Interfaces
             fillPattern=FillPattern.Solid)}));
   end HeatPorts_b;
 
-  model PartialTwoPort "Partial component with two ports"
+  partial model PartialTwoPort "Partial component with two ports"
     import Modelica.Constants;
     outer Modelica_Fluid.System system "System wide properties";
     replaceable package Medium = 
