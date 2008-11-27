@@ -4,13 +4,15 @@ package TestOverdeterminedSteadyStateInit
   model HeatingSystem "Simple model of a heating system"
      replaceable package Medium = Modelica.Media.Water.StandardWater 
        constrainedby Modelica.Media.Interfaces.PartialMedium;
-    annotation (Diagram(graphics),
-                         Icon(graphics={Rectangle(extent={{-100,100},{100,-100}},
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}),
+                        graphics),
+                         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
               lineColor={0,0,255}), Text(
             extent={{-60,60},{60,-60}},
             lineColor={0,0,255},
-            textString=
-                 "P")}));
+            textString="P")}));
     Volumes.OpenTank tank(
       redeclare package Medium = Medium,
       p_static_at_port=true,
@@ -70,21 +72,21 @@ package TestOverdeterminedSteadyStateInit
               {-80,100}}, rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe(
       redeclare package Medium = Medium,
-      p_a_start=4.0e5,
-      p_b_start=3.9e5,
       use_T_start=true,
       diameter=0.03,
       T_start=Modelica.SIunits.Conversions.from_degC(80),
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
-      use_nominal=true,
+      use_eta_nominal=true,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      length=2) 
+      length=2,
+      p_a_start=400000,
+      p_b_start=390000,
+      redeclare model HeatTransfer = 
+          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal) 
       annotation (Placement(transformation(extent={{12,-14},{32,6}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe radiator(
-      p_a_start=1.1e5,
-      p_b_start=1.05e5,
       use_T_start=true,
       redeclare package Medium = Medium,
       length=10,
@@ -92,8 +94,12 @@ package TestOverdeterminedSteadyStateInit
       T_start=Modelica.SIunits.Conversions.from_degC(40),
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
-      use_nominal=true,
-      initType=Modelica_Fluid.Types.Init.InitialValues) 
+      use_eta_nominal=true,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
+      p_a_start=110000,
+      p_b_start=105000,
+      redeclare model HeatTransfer = 
+          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal) 
       annotation (Placement(transformation(extent={{28,-76},{8,-56}}, rotation=
               0)));
 
@@ -120,9 +126,9 @@ package TestOverdeterminedSteadyStateInit
   equation
   tankLevel = tank.level;
     connect(valvePosition, valve.stemPosition) annotation (Line(points={{-108,0},
-            {-86,0},{-86,66},{50,66},{50,3.2}}, color={0,0,127}));
-    connect(pump.outlet, massFlowRate.port_a) annotation (Line(points={{-42,
-            -2.8},{-42,-3.4},{-34,-3.4},{-34,-4}}, color={0,127,255}));
+            {-86,0},{-86,66},{50,66},{50,2.4}}, color={0,0,127}));
+    connect(pump.outlet, massFlowRate.port_a) annotation (Line(points={{-40,-6},{
+            -40,-3.4},{-34,-3.4},{-34,-4}},        color={0,127,255}));
     connect(massFlowRate.m_flow, circuitFlowRate) annotation (Line(points={{-24,
             7},{-24,38},{36,38},{36,22},{98,22}}, color={0,0,127}));
     connect(massFlowRate.port_b, pipe.port_a) annotation (Line(points={{-14,-4},
@@ -131,8 +137,8 @@ package TestOverdeterminedSteadyStateInit
           color={0,127,255}));
     connect(thermalConductor1.port_b, radiator.heatPort) annotation (Line(
           points={{18,-56},{18,-60.6}}, color={191,0,0}));
-    connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{22,
-            22},{22,1.4}}, color={191,0,0}));
+    connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{22,22},
+            {22,1.4}},     color={191,0,0}));
     connect(ambientTemperature.port, thermalConductor1.port_a) annotation (Line(
           points={{2,-33},{18,-33},{18,-40}}, color={191,0,0}));
     connect(sensor_T_1.T, hotWaterTemperature) annotation (Line(points={{39,-46},
@@ -141,14 +147,14 @@ package TestOverdeterminedSteadyStateInit
             -46},{-33,-88},{76,-88},{76,-68},{98,-68}}, color={0,0,127}));
     connect(radiator.port_a, valve.port_b) annotation (Line(points={{28,-66},{
             68,-66},{68,-4},{58,-4}}, color={0,127,255}));
-    connect(pump.inlet, radiator.port_b) annotation (Line(points={{-56,-8},{-56,
+    connect(pump.inlet, radiator.port_b) annotation (Line(points={{-56,-6},{-56,
             -66},{8,-66}}, color={0,127,255}));
     connect(sensor_T_2.port, radiator.port_b) annotation (Line(points={{-26,-56},
             {-26,-66},{8,-66}}, color={0,127,255}));
     connect(radiator.port_a, sensor_T_1.port) annotation (Line(points={{28,-66},
             {46,-66},{46,-56}}, color={0,127,255}));
-    connect(pump.inlet, tank.ports[1]) annotation (Line(points={{-56,-8},{-65,
-            -8},{-65,5.45}}, color={0,127,255}));
+    connect(pump.inlet, tank.ports[1]) annotation (Line(points={{-56,-6},{-65.55,
+            -6},{-65.55,6}}, color={0,127,255}));
   end HeatingSystem;
 
   model Test1 "Prescribed inputs, initial values"
@@ -161,7 +167,9 @@ package TestOverdeterminedSteadyStateInit
       startTime=2000,
       offset=0.9)   annotation (Placement(transformation(extent={{-40,0},{-20,
               20}}, rotation=0)));
-    annotation (Diagram(graphics),
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}),
+                        graphics),
       experiment(StopTime=6000, Tolerance=1e-006),
       experimentSetupOutput(equdistant=false),
       Documentation(info="<html>
@@ -170,8 +178,8 @@ Initial equations with initial values for the states close to the steady state a
 The simulation initializes and runs for 6000 seconds without problems.
 </html>"));
   equation
-    connect(valveOpening.y, plant.valvePosition) annotation (Line(points={{-19,
-            10},{-0.8,10}}, color={0,0,127}));
+    connect(valveOpening.y, plant.valvePosition) annotation (Line(points={{-19,10},
+            {-0.8,10}},     color={0,0,127}));
   end Test1;
 
   model Test2 "Prescribed inputs, all derivatives equal to zero"
