@@ -43,9 +43,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
                         annotation (Placement(transformation(extent={{-100,60},
             {-80,80}}, rotation=0)));
 equation
-  connect(source.port, pipe1.port_a) annotation (Line(points={{-64,10},{-20,10}},
+  connect(source.ports[1], pipe1.port_a) annotation (Line(points={{-64,10},{-20,10}},
         color={0,127,255}));
-  connect(pipe1.port_b, sink.port) annotation (Line(
+  connect(pipe1.port_b, sink.ports[1]) annotation (Line(
       points={{0,10},{44,10}},
       color={0,127,255},
       smooth=Smooth.None));

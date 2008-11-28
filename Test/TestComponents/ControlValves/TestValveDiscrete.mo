@@ -36,9 +36,10 @@ model TestValveDiscrete "Test case for discrete valve"
     annotation (Placement(transformation(extent={{14,20},{34,40}})));
 equation
 
-  connect(V1.port_b,SinkP1. port) annotation (Line(points={{-6,-12},{26,
+  connect(V1.port_b,SinkP1.ports[1]) 
+                                  annotation (Line(points={{-6,-12},{26,
           -12}}));
-  connect(SourceP1.port,V1. port_a) 
+  connect(SourceP1.ports[1],V1.port_a) 
                                    annotation (Line(points={{-56,-12},{
           -26,-12}},
         color={0,127,255}));

@@ -44,13 +44,17 @@ model TestMixingVolumes
 equation
   connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (Line(points={{-10,40},
           {9.8,40}},          color={0,127,255}));
-  connect(FlowSource2.port, MixingVolume1.port_a) annotation (Line(points={{-80,40},
+  connect(FlowSource2.ports[1], MixingVolume1.port_a) 
+                                                  annotation (Line(points={{-80,40},
           {-30.2,40}},     color={0,127,255}));
-  connect(FlowSource2.port, Tmix_in.port) annotation (Line(points={{-80,40},{
+  connect(FlowSource2.ports[1], Tmix_in.port) 
+                                          annotation (Line(points={{-80,40},{
           -50,40},{-50,50}}, color={0,127,255}));
-  connect(MixingVolume2.port_b, Sink2.port) annotation (Line(points={{30,40},{
+  connect(MixingVolume2.port_b, Sink2.ports[1]) 
+                                            annotation (Line(points={{30,40},{
           80,40}}, color={0,127,255}));
-  connect(Tmix_out.port, Sink2.port) annotation (Line(
+  connect(Tmix_out.port, Sink2.ports[1]) 
+                                     annotation (Line(
       points={{50,50},{50,40},{80,40}},
       color={0,127,255},
       smooth=Smooth.None));

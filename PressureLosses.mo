@@ -10,6 +10,7 @@ model StaticHead
   parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
     annotation(Dialog(tab="Advanced"));
+
   Medium.Density d "Density of the passing fluid";
   outer Modelica_Fluid.System system "System properties";
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -3051,6 +3052,7 @@ b has the same sign of the change of density.</p>
 
         redeclare function extends massFlowRate_dp_staticHead
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction and static head"
+
           annotation (smoothOrder=1);
 
         protected
@@ -3112,6 +3114,7 @@ b has the same sign of the change of density.</p>
 
         redeclare function extends pressureLoss_m_flow_staticHead
           "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction and static head"
+
           annotation (smoothOrder=1);
 
         protected
@@ -3433,6 +3436,7 @@ b has the same sign of the change of density.</p>
     parameter Boolean allowFlowReversal = system.allowFlowReversal
         "allow flow reversal, false restricts to design direction (port_a -> port_b)"
       annotation(Dialog(tab="Assumptions"), Evaluate=true);
+
     //Initialization
     parameter Boolean compute_T = true
         "= true, if temperatures at port_a and port_b are computed" 

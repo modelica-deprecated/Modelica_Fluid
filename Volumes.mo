@@ -366,6 +366,7 @@ Adapted to the new fluid library interfaces:
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+equation
 
 end OpenTank;
 

@@ -28,7 +28,8 @@ model TestSpecificEnthalpy
                                     annotation (Placement(transformation(extent=
            {{-80,-10},{-60,10}}, rotation=0)));
 equation
-  connect(boundary_prescribed_1.port, specificEnthalpy.port) annotation (Line(
+  connect(boundary_prescribed_1.ports[1], specificEnthalpy.port) 
+                                                             annotation (Line(
       points={{-20,20},{0,20}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -40,7 +41,8 @@ equation
       points={{-59,0},{-52,0},{-52,-20},{-42,-20}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(boundary_prescribed_2.port, specificEnthalpy1.port_a) annotation (Line(
+  connect(boundary_prescribed_2.ports[1], specificEnthalpy1.port_a) 
+                                                                annotation (Line(
       points={{-20,-20},{-10,-20}},
       color={0,127,255},
       smooth=Smooth.None));

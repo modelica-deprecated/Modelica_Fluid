@@ -74,11 +74,14 @@ equation
   connect(ramp.y, source1.p_in) annotation (Line(points={{-80,-1},{-80,-1},{-80,
           -14},{-62,-14}},
         color={0,0,127}));
-  connect(source1.port, pipe.port_a) annotation (Line(points={{-40,-20},{-30,
+  connect(source1.ports[1], pipe.port_a) 
+                                     annotation (Line(points={{-40,-20},{-30,
           -20}}, color={0,127,255}));
-  connect(pipe1.port_b, source2.port) annotation (Line(points={{70,-20},{80,-20}},
+  connect(pipe1.port_b, source2.ports[1]) 
+                                      annotation (Line(points={{70,-20},{80,-20}},
         color={0,127,255}));
-  connect(pipe2.port_b, source3.port) annotation (Line(points={{40,34},{40,47},
+  connect(pipe2.port_b, source3.ports[1]) 
+                                      annotation (Line(points={{40,34},{40,47},
           {40,60}},         color={0,127,255}));
   connect(junction.ports_a[1], pipe.port_b) annotation (Line(
       points={{10,-20},{-10,-20}},

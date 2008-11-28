@@ -37,10 +37,11 @@ model TestValveCompressible "Test case for incompressible fluid valve"
     annotation (Placement(transformation(extent={{14,20},{34,40}})));
 equation
 
-  connect(V1.port_b,SinkP1. port) annotation (Line(points={{-6,-12},{26,-12}}));
+  connect(V1.port_b,SinkP1.ports[1]) 
+                                  annotation (Line(points={{-6,-12},{26,-12}}));
   connect(Opening.y,V1. stemPosition) 
-  annotation (Line(points={{-57,32},{-16,32},{-16,-3}}, color={0,0,255}));
-  connect(SourceP1.port,V1. port_a) 
+  annotation (Line(points={{-57,32},{-16,32},{-16,-4}}, color={0,0,255}));
+  connect(SourceP1.ports[1],V1.port_a) 
                                    annotation (Line(points={{-56,-12},{-26,-12}},
         color={0,127,255}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,

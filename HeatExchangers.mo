@@ -229,6 +229,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
   annotation (Documentation(info="<html>
  
 </html>"));
+
   model BasicHX "Simple heat exchanger model"
     outer Modelica_Fluid.System system "System properties";
     //General

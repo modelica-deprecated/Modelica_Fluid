@@ -25,8 +25,6 @@ package Pipes "Lumped, distributed and thermal pipe components"
       use_nominal=use_eta_nominal or use_d_nominal) 
       annotation (Placement(transformation(extent={{-10,-10},{10,10}},
             rotation=0)));
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
-              -100},{100,100}}),      graphics));
   equation
     connect(port_a, wallFriction.port_a) annotation (Line(
         points={{-100,0},{-10,0}},
@@ -36,6 +34,8 @@ package Pipes "Lumped, distributed and thermal pipe components"
         points={{10,0},{100,0}},
         color={0,127,255},
         smooth=Smooth.None));
+    annotation (defaultComponentName="pipe", Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+              -100},{100,100}}),      graphics));
   end StaticPipe;
 
   model LumpedPipe
@@ -52,29 +52,6 @@ package Pipes "Lumped, distributed and thermal pipe components"
       final useFluidHeatPort=true) 
       annotation (Placement(transformation(extent={{-20,0},{20,40}},   rotation=0)));
 
-    annotation (Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={Ellipse(
-            extent={{-10,10},{10,-10}},
-            lineColor={0,0,0},
-            fillColor={0,0,0},
-            fillPattern=FillPattern.Solid)}),Documentation(info="<html>
-<p>
-Simple pipe model consisting of one volume, 
-wall friction (with different friction correlations)
-and gravity effect. This model is mostly used to demonstrate how
-to build up more detailed models from the basic components.
-Note, if the \"heatPort\" is not connected, then the pipe
-is totally insulated (= no thermal flow from the fluid to the
-pipe wall/environment).
-</p>
-</html>"),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=true,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics),
-      uses(Modelica_Fluid(version="1.0 Beta 2"), Modelica(version="2.2.2")));
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction1(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
@@ -156,6 +133,28 @@ pipe wall/environment).
         points={{0,8},{0,-10.2}},
         color={191,0,0},
         smooth=Smooth.None));
+    annotation (defaultComponentName="pipe",Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={Ellipse(
+            extent={{-10,10},{10,-10}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid)}),Documentation(info="<html>
+<p>
+Simple pipe model consisting of one volume, 
+wall friction (with different friction correlations)
+and gravity effect. This model is mostly used to demonstrate how
+to build up more detailed models from the basic components.
+Note, if the \"heatPort\" is not connected, then the pipe
+is totally insulated (= no thermal flow from the fluid to the
+pipe wall/environment).
+</p>
+</html>"),
+      Diagram(coordinateSystem(
+          preserveAspectRatio=true,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics));
   end LumpedPipe;
 
  model DistributedPipeLumpedPressure
@@ -288,7 +287,7 @@ pipe wall/environment).
 
    connect(heatPorts, heatTransfer.wallHeatPort) 
      annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
-   annotation (
+   annotation (defaultComponentName="pipe",
      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}},
           grid={1,1}), graphics={
@@ -592,7 +591,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     connect(heatPorts, heatTransfer.wallHeatPort) 
       annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
 
-    annotation (
+    annotation (defaultComponentName="pipe",
   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Ellipse(

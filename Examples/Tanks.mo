@@ -57,9 +57,9 @@ package Tanks "Library demonstrating the usage of the tank model"
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
-    connect(flowSource.port, tank.topPorts[1])  annotation (Line(points={{-32,80},
+    connect(flowSource.ports[1], tank.topPorts[1])  annotation (Line(points={{-32,80},
             {-19,80},{-19,68}},     color={0,127,255}));
-    connect(ambient_fixed.port, pipe.port_a) annotation (Line(points={{-34,-10},
+    connect(ambient_fixed.ports[1], pipe.port_a) annotation (Line(points={{-34,-10},
             {-20,-10},{-20,0}}, color={0,127,255}));
     connect(pipe.port_b, tank.ports[1]) annotation (Line(points={{-20,20},{-20,
             24},{-20,28},{-21,28}},
@@ -188,11 +188,11 @@ package Tanks "Library demonstrating the usage of the tank model"
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
-    connect(ambient_fixed.port, valveDiscrete.port_a) annotation (Line(points={
+    connect(ambient_fixed.ports[1], valveDiscrete.port_a) annotation (Line(points={
             {-40,-90},{-20,-90},{-20,-60}}, color={0,127,255}));
     connect(open.y, valveDiscrete.open) annotation (Line(points={{-39,-50},{-28,
             -50}}, color={255,0,255}));
-    connect(flowSource.port, pipe.port_b) annotation (Line(points={{0,50},{40,
+    connect(flowSource.ports[1], pipe.port_b) annotation (Line(points={{0,50},{40,
             50},{40,20}}, color={0,127,255}));
     connect(valveDiscrete.port_b, tank1.ports[1]) annotation (Line(points={{-20,-40},
             {-20,-30},{-20,-20},{-21,-20}},
@@ -272,11 +272,11 @@ package Tanks "Library demonstrating the usage of the tank model"
     connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-21,-20},{
             -21,-35},{-20,-35},{-20,-50}},
                        color={0,127,255}));
-    connect(ambient_fixed.port, pipe1.port_a) annotation (Line(points={{-40,-90},
+    connect(ambient_fixed.ports[1], pipe1.port_a) annotation (Line(points={{-40,-90},
             {-20,-90},{-20,-70}}, color={0,127,255}));
     connect(tank1.ports[2], pipe2.port_b) annotation (Line(points={{-21,-20},{
             -18,-20},{-18,-40},{30,-40},{30,-50}}, color={0,127,255}));
-    connect(ambient_fixed1.port, pipe2.port_a) annotation (Line(points={{20,-90},
+    connect(ambient_fixed1.ports[1], pipe2.port_a) annotation (Line(points={{20,-90},
             {30,-90},{30,-70}}, color={0,127,255}));
   end TankWithEmptyingPipe2;
 
@@ -375,10 +375,10 @@ package Tanks "Library demonstrating the usage of the tank model"
     connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-61,0},{-61,
             -15},{-60,-15},{-60,-30}},
                        color={0,127,255}));
-    connect(ambient_fixed1.port, pipe1.port_a) 
+    connect(ambient_fixed1.ports[1], pipe1.port_a) 
                                               annotation (Line(points={{-80,-70},
             {-60,-70},{-60,-50}}, color={0,127,255}));
-    connect(ambient_fixed2.port, pipe2.port_a) annotation (Line(points={{20,-70},
+    connect(ambient_fixed2.ports[1], pipe2.port_a) annotation (Line(points={{20,-70},
             {40,-70},{40,-50}}, color={0,127,255}));
     connect(tank2.ports[1], pipe2.port_b) 
       annotation (Line(points={{39,0},{39,-15},{40,-15},{40,-30}},
@@ -483,7 +483,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
-    connect(ambient_fixed.port, valveDiscrete.port_a) annotation (Line(points={
+    connect(ambient_fixed.ports[1], valveDiscrete.port_a) annotation (Line(points={
             {-36,-92},{-60,-92},{-60,-88}}, color={0,127,255}));
     connect(open.y, valveDiscrete.open) annotation (Line(points={{-77,-78},{-68,
             -78}}, color={255,0,255}));

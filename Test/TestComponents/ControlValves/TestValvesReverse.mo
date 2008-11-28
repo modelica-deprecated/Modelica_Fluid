@@ -100,12 +100,14 @@ annotation (
                                    annotation (Placement(transformation(extent=
             {{60,68},{80,88}}, rotation=0)));
 equation
-  connect(V1.port_b, SinkP2.port) annotation (Line(points={{-30,68},{-16,68}}));
-  connect(V4.port_b, SinkP3.port) annotation (Line(points={{-20,-68},{6,-68}}));
-  connect(SourceP1.port, V1.port_a) 
+  connect(V1.port_b, SinkP2.ports[1]) 
+                                  annotation (Line(points={{-30,68},{-16,68}}));
+  connect(V4.port_b, SinkP3.ports[1]) 
+                                  annotation (Line(points={{-20,-68},{6,-68}}));
+  connect(SourceP1.ports[1], V1.port_a) 
                                    annotation (Line(points={{-80,36},{-68,36},{
           -68,68},{-50,68}}, color={0,127,255}));
-  connect(SourceP1.port, V2.port_a) 
+  connect(SourceP1.ports[1], V2.port_a) 
                                    annotation (Line(points={{-80,36},{-38,36}},
         color={0,127,255}));
   connect(V2.port_b, V5.port_a) 
@@ -114,10 +116,10 @@ equation
   connect(V3.port_b, V5.port_a) 
                              annotation (Line(points={{-18,-28},{6,-28},{6,6},{
           30,6}}, color={0,127,255}));
-  connect(SourceP2.port, V4.port_a) 
+  connect(SourceP2.ports[1], V4.port_a) 
                                    annotation (Line(points={{-80,-40},{-60,-40},
           {-60,-68},{-40,-68}}, color={0,127,255}));
-  connect(SourceP2.port, V3.port_a) 
+  connect(SourceP2.ports[1], V3.port_a) 
                                    annotation (Line(points={{-80,-40},{-60,-40},
           {-60,-28},{-38,-28}}, color={0,127,255}));
   connect(OpenRelief.y, V1.stemPosition) annotation (Line(points={{-71,80},{-40,
@@ -130,6 +132,6 @@ equation
           -28,-2},{-28,-19}}, color={0,0,127}));
   connect(CloseLoad.y, V5.stemPosition) annotation (Line(points={{29,36},{40,36},
           {40,15}}, color={0,0,127}));
-  connect(V5.port_b, SinkP1.port) 
+  connect(V5.port_b, SinkP1.ports[1]) 
     annotation (Line(points={{50,6},{62,6}}, color={0,127,255}));
 end TestValvesReverse;

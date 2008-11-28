@@ -69,11 +69,12 @@ annotation (
   Modelica.Electrical.Analog.Basic.Ground ground 
     annotation (Placement(transformation(extent={{22,-30},{42,-8}})));
 equation
-  connect(Valve.port_b,Sink. port)       annotation (Line(points={{2,60},{14,60}},
+  connect(Valve.port_b,Sink.ports[1])    annotation (Line(points={{2,60},{14,60}},
         color={0,127,255}));
   connect(Valve.port_a,pump.port_b)      annotation (Line(points={{-16,60},{-34,
           60},{-34,15}},                    color={0,127,255}));
-  connect(pump.port_a,Source. port)  annotation (Line(points={{-66,15},{-70,15},
+  connect(pump.port_a,Source.ports[1]) 
+                                     annotation (Line(points={{-66,15},{-70,15},
           {-80,12}},          color={0,127,255}));
   connect(valveOpening.y, Valve.stemPosition) annotation (Line(
       points={{-19,84},{-7,84},{-7,68}},

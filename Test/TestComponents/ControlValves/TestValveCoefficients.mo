@@ -88,36 +88,40 @@ model TestValveCoefficients
                                                                 rotation=0)));
 equation
 
-  connect(V1.port_b,SinkP1. port) annotation (Line(points={{-24,28},{8,28}}));
+  connect(V1.port_b,SinkP1.ports[1]) 
+                                  annotation (Line(points={{-24,28},{8,28}}));
   connect(Opening.y,V1. stemPosition) 
-  annotation (Line(points={{-75,72},{-34,72},{-34,37}}, color={0,0,255}));
-  connect(SourceP1.port,V1. port_a) 
+  annotation (Line(points={{-75,72},{-34,72},{-34,36}}, color={0,0,255}));
+  connect(SourceP1.ports[1],V1.port_a) 
                                    annotation (Line(points={{-74,28},{-44,28}},
         color={0,127,255}));
-  connect(V2.port_b,SinkP2. port) annotation (Line(points={{-24,-8},{8,-8}}));
-  connect(SourceP2.port,V2. port_a) 
+  connect(V2.port_b,SinkP2.ports[1]) 
+                                  annotation (Line(points={{-24,-8},{8,-8}}));
+  connect(SourceP2.ports[1],V2.port_a) 
                                    annotation (Line(points={{-74,-8},{-44,-8}},
         color={0,127,255}));
-  connect(V3.port_b,SinkP3. port) annotation (Line(points={{-24,-46},{8,-46}}));
-  connect(SourceP3.port,V3. port_a) 
+  connect(V3.port_b,SinkP3.ports[1]) 
+                                  annotation (Line(points={{-24,-46},{8,-46}}));
+  connect(SourceP3.ports[1],V3.port_a) 
                                    annotation (Line(points={{-74,-46},{-44,-46}},
         color={0,127,255}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}}), graphics));
   connect(V2.stemPosition, Opening.y) annotation (Line(
-      points={{-34,1},{-34,8},{-62,8},{-62,72},{-75,72}},
+      points={{-34,0},{-34,8},{-62,8},{-62,72},{-75,72}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(V3.stemPosition, Opening.y) annotation (Line(
-      points={{-34,-37},{-34,-26},{-62,-26},{-62,72},{-75,72}},
+      points={{-34,-38},{-34,-26},{-62,-26},{-62,72},{-75,72}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(V4.port_b,SinkP4. port) annotation (Line(points={{-24,-78},{8,-78}}));
-  connect(SourceP4.port,V4. port_a) 
+  connect(V4.port_b,SinkP4.ports[1]) 
+                                  annotation (Line(points={{-24,-78},{8,-78}}));
+  connect(SourceP4.ports[1],V4.port_a) 
                                    annotation (Line(points={{-74,-78},{-44,-78}},
         color={0,127,255}));
   connect(V4.stemPosition, Opening.y) annotation (Line(
-      points={{-34,-69},{-34,-58},{-62,-58},{-62,72},{-75,72}},
+      points={{-34,-70},{-34,-58},{-62,-58},{-62,72},{-75,72}},
       color={0,0,127},
       smooth=Smooth.None));
 end TestValveCoefficients;

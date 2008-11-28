@@ -69,7 +69,8 @@ model TestOpenTank
     annotation (Placement(transformation(extent={{-140,-60},{-120,-40}},
           rotation=0)));
 equation
-  connect(massFlowRate.port, upperTank.ports[1]) annotation (Line(
+  connect(massFlowRate.ports[1], upperTank.ports[1]) 
+                                                 annotation (Line(
       points={{-40,-30},{-21,-30},{-21,18}},
       color={0,127,255},
       smooth=Smooth.None));

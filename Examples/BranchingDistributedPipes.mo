@@ -234,7 +234,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     annotation (Placement(transformation(extent={{-62,-24},{-42,-4}}, rotation=
             0)));
 equation
-  connect(boundary1.port, pipe1.port_a) annotation (Line(
+  connect(boundary1.ports[1], pipe1.port_a) annotation (Line(
       points={{-94,34},{-88,34}},
       color={0,127,255},
       thickness=0.5));
@@ -262,7 +262,7 @@ equation
       points={{77,76},{68,76},{68,56},{88,56},{88,40},{80,40}},
       color={0,0,127},
       thickness=0.5));
-  connect(pipe3.port_b, boundary2.port) annotation (Line(
+  connect(pipe3.port_b, boundary2.ports[1]) annotation (Line(
       points={{48,34},{58,34}},
       color={0,127,255},
       thickness=0.5));
@@ -279,7 +279,7 @@ equation
       points={{79,-10},{78,-10},{78,-54},{72,-54}},
       color={0,0,127},
       thickness=0.5));
-  connect(boundary3.port, pipe7.port_a) annotation (Line(
+  connect(boundary3.ports[1], pipe7.port_a) annotation (Line(
       points={{-90,-60},{-80,-60},{-66,-60}},
       color={0,127,255},
       thickness=0.5));
@@ -299,7 +299,7 @@ equation
       points={{-8,-80},{4,-80},{4,-60},{16,-60}},
       color={0,127,255},
       thickness=0.5));
-  connect(pipe6.port_b, boundary4.port) annotation (Line(
+  connect(pipe6.port_b, boundary4.ports[1]) annotation (Line(
       points={{36,-60},{36,-60},{50,-60}},
       color={0,127,255},
       thickness=0.5));

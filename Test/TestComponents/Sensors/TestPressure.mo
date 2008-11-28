@@ -39,7 +39,8 @@ equation
       points={{-79,10},{-70,10},{-70,16},{-59.3,16}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowRate1.port, pressure1.port) annotation (Line(
+  connect(massFlowRate1.ports[1], pressure1.port) 
+                                              annotation (Line(
       points={{-40,10},{-26,10},{-26,0},{-10,0}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -55,7 +56,8 @@ equation
       points={{40,43.8},{40,23},{40,23},{40,0}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(pressure2.port, boundary_fixed.port) annotation (Line(
+  connect(pressure2.port, boundary_fixed.ports[1]) 
+                                               annotation (Line(
       points={{60,0},{80,0}},
       color={0,127,255},
       smooth=Smooth.None));
