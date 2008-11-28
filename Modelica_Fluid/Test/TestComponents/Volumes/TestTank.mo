@@ -49,7 +49,8 @@ model TestTank
     "Mass flow rate out of the port at a lever of 2 m" 
     annotation (Placement(transformation(extent={{20,-90},{40,-70}}, rotation=0)));
 equation
-  connect(massFlowRate.port, tank.topPorts) annotation (Line(
+  connect(massFlowRate.ports[1], tank.topPorts) 
+                                            annotation (Line(
       points={{-62,80},{-40,80},{-40,81},{-20,81}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -57,7 +58,8 @@ equation
       points={{-21,40},{20,40}},
       color={0,0,255},
       smooth=Smooth.None));
-  connect(mFlow_9m.port_b, Boundary_fixed.port) annotation (Line(
+  connect(mFlow_9m.port_b, Boundary_fixed.ports[1]) 
+                                                annotation (Line(
       points={{40,40},{60,40},{60,-80},{80,-80}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -65,7 +67,8 @@ equation
       points={{-21,40},{0,40},{0,0},{20,0}},
       color={0,0,255},
       smooth=Smooth.None));
-  connect(mFlow_6m.port_b, Boundary_fixed.port) annotation (Line(
+  connect(mFlow_6m.port_b, Boundary_fixed.ports[1]) 
+                                                annotation (Line(
       points={{40,0},{60,0},{60,-80},{80,-80}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -73,7 +76,8 @@ equation
       points={{-21,40},{0,40},{0,-40},{20,-40}},
       color={0,0,255},
       smooth=Smooth.None));
-  connect(mFlow_4m.port_b, Boundary_fixed.port) annotation (Line(
+  connect(mFlow_4m.port_b, Boundary_fixed.ports[1]) 
+                                                annotation (Line(
       points={{40,-40},{60,-40},{60,-80},{80,-80}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -81,7 +85,8 @@ equation
       points={{-21,40},{0,40},{0,-80},{20,-80}},
       color={0,0,255},
       smooth=Smooth.None));
-  connect(mFlow_2m.port_b, Boundary_fixed.port) annotation (Line(
+  connect(mFlow_2m.port_b, Boundary_fixed.ports[1]) 
+                                                annotation (Line(
       points={{40,-80},{80,-80}},
       color={0,127,255},
       smooth=Smooth.None));

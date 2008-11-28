@@ -73,7 +73,8 @@ annotation (
                 annotation (Placement(transformation(extent={{-100,70},{-80,90}},
           rotation=0)));
 equation
-  connect(pump.port_a,Source. port)  annotation (Line(points={{-46,-25},{-46,
+  connect(pump.port_a,Source.ports[1]) 
+                                     annotation (Line(points={{-46,-25},{-46,
           -25},{-80,-28}},    color={0,127,255}));
   connect(N_pump.y, pump.N_in) annotation (Line(
       points={{-79,2},{-30,2},{-30,-10}},
@@ -91,7 +92,7 @@ equation
       points={{-14,-25},{-10.2,-25},{-10.2,-20},{0,-20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(V2.port_b, Sink.port) annotation (Line(
+  connect(V2.port_b, Sink.ports[1]) annotation (Line(
       points={{22,-20},{42,-20}},
       color={0,127,255},
       smooth=Smooth.None));

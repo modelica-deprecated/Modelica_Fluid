@@ -105,24 +105,24 @@ equation
   connect(p_table.y, ambient_a.p_in) 
                                     annotation (Line(points={{-59,50},{-52,50},
           {-52,56},{-40,56}}, color={0,0,127}));
-  connect(ambient_a.port, pipe1.port_a) 
+  connect(ambient_a.ports[1], pipe1.port_a) 
                                       annotation (Line(points={{-18,50},{0,50}},
         color={0,127,255}));
-  connect(pipe1.port_b, ambient_p1.port) 
+  connect(pipe1.port_b, ambient_p1.ports[1]) 
     annotation (Line(points={{20,50},{42,50}}, color={0,127,255}));
-  connect(pipe2.port_b, ambient_p2.port) 
+  connect(pipe2.port_b, ambient_p2.ports[1]) 
     annotation (Line(points={{20,20},{40,20}}, color={0,127,255}));
-  connect(ambient_a.port, pipe2.port_a) 
+  connect(ambient_a.ports[1], pipe2.port_a) 
                                       annotation (Line(points={{-18,50},{-12,50},
           {-12,20},{0,20}}, color={0,127,255}));
-  connect(pipe3.port_b,ambient_p3. port) 
+  connect(pipe3.port_b,ambient_p3.ports[1]) 
     annotation (Line(points={{20,-10},{40,-10}}, color={0,127,255}));
-  connect(pipe4.port_b,ambient_p4. port) 
+  connect(pipe4.port_b,ambient_p4.ports[1]) 
     annotation (Line(points={{20,-40},{40,-40}}, color={0,127,255}));
-  connect(ambient_a.port, pipe3.port_a) 
+  connect(ambient_a.ports[1], pipe3.port_a) 
                                       annotation (Line(points={{-18,50},{-12,50},
           {-12,-10},{0,-10}}, color={0,127,255}));
-  connect(ambient_a.port, pipe4.port_a) 
+  connect(ambient_a.ports[1], pipe4.port_a) 
                                       annotation (Line(points={{-18,50},{-12,50},
           {-12,-40},{0,-40}}, color={0,127,255}));
 end TestWallFriction;

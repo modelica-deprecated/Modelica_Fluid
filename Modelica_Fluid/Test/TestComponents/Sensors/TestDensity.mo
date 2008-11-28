@@ -59,7 +59,8 @@ equation
       points={{-79,-10},{-70,-10},{-70,-4},{-59.3,-4}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowRate2.port, density2_1.port_a) annotation (Line(
+  connect(massFlowRate2.ports[1], density2_1.port_a) 
+                                                 annotation (Line(
       points={{-40,-10},{-30,-10},{-30,-20},{-20,-20}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -71,7 +72,8 @@ equation
       points={{40,-20},{50,-20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(density2_2.port_b, boundary_fixed1.port) annotation (Line(
+  connect(density2_2.port_b, boundary_fixed1.ports[1]) 
+                                                   annotation (Line(
       points={{70,-20},{80,-20}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -79,7 +81,8 @@ equation
       points={{-79,60},{-70,60},{-70,66},{-59.3,66}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowRate1.port, density1_1.port) annotation (Line(
+  connect(massFlowRate1.ports[1], density1_1.port) 
+                                               annotation (Line(
       points={{-40,60},{-26,60},{-26,50},{-10,50}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -87,7 +90,8 @@ equation
       points={{-10,50},{20,50}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(density1_2.port, boundary_fixed.port) annotation (Line(
+  connect(density1_2.port, boundary_fixed.ports[1]) 
+                                                annotation (Line(
       points={{60,50},{80,50}},
       color={0,127,255},
       smooth=Smooth.None));

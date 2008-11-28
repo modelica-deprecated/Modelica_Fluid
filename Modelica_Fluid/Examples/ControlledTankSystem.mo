@@ -190,7 +190,7 @@ This example is based on
             -12},{-10,-12},{-10,-70},{72,-70}}, color={255,0,255}));
     connect(level2.y, tankController.level2) annotation (Line(points={{-31.15,
             -70},{-28,-70},{-28,-22}}, color={0,0,127}));
-    connect(source.port, valve1.port_b) 
+    connect(source.ports[1], valve1.port_b) 
       annotation (Line(points={{20,70},{20,65},{20,60}},
                                                  color={0,127,255}));
     connect(valve1.port_a, tank1.topPorts[1]) 
@@ -204,7 +204,7 @@ This example is based on
     connect(tank2.ports[1], valve3.port_b) annotation (Line(points={{79,-50},{
             79,-55},{80,-55},{80,-60}},
                       color={0,127,255}));
-    connect(valve3.port_a, ambient1.port) annotation (Line(points={{80,-80},{80,
+    connect(valve3.port_a, ambient1.ports[1]) annotation (Line(points={{80,-80},{80,
             -90},{30,-90}}, color={0,127,255}));
 
   end ControlledTanks;

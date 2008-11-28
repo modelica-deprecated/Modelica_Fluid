@@ -81,17 +81,19 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
                                    annotation (Placement(transformation(extent=
             {{60,70},{80,90}}, rotation=0)));
 equation
-  connect(massFlowRate1.port, HEX.port_a1)            annotation (Line(points={
+  connect(massFlowRate1.ports[1], HEX.port_a1)        annotation (Line(points={
           {-46,0},{-40,0},{-40,15.4},{-29,15.4}}, color={0,127,255}));
-  connect(HEX.port_b1, ambient1.port)            annotation (Line(points={{37,
+  connect(HEX.port_b1, ambient1.ports[1])        annotation (Line(points={{37,
           15.4},{48.5,15.4},{48.5,34},{62,34}}, color={0,127,255}));
   connect(Ramp1.y, massFlowRate2.m_flow_in) annotation (Line(points={{-79,34},{
           -74,34},{-74,40},{-65.3,40}}, color={0,0,127}));
-  connect(massFlowRate2.port, HEX.port_b2) annotation (Line(
+  connect(massFlowRate2.ports[1], HEX.port_b2) 
+                                           annotation (Line(
       points={{-46,34},{-40,34},{-40,29.8},{-29,29.8}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(HEX.port_a2, ambient2.port) annotation (Line(
+  connect(HEX.port_a2, ambient2.ports[1]) 
+                                      annotation (Line(
       points={{37,2.2},{42,2},{50,2},{50,-18},{62,-18}},
       color={0,127,255},
       smooth=Smooth.None));

@@ -36,11 +36,13 @@ equation
       points={{-79,10},{-70,10},{-70,16},{-59.3,16}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowRate1.port, simpleGenericOrifice.port_a) annotation (Line(
+  connect(massFlowRate1.ports[1], simpleGenericOrifice.port_a) 
+                                                           annotation (Line(
       points={{-40,10},{-32,10},{-32,0},{-20,0}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(volumeFlowRate.port_b, boundary_fixed.port) annotation (Line(
+  connect(volumeFlowRate.port_b, boundary_fixed.ports[1]) 
+                                                      annotation (Line(
       points={{70,0},{80,0}},
       color={0,127,255},
       smooth=Smooth.None));

@@ -330,7 +330,8 @@ Test of different distributed pipe models. The first system uses explicit juncti
     annotation (Placement(transformation(extent={{-74,-38},{-54,-18}}, rotation=
            0)));
 equation
-  connect(boundary1.port, pipe1.port_a) annotation (Line(
+  connect(boundary1.ports[1], pipe1.port_a) 
+                                        annotation (Line(
       points={{-88,64},{-82,64}},
       color={0,127,255},
       thickness=0.5));
@@ -354,7 +355,8 @@ equation
       points={{-8,48},{-2,48},{-2,62},{6,62}},
       color={0,127,255},
       thickness=0.5));
-  connect(pipe3.port_b, boundary2.port) annotation (Line(
+  connect(pipe3.port_b, boundary2.ports[1]) 
+                                        annotation (Line(
       points={{54,64},{64,64}},
       color={0,127,255},
       thickness=0.5));
@@ -371,7 +373,8 @@ equation
       points={{83.4,14},{70,14}},
       color={0,0,127},
       thickness=0.5));
-  connect(boundary3.port, pipe7.port_a) annotation (Line(
+  connect(boundary3.ports[1], pipe7.port_a) 
+                                        annotation (Line(
       points={{-88,8},{-68,8}},
       color={0,127,255},
       thickness=0.5));
@@ -391,7 +394,8 @@ equation
       points={{-10,-2},{2,-2},{2,8},{10,8}},
       color={0,127,255},
       thickness=0.5));
-  connect(pipe6.port_b, boundary4.port) annotation (Line(
+  connect(pipe6.port_b, boundary4.ports[1]) 
+                                        annotation (Line(
       points={{30,8},{48,8}},
       color={0,127,255},
       thickness=0.5));
@@ -408,7 +412,8 @@ equation
       points={{79.4,-46},{68,-46}},
       color={0,0,127},
       thickness=0.5));
-  connect(boundary6.port, pipe11.port_a) annotation (Line(
+  connect(boundary6.ports[1], pipe11.port_a) 
+                                         annotation (Line(
       points={{-90,-52},{-70,-52}},
       color={0,127,255},
       thickness=0.5));
@@ -428,7 +433,8 @@ equation
       points={{-12,-62},{0,-62},{0,-52},{8,-52}},
       color={0,127,255},
       thickness=0.5));
-  connect(pipe10.port_b, boundary5.port) annotation (Line(
+  connect(pipe10.port_b, boundary5.ports[1]) 
+                                         annotation (Line(
       points={{28,-52},{46,-52}},
       color={0,127,255},
       thickness=0.5));

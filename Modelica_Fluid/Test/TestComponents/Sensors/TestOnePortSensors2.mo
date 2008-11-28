@@ -72,9 +72,11 @@ model TestOnePortSensors2
         Medium) annotation (Placement(transformation(extent={{0,-30},{20,-10}},
           rotation=0)));
 equation
-  connect(FlowSource2.port, MixingVolume1.port_a) annotation (Line(points={{-48,
+  connect(FlowSource2.ports[1], MixingVolume1.port_a) 
+                                                  annotation (Line(points={{-48,
           40},{-34.2,40}}, color={0,127,255}));
-  connect(MixingVolume2.port_b, Sink2.port) annotation (Line(points={{52,40},{
+  connect(MixingVolume2.port_b, Sink2.ports[1]) 
+                                            annotation (Line(points={{52,40},{
           80,40}}, color={0,127,255}));
   connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (Line(
       points={{-14,40},{31.8,40}},
@@ -84,9 +86,11 @@ equation
       points={{-79,40},{-74,40},{-74,46},{-67.3,46}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(FlowSource1.port,MixingVolume3. port_a) annotation (Line(points={{-48,
+  connect(FlowSource1.ports[1],MixingVolume3.port_a) 
+                                                  annotation (Line(points={{-48,
           -20},{-34.2,-20}}, color={0,127,255}));
-  connect(MixingVolume4.port_b,Sink1. port) annotation (Line(points={{52,-20},{
+  connect(MixingVolume4.port_b,Sink1.ports[1]) 
+                                            annotation (Line(points={{52,-20},{
           80,-20}}, color={0,127,255}));
   connect(ramp.y, FlowSource1.m_flow_in) annotation (Line(
       points={{-79,40},{-76,40},{-76,-14},{-67.3,-14}},

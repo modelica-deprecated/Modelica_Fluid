@@ -82,24 +82,28 @@ equation
   connect(p_table.y, ambient_a.p_in) 
                                     annotation (Line(points={{-59,50},{-52,50},
           {-52,56},{-42,56}}, color={0,0,127}));
-  connect(ambient_a.port, expansion1.port_a) 
+  connect(ambient_a.ports[1], expansion1.port_a) 
                                            annotation (Line(points={{-20,50},{0,
           50}}, color={0,127,255}));
-  connect(expansion1.port_b, ambient_p1.port) annotation (Line(points={{20,50},
+  connect(expansion1.port_b, ambient_p1.ports[1]) 
+                                              annotation (Line(points={{20,50},
           {40,50}}, color={0,127,255}));
-  connect(expansion2.port_b, ambient_p2.port) annotation (Line(points={{20,20},
+  connect(expansion2.port_b, ambient_p2.ports[1]) 
+                                              annotation (Line(points={{20,20},
           {40,20}}, color={0,127,255}));
-  connect(expansion2.port_a, ambient_a.port) 
+  connect(expansion2.port_a, ambient_a.ports[1]) 
                                            annotation (Line(points={{0,20},{-10,
           20},{-10,50},{-20,50}}, color={0,127,255}));
-  connect(ambient_a.port, expansion3.port_a) 
+  connect(ambient_a.ports[1], expansion3.port_a) 
                                            annotation (Line(points={{-20,50},{
           -10,50},{-10,-10},{0,-10}}, color={0,127,255}));
-  connect(expansion3.port_b, ambient_p3.port) annotation (Line(points={{20,-10},
+  connect(expansion3.port_b, ambient_p3.ports[1]) 
+                                              annotation (Line(points={{20,-10},
           {40,-10}}, color={0,127,255}));
-  connect(ambient_a.port, expansion4.port_a) 
+  connect(ambient_a.ports[1], expansion4.port_a) 
                                            annotation (Line(points={{-20,50},{
           -10,50},{-10,-50},{0,-50}}, color={0,127,255}));
-  connect(expansion4.port_b, ambient_p4.port) annotation (Line(points={{20,-50},
+  connect(expansion4.port_b, ambient_p4.ports[1]) 
+                                              annotation (Line(points={{20,-50},
           {40,-50}}, color={0,127,255}));
 end TestSimpleGenericOrifice;

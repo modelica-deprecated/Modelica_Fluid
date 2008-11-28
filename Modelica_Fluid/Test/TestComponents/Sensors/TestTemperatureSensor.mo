@@ -86,11 +86,13 @@ model TestTemperatureSensor "Test and compare case for the difference between us
       = Modelica.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{20,-90},{40,-70}}, rotation=0)));
 equation
-  connect(massFlowRate2.port, temperatureTwoPort.port_a) annotation (Line(
+  connect(massFlowRate2.ports[1], temperatureTwoPort.port_a) 
+                                                         annotation (Line(
       points={{-40,-10},{-20,-10}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(massFlowRate1.port, temperatureOnePort.port) annotation (Line(
+  connect(massFlowRate1.ports[1], temperatureOnePort.port) 
+                                                       annotation (Line(
       points={{-40,40},{-10,40}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -102,7 +104,8 @@ equation
       points={{-79,20},{-70,20},{-70,-4},{-59.3,-4}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(massFlowRate3.port, temperatureOnePortJunction.port) annotation (Line(
+  connect(massFlowRate3.ports[1], temperatureOnePortJunction.port) 
+                                                               annotation (Line(
       points={{-40,-80},{-10,-80}},
       color={0,127,255},
       smooth=Smooth.None));

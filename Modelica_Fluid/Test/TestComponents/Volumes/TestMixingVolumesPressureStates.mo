@@ -61,11 +61,13 @@ model TestMixingVolumesPressureStates
     length=1)                   annotation (Placement(transformation(extent={{
             -70,30},{-50,50}}, rotation=0)));
 equation
-  connect(simpleGenericOrifice2.port_b, Sink2.port) annotation (Line(
+  connect(simpleGenericOrifice2.port_b, Sink2.ports[1]) 
+                                                    annotation (Line(
       points={{70,40},{80,40}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(FlowSource2.port,simpleGenericOrifice1. port_a) annotation (Line(
+  connect(FlowSource2.ports[1],simpleGenericOrifice1.port_a) 
+                                                          annotation (Line(
       points={{-80,40},{-70,40}},
       color={0,127,255},
       smooth=Smooth.None));

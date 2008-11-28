@@ -18,8 +18,8 @@ package Pumps "Pump components"
           rotation=-90,
           origin={0,100})));
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
             visible=use_N_input,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
@@ -145,6 +145,7 @@ package Pumps "Pump components"
                  choicesAllMatching=true);
     parameter AngularVelocity_rpm N_nominal = 1500 "Nominal rotational speed" 
       annotation(Dialog(group="Characteristics"));
+
     parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal fluid density" 
       annotation(Dialog(group="Characteristics"));
@@ -154,6 +155,7 @@ package Pumps "Pump components"
     parameter Boolean allowFlowReversal = system.allowFlowReversal
         "allow flow reversal, false restricts to design direction (port_a -> port_b)"
       annotation(Dialog(tab="Assumptions"), Evaluate=true);
+
     parameter Medium.AbsolutePressure p_a_start
         "Guess value for inlet pressure" 
       annotation(Dialog(tab="Initialization"));
@@ -295,8 +297,8 @@ package Pumps "Pump components"
       assert(false, "Unsupported initialization option");
     end if;
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-                100,100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+                100}}), graphics={
             Polygon(
               points={{-40,-64},{-60,-100},{60,-100},{40,-64},{-40,-64}},
               lineColor={0,0,255},

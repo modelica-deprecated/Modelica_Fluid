@@ -197,11 +197,11 @@ Simulate for 7200 seconds.
             -10,60},{37,60}}, color={0,0,127}));
     connect(pressure.port, massFlowRate.port_a) annotation (Line(points={{20,14},
             {20,-20}}, color={0,127,255}));
-    connect(pump.port, evaporator.feedwater) annotation (Line(points={{-60,-20},
+    connect(pump.ports[1], evaporator.feedwater) annotation (Line(points={{-60,-20},
             {-46,-20}}, color={0,127,255}));
     connect(massFlowRate.port_b, SteamValve.port_a) annotation (Line(points={{
             40,-20},{50,-20}}, color={0,127,255}));
-    connect(SteamValve.port_b, sink.port) annotation (Line(points={{70,-20},{75,
+    connect(SteamValve.port_b, sink.ports[1]) annotation (Line(points={{70,-20},{75,
             -20},{80,-20}},          color={0,127,255}));
     connect(SteamValve.stemPosition, Y_Valve) annotation (Line(points={{60,-28},{60,
             -90},{-104.5,-90}}, color={0,0,127}));

@@ -59,14 +59,16 @@ equation
   connect(p_table.y, ambient_p.p_in) 
                                     annotation (Line(points={{-59,50},{-52,50},
           {-52,56},{-42,56}}, color={0,0,127}));
-  connect(ambient_p.port, orifice1.port_a) 
+  connect(ambient_p.ports[1], orifice1.port_a) 
                                          annotation (Line(points={{-20,50},{0,
           50}}, color={0,127,255}));
-  connect(orifice1.port_b, ambient_p1.port) annotation (Line(points={{20,50},{
+  connect(orifice1.port_b, ambient_p1.ports[1]) 
+                                            annotation (Line(points={{20,50},{
           40,50}}, color={0,127,255}));
-  connect(ambient_p.port, orifice2.port_a) 
+  connect(ambient_p.ports[1], orifice2.port_a) 
                                          annotation (Line(points={{-20,50},{-12,
           50},{-12,20},{0,20}}, color={0,127,255}));
-  connect(orifice2.port_b, ambient_p2.port) annotation (Line(points={{20,20},{
+  connect(orifice2.port_b, ambient_p2.ports[1]) 
+                                            annotation (Line(points={{20,20},{
           40,20}}, color={0,127,255}));
 end TestSharpEdgedOrifice;

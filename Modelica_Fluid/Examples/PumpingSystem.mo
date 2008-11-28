@@ -92,8 +92,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-            {100,100}},
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+            100,100}},
         grid={1,1}),
             graphics),
     Documentation(info="<html>
@@ -128,9 +128,9 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
                                    annotation (Placement(transformation(extent=
             {{60,-96},{80,-76}}, rotation=0)));
 equation
-  connect(userValve.port_b, sink.port)     annotation (Line(points={{74,-30},{
+  connect(userValve.port_b, sink.ports[1])     annotation (Line(points={{74,-30},{
           80,-30}}, color={0,127,255}));
-  connect(source.port, pumps.port_a) annotation (Line(points={{-80,-70},{-68,
+  connect(source.ports[1], pumps.port_a) annotation (Line(points={{-80,-70},{-68,
           -70}},                             color={0,127,255}));
   connect(valveOpening.y, userValve.stemPosition) annotation (Line(points={{77,10},{
           98,10},{98,-12},{66,-12},{66,-23.6}}, color={0,0,127}));
@@ -141,7 +141,7 @@ equation
     annotation (Line(points={{-19,70},{-2,70}}, color={255,0,255}));
   connect(reservoirPressure.p_rel, controller.u) annotation (Line(points={{20,
           -13},{20,50},{-52,50},{-52,64},{-42,64}}, color={0,0,127}));
-  connect(reservoirPressure.port_b, sink.port)    annotation (Line(
+  connect(reservoirPressure.port_b, sink.ports[1])    annotation (Line(
       points={{30,-22},{44,-22},{44,-48},{80,-48},{80,-30}},
       color={0,127,255},
       pattern=LinePattern.Dot));

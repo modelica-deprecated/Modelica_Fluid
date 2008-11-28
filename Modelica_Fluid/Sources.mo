@@ -29,7 +29,7 @@ package Sources
       "Boundary mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow", enable=Medium.nXi > 0));
 
-    annotation (defaultComponentName = "Boundary_fixed",
+    annotation (defaultComponentName="boundary",
       Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -87,7 +87,7 @@ with exception of boundary pressure, do not have an effect.
       "Boundary mass fractions m_i/m" 
       annotation (Dialog(group = "Only for multi-substance flow",
                   enable=Medium.nXi > 0));
-    annotation (defaultComponentName = "boundary_fixed",
+    annotation (defaultComponentName="boundary",
       Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -133,7 +133,7 @@ with exception of boundary pressure, do not have an effect.
       Medium.nX](quantity=Medium.substanceNames) = Medium.X_default
       "Boundary mass fractions m_i/m"  annotation (Dialog(group=
             "Only for multi-substance flow", enable=Medium.nXi > 0));
-    annotation (defaultComponentName = "boundary_fixed",
+    annotation (defaultComponentName="boundary",
       Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -220,7 +220,7 @@ to define fixed or prescribed ambient conditions.
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
       "Needed to connect to conditional connector";
-    annotation (defaultComponentName = "boundary_prescribed",
+    annotation (defaultComponentName="boundary",
       Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -344,7 +344,7 @@ with exception of boundary pressure, do not have an effect.
       "Prescribed boundary composition" 
       annotation (Placement(transformation(extent={{-140,-80},{-100,-40}},
             rotation=0)));
-    annotation (defaultComponentName = "boundary_prescribed",
+    annotation (defaultComponentName="boundary",
       Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -478,7 +478,7 @@ with exception of boundary pressure, do not have an effect.
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
       "Needed to connect to conditional connector";
-    annotation (defaultComponentName = "massFlowRate",
+    annotation (defaultComponentName="boundary",
       Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -583,7 +583,7 @@ with exception of boundary flow rate, do not have an effect.
     if not useCompositionInput then
       X_in_internal = X;
     end if;
-    port.m_flow = -m_flow_in_internal;
+    sum(ports.m_flow) = -m_flow_in_internal;
     medium.T = T_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedMassFlowRate_TX;
@@ -632,7 +632,7 @@ with exception of boundary flow rate, do not have an effect.
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
       "Needed to connect to conditional connector";
-    annotation (defaultComponentName = "massFlowRate",
+    annotation (defaultComponentName="boundary",
       Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -737,7 +737,7 @@ with exception of boundary flow rate, do not have an effect.
     if not useCompositionInput then
       X_in_internal = X;
     end if;
-    port.m_flow = -m_flow_in_internal;
+    sum(ports.m_flow) = -m_flow_in_internal;
     medium.h = h_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
   end PrescribedMassFlowRate_hX;
@@ -747,44 +747,47 @@ with exception of boundary flow rate, do not have an effect.
   partial model PartialSource
       "Partial component source with one fluid connector"
       import Modelica.Constants;
+
+    parameter Integer nPorts(min=1)=1 "Number of ports";
+
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium
         "Medium model within the source" 
        annotation (choicesAllMatching=true);
 
     Medium.BaseProperties medium "Medium in the source";
-    Modelica_Fluid.Interfaces.FluidPort_b port(
-                                redeclare package Medium = Medium,
-                     m_flow(max=if flowDirection==Types.PortFlowDirection.Leaving then 0 else 
-                                     +Constants.inf,
-                            min=if flowDirection==Types.PortFlowDirection.Entering then 0 else 
-                                     -Constants.inf)) 
-      annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation=0)));
-    annotation (Documentation(info="<html>
+
+    Interfaces.FluidPorts_b[nPorts] ports(
+                       redeclare each package Medium = Medium,
+                       m_flow(each max=if flowDirection==Types.PortFlowDirection.Leaving then 0 else 
+                                       +Constants.inf,
+                              each min=if flowDirection==Types.PortFlowDirection.Entering then 0 else 
+                                       -Constants.inf)) 
+      annotation (Placement(transformation(extent={{95,-40},{115,40}}),
+          iconTransformation(extent={{90,-40},{110,40}})));
+    annotation (defaultComponentName="boundary", Documentation(info="<html>
 <p>
 Partial component to model the <b>volume interface</b> of a <b>source</b>
 component, such as a mass flow source. The essential
 features are:
 </p>
 <ul>
-<li> The pressure in the connection port (= port.p) is identical to the
-     pressure in the volume (= medium.p).</li>
-<li> The enthalpy flow rate (= port.H_flow) and the mass flow rates of the
-     substances (= port.mX_flow) depend on the direction of the mass flow rate.</li>
+<li> The pressure in the connection port (= ports.p) is identical to the
+     pressure in the volume.</li>
+<li> The outflow enthalpy rate (= port.h_outflow) and the composition of the
+     substances (= port.Xi_outflow) are identical to the respective values in the volume.</li>
 </ul>
-</html>"),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics));
+</html>"),   Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
+                           graphics));
     protected
     parameter Types.PortFlowDirection flowDirection=
                      Types.PortFlowDirection.Bidirectional
         "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
   equation
-    port.p = medium.p;
-    port.h_outflow  = medium.h;
-    port.Xi_outflow = medium.Xi;
+    ports.p = fill(medium.p, nPorts);
+    ports.h_outflow  = fill(medium.h, nPorts);
+    ports.Xi_outflow = fill(medium.Xi, nPorts);
   end PartialSource;
   end BaseClasses;
 end Sources;

@@ -1334,6 +1334,7 @@ Full steady state initialization is not supported, because the corresponding int
 </HTML>"),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
                 200,100}}),  graphics));
+    equation
 
     end TankWith3InletOutletArraysWithEvaporatorCondensor;
 

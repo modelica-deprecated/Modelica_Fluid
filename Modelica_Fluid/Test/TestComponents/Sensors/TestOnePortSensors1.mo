@@ -81,13 +81,13 @@ model TestOnePortSensors1
     diameter=diameter_a) annotation (Placement(transformation(extent={{40,-30},{60,-10}},
           rotation=0)));
 equation
-  connect(FlowSource2.port, volume1.port_a)       annotation (Line(points={{-48,40},
+  connect(FlowSource2.ports[1], volume1.port_a)   annotation (Line(points={{-48,40},
           {-30.2,40}},     color={0,127,255}));
   connect(ramp.y, FlowSource2.m_flow_in) annotation (Line(
       points={{-79,40},{-74,40},{-74,46},{-67.3,46}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(FlowSource1.port, volume2.port_a)       annotation (Line(points={{-48,
+  connect(FlowSource1.ports[1], volume2.port_a)   annotation (Line(points={{-48,
           -20},{-32.2,-20}}, color={0,127,255}));
   connect(ramp.y, FlowSource1.m_flow_in) annotation (Line(
       points={{-79,40},{-76,40},{-76,-14},{-67.3,-14}},
@@ -101,7 +101,8 @@ equation
       points={{40,40},{-10,40}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(orifice1.port_b,sink1. port) annotation (Line(
+  connect(orifice1.port_b,sink1.ports[1]) 
+                                       annotation (Line(
       points={{60,40},{80,40}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -109,7 +110,8 @@ equation
       points={{40,-20},{20,-20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(orifice2.port_b,sink2. port) annotation (Line(
+  connect(orifice2.port_b,sink2.ports[1]) 
+                                       annotation (Line(
       points={{60,-20},{80,-20}},
       color={0,127,255},
       smooth=Smooth.None));
