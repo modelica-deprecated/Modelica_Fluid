@@ -3377,7 +3377,6 @@ b has the same sign of the change of density.</p>
     extends Modelica_Fluid.Interfaces.PartialTwoPort(
       final port_a_exposesState=false,
       final port_b_exposesState=false);
-      import Modelica.Constants;
 
     //Assumptions
     parameter Boolean allowFlowReversal = system.allowFlowReversal
@@ -3398,18 +3397,6 @@ b has the same sign of the change of density.</p>
         "Small mass flow rate that is used to regularize port_a_T and V_flow_a"
       annotation(Dialog(tab = "Advanced"));
 
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(
-                                  redeclare package Medium = Medium,
-                       m_flow(min=if allowFlowReversal then -Constants.inf else 0))
-        "Fluid connector a (positive design flow direction is from port_a to port_b)"
-      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
-              rotation=0)));
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(
-                                  redeclare package Medium = Medium,
-                       m_flow(max=if allowFlowReversal then +Constants.inf else 0))
-        "Fluid connector b (positive design flow direction is from port_a to port_b)"
-      annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation=
-               0)));
     Medium.MassFlowRate m_flow(start=m_flow_start)
         "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
     Modelica.SIunits.VolumeFlowRate V_flow
