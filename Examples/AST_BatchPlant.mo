@@ -248,8 +248,8 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001,
-      n_a=2,
-      n_b=3,
+      nPorts_a=2,
+      nPorts_b=3,
       dp_nominal=10000,
       m_flow_nominal=1) 
                annotation (Placement(transformation(extent={{-38,-260},{-18,
@@ -583,11 +583,11 @@ present that are regulated by a central control system.
             60,-116}}, color={0,127,255}));
     connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-120,-40},{-102,
             -40}}, color={191,0,0}));
-    connect(V1.port_a, volume1.port_b)     annotation (Line(
+    connect(V1.port_a, volume1.ports_b[1])     annotation (Line(
         points={{-180,100},{-180,80}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(volume1.port_a, pipePump1B1.port_b)     annotation (Line(
+    connect(volume1.ports_a[1], pipePump1B1.port_b)     annotation (Line(
         points={{-180,59.8},{-180,6}},
         color={0,127,255},
         smooth=Smooth.None));
@@ -615,11 +615,11 @@ present that are regulated by a central control system.
         points={{160,210},{160,120}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(volume7.port_a, pipePump2B2.port_b)     annotation (Line(
+    connect(volume7.ports_a[1], pipePump2B2.port_b)     annotation (Line(
         points={{160,49.8},{160,20}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(volume7.port_b, V5.port_a)     annotation (Line(
+    connect(volume7.ports_b[1], V5.port_a)     annotation (Line(
         points={{160,70},{160,100}},
         color={0,127,255},
         smooth=Smooth.None));

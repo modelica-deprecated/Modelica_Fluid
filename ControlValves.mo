@@ -254,16 +254,6 @@ explained in detail in the
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
-          Line(
-            points={{30,-50},{-60,-50}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-36},{60,-50},{20,-64},{20,-36}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid),
           Text(
             extent={{-150,-80},{150,-120}},
             textString="%name",
@@ -317,16 +307,6 @@ explained in detail in the
             points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
             fillColor={255,255,255},
             lineColor={0,0,0},
-            fillPattern=FillPattern.Solid),
-          Line(
-            points={{30,-50},{-60,-50}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-36},{60,-50},{20,-64},{20,-36}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
             fillPattern=FillPattern.Solid),
           Text(
             extent={{-150,-80},{150,-120}},
@@ -427,7 +407,7 @@ it is open.
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics={
             Text(
-              extent={{-150,-78},{150,-118}},
+              extent={{-150,-94},{150,-134}},
               textString="%name",
               lineColor={0,0,255}),
             Line(points={{0,52},{0,0}}, color={0,0,0}),
@@ -445,17 +425,7 @@ it is open.
               extent={{-20,60},{20,52}},
               lineColor={0,0,0},
               fillColor={0,0,0},
-              fillPattern=FillPattern.Solid),
-            Polygon(
-              points={{20,-36},{60,-50},{20,-64},{20,-36}},
-              lineColor={0,128,255},
-              smooth=Smooth.None,
-              fillColor={0,128,255},
-              fillPattern=FillPattern.Solid),
-            Line(
-              points={{30,-50},{-60,-50}},
-              color={0,128,255},
-              smooth=Smooth.None)}),
+              fillPattern=FillPattern.Solid)}),
         Diagram(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},

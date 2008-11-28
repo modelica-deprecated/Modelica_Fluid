@@ -32,7 +32,6 @@ Simulate for 7200 seconds.
 
   model DrumBoiler
     "Complete drum boiler model, including evaporator and supplementary components"
-    import Modelica_Fluid;
 
     import Modelica.SIunits.Conversions.*;
 
@@ -49,7 +48,7 @@ Simulate for 7200 seconds.
     annotation (
       uses(Modelica_Fluid(version="0.72")),
       Diagram(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics),
       Icon(coordinateSystem(
@@ -197,7 +196,7 @@ Simulate for 7200 seconds.
             -10,60},{37,60}}, color={0,0,127}));
     connect(pressure.port, massFlowRate.port_a) annotation (Line(points={{20,14},
             {20,-20}}, color={0,127,255}));
-    connect(pump.ports[1], evaporator.feedwater) annotation (Line(points={{-60,-20},
+    connect(pump.ports[1], evaporator.port_a) annotation (Line(points={{-60,-20},
             {-46,-20}}, color={0,127,255}));
     connect(massFlowRate.port_b, SteamValve.port_a) annotation (Line(points={{
             40,-20},{50,-20}}, color={0,127,255}));
@@ -205,9 +204,11 @@ Simulate for 7200 seconds.
             -20},{80,-20}},          color={0,127,255}));
     connect(SteamValve.stemPosition, Y_Valve) annotation (Line(points={{60,-28},{60,
             -90},{-104.5,-90}}, color={0,0,127}));
-    connect(evaporator.steam, massFlowRate.port_a) annotation (Line(points={{
+    connect(evaporator.port_b, massFlowRate.port_a) annotation (Line(points={{
             -26,-20},{20,-20}}, color={0,127,255}));
-    connect(evaporator.steam, temperature.port) annotation (Line(points={{-26,-20},
-            {-3,-20},{-3,-11}},      color={0,127,255}));
+    connect(temperature.port, massFlowRate.port_a) annotation (Line(
+        points={{-3,-11},{-3,-20},{20,-20}},
+        color={0,127,255},
+        smooth=Smooth.None));
   end DrumBoiler;
 end DrumBoiler;

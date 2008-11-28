@@ -7,8 +7,8 @@ model TestGeneircJunction
       package Medium = 
         Modelica.Media.Air.DryAirNasa, V=20e-6,
     initType=Modelica_Fluid.Types.Init.SteadyState,
-    n_a=1,
-    n_b=2,
+    nPorts_a=1,
+    nPorts_b=2,
     modelStructure=Modelica_Fluid.Types.ModelStructure.avb,
     dp_nominal=100000,
     m_flow_nominal=0.01,

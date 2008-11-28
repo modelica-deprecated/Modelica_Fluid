@@ -763,8 +763,27 @@ with exception of boundary flow rate, do not have an effect.
                                        +Constants.inf,
                               each min=if flowDirection==Types.PortFlowDirection.Entering then 0 else 
                                        -Constants.inf)) 
-      annotation (Placement(transformation(extent={{95,-40},{115,40}}),
-          iconTransformation(extent={{90,-40},{110,40}})));
+      annotation (Placement(transformation(extent={{95,40},{115,-40}}),
+          iconTransformation(extent={{90,40},{110,-40}})));
+    protected
+    parameter Types.PortFlowDirection flowDirection=
+                     Types.PortFlowDirection.Bidirectional
+        "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
+  equation
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+    for i in 1:nPorts loop
+      assert(cardinality(ports[i]) <= 1,"
+each ports[i] of boundary shall at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections, which is usually not the intention
+of the modeller. Increase nPorts to add an additional port.
+");
+    end for;
+
+    ports.p = fill(medium.p, nPorts);
+    ports.h_outflow  = fill(medium.h, nPorts);
+    ports.Xi_outflow = fill(medium.Xi, nPorts);
+
     annotation (defaultComponentName="boundary", Documentation(info="<html>
 <p>
 Partial component to model the <b>volume interface</b> of a <b>source</b>
@@ -777,17 +796,11 @@ features are:
 <li> The outflow enthalpy rate (= port.h_outflow) and the composition of the
      substances (= port.Xi_outflow) are identical to the respective values in the volume.</li>
 </ul>
-</html>"),   Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+</html>"),   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
                 -100},{100,100}}),
-                           graphics));
-    protected
-    parameter Types.PortFlowDirection flowDirection=
-                     Types.PortFlowDirection.Bidirectional
-        "Allowed flow direction"             annotation(Evaluate=true, Dialog(tab="Advanced"));
-  equation
-    ports.p = fill(medium.p, nPorts);
-    ports.h_outflow  = fill(medium.h, nPorts);
-    ports.Xi_outflow = fill(medium.Xi, nPorts);
+                           graphics),
+        Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
+                {100,100}}), graphics));
   end PartialSource;
   end BaseClasses;
 end Sources;

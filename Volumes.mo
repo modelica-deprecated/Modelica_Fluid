@@ -30,8 +30,8 @@ package Volumes "Generic volume, tank and other volume type components"
       Documentation(info="<html>
 Ideally mixed volume of constant size with two fluid ports and one medium model. The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. The thermal port temperature is equal to the medium temperature.
 </html>"),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+              {100,100}}),
               graphics));
     equation
       heatPort.T = medium.T;
@@ -318,8 +318,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -728,6 +728,8 @@ end Tank;
       "Mixing volume with inlet and outlet ports (flow reversal is allowed)"
       import Modelica_Fluid.Types;
         outer Modelica_Fluid.System system "System properties";
+        parameter Integer nPorts_a(min=1)=1 "Number of ports on side a";
+        parameter Integer nPorts_b(min=1)=1 "Number of ports on side b";
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation (choicesAllMatching = true);
@@ -758,16 +760,20 @@ end Tank;
         "Start value of mass fractions m_i/m" 
           annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
 
-        Interfaces.FluidStatePort_a port_a(
-                                      redeclare package Medium = Medium, m_flow(min=
+        Interfaces.FluidPorts_a[nPorts_a] ports_a(
+                                      redeclare each package Medium = Medium, each
+          m_flow(                                                                         min=
                 if allowFlowReversal then -Modelica.Constants.inf else 0))
-        "Fluid inlet port" annotation (Placement(transformation(extent={{-112,
-                -10},{-92,10}}, rotation=0)));
-        Interfaces.FluidStatePort_b port_b(
-                                      redeclare package Medium = Medium, m_flow(max=
+        "Fluid inlets" 
+          annotation (Placement(transformation(extent={{-110,-40},{-90,40}}),
+            iconTransformation(extent={{-110,40},{-90,-40}})));
+        Interfaces.FluidPorts_b[nPorts_b] ports_b(
+                                      redeclare each package Medium = Medium, each
+          m_flow(                                                                         max=
                 if allowFlowReversal then +Modelica.Constants.inf else 0))
-        "Fluid outlet port" annotation (Placement(transformation(extent={{90,
-                -10},{110,10}}, rotation=0)));
+        "Fluid outlets" 
+          annotation (Placement(transformation(extent={{90,-40},{110,40}}),
+            iconTransformation(extent={{90,40},{110,-40}})));
         Medium.BaseProperties medium(
           preferredMediumStates=true,
           p(start=p_start),
@@ -783,51 +789,43 @@ end Tank;
         SI.HeatFlowRate Qs_flow
         "Heat flow across boundaries or energy source/sink";
         SI.Power Ws_flow "Work flow across boundaries or source term";
-        annotation (
-          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                {100,100}}), graphics={Text(
-              extent={{-150,110},{150,150}},
-              textString="%name",
-              lineColor={0,0,255}), Text(
-              extent={{-150,-110},{150,-140}},
-              lineColor={0,0,0},
-              textString="V=%V")}),
-          Documentation(info="<html>
-Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
-<ul>
-<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
-</ul>
-The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
-</html>"),Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                -100},{100,100}}),
-                  graphics));
-
+        SI.EnergyFlowRate der_U "derivative of internal energy";
+        SI.MassFlowRate der_m "derivative of fluid mass";
+        SI.MassFlowRate[Medium.nXi] der_mXi "derivatives of substance holdup";
+        Medium.EnthalpyFlowRate ports_a_H_flow[nPorts_a];
+        Medium.EnthalpyFlowRate ports_b_H_flow[nPorts_b];
+        Medium.MassFlowRate ports_a_mXi_flow[nPorts_a,Medium.nXi];
+        Medium.MassFlowRate ports_b_mXi_flow[nPorts_b,Medium.nXi];
+        Medium.ExtraPropertyFlowRate ports_a_mC_flow[nPorts_a,Medium.nC];
+        Medium.ExtraPropertyFlowRate ports_b_mC_flow[nPorts_b,Medium.nC];
       equation
         // Only one connection allowed to a port to avoid unwanted ideal mixing
-      /*
-  assert(cardinality(port_a) <= 1,"
-port_a of volume can at most be connected to one component.
+        for i in 1:nPorts_a loop
+          assert(cardinality(ports_a[i]) <= 1,"
+each ports_a[i] of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
+place with these connections, which is usually not the intention
+of the modeller. Increase nPorts_a to add an additional port.
 ");
-  assert(cardinality(port_b) <= 1,"
-port_b of volume can at most be connected to one component.
+        end for;
+        for i in 1:nPorts_b loop
+          assert(cardinality(ports_b[i]) <= 1,"
+each ports_b[i] of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
+place with these connections, which is usually not the intention
+of the modeller. Increase nPorts_b to add an additional port.
 ");
-*/
+        end for;
 
         // Boundary conditions
-        port_a.p = medium.p;
-        port_b.p = medium.p;
+        ports_a.p = fill(medium.p, nPorts_a);
+        ports_b.p = fill(medium.p, nPorts_b);
 
-        port_a.h_outflow = medium.h;
-        port_b.h_outflow = medium.h;
+        ports_a.h_outflow = fill(medium.h, nPorts_a);
+        ports_b.h_outflow = fill(medium.h, nPorts_b);
 
-        port_a.Xi_outflow = medium.Xi;
-        port_b.Xi_outflow = medium.Xi;
+        ports_a.Xi_outflow = fill(medium.Xi, nPorts_a);
+        ports_b.Xi_outflow = fill(medium.Xi, nPorts_b);
 
         // Total quantities
         m = V_lumped*medium.d;
@@ -835,21 +833,45 @@ of the modeller.
         U = m*medium.u;
 
         // Mass and energy balances
+        der_m = sum(ports_a.m_flow) + sum(ports_b.m_flow);
+        for i in 1:Medium.nXi loop
+          der_mXi[i] = sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]);
+        end for;
+        der_U = sum(ports_a_H_flow) + sum(ports_b_H_flow) + Qs_flow + Ws_flow;
         if dynamicsType < Types.Dynamics.SteadyStateMass then
-          der(m) = port_a.m_flow + port_b.m_flow;
-          der(mXi) = port_a.m_flow*actualStream(port_a.Xi_outflow) + port_b.m_flow*actualStream(port_b.Xi_outflow);
+          der_m = der(m);
+          der_mXi = der(mXi);
         else
-          0 = port_a.m_flow + port_b.m_flow;
-          zeros(Medium.nXi) = port_a.m_flow*actualStream(port_a.Xi_outflow) + port_b.m_flow*actualStream(port_b.Xi_outflow);
+          der_m = 0;
+          der_mXi = zeros(Medium.nXi);
         end if;
         if dynamicsType < Types.Dynamics.SteadyState then
-          der(U) = port_a.m_flow*actualStream(port_a.h_outflow) + port_b.m_flow*actualStream(port_b.h_outflow) + Qs_flow + Ws_flow;
+          der_U = der(U);
         else
-          0 = port_a.m_flow*actualStream(port_a.h_outflow) + port_b.m_flow*actualStream(port_b.h_outflow) + Qs_flow + Ws_flow;
+          der_U = 0;
         end if;
-        // Steady-state extra composition balance
-        port_a.C_outflow = inStream(port_b.C_outflow);
-        port_b.C_outflow = inStream(port_a.C_outflow);
+        // Steady-state trace substance mass balance
+        for i in 1:Medium.nC loop
+          sum(ports_a_mC_flow[:,i])+sum(ports_b_mC_flow[:,i]) = 0;
+        end for;
+
+        for i in 1:nPorts_a loop
+          ports_a_H_flow[i] = ports_a[i].m_flow * actualStream(ports_a[i].h_outflow)
+          "Enthalpy flow";
+          ports_a_mXi_flow[i,:] = ports_a[i].m_flow * actualStream(ports_a[i].Xi_outflow)
+          "Component mass flow";
+          ports_a_mC_flow[i,:] = ports_a[i].m_flow * actualStream(ports_a[i].C_outflow)
+          "Trace substance mass flow";
+        end for;
+
+        for i in 1:nPorts_b loop
+          ports_b_H_flow[i] = ports_b[i].m_flow * actualStream(ports_b[i].h_outflow)
+          "Enthalpy flow";
+          ports_b_mXi_flow[i,:] = ports_b[i].m_flow * actualStream(ports_b[i].Xi_outflow)
+          "Component mass flow";
+          ports_b_mC_flow[i,:] = ports_b[i].m_flow * actualStream(ports_b[i].C_outflow)
+          "Trace substance mass flow";
+        end for;
 
       initial equation
       // Initial conditions
@@ -884,6 +906,24 @@ of the modeller.
         else
           assert(false, "Unsupported initialization option");
         end if;
+        annotation (
+          Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+                {100,100}}), graphics={Text(
+              extent={{-150,110},{150,150}},
+              textString="%name",
+              lineColor={0,0,255}), Text(
+              extent={{-150,-110},{150,-140}},
+              lineColor={0,0,0},
+              textString="V=%V")}),
+          Documentation(info="<html>
+Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
+<ul>
+<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
+</ul>
+The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
+</html>"),Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+                -100},{100,100}}),
+                  graphics));
       end PartialLumpedVolume;
   end BaseClasses;
   annotation (Documentation(info="<html>

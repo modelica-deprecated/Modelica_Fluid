@@ -3,14 +3,15 @@ package HeatExchangers "Evaporators and condensor components"
   extends Modelica_Fluid.Icons.VariantLibrary;
   model EquilibriumDrumBoiler
     "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378"
+    extends Modelica_Fluid.Interfaces.PartialTwoPort(
+      final port_a_exposesState=true,
+      final port_b_exposesState=true,
+      redeclare replaceable package Medium = Modelica.Media.Water.StandardWater
+          constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     import Modelica.SIunits.Conversions.*;
     import Modelica.Constants;
     import Modelica_Fluid.Types;
-    outer Modelica_Fluid.System system "System properties";
-    replaceable package Medium = Modelica.Media.Water.StandardWater 
-      constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium
-      "Medium model" 
-        annotation (choicesAllMatching=true);
+
     parameter SI.Mass m_D "mass of surrounding drum metal";
     parameter Medium.SpecificHeatCapacity cp_D
       "specific heat capacity of drum metal";
@@ -28,13 +29,6 @@ package HeatExchangers "Evaporators and condensor components"
       "allow flow reversal, false restricts to design direction (port_a -> port_b)"
       annotation(Dialog(tab="Assumptions"), Evaluate=true);
 
-    Modelica_Fluid.Interfaces.FluidPort_a feedwater(redeclare package Medium = 
-          Medium, m_flow(min=if allowFlowReversal then -Constants.inf else 0)) 
-    annotation (Placement(transformation(extent={{-110,-10},{-90,10}}, rotation=
-             0)));
-    Modelica_Fluid.Interfaces.FluidPort_b steam(redeclare package Medium = Medium,
-        m_flow(max=if allowFlowReversal then +Constants.inf else 0)) 
-    annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation=0)));
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
     annotation (Placement(transformation(extent={{-10,-110},{10,-90}}, rotation=
              0)));
@@ -62,12 +56,12 @@ package HeatExchangers "Evaporators and condensor components"
     SI.Energy U "internal energy";
     Medium.Temperature T_D=heatPort.T "temperature of drum";
     SI.HeatFlowRate q_F=heatPort.Q_flow "heat flow rate from furnace";
-    Medium.SpecificEnthalpy h_W=inStream(feedwater.h_outflow)
+    Medium.SpecificEnthalpy h_W=inStream(port_a.h_outflow)
       "Feed water enthalpy (specific enthalpy close to feedwater port when mass flows in to the boiler)";
-    Medium.SpecificEnthalpy h_S=inStream(steam.h_outflow)
+    Medium.SpecificEnthalpy h_S=inStream(port_b.h_outflow)
       "steam enthalpy (specific enthalpy close to steam port when mass flows in to the boiler)";
-    SI.MassFlowRate qm_W=feedwater.m_flow "feed water mass flow rate";
-    SI.MassFlowRate qm_S=steam.m_flow "steam mass flow rate";
+    SI.MassFlowRate qm_W=port_a.m_flow "feed water mass flow rate";
+    SI.MassFlowRate qm_S=port_b.m_flow "steam mass flow rate";
   /*outer Modelica_Fluid.Components.FluidOptions fluidOptions 
     "Global default options";*/
   equation
@@ -76,8 +70,8 @@ package HeatExchangers "Evaporators and condensor components"
     U = rho_v*V_v*h_v + rho_l*V_l*h_l - p*V_t + m_D*cp_D*T_D "Total energy";
     der(m) = qm_W + qm_S "Mass balance";
     der(U) = q_F
-              + feedwater.m_flow*actualStream(feedwater.h_outflow)
-              + steam.m_flow*actualStream(steam.h_outflow) "Energy balance";
+              + port_a.m_flow*actualStream(port_a.h_outflow)
+              + port_b.m_flow*actualStream(port_b.h_outflow) "Energy balance";
     V_t = V_l + V_v;
 
   // Properties of saturated liquid and steam
@@ -89,12 +83,10 @@ package HeatExchangers "Evaporators and condensor components"
     T_D = T;
 
   // boundary conditions at the ports
-    feedwater.p = p;
-    feedwater.h_outflow = h_l;
-  // feedwater.H_flow = semiLinear(feedwater.m_flow, feedwater.h, h_l);
-    steam.p = p;
-    steam.h_outflow = h_v;
-  //steam.H_flow = semiLinear(steam.m_flow, steam.h, h_v);
+    port_a.p = p;
+    port_a.h_outflow = h_l;
+    port_b.p = p;
+    port_b.h_outflow = h_v;
 
   // liquid volume
     V = V_l;
@@ -199,17 +191,7 @@ package HeatExchangers "Evaporators and condensor components"
             fillColor={0,127,255},
             textString="%name"),
           Line(points={{0,-61},{0,-100}}, color={191,0,0}),
-          Line(points={{100,100},{100,60}}, color={0,0,127}),
-          Line(
-            points={{30,-80},{-60,-80}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-65},{60,-80},{20,-95},{20,-65}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+          Line(points={{100,100},{100,60}}, color={0,0,127})}),
       Documentation(revisions="<html>
 <ul>
 <li><i>2 Nov 2005</i>

@@ -62,7 +62,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
                                        redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     p=system.p_ambient,
-    T=system.T_ambient) 
+    T=system.T_ambient,
+    nPorts=2) 
     annotation (Placement(transformation(extent={{100,-40},{80,-20}}, rotation=
             0)));
   Modelica.Blocks.Sources.Step valveOpening(startTime=200, offset=1e-6) 
@@ -128,8 +129,9 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
                                    annotation (Placement(transformation(extent=
             {{60,-96},{80,-76}}, rotation=0)));
 equation
-  connect(userValve.port_b, sink.ports[1])     annotation (Line(points={{74,-30},{
-          80,-30}}, color={0,127,255}));
+  connect(userValve.port_b, sink.ports[1])     annotation (Line(points={{74,-30},
+          {77,-30},{77,-28},{80,-28}},
+                    color={0,127,255}));
   connect(source.ports[1], pumps.port_a) annotation (Line(points={{-80,-70},{-68,
           -70}},                             color={0,127,255}));
   connect(valveOpening.y, userValve.stemPosition) annotation (Line(points={{77,10},{
@@ -141,8 +143,8 @@ equation
     annotation (Line(points={{-19,70},{-2,70}}, color={255,0,255}));
   connect(reservoirPressure.p_rel, controller.u) annotation (Line(points={{20,
           -13},{20,50},{-52,50},{-52,64},{-42,64}}, color={0,0,127}));
-  connect(reservoirPressure.port_b, sink.ports[1])    annotation (Line(
-      points={{30,-22},{44,-22},{44,-48},{80,-48},{80,-30}},
+  connect(reservoirPressure.port_b, sink.ports[2])    annotation (Line(
+      points={{30,-22},{44,-22},{44,-48},{80,-48},{80,-32}},
       color={0,127,255},
       pattern=LinePattern.Dot));
   connect(PumpRPMGenerator.y, PT1.u) 

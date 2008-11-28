@@ -197,7 +197,7 @@ package Interfaces
           initialScale=0.2), graphics={
           Text(extent={{-75,130},{75,100}}, textString="%name"),
           Rectangle(
-            extent={{-25,100},{25,-100}},
+            extent={{25,-100},{-25,100}},
             lineColor={0,127,255},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
@@ -222,7 +222,7 @@ package Interfaces
           grid={1,1},
           initialScale=0.2), graphics={
           Rectangle(
-            extent={{-50,200},{50,-200}},
+            extent={{50,-200},{-50,200}},
             lineColor={0,127,255},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),
@@ -619,20 +619,20 @@ This will be visualized at the port icons, in order to improve the understanding
             extent={{-100,-100},{100,100}},
             grid={1,1}), graphics={
           Polygon(
-            points={{20,-60},{60,-75},{20,-90},{20,-60}},
+            points={{20,-65},{60,-80},{20,-95},{20,-65}},
             lineColor={0,128,255},
             smooth=Smooth.None,
             fillColor={0,128,255},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{20,-65},{50,-75},{20,-85},{20,-65}},
+            points={{20,-70},{50,-80},{20,-90},{20,-70}},
             lineColor={255,255,255},
             smooth=Smooth.None,
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             visible=allowFlowReversal),
           Line(
-            points={{55,-75},{-60,-75}},
+            points={{55,-80},{-60,-80}},
             color={0,128,255},
             smooth=Smooth.None),
           Ellipse(

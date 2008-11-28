@@ -72,13 +72,13 @@ model TestOnePortSensors2
         Medium) annotation (Placement(transformation(extent={{0,-30},{20,-10}},
           rotation=0)));
 equation
-  connect(FlowSource2.ports[1], MixingVolume1.port_a) 
+  connect(FlowSource2.ports[1], MixingVolume1.ports_a[1]) 
                                                   annotation (Line(points={{-48,
           40},{-34.2,40}}, color={0,127,255}));
-  connect(MixingVolume2.port_b, Sink2.ports[1]) 
+  connect(MixingVolume2.ports_b[1], Sink2.ports[1]) 
                                             annotation (Line(points={{52,40},{
           80,40}}, color={0,127,255}));
-  connect(MixingVolume1.port_b, MixingVolume2.port_a) annotation (Line(
+  connect(MixingVolume1.ports_b[1], MixingVolume2.ports_a[1]) annotation (Line(
       points={{-14,40},{31.8,40}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -86,21 +86,21 @@ equation
       points={{-79,40},{-74,40},{-74,46},{-67.3,46}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(FlowSource1.ports[1],MixingVolume3.port_a) 
+  connect(FlowSource1.ports[1],MixingVolume3.ports_a[1]) 
                                                   annotation (Line(points={{-48,
           -20},{-34.2,-20}}, color={0,127,255}));
-  connect(MixingVolume4.port_b,Sink1.ports[1]) 
+  connect(MixingVolume4.ports_b[1],Sink1.ports[1]) 
                                             annotation (Line(points={{52,-20},{
           80,-20}}, color={0,127,255}));
   connect(ramp.y, FlowSource1.m_flow_in) annotation (Line(
       points={{-79,40},{-76,40},{-76,-14},{-67.3,-14}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(Tmix2.port_a, MixingVolume3.port_b) annotation (Line(
+  connect(Tmix2.port_a, MixingVolume3.ports_b[1]) annotation (Line(
       points={{0,-20},{-14,-20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(Tmix2.port_b, MixingVolume4.port_a) annotation (Line(
+  connect(Tmix2.port_b, MixingVolume4.ports_a[1]) annotation (Line(
       points={{20,-20},{31.8,-20}},
       color={0,127,255},
       smooth=Smooth.None));
