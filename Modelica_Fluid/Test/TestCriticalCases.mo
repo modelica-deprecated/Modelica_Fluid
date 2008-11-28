@@ -1837,18 +1837,26 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,
             extent={{-100,-100},{100,100}}), graphics={
           Text(
-            extent={{-43,-52},{43,-60}},
+            extent={{-57,-52},{29,-60}},
             lineColor={0,0,255},
             textString="or b) Change to ValveIncompressible and it works!?"),
           Text(
-            extent={{-40,-34},{62,-54}},
+            extent={{-54,-34},{48,-54}},
             lineColor={0,0,255},
             textString=
-                "a) Select WallFriction = \"No pipe wall friction\" and it works!?"),
+                "a) Select WallFriction = \"No pipe wall friction\" and it works!?"), 
+
           Text(
-            extent={{-52,-24},{50,-38}},
+            extent={{-90,-20},{36,-38}},
             lineColor={0,0,255},
-            textString="How to make steady-state initialization work:")}),
+            textString=
+                "How to get correct result from steady-state initialization:"), 
+
+          Text(
+            extent={{-57,-64},{92,-72}},
+            lineColor={0,0,255},
+            textString=
+                "or c) check the region and increase source.h and pipe.h_start into the superheated region!")}),
       experiment(StopTime=4),
       experimentSetupOutput,
       uses(Modelica_Fluid(version="1.0 Streams Beta 3"), Modelica(version="3.0")));
