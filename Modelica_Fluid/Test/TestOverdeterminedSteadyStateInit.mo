@@ -8,7 +8,7 @@ package TestOverdeterminedSteadyStateInit
               -100},{100,100}}),
                         graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
               lineColor={0,0,255}), Text(
             extent={{-60,60},{60,-60}},
             lineColor={0,0,255},
@@ -43,8 +43,9 @@ package TestOverdeterminedSteadyStateInit
     ControlValves.ValveIncompressible valve(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
-      dp_nominal=3e5,
-      m_flow_nominal=0.01) 
+      m_flow_nominal=0.01,
+      compute_T=true,
+      dp_nominal=300000) 
       annotation (Placement(transformation(extent={{42,-12},{58,4}}, rotation=0)));
     Modelica.Blocks.Interfaces.RealInput valvePosition 
       annotation (Placement(transformation(extent={{-128,-20},{-88,20}},
@@ -78,13 +79,12 @@ package TestOverdeterminedSteadyStateInit
       T_start=Modelica.SIunits.Conversions.from_degC(80),
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
-      use_eta_nominal=true,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       length=2,
-      p_a_start=400000,
-      p_b_start=390000,
       redeclare model HeatTransfer = 
-          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal) 
+          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
+      p_a_start=400000,
+      p_b_start=390000) 
       annotation (Placement(transformation(extent={{12,-14},{32,6}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe radiator(
@@ -95,12 +95,11 @@ package TestOverdeterminedSteadyStateInit
       T_start=Modelica.SIunits.Conversions.from_degC(40),
       redeclare package WallFriction = 
           Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
-      use_eta_nominal=true,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      p_a_start=110000,
-      p_b_start=105000,
       redeclare model HeatTransfer = 
-          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal) 
+          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
+      p_a_start=110000,
+      p_b_start=105000) 
       annotation (Placement(transformation(extent={{28,-76},{8,-56}}, rotation=
               0)));
 
@@ -138,9 +137,8 @@ package TestOverdeterminedSteadyStateInit
           color={0,127,255}));
     connect(thermalConductor1.port_b, radiator.heatPort) annotation (Line(
           points={{18,-56},{18,-60.6}}, color={191,0,0}));
-    connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{
-            22,22},{22,1.4}},
-                           color={191,0,0}));
+    connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{22,22},
+            {22,1.4}},     color={191,0,0}));
     connect(ambientTemperature.port, thermalConductor1.port_a) annotation (Line(
           points={{2,-33},{18,-33},{18,-40}}, color={191,0,0}));
     connect(sensor_T_1.T, hotWaterTemperature) annotation (Line(points={{39,-46},

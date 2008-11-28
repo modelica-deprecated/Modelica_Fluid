@@ -29,7 +29,8 @@ model TestTank
   Modelica_Fluid.Sources.FixedBoundary Boundary_fixed(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=system.p_ambient,
-    T=system.T_ambient) 
+    T=system.T_ambient,
+    nPorts=4) 
     annotation (Placement(transformation(extent={{100,-90},{80,-70}}, rotation=
             0)));
   Modelica_Fluid.Sensors.MassFlowRate mFlow_9m(redeclare package Medium = 
@@ -60,34 +61,34 @@ equation
       smooth=Smooth.None));
   connect(mFlow_9m.port_b, Boundary_fixed.ports[1]) 
                                                 annotation (Line(
-      points={{40,40},{60,40},{60,-80},{80,-80}},
+      points={{40,40},{60,40},{60,-77},{80,-77}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[2], mFlow_6m.port_a) annotation (Line(
       points={{-21,40},{0,40},{0,0},{20,0}},
       color={0,0,255},
       smooth=Smooth.None));
-  connect(mFlow_6m.port_b, Boundary_fixed.ports[1]) 
+  connect(mFlow_6m.port_b, Boundary_fixed.ports[2]) 
                                                 annotation (Line(
-      points={{40,0},{60,0},{60,-80},{80,-80}},
+      points={{40,0},{60,0},{60,-79},{80,-79}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[3], mFlow_4m.port_a) annotation (Line(
       points={{-21,40},{0,40},{0,-40},{20,-40}},
       color={0,0,255},
       smooth=Smooth.None));
-  connect(mFlow_4m.port_b, Boundary_fixed.ports[1]) 
+  connect(mFlow_4m.port_b, Boundary_fixed.ports[3]) 
                                                 annotation (Line(
-      points={{40,-40},{60,-40},{60,-80},{80,-80}},
+      points={{40,-40},{60,-40},{60,-81},{80,-81}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[4], mFlow_2m.port_a) annotation (Line(
       points={{-21,40},{0,40},{0,-80},{20,-80}},
       color={0,0,255},
       smooth=Smooth.None));
-  connect(mFlow_2m.port_b, Boundary_fixed.ports[1]) 
+  connect(mFlow_2m.port_b, Boundary_fixed.ports[4]) 
                                                 annotation (Line(
-      points={{40,-80},{80,-80}},
+      points={{40,-80},{60,-80},{60,-83},{80,-83}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestTank;

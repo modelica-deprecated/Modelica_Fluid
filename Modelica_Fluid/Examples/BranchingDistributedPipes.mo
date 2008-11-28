@@ -118,7 +118,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     annotation (Placement(transformation(extent={{70,-100},{90,-80}}, rotation=
             0)));
   Modelica_Fluid.Junctions.GenericJunction junction1(
-    n_b=2,
+    nPorts_b=2,
     redeclare package Medium = Medium,
     V=0.0001,
     dp_nominal=100000,
@@ -127,7 +127,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     T_start=300)                       annotation (Placement(transformation(
           extent={{-64,24},{-44,44}}, rotation=0)));
   Modelica_Fluid.Junctions.GenericJunction junction2(
-    n_a=2,
+    nPorts_a=2,
     redeclare package Medium = Medium,
     V=0.00001,
     dp_nominal=100000,

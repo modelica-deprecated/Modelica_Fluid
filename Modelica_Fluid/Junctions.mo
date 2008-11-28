@@ -401,8 +401,8 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.ModelStructure;
     outer Modelica_Fluid.System system "System properties";
-    parameter Integer n_a=1 "Number of ports on side a";
-    parameter Integer n_b=1 "Number of ports on side b";
+    parameter Integer nPorts_a(min=1)=1 "Number of ports on side a";
+    parameter Integer nPorts_b(min=1)=1 "Number of ports on side b";
     replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
       "Fluid medium model" 
         annotation (choicesAllMatching=true);
@@ -414,13 +414,13 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
     SI.Mass m "Total mass";
     SI.Mass[Medium.nXi] mXi "Independent masses";
 
-    Interfaces.FluidStatePorts_a[n_a] ports_a(
+    Interfaces.FluidStatePorts_a[nPorts_a] ports_a(
       redeclare each package Medium=Medium,
       m_flow(each min=if allowFlowReversal then -Constants.inf else 0))
       "Fluid connectors a (positive design flow direction is from ports_a to ports_b)"
       annotation (Placement(
           transformation(extent={{-110,40},{-90,-40}}, rotation=0)));
-    Interfaces.FluidStatePorts_b[n_b] ports_b(
+    Interfaces.FluidStatePorts_b[nPorts_b] ports_b(
       redeclare each package Medium=Medium,
       m_flow(each max=if allowFlowReversal then +Constants.inf else 0))
       "Fluid connectors b (positive design flow direction is from ports_a to ports_b)"
@@ -460,12 +460,12 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
 
     parameter ModelStructure modelStructure=ModelStructure.avb annotation(Evaluate=true);
 
-    Medium.EnthalpyFlowRate ports_a_H_flow[n_a];
-    Medium.EnthalpyFlowRate ports_b_H_flow[n_b];
-    Medium.MassFlowRate ports_a_mXi_flow[n_a,Medium.nXi];
-    Medium.MassFlowRate ports_b_mXi_flow[n_b,Medium.nXi];
-    Medium.ExtraPropertyFlowRate ports_a_mC_flow[n_a,Medium.nC];
-    Medium.ExtraPropertyFlowRate ports_b_mC_flow[n_b,Medium.nC];
+    Medium.EnthalpyFlowRate ports_a_H_flow[nPorts_a];
+    Medium.EnthalpyFlowRate ports_b_H_flow[nPorts_b];
+    Medium.MassFlowRate ports_a_mXi_flow[nPorts_a,Medium.nXi];
+    Medium.MassFlowRate ports_b_mXi_flow[nPorts_b,Medium.nXi];
+    Medium.ExtraPropertyFlowRate ports_a_mC_flow[nPorts_a,Medium.nC];
+    Medium.ExtraPropertyFlowRate ports_b_mC_flow[nPorts_b,Medium.nC];
 
     annotation (Icon(coordinateSystem(
           preserveAspectRatio=true,
@@ -517,7 +517,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
   equation
     // Only one connection allowed to a port to avoid unwanted ideal mixing
   /*
-for i in 1:n_a loop
+for i in 1:nPorts_a loop
   assert(cardinality(ports_a[i]) <= 1,"
 ports_a[" + String(i) + "] of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
@@ -526,7 +526,7 @@ of the modeller.
 ");
 end for;
  
-for i in 1:n_b loop
+for i in 1:nPorts_b loop
   assert(cardinality(ports_b[i]) <= 1,"
 ports_a[" + String(i) + "] of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
@@ -567,7 +567,7 @@ end for;
         "Trace substance mass balance";
     end for;
 
-    for i in 1:n_a loop
+    for i in 1:nPorts_a loop
       ports_a[i].h_outflow  = medium.h;
       ports_a[i].Xi_outflow = medium.Xi;
       ports_a[i].C_outflow = C;
@@ -580,7 +580,7 @@ end for;
         "Trace substance mass flow";
     end for;
 
-    for i in 1:n_b loop
+    for i in 1:nPorts_b loop
       ports_b[i].h_outflow  = medium.h;
       ports_b[i].Xi_outflow = medium.Xi;
       ports_b[i].C_outflow = C;
@@ -594,15 +594,15 @@ end for;
     end for;
 
     if modelStructure==ModelStructure.avb or modelStructure == ModelStructure.av_b then
-      ports_a.p=fill(medium.p, n_a);
+      ports_a.p=fill(medium.p, nPorts_a);
     else
-      ports_a.p-fill(medium.p,n_a) = ports_a.m_flow*dp_nominal/m_flow_nominal;
+      ports_a.p-fill(medium.p,nPorts_a) = ports_a.m_flow*dp_nominal/m_flow_nominal;
     end if;
 
     if modelStructure==ModelStructure.avb or modelStructure==ModelStructure.a_vb then
-      ports_b.p=fill(medium.p,n_b);
+      ports_b.p=fill(medium.p,nPorts_b);
     else
-      ports_b.p-fill(medium.p,n_b)=ports_b.m_flow*dp_nominal/m_flow_nominal;
+      ports_b.p-fill(medium.p,nPorts_b)=ports_b.m_flow*dp_nominal/m_flow_nominal;
     end if;
 
     U=m*medium.u;

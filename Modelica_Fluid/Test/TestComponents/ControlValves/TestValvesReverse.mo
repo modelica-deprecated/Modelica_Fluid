@@ -1,17 +1,20 @@
 within Modelica_Fluid.Test.TestComponents.ControlValves;
 model TestValvesReverse "Test case for valves with reverse and zero flow"
+  import Modelica_Fluid;
   extends Modelica.Icons.Example;
   package Medium = Modelica.Media.Water.StandardWater;
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP1(
     T=system.T_ambient,
     redeclare package Medium = 
         Modelica.Media.Water.StandardWaterOnePhase,
+    nPorts=2,
     p=1000000) 
   annotation (Placement(transformation(extent={{-100,26},{-80,46}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SourceP2(
     T=system.T_ambient,
     redeclare package Medium = 
         Modelica.Media.Water.StandardWaterOnePhase,
+    nPorts=2,
     p=800000) 
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
             0)));
@@ -105,10 +108,11 @@ equation
   connect(V4.port_b, SinkP3.ports[1]) 
                                   annotation (Line(points={{-20,-68},{6,-68}}));
   connect(SourceP1.ports[1], V1.port_a) 
-                                   annotation (Line(points={{-80,36},{-68,36},{
+                                   annotation (Line(points={{-80,38},{-68,38},{
           -68,68},{-50,68}}, color={0,127,255}));
-  connect(SourceP1.ports[1], V2.port_a) 
-                                   annotation (Line(points={{-80,36},{-38,36}},
+  connect(SourceP1.ports[2], V2.port_a) 
+                                   annotation (Line(points={{-80,34},{-59,34},{
+          -59,36},{-38,36}},
         color={0,127,255}));
   connect(V2.port_b, V5.port_a) 
                              annotation (Line(points={{-18,36},{5,36},{5,6},{30,
@@ -116,22 +120,22 @@ equation
   connect(V3.port_b, V5.port_a) 
                              annotation (Line(points={{-18,-28},{6,-28},{6,6},{
           30,6}}, color={0,127,255}));
-  connect(SourceP2.ports[1], V4.port_a) 
-                                   annotation (Line(points={{-80,-40},{-60,-40},
+  connect(SourceP2.ports[2], V4.port_a) 
+                                   annotation (Line(points={{-80,-42},{-60,-42},
           {-60,-68},{-40,-68}}, color={0,127,255}));
   connect(SourceP2.ports[1], V3.port_a) 
-                                   annotation (Line(points={{-80,-40},{-60,-40},
+                                   annotation (Line(points={{-80,-38},{-60,-38},
           {-60,-28},{-38,-28}}, color={0,127,255}));
   connect(OpenRelief.y, V1.stemPosition) annotation (Line(points={{-71,80},{-40,
-          80},{-40,77}}, color={0,0,127}));
+          80},{-40,76}}, color={0,0,127}));
   connect(OpenRelief.y, V4.stemPosition) annotation (Line(points={{-71,80},{-64,
-          80},{-64,-52},{-30,-52},{-30,-59}}, color={0,0,127}));
+          80},{-64,-52},{-30,-52},{-30,-60}}, color={0,0,127}));
   connect(CloseValves.y, V2.stemPosition) annotation (Line(points={{-75,-2},{
-          -46,-2},{-46,54},{-28,54},{-28,45}}, color={0,0,127}));
+          -46,-2},{-46,54},{-28,54},{-28,44}}, color={0,0,127}));
   connect(CloseValves.y, V3.stemPosition) annotation (Line(points={{-75,-2},{
-          -28,-2},{-28,-19}}, color={0,0,127}));
+          -28,-2},{-28,-20}}, color={0,0,127}));
   connect(CloseLoad.y, V5.stemPosition) annotation (Line(points={{29,36},{40,36},
-          {40,15}}, color={0,0,127}));
+          {40,14}}, color={0,0,127}));
   connect(V5.port_b, SinkP1.ports[1]) 
     annotation (Line(points={{50,6},{62,6}}, color={0,127,255}));
 end TestValvesReverse;

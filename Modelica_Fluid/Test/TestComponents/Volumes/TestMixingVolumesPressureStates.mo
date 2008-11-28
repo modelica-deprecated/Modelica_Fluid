@@ -71,7 +71,7 @@ equation
       points={{-80,40},{-70,40}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(simpleGenericOrifice1.port_b, MixingVolume1.port_a) annotation (Line(
+  connect(simpleGenericOrifice1.port_b, MixingVolume1.ports_a[1]) annotation (Line(
       points={{-50,40},{-30.2,40}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -79,11 +79,11 @@ equation
       points={{-50,40},{-40,40},{-40,70}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(MixingVolume2.port_a, MixingVolume1.port_b) annotation (Line(
+  connect(MixingVolume2.ports_a[1], MixingVolume1.ports_b[1]) annotation (Line(
       points={{9.8,40},{-10,40}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(MixingVolume2.port_b, simpleGenericOrifice2.port_a) annotation (Line(
+  connect(MixingVolume2.ports_b[1], simpleGenericOrifice2.port_a) annotation (Line(
       points={{30,40},{50,40}},
       color={0,127,255},
       smooth=Smooth.None));

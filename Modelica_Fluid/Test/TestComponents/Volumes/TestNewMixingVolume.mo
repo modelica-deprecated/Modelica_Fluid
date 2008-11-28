@@ -38,9 +38,9 @@ model TestNewMixingVolume
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}},
           rotation=0)));
 equation
-  connect(FlowSource.ports[1], Volume.port_a) annotation (Line(points={{-62,10},{
+  connect(FlowSource.ports[1], Volume.ports_a[1]) annotation (Line(points={{-62,10},{
           -42.2,10}}, color={0,127,255}));
-  connect(Volume.port_b, Valve.port_a) 
+  connect(Volume.ports_b[1], Valve.port_a) 
     annotation (Line(points={{-22,10},{2,10}}, color={0,127,255}));
   connect(Valve.port_b, Sink.ports[1]) 
     annotation (Line(points={{22,10},{40,10}}, color={0,127,255}));

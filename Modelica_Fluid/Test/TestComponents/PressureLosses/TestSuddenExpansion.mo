@@ -18,7 +18,8 @@ model TestSuddenExpansion
       = Medium,
     p=system.p_ambient,
     T=system.T_ambient,
-    usePressureInput=true) 
+    usePressureInput=true,
+    nPorts=2) 
     annotation (Placement(transformation(extent={{-40,40},{-20,60}}, rotation=0)));
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 
     annotation (Placement(transformation(extent={{-80,40},{-60,60}}, rotation=0)));
@@ -56,15 +57,16 @@ equation
                                     annotation (Line(points={{-59,50},{-52,50},
           {-52,56},{-42,56}}, color={0,0,127}));
   connect(ambient_a.ports[1], expansion1.port_a) 
-                                           annotation (Line(points={{-20,50},{0,
-          50}}, color={0,127,255}));
+                                           annotation (Line(points={{-20,52},{
+          -10,52},{-10,50},{0,50}},
+                color={0,127,255}));
   connect(expansion1.port_b, ambient_p1.ports[1]) 
                                               annotation (Line(points={{20,50},
           {40,50}}, color={0,127,255}));
   connect(expansion2.port_b, ambient_p2.ports[1]) 
                                               annotation (Line(points={{20,20},
           {40,20}}, color={0,127,255}));
-  connect(expansion2.port_a, ambient_a.ports[1]) 
+  connect(expansion2.port_a, ambient_a.ports[2]) 
                                            annotation (Line(points={{0,20},{-10,
-          20},{-10,50},{-20,50}}, color={0,127,255}));
+          20},{-10,48},{-20,48}}, color={0,127,255}));
 end TestSuddenExpansion;

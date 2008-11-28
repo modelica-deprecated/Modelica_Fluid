@@ -117,11 +117,11 @@ package Pipes "Lumped, distributed and thermal pipe components"
     connect(wallFriction2.port_b, port_b) 
       annotation (Line(points={{60,-20},{80,-20},{80,0},{100,0}},
                                                 color={0,127,255}));
-    connect(volume.port_a, wallFriction1.port_b)       annotation (Line(
+    connect(volume.ports_a[1], wallFriction1.port_b)       annotation (Line(
         points={{-10.2,-20},{-40,-20}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(volume.port_b, wallFriction2.port_a)       annotation (Line(
+    connect(volume.ports_b[1], wallFriction2.port_a)       annotation (Line(
         points={{10,-20},{40,-20}},
         color={0,127,255},
         smooth=Smooth.None));
@@ -739,11 +739,11 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={0,127,255}),
             Text(
-              extent={{-150,-94},{150,-134}},
+              extent={{-150,-92},{150,-132}},
               lineColor={0,0,255},
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={0,127,255},
-              textString="%name")}),           Documentation(info="<html>
+              textString="%name")}),        Documentation(info="<html>
 <p>
 Base class for one dimensional flow models. It specializes a PartialTwoPort with a parameter interface and icon graphics.
 </p>
@@ -801,23 +801,15 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       annotation (defaultComponentName="pipe",Icon(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={
-            Rectangle(
+            grid={1,1}), graphics={Rectangle(
               extent={{-100,44},{100,-44}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={192,192,192}),
-            Rectangle(
+              fillColor={192,192,192}), Rectangle(
               extent={{-100,40},{100,-40}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={0,127,255}),
-            Text(
-              extent={{-150,-94},{150,-134}},
-              lineColor={0,0,255},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={0,127,255},
-              textString="%name")}),           Documentation(info="<html>
+              fillColor={0,127,255})}),           Documentation(info="<html>
 <p>
 Base class for one dimensional flow models with accumulation. It specializes a PartialTwoPortFlow with dynamics parameters and a heat transfer model.
 </p>

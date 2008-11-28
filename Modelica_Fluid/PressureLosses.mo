@@ -21,7 +21,7 @@ model StaticHead
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={192,192,192}),
           Rectangle(
-            extent={{-100,34},{100,-36}},
+            extent={{-100,48},{100,-48}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255}),
@@ -30,18 +30,7 @@ model StaticHead
             lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString="%name"),
-          Line(
-            points={{30,-90},{-60,-90}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-76},{60,-90},{20,-104},{20,-76}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
-                                           Documentation(info="<html>
+            textString="%name")}),         Documentation(info="<html>
 <p>
 This model describes the static head due to the relative height between the two connectors. No mass, energy and momentum storage, and no pressure drop due to friction are considered.
 </p>
@@ -107,17 +96,7 @@ model SimpleGenericOrifice
           Text(
             extent={{-168,-96},{180,-138}},
             lineColor={0,0,0},
-            textString="zeta=%zeta"),
-          Line(
-            points={{30,-70},{-60,-70}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-56},{60,-70},{20,-84},{20,-56}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+            textString="zeta=%zeta")}),
     Documentation(info="<html>
 <p>
 This pressure drop component defines a
@@ -277,7 +256,7 @@ end SimpleGenericOrifice;
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={192,192,192}),
           Rectangle(
-            extent={{-100,34},{100,-36}},
+            extent={{-100,44},{100,-45}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255}),
@@ -286,17 +265,7 @@ end SimpleGenericOrifice;
             lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString="%name"),
-          Line(
-            points={{30,-85},{-60,-85}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-70},{60,-85},{20,-100},{20,-70}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),Documentation(info="<html>
+            textString="%name")}),           Documentation(info="<html>
 <p>
 This model describes pressure losses due to <b>wall friction</b> in a pipe
 and due to gravity.
@@ -420,7 +389,7 @@ model SuddenExpansion
             fillColor={0,127,255},
             textString="%name"),
           Rectangle(
-            extent={{-100,80},{100,-80}},
+            extent={{-100,60},{100,-60}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={192,192,192}),
@@ -430,20 +399,10 @@ model SuddenExpansion
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255}),
           Rectangle(
-            extent={{0,60},{100,-60}},
+            extent={{0,50},{100,-50}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255}),
-          Line(
-            points={{30,-100},{-60,-100}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-85},{60,-100},{20,-115},{20,-85}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+            fillColor={0,127,255})}),
       Documentation(info="<html>
  
 </html>"));
@@ -472,35 +431,25 @@ model SharpEdgedOrifice
             fillColor={0,127,255},
             textString="%name"),
           Rectangle(
-            extent={{-100,80},{100,-80}},
+            extent={{-100,60},{100,-60}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={192,192,192}),
           Rectangle(
-            extent={{-100,60},{100,-60}},
+            extent={{-100,50},{100,-50}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255}),
           Polygon(
-            points={{-24,60},{-24,12},{36,50},{36,60},{-24,60}},
+            points={{-25,50},{-25,7},{35,45},{35,50},{-25,50}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={255,255,255}),
           Polygon(
-            points={{-22,-10},{-22,-60},{38,-60},{38,-50},{-22,-10}},
+            points={{-24.5,-5},{-24.5,-50},{35.5,-50},{35.5,-45},{-24.5,-5}},
             lineColor={0,0,0},
             fillColor={255,255,255},
-            fillPattern=FillPattern.Backward),
-          Line(
-            points={{40,-100},{-50,-100}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{30,-85},{70,-100},{30,-115},{30,-85}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+            fillPattern=FillPattern.Backward)}),
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
               100,100}},
           grid={1,1}), graphics={
@@ -1729,8 +1678,8 @@ The used sufficient criteria for monotonicity follows from:
           "Absolute roughness of pipe (> 0 required, details see info layer)";
       annotation (
         Diagram(graphics),
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                  {100,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+                  100,100}}), graphics={
               Text(
                 extent={{-150,80},{150,120}},
                 lineColor={0,0,0},
@@ -3425,12 +3374,10 @@ b has the same sign of the change of density.</p>
 
   partial model PartialTwoPortTransport
       "Partial element transporting fluid between two ports without storing mass or energy"
+    extends Modelica_Fluid.Interfaces.PartialTwoPort(
+      final port_a_exposesState=false,
+      final port_b_exposesState=false);
       import Modelica.Constants;
-    outer Modelica_Fluid.System system "System properties";
-    replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-                                                                         annotation (
-        choicesAllMatching =                                                                            true);
 
     //Assumptions
     parameter Boolean allowFlowReversal = system.allowFlowReversal
