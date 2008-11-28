@@ -4,7 +4,7 @@ package TestOverdeterminedSteadyStateInit
   model HeatingSystem "Simple model of a heating system"
      replaceable package Medium = Modelica.Media.Water.StandardWater 
        constrainedby Modelica.Media.Interfaces.PartialMedium;
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}}),
                         graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -18,10 +18,11 @@ package TestOverdeterminedSteadyStateInit
       p_static_at_port=true,
       area=0.01,
       V0=0.01,
-      pipe_diameters={0.025},
       initType=Modelica_Fluid.Types.Init.InitialValues,
       height=2,
-      level_start=1) 
+      level_start=1,
+      n_ports=2,
+      pipe_diameters={0.025,0.025}) 
                 annotation (Placement(transformation(extent={{-76,6},{-54,28}},
             rotation=0)));
     Pumps.Pump pump(
@@ -127,8 +128,8 @@ package TestOverdeterminedSteadyStateInit
   tankLevel = tank.level;
     connect(valvePosition, valve.stemPosition) annotation (Line(points={{-108,0},
             {-86,0},{-86,66},{50,66},{50,2.4}}, color={0,0,127}));
-    connect(pump.port_b, massFlowRate.port_a) annotation (Line(points={{-40,-6},{
-            -40,-3.4},{-34,-3.4},{-34,-4}},        color={0,127,255}));
+    connect(pump.port_b, massFlowRate.port_a) annotation (Line(points={{-38,-6},
+            {-38,-3.4},{-34,-3.4},{-34,-4}},       color={0,127,255}));
     connect(massFlowRate.m_flow, circuitFlowRate) annotation (Line(points={{-24,
             7},{-24,38},{36,38},{36,22},{98,22}}, color={0,0,127}));
     connect(massFlowRate.port_b, pipe.port_a) annotation (Line(points={{-14,-4},
@@ -147,14 +148,18 @@ package TestOverdeterminedSteadyStateInit
             -46},{-33,-88},{76,-88},{76,-68},{98,-68}}, color={0,0,127}));
     connect(radiator.port_a, valve.port_b) annotation (Line(points={{28,-66},{
             68,-66},{68,-4},{58,-4}}, color={0,127,255}));
-    connect(pump.port_a, radiator.port_b) annotation (Line(points={{-56,-6},{-56,
-            -66},{8,-66}}, color={0,127,255}));
     connect(sensor_T_2.port, radiator.port_b) annotation (Line(points={{-26,-56},
             {-26,-66},{8,-66}}, color={0,127,255}));
     connect(radiator.port_a, sensor_T_1.port) annotation (Line(points={{28,-66},
             {46,-66},{46,-56}}, color={0,127,255}));
-    connect(pump.port_a, tank.ports[1]) annotation (Line(points={{-56,-6},{-65.55,
-            -6},{-65.55,6}}, color={0,127,255}));
+    connect(radiator.port_b, tank.ports[1]) annotation (Line(
+        points={{8,-66},{-65.55,-66},{-65.55,4.9}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(tank.ports[2], pump.port_a) annotation (Line(
+        points={{-65.55,7.1},{-65.55,-6},{-58,-6}},
+        color={0,127,255},
+        smooth=Smooth.None));
   end HeatingSystem;
 
   model Test1 "Prescribed inputs, initial values"
