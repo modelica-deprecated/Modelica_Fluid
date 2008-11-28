@@ -37,20 +37,20 @@ model TestSharpEdgedOrifice
     annotation (Placement(transformation(extent={{60,10},{40,30}}, rotation=0)));
   Modelica_Fluid.PressureLosses.SharpEdgedOrifice orifice1(
     redeclare package Medium = Medium,
-    D_pipe=0.1,
+    diameter=0.1,
     alpha=50,
-    D_min=0.02,
-    L=0.005,
+    leastDiameter=0.02,
+    length=0.005,
     show_Re=true) 
              annotation (Placement(transformation(extent={{0,40},{20,60}},
           rotation=0)));
   Modelica_Fluid.PressureLosses.SharpEdgedOrifice orifice2(
     redeclare package Medium = Medium,
-    D_pipe=0.1,
+    diameter=0.1,
     alpha=50,
     from_dp=false,
-    D_min=0.02,
-    L=0.005) annotation (Placement(transformation(extent={{0,10},{20,30}},
+    leastDiameter=0.02,
+    length=0.005) annotation (Placement(transformation(extent={{0,10},{20,30}},
           rotation=0)));
 
   inner Modelica_Fluid.System system 

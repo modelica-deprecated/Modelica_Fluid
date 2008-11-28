@@ -16,13 +16,13 @@ package TestOverdeterminedSteadyStateInit
     Volumes.OpenTank tank(
       redeclare package Medium = Medium,
       p_static_at_port=true,
-      area=0.01,
+      crossArea=0.01,
       V0=0.01,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       height=2,
       level_start=1,
-      n_ports=2,
-      pipe_diameters={0.025,0.025}) 
+      nPorts=2,
+      pipeDiameters={0.025,0.025}) 
                 annotation (Placement(transformation(extent={{-76,6},{-54,28}},
             rotation=0)));
     Pumps.Pump pump(
@@ -138,8 +138,9 @@ package TestOverdeterminedSteadyStateInit
           color={0,127,255}));
     connect(thermalConductor1.port_b, radiator.heatPort) annotation (Line(
           points={{18,-56},{18,-60.6}}, color={191,0,0}));
-    connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{22,22},
-            {22,1.4}},     color={191,0,0}));
+    connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{
+            22,22},{22,1.4}},
+                           color={191,0,0}));
     connect(ambientTemperature.port, thermalConductor1.port_a) annotation (Line(
           points={{2,-33},{18,-33},{18,-40}}, color={191,0,0}));
     connect(sensor_T_1.T, hotWaterTemperature) annotation (Line(points={{39,-46},

@@ -3,10 +3,10 @@ model TestPressureDropDerivatives
   "Test that PressureDrop components can be differentiated"
   import Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent;
   extends Modelica.Icons.Example;
-  parameter SI.Diameter D_a = 0.1 "Inner diameter of pipe at port_a";
-  parameter SI.Diameter D_b = 0.2 "Inner diameter of pipe at port_b";
+  parameter SI.Diameter diameter_a = 0.1 "Inner diameter of pipe at port_a";
+  parameter SI.Diameter diameter_b = 0.2 "Inner diameter of pipe at port_b";
   parameter QuadraticTurbulent.LossFactorData data=
-                  QuadraticTurbulent.LossFactorData.suddenExpansion(D_a, D_b)
+                  QuadraticTurbulent.LossFactorData.suddenExpansion(diameter_a, diameter_b)
     "Loss factors for both flow directions";
   parameter SI.Pressure dp_small = 0.1;
 

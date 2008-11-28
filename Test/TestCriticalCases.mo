@@ -1815,7 +1815,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Pipes.DistributedPipeLumpedPressure pipe(
+    Pipes.DistributedPipe pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       nNodes=5,
       h_start=2e6,

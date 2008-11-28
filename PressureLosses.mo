@@ -367,9 +367,9 @@ simulation and/or might give a more robust simulation.
 model SuddenExpansion
     "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"
   extends PressureLosses.BaseClasses.QuadraticTurbulent.BaseModel(
-     final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.suddenExpansion(D_a, D_b));
-  parameter SI.Diameter D_a "Inner diameter of pipe at port_a";
-  parameter SI.Diameter D_b "Inner diameter of pipe at port_b";
+     final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.suddenExpansion(diameter_a, diameter_b));
+  parameter SI.Diameter diameter_a "Inner diameter of pipe at port_a";
+  parameter SI.Diameter diameter_b "Inner diameter of pipe at port_b";
 
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -398,7 +398,7 @@ model SuddenExpansion
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString="D_a"),
+            textString="diameter_a"),
           Line(
             points={{34,-100},{34,100}},
             color={0,0,255},
@@ -408,7 +408,7 @@ model SuddenExpansion
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString="D_b")}),
+            textString="diameter_b")}),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}},
           grid={1,1}), graphics={
@@ -452,11 +452,11 @@ model SharpEdgedOrifice
     "Pressure drop due to sharp edged orifice (for both flow directions)"
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
   extends PressureLosses.BaseClasses.QuadraticTurbulent.BaseModel(
-     final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(D_pipe, D_min, L, alpha));
-  parameter SI.Diameter D_pipe
+     final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(diameter, leastDiameter, length, alpha));
+  parameter SI.Length length "Length of orifice";
+  parameter SI.Diameter diameter
       "Inner diameter of pipe (= same at port_a and port_b)";
-  parameter SI.Diameter D_min "Smallest diameter of orifice";
-  parameter SI.Diameter L "Length of orifice";
+  parameter SI.Diameter leastDiameter "Smallest diameter of orifice";
   parameter NonSI.Angle_deg alpha "Angle of orifice";
   annotation (defaultComponentName="orifice",
     Documentation(info="<html>
@@ -527,7 +527,7 @@ model SharpEdgedOrifice
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString="D_pipe"),
+            textString="diameter"),
           Line(
             points={{-30,-10},{-30,12}},
             color={0,0,255},
@@ -537,13 +537,13 @@ model SharpEdgedOrifice
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString="D_min"),
+            textString="leastDiameter"),
           Text(
             extent={{-20,84},{18,70}},
             lineColor={0,0,255},
             fillColor={0,0,255},
             fillPattern=FillPattern.Solid,
-            textString="L"),
+            textString="length"),
           Line(
             points={{30,68},{-30,68}},
             color={0,0,255},
@@ -733,8 +733,8 @@ can appear, this component should not be used.
 
             extends Modelica.Icons.Record;
 
-      SI.Diameter D_a "Diameter at port_a" annotation(Dialog);
-      SI.Diameter D_b "Diameter at port_b" annotation(Dialog);
+      SI.Diameter diameter_a "Diameter at port_a" annotation(Dialog);
+      SI.Diameter diameter_b "Diameter at port_b" annotation(Dialog);
       Real zeta1 "Loss factor for flow port_a -> port_b" annotation(Dialog);
       Real zeta2 "Loss factor for flow port_b -> port_a" annotation(Dialog);
       SI.ReynoldsNumber Re_turbulent
@@ -903,8 +903,7 @@ The used sufficient criteria for monotonicity follows from:
                   lineColor={0,0,255},
                   fillColor={0,0,255},
                   fillPattern=FillPattern.Solid,
-                  textString=
-                      "diameter"),
+                  textString="diameter"),
                 Line(
                   points={{-100,74},{100,74}},
                   color={0,0,255},
@@ -914,8 +913,7 @@ The used sufficient criteria for monotonicity follows from:
                   lineColor={0,0,255},
                   fillColor={0,0,255},
                   fillPattern=FillPattern.Solid,
-                  textString=
-                      "length")}),
+                  textString="length")}),
            Documentation(info="<html>
 <p>
 Friction in straight pipe with walls of nonuniform roughness 
@@ -992,8 +990,8 @@ As a short summary:
         protected
          Real Delta = roughness/diameter "relative roughness";
        algorithm
-         data.D_a          := diameter;
-         data.D_b          := diameter;
+         data.diameter_a          := diameter;
+         data.diameter_b          := diameter;
          data.zeta1        := (length/diameter)/(2*lg(3.7 /Delta))^2;
          data.zeta2        := data.zeta1;
          data.Re_turbulent := 4000
@@ -1010,11 +1008,12 @@ As a short summary:
           import
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           import SI = Modelica.SIunits;
-         input SI.Diameter D_a "Inner diameter of pipe at port_a" annotation(Dialog);
-         input SI.Diameter D_b "Inner diameter of pipe at port_b" annotation(Dialog);
+         input SI.Diameter diameter_a "Inner diameter of pipe at port_a" annotation(Dialog);
+         input SI.Diameter diameter_b "Inner diameter of pipe at port_b" annotation(Dialog);
          output LossFactorData data
             "Pressure loss factors for both flow directions";
-         annotation (Icon(graphics={
+         annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                    -100},{100,100}}), graphics={
                 Rectangle(
                   extent={{-100,40},{0,-40}},
                   lineColor={255,255,255},
@@ -1025,11 +1024,13 @@ As a short summary:
                   lineColor={255,255,255},
                   fillColor={255,255,255},
                   fillPattern=FillPattern.Solid),
-                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,
-                      -100},{100,100},{0,100},{0,40}}, color={0,0,0})}),
-                                   Diagram(graphics={
-                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,
-                      -100},{100,100},{0,100},{0,40}}, color={0,0,0}),
+                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{
+                      100,-100},{100,100},{0,100},{0,40}}, color={0,0,0})}),
+                                   Diagram(coordinateSystem(
+                  preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+                graphics={
+                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{
+                      100,-100},{100,100},{0,100},{0,40}}, color={0,0,0}),
                 Rectangle(
                   extent={{-100,40},{0,-40}},
                   lineColor={255,255,255},
@@ -1040,8 +1041,8 @@ As a short summary:
                   lineColor={255,255,255},
                   fillColor={255,255,255},
                   fillPattern=FillPattern.Solid),
-                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,
-                      -100},{100,100},{0,100},{0,40}}, color={0,0,0}),
+                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{
+                      100,-100},{100,100},{0,100},{0,40}}, color={0,0,0}),
                 Line(
                   points={{-60,-40},{-60,40}},
                   color={0,0,255},
@@ -1051,8 +1052,7 @@ As a short summary:
                   lineColor={0,0,255},
                   fillColor={0,0,255},
                   fillPattern=FillPattern.Solid,
-                  textString=
-                      "D_a"),
+                  textString="diameter_a"),
                 Line(
                   points={{34,-100},{34,100}},
                   color={0,0,255},
@@ -1062,8 +1062,7 @@ As a short summary:
                   lineColor={0,0,255},
                   fillColor={0,0,255},
                   fillPattern=FillPattern.Solid,
-                  textString=
-                      "D_b")}),
+                  textString="diameter_b")}),
            Documentation(info="<html>
 <p>
 The loss factors are given for mass flow rates from 
@@ -1084,26 +1083,26 @@ port_a to port_b as:
         protected
          Real A_rel;
        algorithm
-         data.D_a          := D_a;
-         data.D_b          := D_b;
+         data.diameter_a          := diameter_a;
+         data.diameter_b          := diameter_b;
          data.Re_turbulent := 100;
          data.zetaLaminarKnown := true;
          data.c0 := 30;
 
-         if D_a <= D_b then
-            A_rel :=(D_a/D_b)^2;
+         if diameter_a <= diameter_b then
+            A_rel :=(diameter_a/diameter_b)^2;
             data.zeta1 :=(1 - A_rel)^2;
             data.zeta2 :=0.5*(1 - A_rel)^0.75;
             data.zeta1_at_a :=true;
             data.zeta2_at_a :=true;
-            data.D_Re := D_a;
+            data.D_Re := diameter_a;
          else
-            A_rel :=(D_b/D_a)^2;
+            A_rel :=(diameter_b/diameter_a)^2;
             data.zeta1 :=0.5*(1 - A_rel)^0.75;
             data.zeta2 :=(1 - A_rel)^2;
             data.zeta1_at_a :=false;
             data.zeta2_at_a :=false;
-            data.D_Re := D_b;
+            data.D_Re := diameter_b;
          end if;
        end suddenExpansion;
 
@@ -1113,19 +1112,20 @@ port_a to port_b as:
           import
             Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
           import SI = Modelica.SIunits;
-          input SI.Diameter D_pipe
+          input SI.Diameter diameter
             "Inner diameter of pipe (= same at port_a and port_b)" 
                                                                   annotation(Dialog);
-          input SI.Diameter D_min "Smallest diameter of orifice" 
+          input SI.Diameter leastDiameter "Smallest diameter of orifice" 
                                                                 annotation(Dialog);
-          input SI.Diameter L "Length of orifice" 
+          input SI.Diameter length "Length of orifice" 
                                                  annotation(Dialog);
           input NonSI.Angle_deg alpha "Angle of orifice" 
                                                         annotation(Dialog);
           output LossFactorData data
             "Pressure loss factors for both flow directions";
           annotation (
-            Icon(graphics={
+            Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                    -100},{100,100}}), graphics={
                 Rectangle(
                   extent={{-100,60},{100,-60}},
                   lineColor={0,0,0},
@@ -1141,7 +1141,8 @@ port_a to port_b as:
                   lineColor={0,0,0},
                   fillColor={255,255,255},
                   fillPattern=FillPattern.Backward)}),
-            Diagram(graphics={
+            Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                    -100},{100,100}}), graphics={
                 Rectangle(
                   extent={{-100,60},{100,-60}},
                   lineColor={0,0,0},
@@ -1166,8 +1167,7 @@ port_a to port_b as:
                   lineColor={0,0,255},
                   fillColor={0,0,255},
                   fillPattern=FillPattern.Solid,
-                  textString=
-                       "D_pipe"),
+                  textString="diameter"),
                 Line(
                   points={{-30,-10},{-30,12}},
                   color={0,0,255},
@@ -1177,15 +1177,13 @@ port_a to port_b as:
                   lineColor={0,0,255},
                   fillColor={0,0,255},
                   fillPattern=FillPattern.Solid,
-                  textString=
-                       "D_min"),
+                  textString="leastDiameter"),
                 Text(
                   extent={{-20,84},{18,70}},
                   lineColor={0,0,255},
                   fillColor={0,0,255},
                   fillPattern=FillPattern.Solid,
-                  textString=
-                       "L"),
+                  textString="length"),
                 Line(
                   points={{30,68},{-30,68}},
                   color={0,0,255},
@@ -1199,8 +1197,7 @@ port_a to port_b as:
                   lineColor={0,0,255},
                   fillColor={0,0,255},
                   fillPattern=FillPattern.Backward,
-                  textString=
-                       "alpha")}),
+                  textString="alpha")}),
             Documentation(info="<html>
 <p>
 Loss factor for mass flow rate from port_a to port_b
@@ -1226,17 +1223,17 @@ Loss factor for mass flow rate from port_b to port_a
 </pre
 </html>"));
         protected
-          Real D_rel=D_min/D_pipe;
-          Real LD=L/D_min;
+          Real D_rel=leastDiameter/diameter;
+          Real LD=length/leastDiameter;
           Real k=0.13 + 0.34*10^(-(3.4*LD + 88.4*LD^2.3));
        algorithm
-          data.D_a := D_pipe;
-          data.D_b := D_pipe;
+          data.diameter_a := diameter;
+          data.diameter_b := diameter;
           data.zeta1 := ((1 - D_rel) + 0.707*(1 - D_rel)^0.375)^2*(1/D_rel)^2;
           data.zeta2 := k*(1 - D_rel)^0.75 + (1 - D_rel)^2 + 2*sqrt(k*(1 -
             D_rel)^0.375) + (1 - D_rel);
           data.Re_turbulent := 1e4;
-          data.D_Re := D_min;
+          data.D_Re := leastDiameter;
           data.zeta1_at_a := true;
           data.zeta2_at_a := false;
           data.zetaLaminarKnown := false;
@@ -1271,8 +1268,8 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
 </p>
 </html>"));
       protected
-        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
-        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
+        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.diameter_a else data.diameter_b,data.zeta1);
+        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.diameter_a else data.diameter_b,data.zeta2);
       algorithm
         /*
    dp = 0.5*zeta*d*v*|v|
@@ -1372,8 +1369,8 @@ The used sufficient criteria for monotonicity follows from:
       protected
         constant Real pi=Modelica.Constants.pi;
         Real k0=2*data.c0/(pi*data.D_Re^3);
-        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
-        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
+        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.diameter_a else data.diameter_b,data.zeta1);
+        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.diameter_a else data.diameter_b,data.zeta2);
         Real yd0
           "Derivative of m_flow=m_flow(dp) at zero, if data.zetaLaminarKnown";
         SI.AbsolutePressure dp_turbulent
@@ -1445,8 +1442,8 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
 </p>
 </html>"));
       protected
-        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
-        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
+        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.diameter_a else data.diameter_b,data.zeta1);
+        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.diameter_a else data.diameter_b,data.zeta2);
       algorithm
         /*
    dp = 0.5*zeta*d*v*|v|
@@ -1513,8 +1510,8 @@ The used sufficient criteria for monotonicity follows from:
       protected
         constant Real pi=Modelica.Constants.pi;
         Real k0 = 2*data.c0/(pi*data.D_Re^3);
-        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.D_a else data.D_b,data.zeta1);
-        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.D_a else data.D_b,data.zeta2);
+        Real k1 = lossConstant_D_zeta(if data.zeta1_at_a then data.diameter_a else data.diameter_b,data.zeta1);
+        Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.diameter_a else data.diameter_b,data.zeta2);
         Real yd0
           "Derivative of dp = f(m_flow) at zero, if data.zetaLaminarKnown";
         SI.MassFlowRate m_flow_turbulent
@@ -1731,8 +1728,8 @@ The used sufficient criteria for monotonicity follows from:
           "Absolute roughness of pipe (> 0 required, details see info layer)";
       annotation (
         Diagram(graphics),
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-                  100,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                  {100,100}}), graphics={
               Text(
                 extent={{-150,80},{150,120}},
                 lineColor={0,0,0},

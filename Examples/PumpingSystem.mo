@@ -45,8 +45,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     p_static_at_port=false,
-    pipe_diameters={1},
-    area=50,
+    pipeDiameters={1},
+    crossArea=50,
     level_start=2.2,
     height=3) 
     annotation (Placement(transformation(extent={{-20,-16},{0,4}}, rotation=0)));
@@ -92,8 +92,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-            100,100}},
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+            {100,100}},
         grid={1,1}),
             graphics),
     Documentation(info="<html>
@@ -132,7 +132,7 @@ equation
           80,-30}}, color={0,127,255}));
   connect(source.port, pumps.port_a) annotation (Line(points={{-80,-70},{-68,
           -70}},                             color={0,127,255}));
-  connect(valveOpening.y, userValve.opening) annotation (Line(points={{77,10},{
+  connect(valveOpening.y, userValve.stemPosition) annotation (Line(points={{77,10},{
           98,10},{98,-12},{66,-12},{66,-23.6}}, color={0,0,127}));
   connect(RelativePressureSetPoint.y, controller.reference) 
                                                     annotation (Line(points={{

@@ -61,7 +61,7 @@ present that are regulated by a central control system.
       n_TopPorts=1,
       min_level_for_heating=0.0001,
       level_start=0.0009,
-      area=0.05,
+      crossArea=0.05,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       side_pipeArea={0.0001}) 
       annotation (Placement(transformation(extent={{-100,-60},{-20,-20}},
@@ -315,7 +315,7 @@ present that are regulated by a central control system.
       level_start=0.2,
       redeclare package Medium = BatchMedium,
       levelMax=0.5,
-      area=0.05,
+      crossArea=0.05,
       V0=0.0001,
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)}) annotation (Placement(transformation(extent={{-100,180},
@@ -333,7 +333,7 @@ present that are regulated by a central control system.
       level_start=0.2,
       redeclare package Medium = BatchMedium,
       levelMax=0.5,
-      area=0.05,
+      crossArea=0.05,
       V0=0.0001,
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)}) annotation (Placement(transformation(extent={{60,180},
@@ -341,7 +341,7 @@ present that are regulated by a central control system.
     Volumes.Tank B3(
       redeclare package Medium = BatchMedium,
       levelMax=0.5,
-      area=0.05,
+      crossArea=0.05,
       V0=0.0001,
       nTopPorts=2,
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.011,
@@ -352,7 +352,7 @@ present that are regulated by a central control system.
     BaseClasses.CoolingTank B4(
       redeclare package Medium = BatchMedium,
       levelMax=0.5,
-      area=0.05,
+      crossArea=0.05,
       V0=0.0001,
       level_start=0.015,
       nTopPorts=1,
@@ -369,7 +369,7 @@ present that are regulated by a central control system.
       T_start=298,
       alpha0=4.9,
       levelMax=0.5,
-      area=0.05,
+      crossArea=0.05,
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-100,
               -140},{-60,-100}}, rotation=0)));
@@ -467,7 +467,7 @@ present that are regulated by a central control system.
       T_start=298,
       alpha0=4.9,
       levelMax=0.5,
-      area=0.05,
+      crossArea=0.05,
       level_start=0.02,
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
@@ -511,9 +511,9 @@ present that are regulated by a central control system.
     CoolingB6.Q_flow = if controller.actuators.T6_Cooling then -2000 else 0;
     CoolingB7.Q_flow = if controller.actuators.T7_Cooling then -2000 else 0;
 
-    connect(P1.port_a, V23.port_b) annotation (Line(points={{-130,-252},{-116,
+    connect(P1.port_a, V23.port_b) annotation (Line(points={{-128,-252},{-116,
             -252}}, color={0,127,255}));
-    connect(V24.port_b, P2.port_a) annotation (Line(points={{104,-250},{112,-250}},
+    connect(V24.port_b, P2.port_a) annotation (Line(points={{104,-250},{110,-250}},
                                     color={0,127,255}));
     connect(V15.port_a, B5.BottomFluidPort[1]) annotation (Line(points={{-80,-72},
             {-80,-60.4}},      color={0,127,255}));
@@ -557,8 +557,9 @@ present that are regulated by a central control system.
             88},{-80,70}}, color={0,127,255}));
     connect(V10.port_a, pipeB1B1.port_b) annotation (Line(points={{20,60},{20,
             40}}, color={0,127,255}));
-    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-80,-19.6},
-            {-80,-8}}, color={0,0,255}));
+    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-80,
+            -19.6},{-80,-8}},
+                       color={0,0,255}));
     connect(V15.port_b, B7.topPorts[1]) annotation (Line(points={{-80,-92},{-80,
             -100}}, color={0,127,255}));
     connect(B7.ports[1], pipeB7Pump.port_b) annotation (Line(points={{-80,-140},
@@ -571,12 +572,13 @@ present that are regulated by a central control system.
             {160,0}}, color={0,127,255}));
     connect(B6.ports[1], pipeB6Pump.port_b) annotation (Line(points={{60,-80},{
             60,-96}}, color={0,127,255}));
-    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{60,-40},{60,
-            -28},{-19.6,-28}}, color={0,127,255}));
+    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{60,-40},
+            {60,-28},{-19.6,-28}},
+                               color={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{100,-60},{80,
             -60}}, color={191,0,0}));
-    connect(V19.port_b, pipeB6Pump.port_a) annotation (Line(points={{-8,-190},{
-            -8,-140},{60,-140},{60,-116}}, color={0,127,255}));
+    connect(V19.port_b, pipeB6Pump.port_a) annotation (Line(points={{-8,-190},
+            {-8,-140},{60,-140},{60,-116}},color={0,127,255}));
     connect(V20.port_b, pipeB6Pump.port_a) annotation (Line(points={{60,-190},{
             60,-116}}, color={0,127,255}));
     connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-120,-40},{-102,
@@ -654,11 +656,11 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(P2.port_b, V25.port_a) annotation (Line(
-        points={{128,-250},{160,-250},{160,-30}},
+        points={{130,-250},{160,-250},{160,-30}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V22.port_a, P1.port_b) annotation (Line(
-        points={{-180,-66},{-180,-252},{-146,-252}},
+        points={{-180,-66},{-180,-252},{-148,-252}},
         color={0,127,255},
         smooth=Smooth.None));
   end BatchPlant_StandardWater;
@@ -966,9 +968,10 @@ handled properly.</p>
               fillPattern=FillPattern.Solid),
             Text(extent={{-145,-58},{146,-98}}, textString="%name"),
             Polygon(
-              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
-              fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,
-                  0} else {255,255,255}),
+              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,
+                  50}},
+              fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,
+                  255,0} else {255,255,255}),
               lineColor={0,0,0})}),
       Diagram(coordinateSystem(
             preserveAspectRatio=false,
@@ -1004,7 +1007,7 @@ handled properly.</p>
         "Medium in the component" 
         annotation (choicesAllMatching=true);
     // parameter for Tank
-      parameter Modelica.SIunits.Area area "Tank area";
+      parameter Modelica.SIunits.Area crossArea "Tank area";
       parameter SI.Area top_pipeArea[n_TopPorts] "Area of outlet pipe";
       parameter SI.Area side_pipeArea[n_SidePorts] "Area of outlet pipe";
       parameter SI.Area bottom_pipeArea[n_BottomPorts] "Area of outlet pipe";
@@ -1187,10 +1190,10 @@ handled properly.</p>
     // Energy balance
 
       U = m*medium.h - p_ambient*V "Internal energy of fluid";
-      Q_lost = -k*(2*area + 2*sqrt(Modelica.Constants.pi*area))*level*(medium.T -
+      Q_lost = -k*(2*crossArea + 2*sqrt(Modelica.Constants.pi*crossArea))*level*(medium.T -
         T_ambient);
       m = V*medium.d "Mass of fluid";
-      V = area*level + V0 "Volume of fluid";
+      V = crossArea*level + V0 "Volume of fluid";
       mXi = m*medium.Xi "Mass of fluid components";
       sat.psat = medium.p;
       sat.Tsat = Medium.saturationTemperature(medium.p);
@@ -1269,8 +1272,8 @@ handled properly.</p>
         assert(false, "Unsupported initialization option");
       end if;
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
-                200,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
+                {200,100}}), graphics={
             Rectangle(
               extent={{-200,100},{0,-90}},
               lineColor={255,255,255},
@@ -1282,7 +1285,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,
+                  0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1307,10 +1311,11 @@ handled properly.</p>
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={0,0,255}),
             Polygon(
-              points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,74},
-                  {130,60},{144,70},{152,60},{168,66},{180,54},{196,74},{190,76},
-                  {180,64},{170,70},{156,66},{148,76},{132,68},{120,80},{100,74},
-                  {88,88},{70,78},{50,92},{32,82},{28,100},{20,98},{20,98}},
+              points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,
+                  74},{130,60},{144,70},{152,60},{168,66},{180,54},{196,74},
+                  {190,76},{180,64},{170,70},{156,66},{148,76},{132,68},{
+                  120,80},{100,74},{88,88},{70,78},{50,92},{32,82},{28,100},
+                  {20,98},{20,98}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={170,255,255})}),
@@ -1327,8 +1332,8 @@ handled properly.</p>
 Full steady state initialization is not supported, because the corresponding intial equations for temperature/enthalpy are undetermined (the flow rate through the port at steady state is zero). 
 </p>
 </HTML>"),
-        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
-                {200,100}}), graphics));
+        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
+                200,100}}),  graphics));
 
     end TankWith3InletOutletArraysWithEvaporatorCondensor;
 
@@ -1385,8 +1390,8 @@ Full steady state initialization is not supported, because the corresponding int
               rotation=0)));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,
                 -200},{200,200}}),      graphics),
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},{
-                200,200}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},
+                {200,200}}), graphics={
             Rectangle(
               extent={{-200,200},{200,-200}},
               lineColor={0,0,255},
@@ -1813,7 +1818,7 @@ Full steady state initialization is not supported, because the corresponding int
 
   //Tank geometry
       parameter SI.Height levelMax "Maximum level of tank before it overflows";
-      parameter SI.Area area "Area of tank";
+      parameter SI.Area crossArea "Area of tank";
       parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
 
   //Port definitions
@@ -1975,11 +1980,11 @@ Full steady state initialization is not supported, because the corresponding int
     // Total quantities
       medium.T = heatPort.T;
       medium.p = p_ambient;
-      V = area*level + V0 "Volume of fluid";
+      V = crossArea*level + V0 "Volume of fluid";
       m = V*medium.d "Mass of fluid";
       mXi = m*medium.Xi "Mass of fluid components";
       U = m*medium.u "Internal energy of fluid";
-      Q_lost = -alpha0*(area+2*sqrt(area*Modelica.Constants.pi)*level)*(medium.T-T_ambient)
+      Q_lost = -alpha0*(crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level)*(medium.T-T_ambient)
         "Q=-k*A*dT";
 
     // Mass balances
@@ -2030,11 +2035,11 @@ Full steady state initialization is not supported, because the corresponding int
               lineColor={255,255,255},
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                  0,0}),
+            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}},
+                color={0,0,0}),
             Rectangle(
-              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
-                   + 200*level/levelMax)}}),
+              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,
+                  (-100 + 200*level/levelMax)}}),
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
@@ -2042,9 +2047,9 @@ Full steady state initialization is not supported, because the corresponding int
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
               textString=DynamicSelect(" ", realString(
-                    level,
-                    1,
-                    3))),
+                        level,
+                        1,
+                        3))),
             Line(
               points={{-100,100},{100,100}},
               color={0,0,0},

@@ -4,12 +4,12 @@ model TestOpenTank
   import Modelica_Fluid;
   Modelica_Fluid.Volumes.OpenTank upperTank(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    n_ports=2,
+    nPorts=2,
     height=20,
-    pipe_diameters={0.1,0.1},
+    pipeDiameters={0.1,0.1},
     p_static_at_port=true,
     level_start=2,
-    area=0.2,
+    crossArea=0.2,
     V0=0.1) 
     annotation (Placement(transformation(extent={{-40,20},{0,60}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate(
@@ -45,13 +45,13 @@ model TestOpenTank
         rotation=90)));
 
   Modelica_Fluid.Volumes.OpenTank lowerTank(
-    n_ports=1,
+    nPorts=1,
     height=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    pipe_diameters={0.1},
+    pipeDiameters={0.1},
     p_static_at_port=true,
     level_start=2,
-    area=1,
+    crossArea=1,
     V0=0.1) 
     annotation (Placement(transformation(extent={{40,-60},{80,-20}}, rotation=0)));
   Modelica.Blocks.Logical.Hysteresis hysteresis(
