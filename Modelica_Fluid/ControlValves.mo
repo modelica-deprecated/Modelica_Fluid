@@ -214,7 +214,7 @@ explained in detail in the
       "Nominal mass flowrate at full opening";
     final parameter Types.HydraulicConductance Kv = m_flow_nominal/dp_nominal
       "Hydraulic conductance at full opening";
-    Modelica.Blocks.Interfaces.RealInput opening(min=0,max=1)
+    Modelica.Blocks.Interfaces.RealInput stemPosition(min=0,max=1)
       "=1: completely open, =0: completely closed" 
     annotation (Placement(transformation(
           origin={0,90},
@@ -223,15 +223,15 @@ explained in detail in the
           extent={{-20,-20},{20,20}},
           rotation=270,
           origin={0,80})));
-    parameter Real minOpening(min=0, max=0.1)=0
+    parameter Real minStemPosition(min=0, max=0.1)=0
       "Minimum position of opening (leakage flow to improve numerics)" 
     annotation(Dialog(tab="Advanced"));
-    Real modifiedOpening
+    Real modifiedStemPosition
       "Modified, actually used opening, so that the valve is not completely closed to improve numerics";
 
   equation
-    modifiedOpening = smooth(0,noEvent(if opening > minOpening then opening else minOpening));
-    m_flow = Kv*modifiedOpening*dp;
+    modifiedStemPosition = smooth(0,noEvent(if stemPosition > minStemPosition then stemPosition else minStemPosition));
+    m_flow = Kv*modifiedStemPosition*dp;
 
   annotation (
     Icon(coordinateSystem(
@@ -273,7 +273,7 @@ explained in detail in the
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics),
     Documentation(info="<HTML>
-<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>opening</tt> signal, without computing any fluid property.
+<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>stemPosition</tt> signal, without computing any fluid property.
 <p>A medium model must be nevertheless be specified, so that the fluid ports can be connected to other components using the same medium model.
 </HTML>",
       revisions="<html>

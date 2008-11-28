@@ -44,6 +44,6 @@ equation
     annotation (Line(points={{-22,10},{2,10}}, color={0,127,255}));
   connect(Valve.port_b, Sink.port) 
     annotation (Line(points={{22,10},{40,10}}, color={0,127,255}));
-  connect(Step1.y, Valve.opening) annotation (Line(points={{-19,58},{12,58},{12,
+  connect(Step1.y, Valve.stemPosition) annotation (Line(points={{-19,58},{12,58},{12,
           19}}, color={0,0,127}));
 end TestNewMixingVolume;

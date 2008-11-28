@@ -119,7 +119,7 @@ This example is based on
       nTopPorts=1,
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.2,
           portLevel=0)},
-      area=6,
+      crossArea=6,
       levelMax=4)             annotation (Placement(transformation(extent={{0,
               -10},{40,30}}, rotation=0)));
     Modelica.Blocks.Sources.RealExpression level1(y=tank1.level) 
@@ -147,7 +147,7 @@ This example is based on
       level_start=0.05,
       redeclare package Medium = Medium,
       levelMax=5,
-      area=6,
+      crossArea=6,
       nTopPorts=1,
       portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.2,
           portLevel=0)})      annotation (Placement(transformation(extent={{60,

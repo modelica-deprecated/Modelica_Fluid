@@ -2,9 +2,9 @@ within Modelica_Fluid.Test.TestComponents.Sensors;
 model TestOnePortSensors1
   import Modelica_Fluid;
   package Medium = Modelica.Media.Water.StandardWater;
-  parameter Real D_a = 0.1;
-  parameter Real D_b = 0.2;
-  parameter Real A_rel = (D_a/D_b)^2;
+  parameter Real diameter_a = 0.1;
+  parameter Real diameter_b = 0.2;
+  parameter Real A_rel = (diameter_a/diameter_b)^2;
   parameter Real zeta =  (1 - A_rel)^2;
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
@@ -72,13 +72,13 @@ model TestOnePortSensors1
           rotation=0)));
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice orifice1(
     redeclare package Medium = Medium,
-    diameter=D_a,
+    diameter=diameter_a,
     zeta=zeta) annotation (Placement(transformation(extent={{40,30},{60,50}},
           rotation=0)));
   Modelica_Fluid.PressureLosses.SimpleGenericOrifice orifice2(
     redeclare package Medium = Medium,
     zeta=zeta,
-    diameter=D_a) annotation (Placement(transformation(extent={{40,-30},{60,-10}},
+    diameter=diameter_a) annotation (Placement(transformation(extent={{40,-30},{60,-10}},
           rotation=0)));
 equation
   connect(FlowSource2.port, volume1.port_a)       annotation (Line(points={{-48,40},

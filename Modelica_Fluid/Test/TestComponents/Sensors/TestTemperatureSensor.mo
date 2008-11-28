@@ -14,31 +14,31 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
-    area=2,
-    pipe_diameters={0.05}) annotation (Placement(transformation(extent={{20,0},
+    crossArea=2,
+    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{20,0},
             {40,20}}, rotation=0)));
   Modelica_Fluid.Volumes.OpenTank openTankCold1(
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
-    area=2,
-    pipe_diameters={0.05}) annotation (Placement(transformation(extent={{20,60},
+    crossArea=2,
+    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{20,60},
             {40,80}}, rotation=0)));
   Modelica_Fluid.Volumes.OpenTank openTankHot1(
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
-    area=2,
+    crossArea=2,
     T_start=SI.Conversions.from_degC(80),
-    pipe_diameters={0.05}) annotation (Placement(transformation(extent={{60,40},
+    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{60,40},
             {80,60}}, rotation=0)));
   Modelica_Fluid.Volumes.OpenTank openTankHot2(
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
-    area=2,
+    crossArea=2,
     T_start=SI.Conversions.from_degC(80),
-    pipe_diameters={0.05}) annotation (Placement(transformation(extent={{60,-20},
+    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{60,-20},
             {80,0}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -50,7 +50,9 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     useFlowRateInput=true,
     T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
            {{-60,-20},{-40,0}}, rotation=0)));
-  annotation (Diagram(graphics),
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -100},{100,100}}),
+                      graphics),
                        Documentation(info="<html>
 <p align = justify>In that test model the behaviour of one port temperature sensors with and without explicit junction models and two port temperature sensor are compared. Therefor each sensor is connected to two tanks with different temperatures and a flow source with changing flow direction.<p>
 <p align = justify>The one port sensor with explicit junction model and the two port sensor are showing the same expected results. The one port sensor without explicit junction model shows a different and unexpected behaviour. That test case shows that in all case where more are the sensor is between more than two components connected the one port sensor with explicit junction model or the two port sensor should be used!</p>
@@ -64,16 +66,16 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
-    area=2,
-    pipe_diameters={0.05}) annotation (Placement(transformation(extent={{20,-60},
+    crossArea=2,
+    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{20,-60},
             {40,-40}}, rotation=0)));
   Modelica_Fluid.Volumes.OpenTank openTankHot3(
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
-    area=2,
+    crossArea=2,
     T_start=SI.Conversions.from_degC(80),
-    pipe_diameters={0.05}) annotation (Placement(transformation(extent={{60,-80},
+    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{60,-80},
             {80,-60}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate3(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -113,15 +115,17 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(temperatureTwoPort.port_b, openTankCold2.ports[1]) annotation (Line(
-        points={{0,-10},{0,-6},{30,-6},{30,-0.5}}, color={0,127,255}));
+        points={{0,-10},{0,-6},{29.5,-6},{29.5,0}},color={0,127,255}));
   connect(temperatureOnePort.port, openTankCold1.ports[1]) annotation (Line(
-        points={{-10,40},{6,40},{6,56},{30,56},{30,59.5}}, color={0,127,255}));
+        points={{-10,40},{6,40},{6,56},{29.5,56},{29.5,60}},
+                                                           color={0,127,255}));
   connect(temperatureOnePort.port, openTankHot1.ports[1]) annotation (Line(
-        points={{-10,40},{30,40},{30,39.5},{70,39.5}}, color={0,127,255}));
+        points={{-10,40},{30,40},{30,40},{69.5,40}},   color={0,127,255}));
   connect(temperatureTwoPort.port_b, openTankHot2.ports[1]) annotation (Line(
-        points={{0,-10},{34,-10},{34,-20.5},{70,-20.5}}, color={0,127,255}));
-  connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (Line(points=
-         {{30,-70},{30,-60.5}}, color={0,127,255}));
-  connect(junctionIdeal.port_2, openTankHot3.ports[1]) annotation (Line(points=
-          {{40,-80},{55.5,-80},{55.5,-80.5},{70,-80.5}}, color={0,127,255}));
+        points={{0,-10},{34,-10},{34,-20},{69.5,-20}},   color={0,127,255}));
+  connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (Line(points={{30,-70},
+          {30,-65},{30,-60},{29.5,-60}},
+                                color={0,127,255}));
+  connect(junctionIdeal.port_2, openTankHot3.ports[1]) annotation (Line(points={{40,-80},
+          {55.5,-80},{55.5,-80},{69.5,-80}},             color={0,127,255}));
 end TestTemperatureSensor;

@@ -143,25 +143,25 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     parameter Boolean p_static_at_port=false
       "=true, kinetic energy and dissipation is accounted for in port pressure"
                                                                                                         annotation(Evaluate=true, Dialog(tab="Advanced"));
-    parameter Real[n_ports] zeta_in=fill(0, n_ports)
+    parameter Real[nPorts] zeta_in=fill(0, nPorts)
       "Hydraulic resistance into tank, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
                                                                                                         annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
-    parameter Real[n_ports] zeta_out=fill(1, n_ports)
+    parameter Real[nPorts] zeta_out=fill(1, nPorts)
       "Hydraulic resistance out of tank, 0 for ideal smooth outlet" 
                                                                   annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
 
 //Tank geometry
     parameter SI.Height height "Height of tank";
-    parameter SI.Area area "Area of tank";
+    parameter SI.Area crossArea "Area of tank";
     parameter SI.Volume V0=0 "Volume of the liquid when the level is zero";
 
 //Port definitions
-    parameter Integer n_ports(min=1) = 1 "Number of bottom ports (min=1)" 
+    parameter Integer nPorts(min=1) = 1 "Number of bottom ports (min=1)" 
      annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)"));
-    parameter SI.Diameter pipe_diameters[n_ports]
+    parameter SI.Diameter pipeDiameters[nPorts]
       "Inner (hydraulic) diameters of bottom ports (array)" 
      annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)", enable=n_bottomPorts > 0));
-    Interfaces.FluidPorts_b ports[n_ports](
+    Interfaces.FluidPorts_b ports[nPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0)) 
     annotation (Placement(transformation(
@@ -204,9 +204,9 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     SI.Mass m "Mass of fluid in tank";
     SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
     SI.Pressure p_static "bottom tank pressure";
-    Medium.EnthalpyFlowRate H_flow[n_ports]
+    Medium.EnthalpyFlowRate H_flow[nPorts]
       "Enthalpy flow rates from the bottom ports in to the tank";
-    Medium.MassFlowRate mXi_flow[n_ports, Medium.nXi]
+    Medium.MassFlowRate mXi_flow[nPorts, Medium.nXi]
       "Substance mass flow rates from the bottom ports in to the tank";
 
   protected
@@ -214,13 +214,13 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
         p_ambient,
         T_start,
         X_start);
-    parameter SI.Area[n_ports] pipeArea=Modelica.Constants.pi/4*{pipe_diameters[
-        i]^2 for i in 1:n_ports};
+    parameter SI.Area[nPorts] pipeArea=Modelica.Constants.pi/4*{pipeDiameters[
+        i]^2 for i in 1:nPorts};
 
 equation
   // Only one connection allowed to a port to avoid unwanted ideal mixing
 /*
-for i in 1:n_ports loop
+for i in 1:nPorts loop
   assert(cardinality(ports[i]) <= 1,"
 ports[" + String(i) + "] of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
@@ -231,7 +231,7 @@ end for;
 */
 
   //Total quantities
-    V = area*level + V0 "Volume of fluid";
+    V = crossArea*level + V0 "Volume of fluid";
     m = V*medium.d "Mass of fluid";
     mXi = m*medium.Xi "Mass of fluid components";
     U = m*medium.u "Internal energy of fluid";
@@ -255,7 +255,7 @@ end for;
 
 //Determine port properties
     p_static = level*system.g*medium.d + p_ambient;
-    for i in 1:n_ports loop
+    for i in 1:nPorts loop
        H_flow[i]     = ports[i].m_flow*actualStream(ports[i].h_outflow);
        mXi_flow[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
        if p_static_at_port then
@@ -318,8 +318,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -366,7 +366,6 @@ Adapted to the new fluid library interfaces:
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-equation
 
 end OpenTank;
 
@@ -387,7 +386,7 @@ model Tank
 
 //Tank geometry
     parameter SI.Height levelMax "Maximum level of tank before it overflows";
-    parameter SI.Area area "Area of tank";
+    parameter SI.Area crossArea "Area of tank";
     parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
 
 //Port definitions
@@ -510,7 +509,7 @@ end for;
 
   // Total quantities
     medium.p = p_ambient;
-    V = area*level + V0 "Volume of fluid";
+    V = crossArea*level + V0 "Volume of fluid";
     m = V*medium.d "Mass of fluid";
     mXi = m*medium.Xi "Mass of fluid components";
     U = m*medium.u "Internal energy of fluid";

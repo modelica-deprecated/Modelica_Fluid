@@ -16,7 +16,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       compute_T=false,
       show_Re=show_Re,
       from_dp=from_dp,
-      diameter=d_h,
+      diameter=diameter_h,
       reg_m_flow_small=m_flow_small,
       m_flow_small=m_flow_small,
       dp_start=(p_a_start - p_b_start),
@@ -25,8 +25,8 @@ package Pipes "Lumped, distributed and thermal pipe components"
       use_nominal=use_eta_nominal or use_d_nominal) 
       annotation (Placement(transformation(extent={{-10,-10},{10,10}},
             rotation=0)));
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{
-              -100,-100},{100,100}}), graphics));
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+              -100},{100,100}}),      graphics));
   equation
     connect(port_a, wallFriction.port_a) annotation (Line(
         points={{-100,0},{-10,0}},
@@ -43,10 +43,10 @@ package Pipes "Lumped, distributed and thermal pipe components"
 
     HeatTransfer heatTransfer(
       redeclare final package Medium = Medium,
-      final d_h=d_h,
-      final A_h=area_h,
-      final A_cross=area,
-      final dx=length,
+      final diameter_h=diameter_h,
+      final area_h=area_h,
+      final crossArea=crossArea,
+      final length=length,
       state=volume.medium.state,
       m_flow = 0.5*(port_a.m_flow - port_b.m_flow),
       final useFluidHeatPort=true) 
@@ -90,7 +90,7 @@ pipe wall/environment).
       compute_T=false,
       show_Re=show_Re,
       from_dp=from_dp,
-      diameter=d_h,
+      diameter=diameter_h,
       reg_m_flow_small=m_flow_small,
       m_flow_small=m_flow_small,
       use_nominal=use_eta_nominal or use_d_nominal) 
@@ -125,7 +125,7 @@ pipe wall/environment).
       show_Re=show_Re,
       from_dp=from_dp,
       m_flow_small=m_flow_small,
-      diameter=d_h,
+      diameter=diameter_h,
       reg_m_flow_small=m_flow_small,
       use_nominal=use_eta_nominal or use_d_nominal) 
                                     annotation (Placement(transformation(extent={{40,-30},
@@ -187,10 +187,10 @@ pipe wall/environment).
       "Reynolds number of pipe flow";
    HeatTransfer[n] heatTransfer(
      redeclare each final package Medium = Medium,
-     each final d_h=d_h,
-     each final A_h=area_h/n,
-     each final A_cross=area,
-     each final dx=length/n,
+     each final diameter_h=diameter_h,
+     each final area_h=area_h/n,
+     each final crossArea=crossArea,
+     each final length=length/n,
      state=medium.state,
      m_flow = 0.5*(m_flow[1:n]+m_flow[2:n+1])) "Convective heat transfer" 
              annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
@@ -208,12 +208,7 @@ pipe wall/environment).
    //two momentum balances, one on each side of pressure state
    dp = {port_a.p - p[nl], p[nl] - port_b.p};
    //lumped pressure
-   if n == 2 then
-     p[2] = p[1];
-   elseif n > 2 then
-     p[1:nl - 1] = ones(nl - 1)*p[nl];
-     p[nl + 1:n] = ones(n - nl)*p[nl];
-   end if;
+   p[1]*ones(n-1) = p[2:n];
 
    if modelStructure == ModelStructure.a_v_b then
      dlength[1] = ((integer(n/2) + 1)*2 - 1)/(2*n)*length;
@@ -238,7 +233,7 @@ pipe wall/environment).
         eta_a,
         eta_b,
         dlength[1],
-        d_h,
+        diameter_h,
         dheight_ab[1]*system.g,
         roughness,
         dp_small);
@@ -253,7 +248,7 @@ pipe wall/environment).
         eta_a,
         eta_b,
         dlength[2],
-        d_h,
+        diameter_h,
         dheight_ab[2]*system.g,
         roughness,
         dp_small);
@@ -269,7 +264,7 @@ pipe wall/environment).
         eta_a,
         eta_b,
         dlength[1],
-        d_h,
+        diameter_h,
         dheight_ab[1]*system.g,
         roughness,
         m_flow_small);
@@ -284,16 +279,15 @@ pipe wall/environment).
         eta_a,
         eta_b,
         dlength[2],
-        d_h,
+        diameter_h,
         dheight_ab[2]*system.g,
         roughness,
         m_flow_small);
     end if;
   end if;
 
-   connect(heatPort, heatTransfer.wallHeatPort) 
+   connect(heatPorts, heatTransfer.wallHeatPort) 
      annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
-
    annotation (
      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}},
@@ -318,12 +312,12 @@ pipe wall/environment).
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid)}),
-     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}},
+     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}},
           grid={1,1}),
              graphics),
      Documentation(info="<html>
-Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow_pLumped\">PartialDistributedFlowLumpedPressure</a>. Source terms in mass and energy balances are set to zero. The total volume is a paramter. The number of momentum balances is reduced to two, one on each side of the hydraulic state, which corresponds to a constant pressure along the entire pipe with pressure drop and gravitational forces lumped at the ports.<The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. .
+Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow_pLumped\">PartialDistributedFlowLumpedPressure</a>. Source terms in mass and energy balances are set to zero. The total volume is a paramter. The number of momentum balances is reduced to two, one on each side of the hydraulic state, which corresponds to a constant pressure along the entire pipe with pressure drop and gravitational forces lumped at the ports.<The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPorts</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>. .
 <p><b>Momentum balance</b></p>
 <p>The momentum balance is always static, i.e. no dynamic momentum term is used. The momentum balances are formed across the segment boundaries (staggered grid). For this model only two momentum balances are formed on each side of a single pressure state (roughly half way along the flowpath). This assumes a constant pressure level for all medium models in the pipe. The total pressure drop (or rise) is split to be located on each end of the component. Connecting two pipes results in an algebraic pressure at the ports. Specifying a good start value for the port pressure is essential in order to solve large systems. The term <tt>dp</tt> is unspecified in this partial class. When extending from this model it may contain
 <ul>
@@ -345,6 +339,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
        Model added to the Fluid library</li>
 </ul>
 </html>"));
+
  end DistributedPipeLumpedPressure;
 
   model DistributedPipe "Distributed pipe model"
@@ -376,10 +371,10 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       "Reynolds number of pipe flow";
   HeatTransfer[n] heatTransfer(
     redeclare each final package Medium = Medium,
-    each final d_h=d_h,
-    each final A_h=area_h/n,
-    each final A_cross=area,
-    each final dx=length/n,
+    each final diameter_h=diameter_h,
+    each final area_h=area_h/n,
+    each final crossArea=crossArea,
+    each final length=length/n,
     state=medium.state,
     m_flow = 0.5*(m_flow[1:n]+m_flow[2:n+1])) "Convective heat transfer" 
               annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
@@ -422,7 +417,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
           eta_a,
           eta[1],
           dlength[1],
-          d_h,
+          diameter_h,
           dheight_ab[1]*system.g,
           roughness,
           dp_small);
@@ -435,7 +430,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
           eta[i - 1],
           eta[i],
           dlength[i],
-          d_h,
+          diameter_h,
           dheight_ab[i]*system.g,
           roughness,
           dp_small);
@@ -450,7 +445,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
           eta[n],
           eta_b,
           dlength[n+1],
-          d_h,
+          diameter_h,
           dheight_ab[n+1]*system.g,
           roughness,
           dp_small);
@@ -468,7 +463,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
           eta_a,
           eta[1],
           dlength[1],
-          d_h,
+          diameter_h,
           dheight_ab[1]*system.g,
           roughness,
           m_flow_small);
@@ -481,7 +476,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
           eta[i - 1],
           eta[i],
           dlength[i],
-          d_h,
+          diameter_h,
           dheight_ab[i]*system.g,
           roughness,
           m_flow_small);
@@ -496,7 +491,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
           eta[n],
           eta_b,
           dlength[n+1],
-          d_h,
+          diameter_h,
           dheight_ab[n+1]*system.g,
           roughness,
           m_flow_small);
@@ -517,7 +512,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         eta_a,
         eta[1],
         dlength[1],
-        d_h,
+        diameter_h,
         roughness,
         dp_small);
     end if;
@@ -529,7 +524,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         eta[i - 1],
         eta[i],
         dlength[i],
-        d_h,
+        diameter_h,
         roughness,
         dp_small);
     end for;
@@ -543,7 +538,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         eta[n],
         eta_b,
         dlength[n + 1],
-        d_h,
+        diameter_h,
         roughness,
         dp_small);
     end if;
@@ -560,7 +555,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         eta_a,
         eta[1],
         dlength[1],
-        d_h,
+        diameter_h,
         roughness,
         m_flow_small) + height_ab/n*system.g*d[1]/2;
     end if;
@@ -572,7 +567,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         eta[i - 1],
         eta[i],
         dlength[i],
-        d_h,
+        diameter_h,
         roughness,
         m_flow_small) + height_ab/n*system.g*(d[i - 1] + d[i])/2;
     end for;
@@ -586,7 +581,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         eta[n],
         eta_b,
         dlength[n+1],
-        d_h,
+        diameter_h,
         roughness,
         m_flow_small) + height_ab/n/2*system.g*d[n];
     end if;
@@ -594,7 +589,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
   end if;
 
-    connect(heatPort, heatTransfer.wallHeatPort) 
+    connect(heatPorts, heatTransfer.wallHeatPort) 
       annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
 
     annotation (
@@ -620,12 +615,12 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid)}),
-  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}},
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}},
           grid={1,1}),
           graphics),
   Documentation(info="<html>
-<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPort</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>.</p>
+<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. Source terms in the mass balances are set to zero. The total volume is a parameter. The additional component <tt>heatTransfer</tt> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPorts</tt>) and the bulk flow. The <tt>heatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>.</p>
 <p>Pressure drop correlations (algebraic and possibly non-linear flow model) correlate the pressure in the first control volume with the pressure in port_a and the pressures of port_b and the nth control volume, respectively.</p>
 <p><b>Momentum balance</b></p>
 <p>The momentum balance is always static, i.e. no dynamic momentum term is used. The momentum balances are formed across the segment boundaries (staggered grid). The default symmetric model is characterized by half a momentum balance on each end of the flow model resulting in a total of n-1 full and 2 half momentum balances. Connecting two pipes therefore results in an algebraic pressure at the ports. Specifying a good start value for the port pressure is essential in order to solve large systems. Non-symmetric variations are obtained by chosing a different value for the parameter <tt><b>modelStructure</b></tt>. Options include:
@@ -686,9 +681,9 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         annotation (Evaluate, Dialog(tab="General", group="Geometry"));
       parameter SI.Length perimeter=if isCircular then Modelica.Constants.pi*diameter else 0
         "Inner perimeter"                                                                                       annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
-      parameter SI.Area area=if isCircular then Modelica.Constants.pi*diameter*diameter/4 else 0
+      parameter SI.Area crossArea=if isCircular then Modelica.Constants.pi*diameter*diameter/4 else 0
         "Inner cross section area"            annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
-      final parameter SI.Volume V=area*length "volume size";
+      final parameter SI.Volume V=crossArea*length "volume size";
 
       // Static head
       parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
@@ -700,8 +695,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         constrainedby
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
         "Characteristic of wall friction"  annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
-       parameter SI.Diameter d_h=4*area/perimeter "Hydraulic diameter" 
-                                                                   annotation(Dialog(tab="General", group="Pressure loss"));
+       parameter SI.Diameter diameter_h=4*crossArea/perimeter
+        "Hydraulic diameter"                                       annotation(Dialog(tab="General", group="Pressure loss"));
       parameter Modelica.SIunits.Length roughness(min=0)=2.5e-5
         "Absolute roughness of pipe (default = smooth steel pipe)" 
           annotation(Dialog(group="Pressure loss",enable=WallFriction.use_roughness));
@@ -836,6 +831,7 @@ Base class for one dimensional flow models with accumulation. It specializes a P
     end PartialDynamicFlow;
 
   partial model PartialDistributedFlow
+      "Base class for a finite volume flow model"
       import Modelica_Fluid.Types;
     extends PartialDynamicFlow;
 
@@ -893,7 +889,7 @@ Base class for one dimensional flow models with accumulation. It specializes a P
     SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else Medium.density_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)));
     SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)));
     public
-    Interfaces.HeatPorts_a[n] heatPort annotation (Placement(transformation(extent={{-10,44},
+    Interfaces.HeatPorts_a[nNodes] heatPorts annotation (Placement(transformation(extent={{-10,44},
               {10,64}}),                                                                               iconTransformation(extent={{-30,44},{32,60}})));
   equation
     // Boundary conditions
@@ -908,14 +904,14 @@ Base class for one dimensional flow models with accumulation. It specializes a P
     for i in 2:n loop
       H_flow[i] = semiLinear(m_flow[i], medium[i - 1].h, medium[i].h);
       mXi_flow[i, :] = semiLinear(m_flow[i], medium[i - 1].Xi, medium[i].Xi);
-      v[i] = m_flow[i]/(medium[i - 1].d + medium[i].d)*2/area;
+      v[i] = m_flow[i]/(medium[i - 1].d + medium[i].d)*2/crossArea;
     end for;
     H_flow[1] = semiLinear(port_a.m_flow, inStream(port_a.h_outflow), medium[1].h);
     H_flow[n + 1] = -semiLinear(port_b.m_flow, inStream(port_b.h_outflow), medium[n].h);
     mXi_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.Xi_outflow), medium[1].Xi);
     mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.Xi_outflow), medium[n].Xi);
-    v[1] = m_flow[1]/(d_a + d[1])*2/area;
-    v[n + 1] = m_flow[n + 1]/(d[n] + d_b)*2/area;
+    v[1] = m_flow[1]/(d_a + d[1])*2/crossArea;
+    v[n + 1] = m_flow[n + 1]/(d[n] + d_b)*2/crossArea;
 
     // Total quantities
     for i in 1:n loop
@@ -1071,10 +1067,10 @@ If the <tt>dynamicsType</tt> is <b>DynamicsType.SteadyState</b> then no mass or 
 
       // Parameters
       replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(Dialog(tab="No input", enable=false));
-      parameter SI.Area A_h "Total heat transfer area" annotation(Dialog(tab="No input", enable=false));
-      parameter SI.Length d_h "Hydraulic diameter" annotation(Dialog(tab="No input", enable=false));
-      parameter SI.Area A_cross "Cross flow area" annotation(Dialog(tab="No input", enable=false));
-      parameter SI.Length dx "Pipe length" annotation(Dialog(tab="No input", enable=false));
+      parameter SI.Area area_h "Total heat transfer area" annotation(Dialog(tab="No input", enable=false));
+      parameter SI.Length diameter_h "Hydraulic diameter" annotation(Dialog(tab="No input", enable=false));
+      parameter SI.Area crossArea "Cross flow area" annotation(Dialog(tab="No input", enable=false));
+      parameter SI.Length length "Pipe length" annotation(Dialog(tab="No input", enable=false));
 
       // Inputs provided to heat transfer model
       input Medium.ThermodynamicState state;
@@ -1143,10 +1139,10 @@ Base class for heat transfer models that can be used in distributed pipe models.
       eta=Medium.dynamicViscosity(state);
       lambda=Medium.thermalConductivity(state);
       Pr = Medium.prandtlNumber(state);
-      Re = CharacteristicNumbers.ReynoldsNumber(m_flow, d_h, A_cross, eta);
-      Nu = CharacteristicNumbers.NusseltNumber(alpha, d_h, lambda);
+      Re = CharacteristicNumbers.ReynoldsNumber(m_flow, diameter_h, crossArea, eta);
+      Nu = CharacteristicNumbers.NusseltNumber(alpha, diameter_h, lambda);
       wallHeatPort.Q_flow=Q_flow;
-      wallHeatPort.Q_flow=alpha*A_h*(wallHeatPort.T - T);
+      wallHeatPort.Q_flow=alpha*area_h*(wallHeatPort.T - T);
         annotation (Documentation(info="<html>
 Base class for heat transfer models that are expressed in terms of the Nusselt number and which can be used in distributed pipe models.
 </html>"));
@@ -1169,7 +1165,7 @@ Ideal heat transfer without thermal resistance.
 Simple heat transfer correlation with constant heat transfer coefficient, used as default component in <a distributed pipe models.
 </html>"));
     equation
-      wallHeatPort.Q_flow = alpha0*A_h*(wallHeatPort.T - T);
+      wallHeatPort.Q_flow = alpha0*area_h*(wallHeatPort.T - T);
       wallHeatPort.Q_flow = Q_flow;
     end PipeHT_constAlpha;
     annotation (Documentation(info="<html>
@@ -1187,10 +1183,10 @@ Heat transfer correlations for pipe models
       Real Xi;
     equation
       Nu_1=3.66;
-      Nu_turb=smooth(0,(Xi/8)*abs(Re)*Pr/(1+12.7*(Xi/8)^0.5*(Pr^(2/3)-1))*(1+1/3*(d_h/dx)^(2/3)));
+      Nu_turb=smooth(0,(Xi/8)*abs(Re)*Pr/(1+12.7*(Xi/8)^0.5*(Pr^(2/3)-1))*(1+1/3*(diameter_h/length)^(2/3)));
       Xi=(1.8*Modelica.Math.log10(max(1e-10,Re))-1.5)^(-2);
       Nu_lam=(Nu_1^3+0.7^3+(Nu_2-0.7)^3)^(1/3);
-      Nu_2=smooth(0,1.077*(abs(Re)*Pr*d_h/dx)^(1/3));
+      Nu_2=smooth(0,1.077*(abs(Re)*Pr*diameter_h/length)^(1/3));
       Nu=spliceFunction(Nu_turb, Nu_lam, Re-6150, 3850);
       annotation (Documentation(info="<html>
 Heat transfer model for laminar and turbulent flow in pipes. Range of validity:
@@ -1200,7 +1196,7 @@ Heat transfer model for laminar and turbulent flow in pipes. Range of validity:
 <li>one phase Newtonian fluid</li>
 <li>(spatial) constant wall temperature in the laminar region</li>
 <li>0 &le; Re &le; 1e6, 0.6 &le; Pr &le; 100, d/L &le; 1</li>
-<li>The correlation holds for non-circular pipes only in the turbulent region. Use d_h=4*A/P as characteristic length.</li>
+<li>The correlation holds for non-circular pipes only in the turbulent region. Use diameter_h=4*area_h/perimeter as characteristic length.</li>
 </ul>
 The correlation takes into account the spatial position along the pipe flow, which changes discontinuously at flow reversal. However, the heat transfer coefficient itself is continuous around zero flow rate, but not its derivative.
 <h4><font color=\"#008000\">References</font></h4>

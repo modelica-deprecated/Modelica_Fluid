@@ -239,10 +239,10 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     replaceable package Medium_2 = Modelica.Media.Water.StandardWater constrainedby
       Modelica.Media.Interfaces.PartialMedium "Fluid 2" 
                                                       annotation(choicesAllMatching,Dialog(tab="General", group="Fluid 2"));
-    parameter SI.Area Ac_1 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 1"));
-    parameter SI.Area Ac_2 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 2"));
-    parameter SI.Length P_1 "Flow channel perimeter" annotation(Dialog(tab="General",group="Fluid 1"));
-    parameter SI.Length P_2 "Flow channel perimeter" annotation(Dialog(tab="General",group="Fluid 2"));
+    parameter SI.Area crossArea_1 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 1"));
+    parameter SI.Area crossArea_2 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 2"));
+    parameter SI.Length perimeter_1 "Flow channel perimeter" annotation(Dialog(tab="General",group="Fluid 1"));
+    parameter SI.Length perimeter_2 "Flow channel perimeter" annotation(Dialog(tab="General",group="Fluid 2"));
     parameter SI.Length length(min=0) "Length of flow path for both fluids";
     parameter SI.Length s_wall(min=0) "Wall thickness";
     // Heat transfer
@@ -258,13 +258,13 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
       "Heat transfer model" annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
 
-    parameter SI.Area Ah_1 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 1"));
-    parameter SI.Area Ah_2 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 2"));
+    parameter SI.Area area_h_1 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 1"));
+    parameter SI.Area area_h_2 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 2"));
    //Wall
     parameter SI.Density d_wall "Density of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
     parameter SI.SpecificHeatCapacity c_wall
       "Specific heat capacity of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
-    final parameter SI.Area area_h=(Ah_1 + Ah_2)/2 "Heat transfer area";
+    final parameter SI.Area area_h=(area_h_1 + area_h_2)/2 "Heat transfer area";
     final parameter SI.Mass m_wall=d_wall*area_h*s_wall "Wall mass";
     parameter SI.ThermalConductivity k_wall
       "Thermal conductivity of wall material" 
@@ -378,7 +378,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       allowFlowReversal=allowFlowReversal,
       dynamicsType=dynamicsType,
       length=length,
-      area_h=Ah_1,
+      area_h=area_h_1,
       redeclare model HeatTransfer = HeatTransfer_1,
       initType=initType,
       use_T_start=use_T_start,
@@ -386,8 +386,8 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       h_start=h_start_1,
       X_start=X_start_1,
       m_flow_start=m_flow_start_1,
-      perimeter=P_1,
-      area=Ac_1,
+      perimeter=perimeter_1,
+      crossArea=crossArea_1,
       redeclare package WallFriction = WallFriction_1,
       roughness=roughness_1,
       use_eta_nominal=use_eta_nominal,
@@ -410,9 +410,9 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       X_start=X_start_2,
       initType=initType,
       m_flow_start=m_flow_start_2,
-      perimeter=P_2,
-      area=Ac_2,
-      area_h=Ah_2,
+      perimeter=perimeter_2,
+      crossArea=crossArea_2,
+      area_h=area_h_2,
       p_a_start=p_a_start1,
       p_b_start=p_b_start2,
       redeclare package WallFriction = WallFriction_2,
@@ -537,7 +537,7 @@ The design flow direction with positive m_flow variables is counterflow.
         points={{20,58},{65,58},{65,-46},{110,-46}},
         color={0,127,255},
         thickness=0.5));
-    connect(pipe_1.heatPort, wall1.port_a) annotation (Line(
+    connect(pipe_1.heatPorts, wall1.port_a) annotation (Line(
         points={{-9.7,-34.4},{-9.7,-27.2},{-10,-27.2},{-10,-20}},
         color={191,0,0},
         smooth=Smooth.None));
@@ -549,7 +549,7 @@ The design flow direction with positive m_flow variables is counterflow.
         points={{-10,0},{-10,5},{-30,5}},
         color={191,0,0},
         smooth=Smooth.None));
-    connect(wall2[1:nNodes].port_b, pipe_2.heatPort[nNodes:-1:1]) annotation (Line(
+    connect(wall2[1:nNodes].port_b, pipe_2.heatPorts[nNodes:-1:1]) annotation (Line(
         points={{-10,30},{-10,36.2},{-10,42.4},{-10.3,42.4}},
         color={191,0,0},
         smooth=Smooth.None));

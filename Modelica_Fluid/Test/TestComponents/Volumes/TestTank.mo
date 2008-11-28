@@ -14,7 +14,7 @@ model TestTank
         diameter=0.01, portLevel=4),
         Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.01,
         portLevel=2)},
-    area=0.2) 
+    crossArea=0.2) 
     annotation (Placement(transformation(extent={{-40,40},{0,80}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate[2](redeclare
       package Medium = Modelica.Media.Water.StandardWater, each m_flow=0.75) 
