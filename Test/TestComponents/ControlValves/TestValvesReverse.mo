@@ -126,15 +126,15 @@ equation
   connect(SourceP2.ports[1], V3.port_a) 
                                    annotation (Line(points={{-80,-38},{-60,-38},
           {-60,-28},{-38,-28}}, color={0,127,255}));
-  connect(OpenRelief.y, V1.stemPosition) annotation (Line(points={{-71,80},{-40,
+  connect(OpenRelief.y, V1.opening) annotation (Line(points={{-71,80},{-40,
           80},{-40,76}}, color={0,0,127}));
-  connect(OpenRelief.y, V4.stemPosition) annotation (Line(points={{-71,80},{-64,
+  connect(OpenRelief.y, V4.opening) annotation (Line(points={{-71,80},{-64,
           80},{-64,-52},{-30,-52},{-30,-60}}, color={0,0,127}));
-  connect(CloseValves.y, V2.stemPosition) annotation (Line(points={{-75,-2},{
+  connect(CloseValves.y, V2.opening) annotation (Line(points={{-75,-2},{
           -46,-2},{-46,54},{-28,54},{-28,44}}, color={0,0,127}));
-  connect(CloseValves.y, V3.stemPosition) annotation (Line(points={{-75,-2},{
+  connect(CloseValves.y, V3.opening) annotation (Line(points={{-75,-2},{
           -28,-2},{-28,-20}}, color={0,0,127}));
-  connect(CloseLoad.y, V5.stemPosition) annotation (Line(points={{29,36},{40,36},
+  connect(CloseLoad.y, V5.opening) annotation (Line(points={{29,36},{40,36},
           {40,14}}, color={0,0,127}));
   connect(V5.port_b, SinkP1.ports[1]) 
     annotation (Line(points={{50,6},{62,6}}, color={0,127,255}));

@@ -134,7 +134,7 @@ equation
                     color={0,127,255}));
   connect(source.ports[1], pumps.port_a) annotation (Line(points={{-80,-70},{-68,
           -70}},                             color={0,127,255}));
-  connect(valveOpening.y, userValve.stemPosition) annotation (Line(points={{77,10},{
+  connect(valveOpening.y, userValve.opening) annotation (Line(points={{77,10},{
           98,10},{98,-12},{66,-12},{66,-23.6}}, color={0,0,127}));
   connect(RelativePressureSetPoint.y, controller.reference) 
                                                     annotation (Line(points={{

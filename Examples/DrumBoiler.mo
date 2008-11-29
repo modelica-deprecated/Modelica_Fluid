@@ -202,7 +202,7 @@ Simulate for 7200 seconds.
             40,-20},{50,-20}}, color={0,127,255}));
     connect(SteamValve.port_b, sink.ports[1]) annotation (Line(points={{70,-20},{75,
             -20},{80,-20}},          color={0,127,255}));
-    connect(SteamValve.stemPosition, Y_Valve) annotation (Line(points={{60,-28},{60,
+    connect(SteamValve.opening, Y_Valve) annotation (Line(points={{60,-28},{60,
             -90},{-104.5,-90}}, color={0,0,127}));
     connect(evaporator.port_b, massFlowRate.port_a) annotation (Line(points={{
             -26,-20},{20,-20}}, color={0,127,255}));

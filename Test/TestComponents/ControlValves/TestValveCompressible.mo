@@ -39,7 +39,7 @@ equation
 
   connect(V1.port_b,SinkP1.ports[1]) 
                                   annotation (Line(points={{-6,-12},{26,-12}}));
-  connect(Opening.y,V1. stemPosition) 
+  connect(Opening.y,V1. opening) 
   annotation (Line(points={{-57,32},{-16,32},{-16,-4}}, color={0,0,255}));
   connect(SourceP1.ports[1],V1.port_a) 
                                    annotation (Line(points={{-56,-12},{-26,-12}},

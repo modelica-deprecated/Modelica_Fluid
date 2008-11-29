@@ -67,7 +67,7 @@ equation
       points={{-79,72},{-50,72},{-50,50}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(valveOpening.y, Valve.stemPosition) annotation (Line(
+  connect(valveOpening.y, Valve.opening) annotation (Line(
       points={{-19,74},{-7,74},{-7,44}},
       color={0,0,127},
       smooth=Smooth.None));

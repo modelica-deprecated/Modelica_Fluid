@@ -6,7 +6,8 @@ package HeatExchangers "Evaporators and condensor components"
     extends Modelica_Fluid.Interfaces.PartialTwoPort(
       final port_a_exposesState=true,
       final port_b_exposesState=true,
-      redeclare replaceable package Medium = Modelica.Media.Water.StandardWater
+      redeclare replaceable package Medium = 
+          Modelica.Media.Water.StandardWater 
           constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     import Modelica.SIunits.Conversions.*;
     import Modelica.Constants;

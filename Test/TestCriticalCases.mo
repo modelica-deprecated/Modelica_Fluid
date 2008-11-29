@@ -229,9 +229,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             46},{-46,6},{-52,6}}, color={0,127,255}));
     connect(pipe1.port_b, pipe3.port_a) annotation (Line(points={{-52,6},{-46,6},
             {-46,-40},{-40,-40}}, color={0,127,255}));
-    connect(valveOpening1.y, valve1.stemPosition)              annotation (Line(
+    connect(valveOpening1.y, valve1.opening)              annotation (Line(
           points={{1,80},{20,80},{20,54}}, color={0,0,127}));
-    connect(valveOpening2.y, valve2.stemPosition)               annotation (Line(
+    connect(valveOpening2.y, valve2.opening)               annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
   end BranchingPipes1;
 
@@ -329,9 +329,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             46},{-46,6},{-52,6}}, color={0,127,255}));
     connect(pipe1.port_b, pipe3.port_a) annotation (Line(points={{-52,6},{-46,6},
             {-46,-40},{-40,-40}}, color={0,127,255}));
-    connect(valveOpening1.y, valveIncompressible.stemPosition) annotation (Line(
+    connect(valveOpening1.y, valveIncompressible.opening) annotation (Line(
           points={{1,80},{20,80},{20,54}}, color={0,0,127}));
-    connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (Line(
+    connect(valveOpening2.y, valveIncompressible1.opening) annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
   end BranchingPipes2;
 
@@ -430,9 +430,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             {{-20,-40},{8,-40}}, color={0,127,255}));
     connect(pipe2.port_b, valveIncompressible.port_a) annotation (Line(points={
             {-20,46},{10,46}}, color={0,127,255}));
-    connect(valveOpening1.y, valveIncompressible.stemPosition) annotation (Line(
+    connect(valveOpening1.y, valveIncompressible.opening) annotation (Line(
           points={{1,80},{20,80},{20,54}}, color={0,0,127}));
-    connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (Line(
+    connect(valveOpening2.y, valveIncompressible1.opening) annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, splitter.port_3) annotation (Line(points={{-60,6},{
             -55,6},{-55,6},{-50,6}},
@@ -541,9 +541,9 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
             {{-20,-40},{8,-40}}, color={0,127,255}));
     connect(pipe2.port_b, valveIncompressible.port_a) annotation (Line(points={
             {-20,46},{10,46}}, color={0,127,255}));
-    connect(valveOpening1.y, valveIncompressible.stemPosition) annotation (Line(
+    connect(valveOpening1.y, valveIncompressible.opening) annotation (Line(
           points={{1,80},{20,80},{20,54}}, color={0,0,127}));
-    connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (Line(
+    connect(valveOpening2.y, valveIncompressible1.opening) annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, splitter.port_3) annotation (Line(points={{-60,6},{
             -55,6},{-55,6},{-50,6}},
@@ -580,7 +580,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       d_nominal=1000,
       redeclare package Medium = Medium,
       dp_nominal=400000,
-      minStemPosition=0.01)              annotation (Placement(transformation(
+      minOpening=0.01)              annotation (Placement(transformation(
             extent={{52,-10},{72,10}}, rotation=0)));
     annotation (
       Diagram(graphics),
@@ -634,7 +634,7 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
           color={0,127,255}));
     connect(valveIncompressible.port_b, sink.ports[1]) 
       annotation (Line(points={{72,0},{82,0}}, color={0,127,255}));
-    connect(valveOpening1.y, valveIncompressible.stemPosition) annotation (Line(
+    connect(valveOpening1.y, valveIncompressible.opening) annotation (Line(
           points={{1,80},{62,80},{62,9}}, color={0,0,127}));
     connect(pipe1.port_b, simpleGenericOrifice.port_a) annotation (Line(points=
             {{-56,0},{-46,0}}, color={0,127,255}));
@@ -739,7 +739,7 @@ fails for zero flow rate.
       m_flow_nominal=1,
       d_nominal=1000,
       dp_nominal=30000,
-      minStemPosition=0.01) 
+      minOpening=0.01) 
                   annotation (Placement(transformation(extent={{-40,48},{-26,64}},
             rotation=0)));
     ControlValves.ValveIncompressible valve2(
@@ -748,7 +748,7 @@ fails for zero flow rate.
       m_flow_nominal=1,
       d_nominal=1000,
       dp_nominal=30000,
-      minStemPosition=0.01) 
+      minOpening=0.01) 
                   annotation (Placement(transformation(extent={{-40,-28},{-26,
               -44}}, rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe7(
@@ -766,7 +766,7 @@ fails for zero flow rate.
       m_flow_nominal=1,
       d_nominal=1000,
       dp_nominal=30000,
-      minStemPosition=0.01) 
+      minOpening=0.01) 
                   annotation (Placement(transformation(extent={{62,2},{76,18}},
             rotation=0)));
     Sources.FixedBoundary_pTX sink(
@@ -856,11 +856,11 @@ fails for zero flow rate.
             -22},{54,10},{62,10}}, color={0,127,255}));
     connect(valve3.port_b, sink.ports[1]) annotation (Line(points={{76,10},{86,10}},
           color={0,127,255}));
-    connect(valveOpening1.y, valve1.stemPosition) annotation (Line(points={{-45,
+    connect(valveOpening1.y, valve1.opening) annotation (Line(points={{-45,
             90},{-33,90},{-33,63.2}}, color={0,0,127}));
-    connect(valveOpening2.y, valve2.stemPosition) annotation (Line(points={{-61,
+    connect(valveOpening2.y, valve2.opening) annotation (Line(points={{-61,
             -54},{-33,-54},{-33,-43.2}}, color={0,0,127}));
-    connect(valveOpening3.y, valve3.stemPosition) annotation (Line(points={{29,
+    connect(valveOpening3.y, valve3.opening) annotation (Line(points={{29,
             78},{69,78},{69,17.2}}, color={0,0,127}));
     connect(pipe7.port_b, pipe9.port_a) 
       annotation (Line(points={{2,56},{16,56}}, color={0,127,255}));
@@ -986,9 +986,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             46},{-46,6},{-58,6}}, color={0,127,255}));
     connect(pipe1.port_b, pipe3.port_a) annotation (Line(points={{-58,6},{-46,6},
             {-46,-40},{-40,-40}}, color={0,127,255}));
-    connect(valveOpening1.y, valveIncompressible.stemPosition) annotation (Line(
+    connect(valveOpening1.y, valveIncompressible.opening) annotation (Line(
           points={{1,80},{20,80},{20,54}}, color={0,0,127}));
-    connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (Line(
+    connect(valveOpening2.y, valveIncompressible1.opening) annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
   end BranchingPipes12;
 
@@ -1018,7 +1018,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       m_flow_nominal=1,
       d_nominal=5,
       dp_nominal=400000,
-      minStemPosition=0.001) 
+      minOpening=0.001) 
                   annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     ControlValves.ValveIncompressible valveIncompressible1(
@@ -1027,7 +1027,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       m_flow_nominal=1,
       d_nominal=5,
       dp_nominal=400000,
-      minStemPosition=0.001) 
+      minOpening=0.001) 
                   annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
@@ -1093,9 +1093,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             {{-10,-40},{8,-40}}, color={0,127,255}));
     connect(pipe2.port_b, valveIncompressible.port_a) annotation (Line(points={
             {-14,46},{10,46}}, color={0,127,255}));
-    connect(valveOpening1.y, valveIncompressible.stemPosition) annotation (Line(
+    connect(valveOpening1.y, valveIncompressible.opening) annotation (Line(
           points={{1,80},{20,80},{20,54}}, color={0,0,127}));
-    connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (Line(
+    connect(valveOpening2.y, valveIncompressible1.opening) annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (Line(points={{-58,6},
             {-53.5,6},{-53.5,6},{-48,6}}, color={0,127,255}));
@@ -1208,9 +1208,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             {{-10,-40},{8,-40}}, color={0,127,255}));
     connect(pipe2.port_b, valve1.port_a)              annotation (Line(points={
             {-14,46},{10,46}}, color={0,127,255}));
-    connect(valveOpening1.y, valve1.stemPosition)              annotation (Line(
+    connect(valveOpening1.y, valve1.opening)              annotation (Line(
           points={{1,82},{20,82},{20,54}}, color={0,0,127}));
-    connect(valveOpening2.y, valve2.stemPosition)               annotation (Line(
+    connect(valveOpening2.y, valve2.opening)               annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (Line(points={{-58,6},
             {-53.5,6},{-53.5,6},{-48,6}}, color={0,127,255}));
@@ -1327,9 +1327,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             {{-10,-40},{8,-40}}, color={0,127,255}));
     connect(pipe2.port_b, valve1.port_a)              annotation (Line(points={
             {-14,46},{10,46}}, color={0,127,255}));
-    connect(valveOpening1.y, valve1.stemPosition)              annotation (Line(
+    connect(valveOpening1.y, valve1.opening)              annotation (Line(
           points={{1,82},{20,82},{20,54}}, color={0,0,127}));
-    connect(valveOpening2.y, valve2.stemPosition)               annotation (Line(
+    connect(valveOpening2.y, valve2.opening)               annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (Line(points={{-58,6},
             {-53.5,6},{-53.5,6},{-48,6}}, color={0,127,255}));
@@ -1444,9 +1444,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             {{-10,-40},{8,-40}}, color={0,127,255}));
     connect(pipe2.port_b, valve1.port_a)              annotation (Line(points={
             {-14,46},{10,46}}, color={0,127,255}));
-    connect(valveOpening1.y, valve1.stemPosition)              annotation (Line(
+    connect(valveOpening1.y, valve1.opening)              annotation (Line(
           points={{1,82},{20,82},{20,54}}, color={0,0,127}));
-    connect(valveOpening2.y, valve2.stemPosition)               annotation (Line(
+    connect(valveOpening2.y, valve2.opening)               annotation (Line(
           points={{1,-2},{18,-2},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (Line(points={{-58,6},
             {-53.5,6},{-53.5,6},{-48,6}}, color={0,127,255}));
@@ -1561,9 +1561,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             {{-10,-40},{8,-40}}, color={0,127,255}));
     connect(pipe2.port_b, valve1.port_a)              annotation (Line(points={
             {-14,46},{10,46}}, color={0,127,255}));
-    connect(valveOpening1.y, valve1.stemPosition)              annotation (Line(
+    connect(valveOpening1.y, valve1.opening)              annotation (Line(
           points={{1,82},{20,82},{20,55}}, color={0,0,127}));
-    connect(valveOpening2.y, valve2.stemPosition)               annotation (Line(
+    connect(valveOpening2.y, valve2.opening)               annotation (Line(
           points={{3,-2},{18,-2},{18,-31}}, color={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (Line(points={{-58,6},
             {-54.5,6},{-54.5,6},{-50,6}}, color={0,127,255}));
@@ -1682,9 +1682,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             {{-10,-40},{8,-40}}, color={0,127,255}));
     connect(pipe2.port_b, valve1.port_a)              annotation (Line(points={
             {-14,46},{10,46}}, color={0,127,255}));
-    connect(valveOpening1.y, valve1.stemPosition)              annotation (Line(
+    connect(valveOpening1.y, valve1.opening)              annotation (Line(
           points={{1,82},{20,82},{20,55}}, color={0,0,127}));
-    connect(valveOpening2.y, valve2.stemPosition)               annotation (Line(
+    connect(valveOpening2.y, valve2.opening)               annotation (Line(
           points={{3,-2},{18,-2},{18,-31}}, color={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (Line(points={{-58,6},
             {-53.5,6},{-53.5,6},{-48,6}}, color={0,127,255}));
@@ -1725,7 +1725,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
       d_nominal=5,
-      minStemPosition=0.001,
+      minOpening=0.001,
       dp(start=400000),
       dp_nominal=400000) 
                   annotation (Placement(transformation(extent={{8,-50},{28,-30}},
@@ -1771,7 +1771,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             28,-40},{46,-40},{46,-14},{62,-14}}, color={0,127,255}));
     connect(pipe3.port_b, valveIncompressible1.port_a) annotation (Line(points=
             {{-10,-40},{8,-40}}, color={0,127,255}));
-    connect(valveOpening2.y, valveIncompressible1.stemPosition) annotation (Line(
+    connect(valveOpening2.y, valveIncompressible1.opening) annotation (Line(
           points={{1,2},{18,2},{18,-31}}, color={0,0,127}));
     connect(pipe1.port_b, pipe3.port_a) annotation (Line(points={{-58,6},{-44,6},
             {-44,-40},{-30,-40}}, color={0,127,255}));
@@ -1825,7 +1825,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points={{20,0},{40,0}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(ramp.y, valve.stemPosition)               annotation (Line(
+    connect(ramp.y, valve.opening)               annotation (Line(
         points={{25,40},{10,40},{10,8}},
         color={0,0,127},
         smooth=Smooth.None));
@@ -1844,14 +1844,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             extent={{-54,-34},{48,-54}},
             lineColor={0,0,255},
             textString=
-                "a) Select WallFriction = \"No pipe wall friction\" and it works!?"), 
-
+                "a) Select WallFriction = \"No pipe wall friction\" and it works!?"),
           Text(
             extent={{-90,-20},{36,-38}},
             lineColor={0,0,255},
             textString=
-                "How to get correct result from steady-state initialization:"), 
-
+                "How to get correct result from steady-state initialization:"),
           Text(
             extent={{-57,-64},{92,-72}},
             lineColor={0,0,255},
@@ -1918,7 +1916,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points={{20,0},{40,0}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(ramp.y, valve.stemPosition)               annotation (Line(
+    connect(ramp.y, valve.opening)               annotation (Line(
         points={{25,40},{10,40},{10,8}},
         color={0,0,127},
         smooth=Smooth.None));
@@ -1986,7 +1984,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points={{20,0},{40,0}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(ramp.y, valve.stemPosition)               annotation (Line(
+    connect(ramp.y, valve.opening)               annotation (Line(
         points={{25,40},{10,40},{10,8}},
         color={0,0,127},
         smooth=Smooth.None));
