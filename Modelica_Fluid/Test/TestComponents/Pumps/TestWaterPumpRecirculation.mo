@@ -96,11 +96,11 @@ equation
       points={{22,-20},{42,-20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(V1_Opening.y, V1.stemPosition) annotation (Line(
+  connect(V1_Opening.y, V1.opening) annotation (Line(
       points={{-79,50},{-39,50},{-39,24}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(V2_Opening.y, V2.stemPosition) annotation (Line(
+  connect(V2_Opening.y, V2.opening) annotation (Line(
       points={{-79,80},{11,80},{11,-12}},
       color={0,0,127},
       smooth=Smooth.None));

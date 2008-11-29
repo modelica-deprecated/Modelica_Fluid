@@ -594,9 +594,9 @@ package Interfaces
     // Model structure, e.g. used for visualization
   protected
     parameter Boolean port_a_exposesState = false
-      "= true if port_a.p exposes a pressure state";
+      "= true if port_a exposes the state of a fluid volume";
     parameter Boolean port_b_exposesState = false
-      "= true if port_b.p exposes a pressure state";
+      "= true if port_b.p exposes the state of a fluid volume";
     annotation (
       Diagram(coordinateSystem(
             preserveAspectRatio=false,

@@ -121,9 +121,15 @@ package Pumps "Pump components"
   partial model PartialPump "Base model for centrifugal pumps"
       import Modelica.SIunits.Conversions.NonSIunits.*;
       import Modelica.Constants;
-    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
-        "Medium model" 
-                     annotation(choicesAllMatching=true);
+    extends Modelica_Fluid.Interfaces.PartialTwoPort(
+      port_a(
+        p(start=p_a_start),
+        m_flow(start = m_flow_start,
+               min = if allowFlowReversal and not checkValve then -Constants.inf else 0)),
+      port_b(
+        p(start=p_b_start),
+        m_flow(start = -m_flow_start,
+               max = if allowFlowReversal and not checkValve then +Constants.inf else 0)));
     replaceable function flowCharacteristic = 
         PumpCharacteristics.baseFlow
         "Head vs. q_flow characteristic at nominal speed and density" 
@@ -184,21 +190,6 @@ package Pumps "Pump components"
     parameter Types.Init initType=
               Types.Init.NoInit "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-    Modelica_Fluid.Interfaces.FluidPort_a port_a(
-        redeclare package Medium = Medium,
-        p(start=p_a_start),
-        m_flow(start = m_flow_start,
-               min = if allowFlowReversal and not checkValve then -Constants.inf else 0)) 
-    annotation (Placement(transformation(extent={{-110,-10},{-90,10}}),
-                                   iconTransformation(extent={{-110,-10},{-90,
-                10}})));
-    Modelica_Fluid.Interfaces.FluidPort_b port_b(
-                                  redeclare package Medium = Medium,
-        p(start=p_b_start),
-        m_flow(start = -m_flow_start,
-               max = if allowFlowReversal and not checkValve then +Constants.inf else 0)) 
-    annotation(Placement(transformation(extent={{90,-10},{110,10}}),
-                                 iconTransformation(extent={{90,-10},{110,10}})));
     SI.Pressure dp = port_b.p - port_a.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
     Medium.Density d "Liquid density at the inlet port_a";
@@ -249,8 +240,8 @@ package Pumps "Pump components"
     // Medium states close to the ports when mass flows in to the respective port
     // The inlet inflow state is used also in case of flow reversal, to avoid
     // discontinuities.
-    port_a_state_inflow = Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow);
-    // port_b_state_inflow = Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow);
+    port_a_state_inflow = Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow));
+    // port_b_state_inflow = Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow));
 
     // Inflow density and temperature at the inlet port
     d = Medium.density(port_a_state_inflow);
@@ -300,7 +291,7 @@ package Pumps "Pump components"
       Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
                 100}}), graphics={
             Polygon(
-              points={{-40,-64},{-60,-100},{60,-100},{40,-64},{-40,-64}},
+              points={{-48,-60},{-72,-100},{72,-100},{48,-60},{-48,-60}},
               lineColor={0,0,255},
               pattern=LinePattern.None,
               fillColor={0,0,191},

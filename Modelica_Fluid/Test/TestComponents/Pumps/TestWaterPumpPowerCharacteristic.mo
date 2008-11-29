@@ -62,7 +62,7 @@ equation
           {36,42}}, color={0,0,127}));
   annotation (experiment(StopTime=10), Diagram(coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics));
-  connect(valveOpening.y, Valve.stemPosition) annotation (Line(
+  connect(valveOpening.y, Valve.opening) annotation (Line(
       points={{-39,70},{-7,70},{-7,44}},
       color={0,0,127},
       smooth=Smooth.None));

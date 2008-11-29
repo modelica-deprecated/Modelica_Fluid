@@ -58,7 +58,7 @@ equation
   connect(downstreamPressure.y, Sink.p_in) 
                                 annotation (Line(points={{25,84},{58,84},{58,42},
           {36,42}}, color={0,0,127}));
-  connect(valveOpening.y, Valve.stemPosition) annotation (Line(
+  connect(valveOpening.y, Valve.opening) annotation (Line(
       points={{-39,70},{-7,70},{-7,44}},
       color={0,0,127},
       smooth=Smooth.None));

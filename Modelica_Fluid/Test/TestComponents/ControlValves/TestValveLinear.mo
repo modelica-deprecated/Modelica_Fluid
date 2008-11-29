@@ -53,7 +53,7 @@ equation
       points={{35,30},{60,30},{60,-6},{48,-6}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(Opening.y, V1.stemPosition) annotation (Line(
+  connect(Opening.y, V1.opening) annotation (Line(
       points={{-57,32},{-16,32},{-16,-3}},
       color={0,0,127},
       smooth=Smooth.None));

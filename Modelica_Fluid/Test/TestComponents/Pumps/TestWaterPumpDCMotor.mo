@@ -76,7 +76,7 @@ equation
   connect(pump.port_a,Source.ports[1]) 
                                      annotation (Line(points={{-66,15},{-70,15},
           {-80,12}},          color={0,127,255}));
-  connect(valveOpening.y, Valve.stemPosition) annotation (Line(
+  connect(valveOpening.y, Valve.opening) annotation (Line(
       points={{-19,84},{-7,84},{-7,68}},
       color={0,0,127},
       smooth=Smooth.None));

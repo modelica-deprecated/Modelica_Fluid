@@ -125,7 +125,7 @@ package TestOverdeterminedSteadyStateInit
              0)));
   equation
   tankLevel = tank.level;
-    connect(valvePosition, valve.stemPosition) annotation (Line(points={{-108,0},
+    connect(valvePosition, valve.opening) annotation (Line(points={{-108,0},
             {-86,0},{-86,66},{50,66},{50,2.4}}, color={0,0,127}));
     connect(pump.port_b, massFlowRate.port_a) annotation (Line(points={{-38,-6},
             {-38,-3.4},{-34,-3.4},{-34,-4}},       color={0,127,255}));
