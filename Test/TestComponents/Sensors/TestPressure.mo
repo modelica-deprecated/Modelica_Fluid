@@ -21,7 +21,9 @@ model TestPressure
                                     annotation (Placement(transformation(extent=
            {{-60,0},{-40,20}}, rotation=0)));
   annotation (
-    Diagram(graphics),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+            100,100}}),
+            graphics),
     experiment(Tolerance=1e-006),
     experimentSetupOutput);
   Modelica_Fluid.Sources.FixedBoundary_phX boundary_fixed(
@@ -53,7 +55,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(relativePressure.port_b, simpleGenericOrifice.port_b) annotation (Line(
-      points={{40,43.8},{40,23},{40,23},{40,0}},
+      points={{40,44},{40,23},{40,23},{40,0}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pressure2.port, boundary_fixed.ports[1]) 

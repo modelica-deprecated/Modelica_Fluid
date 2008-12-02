@@ -100,23 +100,11 @@ package Junctions "Junction components"
 </html>"));
   model JunctionVolume
     "Splitting/joining component with static balances for a dynamic control volume"
+    extends Volumes.BaseClasses.PartialLumpedVolume;
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.PortFlowDirection;
-    outer Modelica_Fluid.System system "System properties";
 
-    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
-      "Fluid medium model" 
-        annotation (choicesAllMatching=true);
     parameter SI.Volume V "Volume";
-
-    // Assumptions
-    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-      "Dynamics option" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-
-    SI.InternalEnergy U "Internal energy";
-    SI.Mass m "Total mass";
-    SI.Mass[Medium.nXi] mXi "Independent masses";
 
     Modelica_Fluid.Interfaces.FluidPort_a port_1(
       redeclare package Medium=Medium,
@@ -136,27 +124,6 @@ package Junctions "Junction components"
       max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
       annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
              0)));
-
-    Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
-    Medium.BaseProperties medium(preferredMediumStates=true);
-
-    parameter Types.Init initType=system.initType "Initialization option" 
-      annotation(Evaluate=true,Dialog(tab="Initialization"));
-    parameter Medium.AbsolutePressure p_start "Start value of pressure" 
-      annotation(Dialog(tab="Initialization"));
-    parameter Boolean use_T_start=true "=true, use T_start, otherwise h_start" 
-      annotation(Dialog(tab="Initialization"),Evaluate=true);
-    parameter Medium.Temperature T_start=
-      if use_T_start then system.T_start else Medium.temperature_phX(p_start,h_start,X_start)
-      "Start value of temperature" 
-      annotation(Dialog(tab="Initialization",enable=use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.specificEnthalpy_pTX(p_start,T_start,X_start) else Medium.h_default
-      "Start value of specific enthalpy" 
-      annotation(Dialog(tab="Initialization",enable=not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-      "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
 
   protected
     parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
@@ -206,45 +173,27 @@ package Junctions "Junction components"
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
-  initial equation
-    // Initial conditions
-    if initType == Types.Init.NoInit then
-      // no initial equations
-    elseif initType == Types.Init.InitialValues then
-      medium.p = p_start;
-      medium.h = h_start;
-    elseif initType == Types.Init.SteadyState then
-      der(medium.p) = 0;
-      der(medium.h) = 0;
-    elseif initType == Types.Init.SteadyStateHydraulic then
-      der(medium.p) = 0;
-      medium.h = h_start;
-    else
-      assert(false, "Unsupported initialization option");
-    end if;
 
   equation
     // Only one connection allowed to a port to avoid unwanted ideal mixing
-  /*
-  assert(cardinality(port_1) <= 1,"
+    assert(cardinality(port_1) <= 1,"
 port_1 of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
-  assert(cardinality(port_2) <= 1,"
+    assert(cardinality(port_2) <= 1,"
 port_2 of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
-  assert(cardinality(port_3) <= 1,"
+    assert(cardinality(port_3) <= 1,"
 port_3 of volume can at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller.
 ");
-*/
 
     // Boundary conditions
     port_1.h_outflow = medium.h;
@@ -255,32 +204,18 @@ of the modeller.
     port_2.Xi_outflow = medium.Xi;
     port_3.Xi_outflow = medium.Xi;
 
-    // Internal quantities
-    m   = medium.d*V;
-    mXi = m*medium.Xi;
-    U   = m*medium.u;
-
     // Mass balances
-    if dynamicsType < Types.Dynamics.SteadyStateMass then
-      der(m)   = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-      der(mXi) = port_1.m_flow*actualStream(port_1.Xi_outflow)
+    fluidVolume = V;
+    ms_flow = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
+    mXis_flow = port_1.m_flow*actualStream(port_1.Xi_outflow)
                 + port_2.m_flow*actualStream(port_2.Xi_outflow)
                 + port_3.m_flow*actualStream(port_3.Xi_outflow)
-        "Component mass balances";
-    else
-         0   = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-      zeros(Medium.nXi) = port_1.m_flow*actualStream(port_1.Xi_outflow)
-                + port_2.m_flow*actualStream(port_2.Xi_outflow)
-                + port_3.m_flow*actualStream(port_3.Xi_outflow)
-        "Component mass balances";
-    end if;
+      "Component mass balances";
 
-  /* 
-  zeros(Medium.nC) = port_1.m_flow*actualStream(port_1.C_outflow)
-                      + port_2.m_flow*actualStream(port_2.C_outflow)
-                      + port_3.m_flow*actualStream(port_3.C_outflow) 
-    "Trace substance mass balances";
-*/
+    zeros(Medium.nC) = port_1.m_flow*actualStream(port_1.C_outflow)
+                        + port_2.m_flow*actualStream(port_2.C_outflow)
+                        + port_3.m_flow*actualStream(port_3.C_outflow)
+      "Trace substance mass balances";
 
     // Momentum balance (suitable for compressible media)
     port_1.p = medium.p;
@@ -288,41 +223,51 @@ of the modeller.
     port_3.p = medium.p;
 
     // Energy balance
-    if dynamicsType < Types.Dynamics.SteadyState then
-      der(U) = port_1.m_flow*actualStream(port_1.h_outflow)
+    Hs_flow = port_1.m_flow*actualStream(port_1.h_outflow)
               + port_2.m_flow*actualStream(port_2.h_outflow)
               + port_3.m_flow*actualStream(port_3.h_outflow);
-    else
-        0  = port_1.m_flow*actualStream(port_1.h_outflow)
-              + port_2.m_flow*actualStream(port_2.h_outflow)
-              + port_3.m_flow*actualStream(port_3.h_outflow);
-    end if;
+    Ws_flow = 0;
+    Qs_flow = 0;
   end JunctionVolume;
 
-  model MassFlowRatio "simple flow multiplier"
+  model MultiPort
+    "Multiply a port; useful if multiple connections shall be made to a port exposing a state"
+
+    function positiveMax
+      input Real x;
+      output Real y;
+    algorithm
+      y :=max(x, 1e-10);
+    end positiveMax;
+
+    import Modelica.Constants;
+
     replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(choicesAllMatching);
-    parameter Integer nOutlets=1
+
+    // Ports
+    parameter Integer nPorts_b=1
       "Number of outlet ports (mass is distributed evenly between the outlet ports";
     Modelica_Fluid.Interfaces.FluidPort_a port_a(
-                                  redeclare package Medium=Medium) 
-      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+      redeclare package Medium=Medium) 
+      annotation (Placement(transformation(extent={{-50,-10},{-30,10}},
             rotation=0)));
-    Modelica_Fluid.Interfaces.FluidPorts_b ports_b[nOutlets] 
-                                    annotation (Placement(transformation(extent=
-             {{90,-40},{110,40}}, rotation=0)));
+    Modelica_Fluid.Interfaces.FluidPorts_b[nPorts_b] ports_b(
+      redeclare each package Medium=Medium) 
+      annotation (Placement(transformation(extent={{30,40},{50,-40}},
+                                  rotation=0)));
 
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics={
+    annotation (Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-40,
+              -100},{40,100}}), graphics={
           Line(
-            points={{-80,0},{80,0}},
+            points={{-40,0},{40,0}},
             color={0,128,255},
             thickness=1),
           Line(
-            points={{-80,0},{80,28}},
+            points={{-40,0},{40,26}},
             color={0,128,255},
             thickness=1),
           Line(
-            points={{-80,0},{80,-28}},
+            points={{-40,0},{40,-26}},
             color={0,128,255},
             thickness=1),
           Text(
@@ -330,284 +275,148 @@ of the modeller.
             lineColor={0,0,255},
             textString="%name")}),
                             Documentation(info="<html>
+<p>
+This model is useful if multiple connections shall be made to a port of a volume model exposing a state,
+like a pipe with ModelStructure avb. 
+The mixing is shifted into the volume connected to port_a and the result is propageted back to each ports_b.
+</p>
+<p>
+If multiple connections were directly made to the volume,
+then ideal mixing would take place in the connection set, outside the volume. This is normally not intended.
+</p>
+</html>"),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-40,-100},{
+              40,100}}),
+              graphics));
+
+  equation
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+    for i in 1:nPorts_b loop
+      assert(cardinality(ports_b[i]) <= 1,"
+each ports_b[i] of boundary shall at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections, which is usually not the intention
+of the modeller. Increase nPorts_b to add an additional port.
+");
+    end for;
+
+    // mass and momentum balance
+    0 = port_a.m_flow + sum(ports_b.m_flow);
+    ports_b.p = fill(port_a.p, nPorts_b);
+
+    // expose stream values from port_a to ports_b
+    ports_b.h_outflow = fill(inStream(port_a.h_outflow), nPorts_b);
+    ports_b.Xi_outflow = fill(inStream(port_a.Xi_outflow), nPorts_b);
+    ports_b.C_outflow = fill(inStream(port_a.C_outflow), nPorts_b);
+
+    // mixing at port_a
+    port_a.h_outflow = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].h_outflow) for j in 1:nPorts_b})
+                         / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
+    for i in 1:Medium.nXi loop
+      port_a.Xi_outflow[i] = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].Xi_outflow[i]) for j in 1:nPorts_b})
+                           / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
+    end for;
+    for i in 1:Medium.nXi loop
+      port_a.C_outflow[i] = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].C_outflow[i]) for j in 1:nPorts_b})
+                           / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
+    end for;
+  end MultiPort;
+
+  package ToBeRemoved
+    model MassFlowRatio "simple flow multiplier"
+      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(choicesAllMatching);
+      parameter Integer nOutlets=1
+        "Number of outlet ports (mass is distributed evenly between the outlet ports";
+      Modelica_Fluid.Interfaces.FluidPort_a port_a(
+                                    redeclare package Medium=Medium) 
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+              rotation=0)));
+      Modelica_Fluid.Interfaces.FluidPorts_b ports_b[nOutlets] 
+                                      annotation (Placement(transformation(extent=
+               {{90,-40},{110,40}}, rotation=0)));
+
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}), graphics={
+            Line(
+              points={{-80,0},{80,0}},
+              color={0,128,255},
+              thickness=1),
+            Line(
+              points={{-80,0},{80,28}},
+              color={0,128,255},
+              thickness=1),
+            Line(
+              points={{-80,0},{80,-28}},
+              color={0,128,255},
+              thickness=1),
+            Text(
+              extent={{-150,100},{150,60}},
+              lineColor={0,0,255},
+              textString="%name")}),
+                              Documentation(info="<html>
 <p>
 This model describes a simple flow partitioning, which is very helpful in cases where the flow is evenly distributed to several parallel flow paths which are identical in their dimensions and boundary conditions, as e.g. in heat exchangers. Only one of the parallel pipes needs to be simulated then. All flow variables in <b>port_b[i]</b> are equal to those at <b>port_a</b> divided by <b>nOutlets</b>. All effort variables are equal at all ports.
 </p>
 </html>"),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
-              graphics));
+        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}}),
+                graphics));
 
-  equation
-    port_a.h_outflow  =  sum( {inStream(ports_b[i].h_outflow)     for i in 1:nOutlets})/nOutlets;
-    port_a.Xi_outflow = {sum( {inStream(ports_b[i].Xi_outflow[j]) for i in 1:nOutlets})/nOutlets for j in 1:Medium.nXi};
-    port_a.C_outflow  = {sum( {inStream(ports_b[i].C_outflow[j])  for i in 1:nOutlets})/nOutlets for j in 1:Medium.nXi};
+    equation
+      port_a.h_outflow  =  sum( {inStream(ports_b[i].h_outflow)     for i in 1:nOutlets})/nOutlets;
+      port_a.Xi_outflow = {sum( {inStream(ports_b[i].Xi_outflow[j]) for i in 1:nOutlets})/nOutlets for j in 1:Medium.nXi};
+      port_a.C_outflow  = {sum( {inStream(ports_b[i].C_outflow[j])  for i in 1:nOutlets})/nOutlets for j in 1:Medium.nXi};
 
-    for i in 1:nOutlets loop
-       ports_b[i].h_outflow  = inStream(port_a.h_outflow);
-       ports_b[i].Xi_outflow = inStream(port_a.Xi_outflow);
-       ports_b[i].C_outflow  = inStream(port_a.C_outflow);
+      for i in 1:nOutlets loop
+         ports_b[i].h_outflow  = inStream(port_a.h_outflow);
+         ports_b[i].Xi_outflow = inStream(port_a.Xi_outflow);
+         ports_b[i].C_outflow  = inStream(port_a.C_outflow);
 
-       // Momentum balance
-       port_a.p = ports_b[i].p;
+         // Momentum balance
+         port_a.p = ports_b[i].p;
 
-       // Mass balance
-       ports_b[i].m_flow = -port_a.m_flow/nOutlets;
-    end for;
-  end MassFlowRatio;
+         // Mass balance
+         ports_b[i].m_flow = -port_a.m_flow/nOutlets;
+      end for;
+    end MassFlowRatio;
 
-  model HeatFlowRatio "simple heat flow multiplier"
-    parameter Integer nOutlets=1
-      "Number of outlet ports (heat is distributed evenly between the outlet ports";
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics={
-          Line(
-            points={{-80,0},{80,30}},
-            color={127,0,0},
-            thickness=1),
-          Line(
-            points={{-80,0},{80,0}},
-            color={127,0,0},
-            thickness=1),
-          Line(
-            points={{-80,0},{80,-32}},
-            color={127,0,0},
-            thickness=1),
-          Text(
-            extent={{-150,100},{150,60}},
-            lineColor={0,0,255},
-            textString="%name")}),
-                            Documentation(info="<html>
+    model HeatFlowRatio "simple heat flow multiplier"
+      parameter Integer nOutlets=1
+        "Number of outlet ports (heat is distributed evenly between the outlet ports";
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}), graphics={
+            Line(
+              points={{-80,0},{80,30}},
+              color={127,0,0},
+              thickness=1),
+            Line(
+              points={{-80,0},{80,0}},
+              color={127,0,0},
+              thickness=1),
+            Line(
+              points={{-80,0},{80,-32}},
+              color={127,0,0},
+              thickness=1),
+            Text(
+              extent={{-150,100},{150,60}},
+              lineColor={0,0,255},
+              textString="%name")}),
+                              Documentation(info="<html>
 <p>
 Simple model for heat flow partitioning between the two ports. The heat flow rate in port_a is divided by parameter <b>nOutlets</b> to achieve the rate at ports port_b. All temperatures are equal. The model may be used e.g. for parallel pipes in heat exchangers.
 </p>
 </html>"));
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort_a 
-      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
-            rotation=0)));
-    Modelica_Fluid.Interfaces.HeatPorts_b heatPorts_b[nOutlets] 
-                                   annotation (Placement(transformation(extent=
-              {{90,-40},{110,40}}, rotation=0)));
-  equation
-    for i in 1:nOutlets loop
-       heatPorts_b[i].Q_flow = -heatPort_a.Q_flow/nOutlets;
-       heatPorts_b[i].T      =  heatPort_a.T;
-    end for;
-  end HeatFlowRatio;
-
-  model GenericJunction
-    "Branching component with balances for a dynamic control volume"
-    import Modelica.Constants;
-    import Modelica_Fluid.Types;
-    import Modelica_Fluid.Types.ModelStructure;
-    outer Modelica_Fluid.System system "System properties";
-    parameter Integer nPorts_a(min=1)=1 "Number of ports on side a";
-    parameter Integer nPorts_b(min=1)=1 "Number of ports on side b";
-    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
-      "Fluid medium model" 
-        annotation (choicesAllMatching=true);
-    parameter SI.Volume V "Volume";
-    parameter SI.Pressure dp_nominal "nominal (linear) pressure drop" annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
-    parameter SI.MassFlowRate m_flow_nominal "nominal mass flow rate"  annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
-
-    SI.InternalEnergy U "Internal energy";
-    SI.Mass m "Total mass";
-    SI.Mass[Medium.nXi] mXi "Independent masses";
-
-    Interfaces.FluidStatePorts_a[nPorts_a] ports_a(
-      redeclare each package Medium=Medium,
-      m_flow(each min=if allowFlowReversal then -Constants.inf else 0))
-      "Fluid connectors a (positive design flow direction is from ports_a to ports_b)"
-      annotation (Placement(
-          transformation(extent={{-110,40},{-90,-40}}, rotation=0)));
-    Interfaces.FluidStatePorts_b[nPorts_b] ports_b(
-      redeclare each package Medium=Medium,
-      m_flow(each max=if allowFlowReversal then +Constants.inf else 0))
-      "Fluid connectors b (positive design flow direction is from ports_a to ports_b)"
-      annotation (Placement(
-          transformation(extent={{90,40},{110,-40}}, rotation=0)));
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort "Thermal port"
-      annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=0)));
-    Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
-    Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
-
-    // Assumptions
-    parameter Boolean allowFlowReversal = system.allowFlowReversal
-      "allow flow reversal, false restricts to design direction (port_a -> port_b)"
-      annotation(Dialog(tab="Assumptions"), Evaluate=true);
-    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-      "Dynamics option" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-
-    // Initialization
-    parameter Types.Init initType=Types.Init.NoInit "Initialization option" 
-      annotation(Evaluate=true,Dialog(tab="Initialization"));
-    parameter Medium.AbsolutePressure p_start "Start value of pressure" 
-      annotation(Dialog(tab="Initialization"));
-    parameter Boolean use_T_start=true "=true, use T_start, otherwise h_start" 
-      annotation(Dialog(tab="Initialization"),Evaluate=true);
-    parameter Medium.Temperature T_start=
-      if use_T_start then system.T_start else Medium.temperature_phX(p_start,h_start,X_start)
-      "Start value of temperature" 
-      annotation(Dialog(tab="Initialization",enable=use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.specificEnthalpy_pTX(p_start,T_start,X_start) else Medium.h_default
-      "Start value of specific enthalpy" 
-      annotation(Dialog(tab="Initialization",enable=not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-      "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
-
-    parameter ModelStructure modelStructure=ModelStructure.avb annotation(Evaluate=true);
-
-    Medium.EnthalpyFlowRate ports_a_H_flow[nPorts_a];
-    Medium.EnthalpyFlowRate ports_b_H_flow[nPorts_b];
-    Medium.MassFlowRate ports_a_mXi_flow[nPorts_a,Medium.nXi];
-    Medium.MassFlowRate ports_b_mXi_flow[nPorts_b,Medium.nXi];
-    Medium.ExtraPropertyFlowRate ports_a_mC_flow[nPorts_a,Medium.nC];
-    Medium.ExtraPropertyFlowRate ports_b_mC_flow[nPorts_b,Medium.nC];
-
-    annotation (Icon(coordinateSystem(
-          preserveAspectRatio=true,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Ellipse(
-            extent={{-19,0},{1,-20}},
-            lineColor={0,0,0},
-            fillColor={0,0,0},
-            fillPattern=FillPattern.Solid),
-          Ellipse(
-            extent={{-100,100},{100,-100}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.Sphere,
-            fillColor={0,128,255}),
-          Ellipse(
-            extent={{-9,10},{11,-10}},
-            lineColor={0,0,0},
-            fillColor={0,0,0},
-            fillPattern=FillPattern.Solid),
-          Text(
-            extent={{-150,150},{150,110}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name")}),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics));
-
-  initial equation
-    // Initial conditions
-    if initType == Types.Init.NoInit then
-      // no initial equations
-    elseif initType == Types.Init.InitialValues then
-      medium.p = p_start;
-      medium.h = h_start;
-    elseif initType == Types.Init.SteadyState then
-      der(medium.p) = 0;
-      der(medium.h) = 0;
-    elseif initType == Types.Init.SteadyStateHydraulic then
-      der(medium.p) = 0;
-      medium.h = h_start;
-    else
-      assert(false, "Unsupported initialization option");
-    end if;
-
-  equation
-    // Only one connection allowed to a port to avoid unwanted ideal mixing
-  /*
-for i in 1:nPorts_a loop
-  assert(cardinality(ports_a[i]) <= 1,"
-ports_a[" + String(i) + "] of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-end for;
- 
-for i in 1:nPorts_b loop
-  assert(cardinality(ports_b[i]) <= 1,"
-ports_a[" + String(i) + "] of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-end for;
-*/
-
-    heatPort.T = medium.T;
-
-    if dynamicsType < Types.Dynamics.SteadyStateMass then
-      sum(ports_a.m_flow)+sum(ports_b.m_flow) = der(m) "Mass balance";
-
-      for i in 1:Medium.nXi loop
-        sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]) = der(mXi[i])
-          "Substance mass balance";
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort_a 
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+              rotation=0)));
+      Modelica_Fluid.Interfaces.HeatPorts_b heatPorts_b[nOutlets] 
+                                     annotation (Placement(transformation(extent=
+                {{90,-40},{110,40}}, rotation=0)));
+    equation
+      for i in 1:nOutlets loop
+         heatPorts_b[i].Q_flow = -heatPort_a.Q_flow/nOutlets;
+         heatPorts_b[i].T      =  heatPort_a.T;
       end for;
-    else
-      sum(ports_a.m_flow)+sum(ports_b.m_flow) = 0 "Mass balance";
-
-      for i in 1:Medium.nXi loop
-        sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]) = 0
-          "Substance mass balance";
-      end for;
-    end if;
-
-    if dynamicsType < Types.Dynamics.SteadyState then
-      sum(ports_a_H_flow) + sum(ports_b_H_flow) + heatPort.Q_flow = der(U)
-        "Energy balance";
-    else
-      sum(ports_a_H_flow) + sum(ports_b_H_flow) + heatPort.Q_flow = 0
-        "Energy balance";
-    end if;
-
-    for i in 1:Medium.nC loop
-      sum(ports_a_mC_flow[:,i])+sum(ports_b_mC_flow[:,i]) = 0
-        "Trace substance mass balance";
-    end for;
-
-    for i in 1:nPorts_a loop
-      ports_a[i].h_outflow  = medium.h;
-      ports_a[i].Xi_outflow = medium.Xi;
-      ports_a[i].C_outflow = C;
-
-      ports_a_H_flow[i] = ports_a[i].m_flow * actualStream(ports_a[i].h_outflow)
-        "Enthalpy flow";
-      ports_a_mXi_flow[i,:] = ports_a[i].m_flow * actualStream(ports_a[i].Xi_outflow)
-        "Component mass flow";
-      ports_a_mC_flow[i,:] = ports_a[i].m_flow * actualStream(ports_a[i].C_outflow)
-        "Trace substance mass flow";
-    end for;
-
-    for i in 1:nPorts_b loop
-      ports_b[i].h_outflow  = medium.h;
-      ports_b[i].Xi_outflow = medium.Xi;
-      ports_b[i].C_outflow = C;
-
-      ports_b_H_flow[i] = ports_b[i].m_flow * actualStream(ports_b[i].h_outflow)
-        "Enthalpy flow";
-      ports_b_mXi_flow[i,:] = ports_b[i].m_flow * actualStream(ports_b[i].Xi_outflow)
-        "Component mass flow";
-      ports_b_mC_flow[i,:] = ports_b[i].m_flow * actualStream(ports_b[i].C_outflow)
-        "Trace substance mass flow";
-    end for;
-
-    if modelStructure==ModelStructure.avb or modelStructure == ModelStructure.av_b then
-      ports_a.p=fill(medium.p, nPorts_a);
-    else
-      ports_a.p-fill(medium.p,nPorts_a) = ports_a.m_flow*dp_nominal/m_flow_nominal;
-    end if;
-
-    if modelStructure==ModelStructure.avb or modelStructure==ModelStructure.a_vb then
-      ports_b.p=fill(medium.p,nPorts_b);
-    else
-      ports_b.p-fill(medium.p,nPorts_b)=ports_b.m_flow*dp_nominal/m_flow_nominal;
-    end if;
-
-    U=m*medium.u;
-    mXi=m*medium.Xi;
-    m=medium.d*V;
-
-  end GenericJunction;
+    end HeatFlowRatio;
+  end ToBeRemoved;
 end Junctions;

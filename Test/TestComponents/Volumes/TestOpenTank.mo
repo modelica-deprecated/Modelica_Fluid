@@ -6,8 +6,8 @@ model TestOpenTank
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     nPorts=2,
     height=20,
-    pipeDiameters={0.1,0.1},
-    p_static_at_port=true,
+    portDiameters={0.1,0.1},
+    neglectPortDiameters=true,
     level_start=2,
     crossArea=0.2,
     V0=0.1) 
@@ -48,8 +48,8 @@ model TestOpenTank
     nPorts=1,
     height=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    pipeDiameters={0.1},
-    p_static_at_port=true,
+    portDiameters={0.1},
+    neglectPortDiameters=true,
     level_start=2,
     crossArea=1,
     V0=0.1) 

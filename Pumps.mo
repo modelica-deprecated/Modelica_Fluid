@@ -122,6 +122,8 @@ package Pumps "Pump components"
       import Modelica.SIunits.Conversions.NonSIunits.*;
       import Modelica.Constants;
     extends Modelica_Fluid.Interfaces.PartialTwoPort(
+      port_a_exposesState = (M > 0),
+      port_b_exposesState = (M > 0),
       port_a(
         p(start=p_a_start),
         m_flow(start = m_flow_start,

@@ -7,7 +7,7 @@ model TestSweptVolume
     pistonCrossArea=0.05*0.05*Modelica.Constants.pi/4,
     clearance=0.05*0.05*Modelica.Constants.pi/4*0.03,
     redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
-    annotation (Placement(transformation(extent={{0,-10},{20,10}}, rotation=0)));
+    annotation (Placement(transformation(extent={{0,10},{20,-10}}, rotation=0)));
   Modelica.Mechanics.Translational.Sources.Position position 
     annotation (Placement(transformation(extent={{-20,-40},{0,-20}}, rotation=0)));
   Modelica.Blocks.Sources.Sine sine(
@@ -18,7 +18,7 @@ model TestSweptVolume
   inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{80,-40},{100,-20}}, rotation=0)));
 
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}), graphics={Text(
           extent={{-100,80},{100,60}},
           lineColor={0,0,0},

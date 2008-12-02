@@ -44,8 +44,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
-    p_static_at_port=false,
-    pipeDiameters={1},
+    neglectPortDiameters=false,
+    portDiameters={1},
     crossArea=50,
     level_start=2.2,
     height=3) 

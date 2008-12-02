@@ -310,8 +310,8 @@ ideal, i.e., it does not influence the fluid.
             fillColor={191,0,0},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},
-                {12,90},{12,50},{-12,50}},
+            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},{
+                12,90},{12,50},{-12,50}},
             lineColor={0,0,0},
             lineThickness=0.5),
           Line(

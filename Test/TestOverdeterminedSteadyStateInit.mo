@@ -15,14 +15,14 @@ package TestOverdeterminedSteadyStateInit
             textString="P")}));
     Volumes.OpenTank tank(
       redeclare package Medium = Medium,
-      p_static_at_port=true,
+      neglectPortDiameters=true,
       crossArea=0.01,
       V0=0.01,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       height=2,
       level_start=1,
       nPorts=2,
-      pipeDiameters={0.025,0.025}) 
+      portDiameters={0.025,0.025}) 
                 annotation (Placement(transformation(extent={{-76,6},{-54,28}},
             rotation=0)));
     Pumps.Pump pump(
@@ -125,8 +125,8 @@ package TestOverdeterminedSteadyStateInit
              0)));
   equation
   tankLevel = tank.level;
-    connect(valvePosition, valve.opening) annotation (Line(points={{-108,0},
-            {-86,0},{-86,66},{50,66},{50,2.4}}, color={0,0,127}));
+    connect(valvePosition, valve.opening) annotation (Line(points={{-108,0},{
+            -86,0},{-86,66},{50,66},{50,2.4}},  color={0,0,127}));
     connect(pump.port_b, massFlowRate.port_a) annotation (Line(points={{-38,-6},
             {-38,-3.4},{-34,-3.4},{-34,-4}},       color={0,127,255}));
     connect(massFlowRate.m_flow, circuitFlowRate) annotation (Line(points={{-24,
