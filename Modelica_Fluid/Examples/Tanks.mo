@@ -467,17 +467,20 @@ package Tanks "Library demonstrating the usage of the tank model"
       stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort) 
       annotation (Placement(transformation(extent={{-20,10},{20,50}}, rotation=
               0)));
-    PressureLosses.StaticHead pipe1(redeclare package Medium = Medium,
+    Modelica_Fluid.PressureLosses.StaticHead pipe1(
+                                    redeclare package Medium = Medium,
         height_ab=2) annotation (Placement(transformation(
           origin={70,30},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    PressureLosses.StaticHead pipe2(redeclare package Medium = Medium,
+    Modelica_Fluid.PressureLosses.StaticHead pipe2(
+                                    redeclare package Medium = Medium,
         height_ab=2) annotation (Placement(transformation(
           origin={0,-22},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    PressureLosses.StaticHead pipe3(redeclare package Medium = Medium,
+    Modelica_Fluid.PressureLosses.StaticHead pipe3(
+                                    redeclare package Medium = Medium,
         height_ab=2) annotation (Placement(transformation(
           origin={-60,10},
           extent={{-10,-10},{10,10}},
@@ -526,29 +529,29 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Volumes.OpenTank tank1(
       crossArea=1,
       redeclare package Medium = Medium,
-      p_static_at_port=false,
+      neglectPortDiameters=false,
       height=12,
       level_start=8,
       zeta_in={1.05},
       nPorts=1,
-      pipeDiameters={0.1}) 
+      portDiameters={0.1}) 
                      annotation (Placement(transformation(extent={{-80,20},{-40,
               60}}, rotation=0)));
     Modelica_Fluid.Volumes.OpenTank tank2(
       crossArea=1,
       redeclare package Medium = Medium,
-      p_static_at_port=false,
+      neglectPortDiameters=false,
       height=12,
       level_start=3,
       zeta_in={1.05},
       nPorts=1,
-      pipeDiameters={0.1}) 
+      portDiameters={0.1}) 
                      annotation (Placement(transformation(extent={{-20,20},{20,
               60}}, rotation=0)));
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}}),
                         graphics),
-      experiment(StopTime=100),
+      experiment(StopTime=200),
       experimentSetupOutput,
       Documentation(info="<html>
   
@@ -560,14 +563,14 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Volumes.OpenTank tank3(
       crossArea=1,
       redeclare package Medium = Medium,
-      p_static_at_port=false,
+      neglectPortDiameters=false,
       height=12,
       level_start=3,
       zeta_in={1.05},
       nPorts=1,
-      pipeDiameters={0.1}) 
-                     annotation (Placement(transformation(extent={{40,20},{80,
-              60}}, rotation=0)));
+      portDiameters={0.1}) 
+                     annotation (Placement(transformation(extent={{40,-20},{80,20}},
+                    rotation=0)));
     Modelica_Fluid.PressureLosses.StaticHead pipe1(           redeclare package
         Medium =                                                                       Medium,
       allowFlowReversal=true,
@@ -586,16 +589,16 @@ package Tanks "Library demonstrating the usage of the tank model"
         Medium =                                                                       Medium,
       allowFlowReversal=true,
       height_ab=-1) annotation (Placement(transformation(
-          origin={60,-10},
+          origin={60,-50},
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
     connect(pipe1.port_a, pipe2.port_a) annotation (Line(points={{-60,-20},{-60,
             -40},{-6.12323e-016,-40},{-6.12323e-016,-20}}, color={0,127,255}));
     connect(pipe2.port_a, pipe3.port_a) annotation (Line(points={{-6.12323e-016,
-            -20},{0,-20},{0,-40},{60,-40},{60,-20}}, color={0,127,255}));
+            -20},{0,-20},{0,-80},{60,-80},{60,-60}}, color={0,127,255}));
     connect(pipe3.port_b, tank3.ports[1]) 
-      annotation (Line(points={{60,0},{60,10},{60,20},{59,20}},
+      annotation (Line(points={{60,-40},{60,-40},{60,-20},{59,-20}},
                                                 color={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{-60,0},{-60,
             10},{-60,20},{-61,20}},

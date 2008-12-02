@@ -15,14 +15,14 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
     crossArea=2,
-    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{20,0},
+    portDiameters={0.05}) annotation (Placement(transformation(extent={{20,0},
             {40,20}}, rotation=0)));
   Modelica_Fluid.Volumes.OpenTank openTankCold1(
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
     crossArea=2,
-    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{20,60},
+    portDiameters={0.05}) annotation (Placement(transformation(extent={{20,60},
             {40,80}}, rotation=0)));
   Modelica_Fluid.Volumes.OpenTank openTankHot1(
     level_start=1,
@@ -30,7 +30,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     height=2,
     crossArea=2,
     T_start=SI.Conversions.from_degC(80),
-    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{60,40},
+    portDiameters={0.05}) annotation (Placement(transformation(extent={{60,40},
             {80,60}}, rotation=0)));
   Modelica_Fluid.Volumes.OpenTank openTankHot2(
     level_start=1,
@@ -38,7 +38,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     height=2,
     crossArea=2,
     T_start=SI.Conversions.from_degC(80),
-    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{60,-20},
+    portDiameters={0.05}) annotation (Placement(transformation(extent={{60,-20},
             {80,0}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -67,7 +67,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
     crossArea=2,
-    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{20,-60},
+    portDiameters={0.05}) annotation (Placement(transformation(extent={{20,-60},
             {40,-40}}, rotation=0)));
   Modelica_Fluid.Volumes.OpenTank openTankHot3(
     level_start=1,
@@ -75,7 +75,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     height=2,
     crossArea=2,
     T_start=SI.Conversions.from_degC(80),
-    pipeDiameters={0.05}) annotation (Placement(transformation(extent={{60,-80},
+    portDiameters={0.05}) annotation (Placement(transformation(extent={{60,-80},
             {80,-60}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate3(
     redeclare package Medium = Modelica.Media.Water.StandardWater,

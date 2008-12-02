@@ -12,14 +12,14 @@ model TestOnePortSensors1
                       graphics),
                        experiment(StopTime=25, Algorithm="Dassl"),
     experimentSetupOutput);
-  Modelica_Fluid.Volumes.MixingVolume volume1(
+  Modelica_Fluid.Volumes.ClosedVolume volume1(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1e5,
     initType=Modelica_Fluid.Types.Init.InitialValues,
-    p_start=101325) 
-                 annotation (Placement(transformation(extent={{-30,30},{-10,50}},
+    p_start=101325,
+    nPorts=2)    annotation (Placement(transformation(extent={{-30,30},{-10,50}},
           rotation=0)));
 
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
@@ -45,14 +45,14 @@ model TestOnePortSensors1
     duration=20,
     offset=-1) annotation (Placement(transformation(extent={{-100,30},{-80,50}},
           rotation=0)));
-  Modelica_Fluid.Volumes.MixingVolume volume2(
+  Modelica_Fluid.Volumes.ClosedVolume volume2(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1e5,
     initType=Modelica_Fluid.Types.Init.InitialValues,
-    p_start=101325) 
-                 annotation (Placement(transformation(extent={{-32,-30},{-12,
+    p_start=101325,
+    nPorts=2)    annotation (Placement(transformation(extent={{-32,-30},{-12,
             -10}}, rotation=0)));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource1(
     m_flow=1,
@@ -81,25 +81,13 @@ model TestOnePortSensors1
     diameter=diameter_a) annotation (Placement(transformation(extent={{40,-30},{60,-10}},
           rotation=0)));
 equation
-  connect(FlowSource2.ports[1], volume1.ports_a[1])   annotation (Line(points={{-48,40},
-          {-30.2,40}},     color={0,127,255}));
   connect(ramp.y, FlowSource2.m_flow_in) annotation (Line(
       points={{-79,40},{-74,40},{-74,46},{-67.3,46}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(FlowSource1.ports[1], volume2.ports_a[1])   annotation (Line(points={{-48,
-          -20},{-32.2,-20}}, color={0,127,255}));
   connect(ramp.y, FlowSource1.m_flow_in) annotation (Line(
       points={{-79,40},{-76,40},{-76,-14},{-67.3,-14}},
       color={0,0,127},
-      smooth=Smooth.None));
-  connect(Tmix2.port_a, volume2.ports_b[1]) annotation (Line(
-      points={{0,-20},{-12,-20}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(orifice1.port_a, volume1.ports_b[1]) annotation (Line(
-      points={{40,40},{-10,40}},
-      color={0,127,255},
       smooth=Smooth.None));
   connect(orifice1.port_b,sink1.ports[1]) 
                                        annotation (Line(
@@ -117,6 +105,22 @@ equation
       smooth=Smooth.None));
   connect(Tmix1.port, orifice1.port_a) annotation (Line(
       points={{10,60},{10,40},{40,40}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(FlowSource2.ports[1], volume1.ports[1]) annotation (Line(
+      points={{-48,40},{-34,40},{-34,42},{-20,42}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(volume1.ports[2], orifice1.port_a) annotation (Line(
+      points={{-20,38},{10,38},{10,40},{40,40}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(FlowSource1.ports[1], volume2.ports[1]) annotation (Line(
+      points={{-48,-20},{-35,-20},{-35,-18},{-22,-18}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(volume2.ports[2], Tmix2.port_a) annotation (Line(
+      points={{-22,-22},{-11,-22},{-11,-20},{0,-20}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestOnePortSensors1;

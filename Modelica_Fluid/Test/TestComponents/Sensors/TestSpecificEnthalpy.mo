@@ -2,7 +2,9 @@ within Modelica_Fluid.Test.TestComponents.Sensors;
 model TestSpecificEnthalpy
   import Modelica_Fluid;
   annotation (
-    Diagram(graphics),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+            100,100}}),
+            graphics),
     experiment(Tolerance=1e-006),
     experimentSetupOutput);
   inner Modelica_Fluid.System system  annotation (Placement(transformation(

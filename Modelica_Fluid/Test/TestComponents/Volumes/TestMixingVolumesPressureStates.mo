@@ -8,14 +8,17 @@ model TestMixingVolumesPressureStates
             -100},{100,100}}),
                       graphics),
                        experiment(StopTime=10));
-  Modelica_Fluid.Volumes.MixingVolume MixingVolume1(
+  Modelica_Fluid.Volumes.ClosedVolume ClosedVolume1(
     V=1e-3,
     redeclare package Medium = Medium,
     p_start=system.p_ambient,
     use_T_start=true,
     T_start=system.T_ambient,
-    initType=Modelica_Fluid.Types.Init.SteadyState) 
-                 annotation (Placement(transformation(extent={{-30,30},{-10,50}},
+    initType=Modelica_Fluid.Types.Init.SteadyState,
+    nPorts=2,
+    portDiameters={0,0},
+    neglectPortDiameters=true) 
+                 annotation (Placement(transformation(extent={{-30,38},{-10,58}},
           rotation=0)));
 
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
@@ -24,14 +27,16 @@ model TestMixingVolumesPressureStates
     redeclare package Medium = Medium) 
                    annotation (Placement(transformation(extent={{-100,30},{-80,
             50}}, rotation=0)));
-  Modelica_Fluid.Volumes.MixingVolume MixingVolume2(
+  Modelica_Fluid.Volumes.ClosedVolume ClosedVolume2(
     V=1e-3,
     p_start=system.p_ambient,
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
-    initType=Modelica_Fluid.Types.Init.NoInit) 
-                 annotation (Placement(transformation(extent={{10,30},{30,50}},
+    initType=Modelica_Fluid.Types.Init.NoInit,
+    nPorts=2,
+    portDiameters={0,0}) 
+                 annotation (Placement(transformation(extent={{10,38},{30,58}},
           rotation=0)));
   Modelica_Fluid.Sensors.TemperatureOnePort Tmix_in(
                                          redeclare package Medium = Medium) 
@@ -71,24 +76,26 @@ equation
       points={{-80,40},{-70,40}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(simpleGenericOrifice1.port_b, MixingVolume1.ports_a[1]) annotation (Line(
-      points={{-50,40},{-30.2,40}},
-      color={0,127,255},
-      smooth=Smooth.None));
   connect(simpleGenericOrifice1.port_b, Tmix_in.port) annotation (Line(
       points={{-50,40},{-40,40},{-40,70}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(MixingVolume2.ports_a[1], MixingVolume1.ports_b[1]) annotation (Line(
-      points={{9.8,40},{-10,40}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(MixingVolume2.ports_b[1], simpleGenericOrifice2.port_a) annotation (Line(
-      points={{30,40},{50,40}},
-      color={0,127,255},
-      smooth=Smooth.None));
   connect(Tmix_out.port, simpleGenericOrifice2.port_a) annotation (Line(
       points={{40,68},{40,40},{50,40}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(simpleGenericOrifice1.port_b, ClosedVolume1.ports[1]) annotation (
+      Line(
+      points={{-50,40},{-20,40}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(ClosedVolume1.ports[2], ClosedVolume2.ports[2]) annotation (Line(
+      points={{-20,36},{-20,34},{20,34},{20,36}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(ClosedVolume2.ports[1], simpleGenericOrifice2.port_a) annotation (
+      Line(
+      points={{20,40},{50,40}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestMixingVolumesPressureStates;

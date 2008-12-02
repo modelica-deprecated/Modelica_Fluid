@@ -7,12 +7,12 @@ model TestMixingVolumes
             -100},{100,100}}),
                       graphics),
                        experiment(StopTime=10));
-  Modelica_Fluid.Volumes.MixingVolume MixingVolume1(
+  Modelica_Fluid.Volumes.ClosedVolume ClosedVolume1(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
-    nPorts_a=2)  annotation (Placement(transformation(extent={{-30,30},{-10,50}},
+    nPorts=3)  annotation (Placement(transformation(extent={{-30,40},{-10,60}},
           rotation=0)));
 
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
@@ -21,12 +21,12 @@ model TestMixingVolumes
     redeclare package Medium = Medium) 
                    annotation (Placement(transformation(extent={{-100,30},{-80,
             50}}, rotation=0)));
-  Modelica_Fluid.Volumes.MixingVolume MixingVolume2(
+  Modelica_Fluid.Volumes.ClosedVolume ClosedVolume2(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
-    nPorts_b=2)  annotation (Placement(transformation(extent={{10,30},{30,50}},
+    nPorts=3)  annotation (Placement(transformation(extent={{10,40},{30,60}},
           rotation=0)));
   Modelica_Fluid.Sensors.TemperatureOnePort Tmix_in(
                                          redeclare package Medium = Medium) 
@@ -42,22 +42,24 @@ model TestMixingVolumes
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}},
           rotation=0)));
 equation
-  connect(MixingVolume1.ports_b[1], MixingVolume2.ports_a[1]) annotation (Line(points={{-10,40},
-          {10,40}},           color={0,127,255}));
-  connect(FlowSource2.ports[1], MixingVolume1.ports_a[2]) 
+  connect(FlowSource2.ports[1], ClosedVolume1.ports[2]) 
                                                   annotation (Line(points={{-80,40},
-          {-55,40},{-55,38},{-30,38}},
+          {-50,40},{-20,40}},
                            color={0,127,255}));
-  connect(MixingVolume2.ports_b[2], Sink2.ports[1]) 
-                                            annotation (Line(points={{30,38},{
-          55,38},{55,40},{80,40}},
+  connect(ClosedVolume2.ports[2], Sink2.ports[1]) 
+                                            annotation (Line(points={{20,40},{
+          20,40},{80,40}},
                    color={0,127,255}));
-  connect(Tmix_in.port, MixingVolume1.ports_a[1]) annotation (Line(
-      points={{-50,50},{-50,42},{-30,42}},
+  connect(Tmix_in.port, ClosedVolume1.ports[1]) annotation (Line(
+      points={{-50,50},{-50,42.6667},{-20,42.6667}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(Tmix_out.port, MixingVolume2.ports_b[1]) annotation (Line(
-      points={{50,50},{50,42},{30,42}},
+  connect(Tmix_out.port, ClosedVolume2.ports[1]) annotation (Line(
+      points={{50,50},{50,42.6667},{20,42.6667}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(ClosedVolume1.ports[3], ClosedVolume2.ports[3]) annotation (Line(
+      points={{-20,37.3333},{-20,36},{20,36},{20,37.3333}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestMixingVolumes;

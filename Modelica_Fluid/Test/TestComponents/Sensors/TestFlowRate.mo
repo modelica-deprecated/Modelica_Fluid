@@ -15,7 +15,9 @@ model TestFlowRate
                                     annotation (Placement(transformation(extent=
            {{-60,0},{-40,20}}, rotation=0)));
   annotation (
-    Diagram(graphics),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+            100,100}}),
+            graphics),
     experiment(Tolerance=1e-006),
     experimentSetupOutput);
   Modelica_Fluid.Sources.FixedBoundary_phX boundary_fixed(

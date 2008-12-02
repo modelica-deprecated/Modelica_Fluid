@@ -2,98 +2,96 @@ within Modelica_Fluid;
 package Volumes "Generic volume, tank and other volume type components"
    extends Modelica_Fluid.Icons.VariantLibrary;
 
-    model MixingVolume
-    "Mixing volume with inlet and outlet ports (flow reversal is allowed)"
-      extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolume;
+    model ClosedVolume "Closed volume with ports"
+      extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolumePorts(Qs_flow = heatPort.Q_flow);
+
       parameter SI.Volume V "Volume";
+
+    //Port definitions
+      parameter Integer nPorts(min=1)=1 "Number of ports" annotation(Dialog(group="Ports"));
+      parameter SI.Diameter portDiameters[nPorts] = ones(nPorts)
+      "Inner (hydraulic) diameters of ports (array)"   annotation(Dialog(group="Ports",enable= not neglectPortDiameters));
+
+    //Transformation of kinetic energy
+        parameter Boolean neglectPortDiameters=true
+      "=true, kinetic energy and dissipation is accounted for in port pressure"
+                                                                                                          annotation(Evaluate=true, Dialog(tab="Assumptions"));
+        parameter Real[nPorts] zeta_in=fill(0, nPorts)
+      "Hydraulic resistance into volume, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
+                                                                                                          annotation(Dialog(tab="Assumptions",enable= not neglectPortDiameters));
+        parameter Real[nPorts] zeta_out=fill(1, nPorts)
+      "Hydraulic resistance out of volume, 0 for ideal smooth outlet"   annotation(Dialog(tab="Assumptions",enable= not neglectPortDiameters));
+
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
       annotation (
         Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={
-          Ellipse(
+              100,100}}), graphics={Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
-            fillColor={170,213,255}),
-          Line(
-            points={{36,-1},{-54,-1}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{26,14},{66,-1},{26,-16},{26,14}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+            fillColor={170,213,255})}),
       Documentation(info="<html>
 Ideally mixed volume of constant size with two fluid ports and one medium model. The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. The thermal port temperature is equal to the medium temperature.
 </html>"),
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}),
               graphics));
+
     equation
-      heatPort.T = medium.T;
-      Qs_flow = heatPort.Q_flow;
+      fluidVolume = V;
       Ws_flow = 0;
-      V = V_lumped;
-    end MixingVolume;
+      heatPort.T = medium.T;
+    end ClosedVolume;
 
   model SweptVolume
     "varying cylindric volume depending on the postition of the piston"
-    extends BaseClasses.PartialLumpedVolume;
+    extends BaseClasses.PartialLumpedVolumePorts(Qs_flow = 0);
     parameter SI.Area pistonCrossArea "cross sectional area of pistion";
     parameter SI.Volume clearance "remaining volume at zero piston stroke";
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}}),
                         graphics),
-                         Icon(coordinateSystem(preserveAspectRatio=false,
+                         Icon(coordinateSystem(preserveAspectRatio=true,
             extent={{-100,-100},{100,100}}), graphics={
           Rectangle(
-            extent={{-44,62},{44,-30}},
+            extent={{-44,36},{44,-90}},
             lineColor={0,0,255},
             pattern=LinePattern.None,
             lineThickness=1,
             fillColor={170,213,255},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-40,60},{-40,44},{-44,44},{-44,64},{44,64},{44,44},{40,44},
-                {40,60},{-40,60}},
+            points={{-44,60},{-40,60},{-40,-32},{-44,-32},{-44,60}},
             lineColor={95,95,95},
             smooth=Smooth.None,
             fillColor={135,135,135},
             fillPattern=FillPattern.Backward),
           Polygon(
-            points={{-44,34},{-40,34},{-40,-60},{-44,-60},{-44,34}},
+            points={{40,60},{44,60},{44,-34},{40,-34},{40,60}},
             lineColor={95,95,95},
             smooth=Smooth.None,
             fillColor={135,135,135},
             fillPattern=FillPattern.Backward),
+          Rectangle(
+            extent={{-40,40},{40,30}},
+            lineColor={95,95,95},
+            fillColor={135,135,135},
+            fillPattern=FillPattern.Forward),
+          Rectangle(
+            extent={{-6,92},{6,40}},
+            lineColor={95,95,95},
+            fillColor={135,135,135},
+            fillPattern=FillPattern.Forward),
           Polygon(
-            points={{40,34},{44,34},{44,-60},{40,-60},{40,34}},
+            points={{-40,-86},{40,-86},{40,70},{44,70},{44,-90},{-44,-90},{-44,
+                70},{-40,70},{-40,-86}},
             lineColor={95,95,95},
             smooth=Smooth.None,
             fillColor={135,135,135},
-            fillPattern=FillPattern.Backward),
-          Rectangle(
-            extent={{-40,-30},{40,-40}},
-            lineColor={95,95,95},
-            fillColor={135,135,135},
-            fillPattern=FillPattern.Forward),
-          Rectangle(
-            extent={{-6,-40},{6,-92}},
-            lineColor={95,95,95},
-            fillColor={135,135,135},
-            fillPattern=FillPattern.Forward),
-          Line(
-            points={{-102,0},{-70,0},{-70,40},{-44,40}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Line(
-            points={{44,40},{70,40},{70,0},{100,0}},
-            color={0,128,255},
-            smooth=Smooth.None)}),
+            fillPattern=FillPattern.Backward)}),
       Documentation(info="<html>
 <p> Mixing volume with varying size. The size of the volume is given by:</p>
 <ul>
@@ -115,23 +113,18 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
 </html>"));
     Modelica.Mechanics.Translational.Interfaces.Flange_b flange
       "translation flange for piston" annotation (Placement(transformation(
-            extent={{-10,-110},{10,-90}}, rotation=0)));
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort "Thermal port"
-    annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
-    outer Modelica_Fluid.System system "System properties";
+            extent={{-10,90},{10,110}},   rotation=0)));
 
   equation
     assert(flange.s >= 0, "Piston stroke (given by flange.s) must not be smaller than zero!");
 
     // volume size
-    V_lumped = clearance + flange.s * pistonCrossArea;
+    fluidVolume = clearance + flange.s * pistonCrossArea;
 
     flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
-    heatPort.T = medium.T;
 
     // energy balances
     Ws_flow = medium.p * pistonCrossArea * (-der(flange.s));
-    Qs_flow = heatPort.Q_flow;
   end SweptVolume;
 
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
@@ -139,16 +132,20 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
 
+  parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+      "Dynamics option" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+
 //Transformation of kinetic energy
-    parameter Boolean p_static_at_port=false
+    parameter Boolean neglectPortDiameters=false
       "=true, kinetic energy and dissipation is accounted for in port pressure"
-                                                                                                        annotation(Evaluate=true, Dialog(tab="Advanced"));
+                                                                                                        annotation(Evaluate=true, Dialog(tab="Assumptions"));
     parameter Real[nPorts] zeta_in=fill(0, nPorts)
       "Hydraulic resistance into tank, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-                                                                                                        annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
+                                                                                                     annotation(Dialog(tab="Assumptions",enable=neglectPortDiameters==false));
     parameter Real[nPorts] zeta_out=fill(1, nPorts)
       "Hydraulic resistance out of tank, 0 for ideal smooth outlet" 
-                                                                  annotation(Dialog(tab="Advanced",enable=p_static_at_pot==false));
+                                                                  annotation(Dialog(tab="Assumptions",enable=neglectPortDiameters==false));
 
 //Tank geometry
     parameter SI.Height height "Height of tank";
@@ -158,7 +155,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
 //Port definitions
     parameter Integer nPorts(min=1) = 1 "Number of bottom ports (min=1)" 
      annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)"));
-    parameter SI.Diameter pipeDiameters[nPorts]
+    parameter SI.Diameter portDiameters[nPorts]
       "Inner (hydraulic) diameters of bottom ports (array)" 
      annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)", enable=n_bottomPorts > 0));
     Interfaces.FluidPorts_b ports[nPorts](
@@ -214,7 +211,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
         p_ambient,
         T_start,
         X_start);
-    parameter SI.Area[nPorts] pipeArea=Modelica.Constants.pi/4*{pipeDiameters[
+    parameter SI.Area[nPorts] portArea=Modelica.Constants.pi/4*{portDiameters[
         i]^2 for i in 1:nPorts};
 
 equation
@@ -238,31 +235,47 @@ end for;
     medium.p = p_ambient;
 
   // Mass balances
+  if dynamicsType < Types.Dynamics.SteadyStateMass then
     der(m) = sum(ports.m_flow);
     for i in 1:Medium.nXi loop
       der(mXi[i]) = sum(mXi_flow[:,i]);
     end for;
+  else
+    0 = sum(ports.m_flow);
+    for i in 1:Medium.nXi loop
+      0 = sum(mXi_flow[:,i]);
+    end for;
+  end if;
 
   // Energy balance
+  if dynamicsType < Types.Dynamics.SteadyState then
     if Medium.singleState then
       der(U) = sum(H_flow)
-        "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
+          "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
     else
       der(U) = sum(H_flow) - p_ambient*der(V);
     end if;
-    assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
-    assert(level > 0, "Tank is empty (level = 0), tank model is not designed to allow air flow through ports");
+  else
+    if Medium.singleState then
+      0 = sum(H_flow)
+          "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
+    else
+      0 = sum(H_flow) - p_ambient*der(V);
+    end if;
+  end if;
+  assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
+  assert(level > 0, "Tank is empty (level = 0), tank model is not designed to allow air flow through ports");
 
 //Determine port properties
     p_static = level*system.g*medium.d + p_ambient;
     for i in 1:nPorts loop
        H_flow[i]     = ports[i].m_flow*actualStream(ports[i].h_outflow);
        mXi_flow[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
-       if p_static_at_port then
+       if neglectPortDiameters then
          ports[i].p = p_static;
        else
          ports[i].p = p_static - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
-            pipeArea[i]^2)*(if ports[i].m_flow < 0 then (1 + zeta_out[i]) else (1
+            portArea[i]^2)*(if ports[i].m_flow < 0 then (1 + zeta_out[i]) else (1
              - zeta_in[i]))));
        end if;
        ports[i].h_outflow = medium.h;
@@ -366,7 +379,6 @@ Adapted to the new fluid library interfaces:
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-equation
 
 end OpenTank;
 
@@ -381,6 +393,10 @@ model Tank
   replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
     annotation (choicesAllMatching=true);
+
+  parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+      "Dynamics option" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions"));
 
   SI.Height level(stateSelect=StateSelect.prefer, start=level_start)
       "Fluid level in the tank";
@@ -516,18 +532,34 @@ end for;
     U = m*medium.u "Internal energy of fluid";
 
   // Mass balances
+  if dynamicsType < Types.Dynamics.SteadyStateMass then
     der(m) = sum(topPorts.m_flow) + sum(ports.m_flow);
     for i in 1:Medium.nXi loop
       der(mXi[i]) = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flowottom[:,i]);
     end for;
+  else
+    0 = sum(topPorts.m_flow) + sum(ports.m_flow);
+    for i in 1:Medium.nXi loop
+      0 = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flowottom[:,i]);
+    end for;
+  end if;
 
   // Energy balance
+  if dynamicsType < Types.Dynamics.SteadyState then
     if Medium.singleState then
       der(U) = sum(H_flow_top) + sum(port_b_H_flow_bottom)
-        "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
+          "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
     else
       der(U) = sum(H_flow_top) + sum(port_b_H_flow_bottom) - p_ambient*der(V);
     end if;
+  else
+    if Medium.singleState then
+      0 = sum(H_flow_top) + sum(port_b_H_flow_bottom)
+          "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
+    else
+      0 = sum(H_flow_top) + sum(port_b_H_flow_bottom) - p_ambient*der(V);
+    end if;
+  end if;
 
   // Properties at top ports
     for i in 1:nTopPorts loop
@@ -728,14 +760,9 @@ end Tank;
       "Mixing volume with inlet and outlet ports (flow reversal is allowed)"
       import Modelica_Fluid.Types;
         outer Modelica_Fluid.System system "System properties";
-        parameter Integer nPorts_a(min=1)=1 "Number of ports on side a";
-        parameter Integer nPorts_b(min=1)=1 "Number of ports on side b";
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation (choicesAllMatching = true);
-        parameter Boolean allowFlowReversal = system.allowFlowReversal
-        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
-          annotation(Dialog(tab="Assumptions"), Evaluate=true);
         parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
         "Dynamics option" 
           annotation(Evaluate=true, Dialog(tab = "Assumptions"));
@@ -760,20 +787,6 @@ end Tank;
         "Start value of mass fractions m_i/m" 
           annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
 
-        Interfaces.FluidPorts_a[nPorts_a] ports_a(
-                                      redeclare each package Medium = Medium, each
-          m_flow(                                                                         min=
-                if allowFlowReversal then -Modelica.Constants.inf else 0))
-        "Fluid inlets" 
-          annotation (Placement(transformation(extent={{-110,-40},{-90,40}}),
-            iconTransformation(extent={{-110,40},{-90,-40}})));
-        Interfaces.FluidPorts_b[nPorts_b] ports_b(
-                                      redeclare each package Medium = Medium, each
-          m_flow(                                                                         max=
-                if allowFlowReversal then +Modelica.Constants.inf else 0))
-        "Fluid outlets" 
-          annotation (Placement(transformation(extent={{90,-40},{110,40}}),
-            iconTransformation(extent={{90,40},{110,-40}})));
         Medium.BaseProperties medium(
           preferredMediumStates=true,
           p(start=p_start),
@@ -782,96 +795,40 @@ end Tank;
           Xi(start=X_start[1:Medium.nXi]));
         SI.Energy U "Internal energy of fluid";
         SI.Mass m "Mass of fluid";
-        SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
-        SI.Volume V_lumped "Volume";
+        SI.Mass[Medium.nXi] mXi "Masses of independent components in the fluid";
 
-    protected
-        SI.HeatFlowRate Qs_flow
+        // variables that need to be defined by an extending class
+        // make Qs_flow an input, allowing its definition and modification with binding equations,
+        // e.g. to add a HeatPort to an existing model.
+        SI.Volume fluidVolume "Volume";
+        SI.MassFlowRate ms_flow "Mass flows across boundaries";
+        SI.MassFlowRate[Medium.nXi] mXis_flow
+        "Substance mass flows across boundaries";
+        SI.EnthalpyFlowRate Hs_flow
+        "Enthalpy flow across boundaries or energy source/sink";
+        input SI.HeatFlowRate Qs_flow
         "Heat flow across boundaries or energy source/sink";
         SI.Power Ws_flow "Work flow across boundaries or source term";
-        SI.EnergyFlowRate der_U "derivative of internal energy";
-        SI.MassFlowRate der_m "derivative of fluid mass";
-        SI.MassFlowRate[Medium.nXi] der_mXi "derivatives of substance holdup";
-        Medium.EnthalpyFlowRate ports_a_H_flow[nPorts_a];
-        Medium.EnthalpyFlowRate ports_b_H_flow[nPorts_b];
-        Medium.MassFlowRate ports_a_mXi_flow[nPorts_a,Medium.nXi];
-        Medium.MassFlowRate ports_b_mXi_flow[nPorts_b,Medium.nXi];
-        Medium.ExtraPropertyFlowRate ports_a_mC_flow[nPorts_a,Medium.nC];
-        Medium.ExtraPropertyFlowRate ports_b_mC_flow[nPorts_b,Medium.nC];
       equation
-        // Only one connection allowed to a port to avoid unwanted ideal mixing
-        for i in 1:nPorts_a loop
-          assert(cardinality(ports_a[i]) <= 1,"
-each ports_a[i] of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections, which is usually not the intention
-of the modeller. Increase nPorts_a to add an additional port.
-");
-        end for;
-        for i in 1:nPorts_b loop
-          assert(cardinality(ports_b[i]) <= 1,"
-each ports_b[i] of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections, which is usually not the intention
-of the modeller. Increase nPorts_b to add an additional port.
-");
-        end for;
-
-        // Boundary conditions
-        ports_a.p = fill(medium.p, nPorts_a);
-        ports_b.p = fill(medium.p, nPorts_b);
-
-        ports_a.h_outflow = fill(medium.h, nPorts_a);
-        ports_b.h_outflow = fill(medium.h, nPorts_b);
-
-        ports_a.Xi_outflow = fill(medium.Xi, nPorts_a);
-        ports_b.Xi_outflow = fill(medium.Xi, nPorts_b);
 
         // Total quantities
-        m = V_lumped*medium.d;
+        m = fluidVolume*medium.d;
         mXi = m*medium.Xi;
         U = m*medium.u;
 
         // Mass and energy balances
-        der_m = sum(ports_a.m_flow) + sum(ports_b.m_flow);
-        for i in 1:Medium.nXi loop
-          der_mXi[i] = sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]);
-        end for;
-        der_U = sum(ports_a_H_flow) + sum(ports_b_H_flow) + Qs_flow + Ws_flow;
         if dynamicsType < Types.Dynamics.SteadyStateMass then
-          der_m = der(m);
-          der_mXi = der(mXi);
+          der(m) = ms_flow;
+          der(mXi) = mXis_flow;
         else
-          der_m = 0;
-          der_mXi = zeros(Medium.nXi);
+          0 = ms_flow;
+          zeros(Medium.nXi) = mXis_flow;
         end if;
         if dynamicsType < Types.Dynamics.SteadyState then
-          der_U = der(U);
+          der(U) = Hs_flow + Qs_flow + Ws_flow;
         else
-          der_U = 0;
+          0 = Hs_flow + Qs_flow + Ws_flow;
         end if;
-        // Steady-state trace substance mass balance
-        for i in 1:Medium.nC loop
-          sum(ports_a_mC_flow[:,i])+sum(ports_b_mC_flow[:,i]) = 0;
-        end for;
-
-        for i in 1:nPorts_a loop
-          ports_a_H_flow[i] = ports_a[i].m_flow * actualStream(ports_a[i].h_outflow)
-          "Enthalpy flow";
-          ports_a_mXi_flow[i,:] = ports_a[i].m_flow * actualStream(ports_a[i].Xi_outflow)
-          "Component mass flow";
-          ports_a_mC_flow[i,:] = ports_a[i].m_flow * actualStream(ports_a[i].C_outflow)
-          "Trace substance mass flow";
-        end for;
-
-        for i in 1:nPorts_b loop
-          ports_b_H_flow[i] = ports_b[i].m_flow * actualStream(ports_b[i].h_outflow)
-          "Enthalpy flow";
-          ports_b_mXi_flow[i,:] = ports_b[i].m_flow * actualStream(ports_b[i].Xi_outflow)
-          "Component mass flow";
-          ports_b_mC_flow[i,:] = ports_b[i].m_flow * actualStream(ports_b[i].C_outflow)
-          "Trace substance mass flow";
-        end for;
 
       initial equation
       // Initial conditions
@@ -891,7 +848,11 @@ of the modeller. Increase nPorts_b to add an additional port.
           if not Medium.singleState then
             der(medium.p) = 0;
           end if;
-          der(medium.h) = 0;
+          if use_T_start then
+            der(medium.T) = 0;
+          else
+            der(medium.h) = 0;
+          end if;
           der(medium.Xi) = zeros(Medium.nXi);
         elseif initType == Types.Init.SteadyStateHydraulic then
           if not Medium.singleState then
@@ -916,15 +877,126 @@ of the modeller. Increase nPorts_b to add an additional port.
               lineColor={0,0,0},
               textString="V=%V")}),
           Documentation(info="<html>
-Base class for an ideally mixed fluid volume with two ports and the ability to store mass and energy. The following source terms are part of the energy balance and must be specified in the extending class:
+Base class for an ideally mixed fluid volume with the ability to store mass and energy. 
+The following source terms are part of the energy balance and must be specified in an extending class:
 <ul>
-<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> <li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant</li>
+<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
+<li><tt>Ws_flow</tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
 </ul>
-The component volume <tt>V_lumped</tt> is also a variable which needs to be set in the extending class to complete the model.
+The component volume <tt>fluidVolume</tt> is a variable which needs to be set in the extending class to complete the model.
+Further source terms must be defined by an extending class for fluid flow across the segment boundary:
+<ul>
+<li><tt>Hs_flow</tt>, enthalpy flow,</li> 
+<li><tt>ms_flow</tt>, mass flow, and</li> 
+<li><tt>mXis_flow</tt>, substance mass flow.</li> 
+</ul>
 </html>"),Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
                 -100},{100,100}}),
                   graphics));
       end PartialLumpedVolume;
+
+      partial model PartialLumpedVolumePorts
+      "Closed volume with a vector of fluid ports"
+        extends PartialLumpedVolume;
+
+      //Port definitions
+        parameter Integer nPorts(min=1)=1 "Number of ports" annotation(Dialog(group="Ports"));
+        parameter SI.Diameter portDiameters[nPorts] = ones(nPorts)
+        "Inner (hydraulic) diameters of ports (array)"   annotation(Dialog(group="Ports",enable= not neglectPortDiameters));
+        Interfaces.FluidPorts_b[nPorts] ports(
+                                      redeclare each package Medium = Medium)
+        "Fluid outlets" 
+          annotation (Placement(transformation(extent={{-10,-40},{10,40}},
+            rotation=-90,
+            origin={0,-100}),
+            iconTransformation(extent={{-10,40},{10,-40}},
+            rotation=-90,
+            origin={0,-100})));
+
+      //Transformation of kinetic energy
+          parameter Boolean neglectPortDiameters=true
+        "=true, kinetic energy and dissipation is accounted for in port pressure"
+                                                                                                            annotation(Evaluate=true, Dialog(tab="Assumptions"));
+          parameter Real[nPorts] zeta_in=fill(0, nPorts)
+        "Hydraulic resistance into volume, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
+                                                                                                            annotation(Dialog(tab="Assumptions",enable= not neglectPortDiameters));
+          parameter Real[nPorts] zeta_out=fill(1, nPorts)
+        "Hydraulic resistance out of volume, 0 for ideal smooth outlet"   annotation(Dialog(tab="Assumptions",enable= not neglectPortDiameters));
+
+        Medium.EnthalpyFlowRate ports_H_flow[nPorts];
+        Medium.MassFlowRate ports_mXi_flow[nPorts,Medium.nXi];
+        Medium.MassFlowRate[Medium.nXi] sum_ports_mXi_flow
+        "Substance mass flows through ports";
+        Medium.ExtraPropertyFlowRate ports_mC_flow[nPorts,Medium.nC];
+
+    protected
+        parameter SI.Area[nPorts] portArea=Modelica.Constants.pi/4*{portDiameters[i]^2 for i in 1:nPorts};
+
+      equation
+        ms_flow = sum(ports.m_flow);
+        mXis_flow = sum_ports_mXi_flow;
+        Hs_flow = sum(ports_H_flow);
+
+        // Only one connection allowed to a port to avoid unwanted ideal mixing
+        for i in 1:nPorts loop
+          assert(cardinality(ports[i]) <= 1,"
+each ports[i] of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections, which is usually not the intention
+of the modeller. Increase nPorts to add an additional port.
+");
+        end for;
+
+        // Boundary conditions
+        for i in 1:nPorts loop
+          if neglectPortDiameters then
+            ports[i].p = medium.p;
+          else
+            ports[i].p = medium.p - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
+                  portArea[i]^2)*(if ports[i].m_flow < 0 then (1 + zeta_out[i]) else (1
+                   - zeta_in[i]))));
+          end if;
+        end for;
+        ports.h_outflow = fill(medium.h, nPorts);
+        ports.Xi_outflow = fill(medium.Xi, nPorts);
+
+        for i in 1:nPorts loop
+          ports_H_flow[i] = ports[i].m_flow * actualStream(ports[i].h_outflow)
+          "Enthalpy flow";
+          ports_mXi_flow[i,:] = ports[i].m_flow * actualStream(ports[i].Xi_outflow)
+          "Component mass flow";
+          ports_mC_flow[i,:] = ports[i].m_flow * actualStream(ports[i].C_outflow)
+          "Trace substance mass flow";
+        end for;
+        for i in 1:Medium.nXi loop
+          sum_ports_mXi_flow[i] = sum(ports_mXi_flow[:,i]);
+        end for;
+        // Steady-state trace substance mass balance
+        for i in 1:Medium.nC loop
+          sum(ports_mC_flow[:,i]) = 0;
+        end for;
+
+       annotation (
+        Documentation(info="<html>
+This base class extends PartialLumpedVolume by adding a vector of fluid ports 
+and defining the respective source terms
+<ul>
+<li><tt>Hs_flow</tt>, enthalpy flow,</li> 
+<li><tt>ms_flow</tt>, mass flow, and</li> 
+<li><tt>mXis_flow</tt>, substance mass flow.</li> 
+</ul>
+An extending class still needs to define:
+<ul>
+<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary,</li> 
+<li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant, and</li>
+<li><tt>V_lumped</tt>, the volume of the segment.</li>
+</ul>
+</html>"),
+        Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+                {100,100}}),
+                graphics),
+        Icon(graphics));
+      end PartialLumpedVolumePorts;
   end BaseClasses;
   annotation (Documentation(info="<html>
  

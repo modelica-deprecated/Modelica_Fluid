@@ -73,9 +73,8 @@ package Pipes "Lumped, distributed and thermal pipe components"
       use_nominal=use_eta_nominal or use_d_nominal) 
       annotation (Placement(transformation(extent={{-60,-30},{-40,-10}},
             rotation=0)));
-    Volumes.MixingVolume volume(
+    Modelica_Fluid.Volumes.ClosedVolume volume(
       redeclare package Medium = Medium,
-      allowFlowReversal=allowFlowReversal,
       initType=initType,
       p_start=(p_a_start+p_b_start)/2,
       use_T_start=use_T_start,
@@ -83,7 +82,10 @@ package Pipes "Lumped, distributed and thermal pipe components"
       h_start=h_start,
       X_start=X_start,
       dynamicsType=dynamicsType,
-      V=V) 
+      V=V,
+      nPorts=2,
+      portDiameters={0,0},
+      neglectPortDiameters=true) 
       annotation (Placement(transformation(extent={{-10,-30},{10,-10}},rotation=
              0)));
     Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction2(
@@ -117,14 +119,6 @@ package Pipes "Lumped, distributed and thermal pipe components"
     connect(wallFriction2.port_b, port_b) 
       annotation (Line(points={{60,-20},{80,-20},{80,0},{100,0}},
                                                 color={0,127,255}));
-    connect(volume.ports_a[1], wallFriction1.port_b)       annotation (Line(
-        points={{-10.2,-20},{-40,-20}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(volume.ports_b[1], wallFriction2.port_a)       annotation (Line(
-        points={{10,-20},{40,-20}},
-        color={0,127,255},
-        smooth=Smooth.None));
     connect(heatPort, heatTransfer.wallHeatPort) annotation (Line(
         points={{0,54},{0,34}},
         color={191,0,0},
@@ -155,6 +149,14 @@ pipe wall/environment).
           preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
+    connect(wallFriction1.port_b, volume.ports[1]) annotation (Line(
+        points={{-40,-20},{-25,-20},{-25,-40},{0,-40},{0,-28}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(wallFriction2.port_a, volume.ports[2]) annotation (Line(
+        points={{40,-20},{24,-20},{24,-40},{0,-40},{0,-32}},
+        color={0,127,255},
+        smooth=Smooth.None));
   end LumpedPipe;
 
  model DistributedPipeLumpedPressure
@@ -203,6 +205,20 @@ pipe wall/environment).
    SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
 
  equation
+   // Only one connection allowed to a port to avoid unwanted ideal mixing
+   assert(cardinality(port_a) <= 1 or (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.a_v_b),"
+port_a exposing volume with selected modelStructure shall at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller. Use a Junctions.MultiPort.
+");
+   assert(cardinality(port_b) <= 1 or (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.a_v_b),"
+port_b exposing volume with selected modelStructure shall at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller. Use a Junctions.MultiPort.
+");
+
    //Momentum Balance, dp contains contributions from acceleration, gravitational and friction effects
    //two momentum balances, one on each side of pressure state
    dp = {port_a.p - p[nl], p[nl] - port_b.p};
@@ -388,6 +404,20 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       Medium.dynamicViscosity(medium.state));
 
   equation
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+    assert(cardinality(port_a) <= 1 or (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.a_v_b),"
+port_a exposing volume with selected modelStructure shall at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller. Use a Junctions.MultiPort.
+");
+    assert(cardinality(port_b) <= 1 or (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.a_v_b),"
+port_b exposing volume with selected modelStructure shall at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller. Use a Junctions.MultiPort.
+");
+
     //Pressure drop and gravity
     //Simplified Momentum Balance, dp contains contributions from gravitational and friction effects
     dp = cat(1, {port_a.p}, p) - cat(1, p, {port_b.p});
