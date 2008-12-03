@@ -414,7 +414,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Junctions.JunctionIdeal splitter(redeclare package Medium = Medium) 
+    Modelica_Fluid.Junctions.IdealTJunction splitter(
+                                     redeclare package Medium = Medium) 
       annotation (Placement(transformation(
           origin={-43,6},
           extent={{-6,-7},{6,7}},
@@ -522,7 +523,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Junctions.JunctionVolume splitter(redeclare package Medium = Medium,
+    Modelica_Fluid.Junctions.TJunctionVolume splitter(
+                                      redeclare package Medium = Medium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.0002,
       p_start=500000) 
@@ -1077,7 +1079,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Junctions.JunctionIdeal junctionIdeal(redeclare package Medium = Medium) 
+    Modelica_Fluid.Junctions.IdealTJunction junctionIdeal(
+                                          redeclare package Medium = Medium) 
       annotation (Placement(transformation(
           origin={-38,6},
           extent={{-10,-10},{10,10}},
@@ -1187,7 +1190,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Junctions.JunctionVolume junctionIdeal(
+    Modelica_Fluid.Junctions.TJunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
       V=1e-3,
       p_start=5.0e5,
@@ -1306,7 +1309,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Junctions.JunctionVolume junctionIdeal(
+    Modelica_Fluid.Junctions.TJunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
       V=1e-3,
       p_start=5.0e5,
@@ -1423,7 +1426,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Junctions.JunctionVolume junctionIdeal(
+    Modelica_Fluid.Junctions.TJunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
       V=1e-3,
       p_start=5.0e5,
@@ -1539,7 +1542,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Junctions.JunctionVolume junctionIdeal(
+    Modelica_Fluid.Junctions.TJunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
       V=1e-3,
       p_start=5.0e5,
@@ -1549,7 +1552,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           origin={-40,6},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Junctions.JunctionVolume junctionVolume(redeclare package Medium = Medium,
+    Modelica_Fluid.Junctions.TJunctionVolume junctionVolume(
+                                            redeclare package Medium = Medium,
         V=1e-3) annotation (Placement(transformation(
           origin={56,-12},
           extent={{-10,10},{10,-10}},
@@ -1660,7 +1664,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Junctions.JunctionVolume junctionIdeal(
+    Modelica_Fluid.Junctions.TJunctionVolume junctionIdeal(
                                           redeclare package Medium = Medium,
       V=1e-3,
       p_start=5.0e5,
@@ -1670,7 +1674,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           origin={-38,6},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Junctions.JunctionVolume junctionVolume(redeclare package Medium = Medium, V=
+    Modelica_Fluid.Junctions.TJunctionVolume junctionVolume(
+                                            redeclare package Medium = Medium, V=
           1e-3) annotation (Placement(transformation(
           origin={56,-12},
           extent={{-10,10},{10,-10}},

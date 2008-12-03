@@ -2,7 +2,7 @@ within Modelica_Fluid;
 package Volumes "Generic volume, tank and other volume type components"
    extends Modelica_Fluid.Icons.VariantLibrary;
 
-    model ClosedVolume "Closed volume with ports"
+    model Volume "Fixed volume with ports"
       extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolumePorts(Qs_flow = heatPort.Q_flow);
 
       parameter SI.Volume V "Volume";
@@ -43,7 +43,7 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
       fluidVolume = V;
       Ws_flow = 0;
       heatPort.T = medium.T;
-    end ClosedVolume;
+    end Volume;
 
   model SweptVolume
     "varying cylindric volume depending on the postition of the piston"
@@ -331,8 +331,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -757,7 +757,7 @@ end Tank;
     end TankPortData;
 
       partial model PartialLumpedVolume
-      "Mixing volume with inlet and outlet ports (flow reversal is allowed)"
+      "Lumped volume with dynamic mass and energy balance"
       import Modelica_Fluid.Types;
         outer Modelica_Fluid.System system "System properties";
         replaceable package Medium = 
@@ -802,7 +802,7 @@ end Tank;
         // e.g. to add a HeatPort to an existing model.
         SI.Volume fluidVolume "Volume";
         SI.MassFlowRate ms_flow "Mass flows across boundaries";
-        SI.MassFlowRate[Medium.nXi] mXis_flow
+        SI.MassFlowRate[Medium.nXi] msXi_flow
         "Substance mass flows across boundaries";
         SI.EnthalpyFlowRate Hs_flow
         "Enthalpy flow across boundaries or energy source/sink";
@@ -819,10 +819,10 @@ end Tank;
         // Mass and energy balances
         if dynamicsType < Types.Dynamics.SteadyStateMass then
           der(m) = ms_flow;
-          der(mXi) = mXis_flow;
+          der(mXi) = msXi_flow;
         else
           0 = ms_flow;
-          zeros(Medium.nXi) = mXis_flow;
+          zeros(Medium.nXi) = msXi_flow;
         end if;
         if dynamicsType < Types.Dynamics.SteadyState then
           der(U) = Hs_flow + Qs_flow + Ws_flow;
@@ -868,14 +868,6 @@ end Tank;
           assert(false, "Unsupported initialization option");
         end if;
         annotation (
-          Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-                {100,100}}), graphics={Text(
-              extent={{-150,110},{150,150}},
-              textString="%name",
-              lineColor={0,0,255}), Text(
-              extent={{-150,-110},{150,-140}},
-              lineColor={0,0,0},
-              textString="V=%V")}),
           Documentation(info="<html>
 Base class for an ideally mixed fluid volume with the ability to store mass and energy. 
 The following source terms are part of the energy balance and must be specified in an extending class:
@@ -888,7 +880,7 @@ Further source terms must be defined by an extending class for fluid flow across
 <ul>
 <li><tt>Hs_flow</tt>, enthalpy flow,</li> 
 <li><tt>ms_flow</tt>, mass flow, and</li> 
-<li><tt>mXis_flow</tt>, substance mass flow.</li> 
+<li><tt>msXi_flow</tt>, substance mass flow.</li> 
 </ul>
 </html>"),Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
                 -100},{100,100}}),
@@ -934,7 +926,7 @@ Further source terms must be defined by an extending class for fluid flow across
 
       equation
         ms_flow = sum(ports.m_flow);
-        mXis_flow = sum_ports_mXi_flow;
+        msXi_flow = sum_ports_mXi_flow;
         Hs_flow = sum(ports_H_flow);
 
         // Only one connection allowed to a port to avoid unwanted ideal mixing
@@ -983,7 +975,7 @@ and defining the respective source terms
 <ul>
 <li><tt>Hs_flow</tt>, enthalpy flow,</li> 
 <li><tt>ms_flow</tt>, mass flow, and</li> 
-<li><tt>mXis_flow</tt>, substance mass flow.</li> 
+<li><tt>msXi_flow</tt>, substance mass flow.</li> 
 </ul>
 An extending class still needs to define:
 <ul>
@@ -995,8 +987,202 @@ An extending class still needs to define:
         Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
                 {100,100}}),
                 graphics),
-        Icon(graphics));
+          Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+                {100,100}}), graphics={Text(
+              extent={{-150,110},{150,150}},
+              textString="%name",
+              lineColor={0,0,255}), Text(
+              extent={{-150,-110},{150,-140}},
+              lineColor={0,0,0},
+              textString="V=%V")}));
       end PartialLumpedVolumePorts;
+
+  partial model PartialDistributedVolume "Base class for a finite volume model"
+    import Modelica_Fluid.Types;
+    outer Modelica_Fluid.System system "System properties";
+
+    replaceable package Medium = 
+      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
+
+    // Discretization
+    parameter Integer n=1 "Number of discrete flow volumes";
+
+    // Assumptions
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+        "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+
+    final parameter Boolean static = dynamicsType == Types.Dynamics.SteadyState
+        "= true, static balances, no mass or energy is stored" 
+                                  annotation(Dialog(tab="Assumptions"),Evaluate=true);
+
+    //Initialization
+    parameter Types.Init initType=system.initType "Initialization option" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization"));
+
+    parameter Medium.AbsolutePressure p_a_start=system.p_start
+        "Start value of pressure at port a" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_b_start=p_a_start
+        "Start value of pressure at port b" 
+      annotation(Dialog(tab = "Initialization"));
+    final parameter Medium.AbsolutePressure[n] p_start=if n > 1 then linspace(
+          p_a_start - (p_a_start - p_b_start)/(2*n),
+          p_b_start + (p_a_start - p_b_start)/(2*n),
+          n) else {(p_a_start + p_b_start)/2} "Start value of pressure";
+
+    parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
+       annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
+                Medium.temperature_phX(
+          (p_a_start + p_b_start)/2,
+          h_start,
+          X_start) "Start value of temperature" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
+          Medium.specificEnthalpy_pTX(
+          (p_a_start + p_b_start)/2,
+          T_start,
+          X_start) else Medium.h_default "Start value of specific enthalpy" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
+        "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+
+    // Total quantities
+    SI.Energy[n] U "Internal energy of fluid";
+    SI.Mass[n] m "Fluid mass";
+    SI.Mass[n,Medium.nXi] mXi "Substance mass";
+
+    Medium.BaseProperties[n] medium(
+      each preferredMediumStates=if static then false else true,
+      p(start=p_start),
+      each h(start=h_start),
+      each T(start=T_start),
+      each Xi(start=X_start[1:Medium.nXi]));
+
+    //Source terms, have to be set in inheriting class (to zero if not used)
+    protected
+    SI.Volume[n] fluidVolume
+        "Discretized volume, determine in inheriting class";
+    Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
+    Medium.MassFlowRate[n,Medium.nXi] msXi_flow
+        "Independent mass flow rates, source or sink";
+    SI.EnthalpyFlowRate[n] Hs_flow "Enthalpy flow rate, source or sink";
+    input SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
+    SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
+
+  equation
+    // Total quantities
+    for i in 1:n loop
+      m[i] =fluidVolume[i]*medium[i].d;
+      mXi[i, :] = m[i]*medium[i].Xi;
+      U[i] = m[i]*medium[i].u;
+    end for;
+
+    // Mass and energy balances
+    if dynamicsType < Types.Dynamics.SteadyStateMass then
+    // dynamic mass balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
+      for i in 1:n loop
+        der(m[i]) = ms_flow[i];
+        der(mXi[i, :]) = msXi_flow[i, :];
+      end for;
+    else
+    // steady state mass balances, no numerical states, no flow reversal possible
+      for i in 1:n loop
+        0 = ms_flow[i];
+        zeros(Medium.nXi) = msXi_flow[i, :];
+      end for;
+    end if;
+    if dynamicsType < Types.Dynamics.SteadyState then
+    // dynamic energy balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
+      for i in 1:n loop
+        der(U[i]) = Hs_flow[i] + Ws_flow[i] + Qs_flow[i];
+      end for;
+    else
+    // steady state energy balances, no numerical states, no flow reversal possible
+      for i in 1:n loop
+        0 = Hs_flow[i] + Ws_flow[i] + Qs_flow[i];
+      end for;
+    end if;
+
+  initial equation
+    // Initial conditions
+    if not static then
+      if initType == Types.Init.NoInit then
+      // no initial equations
+      elseif initType == Types.Init.SteadyState then
+      //steady state initialization
+        if use_T_start then
+          der(medium.T) = zeros(n);
+        else
+          der(medium.h) = zeros(n);
+        end if;
+        if not (Medium.singleState) then
+          der(medium.p) = zeros(n);
+        end if;
+        for i in 1:n loop
+          der(medium[i].Xi) = zeros(Medium.nXi);
+        end for;
+      elseif initType == Types.Init.InitialValues then
+      //Initialization with initial values
+        if use_T_start then
+          medium.T = ones(n)*T_start;
+        else
+          medium.h = ones(n)*h_start;
+        end if;
+        if not Medium.singleState then
+           medium.p=p_start;
+        end if;
+      elseif initType == Types.Init.SteadyStateHydraulic then
+      //Steady state initialization for hydraulic states (p)
+        if use_T_start then
+          medium.T = ones(n)*T_start;
+        else
+          medium.h = ones(n)*h_start;
+        end if;
+        if not Medium.singleState then
+          der(medium.p) = zeros(n);
+        end if;
+      else
+        assert(false, "Unsupported initialization option");
+      end if;
+    end if;
+
+     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+                -100},{100,100}}),
+                         graphics),
+                          Icon(coordinateSystem(preserveAspectRatio=true,
+              extent={{-100,-100},{100,100}}), graphics),
+        Documentation(info="<html>
+<p>The model <b>PartialDistributedVolume</b> provides a one-dimensional spatial discretization according to the finite volume method.
+The total volume is divided into <tt><b>n</b></tt> segments.</p>
+ 
+<p><b>Mass and energy balances</b></p>
+<p>One total mass and one energy balance is formed across each segment. If the medium contains more than one component, substance mass balances are added. Changes in potential and kinetic energy are neglected in the energy balance. The following source (or sink) terms are used in the balances and must be specified in extending models to complete this partial class:</p>
+<ul>
+<li>Energy balance: <tt><b>Qs_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and <tt><b>Ws_flow</b></tt>, e.g. mechanical power</li>
+<li>Total mass balance: <tt><b>ms_flow</b></tt>, e.g. condensing mass flow of negligible volume such as water in moist air</li>
+<li>Substance mass balance: <tt><b>msXi_flow</b></tt>, as above</li>
+</ul>
+If the <tt>dynamicsType</tt> is <b>DynamicsType.SteadyState</b> then no mass or energy is stored in the component and the mass and energy balances are reduced to a quasi steady-state formulation. It should be noted that dynamic balances are required if flow reversal should be allowed.
+<p>An extending class shall define volume vector <tt><b>fluidVolume</b></tt>, which specifies the volume of each segment, and the mass flow rates <tt><b>m_flow</b></tt> through a mementum balance.
+ 
+<p><b>Momentum balance</b></p>
+<p>The momentum balance needs to be defined by an extending class.</p> 
+ 
+</html>",   revisions="<html>
+<ul>
+<li><i>3 Dec 2008</i>
+    by R&uuml;diger Franke:<br>
+       Derived from PartialDistributedFlow by</li>
+<li><i>04 Mar 2006</i>
+    by Katrin Pr&ouml;l&szlig;:<br>
+       Model added to the Fluid library</li>
+</ul>
+</html>"));
+  end PartialDistributedVolume;
   end BaseClasses;
   annotation (Documentation(info="<html>
  

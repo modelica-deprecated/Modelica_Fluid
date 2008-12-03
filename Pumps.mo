@@ -160,9 +160,6 @@ package Pumps "Pump components"
     parameter Integer nPumps(min=1) = 1 "Number of pumps in parallel";
     parameter SI.Mass M = 0 "Fluid mass inside the pump";
     parameter Boolean checkValve=false "Reverse flow stopped";
-    parameter Boolean allowFlowReversal = system.allowFlowReversal
-        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
-      annotation(Dialog(tab="Assumptions"), Evaluate=true);
 
     parameter Medium.AbsolutePressure p_a_start
         "Guess value for inlet pressure" 

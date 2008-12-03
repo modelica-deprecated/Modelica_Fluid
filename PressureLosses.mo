@@ -157,7 +157,6 @@ end SimpleGenericOrifice;
     parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
     parameter SI.Length height_ab = 0.0 "Height(port_b) - Height(port_a)" 
                                                                        annotation(Evaluate=true);
-    Medium.Density d "Density of the passing fluid";
     parameter SI.Length roughness(min=0) = 2.5e-5
       "Absolute roughness of pipe (default = smooth steel pipe)" 
         annotation(Dialog(enable=WallFriction.use_roughness));
@@ -219,32 +218,6 @@ end SimpleGenericOrifice;
       dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
         g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
     end if;
-
-    /////////////////////////////////////////////////////////////////////////////////////
-    // Old approach without pressure loss correlations properly addressing static head //
-    /////////////////////////////////////////////////////////////////////////////////////
-
-    /* Density is currently not handled correctly. The correct formula:
-        d = if port_a.m_flow>0 then d_a else d_b
-     leads to a non-linear system of equations that mays have an infinite number of
-     solutions and also no solution may exist for small flow rates.
-     Most likely, this can only be correctly handled with a dynamic momentum balance.
-  */
-    if allowFlowReversal then
-       d = (d_a + d_b)/2
-        "temporary solution that must be improved (BUT NOT WITH if port_a.m_flow>0 then d_a else d_b)";
-    else
-       d = d_a;
-    end if;
-  /* 
-  if from_dp and not WallFriction.dp_is_zero then
-     m_flow = WallFriction.massFlowRate_dp(dp-height_ab*system.g*d,
-                                           d_a, d_b, eta_a, eta_b, length, diameter, roughness, dp_small);
-  else
-     dp = WallFriction.pressureLoss_m_flow(m_flow, d_a, d_b, eta_a, eta_b, length, diameter, roughness, m_flow_small)
-          + height_ab*system.g*d;
-  end if;
-*/
 
       annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
           preserveAspectRatio=false,

@@ -148,7 +148,7 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(extent={{-114,210},{-134,230}},
             rotation=0)));
-    Junctions.JunctionIdeal volume2(
+    Modelica_Fluid.Junctions.IdealTJunction volume2(
       redeclare package Medium = BatchMedium) 
                annotation (Placement(transformation(
           origin={-180,220},
@@ -160,7 +160,7 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(extent={{112,210},{132,230}},
             rotation=0)));
-    Junctions.JunctionIdeal volume8(
+    Modelica_Fluid.Junctions.IdealTJunction volume8(
       redeclare package Medium = BatchMedium) 
                annotation (Placement(transformation(
           origin={160,220},
@@ -190,7 +190,7 @@ present that are regulated by a central control system.
           origin={-180,-56},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Volumes.ClosedVolume volume1(
+    Modelica_Fluid.Volumes.Volume volume1(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001,
@@ -225,7 +225,7 @@ present that are regulated by a central control system.
           origin={160,-20},
           extent={{10,-10},{-10,10}},
           rotation=270)));
-    Modelica_Fluid.Volumes.ClosedVolume volume7(
+    Modelica_Fluid.Volumes.Volume volume7(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001,
@@ -278,7 +278,7 @@ present that are regulated by a central control system.
           origin={34,-250},
           extent={{10,10},{-10,-10}},
           rotation=180)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.JunctionVolume volume5(
+    BaseClasses.JunctionVolume volume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{50,-260},{70,-240}},
@@ -2356,13 +2356,13 @@ of the modeller.
       SI.Mass m "Total mass";
       SI.Mass[Medium.nXi] mXi "Independent masses";
 
-      Interfaces.FluidStatePorts_a[nPorts_a] ports_a(
+      Interfaces.FluidPorts_a[nPorts_a] ports_a(
         redeclare each package Medium=Medium,
         m_flow(each min=if allowFlowReversal then -Constants.inf else 0))
         "Fluid connectors a (positive design flow direction is from ports_a to ports_b)"
         annotation (Placement(
             transformation(extent={{-110,40},{-90,-40}}, rotation=0)));
-      Interfaces.FluidStatePorts_b[nPorts_b] ports_b(
+      Interfaces.FluidPorts_b[nPorts_b] ports_b(
         redeclare each package Medium=Medium,
         m_flow(each max=if allowFlowReversal then +Constants.inf else 0))
         "Fluid connectors b (positive design flow direction is from ports_a to ports_b)"
