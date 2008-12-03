@@ -656,8 +656,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 3))),
           Line(
             points={{-100,100},{100,100}},
@@ -872,16 +872,26 @@ end Tank;
 Base class for an ideally mixed fluid volume with the ability to store mass and energy. 
 The following source terms are part of the energy balance and must be specified in an extending class:
 <ul>
-<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
-<li><tt>Ws_flow</tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
+<li><tt><b>input Qs_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
+<li><tt><b>Ws_flow</b></tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
 </ul>
-The component volume <tt>fluidVolume</tt> is a variable which needs to be set in the extending class to complete the model.
+The component volume <tt><b>fluidVolume</b></tt> is a variable which needs to be set in the extending class to complete the model.
+<p>
 Further source terms must be defined by an extending class for fluid flow across the segment boundary:
+</p>
 <ul>
-<li><tt>Hs_flow</tt>, enthalpy flow,</li> 
-<li><tt>ms_flow</tt>, mass flow, and</li> 
-<li><tt>msXi_flow</tt>, substance mass flow.</li> 
+<li><tt><b>Hs_flow</b></tt>, enthalpy flow,</li> 
+<li><tt><b>ms_flow</b></tt>, mass flow, and</li> 
+<li><tt><b>msXi_flow</b></tt>, substance mass flow.</li> 
 </ul>
+<b>Note:</b>
+<p>
+<tt>Qs_flow</tt> is defined as input allowing its definition and modification by extending classes, e.g. to add a HeatPort to an existing model.
+</p>
+<p>
+<tt>Hs_flow</tt> is not defined as input as it needs to be defined carefully together with <tt>ms_flow</tt> and modifications can easily lead to bad models. 
+Moreover an input might mislead a tool to break equation systems, resulting in inefficient models for the treatment of flow reversal. 
+</p>
 </html>"),Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
                 -100},{100,100}}),
                   graphics));
@@ -1156,31 +1166,30 @@ An extending class still needs to define:
                           Icon(coordinateSystem(preserveAspectRatio=true,
               extent={{-100,-100},{100,100}}), graphics),
         Documentation(info="<html>
-<p>The model <b>PartialDistributedVolume</b> provides a one-dimensional spatial discretization according to the finite volume method.
-The total volume is divided into <tt><b>n</b></tt> segments.</p>
- 
-<p><b>Mass and energy balances</b></p>
-<p>One total mass and one energy balance is formed across each segment. If the medium contains more than one component, substance mass balances are added. Changes in potential and kinetic energy are neglected in the energy balance. The following source (or sink) terms are used in the balances and must be specified in extending models to complete this partial class:</p>
+Base class for <tt><b>n</b></tt> ideally mixed fluid volumes with the ability to store mass and energy.
+It is inteded to model a one-dimensional spatial discretization of fluid flow according to the finite volume method. 
+The following source terms are part of the energy balance and must be specified in an extending class:
 <ul>
-<li>Energy balance: <tt><b>Qs_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and <tt><b>Ws_flow</b></tt>, e.g. mechanical power</li>
-<li>Total mass balance: <tt><b>ms_flow</b></tt>, e.g. condensing mass flow of negligible volume such as water in moist air</li>
-<li>Substance mass balance: <tt><b>msXi_flow</b></tt>, as above</li>
+<li><tt><b>input Qs_flow[n]</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
+<li><tt><b>Ws_flow[n]</b></tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
 </ul>
-If the <tt>dynamicsType</tt> is <b>DynamicsType.SteadyState</b> then no mass or energy is stored in the component and the mass and energy balances are reduced to a quasi steady-state formulation. It should be noted that dynamic balances are required if flow reversal should be allowed.
-<p>An extending class shall define volume vector <tt><b>fluidVolume</b></tt>, which specifies the volume of each segment, and the mass flow rates <tt><b>m_flow</b></tt> through a mementum balance.
- 
-<p><b>Momentum balance</b></p>
-<p>The momentum balance needs to be defined by an extending class.</p> 
- 
-</html>",   revisions="<html>
+The component volume <tt><b>fluidVolume[n]</b></tt> is a variable which needs to be set in the extending class to complete the model.
+<p>
+Further source terms must be defined by an extending class for fluid flow across the segment boundary:
+</p>
 <ul>
-<li><i>3 Dec 2008</i>
-    by R&uuml;diger Franke:<br>
-       Derived from PartialDistributedFlow by</li>
-<li><i>04 Mar 2006</i>
-    by Katrin Pr&ouml;l&szlig;:<br>
-       Model added to the Fluid library</li>
+<li><tt><b>Hs_flow[n]</b></tt>, enthalpy flow,</li> 
+<li><tt><b>ms_flow[n]</b></tt>, mass flow, and</li> 
+<li><tt><b>msXi_flow[n]</b></tt>, substance mass flow.</li> 
 </ul>
+<b>Note:</b>
+<p>
+<tt>Qs_flow</tt> is defined as input allowing its definition and modification by extending classes, e.g. to add a HeatPort to an existing model.
+</p>
+<p>
+<tt>Hs_flow</tt> is not defined as input as it needs to be defined carefully together with <tt>ms_flow</tt> and modifications can easily lead to bad models. 
+Moreover an input might mislead a tool to break equation systems, resulting in inefficient models for the treatment of flow reversal. 
+</p>
 </html>"));
   end PartialDistributedVolume;
   end BaseClasses;

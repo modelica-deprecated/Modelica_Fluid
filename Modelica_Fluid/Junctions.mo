@@ -42,7 +42,7 @@ package Junctions "Junction components"
   model TJunctionVolume
     "Splitting/joining component with static balances for a dynamic control volume"
     extends BaseClasses.PartialTJunction;
-    extends Volumes.BaseClasses.PartialLumpedVolume;
+    extends Volumes.BaseClasses.PartialLumpedVolume(Qs_flow = 0);
 
     parameter SI.Volume V "Mixing volume inside junction";
 
@@ -99,7 +99,6 @@ of the modeller.
               + port_2.m_flow*actualStream(port_2.h_outflow)
               + port_3.m_flow*actualStream(port_3.h_outflow);
     Ws_flow = 0;
-    Qs_flow = 0;
 
     annotation (Documentation(info="<html>
   This model introduces a mixing volume into a junction. 
