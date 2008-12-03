@@ -3,7 +3,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
     extends Modelica_Fluid.Icons.VariantLibrary;
 
   model StaticPipe "Basic pipe flow model without storage of mass or energy"
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow(
                                            redeclare model HeatTransfer = 
           BaseClasses.HeatTransfer.PipeHT_ideal,                                                               final
         area_h =                                                                                                    0);
@@ -52,7 +52,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
 
     // Extend here to get right ordering in parameter box
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe;
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow;
 
      //Initialization
     parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
@@ -196,10 +196,6 @@ pipe wall/environment).
    import Modelica_Fluid.Types.ModelStructure;
    extends Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow(
      Qs_flow=heatTransfer.Q_flow,
-     Ws_flow=zeros(n),
-     ms_flow=zeros(n),
-     msXi_flow=zeros(n, Medium.nXi),
-     Vi=ones(n)*V/n,
      final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
      final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
 
@@ -250,6 +246,9 @@ If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller. Use a Junctions.MultiPort.
 ");
+
+   Ws_flow=zeros(n);
+   fluidVolume=ones(n)*V/n;
 
    //Momentum Balance, dp contains contributions from acceleration, gravitational and friction effects
    //two momentum balances, one on each side of pressure state
@@ -393,10 +392,6 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
   import Modelica_Fluid.Types.ModelStructure;
   extends Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow(
     Qs_flow=heatTransfer.Q_flow,
-    Ws_flow=zeros(n),
-    ms_flow=zeros(n),
-    msXi_flow=zeros(n, Medium.nXi),
-    Vi=ones(n)*V/n,
     final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
     final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
 
@@ -449,6 +444,9 @@ If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller. Use a Junctions.MultiPort.
 ");
+
+    Ws_flow=zeros(n);
+    fluidVolume=ones(n)*V/n;
 
     //Pressure drop and gravity
     //Simplified Momentum Balance, dp contains contributions from gravitational and friction effects
@@ -719,7 +717,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
-    partial model PartialPipe "Base class for one dimensional flow models"
+    partial model PartialTwoPortFlow
+      "Base class for one dimensional flow models"
       extends Modelica_Fluid.Interfaces.PartialTwoPort;
 
        //Initialization
@@ -824,65 +823,22 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             extent={{-100,-100},{100,100}},
             grid={1,1}), graphics));
 
-    end PartialPipe;
+    end PartialTwoPortFlow;
 
   partial model PartialDistributedFlow
       "Base class for a finite volume flow model"
       import Modelica_Fluid.Types;
 
-    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-        "Dynamics option" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+    extends Modelica_Fluid.Volumes.BaseClasses.PartialDistributedVolume(final n = nNodes);
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow;
 
   //Discretization
     parameter Integer nNodes(min=1)=1 "Number of discrete flow volumes";
-    final parameter Integer n = nNodes;
-
-    final parameter Boolean static = dynamicsType == Types.Dynamics.SteadyState
-        "= true, static balances, no mass or energy is stored" 
-                                  annotation(Dialog(tab="Assumptions"),Evaluate=true);
-
-  //Initialization
-    parameter Types.Init initType=system.initType "Initialization option" 
-        annotation(Evaluate=true, Dialog(tab = "Initialization"));
-
-    // Extend here to get right ordering in parameter box
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe;
-
-    final parameter Medium.AbsolutePressure[n] p_start=if n > 1 then linspace(
-          p_a_start - (p_a_start - p_b_start)/(2*n),
-          p_b_start + (p_a_start - p_b_start)/(2*n),
-          n) else {(p_a_start + p_b_start)/2} "Start value of pressure";
-
-    parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
-       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-    parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
-                Medium.temperature_phX(
-          (p_a_start + p_b_start)/2,
-          h_start,
-          X_start) "Start value of temperature" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
-          Medium.specificEnthalpy_pTX(
-          (p_a_start + p_b_start)/2,
-          T_start,
-          X_start) else Medium.h_default "Start value of specific enthalpy" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-        "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
 
   //Advanced model options
     parameter Boolean use_approxPortProperties=false
         "=true, port properties for pressure drop correlation are taken from neighboring control volume"
                                                                                                        annotation(Dialog(tab="Advanced", group="Pressure loss"),Evaluate=true);
-    input SI.Volume[n] Vi "Discretized volume, determine in inheriting class ";
-
-  //Total quantities
-    SI.Energy[n] U "Internal energy of fluid";
-    SI.Mass[n] m "Fluid mass";
-    SI.Mass[n,Medium.nXi] mXi "Substance mass";
-
   //Flow quantities
     Medium.MassFlowRate[n + 1] m_flow(each min=if allowFlowReversal then -Modelica.Constants.inf else 
                 0, each start=m_flow_start, each fixed=false)
@@ -893,21 +849,10 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
     Medium.EnthalpyFlowRate[n + 1] H_flow
         "Enthalpy flow rates of fluid across segment boundaries";
 
-    Medium.BaseProperties[n] medium(
-      each preferredMediumStates=if static then false else true,
-      p(start=p_start),
-      each h(start=h_start),
-      each T(start=T_start),
-      each Xi(start=X_start[1:Medium.nXi]));
     Medium.AbsolutePressure[n] p = medium.p "Pressure states";
 
     //Source terms, have to be set in inheriting class (to zero if not used)
     protected
-    input Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
-    input Medium.MassFlowRate[n,Medium.nXi] msXi_flow
-        "Independent mass flow rates, source or sink";
-    input SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
-    input SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
     SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
     SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else Medium.density_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)));
     SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)));
@@ -936,86 +881,18 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
     v[1] = m_flow[1]/(d_a + d[1])*2/crossArea;
     v[n + 1] = m_flow[n + 1]/(d[n] + d_b)*2/crossArea;
 
-    // Total quantities
-    for i in 1:n loop
-      m[i] =Vi[i]*medium[i].d;
-      mXi[i, :] = m[i]*medium[i].Xi;
-      U[i] = m[i]*medium[i].u;
-    end for;
-
     //Mass and energy balances
-    if dynamicsType < Types.Dynamics.SteadyStateMass then
     //dynamic mass balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
-      for i in 1:n loop
-        der(m[i]) = m_flow[i] - m_flow[i + 1] + ms_flow[i];
-        der(mXi[i, :]) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
-      end for;
-    else
-    //steady state mass balances, no numerical states, no flow reversal possible
-      for i in 1:n loop
-        0 = m_flow[i] - m_flow[i + 1] + ms_flow[i];
-        zeros(Medium.nXi) = mXi_flow[i, :] - mXi_flow[i + 1, :] + msXi_flow[i, :];
-      end for;
-    end if;
-    if dynamicsType < Types.Dynamics.SteadyState then
-    //dynamic energy balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
-      for i in 1:n loop
-        der(U[i]) = H_flow[i] - H_flow[i + 1] + Qs_flow[i];
-      end for;
-    else
-    //steady state energy balances, no numerical states, no flow reversal possible
-      for i in 1:n loop
-        0 = H_flow[i] - H_flow[i + 1] + Qs_flow[i];
-      end for;
-    end if;
     for i in 1:n loop
-      assert((allowFlowReversal and not static) or (m_flow[i] >= 0), "Flow reversal not allowed in distributed pipe");
+      ms_flow[i] = m_flow[i] - m_flow[i + 1];
+      msXi_flow[i, :] = mXi_flow[i, :] - mXi_flow[i + 1, :];
+    end for;
+    //dynamic energy balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
+    for i in 1:n loop
+      Hs_flow[i] = H_flow[i] - H_flow[i + 1];
     end for;
 
-  initial equation
-    // Initial conditions
-    if not static then
-      if initType == Types.Init.NoInit then
-      // no initial equations
-      elseif initType == Types.Init.SteadyState then
-      //steady state initialization
-        if use_T_start then
-          der(medium.T) = zeros(n);
-        else
-          der(medium.h) = zeros(n);
-        end if;
-        if not (Medium.singleState) then
-          der(medium.p) = zeros(n);
-        end if;
-        for i in 1:n loop
-          der(medium[i].Xi) = zeros(Medium.nXi);
-        end for;
-      elseif initType == Types.Init.InitialValues then
-      //Initialization with initial values
-        if use_T_start then
-          medium.T = ones(n)*T_start;
-        else
-          medium.h = ones(n)*h_start;
-        end if;
-        if not Medium.singleState then
-           medium.p=p_start;
-        end if;
-      elseif initType == Types.Init.SteadyStateHydraulic then
-      //Steady state initialization for hydraulic states (p)
-        if use_T_start then
-          medium.T = ones(n)*T_start;
-        else
-          medium.h = ones(n)*h_start;
-        end if;
-        if not Medium.singleState then
-          der(medium.p) = zeros(n);
-        end if;
-      else
-        assert(false, "Unsupported initialization option");
-      end if;
-    end if;
-
-     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
                 -100},{100,100}}),
                          graphics),
                           Icon(coordinateSystem(preserveAspectRatio=true,
