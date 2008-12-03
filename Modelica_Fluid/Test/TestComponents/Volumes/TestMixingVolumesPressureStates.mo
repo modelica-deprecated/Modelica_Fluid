@@ -8,7 +8,7 @@ model TestMixingVolumesPressureStates
             -100},{100,100}}),
                       graphics),
                        experiment(StopTime=10));
-  Modelica_Fluid.Volumes.ClosedVolume ClosedVolume1(
+  Modelica_Fluid.Volumes.Volume ClosedVolume1(
     V=1e-3,
     redeclare package Medium = Medium,
     p_start=system.p_ambient,
@@ -27,7 +27,7 @@ model TestMixingVolumesPressureStates
     redeclare package Medium = Medium) 
                    annotation (Placement(transformation(extent={{-100,30},{-80,
             50}}, rotation=0)));
-  Modelica_Fluid.Volumes.ClosedVolume ClosedVolume2(
+  Modelica_Fluid.Volumes.Volume ClosedVolume2(
     V=1e-3,
     p_start=system.p_ambient,
     use_T_start=false,

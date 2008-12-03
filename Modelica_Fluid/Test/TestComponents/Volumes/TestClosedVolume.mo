@@ -1,7 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestClosedVolume
   extends Modelica.Icons.Example;
-  Modelica_Fluid.Volumes.ClosedVolume Volume(
+  Modelica_Fluid.Volumes.Volume Volume(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     initType=Modelica_Fluid.Types.Init.SteadyState,
     V=1,

@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.Junctions;
 model TestJunctionVolume
   extends Modelica.Icons.Example;
 
-  Modelica_Fluid.Junctions.JunctionVolume junction(              redeclare
+  Modelica_Fluid.Junctions.TJunctionVolume junction(             redeclare
       package Medium = 
         Modelica.Media.Air.DryAirNasa, V=20e-6,
     initType=Modelica_Fluid.Types.Init.SteadyState,

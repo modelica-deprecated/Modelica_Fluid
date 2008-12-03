@@ -2,33 +2,19 @@ within Modelica_Fluid;
 package Junctions "Junction components"
   extends Modelica_Fluid.Icons.VariantLibrary;
 
-  model JunctionIdeal
+  model IdealTJunction
     "Splitting/joining component with static balances for an infinitesimal control volume"
-    import Modelica_Fluid.Types;
-    import Modelica_Fluid.Types.PortFlowDirection;
+    extends BaseClasses.PartialTJunction;
 
-    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
-      "Fluid medium model" 
-      annotation (choicesAllMatching=true);
-
-    Modelica_Fluid.Interfaces.FluidPort_a port_1(redeclare package Medium = 
-          Medium, m_flow(min=if (portFlowDirection_1 == PortFlowDirection.Entering) then 
-                  0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_1
-             == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
-            rotation=0)));
-    Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
-          Medium, m_flow(min=if (portFlowDirection_2 == PortFlowDirection.Entering) then 
-                  0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_2
-             == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-      annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation=
-             0)));
-    Modelica_Fluid.Interfaces.FluidPort_a port_3(
-      redeclare package Medium=Medium,
-      m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-      annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
-             0)));
+  equation
+    connect(port_1, port_2) annotation (Line(
+        points={{-100,0},{100,0}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(port_1, port_3) annotation (Line(
+        points={{-100,0},{0,0},{0,100}},
+        color={0,127,255},
+        smooth=Smooth.None));
 
     annotation(Documentation(info="<html>
   This model is the simplest implementation for a splitting/joining component for
@@ -43,136 +29,22 @@ package Junctions "Junction components"
       Icon(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Rectangle(
-            extent={{-100,41},{100,-47}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-100,37},{100,-43}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255}),
-          Rectangle(
-            extent={{-34,100},{34,37}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.VerticalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-30,100},{30,35}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.VerticalCylinder,
-            fillColor={0,127,255}),
-          Text(
-            extent={{-150,-60},{150,-100}},
-            lineColor={0,0,255},
-            textString="%name")}),
+          grid={1,1}), graphics),
       Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
-
-  protected
-    parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
-      "Flow direction for port_1" 
-     annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
-      "Flow direction for port_2" 
-     annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
-      "Flow direction for port_3" 
-     annotation(Dialog(tab="Advanced"));
-
-  equation
-    connect(port_1, port_2) annotation (Line(
-        points={{-100,0},{100,0}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(port_1, port_3) annotation (Line(
-        points={{-100,0},{0,0},{0,100}},
-        color={0,127,255},
-        smooth=Smooth.None));
-  end JunctionIdeal;
+  end IdealTJunction;
 
   annotation (Documentation(info="<html>
  
 </html>"));
-  model JunctionVolume
+  model TJunctionVolume
     "Splitting/joining component with static balances for a dynamic control volume"
+    extends BaseClasses.PartialTJunction;
     extends Volumes.BaseClasses.PartialLumpedVolume;
-    import Modelica_Fluid.Types;
-    import Modelica_Fluid.Types.PortFlowDirection;
 
-    parameter SI.Volume V "Volume";
-
-    Modelica_Fluid.Interfaces.FluidPort_a port_1(
-      redeclare package Medium=Medium,
-      m_flow(min=if (portFlowDirection_1==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      max=if (portFlowDirection_1==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
-            rotation=0)));
-    Modelica_Fluid.Interfaces.FluidPort_b port_2(
-      redeclare package Medium=Medium,
-      m_flow(min=if (portFlowDirection_2==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      max=if (portFlowDirection_2==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-      annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation=
-             0)));
-    Modelica_Fluid.Interfaces.FluidPort_a port_3(
-      redeclare package Medium=Medium,
-      m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-      max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-      annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
-             0)));
-
-  protected
-    parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
-      "Flow direction for port_1" 
-     annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
-      "Flow direction for port_2" 
-     annotation(Dialog(tab="Advanced"));
-    parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
-      "Flow direction for port_3" 
-     annotation(Dialog(tab="Advanced"));
-
-    annotation (Icon(coordinateSystem(
-          preserveAspectRatio=true,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Rectangle(
-            extent={{-100,41},{100,-47}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-100,37},{100,-43}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255}),
-          Rectangle(
-            extent={{-34,100},{34,37}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.VerticalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-30,100},{30,35}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.VerticalCylinder,
-            fillColor={0,127,255}),
-          Ellipse(
-            extent={{-9,10},{11,-10}},
-            lineColor={0,0,0},
-            fillColor={0,0,0},
-            fillPattern=FillPattern.Solid),
-          Text(
-            extent={{-150,-60},{150,-100}},
-            lineColor={0,0,255},
-            textString="%name")}),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics));
+    parameter SI.Volume V "Mixing volume inside junction";
 
   equation
     // Only one connection allowed to a port to avoid unwanted ideal mixing
@@ -207,7 +79,7 @@ of the modeller.
     // Mass balances
     fluidVolume = V;
     ms_flow = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-    mXis_flow = port_1.m_flow*actualStream(port_1.Xi_outflow)
+    msXi_flow = port_1.m_flow*actualStream(port_1.Xi_outflow)
                 + port_2.m_flow*actualStream(port_2.Xi_outflow)
                 + port_3.m_flow*actualStream(port_3.Xi_outflow)
       "Component mass balances";
@@ -228,7 +100,23 @@ of the modeller.
               + port_3.m_flow*actualStream(port_3.h_outflow);
     Ws_flow = 0;
     Qs_flow = 0;
-  end JunctionVolume;
+
+    annotation (Documentation(info="<html>
+  This model introduces a mixing volume into a junction. 
+  This might be useful to examine the non-ideal mixing taking place in a real junction.</html>"),
+  Icon(coordinateSystem(
+          preserveAspectRatio=true,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={Ellipse(
+            extent={{-9,10},{11,-10}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid)}),
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics));
+  end TJunctionVolume;
 
   model MultiPort
     "Multiply a port; useful if multiple connections shall be made to a port exposing a state"
@@ -321,6 +209,84 @@ of the modeller. Increase nPorts_b to add an additional port.
                            / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
     end for;
   end MultiPort;
+
+  package BaseClasses "Base classes for junctions"
+    extends Modelica_Fluid.Icons.BaseClassLibrary;
+
+    partial model PartialTJunction
+      "Base class for a splitting/joining component with three ports"
+      import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types.PortFlowDirection;
+
+      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
+        "Fluid medium model" 
+        annotation (choicesAllMatching=true);
+
+      Modelica_Fluid.Interfaces.FluidPort_a port_1(redeclare package Medium = 
+            Medium, m_flow(min=if (portFlowDirection_1 == PortFlowDirection.Entering) then 
+                    0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_1
+               == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+              rotation=0)));
+      Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
+            Medium, m_flow(min=if (portFlowDirection_2 == PortFlowDirection.Entering) then 
+                    0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_2
+               == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+        annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation=
+               0)));
+      Modelica_Fluid.Interfaces.FluidPort_a port_3(
+        redeclare package Medium=Medium,
+        m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
+        max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+        annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
+               0)));
+
+      annotation(Icon(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics={
+            Rectangle(
+              extent={{-100,41},{100,-47}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.HorizontalCylinder,
+              fillColor={192,192,192}),
+            Rectangle(
+              extent={{-100,37},{100,-43}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.HorizontalCylinder,
+              fillColor={0,127,255}),
+            Rectangle(
+              extent={{-34,100},{34,37}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.VerticalCylinder,
+              fillColor={192,192,192}),
+            Rectangle(
+              extent={{-30,100},{30,35}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.VerticalCylinder,
+              fillColor={0,127,255}),
+            Text(
+              extent={{-150,-60},{150,-100}},
+              lineColor={0,0,255},
+              textString="%name")}),
+        Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics));
+
+    protected
+      parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
+        "Flow direction for port_1" 
+       annotation(Dialog(tab="Advanced"));
+      parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
+        "Flow direction for port_2" 
+       annotation(Dialog(tab="Advanced"));
+      parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
+        "Flow direction for port_3" 
+       annotation(Dialog(tab="Advanced"));
+
+    end PartialTJunction;
+  end BaseClasses;
 
   package ToBeRemoved
     model MassFlowRatio "simple flow multiplier"

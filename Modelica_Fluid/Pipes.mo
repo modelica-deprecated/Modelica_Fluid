@@ -3,7 +3,10 @@ package Pipes "Lumped, distributed and thermal pipe components"
     extends Modelica_Fluid.Icons.VariantLibrary;
 
   model StaticPipe "Basic pipe flow model without storage of mass or energy"
-    extends BaseClasses.PartialTwoPortFlow;
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
+                                           redeclare model HeatTransfer = 
+          BaseClasses.HeatTransfer.PipeHT_ideal,                                                               final
+        area_h =                                                                                                    0);
     PressureLosses.WallFrictionAndGravity wallFriction(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
@@ -39,7 +42,36 @@ package Pipes "Lumped, distributed and thermal pipe components"
   end StaticPipe;
 
   model LumpedPipe
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialDynamicFlow;
+    // Assumptions
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+      "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+
+    // Initialization
+    parameter Types.Init initType=system.initType "Initialization option" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization"));
+
+    // Extend here to get right ordering in parameter box
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe;
+
+     //Initialization
+    parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
+       annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
+                Medium.temperature_phX(
+          (p_a_start + p_b_start)/2,
+          h_start,
+          X_start) "Start value of temperature" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
+          Medium.specificEnthalpy_pTX(
+          (p_a_start + p_b_start)/2,
+          T_start,
+          X_start) else Medium.h_default "Start value of specific enthalpy" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
 
     HeatTransfer heatTransfer(
       redeclare final package Medium = Medium,
@@ -73,7 +105,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       use_nominal=use_eta_nominal or use_d_nominal) 
       annotation (Placement(transformation(extent={{-60,-30},{-40,-10}},
             rotation=0)));
-    Modelica_Fluid.Volumes.ClosedVolume volume(
+    Modelica_Fluid.Volumes.Volume volume(
       redeclare package Medium = Medium,
       initType=initType,
       p_start=(p_a_start+p_b_start)/2,
@@ -687,8 +719,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
-    partial model PartialTwoPortFlow
-      "Base class for one dimensional flow models"
+    partial model PartialPipe "Base class for one dimensional flow models"
       extends Modelica_Fluid.Interfaces.PartialTwoPort;
 
        //Initialization
@@ -705,12 +736,15 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       //Geometry
       parameter SI.Length length "Length"   annotation(Dialog(tab="General", group="Geometry"));
       parameter SI.Diameter diameter "Diameter of circular pipe"      annotation(Dialog(group="Geometry", enable=isCircular));
+      parameter SI.Length roughness(min=0)=2.5e-5
+        "Average height of surface asperities (default = smooth steel pipe)" 
+          annotation(Dialog(group="Geometry",enable=WallFriction.use_roughness));
       parameter Boolean isCircular=true
         "= true if cross sectional area is circular" 
         annotation (Evaluate, Dialog(tab="General", group="Geometry"));
-      parameter SI.Length perimeter=if isCircular then Modelica.Constants.pi*diameter else 0
+      parameter SI.Length perimeter=Modelica.Constants.pi*diameter
         "Inner perimeter"                                                                                       annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
-      parameter SI.Area crossArea=if isCircular then Modelica.Constants.pi*diameter*diameter/4 else 0
+      parameter SI.Area crossArea=Modelica.Constants.pi*diameter*diameter/4
         "Inner cross section area"            annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
       final parameter SI.Volume V=crossArea*length "volume size";
 
@@ -726,9 +760,6 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         "Characteristic of wall friction"  annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
        parameter SI.Diameter diameter_h=4*crossArea/perimeter
         "Hydraulic diameter"                                       annotation(Dialog(tab="General", group="Pressure loss"));
-      parameter Modelica.SIunits.Length roughness(min=0)=2.5e-5
-        "Absolute roughness of pipe (default = smooth steel pipe)" 
-          annotation(Dialog(group="Pressure loss",enable=WallFriction.use_roughness));
       parameter Boolean use_eta_nominal = false
         "= true, if eta_nominal is used, otherwise computed from medium" 
              annotation(Dialog(tab="Advanced", group="Pressure loss"),Evaluate=true);
@@ -740,6 +771,16 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
       parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
          annotation(Dialog(tab="Advanced", group="Pressure loss",enable=use_d_nominal));
+
+      // Heat transfer
+      replaceable model HeatTransfer = 
+          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
+        constrainedby
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
+        "Convective heat transfer" 
+        annotation (Dialog(group="Heat transfer"),editButton=true,choicesAllMatching=true);
+      parameter SI.Area area_h=perimeter*length "Heat transfer area" 
+                                                               annotation(Dialog(tab="General", group="Heat transfer"));
 
       parameter Boolean show_Re = false
         "= true, if Reynolds number is included for plotting" 
@@ -783,78 +824,15 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             extent={{-100,-100},{100,100}},
             grid={1,1}), graphics));
 
-    end PartialTwoPortFlow;
-
-    partial model PartialDynamicFlow
-      "Base class for one dimensional flow models with accumulation"
-
-      parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-        "Dynamics option" 
-        annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-
-       //Initialization
-      parameter Types.Init initType=system.initType "Initialization option" 
-        annotation(Evaluate=true, Dialog(tab = "Initialization"));
-
-      // Extend here to get right ordering in parameter box
-      extends PartialTwoPortFlow;
-
-      parameter Boolean use_T_start=true
-        "Use T_start if true, otherwise h_start" 
-         annotation(Evaluate=true, Dialog(tab = "Initialization"));
-      parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
-                  Medium.temperature_phX(
-            (p_a_start + p_b_start)/2,
-            h_start,
-            X_start) "Start value of temperature" 
-        annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
-      parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
-            Medium.specificEnthalpy_pTX(
-            (p_a_start + p_b_start)/2,
-            T_start,
-            X_start) else Medium.h_default "Start value of specific enthalpy" 
-        annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
-      parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-        "Start value of mass fractions m_i/m" 
-        annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-
-      // Heat transfer
-      replaceable model HeatTransfer = 
-          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
-        constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
-        "Convective heat transfer" 
-        annotation (Dialog(group="Heat transfer"),editButton=true,choicesAllMatching=true);
-      parameter SI.Area area_h=perimeter*length "Heat transfer area" 
-                                                               annotation(Dialog(tab="General", group="Heat transfer"));
-
-      annotation (defaultComponentName="pipe",Icon(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={Rectangle(
-              extent={{-100,44},{100,-44}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={192,192,192}), Rectangle(
-              extent={{-100,40},{100,-40}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={0,127,255})}),           Documentation(info="<html>
-<p>
-Base class for one dimensional flow models with accumulation. It specializes a PartialTwoPortFlow with dynamics parameters and a heat transfer model.
-</p>
-</html>"),
-        Diagram(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics));
-
-    end PartialDynamicFlow;
+    end PartialPipe;
 
   partial model PartialDistributedFlow
       "Base class for a finite volume flow model"
       import Modelica_Fluid.Types;
-    extends PartialDynamicFlow;
+
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+        "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
 
   //Discretization
     parameter Integer nNodes(min=1)=1 "Number of discrete flow volumes";
@@ -865,10 +843,34 @@ Base class for one dimensional flow models with accumulation. It specializes a P
                                   annotation(Dialog(tab="Assumptions"),Evaluate=true);
 
   //Initialization
-      final parameter Medium.AbsolutePressure[n] p_start=if n > 1 then linspace(
+    parameter Types.Init initType=system.initType "Initialization option" 
+        annotation(Evaluate=true, Dialog(tab = "Initialization"));
+
+    // Extend here to get right ordering in parameter box
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe;
+
+    final parameter Medium.AbsolutePressure[n] p_start=if n > 1 then linspace(
           p_a_start - (p_a_start - p_b_start)/(2*n),
           p_b_start + (p_a_start - p_b_start)/(2*n),
           n) else {(p_a_start + p_b_start)/2} "Start value of pressure";
+
+    parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
+       annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
+                Medium.temperature_phX(
+          (p_a_start + p_b_start)/2,
+          h_start,
+          X_start) "Start value of temperature" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
+          Medium.specificEnthalpy_pTX(
+          (p_a_start + p_b_start)/2,
+          T_start,
+          X_start) else Medium.h_default "Start value of specific enthalpy" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
+        "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
 
   //Advanced model options
     parameter Boolean use_approxPortProperties=false
@@ -1217,7 +1219,7 @@ Heat transfer model for laminar and turbulent flow in pipes. Range of validity:
 <li>one phase Newtonian fluid</li>
 <li>(spatial) constant wall temperature in the laminar region</li>
 <li>0 &le; Re &le; 1e6, 0.6 &le; Pr &le; 100, d/L &le; 1</li>
-<li>The correlation holds for non-circular pipes only in the turbulent region. Use diameter_h=4*area_h/perimeter as characteristic length.</li>
+<li>The correlation holds for non-circular pipes only in the turbulent region. Use diameter_h=4*area/perimeter as characteristic length.</li>
 </ul>
 The correlation takes into account the spatial position along the pipe flow, which changes discontinuously at flow reversal. However, the heat transfer coefficient itself is continuous around zero flow rate, but not its derivative.
 <h4><font color=\"#008000\">References</font></h4>
