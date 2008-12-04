@@ -137,8 +137,8 @@ package TestCriticalCases
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
@@ -181,8 +181,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
@@ -194,8 +194,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
@@ -246,8 +246,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -286,8 +286,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -297,8 +297,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -348,8 +348,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       p_b_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-80,-4},{
               -60,16}}, rotation=0)));
@@ -388,8 +388,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       p_b_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
@@ -399,8 +399,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       p_b_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-40,-50},
               {-20,-30}}, rotation=0)));
@@ -455,8 +455,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -495,8 +495,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -506,8 +506,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -566,8 +566,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
             rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium,
@@ -598,8 +598,8 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
             extent={{94,-6},{82,6}}, rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium,
@@ -621,8 +621,8 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
             extent={{-46,-10},{-26,10}}, rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium,
@@ -687,8 +687,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
@@ -697,8 +697,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       diameter=2.5e-2,
       redeclare package Medium = Medium,
       length=0.5)                        annotation (Placement(transformation(
@@ -709,8 +709,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       diameter=2.5e-2,
       redeclare package Medium = Medium,
       length=0.5)                        annotation (Placement(transformation(
@@ -720,8 +720,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe4(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       diameter=2.5e-2,
       redeclare package Medium = Medium,
       length=2)                          annotation (Placement(transformation(
@@ -729,8 +729,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe6(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       diameter=2.5e-2,
       redeclare package Medium = Medium,
       length=20)                         annotation (Placement(transformation(
@@ -756,8 +756,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe7(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
@@ -798,8 +798,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe8(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
@@ -809,8 +809,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe9(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
@@ -818,8 +818,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe10(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
@@ -827,8 +827,8 @@ fails for zero flow rate.
     Modelica_Fluid.Pipes.LumpedPipe pipe5(
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       diameter=2.5e-2,
       redeclare package Medium = Medium,
       length=20)                         annotation (Placement(transformation(
@@ -836,8 +836,8 @@ fails for zero flow rate.
   equation
     connect(source.ports[1], pipe1.port_a) annotation (Line(points={{-86,10},{-78,
             10}}, color={0,127,255}));
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{
-              -100,-100},{100,100}}),
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+              -100},{100,100}}),
                         graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false));
@@ -858,12 +858,12 @@ fails for zero flow rate.
             -22},{54,10},{62,10}}, color={0,127,255}));
     connect(valve3.port_b, sink.ports[1]) annotation (Line(points={{76,10},{86,10}},
           color={0,127,255}));
-    connect(valveOpening1.y, valve1.opening) annotation (Line(points={{-45,
-            90},{-33,90},{-33,63.2}}, color={0,0,127}));
-    connect(valveOpening2.y, valve2.opening) annotation (Line(points={{-61,
-            -54},{-33,-54},{-33,-43.2}}, color={0,0,127}));
-    connect(valveOpening3.y, valve3.opening) annotation (Line(points={{29,
-            78},{69,78},{69,17.2}}, color={0,0,127}));
+    connect(valveOpening1.y, valve1.opening) annotation (Line(points={{-45,90},
+            {-33,90},{-33,62.4}},     color={0,0,127}));
+    connect(valveOpening2.y, valve2.opening) annotation (Line(points={{-61,-54},
+            {-33,-54},{-33,-42.4}},      color={0,0,127}));
+    connect(valveOpening3.y, valve3.opening) annotation (Line(points={{29,78},{
+            69,78},{69,16.4}},      color={0,0,127}));
     connect(pipe7.port_b, pipe9.port_a) 
       annotation (Line(points={{2,56},{16,56}}, color={0,127,255}));
     connect(pipe7.port_b, pipe8.port_a) annotation (Line(points={{2,56},{10,56},
@@ -905,8 +905,8 @@ fails for zero flow rate.
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -944,8 +944,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -955,8 +955,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1007,8 +1007,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -1050,8 +1050,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1061,8 +1061,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1121,8 +1121,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -1160,8 +1160,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1171,8 +1171,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1235,14 +1235,13 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             rotation=0)));
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
-      p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
-      p_b_start=4.95e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-78,-4},{
+      p_a_start=500000,
+      p_b_start=495000)      annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
     ControlValves.ValveIncompressible valve1(
@@ -1277,25 +1276,23 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-34,36},{
+      p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-30,-50},
+      p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-30,-50},
               {-10,-30}}, rotation=0)));
 
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1; 2,
@@ -1335,7 +1332,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.opening)               annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (Line(points={{-58,6},
-            {-53.5,6},{-53.5,6},{-48,6}}, color={0,127,255}));
+            {-48,6}},                     color={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (Line(points={{-34,
             46},{-38,46},{-38,16}}, color={0,127,255}));
     connect(junctionIdeal.port_1, pipe3.port_a) annotation (Line(points={{-38,
@@ -1356,12 +1353,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
-      p_b_start=4.95e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-78,-4},{
+      p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
     ControlValves.ValveIncompressible valve1(
@@ -1396,25 +1392,23 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-34,36},{
+      p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-30,-50},
+      p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-30,-50},
               {-10,-30}}, rotation=0)));
 
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
@@ -1473,12 +1467,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
-      p_b_start=4.95e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-78,-4},{
+      p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
     ControlValves.ValveIncompressible valve1(
@@ -1512,25 +1505,23 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-34,36},{
+      p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-30,-50},
+      p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-30,-50},
               {-10,-30}}, rotation=0)));
 
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
@@ -1597,12 +1588,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
-      p_b_start=4.95e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-78,-4},{
+      p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
     ControlValves.ValveIncompressible valve1(
@@ -1634,25 +1624,23 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-34,36},{
+      p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow(dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5,
-      dp_small=10)      annotation (Placement(transformation(extent={{-30,-50},
+      p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-30,-50},
               {-10,-30}}, rotation=0)));
 
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1; 2,
@@ -1718,8 +1706,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -1736,7 +1724,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
                   annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+              graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
       Documentation(info="<html>
@@ -1751,8 +1741,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1777,7 +1767,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(pipe3.port_b, valveIncompressible1.port_a) annotation (Line(points=
             {{-10,-40},{8,-40}}, color={0,127,255}));
     connect(valveOpening2.y, valveIncompressible1.opening) annotation (Line(
-          points={{1,2},{18,2},{18,-31}}, color={0,0,127}));
+          points={{1,2},{18,2},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, pipe3.port_a) annotation (Line(points={{-58,6},{-44,6},
             {-44,-40},{-30,-40}}, color={0,127,255}));
   end BranchingPipes131;
@@ -1791,7 +1781,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Sources.FixedBoundary source(redeclare package Medium = 
           Modelica.Media.Water.StandardWater, p=200000) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Modelica_Fluid.Pipes.DistributedPipe pipe(
+    Modelica_Fluid.Pipes.DistributedPipe_Old pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       length=1,
       diameter=0.32,
@@ -1870,7 +1860,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Pipes.DistributedPipe pipe(
+    Modelica_Fluid.Pipes.DistributedPipe_Old pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       nNodes=5,
       h_start=2e6,
@@ -1940,7 +1930,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Pipes.LumpedPipe pipe(
+    Modelica_Fluid.Pipes.LumpedPipe pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       h_start=2e6,
       diameter=0.05,

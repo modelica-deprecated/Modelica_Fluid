@@ -354,7 +354,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
     SI.HeatFlowRate Q_flow_1 "Total heat flow rate of pipe 1";
     SI.HeatFlowRate Q_flow_2 "Total heat flow rate of pipe 2";
 
-    Modelica_Fluid.Pipes.DistributedPipe pipe_1(
+    Modelica_Fluid.Pipes.DistributedPipe_Old pipe_1(
       redeclare package Medium = Medium_1,
       isCircular=false,
       diameter=0,
@@ -378,7 +378,7 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       d_nominal=d_nominal_1)   annotation (Placement(transformation(extent={{-40,-80},
               {20,-20}},        rotation=0)));
 
-    Modelica_Fluid.Pipes.DistributedPipe pipe_2(
+    Modelica_Fluid.Pipes.DistributedPipe_Old pipe_2(
       redeclare package Medium = Medium_2,
       nNodes=nNodes,
       allowFlowReversal=allowFlowReversal,
