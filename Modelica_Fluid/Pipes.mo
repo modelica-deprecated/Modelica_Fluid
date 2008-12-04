@@ -35,6 +35,142 @@ package Pipes "Lumped, distributed and thermal pipe components"
               -100},{100,100}}),      graphics));
   end StaticPipe;
 
+  model LumpedPipe "Example for a composite pipe model"
+
+    // Assumptions
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+      "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+
+    // Initialization
+    parameter Types.Init initType=system.initType "Initialization option" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization"));
+
+    // Extend here to get right ordering in parameter box
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
+      final isCircular=true,
+      final perimeter=Modelica.Constants.pi*diameter,
+      final crossArea=Modelica.Constants.pi*diameter*diameter/4);
+
+     //Initialization
+    parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
+       annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
+                Medium.temperature_phX(
+          (p_a_start + p_b_start)/2,
+          h_start,
+          X_start) "Start value of temperature" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
+    parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
+          Medium.specificEnthalpy_pTX(
+          (p_a_start + p_b_start)/2,
+          T_start,
+          X_start) else Medium.h_default "Start value of specific enthalpy" 
+      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
+    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
+      "Start value of mass fractions m_i/m" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+
+    replaceable HeatTransfer heatTransfer(
+      redeclare final package Medium = Medium,
+      final n=1,
+      diameter=4*crossArea/perimeter,
+      area=perimeter*length,
+      final crossArea=crossArea,
+      final length=length,
+      state={volume.medium.state},
+      m_flow = {0.5*(port_a.m_flow - port_b.m_flow)},
+      final useFluidHeatPort=true) "Edit heat transfer parameters" 
+      annotation (editButton=true, Placement(transformation(extent={{-11,14},{
+              11,36}},                                                                  rotation=0)));
+
+    StaticPipe staticPipe1(
+      redeclare package Medium = Medium,
+      allowFlowReversal=allowFlowReversal,
+      length=length/2,
+      height_ab=height_ab/2,
+      roughness=roughness,
+      m_flow_start=m_flow_start,
+      diameter=diameter,
+      redeclare final model PressureDrop = PressureDrop) 
+      annotation (Placement(transformation(extent={{-60,-40},{-40,-20}},
+            rotation=0)));
+    Modelica_Fluid.Volumes.Volume volume(
+      redeclare package Medium = Medium,
+      initType=initType,
+      p_start=(p_a_start+p_b_start)/2,
+      use_T_start=use_T_start,
+      T_start=T_start,
+      h_start=h_start,
+      X_start=X_start,
+      dynamicsType=dynamicsType,
+      V=V,
+      nPorts=2,
+      portDiameters={0,0},
+      neglectPortDiameters=true) 
+      annotation (Placement(transformation(extent={{-10,-20},{10,0}},  rotation=
+             0)));
+    StaticPipe staticPipe2(
+      redeclare package Medium = Medium,
+      allowFlowReversal=allowFlowReversal,
+      length=length/2,
+      height_ab=height_ab/2,
+      roughness=roughness,
+      m_flow_start=m_flow_start,
+      diameter=diameter,
+      redeclare final model PressureDrop = PressureDrop)   annotation (Placement(transformation(extent={{40,-40},
+              {60,-20}},         rotation=0)));
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
+      annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=
+              0)));
+  equation
+    connect(staticPipe1.port_a, port_a) 
+      annotation (Line(points={{-60,-30},{-80,-30},{-80,0},{-100,0}},
+                                                  color={0,127,255}));
+    connect(staticPipe2.port_b, port_b) 
+      annotation (Line(points={{60,-30},{80,-30},{80,0},{100,0}},
+                                                color={0,127,255}));
+    connect(heatPort, heatTransfer.wallHeatPort[1]) annotation (Line(
+        points={{0,54},{0,32.7}},
+        color={191,0,0},
+        smooth=Smooth.None));
+    connect(heatTransfer.fluidHeatPort[1], volume.heatPort) annotation (Line(
+        points={{0,18.4},{0,-0.2}},
+        color={191,0,0},
+        smooth=Smooth.None));
+    annotation (defaultComponentName="pipe",Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={Ellipse(
+            extent={{-10,10},{10,-10}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid)}),Documentation(info="<html>
+<p>
+Simple pipe model consisting of one volume, 
+wall friction (with different friction correlations)
+and gravity effect. This model is mostly used to demonstrate how
+to build up more detailed models from the basic components.
+Note, if the \"heatPort\" is not connected, then the pipe
+is totally insulated (= no thermal flow from the fluid to the
+pipe wall/environment).
+</p>
+</html>"),
+      Diagram(coordinateSystem(
+          preserveAspectRatio=true,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics));
+    connect(staticPipe1.port_b, volume.ports[1])   annotation (Line(
+        points={{-40,-30},{0,-30},{0,-18}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(staticPipe2.port_a, volume.ports[2])   annotation (Line(
+        points={{40,-30},{0,-30},{0,-22}},
+        color={0,127,255},
+        smooth=Smooth.None));
+  end LumpedPipe;
+
+
   model StaticPipe_Old
     "Basic pipe flow model without storage of mass or energy"
     extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe_Old(
@@ -73,7 +209,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
               -100},{100,100}}),      graphics));
   end StaticPipe_Old;
 
-  model LumpedPipe
+  model LumpedPipe_Old
     // Assumptions
     parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
       "Dynamics option" 
@@ -222,12 +358,12 @@ pipe wall/environment).
         points={{40,-20},{24,-20},{24,-40},{0,-40},{0,-32}},
         color={0,127,255},
         smooth=Smooth.None));
-  end LumpedPipe;
+  end LumpedPipe_Old;
 
- model DistributedPipeLumpedPressure
+ model DistributedPipeLumpedPressure_Old
     "Distributed pipe model with lumped pressure state"
-   import Modelica_Fluid.Types.ModelStructure;
-   extends Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow(
+    import Modelica_Fluid.Types.ModelStructure;
+   extends Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow_Old(
      Qs_flow=heatTransfer.Q_flow,
      final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
      final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
@@ -420,11 +556,11 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 </ul>
 </html>"));
 
- end DistributedPipeLumpedPressure;
+ end DistributedPipeLumpedPressure_Old;
 
-  model DistributedPipe "Distributed pipe model"
-  import Modelica_Fluid.Types.ModelStructure;
-  extends Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow(
+  model DistributedPipe_Old "Distributed pipe model"
+    import Modelica_Fluid.Types.ModelStructure;
+  extends Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow_Old(
     Qs_flow=heatTransfer.Q_flow,
     final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
     final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
@@ -747,7 +883,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
        Model added to the Fluid library</li>
 </ul>
 </html>"));
-  end DistributedPipe;
+  end DistributedPipe_Old;
 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
@@ -787,7 +923,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
       // Pressure drop
       replaceable model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulent 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow 
         constrainedby BaseClasses.PressureDrop.PartialPipePressureDrop
         "Characteristics of wall friction and gravity" 
           annotation(Dialog(group="Pressure drop"), editButton=false, choicesAllMatching=true);
@@ -936,7 +1072,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
     end PartialPipe_Old;
 
-  partial model PartialDistributedFlow
+  partial model PartialDistributedFlow_Old
       "Base class for a finite volume flow model"
       import Modelica_Fluid.Types;
 
@@ -1038,7 +1174,7 @@ If the <tt>dynamicsType</tt> is <b>DynamicsType.SteadyState</b> then no mass or 
        Model added to the Fluid library</li>
 </ul>
 </html>"));
-  end PartialDistributedFlow;
+  end PartialDistributedFlow_Old;
 
     package CharacteristicNumbers
       function ReynoldsNumber
@@ -1264,13 +1400,13 @@ The correlation takes into account the spatial position along the pipe flow, whi
 
             // Variables
             //final parameter Medium.AbsolutePressure[n+1] p_start = if n > 0 then linspace(p_a_start, p_b_start, n+1) else {(p_a_start + p_b_start)/2};
+            // Note: don't use start values for p to get same behavior as with PressureLosses.WallFrictionAndGravity
             Medium.AbsolutePressure[n+1] p "pressures of states";
             Medium.AbsolutePressure[n] dp(each start = (p_a_start - p_b_start)/n)
           "pressure loss between states";
           equation
             p = Medium.pressure(state);
             dp = p[1:n] - p[2:n+1];
-            //dp = Medium.pressure(state[1:n]) - Medium.pressure(state[2:n+1]);
 
             annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}}), graphics={Line(
@@ -1433,33 +1569,33 @@ simulation and/or might give a more robust simulation.
               PressureLosses.BaseClasses.WallFriction.NoFriction);
           end NoFriction;
 
-          model Laminar
+          model LaminarFlow
         "Pipe wall friction in the laminar regime (linear correlation)"
            extends PartialWallFrictionAndGravity(
               redeclare package WallFriction = 
               PressureLosses.BaseClasses.WallFriction.Laminar);
-          end Laminar;
+          end LaminarFlow;
 
-          model QuadraticTurbulent
+          model QuadraticTurbulentFlow
         "Pipe wall friction in the quadratic turbulent regime (simple characteristic, eta not used)"
            extends PartialWallFrictionAndGravity(
               redeclare package WallFriction = 
               PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent);
-          end QuadraticTurbulent;
+          end QuadraticTurbulentFlow;
 
-          model LaminarAndQuadraticTurbulent
+          model LaminarAndQuadraticTurbulentFlow
         "Pipe wall friction in the laminar and quadratic turbulent regime (simple characteristic)"
            extends PartialWallFrictionAndGravity(
               redeclare package WallFriction = 
               PressureLosses.BaseClasses.WallFriction.LaminarAndQuadraticTurbulent);
-          end LaminarAndQuadraticTurbulent;
+          end LaminarAndQuadraticTurbulentFlow;
 
-          model Detailed
+          model DetailedFlow
         "Pipe wall friction in the whole regime (detailed characteristic)"
            extends PartialWallFrictionAndGravity(
               redeclare package WallFriction = 
               PressureLosses.BaseClasses.WallFriction.Detailed);
-          end Detailed;
+          end DetailedFlow;
     end PressureDrop;
   end BaseClasses;
   annotation (Documentation(info="<html>

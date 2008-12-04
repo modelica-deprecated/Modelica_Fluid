@@ -10,7 +10,7 @@ package TestOverdeterminedSteadyStateInit
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Pipes.DistributedPipeLumpedPressure pipe(
+    Modelica_Fluid.Pipes.DistributedPipeLumpedPressure_Old pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       nNodes=5,
       h_start=2e6,
@@ -153,8 +153,8 @@ The initial equations are consistent however and a tool shall reduce them approp
       use_T_start=true,
       diameter=0.03,
       T_start=Modelica.SIunits.Conversions.from_degC(80),
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       length=2,
       redeclare model HeatTransfer = 
@@ -169,8 +169,8 @@ The initial equations are consistent however and a tool shall reduce them approp
       length=10,
       diameter=0.05,
       T_start=Modelica.SIunits.Conversions.from_degC(40),
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       redeclare model HeatTransfer = 
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
@@ -315,8 +315,8 @@ Initial equations for steady-state are selected for the pipe components, initial
         tank(initType=Modelica_Fluid.Types.Init.SteadyState),
         pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
         radiator(initType=Modelica_Fluid.Types.Init.SteadyState,
-                 redeclare package WallFriction = 
-              Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction)));
+                 redeclare model PressureDrop = 
+              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NoFriction)));
 
     annotation (
       Documentation(info="<html>
@@ -334,8 +334,8 @@ The radiator pipe has no pressure losses in the momentum balances, so the pressu
         tank(initType=Modelica_Fluid.Types.Init.SteadyState),
         pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
         radiator(initType=Modelica_Fluid.Types.Init.SteadyState,
-                 redeclare package WallFriction = 
-              Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction)));
+                 redeclare model PressureDrop = 
+              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NoFriction)));
     annotation (
       Documentation(info="<html>
 Initial equations for steady-state are selected for all components, plus additional initial equations to set the initial level and temperature of the tank. The model of the radiator pipe has zero pressure losses.
@@ -354,8 +354,8 @@ The radiator pipe has no pressure losses in the momentum balances, so the pressu
     extends Test1(plant(
         tank(initType=Modelica_Fluid.Types.Init.InitialValues),
         pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
-        radiator(redeclare package WallFriction = 
-              Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction,
+        radiator(redeclare model PressureDrop = 
+              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NoFriction,
             initType=Modelica_Fluid.Types.Init.NoInit)));
     annotation (
       Documentation(info="<html>

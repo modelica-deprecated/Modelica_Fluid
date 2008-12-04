@@ -5,7 +5,7 @@ extends Modelica.Icons.Example;
 //replaceable package Medium=Modelica.Media.Water.StandardWater;
 replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
 
- Modelica_Fluid.Pipes.DistributedPipe pipe2(
+ Modelica_Fluid.Pipes.DistributedPipe_Old pipe2(
     redeclare package Medium = Medium,
     use_T_start=true,
     from_dp=true,
@@ -41,7 +41,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     usePressureInput=true,
     useTemperatureInput=false)                                      annotation (Placement(
         transformation(extent={{70,24},{50,44}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe3(
+  Modelica_Fluid.Pipes.DistributedPipe_Old pipe3(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -60,7 +60,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
             annotation (Placement(transformation(extent={{20,24},{40,44}},
           rotation=0)));
 
-  Modelica_Fluid.Pipes.DistributedPipe pipe1(
+  Modelica_Fluid.Pipes.DistributedPipe_Old pipe1(
     redeclare package Medium=Medium,
     use_T_start=true,
     from_dp=true,
@@ -97,7 +97,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
                 annotation (Placement(transformation(extent={{98,66},{78,86}},
           rotation=0)));
 
-  Modelica_Fluid.Pipes.DistributedPipe pipe4(
+  Modelica_Fluid.Pipes.DistributedPipe_Old pipe4(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -123,7 +123,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
                                               pipe2.n] heat(each Q_flow=200,
       each alpha=10000) 
     annotation (Placement(transformation(extent={{-60,72},{-40,92}}, rotation=0)));
- Modelica_Fluid.Pipes.DistributedPipe pipe5(
+ Modelica_Fluid.Pipes.DistributedPipe_Old pipe5(
     redeclare package Medium = Medium,
     use_T_start=true,
     from_dp=true,
@@ -148,7 +148,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     usePressureInput=true,
     useTemperatureInput=false)                                      annotation (Placement(
         transformation(extent={{70,-70},{50,-50}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe6(
+  Modelica_Fluid.Pipes.DistributedPipe_Old pipe6(
     redeclare package Medium=Medium,
     T_start=340,
     length=1,
@@ -165,7 +165,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{16,-70},{36,-50}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe7(
+  Modelica_Fluid.Pipes.DistributedPipe_Old pipe7(
     redeclare package Medium=Medium,
     use_T_start=true,
     from_dp=true,
@@ -194,7 +194,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     height=0.4e5) 
                 annotation (Placement(transformation(extent={{100,-20},{80,0}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe8(
+  Modelica_Fluid.Pipes.DistributedPipe_Old pipe8(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
