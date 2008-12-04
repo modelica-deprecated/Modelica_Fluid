@@ -16,8 +16,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     allowFlowReversal=true,
     diameter=1,
     length=100,
-    redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent,
+    redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulent,
     height_ab=50) 
     annotation (Placement(transformation(
         origin={-30,-51},

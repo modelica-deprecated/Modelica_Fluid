@@ -1023,9 +1023,8 @@ An extending class still needs to define:
         "Dynamics option" 
       annotation(Evaluate=true, Dialog(tab = "Assumptions"));
 
-    final parameter Boolean static = dynamicsType == Types.Dynamics.SteadyState
-        "= true, static balances, no mass or energy is stored" 
-                                  annotation(Dialog(tab="Assumptions"),Evaluate=true);
+    //final parameter Boolean static = dynamicsType == Types.Dynamics.SteadyState
+    //  "= true, static balances, no mass or energy is stored" annotation 2;
 
     //Initialization
     parameter Types.Init initType=system.initType "Initialization option" 
@@ -1066,7 +1065,7 @@ An extending class still needs to define:
     SI.Mass[n,Medium.nXi] mXi "Substance mass";
 
     Medium.BaseProperties[n] medium(
-      each preferredMediumStates=if static then false else true,
+      each preferredMediumStates=if (dynamicsType == Types.Dynamics.SteadyState) then false else true,
       p(start=p_start),
       each h(start=h_start),
       each T(start=T_start),
@@ -1119,45 +1118,43 @@ An extending class still needs to define:
 
   initial equation
     // Initial conditions
-    if not static then
-      if initType == Types.Init.NoInit then
-      // no initial equations
-      elseif initType == Types.Init.SteadyState then
-      //steady state initialization
-        if use_T_start then
-          der(medium.T) = zeros(n);
-        else
-          der(medium.h) = zeros(n);
-        end if;
-        if not (Medium.singleState) then
-          der(medium.p) = zeros(n);
-        end if;
-        for i in 1:n loop
-          der(medium[i].Xi) = zeros(Medium.nXi);
-        end for;
-      elseif initType == Types.Init.InitialValues then
-      //Initialization with initial values
-        if use_T_start then
-          medium.T = ones(n)*T_start;
-        else
-          medium.h = ones(n)*h_start;
-        end if;
-        if not Medium.singleState then
-           medium.p=p_start;
-        end if;
-      elseif initType == Types.Init.SteadyStateHydraulic then
-      //Steady state initialization for hydraulic states (p)
-        if use_T_start then
-          medium.T = ones(n)*T_start;
-        else
-          medium.h = ones(n)*h_start;
-        end if;
-        if not Medium.singleState then
-          der(medium.p) = zeros(n);
-        end if;
+    if initType == Types.Init.NoInit then
+    // no initial equations
+    elseif initType == Types.Init.SteadyState then
+    //steady state initialization
+      if use_T_start then
+        der(medium.T) = zeros(n);
       else
-        assert(false, "Unsupported initialization option");
+        der(medium.h) = zeros(n);
       end if;
+      if not (Medium.singleState) then
+        der(medium.p) = zeros(n);
+      end if;
+      for i in 1:n loop
+        der(medium[i].Xi) = zeros(Medium.nXi);
+      end for;
+    elseif initType == Types.Init.InitialValues then
+    //Initialization with initial values
+      if use_T_start then
+        medium.T = ones(n)*T_start;
+      else
+        medium.h = ones(n)*h_start;
+      end if;
+      if not Medium.singleState then
+         medium.p=p_start;
+      end if;
+    elseif initType == Types.Init.SteadyStateHydraulic then
+    //Steady state initialization for hydraulic states (p)
+      if use_T_start then
+        medium.T = ones(n)*T_start;
+      else
+        medium.h = ones(n)*h_start;
+      end if;
+      if not Medium.singleState then
+        der(medium.p) = zeros(n);
+      end if;
+    else
+      assert(false, "Unsupported initialization option");
     end if;
 
      annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
