@@ -9,18 +9,18 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     redeclare package Medium = Medium,
     use_T_start=true,
     from_dp=true,
-    T_start=280,
     diameter=0.01,
     nNodes=5,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
-    p_b_start=1.0e5,
     length=2,
     use_approxPortProperties=true,
-    heatTransfer(each alpha0=500),
     initType=Modelica_Fluid.Types.Init.NoInit,
-    p_a_start=100000) 
+    heatTransfer(alpha0=500),
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=280) 
             annotation (Placement(transformation(extent={{-34,38},{-14,58}},
           rotation=0)));
 
@@ -109,7 +109,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
-    heatTransfer(each alpha0=1000),
+    heatTransfer(alpha0=1000),
     use_approxPortProperties=true,
     initType=Modelica_Fluid.Types.Init.NoInit,
     p_a_start=100000) 
@@ -127,18 +127,18 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     redeclare package Medium = Medium,
     use_T_start=true,
     from_dp=true,
-    T_start=280,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare package WallFriction = 
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
-    p_b_start=1.0e5,
     length=2,
     use_approxPortProperties=true,
-    heatTransfer(each alpha0=500),
-    p_a_start=100000) 
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=280,
+    heatTransfer(alpha0=500)) 
             annotation (Placement(transformation(extent={{-28,-50},{-8,-30}},
           rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary4(
@@ -207,7 +207,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
         Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
     m_flow_start=0.1,
     p_b_start=1.0e5,
-    heatTransfer(each alpha0=1000),
+    heatTransfer(alpha0=1000),
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-28,-90},{-8,-70}},
