@@ -5,14 +5,13 @@ extends Modelica.Icons.Example;
 //replaceable package Medium=Modelica.Media.Water.StandardWater;
 replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
 
- Modelica_Fluid.Pipes.DistributedPipe_Old pipe2(
+ Modelica_Fluid.Pipes.DistributedPipe pipe2(
     redeclare package Medium = Medium,
     use_T_start=true,
-    from_dp=true,
     diameter=0.01,
     nNodes=5,
-    redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     length=2,
     use_approxPortProperties=true,
@@ -41,15 +40,14 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     usePressureInput=true,
     useTemperatureInput=false)                                      annotation (Placement(
         transformation(extent={{70,24},{50,44}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe_Old pipe3(
+  Modelica_Fluid.Pipes.DistributedPipe pipe3(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
-    from_dp=true,
     diameter=0.01,
     nNodes=5,
-    redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     use_approxPortProperties=true,
     initType=Modelica_Fluid.Types.Init.NoInit,
@@ -60,14 +58,13 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
             annotation (Placement(transformation(extent={{20,24},{40,44}},
           rotation=0)));
 
-  Modelica_Fluid.Pipes.DistributedPipe_Old pipe1(
+  Modelica_Fluid.Pipes.DistributedPipe pipe1(
     redeclare package Medium=Medium,
     use_T_start=true,
-    from_dp=true,
     diameter=0.01,
     nNodes=5,
-    redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     length=0.4,
     use_approxPortProperties=true,
@@ -97,16 +94,15 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
                 annotation (Placement(transformation(extent={{98,66},{78,86}},
           rotation=0)));
 
-  Modelica_Fluid.Pipes.DistributedPipe_Old pipe4(
+  Modelica_Fluid.Pipes.DistributedPipe pipe4(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
-    from_dp=true,
     diameter=0.01,
     T_start=360,
     nNodes=5,
-    redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
@@ -120,18 +116,17 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     annotation (Placement(transformation(extent={{70,-100},{90,-80}}, rotation=
             0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow[
-                                              pipe2.n] heat(each Q_flow=200,
+                                              pipe2.nNodes] heat(each Q_flow=200,
       each alpha=10000) 
     annotation (Placement(transformation(extent={{-60,72},{-40,92}}, rotation=0)));
- Modelica_Fluid.Pipes.DistributedPipe_Old pipe5(
+ Modelica_Fluid.Pipes.DistributedPipe pipe5(
     redeclare package Medium = Medium,
     use_T_start=true,
-    from_dp=true,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     length=2,
     use_approxPortProperties=true,
@@ -148,33 +143,31 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     usePressureInput=true,
     useTemperatureInput=false)                                      annotation (Placement(
         transformation(extent={{70,-70},{50,-50}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe_Old pipe6(
+  Modelica_Fluid.Pipes.DistributedPipe pipe6(
     redeclare package Medium=Medium,
     T_start=340,
     length=1,
     use_T_start=true,
-    from_dp=true,
     p_b_start=1e5,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     use_approxPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{16,-70},{36,-50}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe_Old pipe7(
+  Modelica_Fluid.Pipes.DistributedPipe pipe7(
     redeclare package Medium=Medium,
     use_T_start=true,
-    from_dp=true,
     T_start=300,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
@@ -194,17 +187,16 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     height=0.4e5) 
                 annotation (Placement(transformation(extent={{100,-20},{80,0}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe_Old pipe8(
+  Modelica_Fluid.Pipes.DistributedPipe pipe8(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
-    from_dp=true,
     diameter=0.01,
     T_start=360,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    redeclare model PressureDrop = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(alpha0=1000),
@@ -213,7 +205,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
             annotation (Placement(transformation(extent={{-28,-90},{-8,-70}},
           rotation=0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow[
-                                              pipe2.n] heat1(each Q_flow=200,
+                                              pipe5.nNodes] heat1(each Q_flow=200,
       each alpha=10000) 
     annotation (Placement(transformation(extent={{-62,-24},{-42,-4}}, rotation=
             0)));

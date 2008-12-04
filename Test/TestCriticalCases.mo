@@ -1860,16 +1860,16 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Modelica_Fluid.Pipes.DistributedPipe_Old pipe(
+    Modelica_Fluid.Pipes.DistributedPipe pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       nNodes=5,
       h_start=2e6,
       diameter=0.05,
       length=200,
       use_T_start=false,
-      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
       p_a_start=10000000,
-      p_b_start=9900000) 
+      p_b_start=9900000,
+      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
     ControlValves.ValveCompressible valve(
       redeclare package Medium = Modelica.Media.Water.StandardWater,

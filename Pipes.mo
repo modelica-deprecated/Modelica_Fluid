@@ -20,7 +20,8 @@ package Pipes "Lumped, distributed and thermal pipe components"
             final length=length,
             final height_ab=height_ab,
             final g=system.g) "Edit pressure drop parameters" 
-       annotation (editButton=true,Placement(transformation(extent={{-10,-10},{10,10}},
+       annotation (editButton=true,Placement(transformation(extent={{-38,-18},{
+              38,18}},
             rotation=0)));
   equation
     port_a.m_flow = pressureDrop.m_flow[1];
@@ -170,6 +171,261 @@ pipe wall/environment).
         smooth=Smooth.None));
   end LumpedPipe;
 
+  model DistributedPipe "Distributed pipe model"
+
+    import Modelica_Fluid.Types;
+    import Modelica_Fluid.Types.ModelStructure;
+
+    // distributed volume model
+    extends Modelica_Fluid.Volumes.BaseClasses.PartialDistributedVolume(
+      final n = nNodes,
+      Qs_flow=heatTransfer.Q_flow);
+
+    // extending PartialPipe
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
+      final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
+      final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
+
+    // Discretization
+    parameter Integer nNodes(min=1)=1 "Number of discrete flow volumes";
+
+    parameter Types.ModelStructure modelStructure=Types.ModelStructure.a_v_b
+      "Determines whether flow or volume models are present at the ports"                              annotation(Evaluate=true);
+
+    parameter Boolean lumpedPressure=false
+      "=true to lump all pressure nodes into one" 
+      annotation(Dialog(tab="Advanced", group="Pressure drop"),Evaluate=true);
+    final parameter Integer iLumped=integer(n/2)+1
+      "Index of control volume that representative state"                   annotation(Evaluate=true);
+    final parameter Integer nFlowsLumped=if modelStructure==Types.ModelStructure.a_v_b then 2 else if (modelStructure==Types.ModelStructure.a_vb or modelStructure==Types.ModelStructure.av_b) then 1 else 0;
+    final parameter Integer nFlowsDistributed=if modelStructure==Types.ModelStructure.a_v_b then n+1 else if (modelStructure==Types.ModelStructure.a_vb or modelStructure==Types.ModelStructure.av_b) then n else n-1;
+    final parameter Integer nFlows=if lumpedPressure then nFlowsLumped else nFlowsDistributed;
+
+    // Advanced model options
+    parameter Boolean use_approxPortProperties=false
+      "=true, port properties for pressure drop correlation are taken from neighboring control volume"
+      annotation(Dialog(tab="Advanced", group="Pressure drop"),Evaluate=true);
+    Medium.ThermodynamicState state_a "state defined by volume outside port_a";
+    Medium.ThermodynamicState state_b "state defined by volume outside port_b";
+    Medium.ThermodynamicState[nFlows+1] flowState
+      "state vector for pressureDrop model";
+
+    replaceable PressureDrop pressureDrop(
+            redeclare final package Medium = Medium,
+            final n=nFlows,
+            state=flowState,
+            final allowFlowReversal=allowFlowReversal,
+            final p_a_start=p_a_start,
+            final p_b_start=p_b_start,
+            final m_flow_start=m_flow_start,
+            final roughness=roughness,
+            diameter=4*crossArea/perimeter,
+            final length=length,
+            final height_ab=height_ab,
+            final g=system.g) "Edit pressure drop parameters" 
+       annotation (editButton=true,Placement(transformation(extent={{-77,-57},{77,
+              -23}},
+            rotation=0)));
+
+    // Flow quantities
+    Medium.MassFlowRate[n+1] m_flow(each min=if allowFlowReversal then -Modelica.Constants.inf else 
+                0, each start=m_flow_start)
+      "Mass flow rates of fluid across segment boundaries";
+    Medium.MassFlowRate[n+1, Medium.nXi] mXi_flow
+      "Independent mass flow rates across segment boundaries";
+    Medium.EnthalpyFlowRate[n+1] H_flow
+      "Enthalpy flow rates of fluid across segment boundaries";
+
+    // Wall heat transfer
+    Interfaces.HeatPorts_a[nNodes] heatPorts 
+      annotation (Placement(transformation(extent={{-10,44},{10,64}}), iconTransformation(extent={{-30,44},{32,60}})));
+
+    replaceable HeatTransfer heatTransfer(
+      redeclare each final package Medium = Medium,
+      final n=n,
+      diameter=4*crossArea/perimeter,
+      area=perimeter*length,
+      final crossArea=crossArea,
+      final length=length,
+      state=medium.state,
+      m_flow = 0.5*(m_flow[1:n]+m_flow[2:n+1])) "Edit heat transfer parameters"
+              annotation (editButton=true, Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
+
+  equation
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+    assert(cardinality(port_a) <= 1 or (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.a_v_b),"
+port_a exposing volume with selected modelStructure shall at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller. Use a Junctions.MultiPort.
+");
+    assert(cardinality(port_b) <= 1 or (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.a_v_b),"
+port_b exposing volume with selected modelStructure shall at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller. Use a Junctions.MultiPort.
+");
+
+    // Source/sink terms for mass and energy balances
+    fluidVolume=fill(V/nNodes, n);
+    Ws_flow=zeros(n);
+    for i in 1:n loop
+      ms_flow[i] = m_flow[i] - m_flow[i + 1];
+      msXi_flow[i, :] = mXi_flow[i, :] - mXi_flow[i + 1, :];
+    end for;
+    for i in 1:n loop
+      Hs_flow[i] = H_flow[i] - H_flow[i + 1];
+    end for;
+
+    // Distributed flow quantities, upwind discretization
+    for i in 2:n loop
+      H_flow[i] = semiLinear(m_flow[i], medium[i - 1].h, medium[i].h);
+      mXi_flow[i, :] = semiLinear(m_flow[i], medium[i - 1].Xi, medium[i].Xi);
+    end for;
+    H_flow[1] = semiLinear(port_a.m_flow, inStream(port_a.h_outflow), medium[1].h);
+    H_flow[n + 1] = -semiLinear(port_b.m_flow, inStream(port_b.h_outflow), medium[n].h);
+    mXi_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.Xi_outflow), medium[1].Xi);
+    mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.Xi_outflow), medium[n].Xi);
+
+    // Boundary conditions
+    port_a.h_outflow = medium[1].h;
+    port_b.h_outflow = medium[nNodes].h;
+    port_a.m_flow    = m_flow[1];
+    port_b.m_flow    = -m_flow[n + 1];
+    port_a.C_outflow = inStream(port_b.C_outflow);
+    port_b.C_outflow = inStream(port_a.C_outflow);
+
+    if use_approxPortProperties and n > 0 then
+      state_a = Medium.setState_phX(port_a.p, medium[1].h, medium[1].Xi);
+      state_b = Medium.setState_phX(port_b.p, medium[n].h, medium[n].Xi);
+    else
+      state_a = Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow));
+      state_b = Medium.setState_phX(port_a.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow));
+    end if;
+
+    if lumpedPressure then
+      fill(medium[1].p, n-1) = medium[2:n].p;
+      if modelStructure == ModelStructure.a_v_b then
+        flowState[1] = state_a;
+        flowState[2] = medium[iLumped].state;
+        flowState[3] = state_b;
+      elseif modelStructure == ModelStructure.av_b then
+        flowState[1] = medium[iLumped].state;
+        flowState[2] = state_b;
+      elseif modelStructure == ModelStructure.a_vb then
+        flowState[1] = state_a;
+        flowState[2] = medium[iLumped].state;
+      else // avb
+        flowState[1] = medium[iLumped].state;
+      end if;
+      m_flow[1] = pressureDrop.m_flow[1];
+      m_flow[n+1] = pressureDrop.m_flow[nFlows];
+    else
+      if modelStructure == ModelStructure.a_v_b then
+        flowState[1] = state_a;
+        flowState[2:n+1] = medium[1:n].state;
+        flowState[n+2] = state_b;
+        //m_flow = pressureDrop.m_flow;
+        for i in 1:n+1 loop
+          m_flow[i] = pressureDrop.m_flow[i];
+        end for;
+      elseif modelStructure == ModelStructure.av_b then
+        flowState[1:n] = medium[1:n].state;
+        flowState[n+1] = state_b;
+        //m_flow[2:n+1] = pressureDrop.m_flow;
+        for i in 2:n+1 loop
+          m_flow[i] = pressureDrop.m_flow[i-1];
+        end for;
+        port_a.p = medium[1].p;
+      elseif modelStructure == ModelStructure.a_vb then
+        flowState[1] = state_a;
+        flowState[2:n+1] = medium[1:n].state;
+        //m_flow[1:n] = pressureDrop.m_flow;
+        for i in 1:n loop
+          m_flow[i] = pressureDrop.m_flow[i];
+        end for;
+        port_b.p = medium[n].p;
+      else // avb
+        flowState[1:n] = medium[1:n].state;
+        //m_flow[2:n] = pressureDrop.m_flow[1:n-1];
+        for i in 2:n loop
+          m_flow[i] = pressureDrop.m_flow[i-1];
+        end for;
+        port_a.p = medium[1].p;
+        port_b.p = medium[n].p;
+      end if;
+    end if;
+
+    connect(heatPorts, heatTransfer.wallHeatPort) 
+      annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
+
+    annotation (defaultComponentName="pipe",
+  Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Ellipse(
+            extent={{-72,10},{-52,-10}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-30,10},{-10,-10}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{10,10},{30,-10}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{50,10},{70,-10}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid)}),
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}},
+          grid={1,1}),
+          graphics),
+  Documentation(info="<html>
+<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialPipe\">PartialPipe</a>. The total volume is a parameter. Mass and Energy balance are inherited from <a href=\"Modelica:Modelica_Fluid.Volumes.BaseClasses.PartialDistributedVolume\">PartialDistributedVolume</a>. 
+The additional component <b><tt>HeatTransfer</tt></b> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPorts</tt>) and the bulk flow. 
+The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>.</p>
+<p>Pressure drop correlations (algebraic and possibly non-linear flow model) correlate the pressure in the first control volume with the pressure in port_a and the pressures of port_b and the nth control volume, respectively.</p>
+<p><b>Momentum balance</b></p>
+<p>The momentum balance is determined by the replaceable <b><tt>PressureDrop</tt></b> component. 
+The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow\">QuadraticTurbulentFlow</a>.
+The momentum balances are formed across the segment boundaries (staggered grid). The default symmetric model is characterized by half a momentum balance on each end of the flow model resulting in a total of n-1 full and 2 half momentum balances. Connecting two pipes therefore results in an algebraic pressure at the ports. Specifying a good start value for the port pressure is essential in order to solve large systems. Non-symmetric variations are obtained by chosing a different value for the parameter <tt><b>modelStructure</b></tt>. Options include:
+<ul>
+<li><tt>a_v_b</tt>: default setting with two half momentum balances</li>
+<li><tt>av_b</tt>: full momentum balance between nth volume and <tt>port_b</tt>, potential pressure state at <tt>port_a</tt></li>
+<li><tt>a_vb</tt>: full momentum balance between first volume and <tt>port_a</tt>, potential pressure state at <tt>port_b</tt></li>
+<li><tt>avb</tt>: nNodes-1 momentum balances between first and nth volume, potential pressure states at both ports. It's use should be avoided, since not the entire pipe length is taken into account.
+</ul></p>
+ 
+<p>The term <tt>dp</tt> contains
+<ul>
+<li>pressure drop due to friction and other dissipative losses</li>
+<li>gravity effects for non-horizontal pipes</li>
+</ul>
+It does not model changes in pressure resulting from significant variation of flow velocity along the flow path (with the assumption of a constant cross sectional area it must result from fluid density changes, such as in two-phase flow).
+ 
+When connecting two components, e.g. two pipes, the momentum balance across the connection point reduces to</p> 
+<pre>pipe1.port_b.p = pipe2.port_a.p</pre>
+<p>This is only true if the flow velocity remains the same on each side of the connection. For any significant change in diameter (and if the resulting effects, such as change in kinetic energy, cannot be neglected) an adapter component should be used. This also allows for taking into account friction losses with respect to the actual geometry of the connection point.</p>
+ 
+</html>",
+      revisions="<html>
+<ul>
+<li><i>4 Dec 2008</i>
+    by R&uuml;diger Franke:<br>
+       Derived model from original DistributedPipe models</li>
+<li><i>04 Mar 2006</i>
+    by Katrin Pr&ouml;l&szlig;:<br>
+       Model added to the Fluid library</li>
+</ul>
+</html>"));
+
+  end DistributedPipe;
 
   model StaticPipe_Old
     "Basic pipe flow model without storage of mass or energy"
