@@ -550,15 +550,16 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
               annotation(Dialog(tab="Internal Interface", enable=false));
 
             // Mandadory geometry parameters
-            parameter SI.Length length "Length of pipe" 
+            parameter SI.Length length "Length of flow path" 
                annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
             parameter SI.Diameter diameter
-          "Hydraulic diameter of pipe (typically 4*crossArea/perimeter)" 
+          "Hydraulic diameter (typically 4*crossArea/perimeter)" 
                annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
             parameter SI.Length roughness(min=0)
           "Average height of surface asperities" 
                 annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry",enable=WallFriction.use_roughness));
-            parameter SI.Length height_ab "Height(state_b) - Height(state_a)" 
+            parameter SI.Length height_ab
+          "Height(state[n+1]) - Height(state[1])" 
                 annotation(Dialog(tab="Internal Interface", enable=false,group="Static head"));
 
             // Additional parameters
