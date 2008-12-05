@@ -27,6 +27,9 @@ The <b>one port</b> sensors have the advantage of easily introducing them to and
 </html>",
       revisions="<html>
 <ul>
+<li><i>4 Dec 2008</i>
+    by Michael Wetter<br>
+       included sensors for trace substance</li>
 <li><i>31 Oct 2007</i>
     by Carsten Heinrich<br>
        updated sensor models, included one and two port sensors for thermodynamic state variables</li>
@@ -552,6 +555,126 @@ The sensor is ideal, i.e. it does not influence the fluid.
        s_b_inflow = s;
     end if;
   end SpecificEntropyTwoPort;
+
+  model TraceSubstancesOnePort "Ideal one port trace substances sensor"
+    extends Sensors.BaseClasses.PartialAbsoluteSensor;
+    extends Modelica.Icons.RotationalSensor;
+    parameter String substanceName = "CO2" "Name of trace substance";
+
+    Modelica.Blocks.Interfaces.RealOutput C "Trace substance in port medium" 
+      annotation (Placement(transformation(extent={{100,-10},{120,10}},
+            rotation=0)));
+
+  annotation (defaultComponentName="traceSubstance",
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
+    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
+          Text(
+            extent={{170,-55},{10,-107}},
+            lineColor={0,0,0},
+            textString="C"),
+          Line(points={{70,0},{100,0}}, color={0,0,127})}),
+    Documentation(info="<HTML>
+<p>
+This component monitors the trace substance of the medium in the flow
+between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
+</p>
+</HTML>
+"));
+  protected
+    parameter Integer ind(fixed=false)
+      "Index of species in vector of auxiliary substances";
+    Medium.ExtraProperty CVec[Medium.nC](
+        quantity=Medium.extraPropertiesNames)
+      "Trace substances vector, needed because indexed argument for the operator inStream is not supported";
+  initial algorithm
+    ind:= -1;
+    for i in 1:Medium.nC loop
+      if ( Modelica.Utilities.Strings.isEqual(Medium.extraPropertiesNames[i], substanceName)) then
+        ind := i;
+      end if;
+    end for;
+    assert(ind > 0, "Trace substance '" + substanceName + "' is not present in medium '"
+           + Medium.mediumName + "'.\n"
+           + "Check sensor parameter and medium model.");
+  equation
+    CVec = inStream(port.C_outflow);
+    C = CVec[ind];
+  end TraceSubstancesOnePort;
+
+  model TraceSubstancesTwoPort "Ideal two port sensor for trace substance"
+    extends Sensors.BaseClasses.PartialFlowSensor;
+    extends Modelica.Icons.RotationalSensor;
+    Modelica.Blocks.Interfaces.RealOutput C
+      "Trace substance of the passing fluid" 
+      annotation (Placement(transformation(
+          origin={0,-110},
+          extent={{-10,-10},{10,10}},
+          rotation=270)));
+    parameter String substanceName = "CO2" "Name of trace substance";
+    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
+      "For bi-directional flow, trace substance is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
+      annotation(Dialog(tab="Advanced"));
+
+  annotation (defaultComponentName="traceSubstance",
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics),
+    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
+          Text(
+            extent={{-150,80},{150,120}},
+            textString="%name",
+            lineColor={0,0,255}),
+          Text(
+            extent={{168,-71},{8,-123}},
+            lineColor={0,0,0},
+            textString="C"),
+          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
+          Line(points={{70,0},{100,0}}, color={0,128,255}),
+          Line(
+            points={{30,-19},{-60,-19}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Polygon(
+            points={{20,-4},{60,-19},{20,-34},{20,-4}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid)}),
+    Documentation(info="<HTML>
+<p>
+This component monitors the trace substance of the passing fluid. 
+The sensor is ideal, i.e. it does not influence the fluid.
+</p>
+</HTML>
+"));
+  protected
+    parameter Integer ind(fixed=false)
+      "Index of species in vector of auxiliary substances";
+  initial algorithm
+    ind:= -1;
+    for i in 1:Medium.nC loop
+      if ( Modelica.Utilities.Strings.isEqual(Medium.extraPropertiesNames[i], substanceName)) then
+        ind := i;
+      end if;
+    end for;
+    assert(ind > 0, "Trace substance '" + substanceName + "' is not present in medium '"
+           + Medium.mediumName + "'.\n"
+           + "Check sensor parameter and medium model.");
+  equation
+    if allowFlowReversal then
+       C = Modelica_Fluid.Utilities.regStep(port_a.m_flow, port_b.C_outflow[ind], port_a.C_outflow[ind], m_flow_small);
+    else
+       C = port_b.C_outflow[ind];
+    end if;
+  end TraceSubstancesTwoPort;
 
   model MassFlowRate "Ideal sensor for mass flow rate"
     extends Sensors.BaseClasses.PartialFlowSensor;
