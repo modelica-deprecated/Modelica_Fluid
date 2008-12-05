@@ -3,8 +3,9 @@ package Pipes "Lumped, distributed and thermal pipe components"
     extends Modelica_Fluid.Icons.VariantLibrary;
 
   model StaticPipe "Basic pipe flow model without storage of mass or energy"
+
     extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
-          redeclare model HeatTransfer=BaseClasses.HeatTransfer.PipeHT_ideal);
+          redeclare model HeatTransfer=BaseClasses.HeatTransfer.PipeHT_none(nTubes=nTubes));
 
     replaceable PressureDrop pressureDrop(
             redeclare final package Medium = Medium,
@@ -16,7 +17,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
             final initType=Modelica_Fluid.Types.Init.SteadyState,
             final p_a_start=p_a_start,
             final p_b_start=p_b_start,
-            final m_flow_start=m_flow_start,
+            final m_flow_start=m_flow_start/nTubes,
             final roughness=roughness,
             diameter=4*crossArea/perimeter,
             final length=length,
@@ -26,7 +27,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
               38,18}},
             rotation=0)));
   equation
-    port_a.m_flow = pressureDrop.m_flow[1];
+    port_a.m_flow = pressureDrop.m_flow[1]*nTubes;
     0 = port_a.m_flow + port_b.m_flow;
     port_a.h_outflow = inStream(port_b.h_outflow);
     port_b.h_outflow = inStream(port_a.h_outflow);
@@ -50,10 +51,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
 
     // Extend here to get right ordering in parameter box
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
-      final isCircular=true,
-      final perimeter=Modelica.Constants.pi*diameter,
-      final crossArea=Modelica.Constants.pi*diameter*diameter/4);
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe;
 
      //Initialization
     parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
@@ -77,12 +75,13 @@ package Pipes "Lumped, distributed and thermal pipe components"
     replaceable HeatTransfer heatTransfer(
       redeclare final package Medium = Medium,
       final n=1,
+      final nTubes=nTubes,
       diameter=4*crossArea/perimeter,
       area=perimeter*length,
       final crossArea=crossArea,
       final length=length,
       state={volume.medium.state},
-      m_flow = {0.5*(port_a.m_flow - port_b.m_flow)},
+      m_flow = {0.5*(port_a.m_flow - port_b.m_flow)}/nTubes,
       final useFluidHeatPort=true) "Edit heat transfer parameters" 
       annotation (editButton=true, Placement(transformation(extent={{-11,14},{
               11,36}},                                                                  rotation=0)));
@@ -90,11 +89,14 @@ package Pipes "Lumped, distributed and thermal pipe components"
     StaticPipe staticPipe1(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
+      nTubes=nTubes,
       length=length/2,
-      height_ab=height_ab/2,
       roughness=roughness,
-      m_flow_start=m_flow_start,
       diameter=diameter,
+      perimeter=perimeter,
+      crossArea=crossArea,
+      height_ab=height_ab/2,
+      m_flow_start=m_flow_start,
       redeclare final model PressureDrop = PressureDrop) 
       annotation (Placement(transformation(extent={{-60,-40},{-40,-20}},
             rotation=0)));
@@ -116,11 +118,14 @@ package Pipes "Lumped, distributed and thermal pipe components"
     StaticPipe staticPipe2(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
+      nTubes=nTubes,
       length=length/2,
-      height_ab=height_ab/2,
       roughness=roughness,
-      m_flow_start=m_flow_start,
       diameter=diameter,
+      perimeter=perimeter,
+      crossArea=crossArea,
+      height_ab=height_ab/2,
+      m_flow_start=m_flow_start,
       redeclare final model PressureDrop = PressureDrop)   annotation (Placement(transformation(extent={{40,-40},
               {60,-20}},         rotation=0)));
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
@@ -183,10 +188,6 @@ pipe wall/environment).
       final n = nNodes,
       Qs_flow = heatTransfer.Q_flow*nTubes);
 
-    // Note: define nTubes as Real to support inverse calculations
-    parameter Real nTubes(min=1)=1 "Number of parallel tubes" 
-     annotation(Dialog(group="Geometry"));
-
     // extending PartialPipe
     extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
       final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
@@ -230,7 +231,7 @@ pipe wall/environment).
             final initType=initType,
             final p_a_start=p_a_start,
             final p_b_start=p_b_start,
-            final m_flow_start=m_flow_start,
+            final m_flow_start=m_flow_start/nTubes,
             final roughness=roughness,
             diameter=4*crossArea/perimeter,
             final length=length,
@@ -257,6 +258,7 @@ pipe wall/environment).
     replaceable HeatTransfer heatTransfer(
       redeclare each final package Medium = Medium,
       final n=n,
+      final nTubes=nTubes,
       diameter=4*crossArea/perimeter,
       area=perimeter*length,
       final crossArea=crossArea,
@@ -282,7 +284,7 @@ of the modeller. Use a Junctions.MultiPort.
 ");
 
     // Source/sink terms for mass and energy balances
-    fluidVolume=fill(V/n*nTubes, n);
+    fluidVolume=fill(V/n, n);
     Ws_flow=zeros(n);
     for i in 1:n loop
       ms_flow[i] = m_flow[i] - m_flow[i + 1];
@@ -346,14 +348,14 @@ of the modeller. Use a Junctions.MultiPort.
         flowState[1] = state_a;
         flowState[2:n+1] = medium[1:n].state;
         flowState[n+2] = state_b;
-        //m_flow = pressureDrop.m_flow;
+        //m_flow = pressureDrop.m_flow*nTubes;
         for i in 1:n+1 loop
-          m_flow[i] = pressureDrop.m_flow[i];
+          m_flow[i] = pressureDrop.m_flow[i]*nTubes;
         end for;
       elseif modelStructure == ModelStructure.av_b then
         flowState[1:n] = medium[1:n].state;
         flowState[n+1] = state_b;
-        //m_flow[2:n+1] = pressureDrop.m_flow;
+        //m_flow[2:n+1] = pressureDrop.m_flow*nTubes;
         for i in 2:n+1 loop
           m_flow[i] = pressureDrop.m_flow[i-1]*nTubes;
         end for;
@@ -361,14 +363,14 @@ of the modeller. Use a Junctions.MultiPort.
       elseif modelStructure == ModelStructure.a_vb then
         flowState[1] = state_a;
         flowState[2:n+1] = medium[1:n].state;
-        //m_flow[1:n] = pressureDrop.m_flow;
+        //m_flow[1:n] = pressureDrop.m_flow*nTubes;
         for i in 1:n loop
           m_flow[i] = pressureDrop.m_flow[i]*nTubes;
         end for;
         port_b.p = medium[n].p;
       else // avb
         flowState[1:n] = medium[1:n].state;
-        //m_flow[2:n] = pressureDrop.m_flow[1:n-1];
+        //m_flow[2:n] = pressureDrop.m_flow[1:n-1]*nTubes;
         for i in 2:n loop
           m_flow[i] = pressureDrop.m_flow[i-1]*nTubes;
         end for;
@@ -454,7 +456,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     partial model PartialPipe "Base class for pipe models"
       extends Modelica_Fluid.Interfaces.PartialTwoPort;
 
-       //Initialization
+      // Initialization
       parameter Medium.AbsolutePressure p_a_start=system.p_start
         "Start value of pressure at port a" 
         annotation(Dialog(tab = "Initialization"));
@@ -465,20 +467,24 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         "Start value for mass flow rate" 
          annotation(Evaluate=true, Dialog(tab = "Initialization"));
 
-      //Geometry
+      // Geometry
+
+      // Note: define nTubes as Real to support inverse calculations
+      parameter Real nTubes(min=1)=1 "Number of parallel tubes" 
+        annotation(Dialog(group="Geometry"));
       parameter SI.Length length "Length"   annotation(Dialog(tab="General", group="Geometry"));
-      parameter SI.Length roughness(min=0)=2.5e-5
-        "Average height of surface asperities (default = smooth steel pipe)" 
-          annotation(Dialog(group="Geometry",enable=WallFriction.use_roughness));
-      parameter SI.Diameter diameter "Diameter of circular pipe"      annotation(Dialog(group="Geometry", enable=isCircular));
       parameter Boolean isCircular=true
         "= true if cross sectional area is circular" 
         annotation (Evaluate, Dialog(tab="General", group="Geometry"));
+      parameter SI.Diameter diameter "Diameter of circular pipe"      annotation(Dialog(group="Geometry", enable=isCircular));
       parameter SI.Length perimeter=Modelica.Constants.pi*diameter
         "Inner perimeter"                                                                                       annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
       parameter SI.Area crossArea=Modelica.Constants.pi*diameter*diameter/4
         "Inner cross section area"            annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
-      final parameter SI.Volume V=crossArea*length "volume size";
+      final parameter SI.Volume V=crossArea*length*nTubes "volume size";
+      parameter SI.Length roughness(min=0)=2.5e-5
+        "Average height of surface asperities (default = smooth steel pipe)" 
+          annotation(Dialog(group="Geometry",enable=WallFriction.use_roughness));
 
       // Static head
       parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
@@ -784,6 +790,7 @@ simulation and/or might give a more robust simulation.
       // Parameters
       replaceable package Medium=Modelica.Media.Interfaces.PartialMedium;
       parameter Integer n=1 "Number of heat transfer segments";
+      parameter Real nTubes "Number of parallel tubes, used for HeatPorts only";
       parameter SI.Length length "Pipe length";
       parameter SI.Length diameter
           "Hydraulic diameter (typically 4*crossArea/perimeter)";
@@ -795,7 +802,7 @@ simulation and/or might give a more robust simulation.
       input SI.MassFlowRate[n] m_flow;
 
       // Output defined by heat transfer model
-      output SI.HeatFlowRate[n] Q_flow "Heat flow rates";
+      output SI.HeatFlowRate[n] Q_flow "Heat flow rates per tube";
 
       // Heat ports
       Modelica_Fluid.Interfaces.HeatPorts_a[n] wallHeatPort "Heat port to wall"
@@ -820,11 +827,18 @@ simulation and/or might give a more robust simulation.
 
     equation
       T = Medium.temperature(state);
+      wallHeatPort.Q_flow = Q_flow*nTubes;
       if useFluidHeatPort then
-        prescribedHeatFlow.Q_flow = Q_flow;
+        prescribedHeatFlow.Q_flow = Q_flow*nTubes;
       else
         prescribedHeatFlow.port.T = T;
       end if;
+
+      connect(prescribedHeatFlow.port, fluidHeatPort) annotation (Line(
+          points={{-1.83697e-015,-20},{0,-20},{0,-60}},
+          color={191,0,0},
+          smooth=Smooth.None));
+
       annotation (Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
                   -100},{100,100}}), graphics={Ellipse(
                 extent={{-60,64},{60,-56}},
@@ -839,13 +853,9 @@ simulation and/or might give a more robust simulation.
                               Documentation(info="<html>
 Base class for heat transfer models that can be used in distributed pipe models.
 </html>"),
-        Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
-                  {100,100}}),
+        Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
+                100,100}}),
                         graphics));
-      connect(prescribedHeatFlow.port, fluidHeatPort) annotation (Line(
-          points={{-1.83697e-015,-20},{0,-20},{0,-60}},
-          color={191,0,0},
-          smooth=Smooth.None));
     end PartialPipeHeatTransfer;
 
     partial model PartialPipeHT_Nu
@@ -866,19 +876,27 @@ Base class for heat transfer models that can be used in distributed pipe models.
       Pr = Medium.prandtlNumber(state);
       Re = CharacteristicNumbers.ReynoldsNumber(m_flow, diameter, crossArea, eta);
       Nu = CharacteristicNumbers.NusseltNumber(alpha, diameter, lambda);
-      wallHeatPort.Q_flow=Q_flow;
-      wallHeatPort.Q_flow=alpha.*area.*(wallHeatPort.T - T);
+      Q_flow=alpha.*area.*(wallHeatPort.T - T);
         annotation (Documentation(info="<html>
 Base class for heat transfer models that are expressed in terms of the Nusselt number and which can be used in distributed pipe models.
 </html>"));
     end PartialPipeHT_Nu;
+
+    model PipeHT_none
+        "PipeHT_none: No heat transfer assuming perfect isolation"
+      extends PartialPipeHeatTransfer;
+    equation
+      Q_flow = zeros(n);
+      annotation(Documentation(info="<html>
+Ideal heat transfer without thermal resistance.
+</html>"));
+    end PipeHT_none;
 
     model PipeHT_ideal
         "PipeHT_ideal: Ideal heat transfer without thermal resistance"
       extends PartialPipeHeatTransfer;
     equation
       T = wallHeatPort.T;
-      Q_flow = wallHeatPort.Q_flow;
       annotation(Documentation(info="<html>
 Ideal heat transfer without thermal resistance.
 </html>"));
@@ -893,8 +911,7 @@ Ideal heat transfer without thermal resistance.
 Simple heat transfer correlation with constant heat transfer coefficient, used as default component in <a distributed pipe models.
 </html>"));
     equation
-      wallHeatPort.Q_flow = alpha0*area/n*(wallHeatPort.T - T);
-      wallHeatPort.Q_flow = Q_flow;
+      Q_flow = alpha0*area/n*(wallHeatPort.T - T);
     end PipeHT_constAlpha;
     annotation (Documentation(info="<html>
 Heat transfer correlations for pipe models
@@ -1045,6 +1062,7 @@ The correlation takes into account the spatial position along the pipe flow, whi
       replaceable HeatTransfer heatTransfer(
         redeclare final package Medium = Medium,
         final n=1,
+        final nTubes=1,
         diameter=4*crossArea/perimeter,
         area=perimeter*length,
         final crossArea=crossArea,
@@ -1187,6 +1205,7 @@ pipe wall/environment).
      HeatTransfer heatTransfer(
        redeclare final package Medium = Medium,
        final n=nNodes,
+       final nTubes=1,
        diameter=4*crossArea/perimeter,
        area=perimeter*length,
        final crossArea=crossArea,
@@ -1386,6 +1405,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     replaceable HeatTransfer heatTransfer(
       redeclare each final package Medium = Medium,
       final n=n,
+      final nTubes=1,
       diameter=4*crossArea/perimeter,
       area=perimeter*length,
       final crossArea=crossArea,
@@ -1648,8 +1668,8 @@ of the modeller. Use a Junctions.MultiPort.
               lineColor={0,0,0},
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid)}),
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-                100}},
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+                100,100}},
             grid={1,1}),
             graphics),
     Documentation(info="<html>
