@@ -203,7 +203,7 @@ of the modeller. Increase nPorts_b to add an additional port.
       port_a.Xi_outflow[i] = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].Xi_outflow[i]) for j in 1:nPorts_b})
                            / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
     end for;
-    for i in 1:Medium.nXi loop
+    for i in 1:Medium.nC loop
       port_a.C_outflow[i] = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].C_outflow[i]) for j in 1:nPorts_b})
                            / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
     end for;
