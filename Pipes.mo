@@ -7,7 +7,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
     extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
           redeclare model HeatTransfer=BaseClasses.HeatTransfer.PipeHT_none(nTubes=nTubes));
 
-    replaceable PressureDrop pressureDrop(
+    PressureDrop pressureDrop(
             redeclare final package Medium = Medium,
             final n=1,
             state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
@@ -22,10 +22,8 @@ package Pipes "Lumped, distributed and thermal pipe components"
             diameter=4*crossArea/perimeter,
             final length=length,
             final height_ab=height_ab,
-            final g=system.g) "Edit pressure drop parameters" 
-       annotation (editButton=true,Placement(transformation(extent={{-38,-18},{
-              38,18}},
-            rotation=0)));
+            final g=system.g) "Pressure drop model" 
+       annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
   equation
     port_a.m_flow = pressureDrop.m_flow[1]*nTubes;
     0 = port_a.m_flow + port_b.m_flow;
@@ -72,19 +70,19 @@ package Pipes "Lumped, distributed and thermal pipe components"
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
 
-    replaceable HeatTransfer heatTransfer(
+    HeatTransfer heatTransfer(
       redeclare final package Medium = Medium,
       final n=1,
       final nTubes=nTubes,
-      diameter=4*crossArea/perimeter,
-      area=perimeter*length,
+      final diameter=4*crossArea/perimeter,
+      final area=perimeter*length,
       final crossArea=crossArea,
       final length=length,
+      final use_fluidHeatPort=true,
       state={volume.medium.state},
-      m_flow = {0.5*(port_a.m_flow - port_b.m_flow)}/nTubes,
-      final useFluidHeatPort=true) "Edit heat transfer parameters" 
-      annotation (editButton=true, Placement(transformation(extent={{-11,14},{
-              11,36}},                                                                  rotation=0)));
+      m_flow = {0.5*(port_a.m_flow - port_b.m_flow)}/nTubes)
+      "Heat transfer model" 
+        annotation (Placement(transformation(extent={{-11,14},{11,36}},rotation=0)));
 
     StaticPipe staticPipe1(
       redeclare package Medium = Medium,
@@ -222,7 +220,7 @@ pipe wall/environment).
       "state vector for pressureDrop model";
 
     // Pressure drop model
-    replaceable PressureDrop pressureDrop(
+    PressureDrop pressureDrop(
             redeclare final package Medium = Medium,
             final n=nFlows,
             state=flowState,
@@ -233,13 +231,11 @@ pipe wall/environment).
             final p_b_start=p_b_start,
             final m_flow_start=m_flow_start/nTubes,
             final roughness=roughness,
-            diameter=4*crossArea/perimeter,
+            final diameter=4*crossArea/perimeter,
             final length=length,
             final height_ab=height_ab,
-            final g=system.g) "Edit pressure drop parameters" 
-       annotation (editButton=true,Placement(transformation(extent={{-77,-57},{77,
-              -23}},
-            rotation=0)));
+            final g=system.g) "Pressure drop model" 
+       annotation (Placement(transformation(extent={{-77,-57},{77,-23}},rotation=0)));
 
     // Flow quantities
     Medium.MassFlowRate[n+1] m_flow(
@@ -255,18 +251,17 @@ pipe wall/environment).
     Interfaces.HeatPorts_a[nNodes] heatPorts 
       annotation (Placement(transformation(extent={{-10,44},{10,64}}), iconTransformation(extent={{-30,44},{32,60}})));
 
-    replaceable HeatTransfer heatTransfer(
+    HeatTransfer heatTransfer(
       redeclare each final package Medium = Medium,
       final n=n,
       final nTubes=nTubes,
-      diameter=4*crossArea/perimeter,
-      area=perimeter*length,
+      final diameter=4*crossArea/perimeter,
+      final area=perimeter*length,
       final crossArea=crossArea,
       final length=length,
       state=medium.state,
-      m_flow = 0.5*(m_flow[1:n]+m_flow[2:n+1])/nTubes)
-      "Edit heat transfer parameters" 
-        annotation (editButton=true, Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
+      m_flow = 0.5*(m_flow[1:n]+m_flow[2:n+1])/nTubes) "Heat transfer model" 
+        annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
 
   equation
     // Only one connection allowed to a port to avoid unwanted ideal mixing
@@ -495,15 +490,15 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow 
         constrainedby BaseClasses.PressureDrop.PartialPipePressureDrop
         "Characteristics of wall friction and gravity" 
-          annotation(Dialog(group="Pressure drop"), editButton=false, choicesAllMatching=true);
+          annotation(Dialog(group="Pressure drop"), choicesAllMatching=true);
 
       // Heat transfer
       replaceable model HeatTransfer = 
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
         constrainedby
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
-        "Wall heat transfer model" 
-        annotation (Dialog(group="Heat transfer"),editButton=false,choicesAllMatching=true);
+        "Wall heat transfer" 
+        annotation (Dialog(group="Heat transfer"),choicesAllMatching=true);
 
       annotation (defaultComponentName="pipe",Icon(coordinateSystem(
             preserveAspectRatio=false,
@@ -540,47 +535,55 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       "Pressure drop models for pipes, including wall friction and static head"
           partial model PartialPipePressureDrop
         "Base class for pipe wall friction models"
+
             replaceable package Medium = 
-            Modelica.Media.Interfaces.PartialMedium "fluid medium";
-            parameter Integer n=1 "number of flow segments";
+            Modelica.Media.Interfaces.PartialMedium "fluid medium" 
+              annotation(Dialog(tab="Internal Interface", enable=false));
+
             input Medium.ThermodynamicState[n+1] state
           "states along design flow";
             output Medium.MassFlowRate[n] m_flow(each start = m_flow_start)
           "mass flow rates along design flow";
 
+            // Discretization
+            parameter Integer n=1 "number of flow segments" 
+              annotation(Dialog(tab="Internal Interface", enable=false));
+
             // Mandadory geometry parameters
-            parameter SI.Length length "Length of pipe"   annotation(Dialog(group="Geometry"));
+            parameter SI.Length length "Length of pipe" 
+               annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
             parameter SI.Diameter diameter
-          "Hydraulic diameter of pipe (typically 4*crossArea/perimeter)"                                       annotation(Dialog(group="Geometry"));
+          "Hydraulic diameter of pipe (typically 4*crossArea/perimeter)" 
+               annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
             parameter SI.Length roughness(min=0)
           "Average height of surface asperities" 
-                annotation(Dialog(group="Geometry",enable=WallFriction.use_roughness));
+                annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry",enable=WallFriction.use_roughness));
             parameter SI.Length height_ab "Height(state_b) - Height(state_a)" 
-                annotation(Dialog(group="Static head"));
+                annotation(Dialog(tab="Internal Interface", enable=false,group="Static head"));
 
             // Additional parameters
             // Note: no outer system is used for default values,
             // as a PressureDrop model is intended as sub-component of other models
             parameter SI.Acceleration g "Constant gravity acceleration" 
-              annotation(Dialog(group="Static head"));
+              annotation(Dialog(tab="Internal Interface", enable=false,group="Static head"));
             parameter Boolean allowFlowReversal
           "= true to allow flow reversal, false restricts to design direction (state[1] -> state[n+1])"
-              annotation(Dialog(tab="Assumptions"), Evaluate=true);
+              annotation(Dialog(tab="Internal Interface", enable=false,group="Assumptions"), Evaluate=true);
             parameter Modelica_Fluid.Types.Dynamics dynamicsType
           "Dynamics option, e.g. for models with dynamic momentum balance" 
-              annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+              annotation(Dialog(tab="Internal Interface", enable=false,group = "Assumptions"), Evaluate=true);
             parameter Modelica_Fluid.Types.Init initType
           "Initialization option, e.g. for dynamic momentum balance" 
-              annotation(Evaluate=true, Dialog(tab = "Initialization"));
+              annotation(Evaluate=true, Dialog(tab="Internal Interface", enable=false,group = "Initialization"));
             parameter Medium.AbsolutePressure p_a_start
           "Start value for p[1] at design inflow" 
-              annotation(Dialog(tab = "Initialization"));
+              annotation(Dialog(tab="Internal Interface", enable=false,group = "Initialization"));
             parameter Medium.AbsolutePressure p_b_start
           "Start value for p[n+1] at design outflow" 
-              annotation(Dialog(tab = "Initialization"));
+              annotation(Dialog(tab="Internal Interface", enable=false,group = "Initialization"));
             parameter Medium.MassFlowRate m_flow_start
           "Start value of mass flow rate" 
-              annotation(Dialog(tab = "Initialization"));
+              annotation(Dialog(tab="Internal Interface", enable=false,group = "Initialization"));
 
             // Variables
             //final parameter Medium.AbsolutePressure[n+1] p_start = if n > 0 then linspace(p_a_start, p_b_start, n+1) else {(p_a_start + p_b_start)/2};
@@ -788,14 +791,24 @@ simulation and/or might give a more robust simulation.
         "base class for any pipe heat transfer correlation"
 
       // Parameters
-      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium;
-      parameter Integer n=1 "Number of heat transfer segments";
-      parameter Real nTubes "Number of parallel tubes, used for HeatPorts only";
-      parameter SI.Length length "Pipe length";
+      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
+        annotation(Dialog(tab="Internal Interface", enable=false));
+      parameter Integer n=1 "Number of heat transfer segments" 
+        annotation(Dialog(tab="Internal Interface", enable=false), Evaluate=true);
+      parameter Real nTubes "Number of parallel tubes, used for HeatPorts only"
+        annotation(Dialog(tab="Internal Interface", enable=false));
+      parameter SI.Length length "Pipe length" 
+        annotation(Dialog(tab="Internal Interface", enable=false));
       parameter SI.Length diameter
-          "Hydraulic diameter (typically 4*crossArea/perimeter)";
-      parameter SI.Area crossArea "Cross flow area";
-      parameter SI.Area area "Heat transfer area (typically perimeter*length)";
+          "Hydraulic diameter (typically 4*crossArea/perimeter)" 
+        annotation(Dialog(tab="Internal Interface", enable=false));
+      parameter SI.Area crossArea "Cross flow area" 
+        annotation(Dialog(tab="Internal Interface", enable=false));
+      parameter SI.Area area "Heat transfer area (typically perimeter*length)" 
+        annotation(Dialog(tab="Internal Interface", enable=false));
+      parameter Boolean use_fluidHeatPort=false
+          "= true to use fluidHeatPort instead of output Q_flow" 
+        annotation(Dialog(tab="Internal Interface", enable=false));
 
       // Inputs provided to heat transfer model
       input Medium.ThermodynamicState[n] state;
@@ -809,16 +822,13 @@ simulation and/or might give a more robust simulation.
         annotation (Placement(transformation(extent={{-10,60},{10,80}},
                 rotation=0), iconTransformation(extent={{-20,60},{20,80}})));
 
-      Modelica_Fluid.Interfaces.HeatPorts_b[n] fluidHeatPort if useFluidHeatPort
+      Modelica_Fluid.Interfaces.HeatPorts_b[n] fluidHeatPort if use_fluidHeatPort
           "Thermal port to fluid" 
         annotation (Placement(transformation(extent={{-10,-70},{10,-50}},
                 rotation=0), iconTransformation(extent={{-20,-70},{20,-50}})));
 
       // Internal variables
       SI.Temperature[n] T;
-      parameter Boolean useFluidHeatPort = false
-          "= true to use fluidHeatPort instead of output Q_flow" 
-        annotation(Dialog(tab="No input", enable=false), Evaluate=true, HideResult=true);
       Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow[n]
           prescribedHeatFlow "Needed to connect to conditional connector" 
         annotation (Placement(transformation(extent={{-10,-10},{10,10}},
@@ -828,7 +838,7 @@ simulation and/or might give a more robust simulation.
     equation
       T = Medium.temperature(state);
       wallHeatPort.Q_flow = Q_flow*nTubes;
-      if useFluidHeatPort then
+      if use_fluidHeatPort then
         prescribedHeatFlow.Q_flow = Q_flow*nTubes;
       else
         prescribedHeatFlow.port.T = T;
@@ -853,8 +863,8 @@ simulation and/or might give a more robust simulation.
                               Documentation(info="<html>
 Base class for heat transfer models that can be used in distributed pipe models.
 </html>"),
-        Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
-                100,100}}),
+        Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
+                  {100,100}}),
                         graphics));
     end PartialPipeHeatTransfer;
 
@@ -1069,7 +1079,7 @@ The correlation takes into account the spatial position along the pipe flow, whi
         final length=length,
         state={volume.medium.state},
         m_flow = {0.5*(port_a.m_flow - port_b.m_flow)},
-        final useFluidHeatPort=true) "Edit heat transfer parameters" 
+        final use_fluidHeatPort=true) "Edit heat transfer parameters" 
         annotation (editButton=true, Placement(transformation(extent={{-20,0},{20,40}},   rotation=0)));
 
       Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction1(
