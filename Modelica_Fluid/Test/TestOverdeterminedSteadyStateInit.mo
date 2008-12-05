@@ -85,7 +85,7 @@ The initial equations are consistent however and a tool shall reduce them approp
               -100},{100,100}}),
                         graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
               lineColor={0,0,255}), Text(
             extent={{-60,60},{60,-60}},
             lineColor={0,0,255},
@@ -154,14 +154,15 @@ The initial equations are consistent however and a tool shall reduce them approp
       use_T_start=true,
       diameter=0.03,
       T_start=Modelica.SIunits.Conversions.from_degC(80),
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       length=2,
       redeclare model HeatTransfer = 
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
       p_a_start=400000,
-      p_b_start=390000) 
+      p_b_start=390000,
+      redeclare model PressureDrop =
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow
+          (use_nominal=true)) 
       annotation (Placement(transformation(extent={{12,-14},{32,6}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe radiator(
@@ -170,13 +171,14 @@ The initial equations are consistent however and a tool shall reduce them approp
       length=10,
       diameter=0.05,
       T_start=Modelica.SIunits.Conversions.from_degC(40),
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       redeclare model HeatTransfer = 
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
       p_a_start=110000,
-      p_b_start=105000) 
+      p_b_start=105000,
+      redeclare model PressureDrop =
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow
+          (use_nominal=true)) 
       annotation (Placement(transformation(extent={{28,-76},{8,-56}}, rotation=
               0)));
 
