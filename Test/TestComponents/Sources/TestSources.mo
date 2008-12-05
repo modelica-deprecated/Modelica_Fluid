@@ -1,7 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Sources;
 model TestSources "Test model for models in source package"
   import Modelica_Fluid;
-  replaceable package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
+  package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
   Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary(redeclare package
       Medium = Medium,
     useTraceInput=true,
@@ -17,12 +17,12 @@ model TestSources "Test model for models in source package"
       Medium = Medium,
     useTraceInput=true,
     m_flow=0.1) 
-    annotation (Placement(transformation(extent={{-50,-40},{-30,-20}})));
+    annotation (Placement(transformation(extent={{-50,-50},{-30,-30}})));
   Modelica_Fluid.Sources.PrescribedMassFlowRate_hX boundary3(redeclare package
       Medium = Medium,
     useTraceInput=true,
     m_flow=0.1) 
-    annotation (Placement(transformation(extent={{-50,-80},{-30,-60}})));
+    annotation (Placement(transformation(extent={{-50,-90},{-30,-70}})));
   Modelica_Fluid.Sources.FixedBoundary boundary4(redeclare package Medium = 
         Medium) 
     annotation (Placement(transformation(extent={{80,40},{60,60}})));
@@ -30,7 +30,7 @@ model TestSources "Test model for models in source package"
       = Medium) annotation (Placement(transformation(extent={{80,0},{60,20}})));
   Modelica_Fluid.Sources.FixedBoundary_phX boundary6(nPorts=2, redeclare
       package Medium = Medium) 
-    annotation (Placement(transformation(extent={{80,-60},{60,-40}})));
+    annotation (Placement(transformation(extent={{96,-70},{76,-50}})));
   Modelica_Fluid.Pipes.StaticPipe pipe(
     length=1,
     diameter=0.25,
@@ -47,12 +47,12 @@ model TestSources "Test model for models in source package"
     length=1,
     diameter=0.25,
     redeclare package Medium = Medium) 
-    annotation (Placement(transformation(extent={{0,-40},{20,-20}})));
+    annotation (Placement(transformation(extent={{0,-50},{20,-30}})));
   Modelica_Fluid.Pipes.StaticPipe pipe3(
     length=1,
     diameter=0.25,
     redeclare package Medium = Medium) 
-    annotation (Placement(transformation(extent={{0,-80},{20,-60}})));
+    annotation (Placement(transformation(extent={{0,-90},{20,-70}})));
   inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent={{60,70},
             {80,90}},          rotation=0)));
@@ -75,10 +75,13 @@ model TestSources "Test model for models in source package"
     annotation (Placement(transformation(extent={{-22,14},{-2,34}})));
   Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance3(redeclare
       package Medium = Medium) 
-    annotation (Placement(transformation(extent={{30,-20},{50,0}})));
+    annotation (Placement(transformation(extent={{26,-26},{46,-6}})));
   Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance4(redeclare
       package Medium = Medium) 
-    annotation (Placement(transformation(extent={{-20,-64},{0,-44}})));
+    annotation (Placement(transformation(extent={{-20,-74},{0,-54}})));
+  Modelica_Fluid.Junctions.IdealTJunction junction(redeclare package Medium =
+        Medium)                             annotation (Placement(
+        transformation(extent={{26,-50},{46,-30}}, rotation=0)));
 equation
   connect(boundary.ports[1], pipe.port_a) annotation (Line(
       points={{-30,50},{-20,50}},
@@ -93,19 +96,15 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(boundary2.ports[1], pipe2.port_a) annotation (Line(
-      points={{-30,-30},{0,-30}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(pipe2.port_b, boundary6.ports[1]) annotation (Line(
-      points={{20,-30},{46,-30},{46,-48},{60,-48}},
+      points={{-30,-40},{0,-40}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(boundary3.ports[1], pipe3.port_a) annotation (Line(
-      points={{-30,-70},{0,-70}},
+      points={{-30,-80},{0,-80}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe3.port_b, boundary6.ports[2]) annotation (Line(
-      points={{20,-70},{46,-70},{46,-52},{60,-52}},
+      points={{20,-80},{46,-80},{46,-62},{76,-62}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(C.y, boundary.C_in[1]) annotation (Line(
@@ -133,7 +132,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe3.port_a, traceSubstance4.port) annotation (Line(
-      points={{0,-70},{-6,-70},{-6,-64},{-10,-64}},
+      points={{0,-80},{-6,-80},{-6,-74},{-10,-74}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(traceSubstance.port, pipe.port_b) annotation (Line(
@@ -144,16 +143,24 @@ equation
       points={{0,10},{-6,10},{-6,14},{-12,14}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(pipe2.port_b, traceSubstance3.port) annotation (Line(
-      points={{20,-30},{31,-30},{31,-20},{40,-20}},
-      color={0,127,255},
-      smooth=Smooth.None));
   connect(C.y, boundary2.C_in[1]) annotation (Line(
-      points={{-79,50},{-64,50},{-64,-38},{-50,-38}},
+      points={{-79,50},{-64,50},{-64,-48},{-50,-48}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(C.y, boundary3.C_in[1]) annotation (Line(
-      points={{-79,50},{-64,50},{-64,-78},{-50,-78}},
+      points={{-79,50},{-64,50},{-64,-88},{-50,-88}},
       color={0,0,127},
+      smooth=Smooth.None));
+  connect(pipe2.port_b, junction.port_1) annotation (Line(
+      points={{20,-40},{26,-40}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(junction.port_3, traceSubstance3.port) annotation (Line(
+      points={{36,-30},{36,-26}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(junction.port_2, boundary6.ports[1]) annotation (Line(
+      points={{46,-40},{52,-40},{52,-58},{76,-58}},
+      color={0,127,255},
       smooth=Smooth.None));
 end TestSources;
