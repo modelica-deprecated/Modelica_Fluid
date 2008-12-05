@@ -381,7 +381,7 @@ present that are regulated by a central control system.
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-100,
               -140},{-60,-100}}, rotation=0)));
-    Modelica_Fluid.Pipes.LumpedPipe_Old pipeB1B2(
+    Modelica_Fluid.Pipes.ToBeRemoved.LumpedPipe_Old pipeB1B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -446,7 +446,7 @@ present that are regulated by a central control system.
           origin={-80,-200},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Pipes.LumpedPipe_Old pipePump1B1(
+    Modelica_Fluid.Pipes.ToBeRemoved.LumpedPipe_Old pipePump1B1(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
@@ -457,7 +457,7 @@ present that are regulated by a central control system.
           origin={-180,-4},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Pipes.LumpedPipe_Old pipePump2B2(
+    Modelica_Fluid.Pipes.ToBeRemoved.LumpedPipe_Old pipePump2B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,

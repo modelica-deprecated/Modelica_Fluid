@@ -12,10 +12,12 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     length=2,
     m_flow_start_1=0.2,
     m_flow_start_2=0.2,
-    redeclare package WallFriction_1 = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
-    redeclare package WallFriction_2 = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    redeclare model PressureDrop_1 = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow (
+            use_nominal=true,eta_nominal=0.01),
+    redeclare model PressureDrop_2 = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow (
+            use_nominal=true,eta_nominal=0.01),
     k_wall=100,
     initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
     s_wall=0.005,
@@ -36,10 +38,7 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     Twall_start=300,
     dT=10,
     T_start_1=304,
-    T_start_2=300,
-    eta_nominal_1=0.01,
-    eta_nominal_2=0.01,
-    use_eta_nominal=true)       annotation (Placement(transformation(extent={{
+    T_start_2=300)       annotation (Placement(transformation(extent={{
             -26,-14},{34,46}}, rotation=0)));
 
   Modelica_Fluid.Sources.FixedBoundary_pTX ambient2(
