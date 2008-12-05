@@ -322,39 +322,41 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       "Start value of mass flow rate"    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 2"));
 
     //Pressure drop and heat transfer
-    replaceable package WallFriction_1 = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
+    replaceable model PressureDrop_1 = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow 
       constrainedby
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
-      "Characteristic of wall friction"                                                            annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
-    replaceable package WallFriction_2 = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
+      Modelica_Fluid.Pipes.BaseClasses.PressureDrop.PartialPipePressureDrop
+      "Characteristic of wall friction"                                                                                                   annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
+    replaceable model PressureDrop_2 = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow 
       constrainedby
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
-      "Characteristic of wall friction"                                                            annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
+      Modelica_Fluid.Pipes.BaseClasses.PressureDrop.PartialPipePressureDrop
+      "Characteristic of wall friction"                                                                                                   annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
     parameter SI.Length roughness_1=2.5e-5
       "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Fluid 1"));
     parameter SI.Length roughness_2=2.5e-5
       "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Fluid 2"));
-    parameter SI.DynamicViscosity eta_nominal_1=Medium_1.dynamicViscosity(Medium_1.setState_pTX(Medium_1.p_default, Medium_1.T_default, Medium_1.X_default))
-      "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
-                                                                                             annotation(Dialog(tab="Advanced", group="Fluid 1", enable=use_eta_nominal));
-    parameter SI.DynamicViscosity eta_nominal_2=Medium_2.dynamicViscosity(Medium_2.setState_pTX(Medium_2.p_default, Medium_2.T_default, Medium_2.X_default))
-      "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
-                                                                                         annotation(Dialog(tab="Advanced", group="Fluid 2", enable=use_eta_nominal));
-    parameter SI.Density d_nominal_1 = Medium_1.density_pTX(Medium_1.p_default, Medium_1.T_default, Medium_1.X_default)
-      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
-       annotation(Dialog(tab="Advanced", group="Fluid 1", enable=use_eta_nominal));
-    parameter SI.Density d_nominal_2 = Medium_1.density_pTX(Medium_2.p_default, Medium_2.T_default, Medium_2.X_default)
-      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
-       annotation(Dialog(tab="Advanced", group="Fluid 2", enable=use_eta_nominal));
-    parameter Boolean use_eta_nominal=false
-      "= true, if eta_ and d_nominal are used, otherwise computed from media" annotation(Evaluate=true, Dialog(tab="Advanced", group="Pressure loss"));
+  /*
+  parameter Boolean use_nominal=false 
+    "= true, if eta_ and d_nominal are used, otherwise computed from media" annotation(Evaluate=true, Dialog(tab="Advanced", group="Pressure drop"));
+  parameter SI.DynamicViscosity eta_nominal_1=Medium_1.dynamicViscosity(Medium_1.setState_pTX(Medium_1.p_default, Medium_1.T_default, Medium_1.X_default)) 
+    "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
+                                                                                           annotation(Dialog(tab="Advanced", group="Fluid 1", enable=use_nominal));
+  parameter SI.DynamicViscosity eta_nominal_2=Medium_2.dynamicViscosity(Medium_2.setState_pTX(Medium_2.p_default, Medium_2.T_default, Medium_2.X_default)) 
+    "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
+                                                                                       annotation(Dialog(tab="Advanced", group="Fluid 2", enable=use_nominal));
+  parameter SI.Density d_nominal_1 = Medium_1.density_pTX(Medium_1.p_default, Medium_1.T_default, Medium_1.X_default) 
+    "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+     annotation(Dialog(tab="Advanced", group="Fluid 1", enable=use_nominal));
+  parameter SI.Density d_nominal_2 = Medium_1.density_pTX(Medium_2.p_default, Medium_2.T_default, Medium_2.X_default) 
+    "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+     annotation(Dialog(tab="Advanced", group="Fluid 2", enable=use_nominal));
+*/
     //Display variables
     SI.HeatFlowRate Q_flow_1 "Total heat flow rate of pipe 1";
     SI.HeatFlowRate Q_flow_2 "Total heat flow rate of pipe 2";
 
-    Modelica_Fluid.Pipes.DistributedPipe_Old pipe_1(
+    Modelica_Fluid.Pipes.DistributedPipe pipe_1(
       redeclare package Medium = Medium_1,
       isCircular=false,
       diameter=0,
@@ -371,14 +373,16 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       m_flow_start=m_flow_start_1,
       perimeter=perimeter_1,
       crossArea=crossArea_1,
-      redeclare package WallFriction = WallFriction_1,
       roughness=roughness_1,
-      use_eta_nominal=use_eta_nominal,
-      eta_nominal=eta_nominal_1,
-      d_nominal=d_nominal_1)   annotation (Placement(transformation(extent={{-40,-80},
+      redeclare model PressureDrop = PressureDrop_1)   annotation (Placement(transformation(extent={{-40,-80},
               {20,-20}},        rotation=0)));
+  /*
+      (use_nominal=use_nominal,
+      eta_nominal=eta_nominal_1,
+      d_nominal=d_nominal_1)
+*/
 
-    Modelica_Fluid.Pipes.DistributedPipe_Old pipe_2(
+    Modelica_Fluid.Pipes.DistributedPipe pipe_2(
       redeclare package Medium = Medium_2,
       nNodes=nNodes,
       allowFlowReversal=allowFlowReversal,
@@ -397,14 +401,15 @@ References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
       crossArea=crossArea_2,
       p_a_start=p_a_start1,
       p_b_start=p_b_start2,
-      redeclare package WallFriction = WallFriction_2,
       roughness=roughness_2,
-      use_eta_nominal=use_eta_nominal,
-      eta_nominal=eta_nominal_2,
-      d_nominal=d_nominal_2,
-      show_Re=false) 
+      redeclare model PressureDrop = PressureDrop_2) 
                 annotation (Placement(transformation(extent={{20,88},{-40,28}},
             rotation=0)));
+  /*
+      (use_nominal=use_nominal,
+      eta_nominal=eta_nominal_2,
+      d_nominal=d_nominal_2)
+*/
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}},
           grid={1,1}),  graphics),

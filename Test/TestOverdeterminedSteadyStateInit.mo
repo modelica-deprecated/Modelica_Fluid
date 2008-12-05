@@ -10,7 +10,7 @@ package TestOverdeterminedSteadyStateInit
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Modelica_Fluid.Pipes.DistributedPipeLumpedPressure_Old pipe(
+    Pipes.DistributedPipe pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       nNodes=5,
       h_start=2e6,
@@ -19,7 +19,8 @@ package TestOverdeterminedSteadyStateInit
       use_T_start=false,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
       p_a_start=10000000,
-      p_b_start=9900000) 
+      p_b_start=9900000,
+      lumpedPressure=true) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
     ControlValves.ValveCompressible valve(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -84,7 +85,7 @@ The initial equations are consistent however and a tool shall reduce them approp
               -100},{100,100}}),
                         graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
               lineColor={0,0,255}), Text(
             extent={{-60,60},{60,-60}},
             lineColor={0,0,255},

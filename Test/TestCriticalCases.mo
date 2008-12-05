@@ -1781,7 +1781,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Sources.FixedBoundary source(redeclare package Medium = 
           Modelica.Media.Water.StandardWater, p=200000) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Modelica_Fluid.Pipes.DistributedPipe_Old pipe(
+    Modelica_Fluid.Pipes.ToBeRemoved.DistributedPipe_Old pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       length=1,
       diameter=0.32,
