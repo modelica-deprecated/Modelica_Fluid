@@ -85,7 +85,7 @@ The initial equations are consistent however and a tool shall reduce them approp
               -100},{100,100}}),
                         graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
               lineColor={0,0,255}), Text(
             extent={{-60,60},{60,-60}},
             lineColor={0,0,255},
@@ -160,7 +160,7 @@ The initial equations are consistent however and a tool shall reduce them approp
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
       p_a_start=400000,
       p_b_start=390000,
-      redeclare model PressureDrop =
+      redeclare model PressureDrop = 
           Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow
           (use_nominal=true)) 
       annotation (Placement(transformation(extent={{12,-14},{32,6}}, rotation=0)));
@@ -176,7 +176,7 @@ The initial equations are consistent however and a tool shall reduce them approp
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
       p_a_start=110000,
       p_b_start=105000,
-      redeclare model PressureDrop =
+      redeclare model PressureDrop = 
           Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow
           (use_nominal=true)) 
       annotation (Placement(transformation(extent={{28,-76},{8,-56}}, rotation=
