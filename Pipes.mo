@@ -181,7 +181,11 @@ pipe wall/environment).
     // distributed volume model
     extends Modelica_Fluid.Volumes.BaseClasses.PartialDistributedVolume(
       final n = nNodes,
-      Qs_flow=heatTransfer.Q_flow);
+      Qs_flow = heatTransfer.Q_flow*nTubes);
+
+    // Note: define nTubes as Real to support inverse calculations
+    parameter Real nTubes(min=1)=1 "Number of parallel tubes" 
+     annotation(Dialog(group="Geometry"));
 
     // extending PartialPipe
     extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
@@ -258,8 +262,9 @@ pipe wall/environment).
       final crossArea=crossArea,
       final length=length,
       state=medium.state,
-      m_flow = 0.5*(m_flow[1:n]+m_flow[2:n+1])) "Edit heat transfer parameters"
-              annotation (editButton=true, Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
+      m_flow = 0.5*(m_flow[1:n]+m_flow[2:n+1])/nTubes)
+      "Edit heat transfer parameters" 
+        annotation (editButton=true, Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
 
   equation
     // Only one connection allowed to a port to avoid unwanted ideal mixing
@@ -277,7 +282,7 @@ of the modeller. Use a Junctions.MultiPort.
 ");
 
     // Source/sink terms for mass and energy balances
-    fluidVolume=fill(V/n, n);
+    fluidVolume=fill(V/n*nTubes, n);
     Ws_flow=zeros(n);
     for i in 1:n loop
       ms_flow[i] = m_flow[i] - m_flow[i + 1];
@@ -316,18 +321,18 @@ of the modeller. Use a Junctions.MultiPort.
     if lumpedPressure then
       fill(medium[1].p, n-1) = medium[2:n].p;
       if modelStructure == ModelStructure.a_v_b then
-        m_flow[1] = pressureDrop.m_flow[1];
+        m_flow[1] = pressureDrop.m_flow[1]*nTubes;
         flowState[1] = state_a;
         flowState[2] = medium[iLumped].state;
         flowState[3] = state_b;
-        m_flow[n+1] = pressureDrop.m_flow[2];
+        m_flow[n+1] = pressureDrop.m_flow[2]*nTubes;
       elseif modelStructure == ModelStructure.av_b then
         port_a.p = medium[1].p;
         flowState[1] = medium[iLumped].state;
         flowState[2] = state_b;
-        m_flow[n+1] = pressureDrop.m_flow[1];
+        m_flow[n+1] = pressureDrop.m_flow[1]*nTubes;
       elseif modelStructure == ModelStructure.a_vb then
-        m_flow[1] = pressureDrop.m_flow[1];
+        m_flow[1] = pressureDrop.m_flow[1]*nTubes;
         flowState[1] = state_a;
         flowState[2] = medium[iLumped].state;
         port_b.p = medium[n].p;
@@ -350,7 +355,7 @@ of the modeller. Use a Junctions.MultiPort.
         flowState[n+1] = state_b;
         //m_flow[2:n+1] = pressureDrop.m_flow;
         for i in 2:n+1 loop
-          m_flow[i] = pressureDrop.m_flow[i-1];
+          m_flow[i] = pressureDrop.m_flow[i-1]*nTubes;
         end for;
         port_a.p = medium[1].p;
       elseif modelStructure == ModelStructure.a_vb then
@@ -358,14 +363,14 @@ of the modeller. Use a Junctions.MultiPort.
         flowState[2:n+1] = medium[1:n].state;
         //m_flow[1:n] = pressureDrop.m_flow;
         for i in 1:n loop
-          m_flow[i] = pressureDrop.m_flow[i];
+          m_flow[i] = pressureDrop.m_flow[i]*nTubes;
         end for;
         port_b.p = medium[n].p;
       else // avb
         flowState[1:n] = medium[1:n].state;
         //m_flow[2:n] = pressureDrop.m_flow[1:n-1];
         for i in 2:n loop
-          m_flow[i] = pressureDrop.m_flow[i-1];
+          m_flow[i] = pressureDrop.m_flow[i-1]*nTubes;
         end for;
         port_a.p = medium[1].p;
         port_b.p = medium[n].p;
@@ -462,10 +467,10 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
       //Geometry
       parameter SI.Length length "Length"   annotation(Dialog(tab="General", group="Geometry"));
-      parameter SI.Diameter diameter "Diameter of circular pipe"      annotation(Dialog(group="Geometry", enable=isCircular));
       parameter SI.Length roughness(min=0)=2.5e-5
         "Average height of surface asperities (default = smooth steel pipe)" 
           annotation(Dialog(group="Geometry",enable=WallFriction.use_roughness));
+      parameter SI.Diameter diameter "Diameter of circular pipe"      annotation(Dialog(group="Geometry", enable=isCircular));
       parameter Boolean isCircular=true
         "= true if cross sectional area is circular" 
         annotation (Evaluate, Dialog(tab="General", group="Geometry"));
