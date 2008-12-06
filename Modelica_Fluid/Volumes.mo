@@ -1080,11 +1080,19 @@ An extending class still needs to define:
     parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
         "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    parameter Medium.ExtraProperty C_start[Medium.nC](
+         quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
+        "Start value of trace substances" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nC > 0));
 
     // Total quantities
     SI.Energy[n] U "Internal energy of fluid";
     SI.Mass[n] m "Fluid mass";
     SI.Mass[n,Medium.nXi] mXi "Substance mass";
+    SI.Mass[n,Medium.nC] mC "Trace substance mass";
+    // C need to be added here because unlike for Xi, which has medium[:].Xi,
+    // there is no variable medium[:].C
+    Medium.ExtraProperty C[n, Medium.nC] "Trace substance mixture content";
 
     Medium.BaseProperties[n] medium(
       each preferredMediumStates=if (dynamicsType == Types.Dynamics.SteadyState) then false else true,
@@ -1099,6 +1107,8 @@ An extending class still needs to define:
     Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
     Medium.MassFlowRate[n,Medium.nXi] msXi_flow
         "Independent mass flow rates, source or sink";
+    Medium.ExtraPropertyFlowRate[n,Medium.nC] msC_flow
+        "Trace substance mass flow rates, source or sink";
     SI.EnthalpyFlowRate[n] Hs_flow "Enthalpy flow rate, source or sink";
     input SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
     SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
@@ -1108,6 +1118,7 @@ An extending class still needs to define:
     for i in 1:n loop
       m[i] =fluidVolume[i]*medium[i].d;
       mXi[i, :] = m[i]*medium[i].Xi;
+      mC[i, :]  = m[i]*C[i, :];
       U[i] = m[i]*medium[i].u;
     end for;
 
@@ -1117,12 +1128,14 @@ An extending class still needs to define:
       for i in 1:n loop
         der(m[i]) = ms_flow[i];
         der(mXi[i, :]) = msXi_flow[i, :];
+        der(mC[i, :])  = msC_flow[i, :];
       end for;
     else
     // steady state mass balances, no numerical states, no flow reversal possible
       for i in 1:n loop
         0 = ms_flow[i];
         zeros(Medium.nXi) = msXi_flow[i, :];
+        zeros(Medium.nC)  = msC_flow[i, :];
       end for;
     end if;
     if dynamicsType < Types.Dynamics.SteadyState then
@@ -1153,6 +1166,7 @@ An extending class still needs to define:
       end if;
       for i in 1:n loop
         der(medium[i].Xi) = zeros(Medium.nXi);
+        der(mC[i,:])      = zeros(Medium.nC);
       end for;
     elseif initType == Types.Init.InitialValues then
     //Initialization with initial values
@@ -1197,8 +1211,9 @@ Further source terms must be defined by an extending class for fluid flow across
 </p>
 <ul>
 <li><tt><b>Hs_flow[n]</b></tt>, enthalpy flow,</li> 
-<li><tt><b>ms_flow[n]</b></tt>, mass flow, and</li> 
-<li><tt><b>msXi_flow[n]</b></tt>, substance mass flow.</li> 
+<li><tt><b>ms_flow[n]</b></tt>, mass flow,</li> 
+<li><tt><b>msXi_flow[n]</b></tt>, substance mass flow, and</li> 
+<li><tt><b>msC_flow[n]</b></tt>, trace substance mass flow.</li> 
 </ul>
 <b>Note:</b>
 <p>

@@ -244,6 +244,8 @@ pipe wall/environment).
       "Mass flow rates of fluid across segment boundaries";
     Medium.MassFlowRate[n+1, Medium.nXi] mXi_flow
       "Independent mass flow rates across segment boundaries";
+    Medium.MassFlowRate[n+1, Medium.nC] mC_flow
+      "Trace substance mass flow rates across segment boundaries";
     Medium.EnthalpyFlowRate[n+1] H_flow
       "Enthalpy flow rates of fluid across segment boundaries";
 
@@ -284,6 +286,7 @@ of the modeller. Use a Junctions.MultiPort.
     for i in 1:n loop
       ms_flow[i] = m_flow[i] - m_flow[i + 1];
       msXi_flow[i, :] = mXi_flow[i, :] - mXi_flow[i + 1, :];
+      msC_flow[i, :]  = mC_flow[i, :]  - mC_flow[i + 1, :];
       Hs_flow[i] = H_flow[i] - H_flow[i + 1];
     end for;
 
@@ -291,11 +294,14 @@ of the modeller. Use a Junctions.MultiPort.
     for i in 2:n loop
       H_flow[i] = semiLinear(m_flow[i], medium[i - 1].h, medium[i].h);
       mXi_flow[i, :] = semiLinear(m_flow[i], medium[i - 1].Xi, medium[i].Xi);
+      mC_flow[i, :]  = semiLinear(m_flow[i], C[i - 1, :],         C[i, :]);
     end for;
     H_flow[1] = semiLinear(port_a.m_flow, inStream(port_a.h_outflow), medium[1].h);
     H_flow[n + 1] = -semiLinear(port_b.m_flow, inStream(port_b.h_outflow), medium[n].h);
     mXi_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.Xi_outflow), medium[1].Xi);
     mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.Xi_outflow), medium[n].Xi);
+    mC_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.C_outflow), C[1, :]);
+    mC_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.C_outflow), C[n, :]);
 
     // Boundary conditions
     port_a.m_flow    = m_flow[1];
@@ -304,8 +310,12 @@ of the modeller. Use a Junctions.MultiPort.
     port_b.h_outflow = medium[n].h;
     port_a.Xi_outflow = medium[1].Xi;
     port_b.Xi_outflow = medium[n].Xi;
-    port_a.C_outflow = inStream(port_b.C_outflow);
-    port_b.C_outflow = inStream(port_a.C_outflow);
+    port_a.C_outflow = C[1, :];
+    port_b.C_outflow = C[n, :];
+    // The two equations below are not correct if C is stored in volumes.
+    // C should be treated the same way as Xi.
+    //port_a.C_outflow = inStream(port_b.C_outflow);
+    //port_b.C_outflow = inStream(port_a.C_outflow);
 
     if use_approxPortProperties and n > 0 then
       state_a = Medium.setState_phX(port_a.p, medium[1].h, medium[1].Xi);
@@ -434,6 +444,10 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 </html>",
       revisions="<html>
 <ul>
+<li><i>5 Dec 2008</i>
+    by Michael Wetter:<br>
+       Modified mass balance for trace substances. With the new formulation, the trace substances masses <tt>mC</tt> are stored
+       in the same way as the species <tt>mXi</tt>.</li>
 <li><i>4 Dec 2008</i>
     by R&uuml;diger Franke:<br>
        Derived model from original DistributedPipe models</li>
