@@ -105,7 +105,7 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
 equation
   connect(p_table.y, ambient_a.p_in) 
                                     annotation (Line(points={{-59,50},{-52,50},
-          {-52,56},{-40,56}}, color={0,0,127}));
+          {-52,58},{-40,58}}, color={0,0,127}));
   connect(ambient_a.ports[1], pipe1.port_a) 
                                       annotation (Line(points={{-18,53},{-9,53},
           {-9,50},{0,50}},

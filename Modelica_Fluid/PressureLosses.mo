@@ -3,17 +3,60 @@ package PressureLosses
   "Models and functions providing pressure loss correlations "
      extends Modelica_Fluid.Icons.VariantLibrary;
 
-model StaticHead
+  model StaticHead
     "Models the static head between two ports at different heights"
-  extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-  parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
-  parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
-      "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
-    annotation(Dialog(tab="Advanced"));
+    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
+    outer Modelica_Fluid.System system "System properties";
 
-  Medium.Density d "Density of the passing fluid";
-  outer Modelica_Fluid.System system "System properties";
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+    parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
+
+    parameter SI.AbsolutePressure dp_nominal=1
+      "Nominal pressure drop (0 to disable)";
+    parameter SI.MassFlowRate m_flow_nominal=1 "Mass flow rate for dp_nominal";
+
+    parameter Boolean use_m_flow_small=false
+      "=true for numerical regularization around zero flow" 
+      annotation(Dialog(group="Advanced",enable=allowFlowReversal and not use_d_nominal));
+    parameter SI.MassFlowRate m_flow_small = 0.01
+      "Within regularization if |m_flow| < m_flow_small" 
+      annotation(Dialog(group="Advanced",enable=use_m_flow_small));
+
+    parameter Boolean use_d_nominal = false
+      "= true to use d_nominal for static head, otherwise computed from medium"
+      annotation(Dialog(group="Advanced"), Evaluate=true);
+    parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+      annotation(Dialog(group="Advanced", enable=use_d_nominal));
+
+    Pipes.BaseClasses.PressureDrop.NominalPressureDrop pressureDrop(
+            redeclare final package Medium = Medium,
+            final n=1,
+            state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
+                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
+            final allowFlowReversal=allowFlowReversal,
+            final dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
+            final initType=Modelica_Fluid.Types.Init.SteadyState,
+            final p_a_start=system.p_start - dp_start/2,
+            final p_b_start=system.p_start + dp_start/2,
+            final m_flow_start=m_flow_start,
+            final nPipes=1,
+            final height_ab=height_ab,
+            final g=system.g,
+            final roughness=0,
+            final diameter=0,
+            final length=0,
+      dp_nominal=dp_nominal,
+      m_flow_nominal=m_flow_nominal,
+      use_m_flow_small=use_m_flow_small,
+      m_flow_small=m_flow_small,
+      use_d_nominal=use_d_nominal,
+      d_nominal=d_nominal) 
+       annotation (Placement(transformation(extent={{-39,-20},{40,20}},rotation=0)));
+
+  equation
+    port_a.m_flow = pressureDrop.m_flow[1];
+
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics={
           Rectangle(
             extent={{-100,60},{100,-60}},
@@ -30,13 +73,15 @@ model StaticHead
             lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
-            textString="%name")}),         Documentation(info="<html>
+            textString="%name")}),           Documentation(info="<html>
 <p>
 This model describes the static head due to the relative height between the two connectors. No mass, energy and momentum storage, and no pressure drop due to friction are considered.
 </p>
-</html>",
-        revisions="<html>
+</html>", revisions="<html>
 <ul>
+<li><i>6 Dec 2008</i>
+    by Ruediger Franke:<br>
+       Rewrite using Pipes.BaseClasses.NominalPressureDrop</li>
 <li><i>31 Oct 2007</i>
     by <a href=\"mailto:jonas@modelon.se\">Jonas Eborn</a>:<br>
        Changed to flow-direction dependent density</li>
@@ -45,22 +90,7 @@ This model describes the static head due to the relative height between the two 
        Added to Modelica_Fluid</li>
 </ul>
 </html>"));
-equation
-//  d = if dp > 0 then medium_a.d else medium_b.d;
-  /* Density is currently not handled correctly. The correct formula:
-        d = if port_a.m_flow>0 then d_a else d_b
-     leads to a non-linear system of equations that mays have an infinite number of
-     solutions and also no solution may exist for small flow rates.
-     Most likely, this can only be correctly handled with a dynamic momentum balance.
-  */
-  if allowFlowReversal then
-     d = (port_a_d_inflow + port_b_d_inflow)/2
-        "temporary solution that must be improved (BUT NOT WITH if port_a.m_flow>0 then d_a else d_b)";
-  else
-     d = port_a_d_inflow;
-  end if;
-  dp = height_ab*system.g*d;
-end StaticHead;
+  end StaticHead;
 
 model SimpleGenericOrifice
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
@@ -142,170 +172,6 @@ equation
      dp = PressureLosses.BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(m_flow, port_a_d_inflow, port_b_d_inflow, diameter, zeta);
   end if;
 end SimpleGenericOrifice;
-
-  model WallFrictionAndGravity
-    "Pressure drop in pipe due to wall friction and gravity (for both flow directions)"
-    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-
-    replaceable package WallFriction = 
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
-      constrainedby
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
-      "Characteristic of wall friction"  annotation(choicesAllMatching=true);
-
-    parameter SI.Length length "Length of pipe";
-    parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
-    parameter SI.Length height_ab = 0.0 "Height(port_b) - Height(port_a)" 
-                                                                       annotation(Evaluate=true);
-    parameter SI.Length roughness(min=0) = 2.5e-5
-      "Absolute roughness of pipe (default = smooth steel pipe)" 
-        annotation(Dialog(enable=WallFriction.use_roughness));
-
-    parameter Boolean use_nominal = false
-      "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
-                                                                                                    annotation(Evaluate=true);
-    parameter SI.DynamicViscosity eta_nominal = Medium.dynamicViscosity(
-                                                   Medium.setState_pTX(
-                                                       Medium.p_default, Medium.T_default, Medium.X_default))
-      "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
-                                                                              annotation(Dialog(enable=use_nominal));
-    parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
-      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
-                                                               annotation(Dialog(enable=use_nominal));
-
-    parameter Boolean show_Re = false
-      "= true, if Reynolds number is included for plotting" 
-       annotation (Evaluate=true, Dialog(tab="Advanced"));
-    parameter Boolean from_dp=true
-      " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
-      annotation (Evaluate=true, Dialog(tab="Advanced"));
-    parameter SI.AbsolutePressure dp_small = 1
-      "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
-      annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
-    parameter SI.MassFlowRate m_flow_small = reg_m_flow_small
-      "Within regularizatio if |m_flow| < m_flow_small (may be wider for large discontinuities in static head)"
-      annotation(Dialog(tab="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
-    SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, noEvent(if m_flow>0 then eta_a else eta_b), diameter) if show_Re
-      "Reynolds number of pipe";
-
-    outer Modelica_Fluid.System system "System properties";
-
-  protected
-    SI.DynamicViscosity eta_a = if not WallFriction.use_eta then 1.e-10 else 
-                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(port_a_state_inflow));
-    SI.DynamicViscosity eta_b = if not WallFriction.use_eta then 1.e-10 else 
-                                (if use_nominal then eta_nominal else Medium.dynamicViscosity(port_b_state_inflow));
-    SI.Density d_a = if use_nominal then d_nominal else port_a_d_inflow;
-    SI.Density d_b = if use_nominal then d_nominal else port_b_d_inflow;
-
-    Real g_times_height_ab(final unit="m2/s2") = system.g*height_ab
-      "Gravitiy times height_ab = dp_grav/d";
-
-    // Currently not in use (means to widen the regularization domain in case of large difference in static head)
-    final parameter Boolean use_x_small_staticHead = false
-      "Use dp_/m_flow_small_staticHead only if static head actually exists" annotation(Evaluate=true);
-                                                           /*abs(height_ab)>0*/
-    SI.AbsolutePressure dp_small_staticHead = noEvent(max(dp_small, 0.015*abs(g_times_height_ab*(d_a-d_b))))
-      "Heuristic for large discontinuities in static head";
-    SI.MassFlowRate m_flow_small_staticHead = noEvent(max(m_flow_small, (-5.55e-7*(d_a+d_b)/2+5.5e-4)*abs(g_times_height_ab*(d_a-d_b))))
-      "Heuristic for large discontinuities in static head";
-
-  equation
-    if from_dp and not WallFriction.dp_is_zero then
-      m_flow = WallFriction.massFlowRate_dp_staticHead(dp, d_a, d_b, eta_a, eta_b, length, diameter,
-        g_times_height_ab, roughness, if use_x_small_staticHead then dp_small_staticHead else dp_small);
-    else
-      dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
-        g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
-    end if;
-
-      annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Rectangle(
-            extent={{-100,60},{100,-60}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-100,44},{100,-45}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255}),
-          Text(
-            extent={{-150,80},{150,120}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name")}),           Documentation(info="<html>
-<p>
-This model describes pressure losses due to <b>wall friction</b> in a pipe
-and due to gravity.
-It is assumed that no mass or energy is stored in the pipe. 
-Correlations of different complexity and validity can be
-seleted via the replaceable package <b>WallFriction</b> (see parameter menu below).
-The details of the pipe wall friction model are described in the
-<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
-Basically, different variants of the equation
-</p>
- 
-<pre>
-   dp = &lambda;(Re,<font face=\"Symbol\">D</font>)*(L/D)*&rho;*v*|v|/2
-</pre>
- 
-<p>
-are used, where the friction loss factor &lambda; is shown
-in the next figure:
-</p>
- 
-<img src=\"../Images/Components/PipeFriction1.png\">
- 
-<p>
-By default, the correlations are computed with media data
-at the actual time instant.
-In order to reduce non-linear equation systems, parameter
-<b>use_nominal</b> provides the option
-to compute the correlations with constant media values
-at the desired operating point. This might speed-up the
-simulation and/or might give a more robust simulation.
-</p>
-</html>"),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Rectangle(
-            extent={{-100,64},{100,-64}},
-            lineColor={0,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Backward),
-          Rectangle(
-            extent={{-100,50},{100,-49}},
-            lineColor={0,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Line(
-            points={{-60,-49},{-60,50}},
-            color={0,0,255},
-            arrow={Arrow.Filled,Arrow.Filled}),
-          Text(
-            extent={{-50,16},{6,-10}},
-            lineColor={0,0,255},
-            fillColor={0,0,255},
-            fillPattern=FillPattern.Solid,
-            textString="diameter"),
-          Line(
-            points={{-100,74},{100,74}},
-            color={0,0,255},
-            arrow={Arrow.Filled,Arrow.Filled}),
-          Text(
-            extent={{-34,92},{34,74}},
-            lineColor={0,0,255},
-            fillColor={0,0,255},
-            fillPattern=FillPattern.Solid,
-            textString="length")}));
-  end WallFrictionAndGravity;
 
 model SuddenExpansion
     "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"
@@ -481,7 +347,178 @@ model SharpEdgedOrifice
             fillColor={0,0,255},
             fillPattern=FillPattern.Backward,
             textString="alpha")}));
+
 end SharpEdgedOrifice;
+
+  model WallFrictionAndGravity
+    "Pressure drop in pipe due to wall friction and gravity (for both flow directions)"
+    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
+
+    replaceable package WallFriction = 
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
+      constrainedby
+      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
+      "Characteristic of wall friction"  annotation(choicesAllMatching=true);
+
+    parameter SI.Length length "Length of pipe";
+    parameter SI.Diameter diameter "Inner (hydraulic) diameter of pipe";
+    parameter SI.Length height_ab = 0.0 "Height(port_b) - Height(port_a)" 
+                                                                       annotation(Evaluate=true);
+    parameter SI.Length roughness(min=0) = 2.5e-5
+      "Absolute roughness of pipe (default = smooth steel pipe)" 
+        annotation(Dialog(enable=WallFriction.use_roughness));
+
+    parameter Boolean use_nominal = false
+      "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
+                                                                                                    annotation(Evaluate=true);
+    parameter SI.DynamicViscosity eta_nominal = Medium.dynamicViscosity(
+                                                   Medium.setState_pTX(
+                                                       Medium.p_default, Medium.T_default, Medium.X_default))
+      "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
+                                                                              annotation(Dialog(enable=use_nominal));
+    parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+                                                               annotation(Dialog(enable=use_nominal));
+
+    parameter Boolean show_Re = false
+      "= true, if Reynolds number is included for plotting" 
+       annotation (Evaluate=true, Dialog(tab="Advanced"));
+    parameter Boolean from_dp=true
+      " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
+      annotation (Evaluate=true, Dialog(tab="Advanced"));
+    parameter SI.AbsolutePressure dp_small = 1
+      "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
+      annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
+    parameter SI.MassFlowRate m_flow_small = reg_m_flow_small
+      "Within regularizatio if |m_flow| < m_flow_small (may be wider for large discontinuities in static head)"
+      annotation(Dialog(tab="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
+    SI.ReynoldsNumber Re = pressureDrop.Re[1] if show_Re
+      "Reynolds number of pipe";
+
+    outer Modelica_Fluid.System system "System properties";
+
+    // implementation finds in Pipes.BaseClasses.PressureDrop.PartialWallFrictionAndGravity
+    model PressureDrop = Pipes.BaseClasses.PressureDrop.DetailedFlow (
+          redeclare package WallFriction = WallFriction);
+
+    PressureDrop pressureDrop(
+            redeclare package Medium = Medium,
+            n=1,
+            state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
+                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
+            allowFlowReversal=allowFlowReversal,
+            dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
+            initType=Modelica_Fluid.Types.Init.SteadyState,
+            p_a_start=system.p_start + dp_start/2,
+            p_b_start=system.p_start - dp_start/2,
+            m_flow_start=m_flow_start,
+            nPipes=1,
+            roughness=roughness,
+            diameter=diameter,
+            length=length,
+            height_ab=height_ab,
+            g=system.g,
+      show_Re = show_Re,
+      use_eta_nominal=use_nominal,
+      eta_nominal=eta_nominal,
+      use_d_nominal=use_nominal,
+      d_nominal=d_nominal,
+      from_dp=from_dp,
+      dp_small=dp_small,
+      m_flow_small=m_flow_small) "Pressure drop model" 
+       annotation (Placement(transformation(extent={{-41,-106},{35,-70}},
+                                                                       rotation=0)));
+
+  equation
+    port_a.m_flow = pressureDrop.m_flow[1];
+
+      annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={192,192,192}),
+          Rectangle(
+            extent={{-100,44},{100,-45}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Text(
+            extent={{-150,80},{150,120}},
+            lineColor={0,0,255},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString="%name")}),           Documentation(info="<html>
+<p>
+This model describes pressure losses due to <b>wall friction</b> in a pipe
+and due to gravity.
+It is assumed that no mass or energy is stored in the pipe. 
+Correlations of different complexity and validity can be
+seleted via the replaceable package <b>WallFriction</b> (see parameter menu below).
+The details of the pipe wall friction model are described in the
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
+Basically, different variants of the equation
+</p>
+ 
+<pre>
+   dp = &lambda;(Re,<font face=\"Symbol\">D</font>)*(L/D)*&rho;*v*|v|/2
+</pre>
+ 
+<p>
+are used, where the friction loss factor &lambda; is shown
+in the next figure:
+</p>
+ 
+<img src=\"../Images/Components/PipeFriction1.png\">
+ 
+<p>
+By default, the correlations are computed with media data
+at the actual time instant.
+In order to reduce non-linear equation systems, parameter
+<b>use_nominal</b> provides the option
+to compute the correlations with constant media values
+at the desired operating point. This might speed-up the
+simulation and/or might give a more robust simulation.
+</p>
+</html>"),
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Rectangle(
+            extent={{-100,64},{100,-64}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward),
+          Rectangle(
+            extent={{-100,50},{100,-49}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Line(
+            points={{-60,-49},{-60,50}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-50,16},{6,-10}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString="diameter"),
+          Line(
+            points={{-100,74},{100,74}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-34,92},{34,74}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString="length")}));
+  end WallFrictionAndGravity;
 
   annotation (Documentation(info="<html>
 <p>
@@ -1651,8 +1688,8 @@ The used sufficient criteria for monotonicity follows from:
           "Absolute roughness of pipe (> 0 required, details see info layer)";
       annotation (
         Diagram(graphics),
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-                  100,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                  {100,100}}), graphics={
               Text(
                 extent={{-150,80},{150,120}},
                 lineColor={0,0,0},

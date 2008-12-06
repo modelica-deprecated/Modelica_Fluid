@@ -1,8 +1,5 @@
 within Modelica_Fluid;
 package Examples "Demonstrates usage of fluid component models"
-
-
-
 annotation(preferedView="info",classOrder={"PumpingSystem", "DrumBoiler", "Tanks", "ControlledTankSystem", "AST_BatchPlant", "*"},
     Documentation(info="<html>
  

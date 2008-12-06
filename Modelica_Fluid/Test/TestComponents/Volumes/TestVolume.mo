@@ -1,5 +1,5 @@
 within Modelica_Fluid.Test.TestComponents.Volumes;
-model TestClosedVolume
+model TestVolume
   extends Modelica.Icons.Example;
   Modelica_Fluid.Volumes.Volume Volume(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -53,4 +53,4 @@ equation
       points={{-30,12},{-30,10},{2,10}},
       color={0,127,255},
       smooth=Smooth.None));
-end TestClosedVolume;
+end TestVolume;

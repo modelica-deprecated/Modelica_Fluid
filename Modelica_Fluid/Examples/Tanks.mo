@@ -569,7 +569,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       zeta_in={1.05},
       nPorts=1,
       portDiameters={0.1}) 
-                     annotation (Placement(transformation(extent={{40,-20},{80,20}},
+                     annotation (Placement(transformation(extent={{40,10},{80,50}},
                     rotation=0)));
     Modelica_Fluid.PressureLosses.StaticHead pipe1(           redeclare package
         Medium =                                                                       Medium,
@@ -589,16 +589,16 @@ package Tanks "Library demonstrating the usage of the tank model"
         Medium =                                                                       Medium,
       allowFlowReversal=true,
       height_ab=-1) annotation (Placement(transformation(
-          origin={60,-50},
+          origin={60,-10},
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
     connect(pipe1.port_a, pipe2.port_a) annotation (Line(points={{-60,-20},{-60,
             -40},{-6.12323e-016,-40},{-6.12323e-016,-20}}, color={0,127,255}));
     connect(pipe2.port_a, pipe3.port_a) annotation (Line(points={{-6.12323e-016,
-            -20},{0,-20},{0,-80},{60,-80},{60,-60}}, color={0,127,255}));
+            -20},{0,-20},{0,-40},{60,-40},{60,-20}}, color={0,127,255}));
     connect(pipe3.port_b, tank3.ports[1]) 
-      annotation (Line(points={{60,-40},{60,-40},{60,-20},{59,-20}},
+      annotation (Line(points={{60,0},{60,0},{60,10},{59,10}},
                                                 color={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{-60,0},{-60,
             10},{-60,20},{-61,20}},
