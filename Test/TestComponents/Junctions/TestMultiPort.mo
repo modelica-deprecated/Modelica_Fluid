@@ -3,9 +3,9 @@ model TestMultiPort
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
 
-  Modelica_Fluid.Junctions.MultiPort multiPort(redeclare package Medium = 
-        Modelica.Media.Air.DryAirNasa, nPorts_b=2) 
-                                            annotation (Placement(
+  Modelica_Fluid.Junctions.MultiPort multiPort(
+                                       nPorts_b=2, redeclare package Medium =
+        Modelica.Media.Air.MoistAir)        annotation (Placement(
         transformation(extent={{-28,-30},{-20,-10}},
                                                    rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
@@ -14,7 +14,7 @@ model TestMultiPort
   Modelica_Fluid.Sources.FixedBoundary_pTX source2(
     T=278.15,
     p=5e5,
-    redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+    redeclare package Medium = Modelica.Media.Air.MoistAir) 
     annotation (Placement(transformation(
         origin={80,-20},
         extent={{-10,-10},{10,10}},
@@ -22,7 +22,7 @@ model TestMultiPort
   Modelica_Fluid.Sources.FixedBoundary_pTX source3(
     T=283.15,
     p=2e5,
-    redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+    redeclare package Medium = Modelica.Media.Air.MoistAir) 
     annotation (Placement(transformation(
         origin={10,70},
         extent={{-10,-10},{10,10}},
@@ -30,10 +30,11 @@ model TestMultiPort
   inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,80},{-80,100}}, rotation=
            0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(          p=5e5,
-      redeclare package Medium = Modelica.Media.Air.DryAirNasa,
+  Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(
     T=system.T_ambient,
-    usePressureInput=true) 
+    usePressureInput=true,
+    redeclare package Medium = Modelica.Media.Air.MoistAir,
+    p=500000) 
     annotation (Placement(transformation(extent={{-60,-30},{-40,-10}}, rotation=
            0)));
   Modelica.Blocks.Sources.Ramp ramp(
@@ -42,24 +43,23 @@ model TestMultiPort
     offset=7e5) annotation (Placement(transformation(extent={{-10,-10},{10,10}},
           rotation=270,
         origin={-80,10})));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(redeclare package
-      Medium = 
-        Modelica.Media.Air.DryAirNasa,
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
     length=1,
-    diameter=0.1)                      annotation (Placement(transformation(
+    diameter=0.1,
+    redeclare package Medium = Modelica.Media.Air.MoistAir) 
+                                       annotation (Placement(transformation(
           extent={{40,-30},{60,-10}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(redeclare package
-      Medium = 
-        Modelica.Media.Air.DryAirNasa,
+  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
     length=1,
-    diameter=0.1) 
+    diameter=0.1,
+    redeclare package Medium = Modelica.Media.Air.MoistAir) 
     annotation (Placement(transformation(
         origin={10,24},
         extent={{-10,-10},{10,10}},
         rotation=90)));
 equation
   connect(ramp.y, source1.p_in) annotation (Line(points={{-80,-1},{-80,-1},{-80,
-          -14},{-62,-14}},
+          -12},{-62,-12}},
         color={0,0,127}));
   connect(pipe1.port_b, source2.ports[1]) 
                                       annotation (Line(points={{60,-20},{70,-20}},

@@ -147,6 +147,11 @@ of the modeller.
       annotation (Placement(transformation(extent={{30,40},{50,-40}},
                                   rotation=0)));
 
+    Medium.MassFraction[nPorts_b,Medium.nXi] ports_b_Xi_inStream
+      "inStream mass fractions at ports_b";
+    Medium.ExtraProperty[nPorts_b,Medium.nC] ports_b_C_inStream
+      "inStream extra properties at ports_b";
+
     annotation (Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-40,
               -100},{40,100}}), graphics={
           Line(
@@ -203,13 +208,17 @@ of the modeller. Increase nPorts_b to add an additional port.
     // mixing at port_a
     port_a.h_outflow = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].h_outflow) for j in 1:nPorts_b})
                          / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
+    for j in 1:nPorts_b loop
+       ports_b_Xi_inStream[j,:] = inStream(ports_b[j].Xi_outflow);
+       ports_b_C_inStream[j,:] = inStream(ports_b[j].C_outflow);
+    end for;
     for i in 1:Medium.nXi loop
-      port_a.Xi_outflow[i] = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].Xi_outflow[i]) for j in 1:nPorts_b})
-                           / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
+      port_a.Xi_outflow[i] = sum(positiveMax(ports_b.m_flow).*ports_b_Xi_inStream[:,i])
+                           / sum(positiveMax(ports_b.m_flow));
     end for;
     for i in 1:Medium.nC loop
-      port_a.C_outflow[i] = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].C_outflow[i]) for j in 1:nPorts_b})
-                           / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
+      port_a.C_outflow[i] = sum(positiveMax(ports_b.m_flow).*ports_b_C_inStream[:,i])
+                           / sum(positiveMax(ports_b.m_flow));
     end for;
   end MultiPort;
 
