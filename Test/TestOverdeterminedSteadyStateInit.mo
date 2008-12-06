@@ -85,7 +85,7 @@ The initial equations are consistent however and a tool shall reduce them approp
               -100},{100,100}}),
                         graphics),
                          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+              -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
               lineColor={0,0,255}), Text(
             extent={{-60,60},{60,-60}},
             lineColor={0,0,255},
@@ -160,9 +160,9 @@ The initial equations are consistent however and a tool shall reduce them approp
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
       p_a_start=400000,
       p_b_start=390000,
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow
-          (use_nominal=true)) 
+      redeclare model PressureDrop =
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop (
+            m_flow_nominal=1, dp_nominal=100)) 
       annotation (Placement(transformation(extent={{12,-14},{32,6}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe radiator(
@@ -176,9 +176,9 @@ The initial equations are consistent however and a tool shall reduce them approp
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
       p_a_start=110000,
       p_b_start=105000,
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow
-          (use_nominal=true)) 
+      redeclare model PressureDrop =
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop (
+            m_flow_nominal=1, dp_nominal=100)) 
       annotation (Placement(transformation(extent={{28,-76},{8,-56}}, rotation=
               0)));
 
@@ -212,7 +212,8 @@ The initial equations are consistent however and a tool shall reduce them approp
             7},{-24,38},{36,38},{36,22},{98,22}}, color={0,0,127}));
     connect(massFlowRate.port_b, pipe.port_a) annotation (Line(points={{-14,-4},
             {12,-4}}, color={0,127,255}));
-    connect(pipe.port_b, valve.port_a) annotation (Line(points={{32,-4},{42,-4}},
+    connect(pipe.port_b, valve.port_a) annotation (Line(points={{32,-4},{42,
+            -4}},
           color={0,127,255}));
     connect(thermalConductor1.port_b, radiator.heatPort) annotation (Line(
           points={{18,-56},{18,-60.6}}, color={191,0,0}));
@@ -224,8 +225,8 @@ The initial equations are consistent however and a tool shall reduce them approp
             {39,-80},{72,-80},{72,-18},{98,-18}}, color={0,0,127}));
     connect(sensor_T_2.T, coldWaterTemperature) annotation (Line(points={{-33,
             -46},{-33,-88},{76,-88},{76,-68},{98,-68}}, color={0,0,127}));
-    connect(radiator.port_a, valve.port_b) annotation (Line(points={{28,-66},{
-            68,-66},{68,-4},{58,-4}}, color={0,127,255}));
+    connect(radiator.port_a, valve.port_b) annotation (Line(points={{28,-66},
+            {68,-66},{68,-4},{58,-4}},color={0,127,255}));
     connect(sensor_T_2.port, radiator.port_b) annotation (Line(points={{-26,-56},
             {-26,-66},{8,-66}}, color={0,127,255}));
     connect(radiator.port_a, sensor_T_1.port) annotation (Line(points={{28,-66},
@@ -319,7 +320,7 @@ Initial equations for steady-state are selected for the pipe components, initial
         pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
         radiator(initType=Modelica_Fluid.Types.Init.SteadyState,
                  redeclare model PressureDrop = 
-              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NoFriction)));
+              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop(dp_nominal=0,use_m_flow_small=true,m_flow_small=1e-4))));
 
     annotation (
       Documentation(info="<html>
@@ -338,7 +339,7 @@ The radiator pipe has no pressure losses in the momentum balances, so the pressu
         pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
         radiator(initType=Modelica_Fluid.Types.Init.SteadyState,
                  redeclare model PressureDrop = 
-              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NoFriction)));
+              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop(dp_nominal=0,use_m_flow_small=true,m_flow_small=1e-4))));
     annotation (
       Documentation(info="<html>
 Initial equations for steady-state are selected for all components, plus additional initial equations to set the initial level and temperature of the tank. The model of the radiator pipe has zero pressure losses.
@@ -358,7 +359,7 @@ The radiator pipe has no pressure losses in the momentum balances, so the pressu
         tank(initType=Modelica_Fluid.Types.Init.InitialValues),
         pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
         radiator(redeclare model PressureDrop = 
-              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NoFriction,
+              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop(dp_nominal=0,use_m_flow_small=true,m_flow_small=1e-4),
             initType=Modelica_Fluid.Types.Init.NoInit)));
     annotation (
       Documentation(info="<html>
@@ -380,4 +381,5 @@ On the other hand, it is quite straightforward to set up overdetermined conditio
   initial equation
     der(plant.radiator.volume.medium.h) = 0;
   end Test7;
+
 end TestOverdeterminedSteadyStateInit;

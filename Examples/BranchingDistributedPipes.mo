@@ -16,7 +16,8 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     length=2,
     use_approxPortProperties=true,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    heatTransfer(alpha0=500),
+    redeclare model HeatTransfer = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_localLamTurb,
     p_a_start=100000,
     p_b_start=100000,
     T_start=280) 
@@ -133,7 +134,8 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     p_a_start=100000,
     p_b_start=100000,
     T_start=280,
-    heatTransfer(alpha0=500)) 
+    redeclare model HeatTransfer = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_localLamTurb) 
             annotation (Placement(transformation(extent={{-28,-50},{-8,-30}},
           rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary4(
@@ -221,7 +223,7 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(ramp.y, boundary2.p_in) annotation (Line(
-      points={{77,76},{76,76},{76,40},{72,40}},
+      points={{77,76},{76,76},{76,42},{72,42}},
       color={0,0,127},
       thickness=0.5));
   connect(pipe3.port_b, boundary2.ports[1]) annotation (Line(
@@ -234,7 +236,7 @@ equation
       color={191,0,0},
       thickness=0.5));
   connect(ramp1.y, boundary4.p_in) annotation (Line(
-      points={{79,-10},{78,-10},{78,-54},{72,-54}},
+      points={{79,-10},{78,-10},{78,-52},{72,-52}},
       color={0,0,127},
       thickness=0.5));
   connect(boundary3.ports[1], pipe7.port_a) annotation (Line(

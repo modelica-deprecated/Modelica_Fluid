@@ -7,31 +7,33 @@ package TestCriticalCases
     package Medium = 
         Modelica.Media.IdealGases.MixtureGases.FlueGasSixComponents;
 
-    PressureLosses.WallFrictionAndGravity pipeFriction1(
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    Pipes.StaticPipe pipeFriction1(
       length=1,
       diameter=0.2,
-      redeclare package Medium = Medium) annotation (Placement(transformation(
+      redeclare package Medium = Medium,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
+                                         annotation (Placement(transformation(
             extent={{-32,-40},{-12,-20}}, rotation=0)));
-    PressureLosses.WallFrictionAndGravity pipeFriction2(
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    Pipes.StaticPipe pipeFriction2(
       length=1,
       diameter=0.2,
-      redeclare package Medium = Medium) annotation (Placement(transformation(
+      redeclare package Medium = Medium,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
+                                         annotation (Placement(transformation(
             extent={{12,-40},{32,-20}}, rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
               100,100}}), graphics),
       experiment(StopTime=10),
       experimentSetupOutput);
-    PressureLosses.WallFrictionAndGravity pipeFriction3(
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+    Pipes.StaticPipe pipeFriction3(
       length=1,
       diameter=0.2,
-      redeclare package Medium = Medium) 
+      redeclare package Medium = Medium,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
       annotation (Placement(transformation(
           origin={0,0},
           extent={{-10,-10},{10,10}},
@@ -103,19 +105,19 @@ package TestCriticalCases
         smooth=Smooth.None));
     connect(boundary3.ports[1], pipeFriction3.port_b) 
                                                   annotation (Line(
-        points={{-1.83697e-015,20},{-1.83697e-015,10},{6.12323e-016,10}},
+        points={{-1.9984e-015,20},{-1.9984e-015,10},{6.12323e-016,10}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(sine1.y, boundary1.p_in) annotation (Line(
-        points={{-79,-10},{-76,-10},{-76,-24},{-70,-24}},
+        points={{-79,-10},{-76,-10},{-76,-22},{-70,-22}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(sine2.y, boundary1.T_in) annotation (Line(
-        points={{-79,-48},{-76,-48},{-76,-30},{-70,-30}},
+        points={{-79,-48},{-76,-48},{-76,-26},{-70,-26}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(sine3.y, boundary3.p_in) annotation (Line(
-        points={{-6.73556e-016,59},{-6.73556e-016,50.5},{-6,50.5},{-6,42}},
+        points={{-6.73556e-016,59},{-6.73556e-016,50.5},{-8,50.5},{-8,42}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(temperature.port, pipeFriction3.port_a) annotation (Line(
@@ -1781,7 +1783,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Sources.FixedBoundary source(redeclare package Medium = 
           Modelica.Media.Water.StandardWater, p=200000) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Modelica_Fluid.Pipes.ToBeRemoved.DistributedPipe_Old pipe(
+    Pipes.DistributedPipe pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       length=1,
       diameter=0.32,

@@ -8,18 +8,20 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
  Modelica_Fluid.Pipes.DistributedPipe pipe2(
     redeclare package Medium = Medium,
     use_T_start=true,
-    T_start=280,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare model PressureDrop = 
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
-    p_b_start=1.0e5,
     length=2,
     use_approxPortProperties=true,
-    heatTransfer(each alpha0=500),
-    p_a_start=100000) 
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=280,
+    redeclare model HeatTransfer = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha (alpha0=
+           500)) 
             annotation (Placement(transformation(extent={{-30,68},{-10,88}},
           rotation=0)));
 
@@ -134,18 +136,19 @@ Test of different distributed pipe models. The first system uses explicit juncti
  Modelica_Fluid.Pipes.DistributedPipe pipe5(
     redeclare package Medium = Medium,
     use_T_start=true,
-    T_start=280,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare model PressureDrop = 
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
-    p_b_start=1.0e5,
     length=2,
     use_approxPortProperties=true,
-    heatTransfer(each alpha0=500),
-    p_a_start=100000) 
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=280,
+    redeclare model HeatTransfer = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_localLamTurb) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
           rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary4(
@@ -224,18 +227,20 @@ Test of different distributed pipe models. The first system uses explicit juncti
  Modelica_Fluid.Pipes.DistributedPipe pipe9(
     redeclare package Medium = Medium,
     use_T_start=true,
-    T_start=280,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
     redeclare model PressureDrop = 
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
-    p_b_start=1.0e5,
     length=2,
     use_approxPortProperties=true,
-    heatTransfer(each alpha0=500),
-    p_a_start=100000) 
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=280,
+    redeclare model HeatTransfer = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha (alpha0=
+           500)) 
             annotation (Placement(transformation(extent={{-29,-50},{-9,-30}},
           rotation=0)));
   Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary5(
@@ -337,7 +342,7 @@ equation
       color={191,0,0},
       thickness=0.5));
   connect(ramp1.y, boundary4.p_in) annotation (Line(
-      points={{83.4,14},{70,14}},
+      points={{83.4,14},{76.7,14},{76.7,16},{70,16}},
       color={0,0,127},
       thickness=0.5));
   connect(boundary3.ports[1], pipe7.port_a) 
@@ -372,11 +377,11 @@ equation
       color={191,0,0},
       thickness=0.5));
   connect(boundary2.p_in, ramp.y) annotation (Line(
-      points={{72,70},{77.4,70}},
+      points={{72,72},{74.7,72},{74.7,70},{77.4,70}},
       color={0,0,127},
       thickness=0.5));
   connect(ramp2.y, boundary5.p_in) annotation (Line(
-      points={{83.4,-46},{72,-46}},
+      points={{83.4,-46},{77.7,-46},{77.7,-44},{72,-44}},
       color={0,0,127},
       thickness=0.5));
   connect(boundary6.ports[1], pipe11.port_a) 

@@ -14,10 +14,10 @@ package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     m_flow_start_2=0.2,
     redeclare model PressureDrop_1 = 
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow (
-            use_nominal=true,eta_nominal=0.01),
+            use_d_nominal=true,use_eta_nominal=true,eta_nominal=0.01),
     redeclare model PressureDrop_2 = 
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow (
-            use_nominal=true,eta_nominal=0.01),
+            use_d_nominal=true,use_eta_nominal=true,eta_nominal=0.01),
     k_wall=100,
     initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
     s_wall=0.005,
@@ -85,7 +85,7 @@ equation
   connect(HEX.port_b1, ambient1.ports[1])        annotation (Line(points={{37,
           15.4},{48.5,15.4},{48.5,34},{62,34}}, color={0,127,255}));
   connect(Ramp1.y, massFlowRate2.m_flow_in) annotation (Line(points={{-79,34},{
-          -74,34},{-74,40},{-65.3,40}}, color={0,0,127}));
+          -74,34},{-74,42},{-66,42}},   color={0,0,127}));
   connect(massFlowRate2.ports[1], HEX.port_b2) 
                                            annotation (Line(
       points={{-46,34},{-40,34},{-40,29.8},{-29,29.8}},

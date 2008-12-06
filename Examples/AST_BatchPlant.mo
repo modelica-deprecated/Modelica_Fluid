@@ -190,17 +190,6 @@ present that are regulated by a central control system.
           origin={-180,-56},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Volumes.Volume volume1(
-      redeclare package Medium = BatchMedium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001,
-      nPorts=2,
-      neglectPortDiameters=true,
-      portDiameters={0,0}) 
-               annotation (Placement(transformation(
-          origin={-192,70},
-          extent={{-10,-10},{10,10}},
-          rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V5(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
@@ -223,17 +212,6 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={160,-20},
-          extent={{10,-10},{-10,10}},
-          rotation=270)));
-    Modelica_Fluid.Volumes.Volume volume7(
-      redeclare package Medium = BatchMedium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001,
-      nPorts=2,
-      portDiameters={0,0},
-      neglectPortDiameters=true) 
-               annotation (Placement(transformation(
-          origin={172,60},
           extent={{10,-10},{-10,10}},
           rotation=270)));
     Modelica_Fluid.ControlValves.ValveDiscrete V20(
@@ -288,7 +266,7 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={-80,-232},
+          origin={-80,-210},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Pumps.PumpNPSH P1(
@@ -381,91 +359,91 @@ present that are regulated by a central control system.
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-100,
               -140},{-60,-100}}, rotation=0)));
-    Modelica_Fluid.Pipes.ToBeRemoved.LumpedPipe_Old pipeB1B2(
+    Pipes.DistributedPipe pipeB1B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
       height_ab=0,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar) 
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
                    annotation (Placement(transformation(extent={{10,230},{-10,
               250}}, rotation=0)));
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipeB1B3(
+    Pipes.StaticPipe pipeB1B3(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
       height_ab=0.1,
-      from_dp=false,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop (
+           dp_nominal(displayUnit="Pa") = 1, m_flow_nominal=1)) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
             rotation=0)));
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipeB2B3(
+    Pipes.StaticPipe pipeB2B3(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
       height_ab=0.1,
-      from_dp=false,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop (
+           dp_nominal(displayUnit="Pa") = 1, m_flow_nominal=1)) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
              0)));
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipeB1B1(
+    Pipes.StaticPipe pipeB1B1(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
-      from_dp=false,
       height_ab=0.5,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop (
+           dp_nominal=1, m_flow_nominal=1)) 
       annotation (Placement(transformation(
           origin={20,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipeB6Pump(
+    Pipes.StaticPipe pipeB6Pump(
       redeclare package Medium = BatchMedium,
-      from_dp=true,
       length=0.5,
       diameter=0.1,
       height_ab=0.5,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed) 
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
                    annotation (Placement(transformation(
           origin={60,-106},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipeB7Pump(
+    Pipes.StaticPipe pipeB7Pump(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
-      from_dp=false,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction,
-      height_ab=0.1) 
+      height_ab=0.1,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
                    annotation (Placement(transformation(
-          origin={-80,-200},
+          origin={-80,-170},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Pipes.ToBeRemoved.LumpedPipe_Old pipePump1B1(
+    Pipes.DistributedPipe pipePump1B1(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
       height_ab=3,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
                    annotation (Placement(transformation(
-          origin={-180,-4},
+          origin={-180,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Pipes.ToBeRemoved.LumpedPipe_Old pipePump2B2(
+    Pipes.DistributedPipe pipePump2B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=0.1,
       height_ab=3,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.NoFriction) 
+      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
                    annotation (Placement(transformation(
-          origin={160,10},
+          origin={160,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     BaseClasses.CoolingTank B6(
@@ -565,26 +543,28 @@ present that are regulated by a central control system.
             88},{-80,70}}, color={0,127,255}));
     connect(V10.port_a, pipeB1B1.port_b) annotation (Line(points={{20,60},{20,
             40}}, color={0,127,255}));
-    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-80,-19.6},
-            {-80,-8}}, color={0,0,255}));
+    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-80,
+            -19.6},{-80,-8}},
+                       color={0,0,255}));
     connect(V15.port_b, B7.topPorts[1]) annotation (Line(points={{-80,-92},{-80,
             -100}}, color={0,127,255}));
     connect(B7.ports[1], pipeB7Pump.port_b) annotation (Line(points={{-80,-140},
-            {-80,-190}}, color={0,127,255}));
-    connect(pipeB7Pump.port_a, V18.port_b) annotation (Line(points={{-80,-210},
-            {-80,-222}}, color={0,127,255}));
-    connect(pipePump1B1.port_a, V22.port_b) annotation (Line(points={{-180,-14},
+            {-80,-160}}, color={0,127,255}));
+    connect(pipeB7Pump.port_a, V18.port_b) annotation (Line(points={{-80,-180},
+            {-80,-200}}, color={0,127,255}));
+    connect(pipePump1B1.port_a, V22.port_b) annotation (Line(points={{-180,20},
             {-180,-46}}, color={0,127,255}));
     connect(V25.port_b, pipePump2B2.port_a) annotation (Line(points={{160,-10},
-            {160,0}}, color={0,127,255}));
+            {160,20}},color={0,127,255}));
     connect(B6.ports[1], pipeB6Pump.port_b) annotation (Line(points={{60,-80},{
             60,-96}}, color={0,127,255}));
-    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{60,-40},{60,
-            -28},{-19.6,-28}}, color={0,127,255}));
+    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{60,-40},
+            {60,-28},{-19.6,-28}},
+                               color={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{100,-60},{80,
             -60}}, color={191,0,0}));
-    connect(V19.port_b, pipeB6Pump.port_a) annotation (Line(points={{-8,-190},{
-            -8,-140},{60,-140},{60,-116}}, color={0,127,255}));
+    connect(V19.port_b, pipeB6Pump.port_a) annotation (Line(points={{-8,-190},
+            {-8,-140},{60,-140},{60,-116}},color={0,127,255}));
     connect(V20.port_b, pipeB6Pump.port_a) annotation (Line(points={{60,-190},{
             60,-116}}, color={0,127,255}));
     connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-120,-40},{-102,
@@ -630,7 +610,7 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume4.ports_a[1], V18.port_a)     annotation (Line(
-        points={{-38,-248},{-80,-248},{-80,-242}},
+        points={{-38,-248},{-80,-248},{-80,-220}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume4.ports_b[1], V19.port_a)     annotation (Line(
@@ -653,20 +633,12 @@ present that are regulated by a central control system.
         points={{-180,-66},{-180,-252},{-148,-252}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(V1.port_a, volume1.ports[1]) annotation (Line(
-        points={{-180,100},{-180,70},{-184,70}},
+    connect(V5.port_a, pipePump2B2.port_b) annotation (Line(
+        points={{160,100},{160,40}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(volume1.ports[2], pipePump1B1.port_b) annotation (Line(
-        points={{-180,70},{-180,6}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(V5.port_a, volume7.ports[1]) annotation (Line(
-        points={{160,100},{160,60},{164,60}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(volume7.ports[2], pipePump2B2.port_b) annotation (Line(
-        points={{160,60},{160,20}},
+    connect(V1.port_a, pipePump1B1.port_b) annotation (Line(
+        points={{-180,100},{-180,40}},
         color={0,127,255},
         smooth=Smooth.None));
   end BatchPlant_StandardWater;
@@ -1277,8 +1249,8 @@ handled properly.</p>
         assert(false, "Unsupported initialization option");
       end if;
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
-                200,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
+                {200,100}}), graphics={
             Rectangle(
               extent={{-200,100},{0,-90}},
               lineColor={255,255,255},
@@ -1290,7 +1262,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,
+                  0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1315,10 +1288,11 @@ handled properly.</p>
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={0,0,255}),
             Polygon(
-              points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,74},
-                  {130,60},{144,70},{152,60},{168,66},{180,54},{196,74},{190,76},
-                  {180,64},{170,70},{156,66},{148,76},{132,68},{120,80},{100,74},
-                  {88,88},{70,78},{50,92},{32,82},{28,100},{20,98},{20,98}},
+              points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,
+                  74},{130,60},{144,70},{152,60},{168,66},{180,54},{196,74},
+                  {190,76},{180,64},{170,70},{156,66},{148,76},{132,68},{
+                  120,80},{100,74},{88,88},{70,78},{50,92},{32,82},{28,100},
+                  {20,98},{20,98}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={170,255,255})}),
@@ -1337,6 +1311,7 @@ Full steady state initialization is not supported, because the corresponding int
 </HTML>"),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
                 200,100}}),  graphics));
+    equation
 
     end TankWith3InletOutletArraysWithEvaporatorCondensor;
 
@@ -1393,8 +1368,8 @@ Full steady state initialization is not supported, because the corresponding int
               rotation=0)));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,
                 -200},{200,200}}),      graphics),
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},{
-                200,200}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},
+                {200,200}}), graphics={
             Rectangle(
               extent={{-200,200},{200,-200}},
               lineColor={0,0,255},
@@ -2038,11 +2013,11 @@ Full steady state initialization is not supported, because the corresponding int
               lineColor={255,255,255},
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                  0,0}),
+            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}},
+                color={0,0,0}),
             Rectangle(
-              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
-                   + 200*level/levelMax)}}),
+              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,
+                  (-100 + 200*level/levelMax)}}),
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
@@ -2050,9 +2025,9 @@ Full steady state initialization is not supported, because the corresponding int
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
               textString=DynamicSelect(" ", realString(
-                    level,
-                    1,
-                    3))),
+                        level,
+                        1,
+                        3))),
             Line(
               points={{-100,100},{100,100}},
               color={0,0,0},
