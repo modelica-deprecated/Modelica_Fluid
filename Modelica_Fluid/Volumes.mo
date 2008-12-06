@@ -786,6 +786,10 @@ end Tank;
         parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default
         "Start value of mass fractions m_i/m" 
           annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+        parameter Medium.ExtraProperty C_start[Medium.nC](
+             quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
+        "Start value of trace substances" 
+          annotation (Dialog(tab="Initialization", enable=Medium.nC > 0));
 
         Medium.BaseProperties medium(
           preferredMediumStates=true,
@@ -796,6 +800,10 @@ end Tank;
         SI.Energy U "Internal energy of fluid";
         SI.Mass m "Mass of fluid";
         SI.Mass[Medium.nXi] mXi "Masses of independent components in the fluid";
+        SI.Mass[Medium.nC] mC "Masses of trace substances in the fluid";
+        // C need to be added here because unlike for Xi, which has medium.Xi,
+        // there is no variable medium.C
+        Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
 
         // variables that need to be defined by an extending class
         // make Qs_flow an input, allowing its definition and modification with binding equations,
@@ -804,6 +812,8 @@ end Tank;
         SI.MassFlowRate ms_flow "Mass flows across boundaries";
         SI.MassFlowRate[Medium.nXi] msXi_flow
         "Substance mass flows across boundaries";
+        Medium.ExtraPropertyFlowRate[Medium.nC] msC_flow
+        "Trace substance mass flows across boundaries";
         SI.EnthalpyFlowRate Hs_flow
         "Enthalpy flow across boundaries or energy source/sink";
         input SI.HeatFlowRate Qs_flow
@@ -815,14 +825,17 @@ end Tank;
         m = fluidVolume*medium.d;
         mXi = m*medium.Xi;
         U = m*medium.u;
+        mC = m*C;
 
         // Mass and energy balances
         if dynamicsType < Types.Dynamics.SteadyStateMass then
           der(m) = ms_flow;
           der(mXi) = msXi_flow;
+          der(mC)  = msC_flow;
         else
           0 = ms_flow;
           zeros(Medium.nXi) = msXi_flow;
+          zeros(Medium.nC)  = msC_flow;
         end if;
         if dynamicsType < Types.Dynamics.SteadyState then
           der(U) = Hs_flow + Qs_flow + Ws_flow;
@@ -844,6 +857,8 @@ end Tank;
             medium.h = h_start;
           end if;
           medium.Xi = X_start[1:Medium.nXi];
+          C         = C_start[1:Medium.nC];
+
         elseif initType == Types.Init.SteadyState then
           if not Medium.singleState then
             der(medium.p) = 0;
@@ -854,6 +869,8 @@ end Tank;
             der(medium.h) = 0;
           end if;
           der(medium.Xi) = zeros(Medium.nXi);
+          der(C)         = zeros(Medium.nC);
+
         elseif initType == Types.Init.SteadyStateHydraulic then
           if not Medium.singleState then
             der(medium.p) = 0;
@@ -864,6 +881,7 @@ end Tank;
             medium.h = h_start;
           end if;
           medium.Xi = X_start[1:Medium.nXi];
+          C         = C_start[1:Medium.nC];
         else
           assert(false, "Unsupported initialization option");
         end if;
@@ -881,8 +899,9 @@ Further source terms must be defined by an extending class for fluid flow across
 </p>
 <ul>
 <li><tt><b>Hs_flow</b></tt>, enthalpy flow,</li> 
-<li><tt><b>ms_flow</b></tt>, mass flow, and</li> 
-<li><tt><b>msXi_flow</b></tt>, substance mass flow.</li> 
+<li><tt><b>ms_flow</b></tt>, mass flow,</li> 
+<li><tt><b>msXi_flow</b></tt>, substance mass flow, and</li> 
+<li><tt><b>msC_flow</b></tt>, trace substance mass flow.</li> 
 </ul>
 <b>Note:</b>
 <p>
@@ -930,6 +949,8 @@ Moreover an input might mislead a tool to break equation systems, resulting in i
         Medium.MassFlowRate[Medium.nXi] sum_ports_mXi_flow
         "Substance mass flows through ports";
         Medium.ExtraPropertyFlowRate ports_mC_flow[nPorts,Medium.nC];
+        Medium.ExtraPropertyFlowRate[Medium.nC] sum_ports_mC_flow
+        "Trace substance mass flows through ports";
 
     protected
         parameter SI.Area[nPorts] portArea=Modelica.Constants.pi/4*{portDiameters[i]^2 for i in 1:nPorts};
@@ -937,6 +958,7 @@ Moreover an input might mislead a tool to break equation systems, resulting in i
       equation
         ms_flow = sum(ports.m_flow);
         msXi_flow = sum_ports_mXi_flow;
+        msC_flow  = sum_ports_mC_flow;
         Hs_flow = sum(ports_H_flow);
 
         // Only one connection allowed to a port to avoid unwanted ideal mixing
@@ -967,15 +989,14 @@ of the modeller. Increase nPorts to add an additional port.
           "Enthalpy flow";
           ports_mXi_flow[i,:] = ports[i].m_flow * actualStream(ports[i].Xi_outflow)
           "Component mass flow";
-          ports_mC_flow[i,:] = ports[i].m_flow * actualStream(ports[i].C_outflow)
+          ports_mC_flow[i,:]  = ports[i].m_flow * actualStream(ports[i].C_outflow)
           "Trace substance mass flow";
         end for;
         for i in 1:Medium.nXi loop
           sum_ports_mXi_flow[i] = sum(ports_mXi_flow[:,i]);
         end for;
-        // Steady-state trace substance mass balance
         for i in 1:Medium.nC loop
-          sum(ports_mC_flow[:,i]) = 0;
+          sum_ports_mC_flow[i]  = sum(ports_mC_flow[:,i]);
         end for;
 
        annotation (
@@ -984,8 +1005,9 @@ This base class extends PartialLumpedVolume by adding a vector of fluid ports
 and defining the respective source terms
 <ul>
 <li><tt>Hs_flow</tt>, enthalpy flow,</li> 
-<li><tt>ms_flow</tt>, mass flow, and</li> 
-<li><tt>msXi_flow</tt>, substance mass flow.</li> 
+<li><tt>ms_flow</tt>, mass flow,</li> 
+<li><tt>msXi_flow</tt>, substance mass flow, and</li> 
+<li><tt>msC_flow</tt>, trace substance mass flow.</li> 
 </ul>
 An extending class still needs to define:
 <ul>

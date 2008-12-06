@@ -76,6 +76,10 @@ of the modeller.
     port_2.Xi_outflow = medium.Xi;
     port_3.Xi_outflow = medium.Xi;
 
+    port_1.C_outflow = C;
+    port_2.C_outflow = C;
+    port_3.C_outflow = C;
+
     // Mass balances
     fluidVolume = V;
     ms_flow = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
@@ -84,9 +88,9 @@ of the modeller.
                 + port_3.m_flow*actualStream(port_3.Xi_outflow)
       "Component mass balances";
 
-    zeros(Medium.nC) = port_1.m_flow*actualStream(port_1.C_outflow)
-                        + port_2.m_flow*actualStream(port_2.C_outflow)
-                        + port_3.m_flow*actualStream(port_3.C_outflow)
+    msC_flow  = port_1.m_flow*actualStream(port_1.C_outflow)
+              + port_2.m_flow*actualStream(port_2.C_outflow)
+              + port_3.m_flow*actualStream(port_3.C_outflow)
       "Trace substance mass balances";
 
     // Momentum balance (suitable for compressible media)
