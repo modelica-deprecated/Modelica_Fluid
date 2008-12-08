@@ -7,12 +7,7 @@ model TestJunctionTraceSubstances
         Medium)                             annotation (Placement(
         transformation(extent={{0,-30},{20,-10}},  rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
-            -100},{100,100}}),
-                      graphics={Text(
-          extent={{-80,-58},{92,-120}},
-          lineColor={255,0,0},
-          textString=
-              "Note: Multiport has been removed due to bug. See ticket #50.")}));
+            -100},{100,100}}), graphics));
   Modelica_Fluid.Sources.FixedBoundary_pTX source2(
     T=278.15,
     redeclare package Medium = Medium,
@@ -38,9 +33,9 @@ model TestJunctionTraceSubstances
     T=system.T_ambient,
     usePressureInput=true,
     redeclare package Medium = Medium,
-    nPorts=2,
     useTraceInput=true,
     useCompositionInput=true,
+    nPorts=1,
     p=500000) 
     annotation (Placement(transformation(extent={{-68,-28},{-48,-8}},  rotation=
            0)));
@@ -54,7 +49,7 @@ model TestJunctionTraceSubstances
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) annotation (Placement(transformation(
-          extent={{-26,-30},{-6,-10}},rotation=0)));
+          extent={{-24,-30},{-4,-10}},rotation=0)));
   Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
     length=1,
     diameter=0.1,
@@ -123,12 +118,15 @@ model TestJunctionTraceSubstances
     annotation (Placement(transformation(extent={{-100,-8},{-80,12}})));
   Modelica.Blocks.Sources.RealExpression X2(y=1 - X.y) "Concentration of X[2]" 
     annotation (Placement(transformation(extent={{-100,-32},{-80,-12}})));
+  Modelica_Fluid.Junctions.MultiPort multiPort(redeclare package Medium =
+        Medium, nPorts_b=2)
+    annotation (Placement(transformation(extent={{-42,-28},{-34,-8}})));
 equation
   connect(ramp.y, source1.p_in) annotation (Line(points={{-79,34},{-74,34},{-74,
           -10},{-70,-10}},
         color={0,0,127}));
   connect(pipe1.port_b, junction.port_1) 
-    annotation (Line(points={{-6,-20},{0,-20}}, color={0,127,255}));
+    annotation (Line(points={{-4,-20},{0,-20}}, color={0,127,255}));
   connect(pipe2.port_b, source2.ports[1]) 
                                       annotation (Line(points={{76,-20},{76,-20},
           {80,-20}},
@@ -161,16 +159,8 @@ equation
       points={{40,20},{40,-10}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(source1.ports[1], pipe3.port_a) annotation (Line(
-      points={{-48,-16},{-30,-16},{-30,20}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(source1.ports[2], pipe1.port_a) annotation (Line(
-      points={{-48,-20},{-26,-20}},
-      color={0,127,255},
-      smooth=Smooth.None));
   connect(traceSubstance.port, pipe1.port_a) annotation (Line(
-      points={{-60,16},{-44,16},{-44,-20},{-26,-20}},
+      points={{-60,16},{-28,16},{-28,-20},{-24,-20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(C.y, source1.C_in[1]) annotation (Line(
@@ -188,5 +178,17 @@ equation
   connect(X2.y, source1.X_in[2]) annotation (Line(
       points={{-79,-22},{-70,-22}},
       color={0,0,127},
+      smooth=Smooth.None));
+  connect(source1.ports[1], multiPort.port_a) annotation (Line(
+      points={{-48,-18},{-42,-18}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(multiPort.ports_b[1], pipe3.port_a) annotation (Line(
+      points={{-34,-16},{-30,-16},{-30,20}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(multiPort.ports_b[2], pipe1.port_a) annotation (Line(
+      points={{-34,-20},{-24,-20}},
+      color={0,127,255},
       smooth=Smooth.None));
 end TestJunctionTraceSubstances;
