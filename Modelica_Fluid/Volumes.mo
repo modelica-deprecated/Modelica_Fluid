@@ -984,6 +984,7 @@ of the modeller. Increase nPorts to add an additional port.
         end for;
         ports.h_outflow = fill(medium.h, nPorts);
         ports.Xi_outflow = fill(medium.Xi, nPorts);
+        ports.C_outflow  = fill(C,         nPorts);
 
         for i in 1:nPorts loop
           ports_H_flow[i] = ports[i].m_flow * actualStream(ports[i].h_outflow)
