@@ -231,7 +231,7 @@ of the modeller. Increase nPorts_b to add an additional port.
       import Modelica_Fluid.Types.PortFlowDirection;
 
       replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
-        "Fluid medium model" 
+        "Medium in the component" 
         annotation (choicesAllMatching=true);
 
       Modelica_Fluid.Interfaces.FluidPort_a port_1(redeclare package Medium = 
