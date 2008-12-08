@@ -4,7 +4,7 @@ model TestMultiPort
   extends Modelica.Icons.Example;
 
   Modelica_Fluid.Junctions.MultiPort multiPort(
-                                       nPorts_b=2, redeclare package Medium =
+                                       nPorts_b=2, redeclare package Medium = 
         Modelica.Media.Air.MoistAir)        annotation (Placement(
         transformation(extent={{-28,-30},{-20,-10}},
                                                    rotation=0)));

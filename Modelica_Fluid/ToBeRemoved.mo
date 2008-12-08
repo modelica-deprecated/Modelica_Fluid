@@ -678,8 +678,8 @@ of the modeller. Use a Junctions.MultiPort.
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid)}),
-  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}},
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}},
           grid={1,1}),
           graphics),
   Documentation(info="<html>

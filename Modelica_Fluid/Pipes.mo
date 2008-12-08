@@ -2,7 +2,6 @@ within Modelica_Fluid;
 package Pipes "Lumped, distributed and thermal pipe components"
     extends Modelica_Fluid.Icons.VariantLibrary;
 
-
   model StaticPipe
     "Basic pipe flow model without storage of momentum, mass or energy"
 
@@ -630,13 +629,6 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             parameter SI.MassFlowRate m_flow_nominal
           "Mass flow rate for dp_nominal";
 
-            parameter Boolean use_m_flow_small=false
-          "=true for numerical regularization around zero flow" 
-              annotation(Dialog(group="Advanced",enable=allowFlowReversal and not use_d_nominal));
-            parameter SI.MassFlowRate m_flow_small = 0.01
-          "Within regularization if |m_flow| < m_flow_small" 
-              annotation(Dialog(group="Advanced",enable=use_m_flow_small));
-
             parameter Boolean use_d_nominal = false
           "= true to use d_nominal for static head, otherwise computed from medium"
               annotation(Dialog(group="Advanced"), Evaluate=true);
@@ -644,21 +636,28 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
               annotation(Dialog(group="Advanced", enable=use_d_nominal));
 
+            parameter Boolean smoothFlowReversal=false
+          "=true for numerical regularization around zero flow" 
+              annotation(Dialog(group="Advanced",enable=allowFlowReversal and not use_d_nominal));
+            parameter SI.MassFlowRate m_flow_small = 0.01
+          "Within regularization if |m_flow| < m_flow_small" 
+              annotation(Dialog(group="Advanced",enable=smoothFlowReversal));
+
             SI.Density[n+1] d = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(state);
 
           equation
-            if allowFlowReversal and not use_d_nominal then
-              if use_m_flow_small then
-                // regularization around zero flow
-                dp = g*height_ab*Utilities.regStep(m_flow, d[1:n], d[2:n+1], m_flow_small) + dp_nominal/m_flow_nominal*m_flow*nPipes;
-              else
+            if not allowFlowReversal or use_d_nominal then
+              dp = g*height_ab*d[1:n] + dp_nominal/m_flow_nominal*m_flow*nPipes;
+            else
+              if not smoothFlowReversal then
                 // exact switching
                 for i in 1:n loop
                   dp[i] = g*height_ab*(if m_flow[i] > 0 then d[i] else d[i+1]) + dp_nominal/m_flow_nominal*m_flow[i]*nPipes;
                 end for;
+              else
+                // regularization around zero flow
+                dp = g*height_ab*Utilities.regStep(m_flow, d[1:n], d[2:n+1], m_flow_small) + dp_nominal/m_flow_nominal*m_flow*nPipes;
               end if;
-            else
-              dp = g*height_ab*d[1:n] + dp_nominal/m_flow_nominal*m_flow*nPipes;
             end if;
           end NominalPressureDrop;
 
@@ -709,28 +708,64 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             Real g_times_height_ab(final unit="m2/s2") = g*height_ab
           "Gravitiy times height_ab = dp_grav/d";
 
-            // Currently not in use (means to widen the regularization domain in case of large difference in static head)
-            final parameter Boolean use_x_small_staticHead = false
-          "Use dp_/m_flow_small_staticHead only if static head actually exists"
-                                                                                    annotation(Evaluate=true);
-                                                                   /*abs(height_ab)>0*/
-            SI.AbsolutePressure[n] dp_small_staticHead
-          "Heuristic for large discontinuities in static head";
-            SI.MassFlowRate[n] m_flow_small_staticHead
-          "Heuristic for large discontinuities in static head";
+            // basing static head on average density is sensible for a distributed pipe with small segments
+            final parameter Boolean use_staticHead = true
+          "= false to use average density for static head, independent of regularization of flow reversal"
+                                                                                               annotation(Dialog(group="Advanced"), Evaluate=true);
 
           equation
-            for i in 1:n loop
-              dp_small_staticHead[i] = noEvent(max(dp_small/n, 0.015*abs(g_times_height_ab/n*(d[i]-d[i+1]))));
-              m_flow_small_staticHead[i] = noEvent(max(m_flow_small/nPipes, (-5.55e-7*(d[i]+d[i+1])/2+5.5e-4)*abs(g_times_height_ab/n*(d[i]-d[i+1]))));
-            end for;
+          if use_staticHead then
+            // regularization with static head
             if from_dp and not WallFriction.dp_is_zero then
-              m_flow = WallFriction.massFlowRate_dp_staticHead(dp, d[1:n], d[2:n+1], eta[1:n], eta[2:n+1], length, diameter,
-                g_times_height_ab, roughness, if use_x_small_staticHead then dp_small_staticHead else fill(dp_small/n, n))*nPipes;
+              m_flow = WallFriction.massFlowRate_dp_staticHead(
+                dp,
+                d[1:n],
+                d[2:n+1],
+                eta[1:n],
+                eta[2:n+1],
+                length/n,
+                diameter,
+                g_times_height_ab/n,
+                roughness,
+                dp_small/n)*nPipes;
             else
-              dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow/nPipes, d[1:n], d[2:n+1], eta[1:n], eta[2:n+1], length, diameter,
-                g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else fill(m_flow_small/nPipes, n));
+              dp = WallFriction.pressureLoss_m_flow_staticHead(
+                m_flow/nPipes,
+                d[1:n],
+                d[2:n+1],
+                eta[1:n],
+                eta[2:n+1],
+                length/n,
+                diameter,
+                g_times_height_ab/n,
+                roughness,
+                m_flow_small/nPipes);
             end if;
+          else
+            if from_dp and not WallFriction.dp_is_zero then
+              m_flow = WallFriction.massFlowRate_dp(
+                dp - g*height_ab/n*(d[1:n] + d[2:n+1])/2,
+                d[1:n],
+                d[2:n+1],
+                eta[1:n],
+                eta[2:n+1],
+                length/n,
+                diameter,
+                roughness,
+                dp_small)*nPipes;
+            else
+              dp = WallFriction.pressureLoss_m_flow(
+                m_flow/nPipes,
+                d[1:n],
+                d[2:n+1],
+                eta[1:n],
+                eta[2:n+1],
+                length/n,
+                diameter,
+                roughness,
+                m_flow_small/nPipes) + g*height_ab/n*(d[1:n] + d[2:n+1])/2;
+            end if;
+          end if;
 
               annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
                   preserveAspectRatio=false,

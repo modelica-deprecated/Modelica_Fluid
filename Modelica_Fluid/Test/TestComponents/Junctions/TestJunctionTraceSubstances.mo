@@ -111,17 +111,17 @@ model TestJunctionTraceSubstances
         extent={{-10,-10},{10,10}},
         rotation=90)));
   Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance2(redeclare
-      package Medium = Medium)
+      package Medium = Medium) 
     annotation (Placement(transformation(extent={{56,4},{76,24}})));
   Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance(redeclare
-      package Medium = Medium)
+      package Medium = Medium) 
     annotation (Placement(transformation(extent={{-70,16},{-50,36}})));
   Modelica.Blocks.Sources.Ramp C(duration=1, height=1.519E-3)
     "substance concentration, raising to 1000 PPM CO2" 
     annotation (Placement(transformation(extent={{-100,-60},{-80,-40}})));
   Modelica.Blocks.Sources.Constant X(k=0.02) 
     annotation (Placement(transformation(extent={{-100,-8},{-80,12}})));
-  Modelica.Blocks.Sources.RealExpression X2(y=1 - X.y) "Concentration of X[2]"
+  Modelica.Blocks.Sources.RealExpression X2(y=1 - X.y) "Concentration of X[2]" 
     annotation (Placement(transformation(extent={{-100,-32},{-80,-12}})));
 equation
   connect(ramp.y, source1.p_in) annotation (Line(points={{-79,34},{-74,34},{-74,
