@@ -186,6 +186,10 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
       "Start value of mass fractions m_i/m" 
     annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nXi > 0));
+    parameter Medium.ExtraProperty C_start[Medium.nC](
+    quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
+      "Start value of trace substances" 
+    annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nC > 0));
 
 //Tank properties
     Medium.BaseProperties medium(
@@ -200,11 +204,15 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     SI.Energy U "Internal energy of tank volume";
     SI.Mass m "Mass of fluid in tank";
     SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
+    SI.Mass[Medium.nC] mC "Masses of trace substances in the fluid";
+    Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     SI.Pressure p_static "bottom tank pressure";
     Medium.EnthalpyFlowRate H_flow[nPorts]
       "Enthalpy flow rates from the bottom ports in to the tank";
     Medium.MassFlowRate mXi_flow[nPorts, Medium.nXi]
-      "Substance mass flow rates from the bottom ports in to the tank";
+      "Substance mass flow rates from the bottom ports into the tank";
+    Medium.ExtraPropertyFlowRate[nPorts, Medium.nC] mC_flow
+      "Trace substance mass flow rates from the bottom ports into the tank";
 
   protected
     parameter Medium.SpecificEnthalpy h_start=Medium.specificEnthalpy_pTX(
@@ -232,6 +240,7 @@ end for;
     m = V*medium.d "Mass of fluid";
     mXi = m*medium.Xi "Mass of fluid components";
     U = m*medium.u "Internal energy of fluid";
+    mC = m*C "Mass of trace substances";
     medium.p = p_ambient;
 
   // Mass balances
@@ -240,10 +249,16 @@ end for;
     for i in 1:Medium.nXi loop
       der(mXi[i]) = sum(mXi_flow[:,i]);
     end for;
+    for i in 1:Medium.nC loop
+      der(mC[i])  = sum(mC_flow[:,i]);
+    end for;
   else
     0 = sum(ports.m_flow);
     for i in 1:Medium.nXi loop
       0 = sum(mXi_flow[:,i]);
+    end for;
+    for i in 1:Medium.nC loop
+      0 = sum(mC_flow[:,i]);
     end for;
   end if;
 
@@ -271,6 +286,7 @@ end for;
     for i in 1:nPorts loop
        H_flow[i]     = ports[i].m_flow*actualStream(ports[i].h_outflow);
        mXi_flow[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
+       mC_flow[i,:]  = ports[i].m_flow*actualStream(ports[i].C_outflow);
        if neglectPortDiameters then
          ports[i].p = p_static;
        else
@@ -280,6 +296,7 @@ end for;
        end if;
        ports[i].h_outflow = medium.h;
        ports[i].Xi_outflow = medium.Xi;
+       ports[i].C_outflow = C;
     end for;
 
 initial equation
@@ -289,14 +306,17 @@ initial equation
       level = level_start;
       medium.T = T_start;
       medium.Xi = X_start[1:Medium.nXi];
+      C         = C_start[1:Medium.nC];
     elseif initType == Types.Init.SteadyState then
       der(level) = 0;
       der(medium.h) = 0;
       der(medium.Xi) = zeros(Medium.nXi);
+      der(C)         = zeros(Medium.nC);
     elseif initType == Types.Init.SteadyStateHydraulic then
       der(level) = 0;
       medium.T = T_start;
       medium.Xi = X_start[1:Medium.nXi];
+      C         = C_start[1:Medium.nC];
     else
       assert(false, "Unsupported initialization option");
     end if;
@@ -331,8 +351,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -370,7 +390,8 @@ Limitation to bottom ports only, added inlet and outlet loss factors.</li>
 Adapted to the new fluid library interfaces: 
 <ul> <li>FluidPorts_b is used instead of FluidPort_b (due to it is defined as an array of ports)</li>
     <li>Port name changed from port to ports</li></ul>Updated documentation.</li>
- 
+<li><i>Dec. 8, 2008</i> by Michael Wetter (LBNL):<br>
+Implemented trace substances.</li>
 </ul>
 </html>"),
       Diagram(coordinateSystem(
@@ -379,7 +400,6 @@ Adapted to the new fluid library interfaces:
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-equation
 
 end OpenTank;
 
@@ -452,6 +472,10 @@ model Tank
     parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
       "Start value of mass fractions m_i/m" 
     annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nXi > 0));
+    parameter Medium.ExtraProperty C_start[Medium.nC](
+    quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
+      "Start value of trace substances" 
+    annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nC > 0));
 
 // Advanced
     parameter Real hysteresisFactor(min=0) = 0.1
@@ -485,14 +509,20 @@ model Tank
     SI.Mass m(stateSelect=StateSelect.never) "Mass of fluid in tank";
     SI.Mass mXi[Medium.nXi](each stateSelect=StateSelect.never)
       "Masses of independent components in the fluid";
+    SI.Mass[Medium.nC] mC "Masses of trace substances in the fluid";
+    Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
     Medium.EnthalpyFlowRate H_flow_top[nTopPorts]
       "Enthalpy flow rates from the top ports in to the tank";
     Medium.EnthalpyFlowRate port_b_H_flow_bottom[nPorts]
       "Enthalpy flow rates from the bottom ports in to the tank";
     Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi]
-      "Substance mass flow rates from the top ports in to the tank";
-    Medium.MassFlowRate port_b_mXi_flowottom[nPorts, Medium.nXi]
-      "Substance mass flow rates from the bottom ports in to the tank";
+      "Substance mass flow rates from the top ports into the tank";
+    Medium.MassFlowRate port_b_mXi_flow_bottom[nPorts, Medium.nXi]
+      "Substance mass flow rates from the bottom ports into the tank";
+    Medium.MassFlowRate mC_flow_top[nTopPorts, Medium.nC]
+      "Trace substance mass flow rates from the top ports into the tank";
+    Medium.MassFlowRate port_b_mC_flow_bottom[nPorts, Medium.nC]
+      "Trace substance mass flow rates from the bottom ports into the tank";
   protected
     parameter SI.Area bottomArea[nPorts]=Constants.pi*{(portsData[i].diameter/2)^2 for i in 1:nPorts};
     parameter SI.Diameter ports_emptyPipeHysteresis[nPorts] = portsData.diameter*hysteresisFactor;
@@ -531,17 +561,24 @@ end for;
     m = V*medium.d "Mass of fluid";
     mXi = m*medium.Xi "Mass of fluid components";
     U = m*medium.u "Internal energy of fluid";
+    mC = m*C "Mass of trace substances";
 
   // Mass balances
   if dynamicsType < Types.Dynamics.SteadyStateMass then
     der(m) = sum(topPorts.m_flow) + sum(ports.m_flow);
     for i in 1:Medium.nXi loop
-      der(mXi[i]) = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flowottom[:,i]);
+      der(mXi[i]) = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flow_bottom[:,i]);
+    end for;
+    for i in 1:Medium.nC loop
+      der(mC[i])  = sum(mC_flow_top[:,i])  + sum(port_b_mC_flow_bottom[:,i]);
     end for;
   else
     0 = sum(topPorts.m_flow) + sum(ports.m_flow);
     for i in 1:Medium.nXi loop
-      0 = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flowottom[:,i]);
+      0 = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flow_bottom[:,i]);
+    end for;
+    for i in 1:Medium.nC loop
+      0 = sum(mC_flow_top[:,i])  + sum(port_b_mC_flow_bottom[:,i]);
     end for;
   end if;
 
@@ -567,8 +604,11 @@ end for;
        // It is assumed that fluid flows only from one of the top ports in to the tank and never vice versa
        H_flow_top[i]     = topPorts[i].m_flow*actualStream(topPorts[i].h_outflow);
        mXi_flow_top[i,:] = topPorts[i].m_flow*actualStream(topPorts[i].Xi_outflow);
+       mC_flow_top[i,:]  = topPorts[i].m_flow*actualStream(topPorts[i].C_outflow);
        topPorts[i].p     = p_ambient;
        topPorts[i].h_outflow = h_start;
+       topPorts[i].Xi_outflow = X_start[1:Medium.nXi];
+       topPorts[i].C_outflow  = C_start;
 /*
        assert(topPorts[i].m_flow > -1, "Mass flows out of tank via topPorts[" + String(i) + "]\n" +
                                          "This indicates a wrong model");
@@ -578,12 +618,14 @@ end for;
   // Properties at bottom ports
     for i in 1:nPorts loop
        port_b_H_flow_bottom[i]   = ports[i].m_flow*actualStream(ports[i].h_outflow);
-       port_b_mXi_flowottom[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
+       port_b_mXi_flow_bottom[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
+       port_b_mC_flow_bottom[i,:]  = ports[i].m_flow*actualStream(ports[i].C_outflow);
        aboveLevel[i] = level >= (portsData[i].portLevel + ports_emptyPipeHysteresis[i])
                        or pre(aboveLevel[i]) and level >= (portsData[i].portLevel - ports_emptyPipeHysteresis[i]);
        levelAbovePort[i] = if aboveLevel[i] then level - portsData[i].portLevel else 0;
        ports[i].h_outflow = medium.h;
        ports[i].Xi_outflow = medium.Xi;
+       ports[i].C_outflow  = C;
 
        if stiffCharacteristicForEmptyPort then
           // If port is above fluid level, use large zeta if fluid flows out of port (= small mass flow rate)
@@ -624,14 +666,17 @@ initial equation
       level = level_start;
       medium.T = T_start;
       medium.Xi = X_start[1:Medium.nXi];
+      C         = C_start[1:Medium.nC];
     elseif initType == Types.Init.SteadyState then
       der(level) = 0;
       der(medium.T) = 0;
       der(medium.Xi) = zeros(Medium.nXi);
+      der(C)         = zeros(Medium.nC);
     elseif initType == Types.Init.SteadyStateHydraulic then
       der(level) = 0;
       medium.T = T_start;
       medium.Xi = X_start[1:Medium.nXi];
+      C         = C_start[1:Medium.nC];
     else
       assert(false, "Unsupported initialization option");
     end if;
@@ -725,6 +770,8 @@ of the diagram animation in Dymola can be set via command
 </p>
 </HTML>", revisions="<html>
 <ul>
+<li><i>Dec. 8, 2008</i> by Michael Wetter (LBNL):<br>
+Implemented trace substances and missing equation for outflow of multi substance media at top port.</li>
 <li><i>Jul. 29, 2006</i> by Martin Otter (DLR):<br> 
    Improved handling of ports that are above the fluid level and
    simpler implementation.</li>
