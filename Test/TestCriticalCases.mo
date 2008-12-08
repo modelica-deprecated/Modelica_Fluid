@@ -681,12 +681,16 @@ fails for zero flow rate.
     replaceable package Medium = 
         Modelica.Media.Incompressible.Examples.Essotherm650 
       constrainedby Modelica.Media.Interfaces.PartialMedium;
+
+    //model Pipe = Modelica_Fluid.Pipes.LumpedPipe;
+    model Pipe = Modelica_Fluid.Pipes.DistributedPipe(nNodes=2,modelStructure=Types.ModelStructure.avb);
+
     Sources.FixedBoundary_pTX source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-98,4},{-86,16}},
             rotation=0)));
-    Modelica_Fluid.Pipes.LumpedPipe pipe1(
+    Pipe pipe1(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 
@@ -696,7 +700,7 @@ fails for zero flow rate.
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{-78,0},{-58,20}}, rotation=0)));
 
-    Modelica_Fluid.Pipes.LumpedPipe pipe2(
+    Pipe pipe2(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 
@@ -708,7 +712,7 @@ fails for zero flow rate.
           extent={{-10,-10},{10,10}},
           rotation=90)));
 
-    Modelica_Fluid.Pipes.LumpedPipe pipe3(
+    Pipe pipe3(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 
@@ -719,7 +723,7 @@ fails for zero flow rate.
           origin={-50,-16},
           extent={{-10,-10},{10,10}},
           rotation=270)));
-    Modelica_Fluid.Pipes.LumpedPipe pipe4(
+    Pipe pipe4(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 
@@ -728,7 +732,7 @@ fails for zero flow rate.
       redeclare package Medium = Medium,
       length=2)                          annotation (Placement(transformation(
             extent={{-16,-46},{4,-26}}, rotation=0)));
-    Modelica_Fluid.Pipes.LumpedPipe pipe6(
+    Pipe pipe6(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 
@@ -755,7 +759,7 @@ fails for zero flow rate.
       minOpening=0.01) 
                   annotation (Placement(transformation(extent={{-40,-28},{-26,
               -44}}, rotation=0)));
-    Modelica_Fluid.Pipes.LumpedPipe pipe7(
+    Pipe pipe7(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 
@@ -797,7 +801,7 @@ fails for zero flow rate.
       offset=1,
       startTime=2) annotation (Placement(transformation(extent={{8,68},{28,88}},
             rotation=0)));
-    Modelica_Fluid.Pipes.LumpedPipe pipe8(
+    Pipe pipe8(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 
@@ -808,7 +812,7 @@ fails for zero flow rate.
           origin={10,30},
           extent={{-10,-10},{10,10}},
           rotation=270)));
-    Modelica_Fluid.Pipes.LumpedPipe pipe9(
+    Pipe pipe9(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 
@@ -817,7 +821,7 @@ fails for zero flow rate.
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{16,46},{36,66}}, rotation=0)));
-    Modelica_Fluid.Pipes.LumpedPipe pipe10(
+    Pipe pipe10(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 
@@ -826,7 +830,7 @@ fails for zero flow rate.
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{18,-4},{38,16}}, rotation=0)));
-    Modelica_Fluid.Pipes.LumpedPipe pipe5(
+    Pipe pipe5(
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureDrop = 

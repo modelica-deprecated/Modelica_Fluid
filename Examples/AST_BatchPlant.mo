@@ -365,7 +365,9 @@ present that are regulated by a central control system.
       diameter=0.1,
       height_ab=0,
       redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      nNodes=1,
+      modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b) 
                    annotation (Placement(transformation(extent={{10,230},{-10,
               250}}, rotation=0)));
     PressureLosses.StaticHead pipeB1B3(
@@ -414,8 +416,8 @@ present that are regulated by a central control system.
       height_ab=3,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
       redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
-                   annotation (Placement(transformation(
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      nNodes=1)    annotation (Placement(transformation(
           origin={-180,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
@@ -426,8 +428,8 @@ present that are regulated by a central control system.
       height_ab=3,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
       redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
-                   annotation (Placement(transformation(
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      nNodes=1)    annotation (Placement(transformation(
           origin={160,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
