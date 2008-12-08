@@ -193,10 +193,10 @@ pipe wall/environment).
       final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
 
     // Discretization
-    parameter Integer nNodes(min=1)=1 "Number of discrete flow volumes" 
+    parameter Integer nNodes(min=1)=2 "Number of discrete flow volumes" 
       annotation(Dialog(tab="Advanced"),Evaluate=true);
 
-    parameter Types.ModelStructure modelStructure=Types.ModelStructure.a_v_b
+    parameter Types.ModelStructure modelStructure=Types.ModelStructure.avb
       "Determines whether flow or volume models are present at the ports" 
       annotation(Dialog(tab="Advanced"), Evaluate=true);
 
@@ -268,20 +268,21 @@ pipe wall/environment).
         annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
 
   equation
-    // Only one connection allowed to a port to avoid unwanted ideal mixing
-    assert(cardinality(port_a) <= 1 or (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.a_v_b),"
+  /*
+  // Only one connection allowed to a port to avoid unwanted ideal mixing
+  assert(cardinality(port_a) <= 1 or (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.a_v_b),"
 port_a exposing volume with selected modelStructure shall at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller. Use a Junctions.MultiPort.
 ");
-    assert(cardinality(port_b) <= 1 or (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.a_v_b),"
+  assert(cardinality(port_b) <= 1 or (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.a_v_b),"
 port_b exposing volume with selected modelStructure shall at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
 of the modeller. Use a Junctions.MultiPort.
 ");
-
+*/
     // Source/sink terms for mass and energy balances
     fluidVolume=fill(V/n, n);
     Ws_flow=zeros(n);
@@ -346,6 +347,7 @@ of the modeller. Use a Junctions.MultiPort.
         flowState[2] = medium[iLumped].state;
         port_b.p = medium[n].p;
       else // avb
+        assert(true, "Can't use lumpedPressure with modelStructure avb, as flow model disappears!");
         port_a.p = medium[1].p;
         flowState[1] = medium[iLumped].state;
         port_b.p = medium[n].p;
@@ -376,6 +378,7 @@ of the modeller. Use a Junctions.MultiPort.
         end for;
         port_b.p = medium[n].p;
       else // avb
+        assert(nNodes > 1, "nNodes needs to be at least 2 for modelStructure avb, as flow model disappears otherwise!");
         flowState[1:n] = medium[1:n].state;
         //m_flow[2:n] = pressureDrop.m_flow[1:n-1];
         for i in 2:n loop
@@ -388,7 +391,6 @@ of the modeller. Use a Junctions.MultiPort.
 
     connect(heatPorts, heatTransfer.wallHeatPort) 
       annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
-
     annotation (defaultComponentName="pipe",
   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
@@ -412,8 +414,8 @@ of the modeller. Use a Junctions.MultiPort.
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid)}),
-  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}},
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}},
           grid={1,1}),
           graphics),
   Documentation(info="<html>

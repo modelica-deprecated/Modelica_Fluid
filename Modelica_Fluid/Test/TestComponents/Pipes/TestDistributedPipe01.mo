@@ -42,10 +42,8 @@ Test of different distributed pipe models. The first system uses explicit juncti
         transformation(extent={{70,54},{50,74}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe3(
     redeclare package Medium=Medium,
-    T_start=340,
     length=1,
     use_T_start=true,
-    p_b_start=1e5,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
@@ -53,7 +51,10 @@ Test of different distributed pipe models. The first system uses explicit juncti
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     use_approxPortProperties=true,
-    p_a_start=100000) 
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=340,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b) 
             annotation (Placement(transformation(extent={{20,54},{40,74}},
           rotation=0)));
 
@@ -160,10 +161,8 @@ Test of different distributed pipe models. The first system uses explicit juncti
         transformation(extent={{68,-2},{48,18}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe6(
     redeclare package Medium=Medium,
-    T_start=340,
     length=1,
     use_T_start=true,
-    p_b_start=1e5,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
@@ -171,7 +170,10 @@ Test of different distributed pipe models. The first system uses explicit juncti
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     use_approxPortProperties=true,
-    p_a_start=100000) 
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=340,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b) 
             annotation (Placement(transformation(extent={{14,-2},{34,18}},
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe7(

@@ -147,10 +147,8 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
         transformation(extent={{70,-70},{50,-50}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe6(
     redeclare package Medium=Medium,
-    T_start=340,
     length=1,
     use_T_start=true,
-    p_b_start=1e5,
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
@@ -158,7 +156,10 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     use_approxPortProperties=true,
-    p_a_start=100000) 
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=340,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b) 
             annotation (Placement(transformation(extent={{16,-70},{36,-50}},
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe7(
