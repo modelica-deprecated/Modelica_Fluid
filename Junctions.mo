@@ -213,11 +213,11 @@ of the modeller. Increase nPorts_b to add an additional port.
        ports_b_C_inStream[j,:] = inStream(ports_b[j].C_outflow);
     end for;
     for i in 1:Medium.nXi loop
-      port_a.Xi_outflow[i] = sum(positiveMax(ports_b.m_flow).*ports_b_Xi_inStream[:,i])
+      port_a.Xi_outflow[i] = (positiveMax(ports_b.m_flow)*ports_b_Xi_inStream[:,i])
                            / sum(positiveMax(ports_b.m_flow));
     end for;
     for i in 1:Medium.nC loop
-      port_a.C_outflow[i] = sum(positiveMax(ports_b.m_flow).*ports_b_C_inStream[:,i])
+      port_a.C_outflow[i] = (positiveMax(ports_b.m_flow)*ports_b_C_inStream[:,i])
                            / sum(positiveMax(ports_b.m_flow));
     end for;
   end MultiPort;
