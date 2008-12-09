@@ -118,8 +118,8 @@ model TestJunctionTraceSubstances
     annotation (Placement(transformation(extent={{-100,-8},{-80,12}})));
   Modelica.Blocks.Sources.RealExpression X2(y=1 - X.y) "Concentration of X[2]" 
     annotation (Placement(transformation(extent={{-100,-32},{-80,-12}})));
-  Modelica_Fluid.Junctions.MultiPort multiPort(redeclare package Medium =
-        Medium, nPorts_b=2)
+  Modelica_Fluid.Junctions.MultiPort multiPort(redeclare package Medium = 
+        Medium, nPorts_b=2) 
     annotation (Placement(transformation(extent={{-42,-28},{-34,-8}})));
 equation
   connect(ramp.y, source1.p_in) annotation (Line(points={{-79,34},{-74,34},{-74,

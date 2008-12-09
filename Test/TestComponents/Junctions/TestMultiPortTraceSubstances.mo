@@ -62,7 +62,7 @@ model TestMultiPortTraceSubstances
     nPorts=3,
     C_start={1E-4},
     neglectPortDiameters=false,
-    zeta_out={0,0,0})
+    zeta_out={0,0,0}) 
     annotation (Placement(transformation(extent={{12,-80},{32,-60}})));
   Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance1(
                                                                redeclare
@@ -90,7 +90,7 @@ model TestMultiPortTraceSubstances
     length=1,
     nPipes=1) annotation (Placement(transformation(extent={{52,-90},{72,-70}})));
   Modelica_Fluid.Junctions.MultiPort multiPort(
-                                       nPorts_b=2, redeclare package Medium =
+                                       nPorts_b=2, redeclare package Medium = 
         Medium)                             annotation (Placement(
         transformation(extent={{-36,-10},{-28,10}},rotation=0)));
   Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance(redeclare

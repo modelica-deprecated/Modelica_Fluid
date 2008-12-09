@@ -231,8 +231,8 @@ pipe wall/environment).
 
   protected
    SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-       use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[1].state) else Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)))));
-   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then Medium.dynamicViscosity(medium[n].state) else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
+       use_eta_nominal then eta_nominal else (if useInnerPortProperties then Medium.dynamicViscosity(medium[1].state) else Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)))));
+   SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if useInnerPortProperties then Medium.dynamicViscosity(medium[n].state) else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
 
  equation
    // Only one connection allowed to a port to avoid unwanted ideal mixing
@@ -429,8 +429,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
   SI.Length[n+1] dheight_ab "discretized height_ab for static head";
   protected
   SI.DynamicViscosity eta_a=if not WallFriction.use_eta then 1.e-10 else (if 
-      use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[1] else Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)))));
-  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if use_approxPortProperties then eta[n] else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
+      use_eta_nominal then eta_nominal else (if useInnerPortProperties then eta[1] else Medium.dynamicViscosity(Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)))));
+  SI.DynamicViscosity eta_b=if not WallFriction.use_eta then 1.e-10 else (if use_eta_nominal then eta_nominal else (if useInnerPortProperties then eta[n] else Medium.dynamicViscosity(Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)))));
   SI.DynamicViscosity[n] eta=if not WallFriction.use_eta then fill(1.e-10, n) else (if use_eta_nominal then fill(eta_nominal, n) else 
       Medium.dynamicViscosity(medium.state));
 
@@ -834,7 +834,7 @@ partial model PartialDistributedFlow_Old
   parameter Integer nNodes(min=1)=1 "Number of discrete flow volumes";
 
 //Advanced model options
-  parameter Boolean use_approxPortProperties=false
+  parameter Boolean useInnerPortProperties=false
       "=true, port properties for pressure drop correlation are taken from neighboring control volume"
                                                                                                      annotation(Dialog(tab="Advanced", group="Pressure loss"),Evaluate=true);
 //Flow quantities
@@ -852,8 +852,8 @@ partial model PartialDistributedFlow_Old
   //Source terms, have to be set in inheriting class (to zero if not used)
   protected
   SI.Density[n] d=if use_d_nominal then ones(n)*d_nominal else medium.d;
-  SI.Density d_a=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[1] else Medium.density_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)));
-  SI.Density d_b=if use_d_nominal then d_nominal else (if use_approxPortProperties then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)));
+  SI.Density d_a=if use_d_nominal then d_nominal else (if useInnerPortProperties then d[1] else Medium.density_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)));
+  SI.Density d_b=if use_d_nominal then d_nominal else (if useInnerPortProperties then d[n] else Medium.density_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow)));
   public
   Interfaces.HeatPorts_a[nNodes] heatPorts annotation (Placement(transformation(extent={{-10,44},
             {10,64}}),                                                                               iconTransformation(extent={{-30,44},{32,60}})));

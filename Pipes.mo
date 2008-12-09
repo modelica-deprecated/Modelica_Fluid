@@ -212,7 +212,7 @@ pipe wall/environment).
       annotation(Evaluate=true);
 
     // Advanced model options
-    parameter Boolean use_approxPortProperties=false
+    parameter Boolean useInnerPortProperties=false
       "=true to take port properties for pressure drops from internal control volumes"
       annotation(Dialog(tab="Advanced"),Evaluate=true);
     Medium.ThermodynamicState state_a "state defined by volume outside port_a";
@@ -320,7 +320,7 @@ of the modeller. Use a Junctions.MultiPort.
     //port_a.C_outflow = inStream(port_b.C_outflow);
     //port_b.C_outflow = inStream(port_a.C_outflow);
 
-    if use_approxPortProperties and n > 0 then
+    if useInnerPortProperties and n > 0 then
       state_a = Medium.setState_phX(port_a.p, medium[1].h, medium[1].Xi);
       state_b = Medium.setState_phX(port_b.p, medium[n].h, medium[n].Xi);
     else
@@ -402,8 +402,8 @@ of the modeller. Use a Junctions.MultiPort.
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid)}),
-  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-              100}},
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}},
           grid={1,1}),
           graphics),
   Documentation(info="<html>
