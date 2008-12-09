@@ -952,8 +952,8 @@ simulation and/or might give a more robust simulation.
                               Documentation(info="<html>
 Base class for heat transfer models that can be used in distributed pipe models.
 </html>"),
-        Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
-                100,100}}),
+        Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
+                  {100,100}}),
                         graphics));
     end PartialPipeHeatTransfer;
 
@@ -975,7 +975,7 @@ Base class for heat transfer models that can be used in distributed pipe models.
       Pr = Medium.prandtlNumber(state);
       Re = CharacteristicNumbers.ReynoldsNumber(m_flow/nPipes, diameter, crossArea, eta);
       Nu = CharacteristicNumbers.NusseltNumber(alpha, diameter, lambda);
-      Q_flow=alpha.*area.*(wallHeatPort.T - T)*nPipes;
+      Q_flow={alpha[i]*area/n*(wallHeatPort[i].T - T[i])*nPipes for i in 1:n};
         annotation (Documentation(info="<html>
 Base class for heat transfer models that are expressed in terms of the Nusselt number and which can be used in distributed pipe models.
 </html>"));
