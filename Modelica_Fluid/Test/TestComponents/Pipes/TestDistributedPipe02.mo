@@ -17,7 +17,7 @@ extends Modelica.Icons.Example;
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
-    use_approxPortProperties=true,
+    useInnerPortProperties=true,
     heatTransfer(each alpha0=500),
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,68},{-10,88}},
@@ -53,7 +53,7 @@ Test of different distributed pipe models with trace substances. This model is t
     redeclare model PressureDrop = 
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
-    use_approxPortProperties=true,
+    useInnerPortProperties=true,
     p_a_start=100000,
     p_b_start=100000,
     T_start=340,
@@ -73,7 +73,7 @@ Test of different distributed pipe models with trace substances. This model is t
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
-    use_approxPortProperties=true,
+    useInnerPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-82,54},{-62,74}},
           rotation=0)));
@@ -107,7 +107,7 @@ Test of different distributed pipe models with trace substances. This model is t
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     heatTransfer(each alpha0=1000),
-    use_approxPortProperties=true,
+    useInnerPortProperties=true,
     p_a_start=100000,
     p_b_start=100000,
     T_start=360) 
@@ -149,7 +149,7 @@ Test of different distributed pipe models with trace substances. This model is t
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
-    use_approxPortProperties=true,
+    useInnerPortProperties=true,
     heatTransfer(each alpha0=500),
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
@@ -172,7 +172,7 @@ Test of different distributed pipe models with trace substances. This model is t
     redeclare model PressureDrop = 
         Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
-    use_approxPortProperties=true,
+    useInnerPortProperties=true,
     p_a_start=100000,
     p_b_start=100000,
     T_start=340,
@@ -191,7 +191,7 @@ Test of different distributed pipe models with trace substances. This model is t
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
-    use_approxPortProperties=true,
+    useInnerPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-74,-2},{-54,18}},
           rotation=0)));
@@ -220,7 +220,7 @@ Test of different distributed pipe models with trace substances. This model is t
     m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(each alpha0=1000),
-    use_approxPortProperties=true,
+    useInnerPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,-12},{-10,8}},
           rotation=0)));
