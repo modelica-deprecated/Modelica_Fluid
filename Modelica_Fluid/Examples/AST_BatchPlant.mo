@@ -50,6 +50,8 @@ present that are regulated by a central control system.
     Modelica.Media.Interfaces.PartialTwoPhaseMedium "Component media";
 */
 
+    parameter Modelica.SIunits.Length pipeDiameter = 0.01;
+
     BaseClasses.TankWith3InletOutletArraysWithEvaporatorCondensor B5(
       redeclare package Medium = BatchMedium,
       height=0.5,
@@ -171,7 +173,7 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={-106,-252},
+          origin={-110,-250},
           extent={{-10,10},{10,-10}},
           rotation=180)));
     Modelica_Fluid.ControlValves.ValveDiscrete V1(
@@ -203,7 +205,7 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={94,-250},
+          origin={90,-250},
           extent={{10,10},{-10,-10}},
           rotation=180)));
     Modelica_Fluid.ControlValves.ValveDiscrete V25(
@@ -219,7 +221,7 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={60,-200},
+          origin={60,-210},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Modelica_Fluid.ControlValves.ValveDiscrete V19(
@@ -227,19 +229,9 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={-8,-200},
+          origin={4,-200},
           extent={{-10,10},{10,-10}},
-          rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.GenericJunction volume4(
-      redeclare package Medium = BatchMedium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
-      V=0.001,
-      nPorts_a=2,
-      nPorts_b=3,
-      dp_nominal=10000,
-      m_flow_nominal=1) 
-               annotation (Placement(transformation(extent={{-38,-260},{-18,
-              -240}}, rotation=0)));
+          rotation=180)));
     Modelica_Fluid.ControlValves.ValveDiscrete V10(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
@@ -253,10 +245,10 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={34,-250},
+          origin={30,-250},
           extent={{10,10},{-10,-10}},
           rotation=180)));
-    BaseClasses.JunctionVolume volume5(
+    Junctions.TJunctionVolume volume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{50,-260},{70,-240}},
@@ -266,35 +258,33 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={-80,-210},
-          extent={{-10,10},{10,-10}},
-          rotation=90)));
+          origin={-56,-200},
+          extent={{10,10},{-10,-10}},
+          rotation=180)));
     Pumps.PumpNPSH P1(
       redeclare package Medium = BatchMedium,
-      M=0.01,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
           Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (q_nominal={0,
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
       checkValve=false,
+      use_N_input=true,
       p_a_start=100000,
-      p_b_start=100000,
-      use_N_input=true) 
-      annotation (Placement(transformation(extent={{-128,-262},{-148,-242}},
+      p_b_start=100000) 
+      annotation (Placement(transformation(extent={{-128,-260},{-148,-240}},
             rotation=0)));
     Pumps.PumpNPSH P2(
       redeclare package Medium = BatchMedium,
-      M=0.01,
       checkValve=false,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
           Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow(q_nominal={0,
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
+      use_N_input=true,
       p_a_start=100000,
-      p_b_start=100000,
-      use_N_input=true) 
+      p_b_start=100000) 
       annotation (Placement(transformation(extent={{110,-260},{130,-240}},
             rotation=0)));
     Volumes.Tank B1(
@@ -362,74 +352,90 @@ present that are regulated by a central control system.
     Pipes.DistributedPipe pipeB1B2(
       redeclare package Medium = BatchMedium,
       length=1,
-      diameter=0.1,
+      diameter=pipeDiameter,
       height_ab=0,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
+                   annotation (Placement(transformation(extent={{10,230},{-10,
+              250}}, rotation=0)));
+    Pipes.StaticPipe pipeB1B3(
+      redeclare package Medium = BatchMedium,
+      height_ab=0.1,
+      diameter=pipeDiameter,
+      length=1,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop (
+            dp_nominal=1, m_flow_nominal=1)) 
+      annotation (Placement(transformation(extent={{-42,134},{-62,154}},
+            rotation=0)));
+    Pipes.StaticPipe pipeB2B3(
+      redeclare package Medium = BatchMedium,
+      height_ab=0.1,
+      length=1,
+      diameter=pipeDiameter,
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop (
+            dp_nominal=1, m_flow_nominal=1)) 
+      annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
+             0)));
+    Pipes.DistributedPipe pipeB1B1(
+      redeclare package Medium = BatchMedium,
+      height_ab=0.5,
+      diameter=pipeDiameter,
+      length=1,
       redeclare model PressureDrop = 
           Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
       nNodes=1,
-      modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b) 
-                   annotation (Placement(transformation(extent={{10,230},{-10,
-              250}}, rotation=0)));
-    PressureLosses.StaticHead pipeB1B3(
-      redeclare package Medium = BatchMedium,
-      height_ab=0.1) 
-      annotation (Placement(transformation(extent={{-42,134},{-62,154}},
-            rotation=0)));
-    PressureLosses.StaticHead pipeB2B3(
-      redeclare package Medium = BatchMedium,
-      height_ab=0.1) 
-      annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
-             0)));
-    PressureLosses.StaticHead pipeB1B1(
-      redeclare package Medium = BatchMedium,
-      height_ab=0.5) 
+      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
       annotation (Placement(transformation(
           origin={20,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    PressureLosses.WallFrictionAndGravity pipeB6Pump(
+    Pipes.StaticPipe pipeB6Pump(
       redeclare package Medium = BatchMedium,
       length=0.5,
-      diameter=0.1,
+      diameter=pipeDiameter,
       height_ab=0.5,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed) 
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
                    annotation (Placement(transformation(
           origin={60,-106},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    PressureLosses.WallFrictionAndGravity pipeB7Pump(
+    Pipes.StaticPipe pipeB7Pump(
       redeclare package Medium = BatchMedium,
       length=1,
-      diameter=0.1,
+      diameter=pipeDiameter,
       height_ab=0.1,
-      redeclare package WallFriction = 
-          Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed) 
+      redeclare model PressureDrop = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow) 
                    annotation (Placement(transformation(
           origin={-80,-170},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Pipes.DistributedPipe pipePump1B1(
       redeclare package Medium = BatchMedium,
-      length=1,
-      diameter=0.1,
+      diameter=pipeDiameter,
       height_ab=3,
-      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
       redeclare model PressureDrop = 
           Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
-      nNodes=1)    annotation (Placement(transformation(
+      length=3,
+      nNodes=1,
+      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
+                   annotation (Placement(transformation(
           origin={-180,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Pipes.DistributedPipe pipePump2B2(
       redeclare package Medium = BatchMedium,
-      length=1,
-      diameter=0.1,
+      diameter=pipeDiameter,
       height_ab=3,
-      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
       redeclare model PressureDrop = 
           Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
-      nNodes=1)    annotation (Placement(transformation(
+      length=3,
+      nNodes=1,
+      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
+                   annotation (Placement(transformation(
           origin={160,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
@@ -447,6 +453,17 @@ present that are regulated by a central control system.
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{80,-80},
               {40,-40}}, rotation=0)));
+    Junctions.MultiPort multiPort(redeclare package Medium = BatchMedium,
+        nPorts_b=3) annotation (Placement(transformation(
+          extent={{4,10},{-4,-10}},
+          rotation=-90,
+          origin={-26,-228})));
+    Junctions.TJunctionVolume volume4(
+      redeclare package Medium = BatchMedium,
+      initType=Modelica_Fluid.Types.Init.InitialValues,
+      V=0.001) annotation (Placement(transformation(extent={{-36,-260},{-16,
+              -240}},
+            rotation=0)));
   equation
     controller.sensors.LIS_301 = B3.level;
     controller.sensors.QI_302 = 0;//B3.medium.X[2];
@@ -484,10 +501,8 @@ present that are regulated by a central control system.
     CoolingB6.Q_flow = if controller.actuators.T6_Cooling then -2000 else 0;
     CoolingB7.Q_flow = if controller.actuators.T7_Cooling then -2000 else 0;
 
-    connect(P1.port_a, V23.port_b) annotation (Line(points={{-128,-252},{-116,
-            -252}}, color={0,127,255}));
-    connect(V24.port_b, P2.port_a) annotation (Line(points={{104,-250},{110,-250}},
-                                    color={0,127,255}));
+    connect(V24.port_b, P2.port_a) annotation (Line(points={{100,-250},{110,
+            -250}},                 color={0,127,255}));
     connect(V15.port_a, B5.BottomFluidPort[1]) annotation (Line(points={{-80,-72},
             {-80,-60.4}},      color={0,127,255}));
     connect(V3.port_a, B1.topPorts[1]) annotation (Line(points={{-114,220},{
@@ -496,7 +511,7 @@ present that are regulated by a central control system.
             {-80,176},{-80,172}},
           color={0,127,255}));
     connect(P1_on.y, P1.N_in) annotation (Line(points={{-147,-220},{-138,-220},
-            {-138,-242}},     color={0,0,127}));
+            {-138,-240}},     color={0,0,127}));
     connect(P2_on.y, P2.N_in) annotation (Line(points={{111,-220},{120,-220},{
             120,-240}},      color={0,0,127}));
     connect(B2.topPorts[1], V6.port_a) annotation (Line(points={{81,220},{81,
@@ -536,8 +551,6 @@ present that are regulated by a central control system.
             -100}}, color={0,127,255}));
     connect(B7.ports[1], pipeB7Pump.port_b) annotation (Line(points={{-80,-140},
             {-80,-160}}, color={0,127,255}));
-    connect(pipeB7Pump.port_a, V18.port_b) annotation (Line(points={{-80,-180},
-            {-80,-200}}, color={0,127,255}));
     connect(pipePump1B1.port_a, V22.port_b) annotation (Line(points={{-180,20},
             {-180,-46}}, color={0,127,255}));
     connect(V25.port_b, pipePump2B2.port_a) annotation (Line(points={{160,-10},
@@ -548,9 +561,7 @@ present that are regulated by a central control system.
             -28},{-19.6,-28}}, color={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{100,-60},{80,
             -60}}, color={191,0,0}));
-    connect(V19.port_b, pipeB6Pump.port_a) annotation (Line(points={{-8,-190},{
-            -8,-140},{60,-140},{60,-116}}, color={0,127,255}));
-    connect(V20.port_b, pipeB6Pump.port_a) annotation (Line(points={{60,-190},{
+    connect(V20.port_b, pipeB6Pump.port_a) annotation (Line(points={{60,-200},{
             60,-116}}, color={0,127,255}));
     connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-120,-40},{-102,
             -40}}, color={191,0,0}));
@@ -579,35 +590,15 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume5.port_1, V21.port_b)     annotation (Line(
-        points={{50,-250},{44,-250}},
+        points={{50,-250},{40,-250}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume5.port_2, V24.port_a)     annotation (Line(
-        points={{70,-250},{84,-250}},
+        points={{70,-250},{80,-250}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume5.port_3, V20.port_a)     annotation (Line(
-        points={{60,-240},{60,-210}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(V23.port_a, volume4.ports_a[2])     annotation (Line(
-        points={{-96,-252},{-38,-252}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(volume4.ports_a[1], V18.port_a)     annotation (Line(
-        points={{-38,-248},{-80,-248},{-80,-220}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(volume4.ports_b[1], V19.port_a)     annotation (Line(
-        points={{-18,-247.333},{-8,-247.333},{-8,-210}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(volume4.ports_b[2], V21.port_a)     annotation (Line(
-        points={{-18,-250},{24,-250}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(pipeB1B1.port_a, volume4.ports_b[3])     annotation (Line(
-        points={{20,20},{20,0},{12,0},{12,-252},{-18,-252},{-18,-252.667}},
+        points={{60,-240},{60,-220}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(P2.port_b, V25.port_a) annotation (Line(
@@ -615,7 +606,7 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(V22.port_a, P1.port_b) annotation (Line(
-        points={{-180,-66},{-180,-252},{-148,-252}},
+        points={{-180,-66},{-180,-250},{-148,-250}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V5.port_a, pipePump2B2.port_b) annotation (Line(
@@ -624,6 +615,42 @@ present that are regulated by a central control system.
         smooth=Smooth.None));
     connect(V1.port_a, pipePump1B1.port_b) annotation (Line(
         points={{-180,100},{-180,40}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(P1.port_a, V23.port_b) annotation (Line(
+        points={{-128,-250},{-120,-250}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V23.port_a, volume4.port_1) annotation (Line(
+        points={{-100,-250},{-36,-250}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(volume4.port_2, V21.port_a) annotation (Line(
+        points={{-16,-250},{20,-250}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(multiPort.port_a, volume4.port_3) annotation (Line(
+        points={{-26,-232},{-26,-240}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipeB1B1.port_a, multiPort.ports_b[2]) annotation (Line(
+        points={{20,20},{20,-100},{-26,-100},{-26,-224}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(multiPort.ports_b[3], V19.port_b) annotation (Line(
+        points={{-23.3333,-224},{-23.3333,-200},{-6,-200}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipeB7Pump.port_a, V18.port_a) annotation (Line(
+        points={{-80,-180},{-80,-200},{-66,-200}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V18.port_b, multiPort.ports_b[1]) annotation (Line(
+        points={{-46,-200},{-28.6667,-200},{-28.6667,-224}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V19.port_a, pipeB6Pump.port_a) annotation (Line(
+        points={{14,-200},{30,-200},{30,-160},{60,-160},{60,-116}},
         color={0,127,255},
         smooth=Smooth.None));
   end BatchPlant_StandardWater;
@@ -1247,7 +1274,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -2007,8 +2035,8 @@ Full steady state initialization is not supported, because the corresponding int
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
               textString=DynamicSelect(" ", realString(
-                    level,
-                    1,
+                    level, 
+                    1, 
                     3))),
             Line(
               points={{-100,100},{100,100}},
@@ -2092,425 +2120,6 @@ of the diagram animation in Dymola can be set via command
         uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
   end CoolingTank;
 
-    model JunctionVolume
-      "Splitting/joining component with static balances for a dynamic control volume"
-      import Modelica_Fluid.Types;
-      import Modelica_Fluid.Types.PortFlowDirection;
-      outer Modelica_Fluid.System system "System properties";
-
-      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
-        "Fluid medium model" 
-          annotation (choicesAllMatching=true);
-      parameter SI.Volume V "Volume";
-
-      // Assumptions
-      parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-        "Dynamics option" 
-        annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-
-      SI.InternalEnergy U "Internal energy";
-      SI.Mass m "Total mass";
-      SI.Mass[Medium.nXi] mXi "Independent masses";
-
-      Modelica_Fluid.Interfaces.FluidPort_a port_1(
-        redeclare package Medium=Medium,
-        m_flow(min=if (portFlowDirection_1==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-        max=if (portFlowDirection_1==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-        annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
-              rotation=0)));
-      Modelica_Fluid.Interfaces.FluidPort_b port_2(
-        redeclare package Medium=Medium,
-        m_flow(min=if (portFlowDirection_2==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-        max=if (portFlowDirection_2==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-        annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation=
-               0)));
-      Modelica_Fluid.Interfaces.FluidPort_a port_3(
-        redeclare package Medium=Medium,
-        m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-        max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-        annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
-               0)));
-
-      Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
-      Medium.BaseProperties medium(preferredMediumStates=true);
-
-      parameter Types.Init initType=system.initType "Initialization option" 
-        annotation(Evaluate=true,Dialog(tab="Initialization"));
-      parameter Medium.AbsolutePressure p_start "Start value of pressure" 
-        annotation(Dialog(tab="Initialization"));
-      parameter Boolean use_T_start=true
-        "=true, use T_start, otherwise h_start" 
-        annotation(Dialog(tab="Initialization"),Evaluate=true);
-      parameter Medium.Temperature T_start=
-        if use_T_start then system.T_start else Medium.temperature_phX(p_start,h_start,X_start)
-        "Start value of temperature" 
-        annotation(Dialog(tab="Initialization",enable=use_T_start));
-      parameter Medium.SpecificEnthalpy h_start=
-        if use_T_start then Medium.specificEnthalpy_pTX(p_start,T_start,X_start) else Medium.h_default
-        "Start value of specific enthalpy" 
-        annotation(Dialog(tab="Initialization",enable=not use_T_start));
-      parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-        "Start value of mass fractions m_i/m" 
-        annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
-
-    protected
-      parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
-        "Flow direction for port_1" 
-       annotation(Dialog(tab="Advanced"));
-      parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
-        "Flow direction for port_2" 
-       annotation(Dialog(tab="Advanced"));
-      parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
-        "Flow direction for port_3" 
-       annotation(Dialog(tab="Advanced"));
-
-      annotation (Icon(coordinateSystem(
-            preserveAspectRatio=true,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={
-            Rectangle(
-              extent={{-100,41},{100,-47}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={192,192,192}),
-            Rectangle(
-              extent={{-100,37},{100,-43}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={0,127,255}),
-            Rectangle(
-              extent={{-34,100},{34,37}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.VerticalCylinder,
-              fillColor={192,192,192}),
-            Rectangle(
-              extent={{-30,100},{30,35}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.VerticalCylinder,
-              fillColor={0,127,255}),
-            Ellipse(
-              extent={{-9,10},{11,-10}},
-              lineColor={0,0,0},
-              fillColor={0,0,0},
-              fillPattern=FillPattern.Solid),
-            Text(
-              extent={{-150,-60},{150,-100}},
-              lineColor={0,0,255},
-              textString="%name")}),
-        Diagram(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics));
-    initial equation
-      // Initial conditions
-      if initType == Types.Init.NoInit then
-        // no initial equations
-      elseif initType == Types.Init.InitialValues then
-        medium.p = p_start;
-        medium.h = h_start;
-      elseif initType == Types.Init.SteadyState then
-        der(medium.p) = 0;
-        der(medium.h) = 0;
-      elseif initType == Types.Init.SteadyStateHydraulic then
-        der(medium.p) = 0;
-        medium.h = h_start;
-      else
-        assert(false, "Unsupported initialization option");
-      end if;
-
-    equation
-      // Only one connection allowed to a port to avoid unwanted ideal mixing
-    /*
-  assert(cardinality(port_1) <= 1,"
-port_1 of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-  assert(cardinality(port_2) <= 1,"
-port_2 of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-  assert(cardinality(port_3) <= 1,"
-port_3 of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-*/
-
-      // Boundary conditions
-      port_1.h_outflow = medium.h;
-      port_2.h_outflow = medium.h;
-      port_3.h_outflow = medium.h;
-
-      port_1.Xi_outflow = medium.Xi;
-      port_2.Xi_outflow = medium.Xi;
-      port_3.Xi_outflow = medium.Xi;
-
-      // Internal quantities
-      m   = medium.d*V;
-      mXi = m*medium.Xi;
-      U   = m*medium.u;
-
-      // Mass balances
-      if dynamicsType < Types.Dynamics.SteadyStateMass then
-        der(m)   = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-        der(mXi) = port_1.m_flow*actualStream(port_1.Xi_outflow)
-                  + port_2.m_flow*actualStream(port_2.Xi_outflow)
-                  + port_3.m_flow*actualStream(port_3.Xi_outflow)
-          "Component mass balances";
-      else
-           0   = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-        zeros(Medium.nXi) = port_1.m_flow*actualStream(port_1.Xi_outflow)
-                  + port_2.m_flow*actualStream(port_2.Xi_outflow)
-                  + port_3.m_flow*actualStream(port_3.Xi_outflow)
-          "Component mass balances";
-      end if;
-
-    /* 
-  zeros(Medium.nC) = port_1.m_flow*actualStream(port_1.C_outflow)
-                      + port_2.m_flow*actualStream(port_2.C_outflow)
-                      + port_3.m_flow*actualStream(port_3.C_outflow) 
-    "Trace substance mass balances";
-*/
-
-      // Momentum balance (suitable for compressible media)
-      port_1.p = medium.p;
-      port_2.p = medium.p;
-      port_3.p = medium.p;
-
-      // Energy balance
-      if dynamicsType < Types.Dynamics.SteadyState then
-        der(U) = port_1.m_flow*actualStream(port_1.h_outflow)
-                + port_2.m_flow*actualStream(port_2.h_outflow)
-                + port_3.m_flow*actualStream(port_3.h_outflow);
-      else
-          0  = port_1.m_flow*actualStream(port_1.h_outflow)
-                + port_2.m_flow*actualStream(port_2.h_outflow)
-                + port_3.m_flow*actualStream(port_3.h_outflow);
-      end if;
-    end JunctionVolume;
-
-    model GenericJunction
-      "Branching component with balances for a dynamic control volume"
-      import Modelica.Constants;
-      import Modelica_Fluid.Types;
-      import Modelica_Fluid.Types.ModelStructure;
-      outer Modelica_Fluid.System system "System properties";
-      parameter Integer nPorts_a(min=1)=1 "Number of ports on side a";
-      parameter Integer nPorts_b(min=1)=1 "Number of ports on side b";
-      replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
-        "Fluid medium model" 
-          annotation (choicesAllMatching=true);
-      parameter SI.Volume V "Volume";
-      parameter SI.Pressure dp_nominal "nominal (linear) pressure drop" annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
-      parameter SI.MassFlowRate m_flow_nominal "nominal mass flow rate"  annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
-
-      SI.InternalEnergy U "Internal energy";
-      SI.Mass m "Total mass";
-      SI.Mass[Medium.nXi] mXi "Independent masses";
-
-      Interfaces.FluidPorts_a[nPorts_a] ports_a(
-        redeclare each package Medium=Medium,
-        m_flow(each min=if allowFlowReversal then -Constants.inf else 0))
-        "Fluid connectors a (positive design flow direction is from ports_a to ports_b)"
-        annotation (Placement(
-            transformation(extent={{-110,40},{-90,-40}}, rotation=0)));
-      Interfaces.FluidPorts_b[nPorts_b] ports_b(
-        redeclare each package Medium=Medium,
-        m_flow(each max=if allowFlowReversal then +Constants.inf else 0))
-        "Fluid connectors b (positive design flow direction is from ports_a to ports_b)"
-        annotation (Placement(
-            transformation(extent={{90,40},{110,-40}}, rotation=0)));
-      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort
-        "Thermal port" 
-        annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=0)));
-      Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
-      Medium.BaseProperties medium(T(start=T_start),p(start=p_start),h(start=h_start),X(start=X_start), preferredMediumStates=true);
-
-      // Assumptions
-      parameter Boolean allowFlowReversal = system.allowFlowReversal
-        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
-        annotation(Dialog(tab="Assumptions"), Evaluate=true);
-      parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-        "Dynamics option" 
-        annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-
-      // Initialization
-      parameter Types.Init initType=Types.Init.NoInit "Initialization option" 
-        annotation(Evaluate=true,Dialog(tab="Initialization"));
-      parameter Medium.AbsolutePressure p_start "Start value of pressure" 
-        annotation(Dialog(tab="Initialization"));
-      parameter Boolean use_T_start=true
-        "=true, use T_start, otherwise h_start" 
-        annotation(Dialog(tab="Initialization"),Evaluate=true);
-      parameter Medium.Temperature T_start=
-        if use_T_start then system.T_start else Medium.temperature_phX(p_start,h_start,X_start)
-        "Start value of temperature" 
-        annotation(Dialog(tab="Initialization",enable=use_T_start));
-      parameter Medium.SpecificEnthalpy h_start=
-        if use_T_start then Medium.specificEnthalpy_pTX(p_start,T_start,X_start) else Medium.h_default
-        "Start value of specific enthalpy" 
-        annotation(Dialog(tab="Initialization",enable=not use_T_start));
-      parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-        "Start value of mass fractions m_i/m" 
-        annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
-
-      parameter ModelStructure modelStructure=ModelStructure.avb annotation(Evaluate=true);
-
-      Medium.EnthalpyFlowRate ports_a_H_flow[nPorts_a];
-      Medium.EnthalpyFlowRate ports_b_H_flow[nPorts_b];
-      Medium.MassFlowRate ports_a_mXi_flow[nPorts_a,Medium.nXi];
-      Medium.MassFlowRate ports_b_mXi_flow[nPorts_b,Medium.nXi];
-      Medium.ExtraPropertyFlowRate ports_a_mC_flow[nPorts_a,Medium.nC];
-      Medium.ExtraPropertyFlowRate ports_b_mC_flow[nPorts_b,Medium.nC];
-
-      annotation (Icon(coordinateSystem(
-            preserveAspectRatio=true,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={
-            Ellipse(
-              extent={{-19,0},{1,-20}},
-              lineColor={0,0,0},
-              fillColor={0,0,0},
-              fillPattern=FillPattern.Solid),
-            Ellipse(
-              extent={{-100,100},{100,-100}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.Sphere,
-              fillColor={0,128,255}),
-            Ellipse(
-              extent={{-9,10},{11,-10}},
-              lineColor={0,0,0},
-              fillColor={0,0,0},
-              fillPattern=FillPattern.Solid),
-            Text(
-              extent={{-150,150},{150,110}},
-              lineColor={0,0,255},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={0,127,255},
-              textString="%name")}),
-        Diagram(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics));
-
-    initial equation
-      // Initial conditions
-      if initType == Types.Init.NoInit then
-        // no initial equations
-      elseif initType == Types.Init.InitialValues then
-        medium.p = p_start;
-        medium.h = h_start;
-      elseif initType == Types.Init.SteadyState then
-        der(medium.p) = 0;
-        der(medium.h) = 0;
-      elseif initType == Types.Init.SteadyStateHydraulic then
-        der(medium.p) = 0;
-        medium.h = h_start;
-      else
-        assert(false, "Unsupported initialization option");
-      end if;
-
-    equation
-      // Only one connection allowed to a port to avoid unwanted ideal mixing
-    /*
-for i in 1:nPorts_a loop
-  assert(cardinality(ports_a[i]) <= 1,"
-ports_a[" + String(i) + "] of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-end for;
- 
-for i in 1:nPorts_b loop
-  assert(cardinality(ports_b[i]) <= 1,"
-ports_a[" + String(i) + "] of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-end for;
-*/
-
-      heatPort.T = medium.T;
-
-      if dynamicsType < Types.Dynamics.SteadyStateMass then
-        sum(ports_a.m_flow)+sum(ports_b.m_flow) = der(m) "Mass balance";
-
-        for i in 1:Medium.nXi loop
-          sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]) = der(mXi[i])
-            "Substance mass balance";
-        end for;
-      else
-        sum(ports_a.m_flow)+sum(ports_b.m_flow) = 0 "Mass balance";
-
-        for i in 1:Medium.nXi loop
-          sum(ports_a_mXi_flow[:,i])+sum(ports_b_mXi_flow[:,i]) = 0
-            "Substance mass balance";
-        end for;
-      end if;
-
-      if dynamicsType < Types.Dynamics.SteadyState then
-        sum(ports_a_H_flow) + sum(ports_b_H_flow) + heatPort.Q_flow = der(U)
-          "Energy balance";
-      else
-        sum(ports_a_H_flow) + sum(ports_b_H_flow) + heatPort.Q_flow = 0
-          "Energy balance";
-      end if;
-
-      for i in 1:Medium.nC loop
-        sum(ports_a_mC_flow[:,i])+sum(ports_b_mC_flow[:,i]) = 0
-          "Trace substance mass balance";
-      end for;
-
-      for i in 1:nPorts_a loop
-        ports_a[i].h_outflow  = medium.h;
-        ports_a[i].Xi_outflow = medium.Xi;
-        ports_a[i].C_outflow = C;
-
-        ports_a_H_flow[i] = ports_a[i].m_flow * actualStream(ports_a[i].h_outflow)
-          "Enthalpy flow";
-        ports_a_mXi_flow[i,:] = ports_a[i].m_flow * actualStream(ports_a[i].Xi_outflow)
-          "Component mass flow";
-        ports_a_mC_flow[i,:] = ports_a[i].m_flow * actualStream(ports_a[i].C_outflow)
-          "Trace substance mass flow";
-      end for;
-
-      for i in 1:nPorts_b loop
-        ports_b[i].h_outflow  = medium.h;
-        ports_b[i].Xi_outflow = medium.Xi;
-        ports_b[i].C_outflow = C;
-
-        ports_b_H_flow[i] = ports_b[i].m_flow * actualStream(ports_b[i].h_outflow)
-          "Enthalpy flow";
-        ports_b_mXi_flow[i,:] = ports_b[i].m_flow * actualStream(ports_b[i].Xi_outflow)
-          "Component mass flow";
-        ports_b_mC_flow[i,:] = ports_b[i].m_flow * actualStream(ports_b[i].C_outflow)
-          "Trace substance mass flow";
-      end for;
-
-      if modelStructure==ModelStructure.avb or modelStructure == ModelStructure.av_b then
-        ports_a.p=fill(medium.p, nPorts_a);
-      else
-        ports_a.p-fill(medium.p,nPorts_a) = ports_a.m_flow*dp_nominal/m_flow_nominal;
-      end if;
-
-      if modelStructure==ModelStructure.avb or modelStructure==ModelStructure.a_vb then
-        ports_b.p=fill(medium.p,nPorts_b);
-      else
-        ports_b.p-fill(medium.p,nPorts_b)=ports_b.m_flow*dp_nominal/m_flow_nominal;
-      end if;
-
-      U=m*medium.u;
-      mXi=m*medium.Xi;
-      m=medium.d*V;
-
-    end GenericJunction;
   end BaseClasses;
 
 end AST_BatchPlant;
