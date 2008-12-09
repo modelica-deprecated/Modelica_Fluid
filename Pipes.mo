@@ -505,6 +505,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
         "Wall heat transfer" 
           annotation (Dialog(group="Heat transfer"),choicesAllMatching=true);
+    equation
+      assert(length >= height_ab, "Parameter length must be greater or equal height_ab.");
 
       annotation (defaultComponentName="pipe",Icon(coordinateSystem(
             preserveAspectRatio=false,
