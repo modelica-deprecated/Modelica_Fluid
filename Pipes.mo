@@ -393,23 +393,11 @@ of the modeller. Use a Junctions.MultiPort.
       annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
     annotation (defaultComponentName="pipe",
   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Ellipse(
+          grid={1,1}), graphics={Ellipse(
             extent={{-72,10},{-52,-10}},
             lineColor={0,0,0},
             fillColor={0,0,0},
-            fillPattern=FillPattern.Solid),
-          Ellipse(
-            extent={{-30,10},{-10,-10}},
-            lineColor={0,0,0},
-            fillColor={0,0,0},
-            fillPattern=FillPattern.Solid),
-          Ellipse(
-            extent={{10,10},{30,-10}},
-            lineColor={0,0,0},
-            fillColor={0,0,0},
-            fillPattern=FillPattern.Solid),
-          Ellipse(
+            fillPattern=FillPattern.Solid), Ellipse(
             extent={{50,10},{70,-10}},
             lineColor={0,0,0},
             fillColor={0,0,0},
