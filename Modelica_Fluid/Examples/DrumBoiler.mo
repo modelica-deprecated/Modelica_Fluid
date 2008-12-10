@@ -35,7 +35,8 @@ Simulate for 7200 seconds.
 
     import Modelica.SIunits.Conversions.*;
 
-    Modelica_Fluid.HeatExchangers.EquilibriumDrumBoiler evaporator(
+    Modelica_Fluid.Examples.DrumBoiler.BaseClasses.EquilibriumDrumBoiler
+      evaporator(
       m_D=300e3,
       cp_D=500,
       V_t=100,
@@ -191,7 +192,7 @@ Simulate for 7200 seconds.
     connect(controller.y, limiter.u) annotation (Line(points={{-65.7,30},{-69.6,
             30}}, color={0,0,127}));
     connect(limiter.y, pump.m_flow_in) annotation (Line(points={{-85.7,30},{-90,
-            30},{-90,-14},{-79.3,-14}}, color={0,0,127}));
+            30},{-90,-12},{-80,-12}},   color={0,0,127}));
     connect(temperature.T, K2degC.Kelvin) annotation (Line(points={{-10,-1},{
             -10,60},{37,60}}, color={0,0,127}));
     connect(pressure.port, massFlowRate.port_a) annotation (Line(points={{20,14},
@@ -211,4 +212,217 @@ Simulate for 7200 seconds.
         color={0,127,255},
         smooth=Smooth.None));
   end DrumBoiler;
+
+  package BaseClasses "Additional components for drum boiler example"
+    extends Modelica_Fluid.Icons.BaseClassLibrary;
+
+    model EquilibriumDrumBoiler
+      "Simple Evaporator with two states, see Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378"
+      extends Modelica_Fluid.Interfaces.PartialTwoPort(
+        final port_a_exposesState=true,
+        final port_b_exposesState=true,
+        redeclare replaceable package Medium = 
+            Modelica.Media.Water.StandardWater 
+            constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium);
+      import Modelica.SIunits.Conversions.*;
+      import Modelica.Constants;
+      import Modelica_Fluid.Types;
+
+      parameter SI.Mass m_D "mass of surrounding drum metal";
+      parameter Medium.SpecificHeatCapacity cp_D
+        "specific heat capacity of drum metal";
+      parameter SI.Volume V_t "total volume inside drum";
+      parameter Types.Init initType=Types.Init.NoInit "Initialization option" 
+      annotation(Dialog(tab = "Initialization"));
+      parameter Medium.AbsolutePressure p_start=system.p_start
+        "Start value of pressure" 
+      annotation(Dialog(tab = "Initialization"));
+      parameter SI.Volume V_l_start=V_t/2
+        "Start value of liquid volumeStart value of volume" 
+      annotation(Dialog(tab = "Initialization"));
+
+      parameter Boolean allowFlowReversal = system.allowFlowReversal
+        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+        annotation(Dialog(tab="Assumptions"), Evaluate=true);
+
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
+      annotation (Placement(transformation(extent={{-10,-110},{10,-90}}, rotation=
+               0)));
+      Modelica.Blocks.Interfaces.RealOutput V "liquid volume" 
+      annotation (Placement(transformation(
+            origin={100,110},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+
+      Medium.SaturationProperties sat
+        "State vector to compute saturation properties";
+      Medium.AbsolutePressure p(start=p_start, stateSelect=StateSelect.prefer)
+        "pressure inside drum boiler";
+      Medium.Temperature T "temperature inside drum boiler";
+      SI.Volume V_v "volume of vapour phase";
+      SI.Volume V_l(start=V_l_start, stateSelect=StateSelect.prefer)
+        "volumes of liquid phase";
+      Medium.SpecificEnthalpy h_v=Medium.dewEnthalpy(sat)
+        "specific enthalpy of vapour";
+      Medium.SpecificEnthalpy h_l=Medium.bubbleEnthalpy(sat)
+        "specific enthalpy of liquid";
+      Medium.Density rho_v=Medium.dewDensity(sat) "density in vapour phase";
+      Medium.Density rho_l=Medium.bubbleDensity(sat) "density in liquid phase";
+      SI.Mass m "total mass of drum boiler";
+      SI.Energy U "internal energy";
+      Medium.Temperature T_D=heatPort.T "temperature of drum";
+      SI.HeatFlowRate q_F=heatPort.Q_flow "heat flow rate from furnace";
+      Medium.SpecificEnthalpy h_W=inStream(port_a.h_outflow)
+        "Feed water enthalpy (specific enthalpy close to feedwater port when mass flows in to the boiler)";
+      Medium.SpecificEnthalpy h_S=inStream(port_b.h_outflow)
+        "steam enthalpy (specific enthalpy close to steam port when mass flows in to the boiler)";
+      SI.MassFlowRate qm_W=port_a.m_flow "feed water mass flow rate";
+      SI.MassFlowRate qm_S=port_b.m_flow "steam mass flow rate";
+    /*outer Modelica_Fluid.Components.FluidOptions fluidOptions 
+    "Global default options";*/
+    equation
+    // balance equations
+      m = rho_v*V_v + rho_l*V_l + m_D "Total mass";
+      U = rho_v*V_v*h_v + rho_l*V_l*h_l - p*V_t + m_D*cp_D*T_D "Total energy";
+      der(m) = qm_W + qm_S "Mass balance";
+      der(U) = q_F
+                + port_a.m_flow*actualStream(port_a.h_outflow)
+                + port_b.m_flow*actualStream(port_b.h_outflow) "Energy balance";
+      V_t = V_l + V_v;
+
+    // Properties of saturated liquid and steam
+      sat.psat = p;
+      sat.Tsat = T;
+      sat.Tsat = Medium.saturationTemperature(p);
+
+    // ideal heat transfer between metal and water
+      T_D = T;
+
+    // boundary conditions at the ports
+      port_a.p = p;
+      port_a.h_outflow = h_l;
+      port_b.p = p;
+      port_b.h_outflow = h_v;
+
+    // liquid volume
+      V = V_l;
+
+    // Check that two-phase equilibrium is actually possible
+      assert(p < Medium.fluidConstants[1].criticalPressure - 10000,
+        "Evaporator model requires subcritical pressure");
+    initial equation
+    // Initial conditions
+      if initType == Types.Init.NoInit then
+      // no initial equations
+      elseif initType == Types.Init.InitialValues then
+        p = p_start;
+        V_l = V_l_start;
+      elseif initType == Types.Init.SteadyState then
+        der(p) = 0;
+        der(V_l) = 0;
+      elseif initType == Types.Init.SteadyStateHydraulic then
+        der(p) = 0;
+        V_l = V_l_start;
+      else
+        assert(false, "Unsupported initialization option");
+      end if;
+
+      annotation (
+        Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics),
+        Icon(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics={
+            Rectangle(
+              extent={{-100,60},{100,-61}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.HorizontalCylinder,
+              fillColor={192,192,192}),
+            Rectangle(
+              extent={{-100,34},{100,-36}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.HorizontalCylinder,
+              fillColor={0,127,255}),
+            Ellipse(
+              extent={{18,0},{48,-29}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-1,29},{29,0}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{48,34},{78,5}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-31,1},{-1,-28}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{47,14},{77,-15}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-72,25},{-42,-4}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{71,0},{101,-29}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{74,14},{104,-15}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{71,29},{101,0}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{-150,70},{150,110}},
+              lineColor={0,0,255},
+              fillPattern=FillPattern.HorizontalCylinder,
+              fillColor={0,127,255},
+              textString="%name"),
+            Line(points={{0,-61},{0,-100}}, color={191,0,0}),
+            Line(points={{100,100},{100,60}}, color={0,0,127})}),
+        Documentation(revisions="<html>
+<ul>
+<li><i>2 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+     Initialization options fixed</li>
+<li><i>6 Sep 2005</i><br>
+    Model by Ruediger Franke modified after the 45th Design Meeting</li>
+</ul>
+</html>",     info="<html>
+Model of a simple evaporator with two states. The model assumes two-phase equilibrium inside the component; saturated steam goes out of the steam outlet.
+<p>
+References: Astroem, Bell: Drum-boiler dynamics, Automatica 36, 2000, pp.363-378
+</html>"));
+    equation
+
+    end EquilibriumDrumBoiler;
+  end BaseClasses;
 end DrumBoiler;

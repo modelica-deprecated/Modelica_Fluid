@@ -78,7 +78,6 @@ The initial equations are consistent however and a tool shall reduce them approp
       experimentSetupOutput);
   end DistributedPipeLumpedPressureInitialization;
 
-
   model Test1 "Prescribed inputs, initial values"
 
     Modelica_Fluid.Examples.HeatingSystem plant(
