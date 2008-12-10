@@ -387,7 +387,7 @@ The design flow direction with positive m_flow variables is counterflow.
           points={{-10,-8.5},{-10,-34.4},{-9.7,-34.4}},
           color={191,0,0},
           smooth=Smooth.None));
-      connect(pipe_2.heatPorts[nNodes:-1:1], wall.heatPort_a[1:nNodes])
+      connect(pipe_2.heatPorts[nNodes:-1:1], wall.heatPort_a[1:nNodes]) 
         annotation (Line(
           points={{-10.3,42.4},{-10.3,31.7},{-10,31.7},{-10,20.5}},
           color={127,0,0},

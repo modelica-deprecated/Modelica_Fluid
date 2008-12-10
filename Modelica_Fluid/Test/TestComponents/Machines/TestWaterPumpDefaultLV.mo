@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.Pumps;
+within Modelica_Fluid.Test.TestComponents.Machines;
 model TestWaterPumpDefaultLV "Test pump with default options an linear valve"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;

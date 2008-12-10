@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.Volumes;
+within Modelica_Fluid.Test.TestComponents.Vessels;
 model TestMixingVolumesPressureStates
   "Test case where in one of the mixing volumes a pressure state appears"
   import Modelica_Fluid;
