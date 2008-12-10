@@ -21,11 +21,11 @@ annotation (
     usePressureInput=false,
     p=100000) 
   annotation (Placement(transformation(extent={{34,50},{14,70}}, rotation=0)));
-  Modelica_Fluid.Pumps.PumpShaft pump(
+  Modelica_Fluid.Machines.Pump pump(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_start=1,
     redeclare function flowCharacteristic = 
-        Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
+        Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
           q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     N_nominal=1500,
     p_a_start=100000,
@@ -37,7 +37,7 @@ annotation (
     offset=1,
     startTime=5) 
   annotation (Placement(transformation(extent={{-40,74},{-20,94}}, rotation=0)));
-  Modelica_Fluid.ControlValves.ValveIncompressible Valve(
+  Modelica_Fluid.Valves.ValveIncompressible Valve(
                                              redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
     m_flow_nominal=1,

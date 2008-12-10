@@ -42,21 +42,21 @@ model TestMultiPortTraceSubstances
     annotation (Placement(transformation(extent={{-100,-8},{-80,12}})));
   Modelica.Blocks.Sources.RealExpression X2(y=1 - X.y) "Concentration of X[2]" 
     annotation (Placement(transformation(extent={{-100,-32},{-80,-12}})));
-  Modelica_Fluid.Volumes.Volume volume1(
+  Modelica_Fluid.Vessels.Volume volume1(
     redeclare package Medium = Medium,
     nPorts=3,
     C_start={1E-4},
     neglectPortDiameters=false,
     zeta_out={0,0,0},
     V=1) annotation (Placement(transformation(extent={{12,20},{32,40}})));
-  Modelica_Fluid.Volumes.Volume volume2(
+  Modelica_Fluid.Vessels.Volume volume2(
     redeclare package Medium = Medium,
     nPorts=3,
     C_start={1E-4},
     neglectPortDiameters=false,
     zeta_out={0,0,0},
     V=1) annotation (Placement(transformation(extent={{12,-20},{32,0}})));
-  Modelica_Fluid.Volumes.Volume volume3(
+  Modelica_Fluid.Vessels.Volume volume3(
     redeclare package Medium = Medium,
     V=1,
     nPorts=3,

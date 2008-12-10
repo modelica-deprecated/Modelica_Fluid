@@ -7,7 +7,7 @@ model TestValveIncompressible "Test case with different valve characteristics"
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,30},{-80,50}}, rotation=0)));
-  Modelica_Fluid.ControlValves.ValveIncompressible V1(
+  Modelica_Fluid.Valves.ValveIncompressible V1(
     d_nominal=1000,
     dp_nominal=9e5,
     m_flow_nominal=1.5,
@@ -39,7 +39,7 @@ annotation (
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,-10},{-80,10}}, rotation=0)));
-  Modelica_Fluid.ControlValves.ValveIncompressible V2(
+  Modelica_Fluid.Valves.ValveIncompressible V2(
     d_nominal=1000,
     dp_nominal=9e5,
     m_flow_nominal=1.5,
@@ -47,7 +47,7 @@ annotation (
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
     redeclare function valveCharacteristic = 
-        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.equalPercentage)
+        Modelica_Fluid.Valves.BaseClasses.ValveCharacteristics.equalPercentage)
             annotation (Placement(transformation(extent={{-50,-10},{-30,10}},
           rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX SinkP2(
@@ -61,7 +61,7 @@ annotation (
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
             0)));
-  Modelica_Fluid.ControlValves.ValveIncompressible V3(
+  Modelica_Fluid.Valves.ValveIncompressible V3(
     d_nominal=1000,
     dp_nominal=9e5,
     m_flow_nominal=1.5,
@@ -69,7 +69,7 @@ annotation (
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
     redeclare function valveCharacteristic = 
-        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.equalPercentage
+        Modelica_Fluid.Valves.BaseClasses.ValveCharacteristics.equalPercentage
         (                                                                              rangeability=10)) 
             annotation (Placement(transformation(extent={{-50,-50},{-30,-30}},
           rotation=0)));

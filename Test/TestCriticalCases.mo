@@ -149,7 +149,7 @@ package TestCriticalCases
       T_start=300)      annotation (Placement(transformation(extent={{-72,-4},{
               -52,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valve1(
+    Modelica_Fluid.Valves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
@@ -157,7 +157,7 @@ package TestCriticalCases
       dp_nominal=200000) 
                   annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valve2(
+    Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
@@ -256,14 +256,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=5.0e5)  annotation (Placement(transformation(extent={{-72,-4},{
               -52,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valveIncompressible(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
       d_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valveIncompressible1(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -356,14 +356,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-80,-4},{
               -60,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valveIncompressible(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
       d_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valveIncompressible1(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -416,7 +416,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Junctions.IdealTJunction splitter(
+    Modelica_Fluid.Junctions.TJunctionIdeal splitter(
                                      redeclare package Medium = Medium) 
       annotation (Placement(transformation(
           origin={-43,6},
@@ -465,14 +465,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=5.0e5)  annotation (Placement(transformation(extent={{-80,-4},{
               -60,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valveIncompressible(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
       d_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valveIncompressible1(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -578,7 +578,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       p_b_start=500000)                  annotation (Placement(transformation(
             extent={{-76,-10},{-56,10}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valveIncompressible(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible(
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
       d_nominal=1000,
@@ -741,7 +741,7 @@ fails for zero flow rate.
       redeclare package Medium = Medium,
       length=20)                         annotation (Placement(transformation(
             extent={{20,-30},{40,-10}}, rotation=0)));
-    ControlValves.ValveIncompressible valve1(
+    Modelica_Fluid.Valves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
@@ -750,7 +750,7 @@ fails for zero flow rate.
       minOpening=0.01) 
                   annotation (Placement(transformation(extent={{-46,40},{-26,60}},
             rotation=0)));
-    ControlValves.ValveIncompressible valve2(
+    Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
@@ -768,7 +768,7 @@ fails for zero flow rate.
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{-20,40},{0,60}}, rotation=0)));
-    ControlValves.ValveIncompressible valve3(
+    Modelica_Fluid.Valves.ValveIncompressible valve3(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
@@ -923,14 +923,14 @@ fails for zero flow rate.
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valveIncompressible(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
       d_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valveIncompressible1(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -1025,7 +1025,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valveIncompressible(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
@@ -1034,7 +1034,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       minOpening=0.001) 
                   annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valveIncompressible1(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
@@ -1090,7 +1090,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Junctions.IdealTJunction junctionIdeal(
+    Modelica_Fluid.Junctions.TJunctionIdeal junctionIdeal(
                                           redeclare package Medium = Medium) 
       annotation (Placement(transformation(
           origin={-38,6},
@@ -1139,14 +1139,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valve1(
+    Modelica_Fluid.Valves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
        dp_nominal=4.0e5,
       m_flow_nominal=1,
       d_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valve2(
+    Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -1255,14 +1255,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=495000)      annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valve1(
+    Modelica_Fluid.Valves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
       d_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valve2(
+    Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -1371,14 +1371,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valve1(
+    Modelica_Fluid.Valves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
       d_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valve2(
+    Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -1485,7 +1485,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valve1(
+    Modelica_Fluid.Valves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -1494,7 +1494,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       dp(start=10)) 
                   annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valve2(
+    Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -1606,14 +1606,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valve1(
+    Modelica_Fluid.Valves.ValveIncompressible valve1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
       d_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
-    ControlValves.ValveIncompressible valve2(
+    Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
@@ -1724,7 +1724,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
-    ControlValves.ValveIncompressible valveIncompressible1(
+    Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
@@ -1801,7 +1801,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=200000,
       p_b_start=200000) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
-    Modelica_Fluid.ControlValves.ValveIncompressible valve(
+    Modelica_Fluid.Valves.ValveIncompressible valve(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       m_flow_nominal=10,
       Av=1e-3,
@@ -1882,7 +1882,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=9900000,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
-    ControlValves.ValveCompressible valve(
+    Modelica_Fluid.Valves.ValveCompressible valve(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       Av=1e-3,
       dp_nominal=10000000,
@@ -1950,7 +1950,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=10000000,
       p_b_start=9900000) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
-    Modelica_Fluid.ControlValves.ValveCompressible valve(
+    Modelica_Fluid.Valves.ValveCompressible valve(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       Av=1e-3,
       dp_nominal=10000000,

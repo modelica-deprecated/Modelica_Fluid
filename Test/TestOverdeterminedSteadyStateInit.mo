@@ -22,7 +22,7 @@ package TestOverdeterminedSteadyStateInit
       p_b_start=9900000,
       nNodes=5) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
-    ControlValves.ValveCompressible valve(
+    Modelica_Fluid.Valves.ValveCompressible valve(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       Av=1e-3,
       dp_nominal=10000000,
@@ -90,7 +90,7 @@ The initial equations are consistent however and a tool shall reduce them approp
             extent={{-60,60},{60,-60}},
             lineColor={0,0,255},
             textString="P")}));
-    Volumes.OpenTank tank(
+    Modelica_Fluid.Vessels.OpenTank tank(
       redeclare package Medium = Medium,
       neglectPortDiameters=true,
       crossArea=0.01,
@@ -102,7 +102,7 @@ The initial equations are consistent however and a tool shall reduce them approp
       portDiameters={0.025,0.025}) 
                 annotation (Placement(transformation(extent={{-76,6},{-54,28}},
             rotation=0)));
-    Pumps.Pump pump(
+    Modelica_Fluid.Machines.ControlledPump pump(
       redeclare package Medium = Medium,
       N_nominal=1500,
       N_const=1500,
@@ -111,13 +111,13 @@ The initial equations are consistent however and a tool shall reduce them approp
       use_T_start=true,
       T_start=Modelica.SIunits.Conversions.from_degC(40),
       redeclare function flowCharacteristic = 
-          Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.linearFlow (
+          Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.linearFlow (
             head_nominal={60.0,0}, q_nominal={0.0,0.02e-3}),
       m_flow_start=0.01,
       checkValve=false) 
       annotation (Placement(transformation(extent={{-58,-16},{-38,4}}, rotation=
              0)));
-    ControlValves.ValveIncompressible valve(
+    Modelica_Fluid.Valves.ValveIncompressible valve(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=0.01,

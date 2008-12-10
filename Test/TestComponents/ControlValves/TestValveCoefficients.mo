@@ -7,7 +7,7 @@ model TestValveCoefficients
     T=system.T_ambient,
     p=200000) 
   annotation (Placement(transformation(extent={{-94,18},{-74,38}},  rotation=0)));
-  Modelica_Fluid.ControlValves.ValveIncompressible V1(
+  Modelica_Fluid.Valves.ValveIncompressible V1(
     d_nominal=1000,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_nominal=1,
@@ -32,7 +32,7 @@ model TestValveCoefficients
     T=system.T_ambient,
     p=200000) 
   annotation (Placement(transformation(extent={{-94,-18},{-74,2}},  rotation=0)));
-  Modelica_Fluid.ControlValves.ValveIncompressible V2(
+  Modelica_Fluid.Valves.ValveIncompressible V2(
     d_nominal=1000,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Kv,
@@ -51,7 +51,7 @@ model TestValveCoefficients
     T=system.T_ambient,
     p=200000) 
   annotation (Placement(transformation(extent={{-94,-56},{-74,-36}},rotation=0)));
-  Modelica_Fluid.ControlValves.ValveIncompressible V3(
+  Modelica_Fluid.Valves.ValveIncompressible V3(
     d_nominal=1000,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
@@ -71,7 +71,7 @@ model TestValveCoefficients
     T=system.T_ambient,
     p=200000) 
   annotation (Placement(transformation(extent={{-94,-88},{-74,-68}},rotation=0)));
-  Modelica_Fluid.ControlValves.ValveIncompressible V4(
+  Modelica_Fluid.Valves.ValveIncompressible V4(
     d_nominal=1000,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     Cv=10,

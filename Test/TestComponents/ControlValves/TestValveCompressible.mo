@@ -6,7 +6,7 @@ model TestValveCompressible "Test case for incompressible fluid valve"
     p=1000000,
     T(displayUnit="degC") = 673.15) 
   annotation (Placement(transformation(extent={{-76,-22},{-56,-2}}, rotation=0)));
-  Modelica_Fluid.ControlValves.ValveCompressible V1(
+  Modelica_Fluid.Valves.ValveCompressible V1(
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_nominal=1,
     CvData=Modelica_Fluid.Types.CvTypes.Av,

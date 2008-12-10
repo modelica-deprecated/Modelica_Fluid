@@ -2,7 +2,7 @@ within Modelica_Fluid;
 package Junctions "Junction components"
   extends Modelica_Fluid.Icons.VariantLibrary;
 
-  model IdealTJunction
+  model TJunctionIdeal
     "Splitting/joining component with static balances for an infinitesimal control volume"
     extends BaseClasses.PartialTJunction;
 
@@ -34,7 +34,7 @@ package Junctions "Junction components"
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
-  end IdealTJunction;
+  end TJunctionIdeal;
 
   annotation (Documentation(info="<html>
  
@@ -42,7 +42,8 @@ package Junctions "Junction components"
   model TJunctionVolume
     "Splitting/joining component with static balances for a dynamic control volume"
     extends BaseClasses.PartialTJunction;
-    extends Volumes.BaseClasses.PartialLumpedVolume(Qs_flow = 0);
+    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume(
+                                                    Qs_flow = 0);
 
     parameter SI.Volume V "Mixing volume inside junction";
 

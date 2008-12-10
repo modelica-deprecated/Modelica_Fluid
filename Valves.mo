@@ -1,5 +1,5 @@
 within Modelica_Fluid;
-package ControlValves "Various variants of valve components"
+package Valves "Various variants of valve components"
     extends Modelica_Fluid.Icons.VariantLibrary;
 
     model ValveIncompressible "Valve for (almost) incompressible fluids"
@@ -61,9 +61,9 @@ explained in detail in the
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     parameter Real Fl_nominal=0.9 "Liquid pressure recovery factor";
     replaceable function FlCharacteristic = 
-        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.one 
+        Modelica_Fluid.Valves.BaseClasses.ValveCharacteristics.one 
       constrainedby
-      Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun
+      Modelica_Fluid.Valves.BaseClasses.ValveCharacteristics.baseFun
       "Pressure recovery characteristic";
     Real Ff "Ff coefficient (see IEC/ISA standard)";
     Real Fl "Pressure recovery coefficient Fl (see IEC/ISA standard)";
@@ -129,9 +129,9 @@ explained in detail in the
     annotation(Dialog(group="Nominal operating point"));
     parameter Real Fxt_full=0.5 "Fk*xt critical ratio at full opening";
     replaceable function xtCharacteristic = 
-        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.one 
+        Modelica_Fluid.Valves.BaseClasses.ValveCharacteristics.one 
       constrainedby
-      Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun
+      Modelica_Fluid.Valves.BaseClasses.ValveCharacteristics.baseFun
       "Critical ratio characteristic";
     Real Fxt;
     Real x "Pressure drop ratio";
@@ -372,9 +372,9 @@ it is open.
       parameter Boolean CheckValve=false "Reverse flow stopped";
 
       replaceable function valveCharacteristic = 
-          Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.linear 
+          Modelica_Fluid.Valves.BaseClasses.ValveCharacteristics.linear 
         constrainedby
-        Modelica_Fluid.ControlValves.BaseClasses.ValveCharacteristics.baseFun
+        Modelica_Fluid.Valves.BaseClasses.ValveCharacteristics.baseFun
         "Inherent flow characteristic" 
         annotation(choicesAllMatching=true);
 
@@ -519,4 +519,4 @@ This characteristic is such that the relative change of the flow coefficient is 
   annotation (Documentation(info="<html>
  
 </html>"));
-end ControlValves;
+end Valves;

@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestOpenTank
   extends Modelica.Icons.Example;
   import Modelica_Fluid;
-  Modelica_Fluid.Volumes.OpenTank upperTank(
+  Modelica_Fluid.Vessels.OpenTank upperTank(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     nPorts=2,
     height=20,
@@ -44,7 +44,7 @@ model TestOpenTank
         extent={{-10,-10},{10,10}},
         rotation=90)));
 
-  Modelica_Fluid.Volumes.OpenTank lowerTank(
+  Modelica_Fluid.Vessels.OpenTank lowerTank(
     nPorts=1,
     height=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,

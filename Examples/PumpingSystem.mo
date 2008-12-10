@@ -24,13 +24,13 @@ model PumpingSystem "Model of a pumping system for drinking water"
         extent={{-9,-10},{11,10}},
         rotation=90)));
 
-  Pumps.Pump pumps(
+  Modelica_Fluid.Machines.ControlledPump pumps(
     checkValve=true,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     N_nominal=1200,
     redeclare function flowCharacteristic = 
-        Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
+        Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
           q_nominal={0,0.25,0.5}, head_nominal={100,60,0}),
     M=50,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
@@ -39,7 +39,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{-68,-80},{-48,-60}}, rotation=
            0)));
 
-  Modelica_Fluid.Volumes.OpenTank reservoir(
+  Modelica_Fluid.Vessels.OpenTank reservoir(
     initType=Modelica_Fluid.Types.Init.InitialValues,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
@@ -51,8 +51,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     height=3) 
     annotation (Placement(transformation(extent={{-20,-16},{0,4}}, rotation=0)));
 
-  Modelica_Fluid.ControlValves.ValveLinear userValve(
-                                                 redeclare package Medium = 
+  Modelica_Fluid.Valves.ValveLinear userValve(   redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     allowFlowReversal=false,
     dp_nominal=200000,

@@ -3,7 +3,7 @@ model TestSweptVolume
   "Enclosed medium with fixed quantity in an adiabatic volume with varying size"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  Modelica_Fluid.Volumes.SweptVolume sweptVolume(
+  Modelica_Fluid.Machines.SweptVolume sweptVolume(
     pistonCrossArea=0.05*0.05*Modelica.Constants.pi/4,
     clearance=0.05*0.05*Modelica.Constants.pi/4*0.03,
     redeclare package Medium = Modelica.Media.Air.DryAirNasa) 

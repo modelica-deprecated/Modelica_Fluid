@@ -1,8 +1,125 @@
 within Modelica_Fluid;
-package Pumps "Pump components"
+package Machines "Fluid flow machines"
   extends Modelica_Fluid.Icons.VariantLibrary;
-  model Pump "Centrifugal pump with ideally controlled speed"
-    extends Modelica_Fluid.Pumps.BaseClasses.PartialPump;
+  model SweptVolume
+    "varying cylindric volume depending on the postition of the piston"
+    extends Vessels.BaseClasses.PartialLumpedVolumePorts(Qs_flow=0);
+    parameter SI.Area pistonCrossArea "cross sectional area of pistion";
+    parameter SI.Volume clearance "remaining volume at zero piston stroke";
+
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+              -100},{100,100}}),
+                        graphics),
+                         Icon(coordinateSystem(preserveAspectRatio=true,
+            extent={{-100,-100},{100,100}}), graphics={
+          Rectangle(
+            extent={{-44,36},{44,-90}},
+            lineColor={0,0,255},
+            pattern=LinePattern.None,
+            lineThickness=1,
+            fillColor={170,213,255},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{-44,60},{-40,60},{-40,-32},{-44,-32},{-44,60}},
+            lineColor={95,95,95},
+            smooth=Smooth.None,
+            fillColor={135,135,135},
+            fillPattern=FillPattern.Backward),
+          Polygon(
+            points={{40,60},{44,60},{44,-34},{40,-34},{40,60}},
+            lineColor={95,95,95},
+            smooth=Smooth.None,
+            fillColor={135,135,135},
+            fillPattern=FillPattern.Backward),
+          Rectangle(
+            extent={{-40,40},{40,30}},
+            lineColor={95,95,95},
+            fillColor={135,135,135},
+            fillPattern=FillPattern.Forward),
+          Rectangle(
+            extent={{-6,92},{6,40}},
+            lineColor={95,95,95},
+            fillColor={135,135,135},
+            fillPattern=FillPattern.Forward),
+          Polygon(
+            points={{-40,-86},{40,-86},{40,70},{44,70},{44,-90},{-44,-90},{-44,
+                70},{-40,70},{-40,-86}},
+            lineColor={95,95,95},
+            smooth=Smooth.None,
+            fillColor={135,135,135},
+            fillPattern=FillPattern.Backward)}),
+      Documentation(info="<html>
+<p> Mixing volume with varying size. The size of the volume is given by:</p>
+<ul>
+  <li>cross sectional piston area</li>
+  <li>piston stroke given by the flange position s</li>
+  <li>clearance (volume at flang position = 0)</li>
+</ul> 
+ 
+<p> The flange position has to be equal or greater than zero. Otherwise the simulation stops. The force of the flange results from the pressure difference between medium and ambient pressure and the cross sectional piston area. For using the component, a top level instance of the ambient model with the inner attribute is needed.</p>
+<p> The pressure at both fluid ports equals the medium pressure in the volume. No suction nor discharge valve is included in the model.</p>
+<p>The thermal port is directly connected to the medium. The temperature of the thermal port equals the medium temperature. The heat capacity of the cylinder and the piston are not includes in the model.</p>
+</html>",
+        revisions="<html>
+<ul>
+<li><i>29 Oct 2007</i>
+    by Carsten Heinrich:<br>
+       Model added to the Fluid library</li>
+</ul>
+</html>"));
+    Modelica.Mechanics.Translational.Interfaces.Flange_b flange
+      "translation flange for piston" annotation (Placement(transformation(
+            extent={{-10,90},{10,110}},   rotation=0)));
+
+  equation
+    assert(flange.s >= 0, "Piston stroke (given by flange.s) must not be smaller than zero!");
+
+    // volume size
+    fluidVolume = clearance + flange.s * pistonCrossArea;
+
+    flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
+
+    // energy balances
+    Ws_flow = medium.p * pistonCrossArea * (-der(flange.s));
+  end SweptVolume;
+
+  model Pump "Centrifugal pump with mechanical connector for the shaft"
+    extends Modelica_Fluid.Machines.BaseClasses.PartialPump;
+    SI.Angle phi "Shaft angle";
+    SI.AngularVelocity omega "Shaft angular velocity";
+    Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft 
+    annotation (Placement(transformation(extent={{80,4},{110,32}}, rotation=0),
+          iconTransformation(extent={{80,-34},{110,-6}})));
+  equation
+    phi = shaft.phi;
+    omega = der(phi);
+    N = Modelica.SIunits.Conversions.to_rpm(omega);
+    W_single = omega*shaft.tau;
+  annotation (
+    Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
+              100}}), graphics={Rectangle(
+            extent={{60,-12},{84,-26}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={95,95,95})}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+            graphics),
+    Documentation(info="<HTML>
+<p>This model describes a centrifugal pump (or a group of <tt>nPumps</tt> pumps in parallel) with a mechanical rotational connector for the shaft, to be used when the pump drive has to be modelled explicitly. In the case of <tt>nPumps</tt> pumps in parallel, the mechanical connector is relative to a single pump.
+<p>The model extends <tt>PartialPump</tt>
+ </HTML>",
+       revisions="<html>
+<ul>
+<li><i>31 Oct 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Model added to the Fluid library</li>
+</ul>
+</html>"));
+  end Pump;
+
+  model ControlledPump "Centrifugal pump with ideally controlled speed"
+    extends Modelica_Fluid.Machines.BaseClasses.PartialPump;
     parameter Boolean use_N_input = false
       "Get the rotational speed from the input connector";
     parameter Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm
@@ -51,46 +168,13 @@ package Pumps "Pump components"
     // Set N with a lower limit to avoid singularities at zero speed
     N = max(N_in_internal,1e-3) "Rotational speed";
 
-  end Pump;
+  end ControlledPump;
 
-  model PumpShaft "Centrifugal pump with mechanical connector for the shaft"
-    extends Modelica_Fluid.Pumps.BaseClasses.PartialPump;
-    SI.Angle phi "Shaft angle";
-    SI.AngularVelocity omega "Shaft angular velocity";
-    Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft 
-    annotation (Placement(transformation(extent={{80,4},{110,32}}, rotation=0),
-          iconTransformation(extent={{80,-34},{110,-6}})));
-  equation
-    phi = shaft.phi;
-    omega = der(phi);
-    N = Modelica.SIunits.Conversions.to_rpm(omega);
-    W_single = omega*shaft.tau;
-  annotation (
-    Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
-              100}}), graphics={Rectangle(
-            extent={{60,-12},{84,-26}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={95,95,95})}),
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
-            graphics),
-    Documentation(info="<HTML>
-<p>This model describes a centrifugal pump (or a group of <tt>nPumps</tt> pumps in parallel) with a mechanical rotational connector for the shaft, to be used when the pump drive has to be modelled explicitly. In the case of <tt>nPumps</tt> pumps in parallel, the mechanical connector is relative to a single pump.
-<p>The model extends <tt>PartialPump</tt>
- </HTML>",
-       revisions="<html>
-<ul>
-<li><i>31 Oct 2005</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Model added to the Fluid library</li>
-</ul>
-</html>"));
-  end PumpShaft;
 
-  model PumpNPSH
+  model ControlledPumpNPSH
     "Centrifugal pump with ideally controlled speed and NPSHa computation"
-    extends Pump(redeclare replaceable package Medium = 
+    extends Modelica_Fluid.Machines.ControlledPump(
+                 redeclare replaceable package Medium = 
       Modelica.Media.Water.WaterIF97_ph constrainedby
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);
     SI.Length NPSHa "Net Positive Suction Head available";
@@ -113,7 +197,7 @@ package Pumps "Pump components"
  
 </html>"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics));
-  end PumpNPSH;
+  end ControlledPumpNPSH;
 
   package BaseClasses "Base classes for Turbomachinery components"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
@@ -482,4 +566,4 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
   annotation (Documentation(info="<html>
  
 </html>"));
-end Pumps;
+end Machines;

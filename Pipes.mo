@@ -99,7 +99,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       redeclare final model PressureDrop = PressureDrop) 
       annotation (Placement(transformation(extent={{-60,-40},{-40,-20}},
             rotation=0)));
-    Modelica_Fluid.Volumes.Volume volume(
+    Modelica_Fluid.Vessels.Volume volume(
       redeclare package Medium = Medium,
       initType=initType,
       p_start=(p_a_start+p_b_start)/2,
@@ -183,7 +183,7 @@ pipe wall/environment).
     import Modelica_Fluid.Types.ModelStructure;
 
     // distributed volume model
-    extends Modelica_Fluid.Volumes.BaseClasses.PartialDistributedVolume(
+    extends Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume(
       final n = nNodes,
       Qs_flow = heatTransfer.Q_flow);
 

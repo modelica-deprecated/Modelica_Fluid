@@ -154,7 +154,7 @@ Simulate for 7200 seconds.
           origin={-78,30},
           extent={{-7,-7},{7,7}},
           rotation=180)));
-    Modelica_Fluid.ControlValves.ValveLinear SteamValve(           redeclare
+    Modelica_Fluid.Valves.ValveLinear SteamValve(                  redeclare
         package Medium = 
           Modelica.Media.Water.StandardWater,
       dp_nominal=9000000,

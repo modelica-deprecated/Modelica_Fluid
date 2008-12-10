@@ -1,9 +1,10 @@
 within Modelica_Fluid;
-package Volumes "Generic volume, tank and other volume type components"
+package Vessels "Generic volume, tank and other vessel type components"
    extends Modelica_Fluid.Icons.VariantLibrary;
 
     model Volume "Fixed volume with ports"
-      extends Modelica_Fluid.Volumes.BaseClasses.PartialLumpedVolumePorts(Qs_flow = heatPort.Q_flow);
+      extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolumePorts(
+        Qs_flow=heatPort.Q_flow);
 
       parameter SI.Volume V "Volume";
 
@@ -25,7 +26,7 @@ package Volumes "Generic volume, tank and other volume type components"
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
-      annotation (
+      annotation (defaultComponentName="volume",
         Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics={Ellipse(
             extent={{-100,100},{100,-100}},
@@ -45,87 +46,6 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
       heatPort.T = medium.T;
     end Volume;
 
-  model SweptVolume
-    "varying cylindric volume depending on the postition of the piston"
-    extends BaseClasses.PartialLumpedVolumePorts(Qs_flow = 0);
-    parameter SI.Area pistonCrossArea "cross sectional area of pistion";
-    parameter SI.Volume clearance "remaining volume at zero piston stroke";
-
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
-              -100},{100,100}}),
-                        graphics),
-                         Icon(coordinateSystem(preserveAspectRatio=true,
-            extent={{-100,-100},{100,100}}), graphics={
-          Rectangle(
-            extent={{-44,36},{44,-90}},
-            lineColor={0,0,255},
-            pattern=LinePattern.None,
-            lineThickness=1,
-            fillColor={170,213,255},
-            fillPattern=FillPattern.Solid),
-          Polygon(
-            points={{-44,60},{-40,60},{-40,-32},{-44,-32},{-44,60}},
-            lineColor={95,95,95},
-            smooth=Smooth.None,
-            fillColor={135,135,135},
-            fillPattern=FillPattern.Backward),
-          Polygon(
-            points={{40,60},{44,60},{44,-34},{40,-34},{40,60}},
-            lineColor={95,95,95},
-            smooth=Smooth.None,
-            fillColor={135,135,135},
-            fillPattern=FillPattern.Backward),
-          Rectangle(
-            extent={{-40,40},{40,30}},
-            lineColor={95,95,95},
-            fillColor={135,135,135},
-            fillPattern=FillPattern.Forward),
-          Rectangle(
-            extent={{-6,92},{6,40}},
-            lineColor={95,95,95},
-            fillColor={135,135,135},
-            fillPattern=FillPattern.Forward),
-          Polygon(
-            points={{-40,-86},{40,-86},{40,70},{44,70},{44,-90},{-44,-90},{-44,
-                70},{-40,70},{-40,-86}},
-            lineColor={95,95,95},
-            smooth=Smooth.None,
-            fillColor={135,135,135},
-            fillPattern=FillPattern.Backward)}),
-      Documentation(info="<html>
-<p> Mixing volume with varying size. The size of the volume is given by:</p>
-<ul>
-  <li>cross sectional piston area</li>
-  <li>piston stroke given by the flange position s</li>
-  <li>clearance (volume at flang position = 0)</li>
-</ul> 
- 
-<p> The flange position has to be equal or greater than zero. Otherwise the simulation stops. The force of the flange results from the pressure difference between medium and ambient pressure and the cross sectional piston area. For using the component, a top level instance of the ambient model with the inner attribute is needed.</p>
-<p> The pressure at both fluid ports equals the medium pressure in the volume. No suction nor discharge valve is included in the model.</p>
-<p>The thermal port is directly connected to the medium. The temperature of the thermal port equals the medium temperature. The heat capacity of the cylinder and the piston are not includes in the model.</p>
-</html>",
-        revisions="<html>
-<ul>
-<li><i>29 Oct 2007</i>
-    by Carsten Heinrich:<br>
-       Model added to the Fluid library</li>
-</ul>
-</html>"));
-    Modelica.Mechanics.Translational.Interfaces.Flange_b flange
-      "translation flange for piston" annotation (Placement(transformation(
-            extent={{-10,90},{10,110}},   rotation=0)));
-
-  equation
-    assert(flange.s >= 0, "Piston stroke (given by flange.s) must not be smaller than zero!");
-
-    // volume size
-    fluidVolume = clearance + flange.s * pistonCrossArea;
-
-    flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
-
-    // energy balances
-    Ws_flow = medium.p * pistonCrossArea * (-der(flange.s));
-  end SweptVolume;
 
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
     replaceable package Medium = 
@@ -351,8 +271,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -409,7 +329,7 @@ model Tank
     import Modelica.Constants;
     import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
     import Modelica_Fluid.Utilities.regRoot2;
-    import Modelica_Fluid.Volumes.BaseClasses.TankPortData;
+    import Modelica_Fluid.Vessels.BaseClasses.TankPortData;
 
   replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -440,7 +360,8 @@ model Tank
         rotation=90,
         origin={0,100})));
 
-    parameter Modelica_Fluid.Volumes.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0.0001)}
+    parameter Modelica_Fluid.Vessels.BaseClasses.TankPortData portsData[:]={
+        TankPortData(diameter=0.0001)}
       "Data of inlet/outlet ports at side and bottom of tank";
 
     Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
@@ -1079,7 +1000,7 @@ An extending class still needs to define:
       end PartialLumpedVolumePorts;
 
   partial model PartialDistributedVolume "Base class for a finite volume model"
-    import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types;
     outer Modelica_Fluid.System system "System properties";
 
     replaceable package Medium = 
@@ -1278,4 +1199,4 @@ Moreover an input might mislead a tool to break equation systems, resulting in i
   annotation (Documentation(info="<html>
  
 </html>"));
-end Volumes;
+end Vessels;

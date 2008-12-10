@@ -12,7 +12,7 @@ model TestOnePortSensors1
                       graphics),
                        experiment(StopTime=25, Algorithm="Dassl"),
     experimentSetupOutput);
-  Modelica_Fluid.Volumes.Volume volume1(
+  Modelica_Fluid.Vessels.Volume volume1(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
@@ -45,7 +45,7 @@ model TestOnePortSensors1
     duration=20,
     offset=-1) annotation (Placement(transformation(extent={{-100,30},{-80,50}},
           rotation=0)));
-  Modelica_Fluid.Volumes.Volume volume2(
+  Modelica_Fluid.Vessels.Volume volume2(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
