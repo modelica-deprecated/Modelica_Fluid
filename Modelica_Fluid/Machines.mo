@@ -170,7 +170,6 @@ package Machines "Fluid flow machines"
 
   end ControlledPump;
 
-
   model ControlledPumpNPSH
     "Centrifugal pump with ideally controlled speed and NPSHa computation"
     extends Modelica_Fluid.Machines.ControlledPump(
