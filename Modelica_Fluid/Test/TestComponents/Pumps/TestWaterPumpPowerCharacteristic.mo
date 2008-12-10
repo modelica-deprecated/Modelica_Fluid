@@ -14,16 +14,16 @@ model TestWaterPumpPowerCharacteristic
     T=system.T_ambient,
     usePressureInput=true) 
   annotation (Placement(transformation(extent={{34,26},{14,46}}, rotation=0)));
-  Modelica_Fluid.Pumps.Pump pump(
+  Modelica_Fluid.Machines.ControlledPump pump(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_start=1,
     redeclare function flowCharacteristic = 
-        Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticFlow (
+        Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
           q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     usePowerCharacteristic=true,
     redeclare function powerCharacteristic = 
-        Modelica_Fluid.Pumps.BaseClasses.PumpCharacteristics.quadraticPower (
-          q_nominal={0,0.001,0.0015}, W_nominal={550,650,800}),
+        Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticPower
+        ( q_nominal={0,0.001,0.0015}, W_nominal={550,650,800}),
     M=0.1,
     p_a_start=100000,
     p_b_start=700000,
@@ -32,7 +32,7 @@ model TestWaterPumpPowerCharacteristic
             {-34,50}}, rotation=0)));
   Modelica.Blocks.Sources.Constant valveOpening(k=1) 
   annotation (Placement(transformation(extent={{-60,60},{-40,80}}, rotation=0)));
-  Modelica_Fluid.ControlValves.ValveIncompressible Valve(
+  Modelica_Fluid.Valves.ValveIncompressible Valve(
                                              redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
     m_flow_nominal=1,

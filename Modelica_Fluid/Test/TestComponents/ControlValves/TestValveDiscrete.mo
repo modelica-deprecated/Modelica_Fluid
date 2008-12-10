@@ -7,7 +7,7 @@ model TestValveDiscrete "Test case for discrete valve"
     p=200000,
     T(displayUnit="degC") = 298.15) 
   annotation (Placement(transformation(extent={{-76,-22},{-56,-2}}, rotation=0)));
-  Modelica_Fluid.ControlValves.ValveDiscrete V1(
+  Modelica_Fluid.Valves.ValveDiscrete V1(
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_nominal=2,
     dp_nominal=100000) 

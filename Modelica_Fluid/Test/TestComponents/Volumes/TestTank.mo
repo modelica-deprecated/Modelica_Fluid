@@ -2,17 +2,17 @@ within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestTank
   extends Modelica.Icons.Example;
   import Modelica_Fluid;
-  Modelica_Fluid.Volumes.Tank tank(
+  Modelica_Fluid.Vessels.Tank tank(
     nTopPorts=2,
     levelMax=10,
     V0=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     level_start=1,
-    portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.01,
-        portLevel=9),Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=
-        0.01, portLevel=6),Modelica_Fluid.Volumes.BaseClasses.TankPortData(
+    portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.01,
+        portLevel=9),Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=
+        0.01, portLevel=6),Modelica_Fluid.Vessels.BaseClasses.TankPortData(
         diameter=0.01, portLevel=4),
-        Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.01,
+        Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.01,
         portLevel=2)},
     crossArea=0.2) 
     annotation (Placement(transformation(extent={{-40,40},{0,80}}, rotation=0)));

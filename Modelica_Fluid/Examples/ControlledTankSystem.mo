@@ -104,7 +104,7 @@ This example is based on
       Commands(file=
             "../Scripts/Examples/ControlledTanks/plot level and ports.m_flow.mos"
           "plot level and ports.m_flow"));
-    ControlValves.ValveDiscrete valve1(                             redeclare
+    Modelica_Fluid.Valves.ValveDiscrete valve1(                     redeclare
         package Medium = Medium,
       Kv_small_rel=0,
       dp_nominal=100000,
@@ -113,11 +113,11 @@ This example is based on
           origin={20,50},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Volumes.Tank tank1(
+    Modelica_Fluid.Vessels.Tank tank1(
       level_start=0.05,
       redeclare package Medium = Medium,
       nTopPorts=1,
-      portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.2,
+      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.2,
           portLevel=0)},
       crossArea=6,
       levelMax=4)             annotation (Placement(transformation(extent={{0,
@@ -125,7 +125,7 @@ This example is based on
     Modelica.Blocks.Sources.RealExpression level1(y=tank1.level) 
       annotation (Placement(transformation(extent={{-90,-60},{-55,-40}},
             rotation=0)));
-    ControlValves.ValveDiscrete valve2(                redeclare package Medium
+    Modelica_Fluid.Valves.ValveDiscrete valve2(        redeclare package Medium
         = Medium,
       Kv_small_rel=0,
       dp_nominal(displayUnit="Pa") = 1,
@@ -134,7 +134,7 @@ This example is based on
           origin={20,-30},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    ControlValves.ValveDiscrete valve3(                redeclare package Medium
+    Modelica_Fluid.Valves.ValveDiscrete valve3(        redeclare package Medium
         = Medium,
       Kv_small_rel=0,
       dp_nominal(displayUnit="Pa") = 1,
@@ -143,13 +143,13 @@ This example is based on
           origin={80,-70},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Volumes.Tank tank2(
+    Modelica_Fluid.Vessels.Tank tank2(
       level_start=0.05,
       redeclare package Medium = Medium,
       levelMax=5,
       crossArea=6,
       nTopPorts=1,
-      portsData={Modelica_Fluid.Volumes.BaseClasses.TankPortData(diameter=0.2,
+      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.2,
           portLevel=0)})      annotation (Placement(transformation(extent={{60,
               -50},{100,-10}}, rotation=0)));
     Modelica_Fluid.Sources.FixedBoundary_pTX ambient1(

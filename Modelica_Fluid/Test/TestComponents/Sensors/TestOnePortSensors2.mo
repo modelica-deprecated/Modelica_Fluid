@@ -7,7 +7,7 @@ model TestOnePortSensors2
                       graphics),
                        experiment(StopTime=15, Algorithm="Euler"),
     experimentSetupOutput);
-  Modelica_Fluid.Volumes.Volume MixingVolume1(
+  Modelica_Fluid.Vessels.Volume MixingVolume1(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
@@ -22,7 +22,7 @@ model TestOnePortSensors2
     useFlowRateInput=true) 
                    annotation (Placement(transformation(extent={{-68,30},{-48,
             50}}, rotation=0)));
-  Modelica_Fluid.Volumes.Volume MixingVolume2(
+  Modelica_Fluid.Vessels.Volume MixingVolume2(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
@@ -43,7 +43,7 @@ model TestOnePortSensors2
     duration=10) 
                annotation (Placement(transformation(extent={{-100,30},{-80,50}},
           rotation=0)));
-  Modelica_Fluid.Volumes.Volume MixingVolume3(
+  Modelica_Fluid.Vessels.Volume MixingVolume3(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
@@ -57,7 +57,7 @@ model TestOnePortSensors2
     useFlowRateInput=true) 
                    annotation (Placement(transformation(extent={{-68,-30},{-48,
             -10}}, rotation=0)));
-  Modelica_Fluid.Volumes.Volume MixingVolume4(
+  Modelica_Fluid.Vessels.Volume MixingVolume4(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,

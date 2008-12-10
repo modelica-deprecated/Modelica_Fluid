@@ -1,7 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Volumes;
 model TestVolume
   extends Modelica.Icons.Example;
-  Modelica_Fluid.Volumes.Volume Volume(
+  Modelica_Fluid.Vessels.Volume Volume(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     initType=Modelica_Fluid.Types.Init.SteadyState,
     V=1,
@@ -21,8 +21,7 @@ model TestVolume
         Modelica.Media.Water.StandardWater, p=101325,
     T=system.T_ambient) 
     annotation (Placement(transformation(extent={{60,0},{40,20}}, rotation=0)));
-  Modelica_Fluid.ControlValves.ValveLinear Valve(
-                                             redeclare package Medium = 
+  Modelica_Fluid.Valves.ValveLinear Valve(   redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
     dp_nominal=10000,
     m_flow_nominal=0.1)                                    annotation (Placement(

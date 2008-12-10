@@ -20,7 +20,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       redeclare package Medium = Medium,
       nPorts=2) 
       annotation (Placement(transformation(extent={{-60,-20},{-40,0}})));
-    Volumes.Volume volume(
+    Modelica_Fluid.Vessels.Volume volume(
       C_start={1.519E-3},
       V=100,
       redeclare package Medium = Medium,
@@ -92,7 +92,7 @@ concentration of the fresh air.
       nPorts=2,
       useFlowRateInput=true) 
       annotation (Placement(transformation(extent={{-60,-42},{-40,-22}})));
-    Volumes.Volume volume(
+    Modelica_Fluid.Vessels.Volume volume(
       C_start={1.519E-3},
       V=100,
       redeclare package Medium = Medium,

@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.Junctions;
 model TestJunctionIdeal
   extends Modelica.Icons.Example;
 
-  Modelica_Fluid.Junctions.IdealTJunction junction(
+  Modelica_Fluid.Junctions.TJunctionIdeal junction(
                                                   redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa)      annotation (Placement(
         transformation(extent={{20,-30},{40,-10}}, rotation=0)));
