@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.Volumes;
+within Modelica_Fluid.Test.TestComponents.Vessels;
 model TestTank
   extends Modelica.Icons.Example;
   import Modelica_Fluid;

@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.Volumes;
+within Modelica_Fluid.Test.TestComponents.Vessels;
 model TestOpenTank
   extends Modelica.Icons.Example;
   import Modelica_Fluid;
@@ -28,8 +28,9 @@ model TestOpenTank
 <p><b>Test case for open tank</b></p>
 <p align=justify>The mass flow rate to the upper tank is controlled by the static pressure at the bootom of the upper tank. The fluid flows from the upper to the lower tank forced by pressure difference between the bootoms of both tanks. Increasing the simulation time leads to an error message, due to a full lower tank.</p>
 </html>"));
-  inner Modelica_Fluid.System system  annotation (Placement(transformation(
-          extent={{-160,-120},{-140,-100}}, rotation=0)));
+  inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.InitialValues)
+                                      annotation (Placement(transformation(
+          extent={{-150,-112},{-130,-92}},  rotation=0)));
   Modelica_Fluid.Sensors.Pressure pressure(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{40,16},{60,36}}, rotation=0)));
@@ -99,7 +100,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(switch1.y, massFlowRate.m_flow_in) annotation (Line(
-      points={{-79,-20},{-70,-20},{-70,-24},{-59.3,-24}},
+      points={{-79,-20},{-70,-20},{-70,-22},{-60,-22}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(pipe.port_b, upperTank.ports[2]) annotation (Line(

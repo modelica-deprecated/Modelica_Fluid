@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.ControlValves;
+within Modelica_Fluid.Test.TestComponents.Valves;
 model TestValvesReverse "Test case for valves with reverse and zero flow"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;

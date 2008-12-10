@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.Pumps;
+within Modelica_Fluid.Test.TestComponents.Machines;
 model TestWaterPumpRecirculation
   "Test pump with variable speed and recirculating flow"
   import Modelica_Fluid;

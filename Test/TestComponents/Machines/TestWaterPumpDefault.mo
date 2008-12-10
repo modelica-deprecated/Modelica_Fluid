@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.Pumps;
+within Modelica_Fluid.Test.TestComponents.Machines;
 model TestWaterPumpDefault "Test pump with default options"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;

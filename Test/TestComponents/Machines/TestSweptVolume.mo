@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.Volumes;
+within Modelica_Fluid.Test.TestComponents.Machines;
 model TestSweptVolume
   "Enclosed medium with fixed quantity in an adiabatic volume with varying size"
   import Modelica_Fluid;

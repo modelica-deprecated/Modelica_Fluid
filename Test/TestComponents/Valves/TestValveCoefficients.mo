@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.ControlValves;
+within Modelica_Fluid.Test.TestComponents.Valves;
 model TestValveCoefficients
   "Test case to compare different choices of flow coefficient"
   extends Modelica.Icons.Example;

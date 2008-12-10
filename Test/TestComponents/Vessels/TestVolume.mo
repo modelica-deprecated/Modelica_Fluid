@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.Volumes;
+within Modelica_Fluid.Test.TestComponents.Vessels;
 model TestVolume
   extends Modelica.Icons.Example;
   Modelica_Fluid.Vessels.Volume Volume(
