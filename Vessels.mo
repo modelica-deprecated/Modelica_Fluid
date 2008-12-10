@@ -46,7 +46,6 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
       heatPort.T = medium.T;
     end Volume;
 
-
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
     replaceable package Medium = 
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -96,8 +95,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     outer Modelica_Fluid.System system "System properties";
 
 //Initialization
-    parameter Types.Init initType=Types.Init.InitialValues
-      "Initialization option" 
+    parameter Types.Init initType=system.initType "Initialization option" 
     annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
     parameter SI.Height level_start "Start value of tank level" 
     annotation(Dialog(tab="Ambient and Initialization", group = "Initialization"));
@@ -383,8 +381,7 @@ model Tank
     annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
 
 //Initialization
-    parameter Types.Init initType=Types.Init.InitialValues
-      "Initialization option" 
+    parameter Types.Init initType=system.initType "Initialization option" 
     annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
     parameter SI.Height level_start(min=0) "Start value of tank level" 
     annotation(Dialog(tab="Ambient and Initialization", group = "Initialization"));
