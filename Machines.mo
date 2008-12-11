@@ -135,8 +135,8 @@ package Machines "Fluid flow machines"
           rotation=-90,
           origin={0,100})));
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-              100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics={Text(
             visible=use_N_input,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
@@ -370,8 +370,8 @@ package Machines "Fluid flow machines"
       assert(false, "Unsupported initialization option");
     end if;
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-                100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+                100,100}}), graphics={
             Polygon(
               points={{-48,-60},{-72,-100},{72,-100},{48,-60},{-48,-60}},
               lineColor={0,0,255},

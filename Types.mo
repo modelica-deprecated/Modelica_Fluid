@@ -110,9 +110,9 @@ Integer type that can have the following values
     "Enumeration to define whether flow reversal is allowed";
 
   type ModelStructure = enumeration(
+      av_vb "av_vb: port_a - volume - flow model - volume - port_b",
       a_v_b "a_v_b: port_a - flow model - volume - flow model - port_b",
       av_b "av_b: port_a - volume - flow model - port_b",
-      a_vb "a_vb: port_a - flow model - volume - port_b",
-      avb "avb: port_a - volume - port_b")
-    "Enumeration with choices for model structure in distributed pipe models";
+      a_vb "a_vb: port_a - flow model - volume - port_b")
+    "Enumeration with choices for model structure in distributed pipe model";
 end Types;

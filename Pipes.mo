@@ -210,8 +210,8 @@ pipe wall/environment).
 
     // extending PartialPipe
     extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
-      final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
-      final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
+      final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.av_vb),
+      final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.av_vb));
 
     // distributed volume model
     extends Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume(
@@ -227,7 +227,7 @@ pipe wall/environment).
     parameter Integer nNodes(min=1)=2 "Number of discrete flow volumes" 
       annotation(Dialog(tab="Advanced"),Evaluate=true);
 
-    parameter Types.ModelStructure modelStructure=Types.ModelStructure.avb
+    parameter Types.ModelStructure modelStructure=Types.ModelStructure.av_vb
       "Determines whether flow or volume models are present at the ports" 
       annotation(Dialog(tab="Advanced"), Evaluate=true);
 
@@ -299,8 +299,8 @@ pipe wall/environment).
         annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
 
   equation
-    assert(nNodes > 1 or modelStructure <> ModelStructure.avb,
-       "nNodes needs to be at least 2 for modelStructure avb, as flow model disappears otherwise!");
+    assert(nNodes > 1 or modelStructure <> ModelStructure.av_vb,
+       "nNodes needs to be at least 2 for modelStructure av_vb, as flow model disappears otherwise!");
 
     // Source/sink terms for mass and energy balances
     fluidVolume=fill(V/n, n);
@@ -348,7 +348,7 @@ pipe wall/environment).
     end if;
 
     if lumpedPressure then
-      if modelStructure <> ModelStructure.avb then
+      if modelStructure <> ModelStructure.av_vb then
         // all pressures are equal
         fill(medium[1].p, n-1) = medium[2:n].p;
       elseif n > 2 then
@@ -372,7 +372,7 @@ pipe wall/environment).
         flowState[1] = state_a;
         flowState[2] = medium[iLumped].state;
         port_b.p = medium[n].p;
-      else // avb
+      else // av_vb
         port_a.p = medium[1].p;
         flowState[1] = medium[1].state;
         m_flow[iLumped] = pressureDrop.m_flow[1];
@@ -404,7 +404,7 @@ pipe wall/environment).
           m_flow[i] = pressureDrop.m_flow[i];
         end for;
         port_b.p = medium[n].p;
-      else // avb
+      else // av_vb
         flowState[1:n] = medium[1:n].state;
         //m_flow[2:n] = pressureDrop.m_flow[1:n-1];
         for i in 2:n loop
@@ -453,7 +453,7 @@ An alternative symmetric variation with nNodes+1 momentum balances, one at each 
 non-symmetric variations can be obtained by chosing a different value for the parameter <tt><b>modelStructure</b></tt>. 
 The options include:
 <ul>
-<li><tt>avb</tt>: nNodes-1 momentum balances between nNodes pipe segments, potential pressure states at both ports.
+<li><tt>av_vb</tt>: nNodes-1 momentum balances between nNodes pipe segments, potential pressure states at both ports.
 <li><tt>a_v_b</tt>: Alternative symmetric setting with nNodes+1 momentum balances across nNodes pipe segments, one momentum balance at each port. 
 Connecting two pipes therefore results in algebraic pressures at the ports. 
 The specification of good start values for the port pressures is essential in order to solve large systems.</li>
@@ -468,9 +468,15 @@ The specification of good start values for the port pressures is essential in or
 </ul>
 It does not model changes in pressure resulting from significant variation of flow velocity along the flow path (with the assumption of a constant cross sectional area it must result from fluid density changes, such as in two-phase flow).
  
-When connecting two components, e.g. two pipes, the momentum balance across the connection point reduces to</p> 
+When connecting two components, e.g. two pipes, the momentum balance across the connection point reduces to
+</p> 
 <pre>pipe1.port_b.p = pipe2.port_a.p</pre>
-<p>This is only true if the flow velocity remains the same on each side of the connection. For any significant change in diameter (and if the resulting effects, such as change in kinetic energy, cannot be neglected) an adapter component should be used. This also allows for taking into account friction losses with respect to the actual geometry of the connection point.</p>
+<p>
+This is only true if the flow velocity remains the same on each side of the connection. 
+Consider using a junction or an adapter comonent, like <a href=\"Modelica:Modelica_Fluid.PressureLosses.SuddenExpansion\">SuddenExpansion</a>
+for any significant change in diameter, if the resulting effects, such as change in kinetic energy, cannot be neglected. 
+This also allows for taking into account friction losses with respect to the actual geometry of the connection point.
+</p>
  
 </html>",
       revisions="<html>

@@ -6,7 +6,7 @@ model IncompressibleFluidNetwork
     constrainedby Modelica.Media.Interfaces.PartialMedium;
 
   //model Pipe = Modelica_Fluid.Pipes.LumpedPipe;
-  model Pipe = Modelica_Fluid.Pipes.DistributedPipe(nNodes=2,modelStructure=Types.ModelStructure.avb);
+  model Pipe = Modelica_Fluid.Pipes.DistributedPipe(nNodes=2,modelStructure=Types.ModelStructure.av_vb);
 
   Sources.FixedBoundary_pTX source(
     redeclare package Medium = Medium,
@@ -235,7 +235,7 @@ and the usage of an incompressible medium model.
 <p>
 Normally one would expect bad equation systems in multi-way connections 
 and possibly introduce mixing volumes to work around this. 
-Here the problem is treated with the the modelStructure=avb in the
+Here the problem is treated with the the modelStructure=av_vb in the
 <a href=\"Modelica:Modelica_Fluid.Pipes.DistributedPipe\">DistributedPipe</a> model. 
 Each pipe exposes the states of the outer fluid segments to the respective fluid ports. 
 Consequently the pressures of all connected pipe segments get lumped together into one mass balance 
