@@ -559,7 +559,7 @@ package Tanks "Library demonstrating the usage of the tank model"
   
 </html>"));
 
-    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.InitialValues)
+    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.InitialValues) 
                                      annotation (Placement(transformation(
             extent={{70,-90},{90,-70}}, rotation=0)));
     Modelica_Fluid.Vessels.OpenTank tank3(
