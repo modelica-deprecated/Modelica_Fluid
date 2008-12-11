@@ -70,12 +70,12 @@ model TestOnePortSensors1
   Modelica_Fluid.Sensors.TemperatureTwoPort Tmix2(redeclare package Medium = 
         Medium) annotation (Placement(transformation(extent={{0,-30},{20,-10}},
           rotation=0)));
-  Modelica_Fluid.PressureLosses.SimpleGenericOrifice orifice1(
+  Modelica_Fluid.Fittings.SimpleGenericOrifice orifice1(
     redeclare package Medium = Medium,
     diameter=diameter_a,
     zeta=zeta) annotation (Placement(transformation(extent={{40,30},{60,50}},
           rotation=0)));
-  Modelica_Fluid.PressureLosses.SimpleGenericOrifice orifice2(
+  Modelica_Fluid.Fittings.SimpleGenericOrifice orifice2(
     redeclare package Medium = Medium,
     zeta=zeta,
     diameter=diameter_a) annotation (Placement(transformation(extent={{40,-30},{60,-10}},

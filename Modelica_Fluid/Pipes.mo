@@ -692,7 +692,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             extends PartialPipePressureDrop;
 
             replaceable package WallFriction = 
-            Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
+            Modelica_Fluid.Fittings.BaseClasses.WallFriction.PartialWallFriction
           "wall friction model";
 
             parameter Boolean use_eta_nominal = false
@@ -873,7 +873,7 @@ simulation and/or might give a more robust simulation.
         "No pipe wall friction ... partial as height_ab is not supported"
            extends PartialWallFrictionAndGravity(
               redeclare package WallFriction = 
-              PressureLosses.BaseClasses.WallFriction.NoFriction,
+              Modelica_Fluid.Fittings.BaseClasses.WallFriction.NoFriction,
               final from_dp = false);
           equation
             assert(abs(height_ab) < Modelica.Constants.small,
@@ -884,28 +884,28 @@ simulation and/or might give a more robust simulation.
         "Pipe wall friction in the laminar regime (linear correlation)"
            extends PartialWallFrictionAndGravity(
               redeclare package WallFriction = 
-              PressureLosses.BaseClasses.WallFriction.Laminar);
+              Modelica_Fluid.Fittings.BaseClasses.WallFriction.Laminar);
           end LaminarFlow;
 
           model QuadraticTurbulentFlow
         "Pipe wall friction in the quadratic turbulent regime (simple characteristic, eta not used)"
            extends PartialWallFrictionAndGravity(
               redeclare package WallFriction = 
-              PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent);
+              Modelica_Fluid.Fittings.BaseClasses.WallFriction.QuadraticTurbulent);
           end QuadraticTurbulentFlow;
 
           model LaminarAndQuadraticTurbulentFlow
         "Pipe wall friction in the laminar and quadratic turbulent regime (simple characteristic)"
            extends PartialWallFrictionAndGravity(
               redeclare package WallFriction = 
-              PressureLosses.BaseClasses.WallFriction.LaminarAndQuadraticTurbulent);
+              Modelica_Fluid.Fittings.BaseClasses.WallFriction.LaminarAndQuadraticTurbulent);
           end LaminarAndQuadraticTurbulentFlow;
 
           model DetailedFlow
         "Pipe wall friction in the whole regime (detailed characteristic)"
            extends PartialWallFrictionAndGravity(
               redeclare package WallFriction = 
-              PressureLosses.BaseClasses.WallFriction.Detailed);
+              Modelica_Fluid.Fittings.BaseClasses.WallFriction.Detailed);
           end DetailedFlow;
     end PressureDrop;
 

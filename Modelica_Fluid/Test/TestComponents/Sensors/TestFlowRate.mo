@@ -1,7 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Sensors;
 model TestFlowRate
   import Modelica_Fluid;
-  Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
+  Modelica_Fluid.Fittings.SimpleGenericOrifice simpleGenericOrifice(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
     diameter=0.1) annotation (Placement(transformation(extent={{-20,-10},{0,10}},

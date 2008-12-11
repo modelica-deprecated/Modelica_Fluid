@@ -4,7 +4,7 @@ model TestPressure
   Modelica_Fluid.Sensors.Pressure pressure1(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{-20,0},{0,20}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
+  Modelica_Fluid.Fittings.SimpleGenericOrifice simpleGenericOrifice(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
     diameter=0.1) annotation (Placement(transformation(extent={{20,-10},{40,10}},

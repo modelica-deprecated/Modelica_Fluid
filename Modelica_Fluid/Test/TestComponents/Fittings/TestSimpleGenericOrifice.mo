@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.PressureLosses;
+within Modelica_Fluid.Test.TestComponents.Fittings;
 model TestSimpleGenericOrifice
   extends Modelica.Icons.Example;
   parameter Real diameter_a = 0.1;
@@ -39,20 +39,20 @@ model TestSimpleGenericOrifice
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (Placement(transformation(extent={{60,10},{40,30}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.SimpleGenericOrifice expansion1(
+  Modelica_Fluid.Fittings.SimpleGenericOrifice expansion1(
     redeclare package Medium = Medium,
     zeta=zeta,
     diameter=diameter_a) 
              annotation (Placement(transformation(extent={{0,40},{20,60}},
           rotation=0)));
-  Modelica_Fluid.PressureLosses.SimpleGenericOrifice expansion2(
+  Modelica_Fluid.Fittings.SimpleGenericOrifice expansion2(
     redeclare package Medium = Medium,
     from_dp=false,
     zeta=zeta,
     diameter=diameter_a) annotation (Placement(transformation(extent={{0,10},{20,30}},
           rotation=0)));
 
-  Modelica_Fluid.PressureLosses.SuddenExpansion expansion3(
+  Modelica_Fluid.Fittings.SuddenExpansion expansion3(
     redeclare package Medium = Medium,
     use_Re=false,
     diameter_a=diameter_a,
@@ -63,7 +63,7 @@ model TestSimpleGenericOrifice
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (Placement(transformation(extent={{60,-20},{40,0}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.SuddenExpansion expansion4(
+  Modelica_Fluid.Fittings.SuddenExpansion expansion4(
     redeclare package Medium = Medium,
     use_Re=false,
     diameter_a=diameter_a,
