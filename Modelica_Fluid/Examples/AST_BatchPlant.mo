@@ -150,7 +150,7 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(extent={{-114,210},{-134,230}},
             rotation=0)));
-    Modelica_Fluid.Fittings.TJunctionIdeal volume2(
+    Modelica_Fluid.Fittings.TeeJunctionIdeal volume2(
       redeclare package Medium = BatchMedium) 
                annotation (Placement(transformation(
           origin={-180,220},
@@ -162,7 +162,7 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(extent={{112,210},{132,230}},
             rotation=0)));
-    Modelica_Fluid.Fittings.TJunctionIdeal volume8(
+    Modelica_Fluid.Fittings.TeeJunctionIdeal volume8(
       redeclare package Medium = BatchMedium) 
                annotation (Placement(transformation(
           origin={160,220},
@@ -248,7 +248,7 @@ present that are regulated by a central control system.
           origin={30,-250},
           extent={{10,10},{-10,-10}},
           rotation=180)));
-    Fittings.TJunctionVolume volume5(
+    Modelica_Fluid.Fittings.TeeJunctionVolume volume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{50,-260},{70,-240}},
@@ -460,7 +460,7 @@ present that are regulated by a central control system.
           extent={{4,10},{-4,-10}},
           rotation=-90,
           origin={-26,-228})));
-    Fittings.TJunctionVolume volume4(
+    Modelica_Fluid.Fittings.TeeJunctionVolume volume4(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{-36,-260},{-16,
@@ -1276,7 +1276,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -2036,8 +2037,8 @@ Full steady state initialization is not supported, because the corresponding int
               extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
               textString=DynamicSelect(" ", realString(
-                    level,
-                    1,
+                    level, 
+                    1, 
                     3))),
             Line(
               points={{-100,100},{100,100}},

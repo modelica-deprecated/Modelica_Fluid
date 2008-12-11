@@ -3,125 +3,10 @@ package Fittings
   "Adaptors for connections of fluid models and the regulation of fluid flow"
      extends Modelica_Fluid.Icons.VariantLibrary;
 
-  model TJunctionIdeal
-    "Splitting/joining component with static balances for an infinitesimal control volume"
-    extends BaseClasses.PartialTJunction;
-
-  equation
-    connect(port_1, port_2) annotation (Line(
-        points={{-100,0},{100,0}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(port_1, port_3) annotation (Line(
-        points={{-100,0},{0,0},{0,100}},
-        color={0,127,255},
-        smooth=Smooth.None));
-
-    annotation(Documentation(info="<html>
-  This model is the simplest implementation for a splitting/joining component for
-  three flows. Its use is not required. It just formulates the balance
-  equations in the same way that the connect symmantics would formulate them anyways.
-  The main advantage of using this component is, that the user does not get
-  confused when looking at the specific enthalpy at each port which might be confusing
-  when not using a splitting/joining component. The reason for the confusion is that one exmanins the mixing
-  enthalpy of the infinitesimal control volume introduced with the connect statement when
-  looking at the specific enthalpy in the connector which
-  might not be equal to the specific enthalpy at the port in the \"real world\".</html>"),
-      Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics));
-  end TJunctionIdeal;
 
   annotation (Documentation(info="<html>
  
 </html>"));
-  model TJunctionVolume
-    "Splitting/joining component with static balances for a dynamic control volume"
-    extends BaseClasses.PartialTJunction;
-    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume(
-                                                    Qs_flow = 0);
-
-    parameter SI.Volume V "Mixing volume inside junction";
-
-  equation
-    // Only one connection allowed to a port to avoid unwanted ideal mixing
-    assert(cardinality(port_1) <= 1,"
-port_1 of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-    assert(cardinality(port_2) <= 1,"
-port_2 of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-    assert(cardinality(port_3) <= 1,"
-port_3 of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-
-    // Boundary conditions
-    port_1.h_outflow = medium.h;
-    port_2.h_outflow = medium.h;
-    port_3.h_outflow = medium.h;
-
-    port_1.Xi_outflow = medium.Xi;
-    port_2.Xi_outflow = medium.Xi;
-    port_3.Xi_outflow = medium.Xi;
-
-    port_1.C_outflow = C;
-    port_2.C_outflow = C;
-    port_3.C_outflow = C;
-
-    // Mass balances
-    fluidVolume = V;
-    ms_flow = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-    msXi_flow = port_1.m_flow*actualStream(port_1.Xi_outflow)
-                + port_2.m_flow*actualStream(port_2.Xi_outflow)
-                + port_3.m_flow*actualStream(port_3.Xi_outflow)
-      "Component mass balances";
-
-    msC_flow  = port_1.m_flow*actualStream(port_1.C_outflow)
-              + port_2.m_flow*actualStream(port_2.C_outflow)
-              + port_3.m_flow*actualStream(port_3.C_outflow)
-      "Trace substance mass balances";
-
-    // Momentum balance (suitable for compressible media)
-    port_1.p = medium.p;
-    port_2.p = medium.p;
-    port_3.p = medium.p;
-
-    // Energy balance
-    Hs_flow = port_1.m_flow*actualStream(port_1.h_outflow)
-              + port_2.m_flow*actualStream(port_2.h_outflow)
-              + port_3.m_flow*actualStream(port_3.h_outflow);
-    Ws_flow = 0;
-
-    annotation (Documentation(info="<html>
-  This model introduces a mixing volume into a junction. 
-  This might be useful to examine the non-ideal mixing taking place in a real junction.</html>"),
-  Icon(coordinateSystem(
-          preserveAspectRatio=true,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={Ellipse(
-            extent={{-9,10},{11,-10}},
-            lineColor={0,0,0},
-            fillColor={0,0,0},
-            fillPattern=FillPattern.Solid)}),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics));
-  end TJunctionVolume;
 
   model MultiPort
     "Multiply a port; useful if multiple connections shall be made to a port exposing a state"
@@ -223,97 +108,6 @@ of the modeller. Increase nPorts_b to add an additional port.
                            / sum(positiveMax(ports_b.m_flow));
     end for;
   end MultiPort;
-
-model SimpleGenericOrifice
-    "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
-      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
-
-  parameter Real zeta "Loss factor for flow of port_a -> port_b";
-  parameter SI.Diameter diameter
-      "Diameter at which zeta is defined (either port_a or port_b)";
-  parameter Boolean from_dp = true
-      "= true, use m_flow = f(dp) else dp = f(m_flow)" 
-    annotation (Evaluate=true, Dialog(tab="Advanced"));
-  annotation (
-    Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics),
-    Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Text(
-            extent={{-150,60},{150,100}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name"),
-          Line(
-            points={{-60,-50},{-60,50},{60,-50},{60,50}},
-            color={0,0,0},
-            thickness=0.5),
-          Line(points={{-60,0},{-100,0}}, color={0,127,255}),
-          Line(points={{60,0},{100,0}}, color={0,127,255}),
-          Text(
-            extent={{-168,-96},{180,-138}},
-            lineColor={0,0,0},
-            textString="zeta=%zeta")}),
-    Documentation(info="<html>
-<p>
-This pressure drop component defines a
-simple, generic orifice, where the loss factor &zeta; is provided
-for one flow direction (e.g., from loss table of a book):
-</p>
- 
-<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
-      = 8*&zeta;/(&pi;^2*D^4*&rho;) * m_flow*|m_flow|
-</pre>
- 
-<p>
-where
-</p>
-<ul>
-<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
-<li> D is the diameter of the orifice at the position where
-     &zeta; is defined (either at port_a or port_b). If the orifice has not a 
-     circular cross section, D = 4*A/P, where A is the cross section
-     area and P is the wetted perimeter.</li>
-<li> &zeta; is the loss factor with respect to D 
-     that depends on the geometry of
-     the orifice. In the turbulent flow regime, it is assumed that
-     &zeta; is constant.<br>
-     For small mass flow rates, the flow is laminar and is approximated 
-     by a polynomial that has a finite derivative for m_flow=0.</li>
-<li> v is the mean velocity.</li>
-<li> &rho; is the upstream density.</li>
-</ul>
- 
-<p>
-Since the pressure loss factor zeta is provided only for a mass flow
-from port_a to port_b, the pressure loss is not correct when the
-flow is reversing. If reversing flow only occurs in a short time interval,
-this is most likely uncritical. If significant reversing flow
-can appear, this component should not be used.
-</p>
-</html>"));
-equation
-  if from_dp then
-      m_flow = BaseClasses.SimpleGenericOrifice.massFlowRate_dp(
-        dp,
-        port_a_d_inflow,
-        port_b_d_inflow,
-        diameter,
-        zeta);
-  else
-      dp = BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(
-        m_flow,
-        port_a_d_inflow,
-        port_b_d_inflow,
-        diameter,
-        zeta);
-  end if;
-end SimpleGenericOrifice;
 
 model SharpEdgedOrifice
     "Pressure drop due to sharp edged orifice (for both flow directions)"
@@ -422,6 +216,97 @@ model SharpEdgedOrifice
 
 end SharpEdgedOrifice;
 
+model SimpleGenericOrifice
+    "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
+      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+
+  parameter Real zeta "Loss factor for flow of port_a -> port_b";
+  parameter SI.Diameter diameter
+      "Diameter at which zeta is defined (either port_a or port_b)";
+  parameter Boolean from_dp = true
+      "= true, use m_flow = f(dp) else dp = f(m_flow)" 
+    annotation (Evaluate=true, Dialog(tab="Advanced"));
+  annotation (
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Text(
+            extent={{-150,60},{150,100}},
+            lineColor={0,0,255},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString="%name"),
+          Line(
+            points={{-60,-50},{-60,50},{60,-50},{60,50}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(points={{-60,0},{-100,0}}, color={0,127,255}),
+          Line(points={{60,0},{100,0}}, color={0,127,255}),
+          Text(
+            extent={{-168,-96},{180,-138}},
+            lineColor={0,0,0},
+            textString="zeta=%zeta")}),
+    Documentation(info="<html>
+<p>
+This pressure drop component defines a
+simple, generic orifice, where the loss factor &zeta; is provided
+for one flow direction (e.g., from loss table of a book):
+</p>
+ 
+<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
+      = 8*&zeta;/(&pi;^2*D^4*&rho;) * m_flow*|m_flow|
+</pre>
+ 
+<p>
+where
+</p>
+<ul>
+<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
+<li> D is the diameter of the orifice at the position where
+     &zeta; is defined (either at port_a or port_b). If the orifice has not a 
+     circular cross section, D = 4*A/P, where A is the cross section
+     area and P is the wetted perimeter.</li>
+<li> &zeta; is the loss factor with respect to D 
+     that depends on the geometry of
+     the orifice. In the turbulent flow regime, it is assumed that
+     &zeta; is constant.<br>
+     For small mass flow rates, the flow is laminar and is approximated 
+     by a polynomial that has a finite derivative for m_flow=0.</li>
+<li> v is the mean velocity.</li>
+<li> &rho; is the upstream density.</li>
+</ul>
+ 
+<p>
+Since the pressure loss factor zeta is provided only for a mass flow
+from port_a to port_b, the pressure loss is not correct when the
+flow is reversing. If reversing flow only occurs in a short time interval,
+this is most likely uncritical. If significant reversing flow
+can appear, this component should not be used.
+</p>
+</html>"));
+equation
+  if from_dp then
+      m_flow = BaseClasses.SimpleGenericOrifice.massFlowRate_dp(
+        dp,
+        port_a_d_inflow,
+        port_b_d_inflow,
+        diameter,
+        zeta);
+  else
+      dp = BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(
+        m_flow,
+        port_a_d_inflow,
+        port_b_d_inflow,
+        diameter,
+        zeta);
+  end if;
+end SimpleGenericOrifice;
+
 model SuddenExpansion
     "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"
   extends BaseClasses.QuadraticTurbulent.BaseModel(final data=
@@ -496,6 +381,126 @@ model SuddenExpansion
  
 </html>"));
 end SuddenExpansion;
+
+  model TeeJunctionIdeal
+    "Splitting/joining component with static balances for an infinitesimal control volume"
+    extends Modelica_Fluid.Fittings.BaseClasses.PartialTeeJunction;
+
+  equation
+    connect(port_1, port_2) annotation (Line(
+        points={{-100,0},{100,0}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(port_1, port_3) annotation (Line(
+        points={{-100,0},{0,0},{0,100}},
+        color={0,127,255},
+        smooth=Smooth.None));
+
+    annotation(Documentation(info="<html>
+  This model is the simplest implementation for a splitting/joining component for
+  three flows. Its use is not required. It just formulates the balance
+  equations in the same way that the connect symmantics would formulate them anyways.
+  The main advantage of using this component is, that the user does not get
+  confused when looking at the specific enthalpy at each port which might be confusing
+  when not using a splitting/joining component. The reason for the confusion is that one exmanins the mixing
+  enthalpy of the infinitesimal control volume introduced with the connect statement when
+  looking at the specific enthalpy in the connector which
+  might not be equal to the specific enthalpy at the port in the \"real world\".</html>"),
+      Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics));
+  end TeeJunctionIdeal;
+
+  model TeeJunctionVolume
+    "Splitting/joining component with static balances for a dynamic control volume"
+    extends Modelica_Fluid.Fittings.BaseClasses.PartialTeeJunction;
+    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume(
+                                                    Qs_flow = 0);
+
+    parameter SI.Volume V "Mixing volume inside junction";
+
+  equation
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+    assert(cardinality(port_1) <= 1,"
+port_1 of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+    assert(cardinality(port_2) <= 1,"
+port_2 of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+    assert(cardinality(port_3) <= 1,"
+port_3 of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+
+    // Boundary conditions
+    port_1.h_outflow = medium.h;
+    port_2.h_outflow = medium.h;
+    port_3.h_outflow = medium.h;
+
+    port_1.Xi_outflow = medium.Xi;
+    port_2.Xi_outflow = medium.Xi;
+    port_3.Xi_outflow = medium.Xi;
+
+    port_1.C_outflow = C;
+    port_2.C_outflow = C;
+    port_3.C_outflow = C;
+
+    // Mass balances
+    fluidVolume = V;
+    ms_flow = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
+    msXi_flow = port_1.m_flow*actualStream(port_1.Xi_outflow)
+                + port_2.m_flow*actualStream(port_2.Xi_outflow)
+                + port_3.m_flow*actualStream(port_3.Xi_outflow)
+      "Component mass balances";
+
+    msC_flow  = port_1.m_flow*actualStream(port_1.C_outflow)
+              + port_2.m_flow*actualStream(port_2.C_outflow)
+              + port_3.m_flow*actualStream(port_3.C_outflow)
+      "Trace substance mass balances";
+
+    // Momentum balance (suitable for compressible media)
+    port_1.p = medium.p;
+    port_2.p = medium.p;
+    port_3.p = medium.p;
+
+    // Energy balance
+    Hs_flow = port_1.m_flow*actualStream(port_1.h_outflow)
+              + port_2.m_flow*actualStream(port_2.h_outflow)
+              + port_3.m_flow*actualStream(port_3.h_outflow);
+    Ws_flow = 0;
+
+    annotation (Documentation(info="<html>
+  This model introduces a mixing volume into a junction. 
+  This might be useful to examine the non-ideal mixing taking place in a real junction.</html>"),
+  Icon(coordinateSystem(
+          preserveAspectRatio=true,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={Ellipse(
+            extent={{-9,10},{11,-10}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid)}),
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics));
+  end TeeJunctionVolume;
+
+
+
 
   model StaticHead
     "Models the static head between two ports at different heights"
@@ -792,7 +797,7 @@ polynomials. The monotonicity is guaranteed using results from:
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
-    partial model PartialTJunction
+    partial model PartialTeeJunction
       "Base class for a splitting/joining component with three ports"
       import Modelica_Fluid.Types;
       import Modelica_Fluid.Types.PortFlowDirection;
@@ -864,7 +869,7 @@ polynomials. The monotonicity is guaranteed using results from:
         "Flow direction for port_3" 
        annotation(Dialog(tab="Advanced"));
 
-    end PartialTJunction;
+    end PartialTeeJunction;
 
     package SimpleGenericOrifice
       "Simple pressure loss component defined by two constants (diameter, zeta) for the quadratic turbulent regime"

@@ -112,14 +112,14 @@ Test of different distributed pipe models with trace substances. This model is t
 
   inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{72,-94},{92,-74}}, rotation=0)));
-  Modelica_Fluid.Fittings.TJunctionVolume junction1(
+  Modelica_Fluid.Fittings.TeeJunctionVolume junction1(
     redeclare package Medium = Medium,
     V=0.0001,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{-10,-10},{10,10}}, rotation=90,
         origin={-42,64})));
-  Modelica_Fluid.Fittings.TJunctionVolume junction2(
+  Modelica_Fluid.Fittings.TeeJunctionVolume junction2(
     redeclare package Medium = Medium,
     V=0.00001,
     p_start=100000,

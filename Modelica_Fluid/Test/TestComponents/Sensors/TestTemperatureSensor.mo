@@ -82,7 +82,8 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     useFlowRateInput=true,
     T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
            {{-60,-90},{-40,-70}}, rotation=0)));
-  Modelica_Fluid.Fittings.TJunctionIdeal junctionIdeal(redeclare package Medium
+  Modelica_Fluid.Fittings.TeeJunctionIdeal junctionIdeal(
+                                                       redeclare package Medium
       = Modelica.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{20,-90},{40,-70}}, rotation=0)));
 equation
