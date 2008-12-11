@@ -1145,6 +1145,8 @@ An extending class still needs to define:
       if not Medium.singleState then
          medium.p=p_start;
       end if;
+      medium.Xi = fill(X_start[1:Medium.nXi], n);
+      C         = fill(C_start[1:Medium.nC], n);
     elseif initType == Types.Init.SteadyStateHydraulic then
     //Steady state initialization for hydraulic states (p)
       if use_T_start then
@@ -1155,6 +1157,8 @@ An extending class still needs to define:
       if not Medium.singleState then
         der(medium.p) = zeros(n);
       end if;
+      medium.Xi = fill(X_start[1:Medium.nXi], n);
+      C         = fill(C_start[1:Medium.nC], n);
     else
       assert(false, "Unsupported initialization option");
     end if;
