@@ -18,14 +18,17 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       useTraceInput=true,
       m_flow=100/1.2/3600*5,
       redeclare package Medium = Medium,
-      nPorts=2) 
+      nPorts=2,
+      X=Medium.X_default) 
       annotation (Placement(transformation(extent={{-60,-20},{-40,0}})));
     Modelica_Fluid.Vessels.Volume volume(
       C_start={1.519E-3},
       V=100,
       redeclare package Medium = Medium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
-      nPorts=2) annotation (Placement(transformation(extent={{-20,0},{0,20}})));
+      nPorts=2,
+      X_start={0.015,0.085}) 
+                annotation (Placement(transformation(extent={{-20,0},{0,20}})));
     PressureLosses.WallFrictionAndGravity pipeFriction(
       redeclare package Medium = Medium,
       length=1,
@@ -70,7 +73,10 @@ There is a fresh air stream with a carbon dioxide concentration of about 300 PPM
 The fresh air stream is such that the air exchange rate is about 5 air changes per hour.
 After 1 hour of ventilation, the volume's carbon dioxide concentration is close to the 
 concentration of the fresh air.
-</html>"));
+</html>"),
+      Commands(file(ensureSimulated=true)=
+          "Scripts/Examples/RoomCO2/plotConcentrations.mos"
+          "plot concentrations"));
   end RoomCO2;
 
   model RoomCO2WithControls "Demonstrates a room volume with CO2 controls"
@@ -167,6 +173,8 @@ concentration of the fresh air.
       Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
               100,100}}), graphics),
       experiment(StopTime=86400, tolerance=1e-006),
+      Commands(file(ensureSimulated=true)="Scripts/Examples/RoomCO2WithControls/plotStatesWithControl.mos"
+          "plot states and controls"),
       Documentation(info="<html>
 This example illustrates a room volume with a CO2 source and a fresh air supply with feedback
 control.
