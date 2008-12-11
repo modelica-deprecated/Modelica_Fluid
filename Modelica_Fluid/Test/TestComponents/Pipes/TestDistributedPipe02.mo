@@ -12,8 +12,8 @@ extends Modelica.Icons.Example;
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
@@ -46,8 +46,8 @@ Test of different distributed pipe models with trace substances. This model is t
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     useInnerPortProperties=true,
     p_a_start=100000,
@@ -64,8 +64,8 @@ Test of different distributed pipe models with trace substances. This model is t
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
@@ -99,8 +99,8 @@ Test of different distributed pipe models with trace substances. This model is t
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     heatTransfer(each alpha0=1000),
     useInnerPortProperties=true,
@@ -140,8 +140,8 @@ Test of different distributed pipe models with trace substances. This model is t
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
@@ -165,8 +165,8 @@ Test of different distributed pipe models with trace substances. This model is t
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     useInnerPortProperties=true,
     p_a_start=100000,
@@ -182,8 +182,8 @@ Test of different distributed pipe models with trace substances. This model is t
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
@@ -211,8 +211,8 @@ Test of different distributed pipe models with trace substances. This model is t
     T_start=360,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.NoInit,
-    redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow(from_dp=true),
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(each alpha0=1000),

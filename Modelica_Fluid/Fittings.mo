@@ -1,5 +1,6 @@
 within Modelica_Fluid;
-package Fittings "Adapt connections of fluid models"
+package Fittings
+  "Adaptors for connections of fluid models and the regulation of fluid flow"
      extends Modelica_Fluid.Icons.VariantLibrary;
 
   model TJunctionIdeal

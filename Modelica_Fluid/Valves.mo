@@ -1,5 +1,5 @@
 within Modelica_Fluid;
-package Valves "Various variants of valve components"
+package Valves "Valve models for the regulation and control of fluid flow"
     extends Modelica_Fluid.Icons.VariantLibrary;
 
     model ValveIncompressible "Valve for (almost) incompressible fluids"
@@ -72,8 +72,8 @@ explained in detail in the
     Medium.AbsolutePressure pin "Inlet pressure";
     Medium.AbsolutePressure pout "Outlet pressure";
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}),
            graphics),
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
               100,100}}),

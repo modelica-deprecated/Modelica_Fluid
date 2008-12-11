@@ -15,8 +15,8 @@ model StaticPipe
     redeclare package Medium = Medium,
     length=10,
     diameter=2.54e-2,
-    redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow,
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
     p_a_start=500000,
     p_b_start=100000) annotation (Placement(transformation(extent={{-20,0},{0,
             20}}, rotation=0)));
