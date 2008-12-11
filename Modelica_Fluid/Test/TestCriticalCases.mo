@@ -677,7 +677,6 @@ fails for zero flow rate.
 </html>"));
   end SeriesPipes13;
 
-
   model BranchingPipes12
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 

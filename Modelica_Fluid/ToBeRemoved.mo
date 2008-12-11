@@ -196,8 +196,8 @@ pipe wall/environment).
     import Modelica_Fluid.Types.ModelStructure;
    extends Modelica_Fluid.ToBeRemoved.PartialDistributedFlow_Old(
      Qs_flow=heatTransfer.Q_flow,
-     final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
-     final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
+     final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.av_vb),
+     final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.av_vb));
 
    parameter Types.ModelStructure modelStructure=Types.ModelStructure.a_v_b
       "Determines whether flow or volume models are present at the ports"                             annotation(Evaluate=true);
@@ -265,7 +265,7 @@ of the modeller. Use a Junctions.MultiPort.
      dlength = {0, length};
    elseif modelStructure == ModelStructure.a_vb then
      dlength = {length, 0};
-   else // avb
+   else // av_vb
      dlength = {0, 0};
    end if;
    dheight_ab = dlength/length*height_ab;
@@ -394,8 +394,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
     import Modelica_Fluid.Types.ModelStructure;
   extends Modelica_Fluid.ToBeRemoved.PartialDistributedFlow_Old(
     Qs_flow=heatTransfer.Q_flow,
-    final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
-    final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
+    final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.av_vb),
+    final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.av_vb));
 
     parameter Types.ModelStructure modelStructure=Types.ModelStructure.a_v_b
       "Determines whether flow or volume models are present at the ports"                              annotation(Evaluate=true);
@@ -462,7 +462,7 @@ of the modeller. Use a Junctions.MultiPort.
       dlength = cat(1, {0}, length/n*ones(n));
     elseif modelStructure == ModelStructure.a_vb then
       dlength = cat(1, length/n*ones(n), {0});
-    else // avb
+    else // av_vb
       dlength = cat(1, {0}, length/(n-1)*ones(n-1), {0});
     end if;
     dheight_ab = dlength/length*height_ab;
@@ -691,7 +691,7 @@ of the modeller. Use a Junctions.MultiPort.
 <li><tt>a_v_b</tt>: default setting with two half momentum balances</li>
 <li><tt>av_b</tt>: full momentum balance between nth volume and <tt>port_b</tt>, potential pressure state at <tt>port_a</tt></li>
 <li><tt>a_vb</tt>: full momentum balance between first volume and <tt>port_a</tt>, potential pressure state at <tt>port_b</tt></li>
-<li><tt>avb</tt>: n-1 momentum balances between first and nth volume, potential pressure states at both ports. It's use should be avoided, since not the entire pipe length is taken into account.
+<li><tt>av_vb</tt>: n-1 momentum balances between first and nth volume, potential pressure states at both ports. It's use should be avoided, since not the entire pipe length is taken into account.
 </ul></p>
  
 <p>The term <tt>dp</tt> contains
@@ -1295,8 +1295,8 @@ of the modeller.
       "Fluid medium model" 
         annotation (choicesAllMatching=true);
     parameter SI.Volume V "Volume";
-    parameter SI.Pressure dp_nominal "nominal (linear) pressure drop" annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
-    parameter SI.MassFlowRate m_flow_nominal "nominal mass flow rate"  annotation(Dialog(enable=not modelStructure==ModelStructure.avb));
+    parameter SI.Pressure dp_nominal "nominal (linear) pressure drop" annotation(Dialog(enable=not modelStructure==ModelStructure.av_vb));
+    parameter SI.MassFlowRate m_flow_nominal "nominal mass flow rate"  annotation(Dialog(enable=not modelStructure==ModelStructure.av_vb));
 
     SI.InternalEnergy U "Internal energy";
     SI.Mass m "Total mass";
@@ -1346,7 +1346,7 @@ of the modeller.
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization",enable=Medium.nXi>0));
 
-    parameter ModelStructure modelStructure=ModelStructure.avb annotation(Evaluate=true);
+    parameter ModelStructure modelStructure=ModelStructure.av_vb annotation(Evaluate=true);
 
     Medium.EnthalpyFlowRate ports_a_H_flow[nPorts_a];
     Medium.EnthalpyFlowRate ports_b_H_flow[nPorts_b];
@@ -1481,13 +1481,13 @@ end for;
         "Trace substance mass flow";
     end for;
 
-    if modelStructure==ModelStructure.avb or modelStructure == ModelStructure.av_b then
+    if modelStructure==ModelStructure.av_vb or modelStructure == ModelStructure.av_b then
       ports_a.p=fill(medium.p, nPorts_a);
     else
       ports_a.p-fill(medium.p,nPorts_a) = ports_a.m_flow*dp_nominal/m_flow_nominal;
     end if;
 
-    if modelStructure==ModelStructure.avb or modelStructure==ModelStructure.a_vb then
+    if modelStructure==ModelStructure.av_vb or modelStructure==ModelStructure.a_vb then
       ports_b.p=fill(medium.p,nPorts_b);
     else
       ports_b.p-fill(medium.p,nPorts_b)=ports_b.m_flow*dp_nominal/m_flow_nominal;

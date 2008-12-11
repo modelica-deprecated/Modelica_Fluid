@@ -78,11 +78,4 @@ The initial equations are consistent however and a tool shall reduce them approp
       experimentSetupOutput);
   end DistributedPipeLumpedPressureInitialization;
 
-
-
-
-
-
-
-
 end TestOverdeterminedSteadyStateInit;

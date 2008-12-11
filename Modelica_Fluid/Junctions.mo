@@ -174,7 +174,7 @@ of the modeller.
                             Documentation(info="<html>
 <p>
 This model is useful if multiple connections shall be made to a port of a volume model exposing a state,
-like a pipe with ModelStructure avb. 
+like a pipe with ModelStructure av_vb. 
 The mixing is shifted into the volume connected to port_a and the result is propageted back to each ports_b.
 </p>
 <p>

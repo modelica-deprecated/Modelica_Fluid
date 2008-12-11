@@ -504,6 +504,7 @@ model SharpEdgedOrifice
             fillColor={0,0,255},
             fillPattern=FillPattern.Backward,
             textString="alpha")}));
+
 end SharpEdgedOrifice;
 
   annotation (Documentation(info="<html>
