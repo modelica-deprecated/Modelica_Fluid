@@ -20,7 +20,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       "Start value for mass flow rate" 
        annotation(Evaluate=true, Dialog(tab = "Initialization"));
 
-    PressureDrop pressureDrop(
+    PressureLoss pressureLoss(
             redeclare final package Medium = Medium,
             final n=1,
             state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
@@ -39,7 +39,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
             final g=system.g) "Pressure drop model" 
        annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
   equation
-    port_a.m_flow = pressureDrop.m_flow[1]*nPipes;
+    port_a.m_flow = pressureLoss.m_flow[1]*nPipes;
     0 = port_a.m_flow + port_b.m_flow;
     port_a.h_outflow = inStream(port_b.h_outflow);
     port_b.h_outflow = inStream(port_a.h_outflow);
@@ -121,7 +121,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       crossArea=crossArea,
       height_ab=height_ab/2,
       m_flow_start=m_flow_start,
-      redeclare final model PressureDrop = PressureDrop) 
+      redeclare final model PressureLoss = PressureLoss) 
       annotation (Placement(transformation(extent={{-60,-40},{-40,-20}},
             rotation=0)));
     Modelica_Fluid.Vessels.Volume volume(
@@ -151,7 +151,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       crossArea=crossArea,
       height_ab=height_ab/2,
       m_flow_start=m_flow_start,
-      redeclare final model PressureDrop = PressureDrop)   annotation (Placement(transformation(extent={{40,-40},
+      redeclare final model PressureLoss = PressureLoss)   annotation (Placement(transformation(extent={{40,-40},
               {60,-20}},         rotation=0)));
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
       annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=
@@ -235,7 +235,7 @@ pipe wall/environment).
       "=true to lump all pressure states into one" 
       annotation(Dialog(tab="Advanced"),Evaluate=true);
     final parameter Integer nFlows=if lumpedPressure then nFlowsLumped else nFlowsDistributed
-      "number of flow models in pressureDrop";
+      "number of flow models in pressureLoss";
     final parameter Integer nFlowsDistributed=if modelStructure==Types.ModelStructure.a_v_b then n+1 else if (modelStructure==Types.ModelStructure.a_vb or modelStructure==Types.ModelStructure.av_b) then n else n-1;
     final parameter Integer nFlowsLumped=if modelStructure==Types.ModelStructure.a_v_b then 2 else 1;
     final parameter Integer iLumped=integer(n/2)+1
@@ -249,10 +249,10 @@ pipe wall/environment).
     Medium.ThermodynamicState state_a "state defined by volume outside port_a";
     Medium.ThermodynamicState state_b "state defined by volume outside port_b";
     Medium.ThermodynamicState[nFlows+1] flowState
-      "state vector for pressureDrop model";
+      "state vector for pressureLoss model";
 
     // Pressure drop model
-    PressureDrop pressureDrop(
+    PressureLoss pressureLoss(
             redeclare final package Medium = Medium,
             final n=nFlows,
             state=flowState,
@@ -357,25 +357,25 @@ pipe wall/environment).
         fill(medium[n].p, n-iLumped) = medium[iLumped:n-1].p;
       end if;
       if modelStructure == ModelStructure.a_v_b then
-        m_flow[1] = pressureDrop.m_flow[1];
+        m_flow[1] = pressureLoss.m_flow[1];
         flowState[1] = state_a;
         flowState[2] = medium[iLumped].state;
         flowState[3] = state_b;
-        m_flow[n+1] = pressureDrop.m_flow[2];
+        m_flow[n+1] = pressureLoss.m_flow[2];
       elseif modelStructure == ModelStructure.av_b then
         port_a.p = medium[1].p;
         flowState[1] = medium[iLumped].state;
         flowState[2] = state_b;
-        m_flow[n+1] = pressureDrop.m_flow[1];
+        m_flow[n+1] = pressureLoss.m_flow[1];
       elseif modelStructure == ModelStructure.a_vb then
-        m_flow[1] = pressureDrop.m_flow[1];
+        m_flow[1] = pressureLoss.m_flow[1];
         flowState[1] = state_a;
         flowState[2] = medium[iLumped].state;
         port_b.p = medium[n].p;
       else // av_vb
         port_a.p = medium[1].p;
         flowState[1] = medium[1].state;
-        m_flow[iLumped] = pressureDrop.m_flow[1];
+        m_flow[iLumped] = pressureLoss.m_flow[1];
         flowState[2] = medium[n].state;
         port_b.p = medium[n].p;
       end if;
@@ -384,31 +384,31 @@ pipe wall/environment).
         flowState[1] = state_a;
         flowState[2:n+1] = medium[1:n].state;
         flowState[n+2] = state_b;
-        //m_flow = pressureDrop.m_flow;
+        //m_flow = pressureLoss.m_flow;
         for i in 1:n+1 loop
-          m_flow[i] = pressureDrop.m_flow[i];
+          m_flow[i] = pressureLoss.m_flow[i];
         end for;
       elseif modelStructure == ModelStructure.av_b then
         flowState[1:n] = medium[1:n].state;
         flowState[n+1] = state_b;
-        //m_flow[2:n+1] = pressureDrop.m_flow;
+        //m_flow[2:n+1] = pressureLoss.m_flow;
         for i in 2:n+1 loop
-          m_flow[i] = pressureDrop.m_flow[i-1];
+          m_flow[i] = pressureLoss.m_flow[i-1];
         end for;
         port_a.p = medium[1].p;
       elseif modelStructure == ModelStructure.a_vb then
         flowState[1] = state_a;
         flowState[2:n+1] = medium[1:n].state;
-        //m_flow[1:n] = pressureDrop.m_flow;
+        //m_flow[1:n] = pressureLoss.m_flow;
         for i in 1:n loop
-          m_flow[i] = pressureDrop.m_flow[i];
+          m_flow[i] = pressureLoss.m_flow[i];
         end for;
         port_b.p = medium[n].p;
       else // av_vb
         flowState[1:n] = medium[1:n].state;
-        //m_flow[2:n] = pressureDrop.m_flow[1:n-1];
+        //m_flow[2:n] = pressureLoss.m_flow[1:n-1];
         for i in 2:n loop
-          m_flow[i] = pressureDrop.m_flow[i-1];
+          m_flow[i] = pressureLoss.m_flow[i-1];
         end for;
         port_a.p = medium[1].p;
         port_b.p = medium[n].p;
@@ -444,9 +444,9 @@ The default component uses a constant coefficient for the heat transfer between 
 The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">BaseClasses.PartialPipeHeatTransfer</a>.</p>
 <p><b>Momentum balance</b></p>
-The momentum balance is determined by the <b><tt>PressureDrop</tt></b> component, which can be replaced with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureDrop.PartialPipePressureDrop\">BaseClasses.PartialPipePressureDrop</a>.
-The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow\">DetailedFlow</a>.
+The momentum balance is determined by the <b><tt>PressureLoss</tt></b> component, which can be replaced with any model extended from 
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPipePressureLoss\">BaseClasses.PartialPipePressureLoss</a>.
+The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow\">DetailedFlow</a>.
 The momentum balances are formed across the segment boundaries along the flow path according to the staggered grid approach. 
 The default symmetric model is characterized by one momentum balance inside the pipe with nNodes=2 fluid segments.
 An alternative symmetric variation with nNodes+1 momentum balances, one at each port, as well as  
@@ -461,7 +461,7 @@ The specification of good start values for the port pressures is essential in or
 <li><tt>a_vb</tt>: nNodes momentum balance, one between first volume and <tt>port_a</tt>, potential pressure state at <tt>port_b</tt></li>
 </ul></p>
  
-<p>The PressureDrop contains
+<p>The PressureLoss contains
 <ul>
 <li>pressure drop due to friction and other dissipative losses</li>
 <li>gravity effects for non-horizontal pipes</li>
@@ -473,7 +473,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 <pre>pipe1.port_b.p = pipe2.port_a.p</pre>
 <p>
 This is only true if the flow velocity remains the same on each side of the connection. 
-Consider using a junction or an adapter comonent, like <a href=\"Modelica:Modelica_Fluid.PressureLosses.SuddenExpansion\">SuddenExpansion</a>
+Consider using a fitting, like <a href=\"Modelica:Modelica_Fluid.Fittings.SuddenExpansion\">SuddenExpansion</a>
 for any significant change in diameter, if the resulting effects, such as change in kinetic energy, cannot be neglected. 
 This also allows for taking into account friction losses with respect to the actual geometry of the connection point.
 </p>
@@ -526,9 +526,9 @@ This also allows for taking into account friction losses with respect to the act
           annotation(Dialog(group="Static head"), Evaluate=true);
 
       // Pressure drop
-      replaceable model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow 
-        constrainedby BaseClasses.PressureDrop.PartialPipePressureDrop
+      replaceable model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow 
+        constrainedby BaseClasses.PressureLoss.PartialPipePressureLoss
         "Characteristics of wall friction and gravity" 
           annotation(Dialog(group="Pressure drop"), choicesAllMatching=true);
 
@@ -573,9 +573,9 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
     end PartialPipe;
 
-    package PressureDrop
+    package PressureLoss
       "Pressure drop models for pipes, including wall friction and static head"
-          partial model PartialPipePressureDrop
+          partial model PartialPipePressureLoss
         "Base class for pipe wall friction models"
 
             replaceable package Medium = 
@@ -608,7 +608,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
             // Additional parameters
             // Note: no outer system is used for default values,
-            // as a PressureDrop model is intended as sub-component of other models
+            // as a PressureLoss model is intended as sub-component of other models
             parameter SI.Acceleration g "Constant gravity acceleration" 
               annotation(Dialog(tab="Internal Interface", enable=false,group="Static head"));
             parameter Boolean allowFlowReversal
@@ -646,10 +646,10 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 color={0,0,255},
                 smooth=Smooth.None,
                 thickness=1)}));
-          end PartialPipePressureDrop;
+          end PartialPipePressureLoss;
 
-          model NominalPressureDrop "Linear pressure drop for nominal values"
-            extends PartialPipePressureDrop;
+          model NominalPressureLoss "Linear pressure drop for nominal values"
+            extends PartialPipePressureLoss;
 
             parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
             parameter SI.MassFlowRate m_flow_nominal
@@ -685,11 +685,11 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 dp = g*height_ab*Utilities.regStep(m_flow, d[1:n], d[2:n+1], m_flow_small) + dp_nominal/m_flow_nominal*m_flow*nPipes;
               end if;
             end if;
-          end NominalPressureDrop;
+          end NominalPressureLoss;
 
           partial model PartialWallFrictionAndGravity
         "Base class for pressure drop in pipe due to wall friction and gravity (for both flow directions)"
-            extends PartialPipePressureDrop;
+            extends PartialPipePressureLoss;
 
             replaceable package WallFriction = 
             Modelica_Fluid.Fittings.BaseClasses.WallFriction.PartialWallFriction
@@ -907,7 +907,7 @@ simulation and/or might give a more robust simulation.
               redeclare package WallFriction = 
               Modelica_Fluid.Fittings.BaseClasses.WallFriction.Detailed);
           end DetailedFlow;
-    end PressureDrop;
+    end PressureLoss;
 
   package HeatTransfer
     partial model PartialPipeHeatTransfer

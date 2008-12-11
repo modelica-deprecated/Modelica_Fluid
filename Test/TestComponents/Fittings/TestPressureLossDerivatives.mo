@@ -1,6 +1,6 @@
 within Modelica_Fluid.Test.TestComponents.Fittings;
-model TestPressureDropDerivatives
-  "Test that PressureDrop components can be differentiated"
+model TestPressureLossDerivatives
+  "Test that PressureLoss components can be differentiated"
   import Modelica_Fluid.Fittings.BaseClasses.QuadraticTurbulent;
   extends Modelica.Icons.Example;
   parameter SI.Diameter diameter_a = 0.1 "Inner diameter of pipe at port_a";
@@ -39,4 +39,4 @@ equation
 
   der_m_flow1 = der(m_flow1);
   // der_m_flow2 = der(m_flow2);
-end TestPressureDropDerivatives;
+end TestPressureLossDerivatives;

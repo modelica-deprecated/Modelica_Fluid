@@ -1576,8 +1576,8 @@ Initial equations for steady-state are selected for the pipe components, initial
         tank(initType=Modelica_Fluid.Types.Init.SteadyState),
         pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
         radiator(initType=Modelica_Fluid.Types.Init.SteadyState,
-                 redeclare model PressureDrop = 
-              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop(dp_nominal=0,smoothFlowReversal=true))));
+                 redeclare model PressureLoss = 
+              Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss(dp_nominal=0,smoothFlowReversal=true))));
 
     annotation (
       Documentation(info="<html>
@@ -1596,8 +1596,8 @@ The radiator pipe has no pressure losses in the momentum balances, so the pressu
         tank(initType=Modelica_Fluid.Types.Init.SteadyState),
         pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
         radiator(initType=Modelica_Fluid.Types.Init.SteadyState,
-                 redeclare model PressureDrop = 
-              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop(dp_nominal=0,smoothFlowReversal=true))));
+                 redeclare model PressureLoss = 
+              Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss(dp_nominal=0,smoothFlowReversal=true))));
     annotation (
       Documentation(info="<html>
 Initial equations for steady-state are selected for all components, plus additional initial equations to set the initial level and temperature of the tank. The model of the radiator pipe has zero pressure losses.
@@ -1617,8 +1617,8 @@ The radiator pipe has no pressure losses in the momentum balances, so the pressu
                   plant(
         tank(initType=Modelica_Fluid.Types.Init.InitialValues),
         pipe(initType=Modelica_Fluid.Types.Init.SteadyState),
-        radiator(redeclare model PressureDrop = 
-              Modelica_Fluid.Pipes.BaseClasses.PressureDrop.NominalPressureDrop(dp_nominal=0,smoothFlowReversal=true),
+        radiator(redeclare model PressureLoss = 
+              Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss(dp_nominal=0,smoothFlowReversal=true),
             initType=Modelica_Fluid.Types.Init.NoInit)));
     annotation (
       Documentation(info="<html>

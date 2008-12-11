@@ -13,11 +13,11 @@ package HeatExchanger "Demo of a heat exchanger model"
       length=2,
       m_flow_start_1=0.2,
       m_flow_start_2=0.2,
-      redeclare model PressureDrop_1 = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow (
+      redeclare model PressureLoss_1 = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow (
               use_d_nominal=true,use_eta_nominal=true,eta_nominal=0.01),
-      redeclare model PressureDrop_2 = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow (
+      redeclare model PressureLoss_2 = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow (
               use_d_nominal=true,use_eta_nominal=true,eta_nominal=0.01),
       k_wall=100,
       initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
@@ -213,15 +213,15 @@ package HeatExchanger "Demo of a heat exchanger model"
         "Start value of mass flow rate"    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 2"));
 
       //Pressure drop and heat transfer
-      replaceable model PressureDrop_1 = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow 
+      replaceable model PressureLoss_1 = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.PartialPipePressureDrop
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPipePressureLoss
         "Characteristic of wall friction"                                                                                                   annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
-      replaceable model PressureDrop_2 = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow 
+      replaceable model PressureLoss_2 = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.PartialPipePressureDrop
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPipePressureLoss
         "Characteristic of wall friction"                                                                                                   annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
       parameter SI.Length roughness_1=2.5e-5
         "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Fluid 1"));
@@ -263,7 +263,7 @@ package HeatExchanger "Demo of a heat exchanger model"
         perimeter=perimeter_1,
         crossArea=crossArea_1,
         roughness=roughness_1,
-        redeclare model PressureDrop = PressureDrop_1)   annotation (Placement(transformation(extent={{-40,-80},
+        redeclare model PressureLoss = PressureLoss_1)   annotation (Placement(transformation(extent={{-40,-80},
                 {20,-20}},        rotation=0)));
 
       Modelica_Fluid.Pipes.DistributedPipe pipe_2(
@@ -286,7 +286,7 @@ package HeatExchanger "Demo of a heat exchanger model"
         p_a_start=p_a_start1,
         p_b_start=p_b_start2,
         roughness=roughness_2,
-        redeclare model PressureDrop = PressureDrop_2) 
+        redeclare model PressureLoss = PressureLoss_2) 
                   annotation (Placement(transformation(extent={{20,88},{-40,28}},
               rotation=0)));
 

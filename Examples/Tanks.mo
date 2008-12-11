@@ -48,8 +48,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=1,
       diameter=0.1,
       height_ab=1) annotation (Placement(transformation(
@@ -107,8 +107,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=1,
       diameter=0.1)  annotation (Placement(transformation(extent={{-30,-30},{
               -10,-10}}, rotation=0)));
@@ -180,8 +180,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      redeclare model PressureLoss = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=1,
       diameter=0.1,
       height_ab=1) annotation (Placement(transformation(
@@ -242,8 +242,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Pipes.StaticPipe pipe1(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      redeclare model PressureLoss = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=1,
       diameter=0.1,
       height_ab=1) annotation (Placement(transformation(
@@ -254,8 +254,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Pipes.StaticPipe pipe2(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      redeclare model PressureLoss = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=1,
       diameter=0.1,
       height_ab=1) annotation (Placement(transformation(
@@ -322,8 +322,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Pipes.StaticPipe pipe1(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      redeclare model PressureLoss = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=1,
       diameter=0.1,
       height_ab=1) annotation (Placement(transformation(
@@ -334,8 +334,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Pipes.StaticPipe pipe2(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      redeclare model PressureLoss = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=1,
       diameter=0.1,
       height_ab=1) annotation (Placement(transformation(
@@ -365,8 +365,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Pipes.StaticPipe pipe3(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      redeclare model PressureDrop = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow,
+      redeclare model PressureLoss = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=1,
       diameter=0.1,
       height_ab=-0.5) 
@@ -627,8 +627,8 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      redeclare model PressureDrop = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureDrop.LaminarAndQuadraticTurbulentFlow,
+      redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LaminarAndQuadraticTurbulentFlow,
       length=1,
       diameter=0.1,
       height_ab=1) annotation (Placement(transformation(

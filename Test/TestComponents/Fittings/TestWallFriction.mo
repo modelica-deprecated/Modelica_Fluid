@@ -25,7 +25,7 @@ pipe1.WallFriction = WallFriction.QuadraticTurbulent (since the same equations).
 </p>
  
 <p>
-pipe1 and pipe2 should be identical to pressureDropPipe for
+pipe1 and pipe2 should be identical to pressureLossPipe for
 pipe1.WallFriction = WallFriction.Detailed (since the same equations).
 </p>
 </html>"));
