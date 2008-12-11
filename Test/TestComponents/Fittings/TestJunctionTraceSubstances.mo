@@ -3,7 +3,8 @@ model TestJunctionTraceSubstances
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
   package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
-  Modelica_Fluid.Fittings.TJunctionIdeal junction(redeclare package Medium = 
+  Modelica_Fluid.Fittings.TeeJunctionIdeal junction(
+                                                  redeclare package Medium = 
         Medium)                             annotation (Placement(
         transformation(extent={{0,-30},{20,-10}},  rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
@@ -63,7 +64,7 @@ model TestJunctionTraceSubstances
         origin={-30,30},
         extent={{-10,-10},{10,10}},
         rotation=90)));
-  Modelica_Fluid.Fittings.TJunctionVolume junction1(
+  Modelica_Fluid.Fittings.TeeJunctionVolume junction1(
     redeclare package Medium = Medium,
     V=0.1,
     C_start={1E-4},

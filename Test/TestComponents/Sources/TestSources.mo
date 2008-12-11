@@ -79,7 +79,8 @@ model TestSources "Test model for models in source package"
   Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance4(redeclare
       package Medium = Medium) 
     annotation (Placement(transformation(extent={{-20,-74},{0,-54}})));
-  Modelica_Fluid.Fittings.TJunctionIdeal junction(redeclare package Medium = 
+  Modelica_Fluid.Fittings.TeeJunctionIdeal junction(
+                                                  redeclare package Medium = 
         Medium)                             annotation (Placement(
         transformation(extent={{26,-50},{46,-30}}, rotation=0)));
 equation
