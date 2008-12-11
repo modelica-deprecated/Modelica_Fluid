@@ -325,7 +325,7 @@ model Tank
     "Open tank with top and bottom inlet/outlet ports at a defineable height"
 
     import Modelica.Constants;
-    import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
+    import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
     import Modelica_Fluid.Utilities.regRoot2;
     import Modelica_Fluid.Vessels.BaseClasses.TankPortData;
 

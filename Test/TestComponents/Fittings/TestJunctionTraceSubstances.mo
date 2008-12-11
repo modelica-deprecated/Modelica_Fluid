@@ -1,9 +1,9 @@
-within Modelica_Fluid.Test.TestComponents.Junctions;
+within Modelica_Fluid.Test.TestComponents.Fittings;
 model TestJunctionTraceSubstances
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
   package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
-  Modelica_Fluid.Junctions.TJunctionIdeal junction(redeclare package Medium = 
+  Modelica_Fluid.Fittings.TJunctionIdeal junction(redeclare package Medium = 
         Medium)                             annotation (Placement(
         transformation(extent={{0,-30},{20,-10}},  rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
@@ -45,17 +45,17 @@ model TestJunctionTraceSubstances
     offset=1E5 + 20) 
                 annotation (Placement(transformation(extent={{-100,24},{-80,44}},
           rotation=0)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe1(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) annotation (Placement(transformation(
           extent={{-24,-30},{-4,-10}},rotation=0)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe2(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) annotation (Placement(transformation(
           extent={{56,-30},{76,-10}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe3(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe3(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) 
@@ -63,7 +63,7 @@ model TestJunctionTraceSubstances
         origin={-30,30},
         extent={{-10,-10},{10,10}},
         rotation=90)));
-  Modelica_Fluid.Junctions.TJunctionVolume junction1(
+  Modelica_Fluid.Fittings.TJunctionVolume junction1(
     redeclare package Medium = Medium,
     V=0.1,
     C_start={1E-4},
@@ -80,7 +80,7 @@ model TestJunctionTraceSubstances
         origin={10,70},
         extent={{-10,-10},{10,10}},
         rotation=270)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe4(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe4(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) 
@@ -97,7 +97,7 @@ model TestJunctionTraceSubstances
         origin={40,70},
         extent={{-10,-10},{10,10}},
         rotation=270)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe5(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe5(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) 
@@ -118,7 +118,7 @@ model TestJunctionTraceSubstances
     annotation (Placement(transformation(extent={{-100,-8},{-80,12}})));
   Modelica.Blocks.Sources.RealExpression X2(y=1 - X.y) "Concentration of X[2]" 
     annotation (Placement(transformation(extent={{-100,-32},{-80,-12}})));
-  Modelica_Fluid.Junctions.MultiPort multiPort(redeclare package Medium = 
+  Modelica_Fluid.Fittings.MultiPort multiPort(redeclare package Medium = 
         Medium, nPorts_b=2) 
     annotation (Placement(transformation(extent={{-42,-28},{-34,-8}})));
 equation

@@ -113,14 +113,14 @@ Test of different distributed pipe models. The first system uses explicit juncti
 
   inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{72,-94},{92,-74}}, rotation=0)));
-  Modelica_Fluid.Junctions.TJunctionVolume junction1(
+  Modelica_Fluid.Fittings.TJunctionVolume junction1(
     redeclare package Medium = Medium,
     V=0.0001,
     p_start=100000,
     T_start=300)                       annotation (Placement(transformation(
           extent={{-10,-10},{10,10}}, rotation=90,
         origin={-42,64})));
-  Modelica_Fluid.Junctions.TJunctionVolume junction2(
+  Modelica_Fluid.Fittings.TJunctionVolume junction2(
     redeclare package Medium = Medium,
     V=0.00001,
     p_start=100000,
@@ -321,10 +321,10 @@ Test of different distributed pipe models. The first system uses explicit juncti
       each T_ref=350) 
     annotation (Placement(transformation(extent={{-72,-38},{-52,-18}}, rotation=
            0)));
-  Modelica_Fluid.Junctions.MultiPort muliPort11(nPorts_b=2, redeclare package
+  Modelica_Fluid.Fittings.MultiPort muliPort11(nPorts_b=2, redeclare package
       Medium = Medium) 
     annotation (Placement(transformation(extent={{-50,-62},{-42,-42}})));
-  Modelica_Fluid.Junctions.MultiPort multiPort10(nPorts_b=2, redeclare package
+  Modelica_Fluid.Fittings.MultiPort multiPort10(nPorts_b=2, redeclare package
       Medium = Medium) 
     annotation (Placement(transformation(extent={{10,-62},{2,-42}})));
 equation

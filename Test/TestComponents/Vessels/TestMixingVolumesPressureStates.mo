@@ -51,18 +51,18 @@ model TestMixingVolumesPressureStates
   inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}},
           rotation=0)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity simpleGenericOrifice2(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity simpleGenericOrifice2(
     redeclare package Medium = Medium,
     diameter=0.2,
     redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
+        Modelica_Fluid.Fittings.BaseClasses.WallFriction.Laminar,
     length=1)                   annotation (Placement(transformation(extent={{
             50,30},{70,50}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity simpleGenericOrifice1(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity simpleGenericOrifice1(
     redeclare package Medium = Medium,
     diameter=0.2,
     redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Laminar,
+        Modelica_Fluid.Fittings.BaseClasses.WallFriction.Laminar,
     length=1)                   annotation (Placement(transformation(extent={{
             -70,30},{-50,50}}, rotation=0)));
 equation

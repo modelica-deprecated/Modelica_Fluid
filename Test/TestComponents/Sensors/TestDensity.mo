@@ -12,7 +12,7 @@ model TestDensity
   Modelica_Fluid.Sensors.DensityTwoPort density2_1(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{-20,-30},{0,-10}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice1(
+  Modelica_Fluid.Fittings.SimpleGenericOrifice simpleGenericOrifice1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
     diameter=0.1) annotation (Placement(transformation(extent={{20,-30},{40,-10}},
@@ -36,7 +36,7 @@ model TestDensity
   Modelica_Fluid.Sensors.DensityOnePort density1_1(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{-20,50},{0,70}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.SimpleGenericOrifice simpleGenericOrifice(
+  Modelica_Fluid.Fittings.SimpleGenericOrifice simpleGenericOrifice(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     zeta=2,
     diameter=0.1) annotation (Placement(transformation(extent={{20,40},{40,60}},

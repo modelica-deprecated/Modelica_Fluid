@@ -5,7 +5,7 @@ package ToBeRemoved "models that will disappear from the release"
     extends Modelica_Fluid.ToBeRemoved.PartialPipe_Old(
        redeclare model HeatTransfer = 
           Pipes.BaseClasses.HeatTransfer.PipeHT_ideal);
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction(
+    Modelica_Fluid.Fittings.WallFrictionAndGravity wallFriction(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
       redeclare package WallFriction = WallFriction,
@@ -84,7 +84,7 @@ package ToBeRemoved "models that will disappear from the release"
       final use_fluidHeatPort=true) "Edit heat transfer parameters" 
       annotation (editButton=true, Placement(transformation(extent={{-20,0},{20,40}},   rotation=0)));
 
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction1(
+    Modelica_Fluid.Fittings.WallFrictionAndGravity wallFriction1(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
       redeclare package WallFriction = WallFriction,
@@ -120,7 +120,7 @@ package ToBeRemoved "models that will disappear from the release"
       neglectPortDiameters=true) 
       annotation (Placement(transformation(extent={{-10,-30},{10,-10}},rotation=
              0)));
-    Modelica_Fluid.PressureLosses.WallFrictionAndGravity wallFriction2(
+    Modelica_Fluid.Fittings.WallFrictionAndGravity wallFriction2(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
       redeclare package WallFriction = WallFriction,
@@ -240,13 +240,13 @@ pipe wall/environment).
 port_a exposing volume with selected modelStructure shall at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
-of the modeller. Use a Junctions.MultiPort.
+of the modeller. Use a Fittings.MultiPort.
 ");
    assert(cardinality(port_b) <= 1 or (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.a_v_b),"
 port_b exposing volume with selected modelStructure shall at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
-of the modeller. Use a Junctions.MultiPort.
+of the modeller. Use a Fittings.MultiPort.
 ");
 
    Ws_flow=zeros(n);
@@ -440,13 +440,13 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 port_a exposing volume with selected modelStructure shall at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
-of the modeller. Use a Junctions.MultiPort.
+of the modeller. Use a Fittings.MultiPort.
 ");
     assert(cardinality(port_b) <= 1 or (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.a_v_b),"
 port_b exposing volume with selected modelStructure shall at most be connected to one component.
 If two or more connections are present, ideal mixing takes
 place with these connections which is usually not the intention
-of the modeller. Use a Junctions.MultiPort.
+of the modeller. Use a Fittings.MultiPort.
 ");
 
     Ws_flow=zeros(n);
@@ -753,9 +753,9 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
     // Pressure loss
     replaceable package WallFriction = 
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
+      Modelica_Fluid.Fittings.BaseClasses.WallFriction.QuadraticTurbulent 
       constrainedby
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
+      Modelica_Fluid.Fittings.BaseClasses.WallFriction.PartialWallFriction
       "Characteristic of wall friction"  annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
      parameter SI.Diameter diameter_h=4*crossArea/perimeter
       "Hydraulic diameter"                                       annotation(Dialog(tab="General", group="Pressure loss"));
@@ -1025,7 +1025,7 @@ Simple model for heat flow partitioning between the two ports. The heat flow rat
 
 model StaticHead
     "Models the static head between two ports at different heights"
-  extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
+  extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
   parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
   parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"

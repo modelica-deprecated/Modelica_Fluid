@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.PressureLosses;
+within Modelica_Fluid.Test.TestComponents.Fittings;
 model TestWallFriction
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
@@ -50,7 +50,7 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (Placement(transformation(extent={{60,10},{40,30}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe1(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium,
@@ -59,17 +59,17 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     dp_small=0.1,
     show_Re=true,
     redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed) 
+        Modelica_Fluid.Fittings.BaseClasses.WallFriction.Detailed) 
                       annotation (Placement(transformation(extent={{0,40},{20,
             60}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe2(
     length=1,
     diameter=0.1,
     from_dp=false,
     redeclare package Medium = Medium,
     roughness=roughness,
     redeclare package WallFriction = 
-        Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.Detailed,
+        Modelica_Fluid.Fittings.BaseClasses.WallFriction.Detailed,
     port_a(m_flow(start=-0.6)),
     show_Re=true)     annotation (Placement(transformation(extent={{0,10},{20,
             30}}, rotation=0)));
@@ -83,16 +83,16 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (Placement(transformation(extent={{60,-50},{40,-30}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.TestWallFriction
-    pipe3(
+  Modelica_Fluid.Fittings.BaseClasses.QuadraticTurbulent.TestWallFriction pipe3
+    (
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium,
     roughness=roughness,
     dp_small=0.1)        annotation (Placement(transformation(extent={{0,-20},{
             20,0}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.TestWallFriction
-    pipe4(
+  Modelica_Fluid.Fittings.BaseClasses.QuadraticTurbulent.TestWallFriction pipe4
+    (
     length=1,
     diameter=0.1,
     from_dp=false,

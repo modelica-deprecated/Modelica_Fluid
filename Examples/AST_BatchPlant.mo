@@ -150,7 +150,7 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(extent={{-114,210},{-134,230}},
             rotation=0)));
-    Modelica_Fluid.Junctions.TJunctionIdeal volume2(
+    Modelica_Fluid.Fittings.TJunctionIdeal volume2(
       redeclare package Medium = BatchMedium) 
                annotation (Placement(transformation(
           origin={-180,220},
@@ -162,7 +162,7 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(extent={{112,210},{132,230}},
             rotation=0)));
-    Modelica_Fluid.Junctions.TJunctionIdeal volume8(
+    Modelica_Fluid.Fittings.TJunctionIdeal volume8(
       redeclare package Medium = BatchMedium) 
                annotation (Placement(transformation(
           origin={160,220},
@@ -248,7 +248,7 @@ present that are regulated by a central control system.
           origin={30,-250},
           extent={{10,10},{-10,-10}},
           rotation=180)));
-    Junctions.TJunctionVolume volume5(
+    Fittings.TJunctionVolume volume5(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{50,-260},{70,-240}},
@@ -455,12 +455,12 @@ present that are regulated by a central control system.
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{80,-80},
               {40,-40}}, rotation=0)));
-    Junctions.MultiPort multiPort(redeclare package Medium = BatchMedium,
+    Fittings.MultiPort multiPort(redeclare package Medium = BatchMedium,
         nPorts_b=3) annotation (Placement(transformation(
           extent={{4,10},{-4,-10}},
           rotation=-90,
           origin={-26,-228})));
-    Junctions.TJunctionVolume volume4(
+    Fittings.TJunctionVolume volume4(
       redeclare package Medium = BatchMedium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{-36,-260},{-16,
@@ -916,7 +916,7 @@ handled properly.</p>
     end setReal;
 
     model ValveDiscrete "Valve for water/steam flows with linear pressure drop"
-      extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
+      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
       parameter Modelica_Fluid.Types.HydraulicConductance Kv
         "Hydraulic conductance at full opening";
       Modelica.Blocks.Interfaces.BooleanInput open annotation (Placement(
@@ -1794,7 +1794,7 @@ Full steady state initialization is not supported, because the corresponding int
   model CoolingTank
       "Open tank with top and bottom inlet/outlet ports at a defineable height, heat transfer through the walls and a cooling unit via heatPort connector"
       import Modelica.Constants;
-      import Modelica_Fluid.PressureLosses.BaseClasses.lossConstant_D_zeta;
+      import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
       import Modelica_Fluid.Utilities.regRoot2;
       import Modelica_Fluid.Vessels.BaseClasses.TankPortData;
 

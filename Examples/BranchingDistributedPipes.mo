@@ -1,6 +1,6 @@
 within Modelica_Fluid.Examples;
 model BranchingDistributedPipes
-  "Multi-way connections of pipes with and without Junctions.MultiPort"
+  "Multi-way connections of pipes with and without Fittings.MultiPort"
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
 //replaceable package Medium=Modelica.Media.Water.StandardWater;
@@ -197,10 +197,10 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
       each alpha=10000) 
     annotation (Placement(transformation(extent={{-34,-20},{-14,0}},  rotation=
             0)));
-  Modelica_Fluid.Junctions.MultiPort multiPort1(redeclare package Medium = 
+  Modelica_Fluid.Fittings.MultiPort multiPort1(redeclare package Medium = 
         Medium, nPorts_b=2) 
     annotation (Placement(transformation(extent={{-42,30},{-34,50}})));
-  Modelica_Fluid.Junctions.MultiPort multiPort3(redeclare package Medium = 
+  Modelica_Fluid.Fittings.MultiPort multiPort3(redeclare package Medium = 
         Medium, nPorts_b=2) 
     annotation (Placement(transformation(extent={{34,30},{26,50}})));
 equation
@@ -305,7 +305,7 @@ non-differentiable boundary conditions.
 Moreover, algebraic energy and substance balances result from the interconnection of multiple flow models, 
 like pipe2 and pipe4 with modelStructure=a_v_b. This is normally not intended. 
 Connecting to models with multiple ports, e.g. a Source, or introducing a 
-<a href=\"Modelica:Modelica_Fluid.Junctions.MultiPort\">MultiPort</a>, the algebraic 
+<a href=\"Modelica:Modelica_Fluid.Fittings.MultiPort\">MultiPort</a>, the algebraic 
 energy and substance balances are avoided; the mixing takes place in the volume model. 
 </p>
 </html>"));

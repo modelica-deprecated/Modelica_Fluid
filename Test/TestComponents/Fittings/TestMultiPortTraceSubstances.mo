@@ -1,4 +1,4 @@
-within Modelica_Fluid.Test.TestComponents.Junctions;
+within Modelica_Fluid.Test.TestComponents.Fittings;
 model TestMultiPortTraceSubstances
   "Test model for multiport and volumes with trace substances."
   import Modelica_Fluid;
@@ -89,7 +89,7 @@ model TestMultiPortTraceSubstances
     redeclare package Medium = Medium,
     length=1,
     nPipes=1) annotation (Placement(transformation(extent={{52,-90},{72,-70}})));
-  Modelica_Fluid.Junctions.MultiPort multiPort(
+  Modelica_Fluid.Fittings.MultiPort multiPort(
                                        nPorts_b=2, redeclare package Medium = 
         Medium)                             annotation (Placement(
         transformation(extent={{-36,-10},{-28,10}},rotation=0)));

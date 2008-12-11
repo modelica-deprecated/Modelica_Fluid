@@ -1,9 +1,9 @@
-within Modelica_Fluid.Test.TestComponents.Junctions;
+within Modelica_Fluid.Test.TestComponents.Fittings;
 model TestMultiPort
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
 
-  Modelica_Fluid.Junctions.MultiPort multiPort(
+  Modelica_Fluid.Fittings.MultiPort multiPort(
                                        nPorts_b=2, redeclare package Medium = 
         Modelica.Media.Air.MoistAir)        annotation (Placement(
         transformation(extent={{-28,-30},{-20,-10}},
@@ -43,13 +43,13 @@ model TestMultiPort
     offset=7e5) annotation (Placement(transformation(extent={{-10,-10},{10,10}},
           rotation=270,
         origin={-80,10})));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe1(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe1(
     length=1,
     diameter=0.1,
     redeclare package Medium = Modelica.Media.Air.MoistAir) 
                                        annotation (Placement(transformation(
           extent={{40,-30},{60,-10}}, rotation=0)));
-  Modelica_Fluid.PressureLosses.WallFrictionAndGravity pipe2(
+  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe2(
     length=1,
     diameter=0.1,
     redeclare package Medium = Modelica.Media.Air.MoistAir) 

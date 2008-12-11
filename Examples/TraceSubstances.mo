@@ -29,7 +29,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       nPorts=2,
       X_start={0.015,0.085}) 
                 annotation (Placement(transformation(extent={{-20,0},{0,20}})));
-    PressureLosses.WallFrictionAndGravity pipeFriction(
+    Modelica_Fluid.Fittings.WallFrictionAndGravity pipeFriction(
       redeclare package Medium = Medium,
       length=1,
       show_Re=true,
@@ -104,7 +104,7 @@ concentration of the fresh air.
       redeclare package Medium = Medium,
       initType=Modelica_Fluid.Types.Init.InitialValues,
       nPorts=3) annotation (Placement(transformation(extent={{-20,-22},{0,-2}})));
-    PressureLosses.WallFrictionAndGravity pipeFriction(
+    Modelica_Fluid.Fittings.WallFrictionAndGravity pipeFriction(
       redeclare package Medium = Medium,
       length=1,
       show_Re=true,

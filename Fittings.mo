@@ -1,11 +1,504 @@
 within Modelica_Fluid;
-package PressureLosses
-  "Models and functions providing pressure loss correlations "
+package Fittings "Adapt connections of fluid models"
      extends Modelica_Fluid.Icons.VariantLibrary;
+
+  model TJunctionIdeal
+    "Splitting/joining component with static balances for an infinitesimal control volume"
+    extends BaseClasses.PartialTJunction;
+
+  equation
+    connect(port_1, port_2) annotation (Line(
+        points={{-100,0},{100,0}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(port_1, port_3) annotation (Line(
+        points={{-100,0},{0,0},{0,100}},
+        color={0,127,255},
+        smooth=Smooth.None));
+
+    annotation(Documentation(info="<html>
+  This model is the simplest implementation for a splitting/joining component for
+  three flows. Its use is not required. It just formulates the balance
+  equations in the same way that the connect symmantics would formulate them anyways.
+  The main advantage of using this component is, that the user does not get
+  confused when looking at the specific enthalpy at each port which might be confusing
+  when not using a splitting/joining component. The reason for the confusion is that one exmanins the mixing
+  enthalpy of the infinitesimal control volume introduced with the connect statement when
+  looking at the specific enthalpy in the connector which
+  might not be equal to the specific enthalpy at the port in the \"real world\".</html>"),
+      Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics));
+  end TJunctionIdeal;
+
+  annotation (Documentation(info="<html>
+ 
+</html>"));
+  model TJunctionVolume
+    "Splitting/joining component with static balances for a dynamic control volume"
+    extends BaseClasses.PartialTJunction;
+    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume(
+                                                    Qs_flow = 0);
+
+    parameter SI.Volume V "Mixing volume inside junction";
+
+  equation
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+    assert(cardinality(port_1) <= 1,"
+port_1 of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+    assert(cardinality(port_2) <= 1,"
+port_2 of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+    assert(cardinality(port_3) <= 1,"
+port_3 of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+
+    // Boundary conditions
+    port_1.h_outflow = medium.h;
+    port_2.h_outflow = medium.h;
+    port_3.h_outflow = medium.h;
+
+    port_1.Xi_outflow = medium.Xi;
+    port_2.Xi_outflow = medium.Xi;
+    port_3.Xi_outflow = medium.Xi;
+
+    port_1.C_outflow = C;
+    port_2.C_outflow = C;
+    port_3.C_outflow = C;
+
+    // Mass balances
+    fluidVolume = V;
+    ms_flow = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
+    msXi_flow = port_1.m_flow*actualStream(port_1.Xi_outflow)
+                + port_2.m_flow*actualStream(port_2.Xi_outflow)
+                + port_3.m_flow*actualStream(port_3.Xi_outflow)
+      "Component mass balances";
+
+    msC_flow  = port_1.m_flow*actualStream(port_1.C_outflow)
+              + port_2.m_flow*actualStream(port_2.C_outflow)
+              + port_3.m_flow*actualStream(port_3.C_outflow)
+      "Trace substance mass balances";
+
+    // Momentum balance (suitable for compressible media)
+    port_1.p = medium.p;
+    port_2.p = medium.p;
+    port_3.p = medium.p;
+
+    // Energy balance
+    Hs_flow = port_1.m_flow*actualStream(port_1.h_outflow)
+              + port_2.m_flow*actualStream(port_2.h_outflow)
+              + port_3.m_flow*actualStream(port_3.h_outflow);
+    Ws_flow = 0;
+
+    annotation (Documentation(info="<html>
+  This model introduces a mixing volume into a junction. 
+  This might be useful to examine the non-ideal mixing taking place in a real junction.</html>"),
+  Icon(coordinateSystem(
+          preserveAspectRatio=true,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={Ellipse(
+            extent={{-9,10},{11,-10}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid)}),
+      Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics));
+  end TJunctionVolume;
+
+  model MultiPort
+    "Multiply a port; useful if multiple connections shall be made to a port exposing a state"
+
+    function positiveMax
+      input Real x;
+      output Real y;
+    algorithm
+      y :=max(x, 1e-10);
+    end positiveMax;
+
+    import Modelica.Constants;
+
+    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(choicesAllMatching);
+
+    // Ports
+    parameter Integer nPorts_b=1
+      "Number of outlet ports (mass is distributed evenly between the outlet ports";
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(
+      redeclare package Medium=Medium) 
+      annotation (Placement(transformation(extent={{-50,-10},{-30,10}},
+            rotation=0)));
+    Modelica_Fluid.Interfaces.FluidPorts_b[nPorts_b] ports_b(
+      redeclare each package Medium=Medium) 
+      annotation (Placement(transformation(extent={{30,40},{50,-40}},
+                                  rotation=0)));
+
+    Medium.MassFraction[nPorts_b,Medium.nXi] ports_b_Xi_inStream
+      "inStream mass fractions at ports_b";
+    Medium.ExtraProperty[nPorts_b,Medium.nC] ports_b_C_inStream
+      "inStream extra properties at ports_b";
+
+    annotation (Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-40,
+              -100},{40,100}}), graphics={
+          Line(
+            points={{-40,0},{40,0}},
+            color={0,128,255},
+            thickness=1),
+          Line(
+            points={{-40,0},{40,26}},
+            color={0,128,255},
+            thickness=1),
+          Line(
+            points={{-40,0},{40,-26}},
+            color={0,128,255},
+            thickness=1),
+          Text(
+            extent={{-150,100},{150,60}},
+            lineColor={0,0,255},
+            textString="%name")}),
+                            Documentation(info="<html>
+<p>
+This model is useful if multiple connections shall be made to a port of a volume model exposing a state,
+like a pipe with ModelStructure av_vb. 
+The mixing is shifted into the volume connected to port_a and the result is propageted back to each ports_b.
+</p>
+<p>
+If multiple connections were directly made to the volume,
+then ideal mixing would take place in the connection set, outside the volume. This is normally not intended.
+</p>
+</html>"),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-40,-100},{
+              40,100}}),
+              graphics));
+
+  equation
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+    for i in 1:nPorts_b loop
+      assert(cardinality(ports_b[i]) <= 1,"
+each ports_b[i] of boundary shall at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections, which is usually not the intention
+of the modeller. Increase nPorts_b to add an additional port.
+");
+    end for;
+
+    // mass and momentum balance
+    0 = port_a.m_flow + sum(ports_b.m_flow);
+    ports_b.p = fill(port_a.p, nPorts_b);
+
+    // expose stream values from port_a to ports_b
+    ports_b.h_outflow = fill(inStream(port_a.h_outflow), nPorts_b);
+    ports_b.Xi_outflow = fill(inStream(port_a.Xi_outflow), nPorts_b);
+    ports_b.C_outflow = fill(inStream(port_a.C_outflow), nPorts_b);
+
+    // mixing at port_a
+    port_a.h_outflow = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].h_outflow) for j in 1:nPorts_b})
+                         / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
+    for j in 1:nPorts_b loop
+       ports_b_Xi_inStream[j,:] = inStream(ports_b[j].Xi_outflow);
+       ports_b_C_inStream[j,:] = inStream(ports_b[j].C_outflow);
+    end for;
+    for i in 1:Medium.nXi loop
+      port_a.Xi_outflow[i] = (positiveMax(ports_b.m_flow)*ports_b_Xi_inStream[:,i])
+                           / sum(positiveMax(ports_b.m_flow));
+    end for;
+    for i in 1:Medium.nC loop
+      port_a.C_outflow[i] = (positiveMax(ports_b.m_flow)*ports_b_C_inStream[:,i])
+                           / sum(positiveMax(ports_b.m_flow));
+    end for;
+  end MultiPort;
+
+model SimpleGenericOrifice
+    "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
+      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+
+  parameter Real zeta "Loss factor for flow of port_a -> port_b";
+  parameter SI.Diameter diameter
+      "Diameter at which zeta is defined (either port_a or port_b)";
+  parameter Boolean from_dp = true
+      "= true, use m_flow = f(dp) else dp = f(m_flow)" 
+    annotation (Evaluate=true, Dialog(tab="Advanced"));
+  annotation (
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Text(
+            extent={{-150,60},{150,100}},
+            lineColor={0,0,255},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString="%name"),
+          Line(
+            points={{-60,-50},{-60,50},{60,-50},{60,50}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(points={{-60,0},{-100,0}}, color={0,127,255}),
+          Line(points={{60,0},{100,0}}, color={0,127,255}),
+          Text(
+            extent={{-168,-96},{180,-138}},
+            lineColor={0,0,0},
+            textString="zeta=%zeta")}),
+    Documentation(info="<html>
+<p>
+This pressure drop component defines a
+simple, generic orifice, where the loss factor &zeta; is provided
+for one flow direction (e.g., from loss table of a book):
+</p>
+ 
+<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
+      = 8*&zeta;/(&pi;^2*D^4*&rho;) * m_flow*|m_flow|
+</pre>
+ 
+<p>
+where
+</p>
+<ul>
+<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
+<li> D is the diameter of the orifice at the position where
+     &zeta; is defined (either at port_a or port_b). If the orifice has not a 
+     circular cross section, D = 4*A/P, where A is the cross section
+     area and P is the wetted perimeter.</li>
+<li> &zeta; is the loss factor with respect to D 
+     that depends on the geometry of
+     the orifice. In the turbulent flow regime, it is assumed that
+     &zeta; is constant.<br>
+     For small mass flow rates, the flow is laminar and is approximated 
+     by a polynomial that has a finite derivative for m_flow=0.</li>
+<li> v is the mean velocity.</li>
+<li> &rho; is the upstream density.</li>
+</ul>
+ 
+<p>
+Since the pressure loss factor zeta is provided only for a mass flow
+from port_a to port_b, the pressure loss is not correct when the
+flow is reversing. If reversing flow only occurs in a short time interval,
+this is most likely uncritical. If significant reversing flow
+can appear, this component should not be used.
+</p>
+</html>"));
+equation
+  if from_dp then
+      m_flow = BaseClasses.SimpleGenericOrifice.massFlowRate_dp(
+        dp,
+        port_a_d_inflow,
+        port_b_d_inflow,
+        diameter,
+        zeta);
+  else
+      dp = BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(
+        m_flow,
+        port_a_d_inflow,
+        port_b_d_inflow,
+        diameter,
+        zeta);
+  end if;
+end SimpleGenericOrifice;
+
+model SharpEdgedOrifice
+    "Pressure drop due to sharp edged orifice (for both flow directions)"
+    import NonSI = Modelica.SIunits.Conversions.NonSIunits;
+  extends BaseClasses.QuadraticTurbulent.BaseModel(final data=
+          BaseClasses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(
+          diameter,
+          leastDiameter,
+          length,
+          alpha));
+  parameter SI.Length length "Length of orifice";
+  parameter SI.Diameter diameter
+      "Inner diameter of pipe (= same at port_a and port_b)";
+  parameter SI.Diameter leastDiameter "Smallest diameter of orifice";
+  parameter NonSI.Angle_deg alpha "Angle of orifice";
+  annotation (defaultComponentName="orifice",
+    Documentation(info="<html>
+</html>"),
+    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}},
+          grid={1,1}), graphics={
+          Text(
+            extent={{-150,90},{150,130}},
+            lineColor={0,0,255},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString="%name"),
+          Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={192,192,192}),
+          Rectangle(
+            extent={{-100,50},{100,-50}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Polygon(
+            points={{-25,50},{-25,7},{35,45},{35,50},{-25,50}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={255,255,255}),
+          Polygon(
+            points={{-24.5,-5},{-24.5,-50},{35.5,-50},{35.5,-45},{-24.5,-5}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward)}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}},
+          grid={1,1}), graphics={
+          Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{-30,60},{-30,12},{30,50},{30,60},{-30,60}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward),
+          Polygon(
+            points={{-30,-10},{-30,-60},{30,-60},{30,-50},{-30,-10}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward),
+          Line(
+            points={{-82,-60},{-82,60}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-78,16},{-44,-8}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString="diameter"),
+          Line(
+            points={{-30,-10},{-30,12}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-24,14},{8,-10}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString="leastDiameter"),
+          Text(
+            extent={{-20,84},{18,70}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString="length"),
+          Line(
+            points={{30,68},{-30,68}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Line(
+            points={{16,40},{32,18},{36,-2},{34,-20},{20,-42}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{38,8},{92,-6}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Backward,
+            textString="alpha")}));
+
+end SharpEdgedOrifice;
+
+model SuddenExpansion
+    "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"
+  extends BaseClasses.QuadraticTurbulent.BaseModel(final data=
+          BaseClasses.QuadraticTurbulent.LossFactorData.suddenExpansion(
+          diameter_a, diameter_b));
+  parameter SI.Diameter diameter_a "Inner diameter of pipe at port_a";
+  parameter SI.Diameter diameter_b "Inner diameter of pipe at port_b";
+
+  annotation (
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}},
+          grid={1,1}), graphics={
+          Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,-100},
+                {100,100},{0,100},{0,40}}, color={0,0,0}),
+          Rectangle(
+            extent={{-100,40},{0,-40}},
+            lineColor={255,255,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{0,100},{100,-100}},
+            lineColor={255,255,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,-100},
+                {100,100},{0,100},{0,40}}, color={0,0,0}),
+          Line(
+            points={{-60,-40},{-60,40}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{-50,16},{-26,-10}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString="diameter_a"),
+          Line(
+            points={{34,-100},{34,100}},
+            color={0,0,255},
+            arrow={Arrow.Filled,Arrow.Filled}),
+          Text(
+            extent={{54,16},{78,-10}},
+            lineColor={0,0,255},
+            fillColor={0,0,255},
+            fillPattern=FillPattern.Solid,
+            textString="diameter_b")}),
+    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}},
+          grid={1,1}), graphics={
+          Text(
+            extent={{-150,90},{150,130}},
+            lineColor={0,0,255},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString="%name"),
+          Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={192,192,192}),
+          Rectangle(
+            extent={{-100,20},{0,-20}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Rectangle(
+            extent={{0,50},{100,-50}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255})}),
+      Documentation(info="<html>
+ 
+</html>"));
+end SuddenExpansion;
 
   model StaticHead
     "Models the static head between two ports at different heights"
-    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
+    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
     outer Modelica_Fluid.System system "System properties";
 
     parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
@@ -85,95 +578,14 @@ This model describes the static head due to the relative height between the two 
 </html>"));
   end StaticHead;
 
-model SimpleGenericOrifice
-    "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
-      extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
-
-  parameter Real zeta "Loss factor for flow of port_a -> port_b";
-  parameter SI.Diameter diameter
-      "Diameter at which zeta is defined (either port_a or port_b)";
-  parameter Boolean from_dp = true
-      "= true, use m_flow = f(dp) else dp = f(m_flow)" 
-    annotation (Evaluate=true, Dialog(tab="Advanced"));
-  annotation (
-    Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics),
-    Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Text(
-            extent={{-150,60},{150,100}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name"),
-          Line(
-            points={{-60,-50},{-60,50},{60,-50},{60,50}},
-            color={0,0,0},
-            thickness=0.5),
-          Line(points={{-60,0},{-100,0}}, color={0,127,255}),
-          Line(points={{60,0},{100,0}}, color={0,127,255}),
-          Text(
-            extent={{-168,-96},{180,-138}},
-            lineColor={0,0,0},
-            textString="zeta=%zeta")}),
-    Documentation(info="<html>
-<p>
-This pressure drop component defines a
-simple, generic orifice, where the loss factor &zeta; is provided
-for one flow direction (e.g., from loss table of a book):
-</p>
- 
-<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
-      = 8*&zeta;/(&pi;^2*D^4*&rho;) * m_flow*|m_flow|
-</pre>
- 
-<p>
-where
-</p>
-<ul>
-<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
-<li> D is the diameter of the orifice at the position where
-     &zeta; is defined (either at port_a or port_b). If the orifice has not a 
-     circular cross section, D = 4*A/P, where A is the cross section
-     area and P is the wetted perimeter.</li>
-<li> &zeta; is the loss factor with respect to D 
-     that depends on the geometry of
-     the orifice. In the turbulent flow regime, it is assumed that
-     &zeta; is constant.<br>
-     For small mass flow rates, the flow is laminar and is approximated 
-     by a polynomial that has a finite derivative for m_flow=0.</li>
-<li> v is the mean velocity.</li>
-<li> &rho; is the upstream density.</li>
-</ul>
- 
-<p>
-Since the pressure loss factor zeta is provided only for a mass flow
-from port_a to port_b, the pressure loss is not correct when the
-flow is reversing. If reversing flow only occurs in a short time interval,
-this is most likely uncritical. If significant reversing flow
-can appear, this component should not be used.
-</p>
-</html>"));
-equation
-  if from_dp then
-     m_flow = PressureLosses.BaseClasses.SimpleGenericOrifice.massFlowRate_dp(dp, port_a_d_inflow, port_b_d_inflow, diameter, zeta);
-  else
-     dp = PressureLosses.BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(m_flow, port_a_d_inflow, port_b_d_inflow, diameter, zeta);
-  end if;
-end SimpleGenericOrifice;
-
   model WallFrictionAndGravity
     "Pressure drop in pipe due to wall friction and gravity (for both flow directions)"
-    extends Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
+    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
 
     replaceable package WallFriction = 
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.QuadraticTurbulent
+      Modelica_Fluid.Fittings.BaseClasses.WallFriction.QuadraticTurbulent 
       constrainedby
-      Modelica_Fluid.PressureLosses.BaseClasses.WallFriction.PartialWallFriction
+      Modelica_Fluid.Fittings.BaseClasses.WallFriction.PartialWallFriction
       "Characteristic of wall friction"  annotation(choicesAllMatching=true);
 
     parameter SI.Length length "Length of pipe";
@@ -330,183 +742,6 @@ simulation and/or might give a more robust simulation.
             textString="length")}));
   end WallFrictionAndGravity;
 
-model SuddenExpansion
-    "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"
-  extends PressureLosses.BaseClasses.QuadraticTurbulent.BaseModel(
-     final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.suddenExpansion(diameter_a, diameter_b));
-  parameter SI.Diameter diameter_a "Inner diameter of pipe at port_a";
-  parameter SI.Diameter diameter_b "Inner diameter of pipe at port_b";
-
-  annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}},
-          grid={1,1}), graphics={
-          Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,-100},
-                {100,100},{0,100},{0,40}}, color={0,0,0}),
-          Rectangle(
-            extent={{-100,40},{0,-40}},
-            lineColor={255,255,255},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{0,100},{100,-100}},
-            lineColor={255,255,255},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,-100},
-                {100,100},{0,100},{0,40}}, color={0,0,0}),
-          Line(
-            points={{-60,-40},{-60,40}},
-            color={0,0,255},
-            arrow={Arrow.Filled,Arrow.Filled}),
-          Text(
-            extent={{-50,16},{-26,-10}},
-            lineColor={0,0,255},
-            fillColor={0,0,255},
-            fillPattern=FillPattern.Solid,
-            textString="diameter_a"),
-          Line(
-            points={{34,-100},{34,100}},
-            color={0,0,255},
-            arrow={Arrow.Filled,Arrow.Filled}),
-          Text(
-            extent={{54,16},{78,-10}},
-            lineColor={0,0,255},
-            fillColor={0,0,255},
-            fillPattern=FillPattern.Solid,
-            textString="diameter_b")}),
-    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}},
-          grid={1,1}), graphics={
-          Text(
-            extent={{-150,90},{150,130}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name"),
-          Rectangle(
-            extent={{-100,60},{100,-60}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-100,20},{0,-20}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255}),
-          Rectangle(
-            extent={{0,50},{100,-50}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255})}),
-      Documentation(info="<html>
- 
-</html>"));
-end SuddenExpansion;
-
-model SharpEdgedOrifice
-    "Pressure drop due to sharp edged orifice (for both flow directions)"
-    import NonSI = Modelica.SIunits.Conversions.NonSIunits;
-  extends PressureLosses.BaseClasses.QuadraticTurbulent.BaseModel(
-     final data = PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice(diameter, leastDiameter, length, alpha));
-  parameter SI.Length length "Length of orifice";
-  parameter SI.Diameter diameter
-      "Inner diameter of pipe (= same at port_a and port_b)";
-  parameter SI.Diameter leastDiameter "Smallest diameter of orifice";
-  parameter NonSI.Angle_deg alpha "Angle of orifice";
-  annotation (defaultComponentName="orifice",
-    Documentation(info="<html>
-</html>"),
-    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}},
-          grid={1,1}), graphics={
-          Text(
-            extent={{-150,90},{150,130}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name"),
-          Rectangle(
-            extent={{-100,60},{100,-60}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-100,50},{100,-50}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255}),
-          Polygon(
-            points={{-25,50},{-25,7},{35,45},{35,50},{-25,50}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={255,255,255}),
-          Polygon(
-            points={{-24.5,-5},{-24.5,-50},{35.5,-50},{35.5,-45},{-24.5,-5}},
-            lineColor={0,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Backward)}),
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}},
-          grid={1,1}), graphics={
-          Rectangle(
-            extent={{-100,60},{100,-60}},
-            lineColor={0,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Polygon(
-            points={{-30,60},{-30,12},{30,50},{30,60},{-30,60}},
-            lineColor={0,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Backward),
-          Polygon(
-            points={{-30,-10},{-30,-60},{30,-60},{30,-50},{-30,-10}},
-            lineColor={0,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Backward),
-          Line(
-            points={{-82,-60},{-82,60}},
-            color={0,0,255},
-            arrow={Arrow.Filled,Arrow.Filled}),
-          Text(
-            extent={{-78,16},{-44,-8}},
-            lineColor={0,0,255},
-            fillColor={0,0,255},
-            fillPattern=FillPattern.Solid,
-            textString="diameter"),
-          Line(
-            points={{-30,-10},{-30,12}},
-            color={0,0,255},
-            arrow={Arrow.Filled,Arrow.Filled}),
-          Text(
-            extent={{-24,14},{8,-10}},
-            lineColor={0,0,255},
-            fillColor={0,0,255},
-            fillPattern=FillPattern.Solid,
-            textString="leastDiameter"),
-          Text(
-            extent={{-20,84},{18,70}},
-            lineColor={0,0,255},
-            fillColor={0,0,255},
-            fillPattern=FillPattern.Solid,
-            textString="length"),
-          Line(
-            points={{30,68},{-30,68}},
-            color={0,0,255},
-            arrow={Arrow.Filled,Arrow.Filled}),
-          Line(
-            points={{16,40},{32,18},{36,-2},{34,-20},{20,-42}},
-            color={0,0,255},
-            arrow={Arrow.Filled,Arrow.Filled}),
-          Text(
-            extent={{38,8},{92,-6}},
-            lineColor={0,0,255},
-            fillColor={0,0,255},
-            fillPattern=FillPattern.Backward,
-            textString="alpha")}));
-
-end SharpEdgedOrifice;
-
   annotation (Documentation(info="<html>
 <p>
 This sublibrary contains models and functions providing pressure 
@@ -555,6 +790,80 @@ polynomials. The monotonicity is guaranteed using results from:
 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
+
+    partial model PartialTJunction
+      "Base class for a splitting/joining component with three ports"
+      import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types.PortFlowDirection;
+
+      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
+        "Medium in the component" 
+        annotation (choicesAllMatching=true);
+
+      Modelica_Fluid.Interfaces.FluidPort_a port_1(redeclare package Medium = 
+            Medium, m_flow(min=if (portFlowDirection_1 == PortFlowDirection.Entering) then 
+                    0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_1
+               == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+              rotation=0)));
+      Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
+            Medium, m_flow(min=if (portFlowDirection_2 == PortFlowDirection.Entering) then 
+                    0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_2
+               == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+        annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation=
+               0)));
+      Modelica_Fluid.Interfaces.FluidPort_a port_3(
+        redeclare package Medium=Medium,
+        m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
+        max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+        annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
+               0)));
+
+      annotation(Icon(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics={
+            Rectangle(
+              extent={{-100,41},{100,-47}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.HorizontalCylinder,
+              fillColor={192,192,192}),
+            Rectangle(
+              extent={{-100,37},{100,-43}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.HorizontalCylinder,
+              fillColor={0,127,255}),
+            Rectangle(
+              extent={{-34,100},{34,37}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.VerticalCylinder,
+              fillColor={192,192,192}),
+            Rectangle(
+              extent={{-30,100},{30,35}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.VerticalCylinder,
+              fillColor={0,127,255}),
+            Text(
+              extent={{-150,-60},{150,-100}},
+              lineColor={0,0,255},
+              textString="%name")}),
+        Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics));
+
+    protected
+      parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
+        "Flow direction for port_1" 
+       annotation(Dialog(tab="Advanced"));
+      parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
+        "Flow direction for port_2" 
+       annotation(Dialog(tab="Advanced"));
+      parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
+        "Flow direction for port_3" 
+       annotation(Dialog(tab="Advanced"));
+
+    end PartialTJunction;
 
     package SimpleGenericOrifice
       "Simple pressure loss component defined by two constants (diameter, zeta) for the quadratic turbulent regime"
@@ -808,7 +1117,7 @@ The used sufficient criteria for monotonicity follows from:
        encapsulated function wallFriction
           "Return pressure loss data due to friction in a straight pipe with walls of nonuniform roughness (not useful for smooth pipes, since zeta is no function of Re)"
           import
-            Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
+            Modelica_Fluid.Fittings.BaseClasses.QuadraticTurbulent.LossFactorData;
           import lg = Modelica.Math.log10;
           import SI = Modelica.SIunits;
 
@@ -953,7 +1262,7 @@ As a short summary:
        encapsulated function suddenExpansion
           "Return pressure loss data for sudden expansion or contraction in a pipe (for both flow directions)"
           import
-            Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
+            Modelica_Fluid.Fittings.BaseClasses.QuadraticTurbulent.LossFactorData;
           import SI = Modelica.SIunits;
          input SI.Diameter diameter_a "Inner diameter of pipe at port_a" annotation(Dialog);
          input SI.Diameter diameter_b "Inner diameter of pipe at port_b" annotation(Dialog);
@@ -1057,7 +1366,7 @@ port_a to port_b as:
           "Return pressure loss data for sharp edged orifice (for both flow directions)"
           import NonSI = Modelica.SIunits.Conversions.NonSIunits;
           import
-            Modelica_Fluid.PressureLosses.BaseClasses.QuadraticTurbulent.LossFactorData;
+            Modelica_Fluid.Fittings.BaseClasses.QuadraticTurbulent.LossFactorData;
           import SI = Modelica.SIunits;
           input SI.Diameter diameter
             "Inner diameter of pipe (= same at port_a and port_b)" 
@@ -1200,9 +1509,9 @@ Loss factor for mass flow rate from port_b to port_a
         input LossFactorData data
           "Constant loss factors for both flow directions" annotation (
             choices(
-            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.wallFriction(),
-            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.suddenExpansion(),
-            choice=Modelica_Fluid.PressureLosses.Utilities.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
+            choice=Modelica_Fluid.Fittings.Utilities.QuadraticTurbulent.LossFactorData.wallFriction(),
+            choice=Modelica_Fluid.Fittings.Utilities.QuadraticTurbulent.LossFactorData.suddenExpansion(),
+            choice=Modelica_Fluid.Fittings.Utilities.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
         input SI.AbsolutePressure dp_small = 1
           "Turbulent flow if |dp| >= dp_small";
         output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
@@ -1506,8 +1815,7 @@ Laminar region:
       partial model BaseModel
         "Generic pressure drop component with constant turbulent loss factor data and without an icon"
 
-        extends
-          Modelica_Fluid.PressureLosses.BaseClasses.PartialTwoPortTransport;
+        extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
 
         SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(
               m_flow, (Medium.dynamicViscosity(port_a_state_inflow) + Medium.dynamicViscosity(port_b_state_inflow))/2,
@@ -3484,4 +3792,4 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     end if;
   end PartialTwoPortTransport;
   end BaseClasses;
-end PressureLosses;
+end Fittings;
