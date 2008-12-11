@@ -122,7 +122,7 @@ model IncompressibleFluidNetwork
   Modelica.Blocks.Sources.Step valveOpening3(
     height=-0.2,
     offset=1,
-    startTime=2) annotation (Placement(transformation(extent={{40,70},{60,90}},
+    startTime=3) annotation (Placement(transformation(extent={{40,70},{60,90}},
           rotation=0)));
   Pipe pipe8(
     p_a_start=5.0e5,
@@ -248,5 +248,8 @@ Pressure dynamics becomes present with a compressible medium model (e.g. Standar
 </p>
 </html>"),
     experiment(StopTime=5),
-    experimentSetupOutput(equdistant=false));
+    experimentSetupOutput(equdistant=false),
+    Commands(file=
+          "../Scripts/Examples/IncompressibleFluidNetwork/plotJunctionPressuresAndValves.mos"
+        "Plot junction pressures and valves"));
 end IncompressibleFluidNetwork;
