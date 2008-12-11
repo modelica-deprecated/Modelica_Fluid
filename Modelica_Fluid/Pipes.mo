@@ -5,8 +5,20 @@ package Pipes "Lumped, distributed and thermal pipe components"
   model StaticPipe
     "Basic pipe flow model without storage of momentum, mass or energy"
 
+    // extending PartialPipe
     extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
           redeclare model HeatTransfer=BaseClasses.HeatTransfer.PipeHT_none(nPipes=nPipes));
+
+    // Initialization
+    parameter Medium.AbsolutePressure p_a_start=system.p_start
+      "Start value of pressure at port a" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_b_start=p_a_start
+      "Start value of pressure at port b" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
+      "Start value for mass flow rate" 
+       annotation(Evaluate=true, Dialog(tab = "Initialization"));
 
     PressureDrop pressureDrop(
             redeclare final package Medium = Medium,
@@ -41,6 +53,9 @@ package Pipes "Lumped, distributed and thermal pipe components"
 
   model LumpedPipe "Example for a composite pipe model"
 
+    // extending PartialPipe
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe;
+
     // Assumptions
     parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
       "Dynamics option" 
@@ -49,11 +64,13 @@ package Pipes "Lumped, distributed and thermal pipe components"
     // Initialization
     parameter Types.Init initType=system.initType "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_a_start=system.p_start
+      "Start value of pressure at port a" 
+      annotation(Dialog(tab = "Initialization"));
+    parameter Medium.AbsolutePressure p_b_start=p_a_start
+      "Start value of pressure at port b" 
+      annotation(Dialog(tab = "Initialization"));
 
-    // Extend here to get right ordering in parameter box
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe;
-
-     //Initialization
     parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
        annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
@@ -71,6 +88,14 @@ package Pipes "Lumped, distributed and thermal pipe components"
     parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
       "Start value of mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    parameter Medium.ExtraProperty C_start[Medium.nC](
+         quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
+      "Start value of trace substances" 
+      annotation (Dialog(tab="Initialization", enable=Medium.nC > 0));
+
+    parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
+      "Start value for mass flow rate" 
+       annotation(Evaluate=true, Dialog(tab = "Initialization"));
 
     HeatTransfer heatTransfer(
       redeclare final package Medium = Medium,
@@ -107,6 +132,7 @@ package Pipes "Lumped, distributed and thermal pipe components"
       T_start=T_start,
       h_start=h_start,
       X_start=X_start,
+      C_start=C_start,
       dynamicsType=dynamicsType,
       V=V,
       nPorts=2,
@@ -182,15 +208,20 @@ pipe wall/environment).
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.ModelStructure;
 
+    // extending PartialPipe
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
+      final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
+      final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
+
     // distributed volume model
     extends Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume(
       final n = nNodes,
       Qs_flow = heatTransfer.Q_flow);
 
-    // extending PartialPipe
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
-      final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.avb),
-      final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.avb));
+    // Initialization
+    parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
+      "Start value for mass flow rate" 
+       annotation(Evaluate=true, Dialog(tab = "Initialization"));
 
     // Discretization
     parameter Integer nNodes(min=1)=2 "Number of discrete flow volumes" 
@@ -206,7 +237,7 @@ pipe wall/environment).
     final parameter Integer nFlows=if lumpedPressure then nFlowsLumped else nFlowsDistributed
       "number of flow models in pressureDrop";
     final parameter Integer nFlowsDistributed=if modelStructure==Types.ModelStructure.a_v_b then n+1 else if (modelStructure==Types.ModelStructure.a_vb or modelStructure==Types.ModelStructure.av_b) then n else n-1;
-    final parameter Integer nFlowsLumped=if modelStructure==Types.ModelStructure.a_v_b then 2 else if (modelStructure==Types.ModelStructure.a_vb or modelStructure==Types.ModelStructure.av_b) then 1 else 0;
+    final parameter Integer nFlowsLumped=if modelStructure==Types.ModelStructure.a_v_b then 2 else 1;
     final parameter Integer iLumped=integer(n/2)+1
       "Index of control volume with representative state if lumpedPressure" 
       annotation(Evaluate=true);
@@ -268,21 +299,9 @@ pipe wall/environment).
         annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
 
   equation
-  /*
-  // Only one connection allowed to a port to avoid unwanted ideal mixing
-  assert(cardinality(port_a) <= 1 or (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.a_v_b),"
-port_a exposing volume with selected modelStructure shall at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller. Use a Junctions.MultiPort.
-");
-  assert(cardinality(port_b) <= 1 or (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.a_v_b),"
-port_b exposing volume with selected modelStructure shall at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller. Use a Junctions.MultiPort.
-");
-*/
+    assert(nNodes > 1 or modelStructure <> ModelStructure.avb,
+       "nNodes needs to be at least 2 for modelStructure avb, as flow model disappears otherwise!");
+
     // Source/sink terms for mass and energy balances
     fluidVolume=fill(V/n, n);
     Ws_flow=zeros(n);
@@ -329,7 +348,14 @@ of the modeller. Use a Junctions.MultiPort.
     end if;
 
     if lumpedPressure then
-      fill(medium[1].p, n-1) = medium[2:n].p;
+      if modelStructure <> ModelStructure.avb then
+        // all pressures are equal
+        fill(medium[1].p, n-1) = medium[2:n].p;
+      elseif n > 2 then
+        // need two pressures
+        fill(medium[1].p, iLumped-2) = medium[2:iLumped-1].p;
+        fill(medium[n].p, n-iLumped) = medium[iLumped:n-1].p;
+      end if;
       if modelStructure == ModelStructure.a_v_b then
         m_flow[1] = pressureDrop.m_flow[1];
         flowState[1] = state_a;
@@ -347,9 +373,10 @@ of the modeller. Use a Junctions.MultiPort.
         flowState[2] = medium[iLumped].state;
         port_b.p = medium[n].p;
       else // avb
-        assert(true, "Can't use lumpedPressure with modelStructure avb, as flow model disappears!");
         port_a.p = medium[1].p;
-        flowState[1] = medium[iLumped].state;
+        flowState[1] = medium[1].state;
+        m_flow[iLumped] = pressureDrop.m_flow[1];
+        flowState[2] = medium[n].state;
         port_b.p = medium[n].p;
       end if;
     else
@@ -378,7 +405,6 @@ of the modeller. Use a Junctions.MultiPort.
         end for;
         port_b.p = medium[n].p;
       else // avb
-        assert(nNodes > 1, "nNodes needs to be at least 2 for modelStructure avb, as flow model disappears otherwise!");
         flowState[1:n] = medium[1:n].state;
         //m_flow[2:n] = pressureDrop.m_flow[1:n-1];
         for i in 2:n loop
@@ -402,27 +428,40 @@ of the modeller. Use a Junctions.MultiPort.
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid)}),
-  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}},
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}},
           grid={1,1}),
           graphics),
   Documentation(info="<html>
-<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialPipe\">PartialPipe</a>. The total volume is a parameter. Mass and Energy balance are inherited from <a href=\"Modelica:Modelica_Fluid.Volumes.BaseClasses.PartialDistributedVolume\">PartialDistributedVolume</a>. 
-The additional component <b><tt>HeatTransfer</tt></b> specifies the source term <tt>Qs_flow</tt> in the energy balance. The default component uses a constant coefficient of heat transfer to model convective heat transfer between segment boundary (<tt>heatPorts</tt>) and the bulk flow. 
-The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">PartialPipeHeatTransfer</a>.</p>
-<p>Pressure drop correlations (algebraic and possibly non-linear flow model) correlate the pressure in the first control volume with the pressure in port_a and the pressures of port_b and the nth control volume, respectively.</p>
+<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialPipe\">PartialPipe</a>. 
+The total volume is determined by geometry parameters. It is split into nNodes pipe segments of equal size along the flow path. 
+The default value is nNodes=2.
+<p><b>Mass and Energy balance</b></p>
+One mass and one energy balance if formulated for each pipe segment. 
+The mass and energy balances are inherited from <a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume\">PartialDistributedVolume</a>. 
+The additional component <b><tt>HeatTransfer</tt></b> specifies the source term <tt>Qs_flow</tt> in the energy balance. 
+The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
+The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">BaseClasses.PartialPipeHeatTransfer</a>.</p>
 <p><b>Momentum balance</b></p>
-<p>The momentum balance is determined by the replaceable <b><tt>PressureDrop</tt></b> component. 
-The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureDrop.QuadraticTurbulentFlow\">QuadraticTurbulentFlow</a>.
-The momentum balances are formed across the segment boundaries (staggered grid). The default symmetric model is characterized by half a momentum balance on each end of the flow model resulting in a total of n-1 full and 2 half momentum balances. Connecting two pipes therefore results in an algebraic pressure at the ports. Specifying a good start value for the port pressure is essential in order to solve large systems. Non-symmetric variations are obtained by chosing a different value for the parameter <tt><b>modelStructure</b></tt>. Options include:
+The momentum balance is determined by the <b><tt>PressureDrop</tt></b> component, which can be replaced with any model extended from 
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureDrop.PartialPipePressureDrop\">BaseClasses.PartialPipePressureDrop</a>.
+The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureDrop.DetailedFlow\">DetailedFlow</a>.
+The momentum balances are formed across the segment boundaries along the flow path according to the staggered grid approach. 
+The default symmetric model is characterized by one momentum balance inside the pipe with nNodes=2 fluid segments.
+An alternative symmetric variation with nNodes+1 momentum balances, one at each port, as well as  
+non-symmetric variations can be obtained by chosing a different value for the parameter <tt><b>modelStructure</b></tt>. 
+The options include:
 <ul>
-<li><tt>a_v_b</tt>: default setting with two half momentum balances</li>
-<li><tt>av_b</tt>: full momentum balance between nth volume and <tt>port_b</tt>, potential pressure state at <tt>port_a</tt></li>
-<li><tt>a_vb</tt>: full momentum balance between first volume and <tt>port_a</tt>, potential pressure state at <tt>port_b</tt></li>
-<li><tt>avb</tt>: nNodes-1 momentum balances between first and nth volume, potential pressure states at both ports. It's use should be avoided, since not the entire pipe length is taken into account.
+<li><tt>avb</tt>: nNodes-1 momentum balances between nNodes pipe segments, potential pressure states at both ports.
+<li><tt>a_v_b</tt>: Alternative symmetric setting with nNodes+1 momentum balances across nNodes pipe segments, one momentum balance at each port. 
+Connecting two pipes therefore results in algebraic pressures at the ports. 
+The specification of good start values for the port pressures is essential in order to solve large systems.</li>
+<li><tt>av_b</tt>: nNodes momentum balances, one between nth volume and <tt>port_b</tt>, potential pressure state at <tt>port_a</tt></li>
+<li><tt>a_vb</tt>: nNodes momentum balance, one between first volume and <tt>port_a</tt>, potential pressure state at <tt>port_b</tt></li>
 </ul></p>
  
-<p>The term <tt>dp</tt> contains
+<p>The PressureDrop contains
 <ul>
 <li>pressure drop due to friction and other dissipative losses</li>
 <li>gravity effects for non-horizontal pipes</li>
@@ -456,17 +495,6 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
     partial model PartialPipe "Base class for pipe models"
       extends Modelica_Fluid.Interfaces.PartialTwoPort;
-
-      // Initialization
-      parameter Medium.AbsolutePressure p_a_start=system.p_start
-        "Start value of pressure at port a" 
-        annotation(Dialog(tab = "Initialization"));
-      parameter Medium.AbsolutePressure p_b_start=p_a_start
-        "Start value of pressure at port b" 
-        annotation(Dialog(tab = "Initialization"));
-      parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
-        "Start value for mass flow rate" 
-         annotation(Evaluate=true, Dialog(tab = "Initialization"));
 
       // Geometry
 
