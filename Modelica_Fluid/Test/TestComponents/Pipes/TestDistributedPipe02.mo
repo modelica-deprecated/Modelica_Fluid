@@ -3,7 +3,7 @@ model TestDistributedPipe02
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
 //replaceable package Medium=Modelica.Media.Water.StandardWater;
- replaceable package Medium=Modelica.Media.Air.DryAirNasa(extraPropertiesNames={"CO2"});
+ replaceable package Medium=Modelica.Media.Air.DryAirNasa(extraPropertiesNames={"CO2", "VOC"});
 
  Modelica_Fluid.Pipes.DistributedPipe pipe2(
     redeclare package Medium = Medium,
@@ -24,11 +24,7 @@ extends Modelica.Icons.Example;
           rotation=0)));
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
-            -100},{100,100}}), graphics={Text(
-          extent={{-86,-18},{86,-80}},
-          lineColor={255,0,0},
-          textString=
-              "Note: Multiport has been removed due to bug. See ticket #50.")}),
+            -100},{100,100}}), graphics),
                        experiment(StopTime=20, Tolerance=1e-005),
     experimentSetupOutput,
     Documentation(info="<html>
@@ -41,7 +37,7 @@ Test of different distributed pipe models with trace substances. This model is t
     useTemperatureInput=false,
     p=100000,
     T=300,
-    C={1.5E-3})                                                     annotation (Placement(
+    C={1.5E-3,0.05E-3})                                             annotation (Placement(
         transformation(extent={{70,54},{50,74}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe3(
     redeclare package Medium=Medium,
@@ -160,7 +156,7 @@ Test of different distributed pipe models with trace substances. This model is t
     useTemperatureInput=false,
     p=100000,
     T=300,
-    C={1.5E-3})                                                     annotation (Placement(
+    C={1.5E-3,0.05E-3})                                             annotation (Placement(
         transformation(extent={{68,-2},{48,18}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe6(
     redeclare package Medium=Medium,
@@ -241,6 +237,9 @@ Test of different distributed pipe models with trace substances. This model is t
   Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance4(redeclare
       package Medium = Medium) 
     annotation (Placement(transformation(extent={{2,22},{22,42}})));
+  Modelica_Fluid.Junctions.MultiPort multiPort(redeclare package Medium = 
+        Medium, nPorts_b=2) 
+    annotation (Placement(transformation(extent={{-46,-2},{-38,18}})));
 equation
   connect(boundary1.ports[1], pipe1.port_a) 
                                         annotation (Line(
@@ -264,14 +263,6 @@ equation
   connect(boundary3.ports[1], pipe7.port_a) 
                                         annotation (Line(
       points={{-88,8},{-74,8}},
-      color={0,127,255},
-      thickness=0.5));
-  connect(pipe7.port_b, pipe5.port_a) annotation (Line(
-      points={{-54,8},{-42,8},{-42,20},{-30,20}},
-      color={0,127,255},
-      thickness=0.5));
-  connect(pipe7.port_b, pipe8.port_a) annotation (Line(
-      points={{-54,8},{-42,8},{-42,-2},{-30,-2}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe5.port_b, pipe6.port_a) annotation (Line(
@@ -340,6 +331,18 @@ equation
       smooth=Smooth.None));
   connect(traceSubstance4.port, pipe6.port_a) annotation (Line(
       points={{12,22},{12,8},{14,8}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(pipe7.port_b, multiPort.port_a) annotation (Line(
+      points={{-54,8},{-46,8}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(multiPort.ports_b[1], pipe5.port_a) annotation (Line(
+      points={{-38,10},{-32,10},{-32,20},{-30,20}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(multiPort.ports_b[2], pipe8.port_a) annotation (Line(
+      points={{-38,6},{-38,8},{-32,8},{-32,-2},{-30,-2}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestDistributedPipe02;
