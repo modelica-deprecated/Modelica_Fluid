@@ -7,6 +7,200 @@ package Fittings
  
 </html>"));
 
+model GenericPressureLoss "Generic pressure loss model"
+  extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+
+  // Nominal values
+  parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
+  parameter SI.MassFlowRate m_flow_nominal "Mass flow rate for dp_nominal";
+
+  // Initialization
+  parameter Medium.AbsolutePressure p_a_start=system.p_start
+      "Start value of pressure at port_a" 
+    annotation(Dialog(tab = "Advanced"));
+
+  replaceable Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss
+      pressureLoss(
+          redeclare package Medium = Medium,
+          n=1,
+          state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
+                 Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
+          allowFlowReversal=allowFlowReversal,
+          dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
+          initType=Modelica_Fluid.Types.Init.SteadyState,
+          p_a_start=p_a_start,
+          p_b_start=p_a_start - dp_start,
+          m_flow_start=m_flow_start,
+          nPipes=1,
+          roughness=0,
+          diameter=diameter,
+          length=length,
+          height_ab=height_ab,
+          g=system.g,
+          dp_nominal = dp_nominal,
+          m_flow_nominal = m_flow_nominal) 
+    constrainedby
+      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss(
+          redeclare package Medium = Medium,
+          n=1,
+          state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
+                 Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
+          allowFlowReversal=allowFlowReversal,
+          dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
+          initType=Modelica_Fluid.Types.Init.SteadyState,
+          p_a_start=p_a_start,
+          p_b_start=p_a_start - dp_start,
+          m_flow_start=m_flow_start,
+          nPipes=1,
+          roughness=0,
+          diameter=diameter,
+          length=length,
+          height_ab=height_ab,
+          g=system.g) "Pressure loss model" 
+    annotation(choicesAllMatching=true,
+        Dialog(tab="Advanced", group="Pressure loss"),
+        Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
+
+  // Geometry
+  parameter SI.Length length=1 "Hydraulic length for pressure loss model" 
+     annotation(Dialog(tab="Advanced", group="Geometry"));
+  parameter SI.Diameter diameter=1 "Hydraulic diameter for pressure loss model"
+     annotation(Dialog(tab="Advanced", group="Geometry", enable=isCircular));
+
+  // Static head
+  parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
+      annotation(Dialog(tab="Advanced", group="Static head"), Evaluate=true);
+
+equation
+  m_flow = pressureLoss.m_flow[1];
+
+  annotation (defaultComponentName="pressureLoss",
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Text(
+            extent={{-150,60},{150,100}},
+            lineColor={0,0,255},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString="%name"),
+          Line(
+            points={{-60,-50},{-60,50},{60,-50},{60,50}},
+            color={0,0,255},
+            thickness=0.5),
+          Line(points={{-60,0},{-100,0}}, color={0,127,255}),
+          Line(points={{60,0},{100,0}}, color={0,127,255}),
+          Text(extent={{-168,-96},{180,-138}}, lineColor={0,0,0})}),
+    Documentation(info="<html>
+<p>
+This pressure drop component is intended for early designs and later replacement 
+by more detailed models. Per default a LinearPressureLoss for specified nominal values is used.
+</p>
+<p>
+On the Advanced tab any pressure loss model defined for the interface
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">
+          Pipes.BaseClasses.PartialFlowPressureLoss</a>.
+can be configured, together with required geometry parameters.
+</p>
+</html>"));
+end GenericPressureLoss;
+
+model SimpleGenericOrifice
+    "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
+      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+
+  parameter Real zeta "Loss factor for flow of port_a -> port_b";
+  parameter SI.Diameter diameter
+      "Diameter at which zeta is defined (either port_a or port_b)";
+  parameter Boolean from_dp = true
+      "= true, use m_flow = f(dp) else dp = f(m_flow)" 
+    annotation (Evaluate=true, Dialog(tab="Advanced"));
+  annotation (
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics={
+          Text(
+            extent={{-150,60},{150,100}},
+            lineColor={0,0,255},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString="%name"),
+          Line(
+            points={{-60,-50},{-60,50},{60,-50},{60,50}},
+            color={0,0,0},
+            thickness=0.5),
+          Line(points={{-60,0},{-100,0}}, color={0,127,255}),
+          Line(points={{60,0},{100,0}}, color={0,127,255}),
+          Text(
+            extent={{-168,-96},{180,-138}},
+            lineColor={0,0,0},
+            textString="zeta=%zeta")}),
+    Documentation(info="<html>
+<p>
+This pressure drop component defines a
+simple, generic orifice, where the loss factor &zeta; is provided
+for one flow direction (e.g., from loss table of a book):
+</p>
+ 
+<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
+      = 8*&zeta;/(&pi;^2*D^4*&rho;) * m_flow*|m_flow|
+</pre>
+ 
+<p>
+where
+</p>
+<ul>
+<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
+<li> D is the diameter of the orifice at the position where
+     &zeta; is defined (either at port_a or port_b). If the orifice has not a 
+     circular cross section, D = 4*A/P, where A is the cross section
+     area and P is the wetted perimeter.</li>
+<li> &zeta; is the loss factor with respect to D 
+     that depends on the geometry of
+     the orifice. In the turbulent flow regime, it is assumed that
+     &zeta; is constant.<br>
+     For small mass flow rates, the flow is laminar and is approximated 
+     by a polynomial that has a finite derivative for m_flow=0.</li>
+<li> v is the mean velocity.</li>
+<li> &rho; is the upstream density.</li>
+</ul>
+ 
+<p>
+Since the pressure loss factor zeta is provided only for a mass flow
+from port_a to port_b, the pressure loss is not correct when the
+flow is reversing. If reversing flow only occurs in a short time interval,
+this is most likely uncritical. If significant reversing flow
+can appear, this component should not be used.
+</p>
+</html>"));
+equation
+  if from_dp then
+      m_flow = BaseClasses.SimpleGenericOrifice.massFlowRate_dp(
+        dp,
+        port_a_d_inflow,
+        port_b_d_inflow,
+        diameter,
+        zeta);
+  else
+      dp = BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(
+        m_flow,
+        port_a_d_inflow,
+        port_b_d_inflow,
+        diameter,
+        zeta);
+  end if;
+end SimpleGenericOrifice;
+
 model SharpEdgedOrifice
     "Pressure drop due to sharp edged orifice (for both flow directions)"
     import NonSI = Modelica.SIunits.Conversions.NonSIunits;
@@ -114,96 +308,6 @@ model SharpEdgedOrifice
 
 end SharpEdgedOrifice;
 
-model SimpleGenericOrifice
-    "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
-      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
-
-  parameter Real zeta "Loss factor for flow of port_a -> port_b";
-  parameter SI.Diameter diameter
-      "Diameter at which zeta is defined (either port_a or port_b)";
-  parameter Boolean from_dp = true
-      "= true, use m_flow = f(dp) else dp = f(m_flow)" 
-    annotation (Evaluate=true, Dialog(tab="Advanced"));
-  annotation (
-    Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics),
-    Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Text(
-            extent={{-150,60},{150,100}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name"),
-          Line(
-            points={{-60,-50},{-60,50},{60,-50},{60,50}},
-            color={0,0,0},
-            thickness=0.5),
-          Line(points={{-60,0},{-100,0}}, color={0,127,255}),
-          Line(points={{60,0},{100,0}}, color={0,127,255}),
-          Text(
-            extent={{-168,-96},{180,-138}},
-            lineColor={0,0,0},
-            textString="zeta=%zeta")}),
-    Documentation(info="<html>
-<p>
-This pressure drop component defines a
-simple, generic orifice, where the loss factor &zeta; is provided
-for one flow direction (e.g., from loss table of a book):
-</p>
- 
-<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
-      = 8*&zeta;/(&pi;^2*D^4*&rho;) * m_flow*|m_flow|
-</pre>
- 
-<p>
-where
-</p>
-<ul>
-<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
-<li> D is the diameter of the orifice at the position where
-     &zeta; is defined (either at port_a or port_b). If the orifice has not a 
-     circular cross section, D = 4*A/P, where A is the cross section
-     area and P is the wetted perimeter.</li>
-<li> &zeta; is the loss factor with respect to D 
-     that depends on the geometry of
-     the orifice. In the turbulent flow regime, it is assumed that
-     &zeta; is constant.<br>
-     For small mass flow rates, the flow is laminar and is approximated 
-     by a polynomial that has a finite derivative for m_flow=0.</li>
-<li> v is the mean velocity.</li>
-<li> &rho; is the upstream density.</li>
-</ul>
- 
-<p>
-Since the pressure loss factor zeta is provided only for a mass flow
-from port_a to port_b, the pressure loss is not correct when the
-flow is reversing. If reversing flow only occurs in a short time interval,
-this is most likely uncritical. If significant reversing flow
-can appear, this component should not be used.
-</p>
-</html>"));
-equation
-  if from_dp then
-      m_flow = BaseClasses.SimpleGenericOrifice.massFlowRate_dp(
-        dp,
-        port_a_d_inflow,
-        port_b_d_inflow,
-        diameter,
-        zeta);
-  else
-      dp = BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(
-        m_flow,
-        port_a_d_inflow,
-        port_b_d_inflow,
-        diameter,
-        zeta);
-  end if;
-end SimpleGenericOrifice;
 
 model SuddenExpansion
     "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"

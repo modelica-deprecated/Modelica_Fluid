@@ -67,7 +67,7 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
           m_flow_nominal=1, dp_nominal=100),
     p_a_start=400000,
     p_b_start=390000) 
@@ -82,7 +82,7 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
           m_flow_nominal=1, dp_nominal=100),
     p_a_start=110000,
     p_b_start=105000) 
