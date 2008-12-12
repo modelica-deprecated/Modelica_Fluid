@@ -122,22 +122,20 @@ This library has the following main features:
      of the components are not influenced by this property.<br>&nbsp;</li>
 <li> All components allow fluid flow in both directions, i.e., 
      <b>reversing flow</b> is supported.<br>&nbsp;</li> 
-<li> 2 or more components can be connected together. The effect can
-     be interpreted as introducing an infinitesimal small control
-     volume in the connecting point with <b>ideal mixing</b>. In particular,
-     the mass- and energy balance is automatically fulfilled.
-     The momentum balance is only fulfilled if two components are
-     connected in a straight line with the same pipe diameter.
-     If more detailed
-     models are needed for a connection, e.g., if mixing losses
-     shall be taken into account, an appropriate model has to be 
-     explicitly used in the connection point.<br>&nbsp;</li>
+<li> Two or more components can be connected together. This means that 
+     the pressures of all connected ports are equal and the mass flow rates 
+     sum up to zero. Specific enthalpy, mass fractions and trace substances are 
+     mixed according to the mass flow rates.
+     The momentum balance is only fulfilled if the assumption of equal port pressures holds,
+     i.e. if two components are connected in a straight line with the same pipe diameter.
+     If more detailed models are needed for a connection, e.g., if a changing pipe diameter
+     shall be taken into account, an appropriate fitting has to be 
+     explicitly introduced into the connection point.<br>&nbsp;</li>
 <li> There is no restriction how components can be connected
-     together (besides from special cases).
-     E.g., Volumes.MixingVolumes can be directly connnected
-     to each other, as well as pressure drop components.
-     Such types of connections might introduce additional
-     linear or non-linear systems of equations.<br>&nbsp;</li>
+     together. The resulting simulation performance however often strongly depends on the
+     model structure and modeling assumptions made. In particular the direct connection of
+     fluid volumes generally results in high-index DAEs for the pressures. The direct 
+     connection of flow models generally results in algebraic equation systems.<br>&nbsp;</li>
      
 </ul>
 </HTML>
@@ -906,18 +904,23 @@ Modelica_Fluid was refactored and finalized for the release:
 <ul>
 <li> Refactoring of the code<br>
      This became necessary as the previous release Modelica_Fluid Streams Beta3 
-     still reflected the long development history, while the basic concepts had been settled.</li>
+     still reflected the long development history, while the basic concepts had been settled.
+     Please consult the subversion control (SVN) logs for individual changes.</li>
  
 <li> Replaceable PressureLoss and HeatTransfer models<br>
-     The pipe models now have replaceable PressureLoss models,
-     which are parameterized with the Medium and the ThermodynamicState of flow segments. 
-     The replaceable HeatTransfer models have been further developed accordingly.
-     This allows the addition of new pressure loss and heat transfer correlations to existing pipe models,
+     The pipes now have replaceable PressureLoss models,
+     which are parameterized with the Medium and the ThermodynamicState of involved flow segments. 
+     The pipe heat transfer models have been further developed accordingly.<br>
+     Based on the new model interfaces 
+     <ul>
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowPressureLoss\">
+          Pipes.BaseClasses.PartialFlowPressureLoss</a></li>
+     and
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">
+          Pipes.BaseClasses.PartialFlowHeatTransfer</a></li>,
+     </ul>
+     new pressure loss and heat transfer correlations can be added to existing pipe models,
      e.g. to consider two phase flow.</li>
- 
-<li> Finalization of trace substrances<br>
-     Modelica_Fluid now provides a sound implementation for trace substances, 
-     which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
  
 <li> New approach for the connection of pipe models<br>
      So far the preferred modeling was to put full mass balances 
@@ -927,7 +930,43 @@ Modelica_Fluid was refactored and finalized for the release:
      exposing mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
      High-index DAEs need to be treated instead in connection sets.</li>
  
-<li> All examples are working now (using Dymola 7.1). The number of examples has been extended.</li>
+<li> Finalization of trace substrances<br>
+     Modelica_Fluid now provides a sound implementation for trace substances, 
+     which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
+ 
+<li> System (former Ambient)<br> 
+     The use of the global System object has been extended towards common default values for
+     modeling assumptions and initialization.</li>
+
+<li> Common base classes implementing mass and energy balances<br>
+     Mass and energy balances are now defined in the common base classes
+     <ul>
+     <li><a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume\">
+          Vessels.BaseClasses.PartialLumpedVolume</a></li>
+     and
+     <li><a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume\">
+          Vessels.BaseClasses.PartialDistributedVolume</a></li>.
+     </ul>
+     These balances are used across the library for Vessels, Pipes, Machines and Fittings;
+     not for Tanks that treat a fluid level instead of pressure.
+ 
+<li> The former MixingVolume has been turned into 
+     <a href=\"Modelica:Modelica_Fluid.Vessels.Volume\">Vessels.Volume</a> 
+     with optional consideration of port diameters.</li>
+ 
+<li> Vectorized ports for volumes<br>
+     The ports of models that typically have large volumes, like Vessels and Sources, 
+     have been vectorized. Formerly the connection of multiple flow models to the same port 
+     of such volume models resulted in unintended mixing equations for stream variables. 
+     Moreover a 
+     <a href=\"Modelica:Modelica_Fluid.Fittings.MultiPort\">Fittings.MultiPort</a> 
+     has been introduced that can be attached to components like pipes 
+     that don't have vectorized ports on their own.</li>
+ 
+<li> All examples are working now (using Dymola 7.1).<br>
+     The number of examples has been extended by the former critical test cases
+     HeatingSystem and IncompressibleFluidNetwork. Moreover the HeatExchangers have been
+     moved into Examples.</li>
  
 </ul> 
  

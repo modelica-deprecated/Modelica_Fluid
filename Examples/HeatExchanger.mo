@@ -122,13 +122,13 @@ package HeatExchanger "Demo of a heat exchanger model"
       replaceable model HeatTransfer_1 = 
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer
         "Heat transfer model" annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
 
       replaceable model HeatTransfer_2 = 
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer
         "Heat transfer model" annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
 
       parameter SI.Area area_h_1 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 1"));
@@ -216,12 +216,12 @@ package HeatExchanger "Demo of a heat exchanger model"
       replaceable model PressureLoss_1 = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPipePressureLoss
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss
         "Characteristic of wall friction"                                                                                                   annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
       replaceable model PressureLoss_2 = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPipePressureLoss
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss
         "Characteristic of wall friction"                                                                                                   annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
       parameter SI.Length roughness_1=2.5e-5
         "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Fluid 1"));

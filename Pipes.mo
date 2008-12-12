@@ -442,10 +442,10 @@ The mass and energy balances are inherited from <a href=\"Modelica:Modelica_Flui
 The additional component <b><tt>HeatTransfer</tt></b> specifies the source term <tt>Qs_flow</tt> in the energy balance. 
 The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
 The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer\">BaseClasses.PartialPipeHeatTransfer</a>.</p>
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.PartialFlowHeatTransfer</a>.</p>
 <p><b>Momentum balance</b></p>
 The momentum balance is determined by the <b><tt>PressureLoss</tt></b> component, which can be replaced with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPipePressureLoss\">BaseClasses.PartialPipePressureLoss</a>.
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">BaseClasses.PartialFlowPressureLoss</a>.
 The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow\">DetailedFlow</a>.
 The momentum balances are formed across the segment boundaries along the flow path according to the staggered grid approach. 
 The default symmetric model is characterized by one momentum balance inside the pipe with nNodes=2 fluid segments.
@@ -528,7 +528,7 @@ This also allows for taking into account friction losses with respect to the act
       // Pressure drop
       replaceable model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow 
-        constrainedby BaseClasses.PressureLoss.PartialPipePressureLoss
+        constrainedby BaseClasses.PressureLoss.PartialFlowPressureLoss
         "Characteristics of wall friction and gravity" 
           annotation(Dialog(group="Pressure drop"), choicesAllMatching=true);
 
@@ -536,7 +536,7 @@ This also allows for taking into account friction losses with respect to the act
       replaceable model HeatTransfer = 
           Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialPipeHeatTransfer
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer
         "Wall heat transfer" 
           annotation (Dialog(group="Heat transfer"),choicesAllMatching=true);
     equation
@@ -575,7 +575,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
     package PressureLoss
       "Pressure drop models for pipes, including wall friction and static head"
-          partial model PartialPipePressureLoss
+          partial model PartialFlowPressureLoss
         "Base class for pipe wall friction models"
 
             replaceable package Medium = 
@@ -646,10 +646,10 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 color={0,0,255},
                 smooth=Smooth.None,
                 thickness=1)}));
-          end PartialPipePressureLoss;
+          end PartialFlowPressureLoss;
 
           model NominalPressureLoss "Linear pressure drop for nominal values"
-            extends PartialPipePressureLoss;
+            extends PartialFlowPressureLoss;
 
             parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
             parameter SI.MassFlowRate m_flow_nominal
@@ -689,7 +689,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
           partial model PartialWallFrictionAndGravity
         "Base class for pressure drop in pipe due to wall friction and gravity (for both flow directions)"
-            extends PartialPipePressureLoss;
+            extends PartialFlowPressureLoss;
 
             replaceable package WallFriction = 
             Modelica_Fluid.Pipes.BaseClasses.WallFriction.PartialWallFriction
@@ -909,7 +909,7 @@ simulation and/or might give a more robust simulation.
     end PressureLoss;
 
   package HeatTransfer
-    partial model PartialPipeHeatTransfer
+    partial model PartialFlowHeatTransfer
         "base class for any pipe heat transfer correlation"
 
       // Parameters
@@ -988,11 +988,11 @@ Base class for heat transfer models that can be used in distributed pipe models.
         Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
                   {100,100}}),
                         graphics));
-    end PartialPipeHeatTransfer;
+    end PartialFlowHeatTransfer;
 
     partial model PartialPipeHT_Nu
         "Base class for pipe heat transfer correlation in terms of Nusselt numberheat transfer in a circular pipe for laminar and turbulent one-phase flow"
-      extends PartialPipeHeatTransfer;
+      extends PartialFlowHeatTransfer;
       parameter SI.CoefficientOfHeatTransfer alpha0=100
           "guess value for heat transfer coefficients";
       SI.CoefficientOfHeatTransfer[n] alpha(each start=alpha0)
@@ -1016,7 +1016,7 @@ Base class for heat transfer models that are expressed in terms of the Nusselt n
 
     model PipeHT_none
         "PipeHT_none: No heat transfer assuming perfect isolation"
-      extends PartialPipeHeatTransfer;
+      extends PartialFlowHeatTransfer;
     equation
       Q_flow = zeros(n);
       annotation(Documentation(info="<html>
@@ -1026,7 +1026,7 @@ Ideal heat transfer without thermal resistance.
 
     model PipeHT_ideal
         "PipeHT_ideal: Ideal heat transfer without thermal resistance"
-      extends PartialPipeHeatTransfer;
+      extends PartialFlowHeatTransfer;
     equation
       T = wallHeatPort.T;
       annotation(Documentation(info="<html>
@@ -1036,7 +1036,7 @@ Ideal heat transfer without thermal resistance.
 
     model PipeHT_constAlpha
         "PipeHT_constAlpha: Constant heat transfer coefficient"
-      extends PartialPipeHeatTransfer;
+      extends PartialFlowHeatTransfer;
       parameter SI.CoefficientOfHeatTransfer alpha0=200
           "heat transfer coefficient";
       annotation(Documentation(info="<html>
