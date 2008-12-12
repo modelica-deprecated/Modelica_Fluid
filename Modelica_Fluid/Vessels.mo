@@ -44,200 +44,72 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
       fluidVolume = V;
       Ws_flow = 0;
       heatPort.T = medium.T;
+      ports_p_static = medium.p;
     end Volume;
 
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
-    replaceable package Medium = 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-    annotation (choicesAllMatching=true);
+  extends BaseClasses.PartialLumpedVolumePorts(
+    Qs_flow = 0,
+    final initializePressure = false,
+    final p_start = p_ambient,
+    final use_d_nominal = false,
+    final d_nominal = 0);
 
-  parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-      "Dynamics option" 
-    annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+  // Tank geometry
+  parameter SI.Height height "Height of tank";
+  parameter SI.Area crossArea "Area of tank";
+  parameter SI.Volume V0=0 "Volume of the liquid when the level is zero";
 
-//Transformation of kinetic energy
-    parameter Boolean neglectPortDiameters=false
-      "=true, kinetic energy and dissipation is accounted for in port pressure"
-                                                                                                        annotation(Evaluate=true, Dialog(tab="Assumptions"));
-    parameter Real[nPorts] zeta_in=fill(0, nPorts)
-      "Hydraulic resistance into tank, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-                                                                                                     annotation(Dialog(tab="Assumptions",enable=neglectPortDiameters==false));
-    parameter Real[nPorts] zeta_out=fill(1, nPorts)
-      "Hydraulic resistance out of tank, 0 for ideal smooth outlet" 
-                                                                  annotation(Dialog(tab="Assumptions",enable=neglectPortDiameters==false));
-
-//Tank geometry
-    parameter SI.Height height "Height of tank";
-    parameter SI.Area crossArea "Area of tank";
-    parameter SI.Volume V0=0 "Volume of the liquid when the level is zero";
-
-//Port definitions
-    parameter Integer nPorts(min=1) = 1 "Number of bottom ports (min=1)" 
-     annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)"));
-    parameter SI.Diameter portDiameters[nPorts]
-      "Inner (hydraulic) diameters of bottom ports (array)" 
-     annotation(Dialog(group="bottomPorts (= pipes at bottom of tank; in and out flow of tank)", enable=n_bottomPorts > 0));
-    Interfaces.FluidPorts_b ports[nPorts](
-    redeclare package Medium = Medium,
-    m_flow(each start=0)) 
-    annotation (Placement(transformation(
-        extent={{0,-20},{-10,20}},
-        rotation=90,
-        origin={0,-100})));
-
-//Ambient
-    parameter Medium.AbsolutePressure p_ambient=system.p_ambient
+  // Ambient
+  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
       "Tank surface pressure" 
-    annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-    parameter Medium.Temperature T_ambient=system.T_ambient
+    annotation(Dialog(tab = "Ambient", group = "Ambient"));
+  parameter Medium.Temperature T_ambient=system.T_ambient
       "Tank surface Temperature" 
-    annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-    outer Modelica_Fluid.System system "System properties";
+    annotation(Dialog(tab = "Ambient", group = "Ambient"));
 
-//Initialization
-    parameter Types.Init initType=system.initType "Initialization option" 
-    annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
-    parameter SI.Height level_start "Start value of tank level" 
-    annotation(Dialog(tab="Ambient and Initialization", group = "Initialization"));
-    parameter Medium.Temperature T_start=T_ambient "Start value of temperature"
-    annotation(Dialog(tab = "Ambient and Initialization", group = "Initialization"));
-    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-      "Start value of mass fractions m_i/m" 
-    annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nXi > 0));
-    parameter Medium.ExtraProperty C_start[Medium.nC](
-    quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Start value of trace substances" 
-    annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nC > 0));
+  // Initialization
+  parameter SI.Height level_start "Start value of tank level" 
+    annotation(Dialog(tab="Initialization"));
 
-//Tank properties
-    Medium.BaseProperties medium(
-      preferredMediumStates=true,
-      p(start=p_ambient),
-      T(start=T_start),
-      h(start=h_start),
-      Xi(start=X_start[1:Medium.nXi]));
-    SI.Height level(stateSelect=StateSelect.default, start=level_start)
+  // Tank properties
+  SI.Height level(stateSelect=StateSelect.default, start=level_start)
       "Level height of tank";
-    SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
-    SI.Energy U "Internal energy of tank volume";
-    SI.Mass m "Mass of fluid in tank";
-    SI.Mass mXi[Medium.nXi] "Masses of independent components in the fluid";
-    SI.Mass[Medium.nC] mC "Masses of trace substances in the fluid";
-    Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
-    SI.Pressure p_static "bottom tank pressure";
-    Medium.EnthalpyFlowRate H_flow[nPorts]
-      "Enthalpy flow rates from the bottom ports in to the tank";
-    Medium.MassFlowRate mXi_flow[nPorts, Medium.nXi]
-      "Substance mass flow rates from the bottom ports into the tank";
-    Medium.ExtraPropertyFlowRate[nPorts, Medium.nC] mC_flow
-      "Trace substance mass flow rates from the bottom ports into the tank";
-
-  protected
-    parameter Medium.SpecificEnthalpy h_start=Medium.specificEnthalpy_pTX(
-        p_ambient,
-        T_start,
-        X_start);
-    parameter SI.Area[nPorts] portArea=Modelica.Constants.pi/4*{portDiameters[
-        i]^2 for i in 1:nPorts};
+  SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
 
 equation
-  // Only one connection allowed to a port to avoid unwanted ideal mixing
-/*
-for i in 1:nPorts loop
-  assert(cardinality(ports[i]) <= 1,"
-ports[" + String(i) + "] of volume can at most be connected to one component.
-If two or more connections are present, ideal mixing takes
-place with these connections which is usually not the intention
-of the modeller.
-");
-end for;
-*/
+  // Total quantities
+  V = crossArea*level + V0 "Volume of fluid";
+  fluidVolume = V;
+  medium.p = p_ambient;
 
-  //Total quantities
-    V = crossArea*level + V0 "Volume of fluid";
-    m = V*medium.d "Mass of fluid";
-    mXi = m*medium.Xi "Mass of fluid components";
-    U = m*medium.u "Internal energy of fluid";
-    mC = m*C "Mass of trace substances";
-    medium.p = p_ambient;
-
-  // Mass balances
-  if dynamicsType < Types.Dynamics.SteadyStateMass then
-    der(m) = sum(ports.m_flow);
-    for i in 1:Medium.nXi loop
-      der(mXi[i]) = sum(mXi_flow[:,i]);
-    end for;
-    for i in 1:Medium.nC loop
-      der(mC[i])  = sum(mC_flow[:,i]);
-    end for;
+  // Source termsEnergy balance
+  if Medium.singleState then
+    Ws_flow = 0
+        "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
   else
-    0 = sum(ports.m_flow);
-    for i in 1:Medium.nXi loop
-      0 = sum(mXi_flow[:,i]);
-    end for;
-    for i in 1:Medium.nC loop
-      0 = sum(mC_flow[:,i]);
-    end for;
+    Ws_flow = -p_ambient*der(V);
   end if;
 
-  // Energy balance
-  if dynamicsType < Types.Dynamics.SteadyState then
-    if Medium.singleState then
-      der(U) = sum(H_flow)
-          "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
-    else
-      der(U) = sum(H_flow) - p_ambient*der(V);
-    end if;
-  else
-    if Medium.singleState then
-      0 = sum(H_flow)
-          "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
-    else
-      0 = sum(H_flow) - p_ambient*der(V);
-    end if;
-  end if;
   assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
   assert(level > 0, "Tank is empty (level = 0), tank model is not designed to allow air flow through ports");
 
-//Determine port properties
-    p_static = level*system.g*medium.d + p_ambient;
-    for i in 1:nPorts loop
-       H_flow[i]     = ports[i].m_flow*actualStream(ports[i].h_outflow);
-       mXi_flow[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
-       mC_flow[i,:]  = ports[i].m_flow*actualStream(ports[i].C_outflow);
-       if neglectPortDiameters then
-         ports[i].p = p_static;
-       else
-         ports[i].p = p_static - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
-            portArea[i]^2)*(if ports[i].m_flow < 0 then (1 + zeta_out[i]) else (1
-             - zeta_in[i]))));
-       end if;
-       ports[i].h_outflow = medium.h;
-       ports[i].Xi_outflow = medium.Xi;
-       ports[i].C_outflow = C;
-    end for;
+  //Determine port properties
+  ports_p_static = level*system.g*medium.d + p_ambient;
 
 initial equation
     if initType == Types.Init.NoInit then
     // no initial equations
     elseif initType == Types.Init.InitialValues then
       level = level_start;
-      medium.T = T_start;
-      medium.Xi = X_start[1:Medium.nXi];
-      C         = C_start[1:Medium.nC];
     elseif initType == Types.Init.SteadyState then
       der(level) = 0;
-      der(medium.h) = 0;
-      der(medium.Xi) = zeros(Medium.nXi);
-      der(C)         = zeros(Medium.nC);
     elseif initType == Types.Init.SteadyStateHydraulic then
       der(level) = 0;
-      medium.T = T_start;
-      medium.Xi = X_start[1:Medium.nXi];
-      C         = C_start[1:Medium.nC];
     else
       assert(false, "Unsupported initialization option");
     end if;
+
     annotation (
       Icon(coordinateSystem(
           preserveAspectRatio=true,
@@ -299,6 +171,8 @@ Inlet and outlet connections are situated at the bottom of the tank. The followi
  
 </HTML>", revisions="<html>
 <ul>
+<li><i>Dec. 12, 2008</i> by Ruediger Franke: replace energy and mass balance as well as port definitions 
+   with common definition in BaseClasses.PartialLumpedVolumePorts</li>
 <li><i>Jan. 6, 2006</i> by Katja Poschlad, Manuel Remelhe (AST Uni Dortmund), 
    Martin Otter (DLR):<br> 
    Implementation based on former tank model.</li>
@@ -318,39 +192,36 @@ Implemented trace substances.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-equation
 
 end OpenTank;
 
 model Tank
     "Open tank with top and bottom inlet/outlet ports at a defineable height"
+  extends BaseClasses.PartialLumpedVolume(
+    Qs_flow = 0,
+    final initializePressure = false,
+    final p_start = p_ambient,
+    final use_d_nominal = false,
+    final d_nominal = 0);
 
-    import Modelica.Constants;
-    import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
-    import Modelica_Fluid.Utilities.regRoot2;
-    import Modelica_Fluid.Vessels.BaseClasses.TankPortData;
-
-  replaceable package Medium = 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-    annotation (choicesAllMatching=true);
-
-  parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-      "Dynamics option" 
-    annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+  import Modelica.Constants;
+  import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
+  import Modelica_Fluid.Utilities.regRoot2;
+  import Modelica_Fluid.Vessels.BaseClasses.TankPortData;
 
   SI.Height level(stateSelect=StateSelect.prefer, start=level_start)
       "Fluid level in the tank";
 
-//Tank geometry
-    parameter SI.Height levelMax "Maximum level of tank before it overflows";
-    parameter SI.Area crossArea "Area of tank";
-    parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
+  //Tank geometry
+  parameter SI.Height levelMax "Maximum level of tank before it overflows";
+  parameter SI.Area crossArea "Area of tank";
+  parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
 
-//Port definitions
-    parameter Integer nTopPorts(min=1) = 1
+  //Port definitions
+  parameter Integer nTopPorts(min=1) = 1
       "Number of inlet ports above levelMax (>= 1)";
 
-    Modelica_Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
+  Modelica_Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0, each min=0))
       "Inlet ports over levelMax at top of tank (fluid flows only from the port in to the tank)"
@@ -359,11 +230,11 @@ model Tank
         rotation=90,
         origin={0,100})));
 
-    parameter Modelica_Fluid.Vessels.BaseClasses.TankPortData portsData[:]={
+  parameter Modelica_Fluid.Vessels.BaseClasses.TankPortData portsData[:]={
         TankPortData(diameter=0.0001)}
       "Data of inlet/outlet ports at side and bottom of tank";
 
-    Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
+  Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
     redeclare package Medium = Medium,
     m_flow(each start=0))
       "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
@@ -372,75 +243,46 @@ model Tank
         rotation=90,
         origin={0,-100})));
 
-//Ambient
-   outer Modelica_Fluid.System system "System properties";
-   parameter Medium.AbsolutePressure p_ambient=system.p_ambient
+  //Ambient
+  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
       "Tank surface pressure" 
-    annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-   parameter Medium.Temperature T_ambient=system.T_ambient
+    annotation(Dialog(tab = "Ambient", group = "Ambient"));
+  parameter Medium.Temperature T_ambient=system.T_ambient
       "Tank surface Temperature" 
-    annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
+    annotation(Dialog(tab = "Ambient", group = "Ambient"));
 
-//Initialization
-    parameter Types.Init initType=system.initType "Initialization option" 
-    annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
-    parameter SI.Height level_start(min=0) "Start value of tank level" 
-    annotation(Dialog(tab="Ambient and Initialization", group = "Initialization"));
-    parameter Medium.Temperature T_start=T_ambient "Start value of temperature"
-    annotation(Dialog(tab = "Ambient and Initialization", group = "Initialization"));
-    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-      "Start value of mass fractions m_i/m" 
-    annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nXi > 0));
-    parameter Medium.ExtraProperty C_start[Medium.nC](
-    quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Start value of trace substances" 
-    annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nC > 0));
+  //Initialization
+  parameter SI.Height level_start(min=0) "Start value of tank level" 
+    annotation(Dialog(tab="Initialization"));
 
-// Advanced
-    parameter Real hysteresisFactor(min=0) = 0.1
+  // Advanced
+  parameter Real hysteresisFactor(min=0) = 0.1
       "Hysteresis for empty pipe = diameter*hysteresisFactor" 
     annotation(Dialog(tab="Advanced", group="Numerical properties"));
-    parameter SI.MassFlowRate m_flow_small(min=0) = 1e-5
+  parameter SI.MassFlowRate m_flow_small(min=0) = 1e-5
       "Regularization range at zero mass flow rate" 
     annotation(Dialog(tab="Advanced", group="Numerical properties"));
-    parameter Boolean stiffCharacteristicForEmptyPort = true
+  parameter Boolean stiffCharacteristicForEmptyPort = true
       "=true, if steep pressure loss characteristic for empty pipe port" 
     annotation(Dialog(tab="Advanced", group="Numerical properties"), Evaluate=true);
-    parameter Real zetaLarge(min=0) = 1e5
+  parameter Real zetaLarge(min=0) = 1e5
       "Large pressure loss factor if mass flows out of empty pipe port" 
     annotation(Dialog(tab="Advanced", group="Numerical properties", enable=stiffCharacteristicForEmptyPort));
 
-//Tank properties
-     final parameter Integer nPorts = size(ports,1)
-      "Number of inlet/outlet ports";
-     final parameter Medium.SpecificEnthalpy h_start=Medium.specificEnthalpy_pTX(
-        p_ambient,
-        T_start,
-        X_start) annotation(Hide=true);
-    Medium.BaseProperties medium(
-      preferredMediumStates=true,
-      p(start=p_ambient),
-      T(start=T_start),
-      h(start=h_start),
-      Xi(start=X_start[1:Medium.nXi]));
-    SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
-    SI.Energy U(stateSelect=StateSelect.never) "Internal energy of tank volume";
-    SI.Mass m(stateSelect=StateSelect.never) "Mass of fluid in tank";
-    SI.Mass mXi[Medium.nXi](each stateSelect=StateSelect.never)
-      "Masses of independent components in the fluid";
-    SI.Mass[Medium.nC] mC "Masses of trace substances in the fluid";
-    Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
-    Medium.EnthalpyFlowRate H_flow_top[nTopPorts]
+  // Tank properties
+  final parameter Integer nPorts = size(ports,1) "Number of inlet/outlet ports";
+  SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
+  Medium.EnthalpyFlowRate H_flow_top[nTopPorts]
       "Enthalpy flow rates from the top ports in to the tank";
-    Medium.EnthalpyFlowRate port_b_H_flow_bottom[nPorts]
+  Medium.EnthalpyFlowRate port_b_H_flow_bottom[nPorts]
       "Enthalpy flow rates from the bottom ports in to the tank";
-    Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi]
+  Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi]
       "Substance mass flow rates from the top ports into the tank";
-    Medium.MassFlowRate port_b_mXi_flow_bottom[nPorts, Medium.nXi]
+  Medium.MassFlowRate port_b_mXi_flow_bottom[nPorts, Medium.nXi]
       "Substance mass flow rates from the bottom ports into the tank";
-    Medium.MassFlowRate mC_flow_top[nTopPorts, Medium.nC]
+  Medium.MassFlowRate mC_flow_top[nTopPorts, Medium.nC]
       "Trace substance mass flow rates from the top ports into the tank";
-    Medium.MassFlowRate port_b_mC_flow_bottom[nPorts, Medium.nC]
+  Medium.MassFlowRate port_b_mC_flow_bottom[nPorts, Medium.nC]
       "Trace substance mass flow rates from the bottom ports into the tank";
   protected
     parameter SI.Area bottomArea[nPorts]=Constants.pi*{(portsData[i].diameter/2)^2 for i in 1:nPorts};
@@ -475,47 +317,26 @@ end for;
 */
 
   // Total quantities
-    medium.p = p_ambient;
-    V = crossArea*level + V0 "Volume of fluid";
-    m = V*medium.d "Mass of fluid";
-    mXi = m*medium.Xi "Mass of fluid components";
-    U = m*medium.u "Internal energy of fluid";
-    mC = m*C "Mass of trace substances";
+  medium.p = p_ambient;
+  V = crossArea*level + V0 "Volume of fluid";
+  fluidVolume = V;
 
   // Mass balances
-  if dynamicsType < Types.Dynamics.SteadyStateMass then
-    der(m) = sum(topPorts.m_flow) + sum(ports.m_flow);
-    for i in 1:Medium.nXi loop
-      der(mXi[i]) = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flow_bottom[:,i]);
-    end for;
-    for i in 1:Medium.nC loop
-      der(mC[i])  = sum(mC_flow_top[:,i])  + sum(port_b_mC_flow_bottom[:,i]);
-    end for;
-  else
-    0 = sum(topPorts.m_flow) + sum(ports.m_flow);
-    for i in 1:Medium.nXi loop
-      0 = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flow_bottom[:,i]);
-    end for;
-    for i in 1:Medium.nC loop
-      0 = sum(mC_flow_top[:,i])  + sum(port_b_mC_flow_bottom[:,i]);
-    end for;
-  end if;
+  ms_flow = sum(topPorts.m_flow) + sum(ports.m_flow);
+  for i in 1:Medium.nXi loop
+    msXi_flow[i] = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flow_bottom[:,i]);
+  end for;
+  for i in 1:Medium.nC loop
+    msC_flow[i]  = sum(mC_flow_top[:,i])  + sum(port_b_mC_flow_bottom[:,i]);
+  end for;
 
   // Energy balance
-  if dynamicsType < Types.Dynamics.SteadyState then
-    if Medium.singleState then
-      der(U) = sum(H_flow_top) + sum(port_b_H_flow_bottom)
-          "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
-    else
-      der(U) = sum(H_flow_top) + sum(port_b_H_flow_bottom) - p_ambient*der(V);
-    end if;
+  Hs_flow = sum(H_flow_top) + sum(port_b_H_flow_bottom);
+  if Medium.singleState then
+    Ws_flow = 0
+        "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
   else
-    if Medium.singleState then
-      0 = sum(H_flow_top) + sum(port_b_H_flow_bottom)
-          "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
-    else
-      0 = sum(H_flow_top) + sum(port_b_H_flow_bottom) - p_ambient*der(V);
-    end if;
+    Ws_flow = -p_ambient*der(V);
   end if;
 
   // Properties at top ports
@@ -583,19 +404,10 @@ initial equation
     // no initial equations
     elseif initType == Types.Init.InitialValues then
       level = level_start;
-      medium.T = T_start;
-      medium.Xi = X_start[1:Medium.nXi];
-      C         = C_start[1:Medium.nC];
     elseif initType == Types.Init.SteadyState then
       der(level) = 0;
-      der(medium.T) = 0;
-      der(medium.Xi) = zeros(Medium.nXi);
-      der(C)         = zeros(Medium.nC);
     elseif initType == Types.Init.SteadyStateHydraulic then
       der(level) = 0;
-      medium.T = T_start;
-      medium.Xi = X_start[1:Medium.nXi];
-      C         = C_start[1:Medium.nC];
     else
       assert(false, "Unsupported initialization option");
     end if;
@@ -621,8 +433,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 3))),
           Line(
             points={{-100,100},{100,100}},
@@ -689,6 +501,8 @@ of the diagram animation in Dymola can be set via command
 </p>
 </HTML>", revisions="<html>
 <ul>
+<li><i>Dec. 12, 2008</i> by Ruediger Franke: replace energy and mass balances with
+   common definition in BaseClasses.PartialLumpedVolume</li>
 <li><i>Dec. 8, 2008</i> by Michael Wetter (LBNL):<br>
 Implemented trace substances and missing equation for outflow of multi substance media at top port.</li>
 <li><i>Jul. 29, 2006</i> by Martin Otter (DLR):<br> 
@@ -796,6 +610,9 @@ end Tank;
         input SI.HeatFlowRate Qs_flow
         "Heat flow across boundaries or energy source/sink";
         SI.Power Ws_flow "Work flow across boundaries or source term";
+    protected
+        parameter Boolean initializePressure = not Medium.singleState
+        "= true to set up initial equations for pressure";
       equation
 
         // Total quantities
@@ -829,7 +646,7 @@ end Tank;
         if initType == Types.Init.NoInit then
         // no initial equations
         elseif initType == Types.Init.InitialValues then
-          if not Medium.singleState then
+          if initializePressure then
             medium.p = p_start;
           end if;
           if use_T_start then
@@ -841,7 +658,7 @@ end Tank;
           C         = C_start[1:Medium.nC];
 
         elseif initType == Types.Init.SteadyState then
-          if not Medium.singleState then
+          if initializePressure then
             der(medium.p) = 0;
           end if;
           if use_T_start then
@@ -853,7 +670,7 @@ end Tank;
           der(C)         = zeros(Medium.nC);
 
         elseif initType == Types.Init.SteadyStateHydraulic then
-          if not Medium.singleState then
+          if initializePressure then
             der(medium.p) = 0;
           end if;
           if use_T_start then
@@ -914,6 +731,8 @@ Moreover an input might mislead a tool to break equation systems, resulting in i
             iconTransformation(extent={{-10,40},{10,-40}},
             rotation=-90,
             origin={0,-100})));
+        Medium.AbsolutePressure ports_p_static
+        "static pressure at the ports, inside the volume";
 
       //Transformation of kinetic energy
           parameter Boolean neglectPortDiameters=true
@@ -955,9 +774,9 @@ of the modeller. Increase nPorts to add an additional port.
         // Boundary conditions
         for i in 1:nPorts loop
           if neglectPortDiameters then
-            ports[i].p = medium.p;
+            ports[i].p = ports_p_static;
           else
-            ports[i].p = medium.p - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
+            ports[i].p = ports_p_static - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
                   portArea[i]^2)*(if ports[i].m_flow < 0 then (1 + zeta_out[i]) else (1
                    - zeta_in[i]))));
           end if;

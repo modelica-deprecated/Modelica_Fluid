@@ -947,8 +947,7 @@ Modelica_Fluid was refactored and finalized for the release:
      <li><a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume\">
           Vessels.BaseClasses.PartialDistributedVolume</a></li>.
      </ul>
-     These balances are used across the library for Vessels, Pipes, Machines and Fittings;
-     not for Tanks that treat a fluid level instead of pressure.
+     These balances are used across the library for Vessels, Pipes, Machines and Fittings.
  
 <li> The former MixingVolume has been turned into 
      <a href=\"Modelica:Modelica_Fluid.Vessels.Volume\">Vessels.Volume</a> 
@@ -964,7 +963,7 @@ Modelica_Fluid was refactored and finalized for the release:
      that don't have vectorized ports on their own.</li>
  
 <li> All examples are working now (using Dymola 7.1).<br>
-     The number of examples has been extended by the former critical test cases
+     The number of examples has been extended with the former critical test cases
      HeatingSystem and IncompressibleFluidNetwork. Moreover the HeatExchangers have been
      moved into Examples.</li>
  

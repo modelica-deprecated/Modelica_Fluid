@@ -72,11 +72,11 @@ model TestOpenTank
 equation
   connect(massFlowRate.ports[1], upperTank.ports[1]) 
                                                  annotation (Line(
-      points={{-40,-30},{-21,-30},{-21,18}},
+      points={{-40,-30},{-20,-30},{-20,24}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe.port_a, lowerTank.ports[1]) annotation (Line(
-      points={{-6.12323e-016,-20},{-6.12323e-016,-70},{59,-70},{59,-60}},
+      points={{-6.12323e-016,-20},{-6.12323e-016,-70},{60,-70},{60,-60}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe.port_b, pressure.port) annotation (Line(
@@ -104,7 +104,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(pipe.port_b, upperTank.ports[2]) annotation (Line(
-      points={{6.12323e-016,0},{-18,0},{-18,20},{-21,22}},
+      points={{6.12323e-016,0},{-18,0},{-18,16},{-20,16}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestOpenTank;
