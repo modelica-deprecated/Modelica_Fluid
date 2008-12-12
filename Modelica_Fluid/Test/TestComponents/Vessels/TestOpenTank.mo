@@ -34,11 +34,11 @@ model TestOpenTank
   Modelica_Fluid.Sensors.Pressure pressure(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{40,16},{60,36}}, rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe(
+  Modelica_Fluid.Pipes.StaticPipe pipe(
     height_ab=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    redeclare package WallFriction = 
-        Modelica_Fluid.Fittings.BaseClasses.WallFriction.LaminarAndQuadraticTurbulent,
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LaminarAndQuadraticTurbulentFlow,
     diameter=0.02,
     length=200) annotation (Placement(transformation(
         origin={0,-10},

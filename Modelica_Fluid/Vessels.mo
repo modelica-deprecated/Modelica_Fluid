@@ -1,8 +1,8 @@
 within Modelica_Fluid;
-package Vessels "Generic volume, tank and other vessel type components"
+package Vessels "Devices for storing fluid"
    extends Modelica_Fluid.Icons.VariantLibrary;
 
-    model Volume "Fixed volume with ports"
+    model Volume "Fixed volume with ports, closed to the environment"
       extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolumePorts(
         Qs_flow=heatPort.Q_flow);
 
@@ -318,6 +318,7 @@ Implemented trace substances.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+equation
 
 end OpenTank;
 
@@ -620,8 +621,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 3))),
           Line(
             points={{-100,100},{100,100}},

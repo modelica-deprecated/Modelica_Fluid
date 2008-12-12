@@ -1,6 +1,6 @@
 within Modelica_Fluid;
 package Sensors
-  "Ideal sensor components (provide the variables in a fluid connector as signals)"
+  "Ideal sensor components to extract signals from a fluid connector"
   extends Modelica_Fluid.Icons.VariantLibrary;
 
   annotation (preferedView="info", Documentation(info="<html>

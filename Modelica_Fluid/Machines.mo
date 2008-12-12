@@ -1,5 +1,6 @@
 within Modelica_Fluid;
-package Machines "Fluid flow machines"
+package Machines
+  "Devices for converting between energy held in a fluid and mechanical energy"
   extends Modelica_Fluid.Icons.VariantLibrary;
   model SweptVolume
     "varying cylindric volume depending on the postition of the piston"

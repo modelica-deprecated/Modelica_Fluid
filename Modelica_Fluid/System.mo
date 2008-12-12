@@ -87,12 +87,15 @@ is used for the current simulation.
             100,100}}),
             graphics),
     Documentation(info="<html>
- 
+<p>
+ A system component is needed in each fluid model to provide system-wide settings, such as ambient conditions and overall modeling assumptions.
+ The system settings are propagated to the fluid models using the inner/outer mechanism. 
+</p>
+<p>
+ A model should never directly use system parameters. 
+ Instead a local parameter should be declared, which uses the global setting as default. 
+ The only exception currently made is the gravity system.g.
+</p>
 </html>"));
 
-/*
-    Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape dummyShape 
-    "Just temporarily, to force Dymola to open an animation window (only then animation setup is available for diagram animation)"
-      annotation (extent=[-60,20; -40,40]);
-*/
 end System;

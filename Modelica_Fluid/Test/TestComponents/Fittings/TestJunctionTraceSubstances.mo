@@ -46,17 +46,17 @@ model TestJunctionTraceSubstances
     offset=1E5 + 20) 
                 annotation (Placement(transformation(extent={{-100,24},{-80,44}},
           rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe1(
+  Modelica_Fluid.Pipes.StaticPipe pipe1(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) annotation (Placement(transformation(
           extent={{-24,-30},{-4,-10}},rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe2(
+  Modelica_Fluid.Pipes.StaticPipe pipe2(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) annotation (Placement(transformation(
           extent={{56,-30},{76,-10}}, rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe3(
+  Modelica_Fluid.Pipes.StaticPipe pipe3(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) 
@@ -81,7 +81,7 @@ model TestJunctionTraceSubstances
         origin={10,70},
         extent={{-10,-10},{10,10}},
         rotation=270)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe4(
+  Modelica_Fluid.Pipes.StaticPipe pipe4(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) 
@@ -98,7 +98,7 @@ model TestJunctionTraceSubstances
         origin={40,70},
         extent={{-10,-10},{10,10}},
         rotation=270)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe5(
+  Modelica_Fluid.Pipes.StaticPipe pipe5(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium) 

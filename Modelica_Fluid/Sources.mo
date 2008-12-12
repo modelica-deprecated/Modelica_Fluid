@@ -1,6 +1,5 @@
 within Modelica_Fluid;
-package Sources
-  "Generic sources for fluid connectors to define fixed or prescribed ambient conditions"
+package Sources "Define fixed or prescribed boundary conditions"
   extends Modelica_Fluid.Icons.VariantLibrary;
   model FixedBoundary "Boundary source component"
     extends Sources.BaseClasses.PartialSource;

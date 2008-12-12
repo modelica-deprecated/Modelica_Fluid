@@ -5,7 +5,8 @@ package ToBeRemoved "models that will disappear from the release"
     extends Modelica_Fluid.ToBeRemoved.PartialPipe_Old(
        redeclare model HeatTransfer = 
           Pipes.BaseClasses.HeatTransfer.PipeHT_ideal);
-    Modelica_Fluid.Fittings.WallFrictionAndGravity wallFriction(
+    Modelica_Fluid.Pipes.BaseClasses.WallFriction.TestWallFrictionAndGravity
+      wallFriction(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
       redeclare package WallFriction = WallFriction,
@@ -84,7 +85,8 @@ package ToBeRemoved "models that will disappear from the release"
       final use_fluidHeatPort=true) "Edit heat transfer parameters" 
       annotation (editButton=true, Placement(transformation(extent={{-20,0},{20,40}},   rotation=0)));
 
-    Modelica_Fluid.Fittings.WallFrictionAndGravity wallFriction1(
+    Modelica_Fluid.Pipes.BaseClasses.WallFriction.TestWallFrictionAndGravity
+      wallFriction1(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
       redeclare package WallFriction = WallFriction,
@@ -120,7 +122,8 @@ package ToBeRemoved "models that will disappear from the release"
       neglectPortDiameters=true) 
       annotation (Placement(transformation(extent={{-10,-30},{10,-10}},rotation=
              0)));
-    Modelica_Fluid.Fittings.WallFrictionAndGravity wallFriction2(
+    Modelica_Fluid.Pipes.BaseClasses.WallFriction.TestWallFrictionAndGravity
+      wallFriction2(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
       redeclare package WallFriction = WallFriction,
@@ -753,9 +756,9 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 
     // Pressure loss
     replaceable package WallFriction = 
-      Modelica_Fluid.Fittings.BaseClasses.WallFriction.QuadraticTurbulent 
+      Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent 
       constrainedby
-      Modelica_Fluid.Fittings.BaseClasses.WallFriction.PartialWallFriction
+      Modelica_Fluid.Pipes.BaseClasses.WallFriction.PartialWallFriction
       "Characteristic of wall friction"  annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
      parameter SI.Diameter diameter_h=4*crossArea/perimeter
       "Hydraulic diameter"                                       annotation(Dialog(tab="General", group="Pressure loss"));
