@@ -269,8 +269,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -621,8 +621,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 3))),
           Line(
             points={{-100,100},{100,100}},
@@ -730,9 +730,19 @@ end Tank;
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation (choicesAllMatching = true);
+
+        // Assumptions
         parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
         "Dynamics option" 
           annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+        parameter Boolean use_d_nominal=dynamicsType==Types.Dynamics.SteadyStateMass
+        "= true, if d_nominal is used, otherwise computed from medium" 
+          annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+        parameter SI.Density d_nominal = Medium.density_pTX(p_start, T_start, X_start)
+        "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+           annotation(Dialog(tab="Assumptions",enable=use_d_nominal));
+
+        // Initialization
         parameter Types.Init initType=
                   system.initType "Initialization option" 
           annotation(Evaluate=true, Dialog(tab = "Initialization"));
@@ -789,7 +799,11 @@ end Tank;
       equation
 
         // Total quantities
-        m = fluidVolume*medium.d;
+        if use_d_nominal then
+          m = fluidVolume*d_nominal;
+        else
+          m = fluidVolume*medium.d;
+        end if;
         mXi = m*medium.Xi;
         U = m*medium.u;
         mC = m*C;
@@ -1012,6 +1026,12 @@ An extending class still needs to define:
     parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
         "Dynamics option" 
       annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+    parameter Boolean use_d_nominal=dynamicsType==Types.Dynamics.SteadyStateMass
+        "= true, if d_nominal is used, otherwise computed from medium" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+    parameter SI.Density[n] d_nominal = Medium.density_pTX(p_start, T_start, X_start)
+        "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+       annotation(Dialog(tab="Assumptions",enable=use_d_nominal));
 
     //final parameter Boolean static = dynamicsType == Types.Dynamics.SteadyState
     //  "= true, static balances, no mass or energy is stored" annotation 2;
@@ -1084,7 +1104,11 @@ An extending class still needs to define:
   equation
     // Total quantities
     for i in 1:n loop
-      m[i] =fluidVolume[i]*medium[i].d;
+      if use_d_nominal then
+        m[i] =fluidVolume[i]*d_nominal[i];
+      else
+        m[i] =fluidVolume[i]*medium[i].d;
+      end if;
       mXi[i, :] = m[i]*medium[i].Xi;
       mC[i, :]  = m[i]*C[i, :];
       U[i] = m[i]*medium[i].u;
