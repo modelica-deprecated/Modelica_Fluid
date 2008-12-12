@@ -8,71 +8,13 @@ package Fittings
 </html>"));
 
 model GenericPressureLoss "Generic pressure loss model"
-  extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+  extends BaseClasses.PartialPressureLoss(pressureLoss(
+     dp_nominal = dp_nominal,
+     m_flow_nominal = m_flow_nominal));
 
   // Nominal values
   parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
   parameter SI.MassFlowRate m_flow_nominal "Mass flow rate for dp_nominal";
-
-  // Initialization
-  parameter Medium.AbsolutePressure p_a_start=system.p_start
-      "Start value of pressure at port_a" 
-    annotation(Dialog(tab = "Advanced"));
-
-  replaceable Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss
-      pressureLoss(
-          redeclare package Medium = Medium,
-          n=1,
-          state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
-                 Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
-          allowFlowReversal=allowFlowReversal,
-          dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
-          initType=Modelica_Fluid.Types.Init.SteadyState,
-          p_a_start=p_a_start,
-          p_b_start=p_a_start - dp_start,
-          m_flow_start=m_flow_start,
-          nPipes=1,
-          roughness=0,
-          diameter=diameter,
-          length=length,
-          height_ab=height_ab,
-          g=system.g,
-          dp_nominal = dp_nominal,
-          m_flow_nominal = m_flow_nominal) 
-    constrainedby
-      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss(
-          redeclare package Medium = Medium,
-          n=1,
-          state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
-                 Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
-          allowFlowReversal=allowFlowReversal,
-          dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
-          initType=Modelica_Fluid.Types.Init.SteadyState,
-          p_a_start=p_a_start,
-          p_b_start=p_a_start - dp_start,
-          m_flow_start=m_flow_start,
-          nPipes=1,
-          roughness=0,
-          diameter=diameter,
-          length=length,
-          height_ab=height_ab,
-          g=system.g) "Pressure loss model" 
-    annotation(choicesAllMatching=true,
-        Dialog(tab="Advanced", group="Pressure loss"),
-        Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
-
-  // Geometry
-  parameter SI.Length length=1 "Hydraulic length for pressure loss model" 
-     annotation(Dialog(tab="Advanced", group="Geometry"));
-  parameter SI.Diameter diameter=1 "Hydraulic diameter for pressure loss model"
-     annotation(Dialog(tab="Advanced", group="Geometry", enable=isCircular));
-
-  // Static head
-  parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
-      annotation(Dialog(tab="Advanced", group="Static head"), Evaluate=true);
-
-equation
-  m_flow = pressureLoss.m_flow[1];
 
   annotation (defaultComponentName="pressureLoss",
     Diagram(coordinateSystem(
@@ -307,7 +249,6 @@ model SharpEdgedOrifice
             textString="alpha")}));
 
 end SharpEdgedOrifice;
-
 
 model SuddenExpansion
     "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"
@@ -604,49 +545,14 @@ of the modeller.
 
   model StaticHead
     "Models the static head between two ports at different heights"
-    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
-    outer Modelica_Fluid.System system "System properties";
 
-    parameter SI.Length height_ab "Height(port_b) - Height(port_a)";
+    // Static head
+    parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
+        annotation(Dialog(group="Static head"));
 
-    parameter SI.AbsolutePressure dp_nominal=1
-      "Nominal pressure drop (0 to disable)" 
-      annotation(Dialog(tab="Advanced",group="Regularization"));
-    parameter SI.MassFlowRate m_flow_nominal=1 "Mass flow rate for dp_nominal" 
-      annotation(Dialog(tab="Advanced",group="Regularization"));
-
-    parameter Boolean smoothFlowReversal=false
-      "=true for numerical regularization around zero flow" 
-      annotation(Dialog(tab="Advanced",group="Regularization",enable=allowFlowReversal and not use_d_nominal));
-    parameter SI.MassFlowRate m_flow_small = 0.01
-      "Within regularization if |m_flow| < m_flow_small" 
-      annotation(Dialog(tab="Advanced",group="Regularization",enable=smoothFlowReversal));
-
-    parameter Boolean use_d_nominal = false
-      "= true to use d_nominal for static head, otherwise computed from medium"
-      annotation(Dialog(tab="Advanced"), Evaluate=true);
-    parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
-      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
-      annotation(Dialog(tab="Advanced", enable=use_d_nominal));
-
-  protected
-    SI.Density d_a = if use_d_nominal then d_nominal else port_a_d_inflow;
-    SI.Density d_b = if use_d_nominal then d_nominal else port_b_d_inflow;
-    Real g_times_height_ab(final unit="m2/s2") = system.g*height_ab
-      "Gravitiy times height_ab = dp_grav/d";
-
-  equation
-    if not allowFlowReversal or use_d_nominal then
-      dp = g_times_height_ab*d_a + dp_nominal/m_flow_nominal*m_flow;
-    else
-      if not smoothFlowReversal then
-        // exact switching
-        dp = g_times_height_ab*(if m_flow > 0 then d_a else d_b) + dp_nominal/m_flow_nominal*m_flow;
-      else
-        // regularization around zero flow
-        dp = g_times_height_ab*Utilities.regStep(m_flow, d_a, d_b, m_flow_small) + dp_nominal/m_flow_nominal*m_flow;
-      end if;
-    end if;
+    extends BaseClasses.PartialPressureLoss(pressureLoss(
+       dp_nominal = 1,
+       m_flow_nominal = 1));
 
     annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics={
@@ -667,7 +573,13 @@ of the modeller.
             fillColor={0,127,255},
             textString="%name")}),           Documentation(info="<html>
 <p>
-This model describes the static head due to the relative height between the two connectors. No mass, energy and momentum storage, and no pressure drop due to friction are considered.
+This component is intended for early designs and later replacement 
+by more detailed models. It describes the static head due to the relative height between the two connectors. 
+No mass, energy and momentum storage, and no pressure drop due to friction are considered. 
+</p>
+<p>
+Per default a small regularization with a linear loss of 1Pa per 1kg/s is configured. 
+The regularization can be changed for the pressureLoss model on the Advanced tab.
 </p>
 </html>", revisions="<html>
 <ul>
@@ -2082,5 +1994,85 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
        port_b_T = Medium.reference_T;
     end if;
   end PartialTwoPortTransport;
+
+  partial model PartialPressureLoss
+      "Two port transport model with replaceable pressure loss correlation"
+    extends PartialTwoPortTransport;
+
+    // Initialization
+    parameter Medium.AbsolutePressure p_a_start=system.p_start
+        "Start value of pressure at port_a" 
+      annotation(Dialog(tab = "Advanced"));
+
+    replaceable
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss
+        pressureLoss(
+            redeclare package Medium = Medium,
+            n=1,
+            state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
+                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
+            allowFlowReversal=allowFlowReversal,
+            dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
+            initType=Modelica_Fluid.Types.Init.SteadyState,
+            p_a_start=p_a_start,
+            p_b_start=p_a_start - dp_start,
+            m_flow_start=m_flow_start,
+            nPipes=1,
+            roughness=0,
+            diameter=diameter,
+            length=length,
+            height_ab=height_ab,
+            g=system.g) 
+      constrainedby
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss(
+            redeclare package Medium = Medium,
+            n=1,
+            state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
+                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
+            allowFlowReversal=allowFlowReversal,
+            dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
+            initType=Modelica_Fluid.Types.Init.SteadyState,
+            p_a_start=p_a_start,
+            p_b_start=p_a_start - dp_start,
+            m_flow_start=m_flow_start,
+            nPipes=1,
+            roughness=0,
+            diameter=diameter,
+            length=length,
+            height_ab=height_ab,
+            g=system.g) "Pressure loss model" 
+      annotation(choicesAllMatching=true,
+          Dialog(tab="Advanced", group="Pressure loss"),
+          Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
+
+    // Geometry
+    parameter SI.Length length=1 "Hydraulic length for pressure loss model" 
+       annotation(Dialog(tab="Advanced", group="Geometry"));
+    parameter SI.Diameter diameter=1
+        "Hydraulic diameter for pressure loss model" 
+       annotation(Dialog(tab="Advanced", group="Geometry", enable=isCircular));
+
+    // Static head
+    parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
+        annotation(Dialog(tab="Advanced", group="Static head"), Evaluate=true);
+
+  equation
+    m_flow = pressureLoss.m_flow[1];
+
+    annotation (Documentation(info="<html>
+<p>
+This partial model extends a TwoPortTransport with a replaceable pressure loss model.
+A LinearPressureLoss is configured by default, because the model is intended for early model 
+design phases, when no detailed geometrical information is available. 
+</p>
+<p>
+On the Advanced tab the linear pressure loss can be replaced with any pressure loss model 
+defined for the interface
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">
+          Pipes.BaseClasses.PartialFlowPressureLoss</a>,
+together with required geometry parameters.
+</p>
+</html>"));
+  end PartialPressureLoss;
   end BaseClasses;
 end Fittings;
