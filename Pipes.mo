@@ -36,7 +36,7 @@ package Pipes "Devices for conveying fluid"
             final diameter=4*crossArea/perimeter,
             final length=length,
             final height_ab=height_ab,
-            final g=system.g) "Pressure drop model" 
+            final g=system.g) "Pressure loss model" 
        annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
   equation
     port_a.m_flow = pressureLoss.m_flow[1]*nPipes;
@@ -251,7 +251,7 @@ pipe wall/environment).
     Medium.ThermodynamicState[nFlows+1] flowState
       "state vector for pressureLoss model";
 
-    // Pressure drop model
+    // Pressure loss model
     PressureLoss pressureLoss(
             redeclare final package Medium = Medium,
             final n=nFlows,
@@ -267,7 +267,7 @@ pipe wall/environment).
             final diameter=4*crossArea/perimeter,
             final length=length,
             final height_ab=height_ab,
-            final g=system.g) "Pressure drop model" 
+            final g=system.g) "Pressure loss model" 
        annotation (Placement(transformation(extent={{-77,-57},{77,-23}},rotation=0)));
 
     // Flow quantities
@@ -525,12 +525,12 @@ This also allows for taking into account friction losses with respect to the act
       parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
           annotation(Dialog(group="Static head"), Evaluate=true);
 
-      // Pressure drop
+      // Pressure loss
       replaceable model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow 
         constrainedby BaseClasses.PressureLoss.PartialFlowPressureLoss
         "Characteristics of wall friction and gravity" 
-          annotation(Dialog(group="Pressure drop"), choicesAllMatching=true);
+          annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
 
       // Heat transfer
       replaceable model HeatTransfer = 
@@ -574,7 +574,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
     end PartialPipe;
 
     package PressureLoss
-      "Pressure drop models for pipes, including wall friction and static head"
+      "Pressure loss models for pipes, including wall friction and static head"
           partial model PartialFlowPressureLoss
         "Base class for pipe wall friction models"
 
@@ -648,7 +648,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 thickness=1)}));
           end PartialFlowPressureLoss;
 
-          model NominalPressureLoss "Linear pressure drop for nominal values"
+          model LinearPressureLoss "Linear pressure drop for nominal values"
             extends PartialFlowPressureLoss;
 
             parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
@@ -685,7 +685,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 dp = g*height_ab*Utilities.regStep(m_flow, d[1:n], d[2:n+1], m_flow_small) + dp_nominal/m_flow_nominal*m_flow*nPipes;
               end if;
             end if;
-          end NominalPressureLoss;
+          end LinearPressureLoss;
 
           partial model PartialWallFrictionAndGravity
         "Base class for pressure drop in pipe due to wall friction and gravity (for both flow directions)"
@@ -1141,7 +1141,7 @@ The correlation takes into account the spatial position along the pipe flow, whi
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
           extends Icons.ObsoleteFunction;
 
-          input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
+          input SI.Pressure dp "Pressure loss (dp = port_a.p - port_b.p)";
           input SI.Density d_a "Density at port_a";
           input SI.Density d_b "Density at port_b";
           input SI.DynamicViscosity eta_a
@@ -1165,7 +1165,7 @@ The correlation takes into account the spatial position along the pipe flow, whi
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction and static head"
           extends Modelica.Icons.Function;
 
-          input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
+          input SI.Pressure dp "Pressure loss (dp = port_a.p - port_b.p)";
           input SI.Density d_a "Density at port_a";
           input SI.Density d_b "Density at port_b";
           input SI.DynamicViscosity eta_a
@@ -1204,7 +1204,7 @@ The correlation takes into account the spatial position along the pipe flow, whi
             "Absolute roughness of pipe, with a default for a smooth steel pipe (dummy if use_roughness = false)";
           input SI.MassFlowRate m_flow_small = 0.01
             "Turbulent flow if |m_flow| >= m_flow_small (dummy if use_m_flow_small = false)";
-          output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
+          output SI.Pressure dp "Pressure loss (dp = port_a.p - port_b.p)";
 
         annotation (Documentation(info="<html>
  
@@ -1230,7 +1230,7 @@ The correlation takes into account the spatial position along the pipe flow, whi
             "Absolute roughness of pipe, with a default for a smooth steel pipe (dummy if use_roughness = false)";
           input SI.MassFlowRate m_flow_small = 0.01
             "Turbulent flow if |m_flow| >= m_flow_small (dummy if use_m_flow_small = false)";
-          output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
+          output SI.Pressure dp "Pressure loss (dp = port_a.p - port_b.p)";
 
         annotation (Documentation(info="<html>
  
@@ -2047,7 +2047,7 @@ Laminar region:
             "Calculate mass flow rate as function of pressure drop due to friction"
 
             input SI.Pressure dp_fric
-              "Pressure drop due to friction (dp = port_a.p - port_b.p)";
+              "Pressure loss due to friction (dp = port_a.p - port_b.p)";
             input SI.Density d_a "Density at port_a";
             input SI.Density d_b "Density at port_b";
             input SI.DynamicViscosity eta_a
@@ -2151,7 +2151,7 @@ Laminar region:
               "Boundary between transition and turbulent regime";
             input Real Delta "Relative roughness";
             output SI.Pressure dp_fric
-              "Pressure drop due to friction (dp_fric = port_a.p - port_b.p - dp_grav)";
+              "Pressure loss due to friction (dp_fric = port_a.p - port_b.p - dp_grav)";
             output Real ddp_fric_dm_flow
               "Derivative of pressure drop with mass flow rate";
             annotation (smoothOrder=1);
@@ -2545,7 +2545,7 @@ b has the same sign of the change of density.</p>
             "Calculate mass flow rate as function of pressure drop due to friction"
 
           input SI.Pressure dp_fric
-              "Pressure drop due to friction (dp = port_a.p - port_b.p)";
+              "Pressure loss due to friction (dp = port_a.p - port_b.p)";
           input SI.Density d_a "Density at port_a";
           input SI.Density d_b "Density at port_b";
           input SI.DynamicViscosity eta_a
@@ -2575,7 +2575,7 @@ b has the same sign of the change of density.</p>
                 "Boundary between transition and turbulent regime";
             input Real Delta "Relative roughness";
             input SI.Pressure dp_fric
-                "Pressure drop due to friction (dp = port_a.p - port_b.p)";
+                "Pressure loss due to friction (dp = port_a.p - port_b.p)";
             output SI.ReynoldsNumber Re "Unknown return variable";
             output Real dRe_ddp "Derivative of return value";
             annotation (smoothOrder=1);
@@ -2673,7 +2673,7 @@ b has the same sign of the change of density.</p>
               "Boundary between transition and turbulent regime";
           input Real Delta "Relative roughness";
           output SI.Pressure dp_fric
-              "Pressure drop due to friction (dp_fric = port_a.p - port_b.p - dp_grav)";
+              "Pressure loss due to friction (dp_fric = port_a.p - port_b.p - dp_grav)";
           output Real ddp_fric_dm_flow
               "Derivative of pressure drop with mass flow rate";
           annotation(smoothOrder=1);
@@ -2768,7 +2768,7 @@ b has the same sign of the change of density.</p>
       end Detailed;
 
       model TestWallFrictionAndGravity
-        "Pressure drop in pipe due to wall friction and gravity (only for test purposes; if needed use Pipes.StaticPipe instead)"
+        "Pressure loss in pipe due to wall friction and gravity (only for test purposes; if needed use Pipes.StaticPipe instead)"
         extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
 
         replaceable package WallFriction = 

@@ -913,11 +913,11 @@ Modelica_Fluid was refactored and finalized for the release:
      The pipe heat transfer models have been further developed accordingly.<br>
      Based on the new model interfaces 
      <ul>
-     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowPressureLoss\">
-          Pipes.BaseClasses.PartialFlowPressureLoss</a></li>
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">
+          Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss</a></li>
      and
      <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">
-          Pipes.BaseClasses.PartialFlowHeatTransfer</a></li>,
+          Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer</a></li>,
      </ul>
      new pressure loss and heat transfer correlations can be added to existing pipe models,
      e.g. to consider two phase flow.</li>
@@ -937,7 +937,7 @@ Modelica_Fluid was refactored and finalized for the release:
 <li> System (former Ambient)<br> 
      The use of the global System object has been extended towards common default values for
      modeling assumptions and initialization.</li>
-
+ 
 <li> Common base classes implementing mass and energy balances<br>
      Mass and energy balances are now defined in the common base classes
      <ul>
