@@ -50,28 +50,29 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (Placement(transformation(extent={{60,10},{40,30}}, rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe1(
+  Modelica_Fluid.Pipes.BaseClasses.WallFriction.TestWallFrictionAndGravity
+    pipe1(
     length=1,
     diameter=0.1,
     redeclare package Medium = Medium,
     roughness=roughness,
     port_a(m_flow(start=-0.6)),
+    redeclare package WallFriction = 
+        Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
     dp_small=0.1,
-    show_Re=true,
-    redeclare package WallFriction = 
-        Modelica_Fluid.Fittings.BaseClasses.WallFriction.Detailed) 
-                      annotation (Placement(transformation(extent={{0,40},{20,
+    show_Re=true)     annotation (Placement(transformation(extent={{0,40},{20,
             60}}, rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe2(
+  Modelica_Fluid.Pipes.BaseClasses.WallFriction.TestWallFrictionAndGravity
+    pipe2(
     length=1,
     diameter=0.1,
-    from_dp=false,
     redeclare package Medium = Medium,
     roughness=roughness,
     redeclare package WallFriction = 
-        Modelica_Fluid.Fittings.BaseClasses.WallFriction.Detailed,
-    port_a(m_flow(start=-0.6)),
-    show_Re=true)     annotation (Placement(transformation(extent={{0,10},{20,
+        Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed (
+           from_dp=false,
+           show_Re=true),
+    port_a(m_flow(start=-0.6)))     annotation (Placement(transformation(extent={{0,10},{20,
             30}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p3(
     redeclare package Medium = Medium,

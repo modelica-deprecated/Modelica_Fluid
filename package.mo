@@ -1,5 +1,5 @@
 within ;
-package Modelica_Fluid "Modelica_Fluid, 1.0 Streams Beta 3: One-dimensional thermo-fluid flow in pipe networks using the Modelica.Media media description (requires package Modelica 3.0 and Dymola 7.1)"
+package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional thermo-fluid flow models using the Modelica.Media media description (requires package Modelica 3.0 and Dymola 7.1)"
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
@@ -9,10 +9,12 @@ package UsersGuide "Users Guide"
   annotation (DocumentationClass=true, Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Users guide of package Modelica_Fluid</font></h3>
 <p> 
-Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
-components describing
+The library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the 
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
+The library contains components describing
 <b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models are decoupled.
+component equations and the media models 
+as well as pressure loss and heat transfer correlations are decoupled from each other.
 All components are implemented such that they can be used for
 media from the Modelica.Media library. This means especially that an
 incompressible or compressible medium, a single or a multiple
@@ -26,14 +28,6 @@ class KnownLimitations "Known limitations"
 
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Known limitations</font></h3>
- 
-<p>
-This public release of the Modelica_Fluid library is
-still a Beta-Version. The goal is to improve it and we are
-interested in your feedback, i.e., bug reports and
-improvement suggestions. Please, send your emails to
-the fluid development group at <b>Modelica-design@Modelica.org</b>.
-</p>
  
 <p>
 The Modelica_Fluid library has quite ambitious goals, especially,
@@ -157,7 +151,9 @@ This library has the following main features:
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Getting started</font></h3>
 <p>
-An example will be included here.
+Please explore the 
+<a href=\"Modelica://Modelica_Fluid.Examples\">Examples</a>,
+which provide simple models for a broad variety of applications.
 </p>
 </html>
 "));
@@ -562,15 +558,13 @@ and 0.0025% around x=1.
 <h3><font color=\"#008000\" size=5>Wall friction</font></h3>
  
 <p>
-One important special case for a pressure drop is the friction at the
+One important special case for a pressure loss is the friction at the
 wall of a pipe under the assumption of quasi steady state flow (i.e., the
 mass flow rate varies only slowly). In this section it is explained how this case is
-handeled in the Modelica_Fluid library for commercial pipes with
+handeled in the Modelica_Fluid library for pipes with
 <b>nonuniform roughness</b>, including the smooth pipe
 as a special case (see 
-<a href=\"Modelica://Modelica_Fluid.PressureLosses.WallFrictionAndGravity\">PressureLosses.WallFrictionAndGravity</a>
-and 
-<a href=\"Modelica://Modelica_Fluid.PressureLosses.Utilities.WallFriction\">PressureLosses.Utilities.WallFriction</a>).
+<a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.WallFriction\">Pipes.BaseClasses.WallFriction</a>.
 The treatment is non-standard in order to get a 
 numerically well-posed description.
 </p>
@@ -903,6 +897,51 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-12</font></h3>
+ 
+<p>
+Modelica_Fluid was refactored and finalized for the release:
+</p>
+ 
+<ul>
+<li> Refactoring of the code<br>
+     This became necessary as the previous release Modelica_Fluid Streams Beta3 
+     still reflected the long development history, while the basic concepts had been settled.</li>
+ 
+<li> Replaceable PressureLoss and HeatTransfer models<br>
+     The pipe models now have replaceable PressureLoss models,
+     which are parameterized with the Medium and the ThermodynamicState of flow segments. 
+     The replaceable HeatTransfer models have been further developed accordingly.
+     This allows the addition of new pressure loss and heat transfer correlations to existing pipe models,
+     e.g. to consider two phase flow.</li>
+ 
+<li> Finalization of trace substrances<br>
+     Modelica_Fluid now provides a sound implementation for trace substances, 
+     which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
+ 
+<li> New approach for the connection of pipe models<br>
+     So far the preferred modeling was to put full mass balances 
+     into the pipes and expose half momentum balances through the ports (ModelStructure a_v_b). 
+     This resulted in nonlinear equation systems for pressure/flow correlations in connection sets. 
+     A new default ModelStructure av_vb has been introduced putting full momentum balances into the pipes and 
+     exposing mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
+     High-index DAEs need to be treated instead in connection sets.</li>
+ 
+<li> All examples are working now (using Dymola 7.1). The number of examples has been extended.</li>
+ 
+</ul> 
+ 
+<p>
+\"Check\" for the library is successful. \"Check with Simulation\" 
+(i.e., simulating all test models in the library) is successful
+with the exception:
+</p>
+ 
+<ul>
+<li> Test.TestCriticalCases.DistributedPipeInitialization<br>
+     The model does not initialize in steady-state with detailed pipe wall friction
+     and two phase flow conditions. Two phase flow is generally not supported yet.</li>
+</ul>
  
 <h3><font color=\"#008000\">Version 1.0 Streams Beta 3, 2008-10-12</font></h3>
  
@@ -1951,12 +1990,31 @@ class Contact "Contact"
  
 <dl>
 <dt>The development of the Modelica_Fluid package is organized by<br>&nbsp;</dt>
-<dd>Francesco Casella<br>
+<dd>
+<table border=0 cellspacing=0 cellpadding=2>
+<tr>
+<td>
+    Francesco Casella<br>
     Dipartimento di Elettronica e Informazione<br>
     Politecnico di Milano<br>
     Via Ponzio 34/5<br>
     I-20133 Milano, Italy<br>
     email: <A HREF=\"mailto:casella@elet.polimi.it\">casella@elet.polimi.it</A><br>&nbsp;
+</td>
+<td></td>
+<td>and</td>
+<td></td>
+<td>
+    R&uuml;diger Franke<br>
+    ABB AG<br>
+    PTSP-E22<br>
+    Kallstadter Str. 1<br>
+    D-68163, Germany<br>
+    email: <A HREF=\"mailto:ruediger.franke@de.abb.com\">ruediger.franke@de.abb.com</A><br>&nbsp;
+</td>
+</tr>
+</table>
+</dd>
 </dl>
 <p><b>Acknowledgements:</b></p>
 <p>
@@ -1983,10 +2041,9 @@ and many have contributed.
      Sven Erik Mattsson, Chuck Newman, Hans Olsson,
      Martin Otter, Katrin Pr&ouml;l&szlig;,
      Christoph Richter, Mike Tiller, Hubertus Tummescheit,
-     Allan Watson.<br><br></li>
-<li> Partial financial support of ABB and of DLR for the further development
-     of this library (especially the development of the new concept of
-     stream connectors) within the <a href=\"http://www.itea2.org\">ITEA</a> project 
+     Allan Watson, Michael Wetter.<br><br></li>
+<li> Partial financial support by ABB and by DLR for the further development
+     of this library within the <a href=\"http://www.itea2.org\">ITEA</a> project 
      <a href=\"http://www.itea2.org/public/project_leaflets/EUROSYSLIB_profile_oct-07.pdf\">EUROSYSLIB</a>
      is highly appreciated (BMBF Föderkennzeichen: 01IS07022F).</li>
 </ul>
@@ -1996,7 +2053,7 @@ end UsersGuide;
 
 
 annotation (
-  version="1.0 Streams Beta 3",
+  version="1.0 Release Candidate 1",
   versionBuild="$Rev$",
   versionDate="$Date::                            $",
   preferedView="info",
@@ -2006,10 +2063,12 @@ annotation (
       "Fittings", "Sources", "Sensors", "Interfaces", "*"},
   Documentation(info="<html>
 <p>
-Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package providing
-components describing
+Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
+The library contains components describing
 <b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models are decoupled.
+component equations and the media models 
+as well as pressure loss and heat transfer correlations are decoupled from each other.
 All components are implemented such that they can be used for
 media from the Modelica.Media library. This means especially that an
 incompressible or compressible medium, a single or a multiple
@@ -2019,7 +2078,7 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
  
 <p>
-This is version <b>1.0 Streams Beta 3</b> of the Modelica_Fluid library.
+This is version <b>1.0 Release Candidate 1</b> of the Modelica_Fluid library.
 With respect to previous versions of the Modelica_Fluid library, the design
 of the connectors has been changed, using the recently developed concept
 with streams connectors (see an overview and a rational 

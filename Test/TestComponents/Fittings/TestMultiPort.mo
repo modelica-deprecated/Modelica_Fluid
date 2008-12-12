@@ -43,13 +43,13 @@ model TestMultiPort
     offset=7e5) annotation (Placement(transformation(extent={{-10,-10},{10,10}},
           rotation=270,
         origin={-80,10})));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe1(
+  Modelica_Fluid.Pipes.StaticPipe pipe1(
     length=1,
     diameter=0.1,
     redeclare package Medium = Modelica.Media.Air.MoistAir) 
                                        annotation (Placement(transformation(
           extent={{40,-30},{60,-10}}, rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe2(
+  Modelica_Fluid.Pipes.StaticPipe pipe2(
     length=1,
     diameter=0.1,
     redeclare package Medium = Modelica.Media.Air.MoistAir) 

@@ -41,20 +41,17 @@ model TestJunctionVolume
     height=-6.5e5,
     offset=7e5) annotation (Placement(transformation(extent={{-90,-24},{-70,-4}},
           rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe(      redeclare package
-      Medium = 
+  Modelica_Fluid.Pipes.StaticPipe pipe(      redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1)                      annotation (Placement(transformation(
           extent={{-12,-30},{8,-10}}, rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe1(      redeclare package
-      Medium = 
+  Modelica_Fluid.Pipes.StaticPipe pipe1(      redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1)                      annotation (Placement(transformation(
           extent={{50,-30},{70,-10}}, rotation=0)));
-  Modelica_Fluid.Fittings.WallFrictionAndGravity pipe2(      redeclare package
-      Medium = 
+  Modelica_Fluid.Pipes.StaticPipe pipe2(      redeclare package Medium = 
         Modelica.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1) 

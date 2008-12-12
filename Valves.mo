@@ -1,5 +1,5 @@
 within Modelica_Fluid;
-package Valves "Valve models for the regulation and control of fluid flow"
+package Valves "Components for the regulation and control of fluid flow"
     extends Modelica_Fluid.Icons.VariantLibrary;
 
     model ValveIncompressible "Valve for (almost) incompressible fluids"
