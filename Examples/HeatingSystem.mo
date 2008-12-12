@@ -142,11 +142,11 @@ tankLevel = tank.level;
   connect(radiator.port_a, sensor_T_1.port) annotation (Line(points={{28,-66},
           {46,-66},{46,-56}}, color={0,127,255}));
   connect(radiator.port_b, tank.ports[1]) annotation (Line(
-      points={{8,-66},{-65.55,-66},{-65.55,4.9}},
+      points={{8,-66},{-65,-66},{-65,8.2}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[2], pump.port_a) annotation (Line(
-      points={{-65.55,7.1},{-65.55,-6},{-58,-6}},
+      points={{-65,3.8},{-65,-6},{-58,-6}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(valveOpening.y, valve.opening) annotation (Line(
@@ -157,7 +157,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},

@@ -600,13 +600,13 @@ package Tanks "Library demonstrating the usage of the tank model"
     connect(pipe2.port_a, pipe3.port_a) annotation (Line(points={{-6.12323e-016,
             -20},{0,-20},{0,-40},{60,-40},{60,-20}}, color={0,127,255}));
     connect(pipe3.port_b, tank3.ports[1]) 
-      annotation (Line(points={{60,0},{60,0},{60,10},{59,10}},
+      annotation (Line(points={{60,0},{60,0},{60,10},{60,10}},
                                                 color={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{-60,0},{-60,
-            10},{-60,20},{-61,20}},
+            10},{-60,20},{-60,20}},
                   color={0,127,255}));
     connect(pipe2.port_b, tank2.ports[1]) annotation (Line(
-        points={{6.12323e-016,0},{-1,0},{-1,20}},
+        points={{6.12323e-016,0},{0,0},{0,20}},
         color={0,127,255},
         smooth=Smooth.None));
   end ThreeOpenTanks;
