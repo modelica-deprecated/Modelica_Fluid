@@ -39,7 +39,7 @@ annotation (
     N_nominal=1500,
     use_N_input=true,
     initType=Modelica_Fluid.Types.Init.InitialValues,
-    M=0.1,
+    V=0.1/1000,
     p_a_start=100000,
     p_b_start=700000)     annotation (Placement(transformation(extent={{-46,-40},
             {-14,-10}},rotation=0)));

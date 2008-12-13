@@ -32,7 +32,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
           q_nominal={0,0.25,0.5}, head_nominal={100,60,0}),
-    M=50,
+    V=50/1000,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_N_input=true,
     nPumps=1) 
@@ -92,8 +92,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-            100,100}},
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+            {100,100}},
         grid={1,1}),
             graphics),
     Documentation(info="<html>
@@ -162,7 +162,7 @@ equation
       smooth=Smooth.None,
       pattern=LinePattern.Dot));
   connect(reservoir.ports[1], pipe.port_b) annotation (Line(
-      points={{-10.5,-16},{-10.5,-30},{-30,-30},{-30,-40}},
+      points={{-10,-16},{-10,-30},{-30,-30},{-30,-40}},
       color={0,127,255},
       smooth=Smooth.None));
 end PumpingSystem;

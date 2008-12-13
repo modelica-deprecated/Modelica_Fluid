@@ -209,8 +209,8 @@ package Machines
       import Modelica.SIunits.Conversions.NonSIunits.*;
       import Modelica.Constants;
     extends Modelica_Fluid.Interfaces.PartialTwoPort(
-      port_a_exposesState = (M > 0),
-      port_b_exposesState = (M > 0),
+      port_a_exposesState = (V > 0),
+      port_b_exposesState = (V > 0),
       port_a(
         p(start=p_a_start),
         m_flow(start = m_flow_start,
@@ -223,30 +223,35 @@ package Machines
         PumpCharacteristics.baseFlow
         "Head vs. q_flow characteristic at nominal speed and density" 
       annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
+    parameter AngularVelocity_rpm N_nominal = 1500 "Nominal rotational speed" 
+      annotation(Dialog(group="Characteristics"));
     parameter Boolean usePowerCharacteristic = false
         "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
        annotation(Evaluate=true,Dialog(group="Characteristics"));
-    replaceable function powerCharacteristic = 
-          PumpCharacteristics.quadraticPower (
-         q_nominal={0,0,0},W_nominal={0,0,0})
-        "Power consumption vs. q_flow at nominal speed and density" 
-      annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
-                 choicesAllMatching=true);
     replaceable function efficiencyCharacteristic = 
       PumpCharacteristics.constantEfficiency(eta_nominal = 0.8) constrainedby
         PumpCharacteristics.baseEfficiency
         "Efficiency vs. q_flow at nominal speed and density" 
       annotation(Dialog(group="Characteristics",enable = not usePowerCharacteristic),
                  choicesAllMatching=true);
-    parameter AngularVelocity_rpm N_nominal = 1500 "Nominal rotational speed" 
-      annotation(Dialog(group="Characteristics"));
+    replaceable function powerCharacteristic = 
+          PumpCharacteristics.quadraticPower (
+         q_nominal={0,0,0},W_nominal={0,0,0})
+        "Power consumption vs. q_flow at nominal speed and density" 
+      annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
+                 choicesAllMatching=true);
 
     parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal fluid density" 
       annotation(Dialog(group="Characteristics"));
     parameter Integer nPumps(min=1) = 1 "Number of pumps in parallel";
-    parameter SI.Mass M = 0 "Fluid mass inside the pump";
-    parameter Boolean checkValve=false "Reverse flow stopped";
+
+    // Assumptions
+    parameter Boolean checkValve=false "= true to prevent reverse flow" 
+      annotation(Dialog(tab="Assumptions"));
+    parameter SI.Volume V = 0
+        "Fluid volume inside the pump; consider if checkValve" 
+      annotation(Dialog(tab="Assumptions"));
 
     parameter Medium.AbsolutePressure p_a_start
         "Guess value for inlet pressure" 
@@ -271,8 +276,7 @@ package Machines
     parameter SI.MassFlowRate m_flow_start = 0
         "Guess value for mass flow rate (total)" 
       annotation(Dialog(tab="Initialization"));
-    outer Modelica_Fluid.System system "System properties";
-    parameter SI.Acceleration g=system.g;
+    final parameter SI.Acceleration g=system.g;
     parameter Types.Init initType=
               Types.Init.GuessValues "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
@@ -341,10 +345,10 @@ package Machines
     port_b.C_outflow = inStream(port_a.C_outflow);
 
     // Energy balances
-    if M > 0 then
+    if V > 0 then
        // Dynamic energy balance
        // mass variations and p/d are neglected
-       nPumps*M*der(h) = port_a.m_flow*actualStream(port_a.h_outflow) +
+       nPumps*V*d_nominal*der(h) = port_a.m_flow*actualStream(port_a.h_outflow) +
                      port_b.m_flow*actualStream(port_b.h_outflow) +
                      W_tot;
        port_b.h_outflow  = h;
@@ -364,7 +368,7 @@ package Machines
     end if;
 
   initial equation
-    if initType == Types.Init.GuessValues or not M > 0 then
+    if initType == Types.Init.GuessValues or not V > 0 then
     // no initial equations
     elseif initType == Types.Init.InitialValues then
       h = h_start;
