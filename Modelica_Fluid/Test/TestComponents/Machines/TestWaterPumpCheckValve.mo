@@ -37,7 +37,7 @@ annotation (
           q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     N_nominal=1500,
     checkValve=true,
-    M=0.1,
+    V=0.1/1000,
     initType=Modelica_Fluid.Types.Init.SteadyState,
     p_a_start=100000,
     p_b_start=700000,

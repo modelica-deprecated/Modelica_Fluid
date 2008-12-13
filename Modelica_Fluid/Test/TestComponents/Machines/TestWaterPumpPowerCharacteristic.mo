@@ -24,7 +24,7 @@ model TestWaterPumpPowerCharacteristic
     redeclare function powerCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticPower
         ( q_nominal={0,0.001,0.0015}, W_nominal={550,650,800}),
-    M=0.1,
+    V=0.1/1000,
     p_a_start=100000,
     p_b_start=700000,
     initType=Modelica_Fluid.Types.Init.SteadyState) 
