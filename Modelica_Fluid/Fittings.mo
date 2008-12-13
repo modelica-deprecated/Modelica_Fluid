@@ -1994,39 +1994,31 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
       "Two port transport model with replaceable pressure loss correlation"
     extends PartialTwoPortTransport;
 
+    // Assumptions
+    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
+        "Dynamics option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+
     // Initialization
+    parameter Types.Init initType=
+              system.initType "Initialization option" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
     parameter Medium.AbsolutePressure p_a_start=system.p_start
         "Start value of pressure at port_a" 
       annotation(Dialog(tab = "Advanced"));
 
     replaceable
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss
-        pressureLoss(
-            redeclare package Medium = Medium,
-            n=1,
-            state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
-                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
-            allowFlowReversal=allowFlowReversal,
-            dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
-            initType=Modelica_Fluid.Types.Init.SteadyState,
-            p_a_start=p_a_start,
-            p_b_start=p_a_start - dp_start,
-            m_flow_start=m_flow_start,
-            nPipes=1,
-            roughness=0,
-            diameter=diameter,
-            length=length,
-            height_ab=height_ab,
-            g=system.g) 
-      constrainedby
+        pressureLoss 
+                   constrainedby
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss(
             redeclare package Medium = Medium,
             n=1,
             state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
                    Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
             allowFlowReversal=allowFlowReversal,
-            dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
-            initType=Modelica_Fluid.Types.Init.SteadyState,
+            dynamicsType=dynamicsType,
+            initType=initType,
             p_a_start=p_a_start,
             p_b_start=p_a_start - dp_start,
             m_flow_start=m_flow_start,
