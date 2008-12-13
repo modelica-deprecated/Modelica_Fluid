@@ -150,7 +150,7 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(extent={{-114,210},{-134,230}},
             rotation=0)));
-    Modelica_Fluid.Fittings.TeeJunctionIdeal volume2(
+    Fittings.TeeJunctionIdeal volume2(
       redeclare package Medium = BatchMedium) 
                annotation (Placement(transformation(
           origin={-180,220},
@@ -162,7 +162,7 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(extent={{112,210},{132,230}},
             rotation=0)));
-    Modelica_Fluid.Fittings.TeeJunctionIdeal volume8(
+    Fittings.TeeJunctionIdeal volume8(
       redeclare package Medium = BatchMedium) 
                annotation (Placement(transformation(
           origin={160,220},
@@ -272,7 +272,8 @@ present that are regulated by a central control system.
       checkValve=false,
       use_N_input=true,
       p_a_start=100000,
-      p_b_start=100000) 
+      p_b_start=100000,
+      M=0.01) 
       annotation (Placement(transformation(extent={{-128,-260},{-148,-240}},
             rotation=0)));
     Modelica_Fluid.Machines.ControlledPumpNPSH P2(
@@ -344,12 +345,11 @@ present that are regulated by a central control system.
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       level_start=0.009,
-      T_start=298,
-      alpha0=4.9,
       levelMax=0.5,
       crossArea=0.05,
-      stiffCharacteristicForEmptyPort=false) 
-                         annotation (Placement(transformation(extent={{-100,
+      stiffCharacteristicForEmptyPort=false,
+      T_start=298,
+      alpha0=4.9e3)      annotation (Placement(transformation(extent={{-100,
               -140},{-60,-100}}, rotation=0)));
     Pipes.DistributedPipe pipeB1B2(
       redeclare package Medium = BatchMedium,
@@ -445,15 +445,14 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       V0=0.0001,
       nTopPorts=1,
-      T_start=298,
-      alpha0=4.9,
       levelMax=0.5,
       crossArea=0.05,
       level_start=0.02,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
-      stiffCharacteristicForEmptyPort=false) 
-                         annotation (Placement(transformation(extent={{80,-80},
+      stiffCharacteristicForEmptyPort=false,
+      T_start=298,
+      alpha0=4.9e3)      annotation (Placement(transformation(extent={{80,-80},
               {40,-40}}, rotation=0)));
     Fittings.MultiPort multiPort(redeclare package Medium = BatchMedium,
         nPorts_b=3) annotation (Placement(transformation(
@@ -527,7 +526,8 @@ present that are regulated by a central control system.
     connect(V10.port_b, B3.ports[2]) annotation (Line(points={{20,80},{20,88},{
             -1,88},{-1,100}},
                            color={0,127,255}));
-    connect(B4.ports[1], V12.port_b) annotation (Line(points={{-80,30},{-80,12}},
+    connect(B4.ports[1], V12.port_b) annotation (Line(points={{-81,30},{-81,21},
+            {-80,21},{-80,12}},
           color={0,127,255}));
     connect(CoolingB7.port, B7.heatPort) annotation (Line(points={{-120,-120},{
             -100,-120}}, color={191,0,0}));
@@ -543,23 +543,26 @@ present that are regulated by a central control system.
             {1,144},{1,142}}, color={0,127,255}));
     connect(pipeB2B3.port_b, V9.port_a) annotation (Line(points={{56,144},{80,
             144},{80,152}}, color={0,127,255}));
-    connect(V11.port_a, B4.topPorts[1]) annotation (Line(points={{-60,88},{-80,
-            88},{-80,70}}, color={0,127,255}));
+    connect(V11.port_a, B4.topPorts[1]) annotation (Line(points={{-60,88},{-79,
+            88},{-79,70}}, color={0,127,255}));
     connect(V10.port_a, pipeB1B1.port_b) annotation (Line(points={{20,60},{20,
             40}}, color={0,127,255}));
     connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-80,-19.6},
             {-80,-8}}, color={0,0,255}));
     connect(V15.port_b, B7.topPorts[1]) annotation (Line(points={{-80,-92},{-80,
-            -100}}, color={0,127,255}));
-    connect(B7.ports[1], pipeB7Pump.port_b) annotation (Line(points={{-80,-140},
-            {-80,-160}}, color={0,127,255}));
+            -96},{-80,-100},{-79,-100}},
+                    color={0,127,255}));
+    connect(B7.ports[1], pipeB7Pump.port_b) annotation (Line(points={{-81,-140},
+            {-81,-150},{-80,-150},{-80,-160}},
+                         color={0,127,255}));
     connect(pipePump1B1.port_a, V22.port_b) annotation (Line(points={{-180,20},
             {-180,-46}}, color={0,127,255}));
     connect(V25.port_b, pipePump2B2.port_a) annotation (Line(points={{160,-10},
             {160,20}},color={0,127,255}));
-    connect(B6.ports[1], pipeB6Pump.port_b) annotation (Line(points={{60,-80},{
-            60,-96}}, color={0,127,255}));
-    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{60,-40},{60,
+    connect(B6.ports[1], pipeB6Pump.port_b) annotation (Line(points={{61,-80},{
+            61,-88},{60,-88},{60,-96}},
+                      color={0,127,255}));
+    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{59,-40},{59,
             -28},{-19.6,-28}}, color={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{100,-60},{80,
             -60}}, color={191,0,0}));
@@ -679,7 +682,8 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
+
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -692,7 +696,7 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
@@ -960,7 +964,8 @@ handled properly.</p>
               fillPattern=FillPattern.Solid),
             Text(extent={{-145,-58},{146,-98}}, textString="%name"),
             Polygon(
-              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
+              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}}, 
+
               fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,
                   0} else {255,255,255}),
               lineColor={0,0,0})}),
@@ -1276,7 +1281,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1321,8 +1327,8 @@ handled properly.</p>
 Full steady state initialization is not supported, because the corresponding intial equations for temperature/enthalpy are undetermined (the flow rate through the port at steady state is zero). 
 </p>
 </HTML>"),
-        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
-                200,100}}),  graphics));
+        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
+                {200,100}}), graphics));
 
     end TankWith3InletOutletArraysWithEvaporatorCondensor;
 
@@ -1792,333 +1798,18 @@ Full steady state initialization is not supported, because the corresponding int
     end ControllerUtilities;
 
   model CoolingTank
-      "Open tank with top and bottom inlet/outlet ports at a defineable height, heat transfer through the walls and a cooling unit via heatPort connector"
-      import Modelica.Constants;
-      import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
-      import Modelica_Fluid.Utilities.regRoot2;
-      import Modelica_Fluid.Vessels.BaseClasses.TankPortData;
-
-    replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-      annotation (choicesAllMatching=true);
-
-    SI.Height level(stateSelect=StateSelect.prefer, start=level_start)
-        "Fluid level in the tank";
-
-  //Tank geometry
-      parameter SI.Height levelMax "Maximum level of tank before it overflows";
-      parameter SI.Area crossArea "Area of tank";
-      parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
-
-  //Port definitions
-      parameter Integer nTopPorts(min=1) = 1
-        "Number of inlet ports above levelMax (>= 1)";
-
-      Modelica_Fluid.Interfaces.FluidPort_a topPorts[nTopPorts](
-      redeclare package Medium = Medium,
-      m_flow(each start=0, each min=0)) if   nTopPorts > 0
-        "Inlet ports over levelMax at top of tank (fluid flows only from the port in to the tank)"
-      annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
-               0)));
-
-      parameter Modelica_Fluid.Vessels.BaseClasses.TankPortData portsData[:] = {TankPortData(diameter=0)}
-        "Data of inlet/outlet ports at side and bottom of tank";
-
-      Modelica_Fluid.Interfaces.FluidPort_b ports[size(portsData,1)](
-      redeclare package Medium = Medium,
-      m_flow(each start=0))
-        "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
-      annotation (Placement(transformation(extent={{-10,-110},{10,-90}},
-              rotation=0)));
+      "Tank with heat transfer through the walls and a cooling unit via heatPort connector"
+    extends Modelica_Fluid.Vessels.Tank(Qs_flow = heatPort.Q_flow);
 
   // Heat transfer
-      parameter SI.CoefficientOfHeatTransfer alpha0=0
+      parameter SI.CoefficientOfHeatTransfer alpha0=1e3
         "Coefficient of heat transfer of tank wall";
      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort annotation (Placement(
             transformation(extent={{-110,-10},{-90,10}}, rotation=0)));
 
-  //Ambient
-     outer Modelica_Fluid.System system "System properties";
-     parameter Medium.AbsolutePressure p_ambient=system.p_ambient
-        "Tank surface pressure" 
-      annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-     parameter Medium.Temperature T_ambient=system.T_ambient
-        "Tank surface Temperature" 
-      annotation(Dialog(tab = "Ambient and Initialization", group = "Ambient"));
-
-  //Initialization
-      parameter Types.Init initType=Types.Init.InitialValues
-        "Initialization option" 
-      annotation(Evaluate=true,Dialog(tab = "Ambient and Initialization", group = "Initialization"));
-      parameter SI.Height level_start(min=0) "Start value of tank level" 
-      annotation(Dialog(tab="Ambient and Initialization", group = "Initialization"));
-      parameter Medium.Temperature T_start=T_ambient
-        "Start value of temperature" 
-      annotation(Dialog(tab = "Ambient and Initialization", group = "Initialization"));
-      parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-        "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Ambient and Initialization", group = "Initialization", enable=Medium.nXi > 0));
-
-  // Advanced
-      parameter Real hysteresisFactor(min=0) = 0.1
-        "Hysteresis for empty pipe = diameter*hysteresisFactor" 
-      annotation(Dialog(tab="Advanced", group="Numerical properties"));
-      parameter SI.MassFlowRate m_flow_small(min=0) = 1e-5
-        "Regularization range at zero mass flow rate" 
-      annotation(Dialog(tab="Advanced", group="Numerical properties"));
-      parameter Boolean stiffCharacteristicForEmptyPort = true
-        "=true, if steep pressure loss characteristic for empty pipe port" 
-      annotation(Dialog(tab="Advanced", group="Numerical properties"), Evaluate=true);
-      parameter Real zetaLarge(min=0) = 1e5
-        "Large pressure loss factor if mass flows out of empty pipe port" 
-      annotation(Dialog(tab="Advanced", group="Numerical properties", enable=stiffCharacteristicForEmptyPort));
-
-  //Tank properties
-       final parameter Integer nPorts = size(ports,1)
-        "Number of inlet/outlet ports";
-       final parameter Medium.SpecificEnthalpy h_start=Medium.specificEnthalpy_pTX(
-          p_ambient,
-          T_start,
-          X_start) annotation(Hide=true);
-      Medium.BaseProperties medium(
-        preferredMediumStates=true,
-        p(start=p_ambient),
-        T(start=T_start),
-        h(start=h_start),
-        Xi(start=X_start[1:Medium.nXi]));
-      SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
-      SI.Energy U(stateSelect=StateSelect.never)
-        "Internal energy of tank volume";
-      SI.HeatFlowRate Q_lost "Heat lost through the walls";
-      SI.Mass m(stateSelect=StateSelect.never) "Mass of fluid in tank";
-      SI.Mass mXi[Medium.nXi](each stateSelect=StateSelect.never)
-        "Masses of independent components in the fluid";
-
-    protected
-      parameter SI.Area bottomArea[nPorts]=Constants.pi*{(portsData[i].diameter/2)^2 for i in 1:nPorts};
-      parameter SI.Diameter ports_emptyPipeHysteresis[nPorts] = portsData.diameter*hysteresisFactor;
-      SI.Length levelAbovePort[nPorts] "Height of fluid over bottom ports";
-      Boolean ports_m_flow_out[nPorts](each start = true, each fixed=true);
-      Boolean aboveLevel[nPorts] "= true, if level >= ports[i].portLevel";
-      Real zeta_out[nPorts];
-
-      Medium.EnthalpyFlowRate H_flow_top[nTopPorts]
-        "Enthalpy flow rates from the top ports in to the tank";
-      Medium.EnthalpyFlowRate H_flow_port[nPorts]
-        "Enthalpy flow rates from the ports in to the tank";
-      Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi]
-        "Substance mass flow rates from the top ports in to the tank";
-      Medium.MassFlowRate mXi_flow_port[nPorts, Medium.nXi]
-        "Substance mass flow rates from the ports in to the tank";
-
   equation
-    assert(level <= levelMax, "Tank starts to overflow (level = levelMax = " + String(level) + ")");
-    assert(m>=0, "Mass in tank is zero");
-
-    // Properties at top ports
-      for i in 1:nTopPorts loop
-         // It is assumed that fluid flows only from one of the top ports in to the tank and never vice versa
-         H_flow_top[i]     = topPorts[i].m_flow*actualStream(topPorts[i].h_outflow);
-         mXi_flow_top[i,:] = topPorts[i].m_flow*actualStream(topPorts[i].Xi_outflow);
-         topPorts[i].p     = p_ambient;
-         topPorts[i].h_outflow = h_start;
-         topPorts[i].Xi_outflow = X_start[1:Medium.nXi];
-  /*
-       assert(topPorts[i].m_flow > -1, "Mass flows out of tank via topPorts[" + String(i) + "]\n" +
-                                         "This indicates a wrong model");
-*/
-      end for;
-
-    // Properties at bottom ports
-      for i in 1:nPorts loop
-         H_flow_port[i]     = ports[i].m_flow*actualStream(ports[i].h_outflow);
-         mXi_flow_port[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
-         ports[i].h_outflow = medium.h;
-         ports[i].Xi_outflow = medium.Xi;
-         aboveLevel[i] = level >= (portsData[i].portLevel + ports_emptyPipeHysteresis[i])
-                         or pre(aboveLevel[i]) and level >= (portsData[i].portLevel - ports_emptyPipeHysteresis[i]);
-         levelAbovePort[i] = if aboveLevel[i] then level - portsData[i].portLevel else 0;
-
-         if stiffCharacteristicForEmptyPort then
-            // If port is above fluid level, use large zeta if fluid flows out of port (= small mass flow rate)
-            zeta_out[i] = 1 + (if aboveLevel[i] then 0 else zetaLarge);
-            ports[i].p = p_ambient + levelAbovePort[i]*system.g*medium.d
-                                 + Modelica_Fluid.Utilities.regSquare2(ports[i].m_flow, m_flow_small,
-                                    0, lossConstant_D_zeta(portsData[i].diameter, zeta_out[i])/medium.d);
-            ports_m_flow_out[i] = false;
-
-         else
-            // Handling according to Remelhe/Poschlad
-            ports_m_flow_out[i] = (pre(ports_m_flow_out[i]) and not ports[i].p>p_ambient)
-                                       or ports[i].m_flow < -1e-6;
-           if aboveLevel[i] then
-               ports[i].p = p_ambient + levelAbovePort[i]*system.g*medium.d -
-                                 smooth(2,noEvent(if ports[i].m_flow < 0 then ports[i].m_flow^2/
-                                       (2*medium.d*bottomArea[i]^2) else 0));
-           else
-              if pre(ports_m_flow_out[i]) then
-                 ports[i].m_flow = 0;
-              else
-                 ports[i].p = p_ambient;
-              end if;
-           end if;
-            zeta_out[i] =0;
-         end if;
-      end for;
-
-    // Total quantities
-      medium.T = heatPort.T;
-      medium.p = p_ambient;
-      V = crossArea*level + V0 "Volume of fluid";
-      m = V*medium.d "Mass of fluid";
-      mXi = m*medium.Xi "Mass of fluid components";
-      U = m*medium.u "Internal energy of fluid";
-      Q_lost = -alpha0*(crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level)*(medium.T-T_ambient)
+      heatPort.Q_flow = -alpha0*(crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level)*(medium.T-heatPort.T)
         "Q=-k*A*dT";
-
-    // Mass balances
-      der(m) = sum(topPorts.m_flow) + sum(ports.m_flow);
-      for i in 1:Medium.nXi loop
-        der(mXi[i]) = sum(mXi_flow_top[:,i]) + sum(mXi_flow_port[:,i]);
-      end for;
-
-    // Energy balance
-      if Medium.singleState then
-        der(U) = sum(H_flow_top) + sum(H_flow_port) + Q_lost + heatPort.Q_flow;
-                                 //Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)
-      else
-        der(U) = sum(H_flow_top) + sum(H_flow_port) - p_ambient*der(V) + Q_lost + heatPort.Q_flow;
-      end if;
-
-  initial equation
-      for i in 1:nPorts loop
-         pre(aboveLevel[i]) = level_start >= portsData[i].portLevel;
-      end for;
-
-      if initType == Types.Init.NoInit then
-      // no initial equations
-      elseif initType == Types.Init.InitialValues then
-        level = level_start;
-        medium.T = T_start;
-        medium.Xi = X_start[1:Medium.nXi];
-      elseif initType == Types.Init.SteadyState then
-        der(level) = 0;
-        der(medium.T) = 0;
-        der(medium.Xi) = zeros(Medium.nXi);
-      elseif initType == Types.Init.SteadyStateHydraulic then
-        der(level) = 0;
-        medium.T = T_start;
-        medium.Xi = X_start[1:Medium.nXi];
-      else
-        assert(false, "Unsupported initialization option");
-      end if;
-
-      annotation (
-        Icon(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1},
-            initialScale=0.2), graphics={
-            Rectangle(
-              extent={{-100,-100},{100,100}},
-              lineColor={255,255,255},
-              fillColor={255,255,255},
-              fillPattern=FillPattern.Solid),
-            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                  0,0}),
-            Rectangle(
-              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
-                   + 200*level/levelMax)}}),
-              lineColor={0,127,255},
-              fillColor={85,170,255},
-              fillPattern=FillPattern.Solid),
-            Text(
-              extent={{-94,19},{96,-1}},
-              lineColor={0,0,0},
-              textString=DynamicSelect(" ", realString(
-                    level,
-                    1,
-                    3))),
-            Line(
-              points={{-100,100},{100,100}},
-              color={0,0,0},
-              pattern=LinePattern.Dot),
-            Text(
-              extent={{-94,90},{95,60}},
-              lineColor={0,0,255},
-              textString="%name"),
-            Text(
-              extent={{-95,-85},{95,-65}},
-              lineColor={0,0,0},
-              textString="%level_start"),
-            Text(
-              extent={{-95,-55},{95,-35}},
-              lineColor={0,0,0},
-              textString="level_start ="),
-            Text(
-              extent={{-95,50},{95,30}},
-              lineColor={0,0,0},
-              textString="level =")}),
-        Documentation(info="<HTML>
-<p> 
-Model of a tank that is open to the environment at the fixed pressure
-<tt>p_ambient</tt>. Heat transfer to the environment and to 
-the tank walls is neglected.
-The tank is filled with a single or multiple-substance liquid, 
-assumed to have uniform temperature and mass fractions.
-</p> 
- 
-<p>
-At the top of the tank over the maximal fill level <b>levelMax</b> 
-a vector of FluidPorts, called <b>topPorts</b>, is present.
-The assumption is made that fluid flows always in to the tank via these
-ports (and never back in to the connector).
-If the tank has no top ports, set <b>nTopPorts</b> = 1, and do not
-connect to this port (the default connection semantics of Modelica
-leads to a behaviour as if the port would not be present; 
-the reason is that some tools do currently no support zero sized
-connectors).
-</p>
- 
-<p>
-The vector of connectors <b>ports</b> are fluid ports at the bottom
-and side of the tank at a defineable height. Fluid can flow either out
-of or in to this port. The fluid level of the tank may be below
-one of these ports. This case is approximated by introducing a
-large pressure flow coefficient so that the mass flow rate
-through this port is very small in this case.
-</p>
- 
-<p>
-If the tank starts to over flow (i.e., level > levelMax), an
-assertion is triggered.
-</p>
- 
-<p>
-When the diagram layer is open in the plot environment, the
-level of the tank is dynamically visualized. Note, the speed
-of the diagram animation in Dymola can be set via command
-<b>animationSpeed</b>(), e.g., animationSpeed(speed = 10)
-</p>
-</HTML>",   revisions="<html>
-<ul>
-<li><i>Jul. 29, 2006</i> by Martin Otter (DLR):<br> 
-   Improved handling of ports that are above the fluid level and
-   simpler implementation.</li>
- 
-<li><i>Jan. 6, 2006</i> by Katja Poschlad, Manuel Remelhe (AST Uni Dortmund), 
-   Martin Otter (DLR):<br> 
-   Implementation based on former tank model but with several improvements
-   (top, bottom, side ports; correctly treating kinetic energy for outlet
-   and total dissipation for inlet; ports can be above the fluid level).</li>
-</ul>
-</html>"),
-        Diagram(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1},
-            initialScale=0.2), graphics),
-        uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
   end CoolingTank;
 
   end BaseClasses;
