@@ -50,7 +50,7 @@ Ideally mixed volume of constant size with two fluid ports and one medium model.
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
   extends BaseClasses.PartialLumpedVolumePorts(
     Qs_flow = 0,
-    final initializePressure = false,
+    final initialize_p = false,
     final p_start = p_ambient,
     final use_d_nominal = false,
     final d_nominal = 0);
@@ -192,6 +192,7 @@ Implemented trace substances.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+equation
 
 end OpenTank;
 
@@ -199,7 +200,7 @@ model Tank
     "Open tank with top and bottom inlet/outlet ports at a defineable height"
   extends BaseClasses.PartialLumpedVolume(
     Qs_flow = 0,
-    final initializePressure = false,
+    final initialize_p = false,
     final p_start = p_ambient,
     final use_d_nominal = false,
     final d_nominal = 0);
@@ -611,7 +612,7 @@ end Tank;
         "Heat flow across boundaries or energy source/sink";
         SI.Power Ws_flow "Work flow across boundaries or source term";
     protected
-        parameter Boolean initializePressure = not Medium.singleState
+        parameter Boolean initialize_p = not Medium.singleState
         "= true to set up initial equations for pressure";
       equation
 
@@ -646,7 +647,7 @@ end Tank;
         if initType == Types.Init.NoInit then
         // no initial equations
         elseif initType == Types.Init.InitialValues then
-          if initializePressure then
+          if initialize_p then
             medium.p = p_start;
           end if;
           if use_T_start then
@@ -658,7 +659,7 @@ end Tank;
           C         = C_start[1:Medium.nC];
 
         elseif initType == Types.Init.SteadyState then
-          if initializePressure then
+          if initialize_p then
             der(medium.p) = 0;
           end if;
           if use_T_start then
@@ -670,7 +671,7 @@ end Tank;
           der(C)         = zeros(Medium.nC);
 
         elseif initType == Types.Init.SteadyStateHydraulic then
-          if initializePressure then
+          if initialize_p then
             der(medium.p) = 0;
           end if;
           if use_T_start then
@@ -866,9 +867,8 @@ An extending class still needs to define:
         "Start value of pressure at port b" 
       annotation(Dialog(tab = "Initialization"));
     final parameter Medium.AbsolutePressure[n] p_start=if n > 1 then linspace(
-          p_a_start - (p_a_start - p_b_start)/(2*n),
-          p_b_start + (p_a_start - p_b_start)/(2*n),
-          n) else {(p_a_start + p_b_start)/2} "Start value of pressure";
+          p_a_start, p_b_start, n) else {(p_a_start + p_b_start)/2}
+        "Start value of pressure";
 
     parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
        annotation(Evaluate=true, Dialog(tab = "Initialization"));
@@ -919,6 +919,10 @@ An extending class still needs to define:
     SI.EnthalpyFlowRate[n] Hs_flow "Enthalpy flow rate, source or sink";
     input SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
     SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
+
+    protected
+    parameter Boolean initialize_p = not Medium.singleState
+        "= true to set up initial equations for pressure";
 
   equation
     // Total quantities
@@ -972,7 +976,7 @@ An extending class still needs to define:
       else
         der(medium.h) = zeros(n);
       end if;
-      if not (Medium.singleState) then
+      if initialize_p then
         der(medium.p) = zeros(n);
       end if;
       for i in 1:n loop
@@ -986,7 +990,7 @@ An extending class still needs to define:
       else
         medium.h = ones(n)*h_start;
       end if;
-      if not Medium.singleState then
+      if initialize_p then
          medium.p=p_start;
       end if;
       medium.Xi = fill(X_start[1:Medium.nXi], n);
@@ -998,7 +1002,7 @@ An extending class still needs to define:
       else
         medium.h = ones(n)*h_start;
       end if;
-      if not Medium.singleState then
+      if initialize_p then
         der(medium.p) = zeros(n);
       end if;
       medium.Xi = fill(X_start[1:Medium.nXi], n);

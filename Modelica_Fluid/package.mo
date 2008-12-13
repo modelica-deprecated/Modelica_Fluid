@@ -959,8 +959,8 @@ Modelica_Fluid was refactored and finalized for the release:
      of such volume models resulted in unintended mixing equations for stream variables. 
      Moreover a 
      <a href=\"Modelica:Modelica_Fluid.Fittings.MultiPort\">Fittings.MultiPort</a> 
-     has been introduced that can be attached to components like pipes 
-     that don't have vectorized ports on their own.</li>
+     has been introduced. It can be attached to components like pipes, 
+     which don't have vectorized ports on their own.</li>
  
 <li> All examples are working now (using Dymola 7.1).<br>
      The number of examples has been extended with the former critical test cases
@@ -976,6 +976,8 @@ with the exception:
 </p>
  
 <ul>
+<li> Test.TestOverdeterminedInitialization.DistributedPipeInitialValues<br>
+     The translation fails due to an initial value for pipe.medium[1].p, which is fixed by source.p.</li>
 <li> Test.TestCriticalCases.DistributedPipeInitialization<br>
      The model does not initialize in steady-state with detailed pipe wall friction
      and two phase flow conditions. Two phase flow is generally not supported yet.</li>
