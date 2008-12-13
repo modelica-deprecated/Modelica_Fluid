@@ -122,7 +122,7 @@ package Machines
 </html>"));
   end Pump;
 
-  model ControlledPump "Centrifugal pump with ideally controlled speed"
+  model ControlledPumpSpeed "Centrifugal pump with ideally controlled speed"
     extends Modelica_Fluid.Machines.BaseClasses.PartialPump;
     parameter Boolean use_N_input = false
       "Get the rotational speed from the input connector";
@@ -172,11 +172,11 @@ package Machines
     // Set N with a lower limit to avoid singularities at zero speed
     N = max(N_in_internal,1e-3) "Rotational speed";
 
-  end ControlledPump;
+  end ControlledPumpSpeed;
 
   model ControlledPumpNPSH
     "Centrifugal pump with ideally controlled speed and NPSHa computation"
-    extends Modelica_Fluid.Machines.ControlledPump(
+    extends Modelica_Fluid.Machines.ControlledPumpSpeed(
                  redeclare replaceable package Medium = 
       Modelica.Media.Water.WaterIF97_ph constrainedby
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);
