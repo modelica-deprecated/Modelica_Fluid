@@ -14,7 +14,7 @@ model HeatingSystem "Simple model of a heating system"
     portDiameters={0.025,0.025}) 
               annotation (Placement(transformation(extent={{-76,6},{-54,28}},
           rotation=0)));
-  Modelica_Fluid.Machines.ControlledPump pump(
+  Modelica_Fluid.Machines.ControlledPumpSpeed pump(
     redeclare package Medium = Medium,
     N_nominal=1500,
     N_const=1500,

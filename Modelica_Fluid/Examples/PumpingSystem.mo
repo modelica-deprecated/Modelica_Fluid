@@ -24,7 +24,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
         extent={{-9,-10},{11,10}},
         rotation=90)));
 
-  Modelica_Fluid.Machines.ControlledPump pumps(
+  Modelica_Fluid.Machines.ControlledPumpSpeed pumps(
     checkValve=true,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
