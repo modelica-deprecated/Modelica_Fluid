@@ -9,7 +9,8 @@ package Fittings
 
 model GenericPressureLoss "Generic pressure loss model"
   extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
-                                          pressureLoss(
+    redeclare replaceable model PressureLoss = 
+    Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
      dp_nominal = dp_nominal,
      m_flow_nominal = m_flow_nominal));
 
@@ -61,7 +62,8 @@ end GenericPressureLoss;
         annotation(Dialog(group="Static head"));
 
     extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
-                                            pressureLoss(
+      redeclare replaceable model PressureLoss = 
+      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
        dp_nominal = 1,
        m_flow_nominal = 1));
 
@@ -2007,37 +2009,42 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
         "Start value of pressure at port_a" 
       annotation(Dialog(tab = "Advanced"));
 
-    replaceable
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss
-        pressureLoss 
-                   constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss(
-            redeclare package Medium = Medium,
-            n=1,
+    // Pressure loss
+    replaceable model PressureLoss = 
+      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss 
+      constrainedby
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss
+        "Pressure loss model" 
+        annotation(Dialog(tab="Advanced", group="Pressure loss"), choicesAllMatching=true);
+
+    PressureLoss pressureLoss(
+            redeclare final package Medium = Medium,
+            final n=1,
             state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
                    Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
-            allowFlowReversal=allowFlowReversal,
-            dynamicsType=dynamicsType,
-            initType=initType,
-            p_a_start=p_a_start,
-            p_b_start=p_a_start - dp_start,
-            m_flow_start=m_flow_start,
-            nPipes=1,
-            roughness=0,
-            diameter=diameter,
-            length=length,
-            height_ab=height_ab,
-            g=system.g) "Pressure loss model" 
-      annotation(choicesAllMatching=true,
-          Dialog(tab="Advanced", group="Pressure loss"),
-          Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
+            final allowFlowReversal=allowFlowReversal,
+            final dynamicsType=dynamicsType,
+            final initType=initType,
+            final p_a_start=p_a_start,
+            final p_b_start=p_a_start - dp_start,
+            final m_flow_start=m_flow_start,
+            final nPipes=1,
+            final roughness=roughness,
+            final diameter=diameter,
+            final length=length,
+            final height_ab=height_ab,
+            final g=system.g) "Pressure loss model instance" 
+       annotation(Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
 
     // Geometry
     parameter SI.Length length=0 "Hydraulic length for pressure loss model" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
     parameter SI.Diameter diameter=0
         "Hydraulic diameter for pressure loss model" 
-       annotation(Dialog(tab="Advanced", group="Geometry", enable=isCircular));
+       annotation(Dialog(tab="Advanced", group="Geometry"));
+    parameter SI.Length roughness(min=0)=0
+        "Average height of surface asperities" 
+       annotation(Dialog(tab="Advanced", group="Geometry"));
 
     // Static head
     parameter SI.Length height_ab=0 "Height(port_b) - Height(port_a)" 
