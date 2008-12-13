@@ -77,7 +77,7 @@ The initial equations are consistent however and a tool shall reduce them approp
             extent={{-100,-20},{100,-40}},
             lineColor={0,0,255},
             textString=
-                "Problem: pipe.medium.p[1:5] are equal and have initial equations der(medium.p)=zeros(5);"), 
+                "Problem: pipe.medium.p[1:5] are equal and have initial equations der(medium.p)=zeros(5);"),
             Text(
             extent={{-76,-40},{80,-58}},
             lineColor={0,0,255},
@@ -122,7 +122,7 @@ The initial equations are consistent however and a tool shall reduce them approp
       height=-0.5,
       startTime=2) 
                 annotation (Placement(transformation(extent={{46,30},{26,50}})));
-    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.InitialValues)
+    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.InitialValues) 
       annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
     discrete Modelica.SIunits.MassFlowRate m_flow_initial;
   equation
@@ -163,26 +163,24 @@ The initial equations are consistent however and a tool shall reduce them approp
             extent={{-100,-20},{100,-40}},
             lineColor={0,0,255},
             textString=
-                "Problem: pipe.medium[1].p is equal to source.p and  has consistent initial value  of 100 bar;"), 
-
+                "Problem: pipe.medium[1].p is equal to source.p and  has consistent initial value  of 100 bar;"),
           Text(
             extent={{-76,-36},{76,-54}},
             lineColor={0,0,255},
             textString=
-                "A translator should remove consistently overdetermined initial equations."), 
-
+                "A translator should remove consistently overdetermined initial equations."),
           Text(
-            extent={{-80,-60},{80,-80}},
+            extent={{-80,-60},{64,-80}},
             lineColor={0,0,255},
             textString=
-                "Work-around 1: change initType from InitialValues to NoInit, i.e. guess values"), 
-
+                "Work-around 1: change initType from InitialValues to GuessValues"),
           Text(
-            extent={{-82,-78},{58,-98}},
+            extent={{-80,-78},{60,-98}},
             lineColor={0,0,255},
             textString=
                 "Work-around 2: change pipe.modelStructure from av_vb to a_vb")}),
       experiment(StopTime=4),
       experimentSetupOutput);
+
   end DistributedPipeInitialValues;
 end TestOverdeterminedInitial;

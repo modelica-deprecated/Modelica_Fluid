@@ -469,19 +469,19 @@ package Tanks "Library demonstrating the usage of the tank model"
       stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort) 
       annotation (Placement(transformation(extent={{-20,10},{20,50}}, rotation=
               0)));
-    Modelica_Fluid.Fittings.StaticHead pipe1(
+    Modelica_Fluid.Fittings.GenericStaticHead pipe1(
                                     redeclare package Medium = Medium,
         height_ab=2) annotation (Placement(transformation(
           origin={70,30},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Fittings.StaticHead pipe2(
+    Modelica_Fluid.Fittings.GenericStaticHead pipe2(
                                     redeclare package Medium = Medium,
         height_ab=2) annotation (Placement(transformation(
           origin={0,-22},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Fittings.StaticHead pipe3(
+    Modelica_Fluid.Fittings.GenericStaticHead pipe3(
                                     redeclare package Medium = Medium,
         height_ab=2) annotation (Placement(transformation(
           origin={-60,10},
@@ -573,37 +573,37 @@ package Tanks "Library demonstrating the usage of the tank model"
       portDiameters={0.1}) 
                      annotation (Placement(transformation(extent={{40,10},{80,50}},
                     rotation=0)));
-    Modelica_Fluid.Fittings.StaticHead pipe1(                 redeclare package
+    Modelica_Fluid.Fittings.GenericStaticHead pipe1(          redeclare package
         Medium =                                                                       Medium,
       allowFlowReversal=true,
       height_ab=2) annotation (Placement(transformation(
           origin={-60,-10},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Fittings.StaticHead pipe2(                 redeclare package
+    Modelica_Fluid.Fittings.GenericStaticHead pipe2(          redeclare package
         Medium =                                                                       Medium,
       allowFlowReversal=true,
       height_ab=2) annotation (Placement(transformation(
           origin={0,-10},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Fittings.StaticHead pipe3(                 redeclare package
+    Modelica_Fluid.Fittings.GenericStaticHead pipe3(          redeclare package
         Medium =                                                                       Medium,
       allowFlowReversal=true,
       height_ab=-1) annotation (Placement(transformation(
-          origin={60,-10},
+          origin={60,-20},
           extent={{-10,-10},{10,10}},
           rotation=90)));
   equation
     connect(pipe1.port_a, pipe2.port_a) annotation (Line(points={{-60,-20},{-60,
             -40},{-6.12323e-016,-40},{-6.12323e-016,-20}}, color={0,127,255}));
     connect(pipe2.port_a, pipe3.port_a) annotation (Line(points={{-6.12323e-016,
-            -20},{0,-20},{0,-40},{60,-40},{60,-20}}, color={0,127,255}));
+            -20},{0,-20},{0,-40},{60,-40},{60,-30}}, color={0,127,255}));
     connect(pipe3.port_b, tank3.ports[1]) 
-      annotation (Line(points={{60,0},{60,0},{60,10},{60,10}},
+      annotation (Line(points={{60,-10},{60,-10},{60,10}},
                                                 color={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{-60,0},{-60,
-            10},{-60,20},{-60,20}},
+            10},{-60,20}},
                   color={0,127,255}));
     connect(pipe2.port_b, tank2.ports[1]) annotation (Line(
         points={{6.12323e-016,0},{0,0},{0,20}},
@@ -650,7 +650,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       levelMax=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.1, portLevel=0)},
-      initType=Modelica_Fluid.Types.Init.NoInit) 
+      initType=Modelica_Fluid.Types.Init.GuessValues) 
       annotation (Placement(transformation(extent={{-20,-80},{20,-40}},
             rotation=0)));
     inner Modelica_Fluid.System system 

@@ -682,8 +682,7 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
-
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -696,7 +695,7 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
@@ -964,8 +963,7 @@ handled properly.</p>
               fillPattern=FillPattern.Solid),
             Text(extent={{-145,-58},{146,-98}}, textString="%name"),
             Polygon(
-              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}}, 
-
+              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
               fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,
                   0} else {255,255,255}),
               lineColor={0,0,0})}),
@@ -1015,7 +1013,7 @@ handled properly.</p>
       parameter Real top_heights[n_TopPorts]=fill(height, n_TopPorts);
       parameter SI.Height level_start(min=0) "Initial tank level" 
         annotation(Dialog(tab="Initialization"));
-      parameter Modelica_Fluid.Types.Init initType=Init.NoInit
+      parameter Modelica_Fluid.Types.Init initType=Init.GuessValues
         "Initialization option" 
         annotation(Dialog(tab = "Initialization"));
       parameter Boolean use_T_start=true
@@ -1246,7 +1244,7 @@ handled properly.</p>
   ");
 
     initial equation
-      if initType == Init.NoInit then
+      if initType == Init.GuessValues then
         // no initial equations
       elseif initType == Init.InitialValues then
         level = level_start;
@@ -1281,8 +1279,7 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1320,7 +1317,7 @@ handled properly.</p>
 (Assumption: The gas is condensed emidiatly afterwards so that a liquid boiling fluid is created.)
 <p>The tank can be initialized with the following options:
 <ul>
-<li>NoInit: no explicit initial conditions
+<li>GuessValues: no explicit initial conditions
 <li>InitialValues: initial values of temperature (or specific enthalpy), composition and level are specified
 <li>SteadyStateHydraulic: initial values of temperature (or specific enthalpy) and composition are specified; the initial level is determined so that levels and pressure are at steady state.
 </ul>

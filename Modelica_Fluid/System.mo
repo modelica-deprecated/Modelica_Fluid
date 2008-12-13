@@ -20,7 +20,7 @@ model System
             Types.Dynamics.Dynamic "Default dynamics option" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions"));
   parameter Types.Init initType=
-            Types.Init.NoInit "Default initialization option" 
+            Types.Init.GuessValues "Default initialization option" 
     annotation(Evaluate=true, Dialog(tab = "Initialization"));
   parameter Medium.AbsolutePressure p_start = Medium.p_default
     "Default start value for pressures" 

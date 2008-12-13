@@ -61,14 +61,15 @@ Enumeration type that can have the following values
 </html>"));
 
   type Init = enumeration(
-      InitialValues "InitialValues -- Initial values for p, T or h, X",
-      NoInit "NoInit -- No initial conditions (guess values for p, T or h, X)", 
+      GuessValues "GuessValues -- Guess values (not fixed) for p, T or h, X, C", 
 
+      InitialValues "InitialValues -- Initial values for p, T or h, X, C",
       SteadyStateMomentum "SteadyStateMomentum: Steady state momentum",
       SteadyStateHydraulic
-        "SteadyStateHydraulic -- Hydraulic steady state (der(p)=0), guess value for p, initial values for T or h, X", 
+        "SteadyStateHydraulic -- Hydraulic steady state (der(p)=0), guess value for p, initial values for T or h, X, C", 
 
-      SteadyState "SteadyState -- Steady state (guess values for p, T or h, X)")
+      SteadyState
+        "SteadyState -- Steady state (guess values for p, T or h, X, C)")
     "Enumeration to define initialization options" 
   annotation (Documentation(info="<html>
 <p>
@@ -78,21 +79,21 @@ Integer type that can have the following values
  
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Types.Init.</b></th><th><b>Meaning</b></th></tr>
-<tr><td>InitialValues</td>
-    <td>Initial values for p, T or h, X</td></tr>
+<tr><td>GuessValues</td>
+    <td>GuessValues -- Guess values (not fixed) for p, T or h, X, C</td></tr>
  
-<tr><td>NoInit</td>
-    <td>No initial conditions (guess values for p, T or h, X)</td></tr>
+<tr><td>InitialValues</td>
+    <td>Initial values for p, T or h, X, C</td></tr>
  
 <tr><td>SteadyStateMomentum</td>
     <td>Steady state momentum</td></tr>
  
 <tr><td>SteadyStateHydraulic</td>
     <td>Hydraulic steady state (der(p)=0), guess value for p, 
-        initial values for T or h, X</td></tr>
+        initial values for T or h, X, C</td></tr>
  
 <tr><td>SteadyState</td>
-    <td>Steady state (guess values for p, T or h, X)</td></tr>
+    <td>Steady state (guess values for p, T or h, X, C)</td></tr>
 </table>
 </html>"));
 

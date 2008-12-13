@@ -33,7 +33,7 @@ model TestMixingVolumesPressureStates
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     nPorts=2,
     portDiameters={0,0}) 
                  annotation (Placement(transformation(extent={{10,38},{30,58}},

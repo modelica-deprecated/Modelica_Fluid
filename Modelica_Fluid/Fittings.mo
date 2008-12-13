@@ -8,7 +8,8 @@ package Fittings
 </html>"));
 
 model GenericPressureLoss "Generic pressure loss model"
-  extends BaseClasses.PartialPressureLoss(pressureLoss(
+  extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
+                                          pressureLoss(
      dp_nominal = dp_nominal,
      m_flow_nominal = m_flow_nominal));
 
@@ -41,7 +42,8 @@ model GenericPressureLoss "Generic pressure loss model"
     Documentation(info="<html>
 <p>
 This pressure drop component is intended for early designs and later replacement 
-by more detailed models. Per default a LinearPressureLoss for specified nominal values is used.
+by more detailed models. Per default a LinearPressureLoss is used for specified 
+nominal values.
 </p>
 <p>
 On the Advanced tab any pressure loss model defined for the interface
@@ -51,6 +53,52 @@ can be configured, together with required geometry parameters.
 </p>
 </html>"));
 end GenericPressureLoss;
+
+  model GenericStaticHead "Models two ports at different heights"
+
+    // Static head
+    parameter SI.Length height_ab=0 "Height(port_b) - Height(port_a)" 
+        annotation(Dialog(group="Static head"));
+
+    extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
+                                            pressureLoss(
+       dp_nominal = 1,
+       m_flow_nominal = 1));
+
+    annotation (defaultComponentName="staticHead",
+          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+              {100,100}}), graphics={Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}), Text(
+            extent={{-150,80},{150,120}},
+            lineColor={0,0,255},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString="%name")}),           Documentation(info="<html>
+<p>
+This component is intended for early designs and later replacement by more detailed models. 
+It describes the static head due to the height difference between its two ports. 
+</p>
+<p>
+Per default a small regularization with a linear pressure loss of 1Pa per 1kg/s is configured. 
+The regularization can be changed for the pressureLoss model on the Advanced tab.
+</p>
+</html>", revisions="<html>
+<ul>
+<li><i>8 Dec 2008</i>
+    by Ruediger Franke:<br>
+       Introduce small nominal pressure loss for regularization</li>
+<li><i>31 Oct 2007</i>
+    by <a href=\"mailto:jonas@modelon.se\">Jonas Eborn</a>:<br>
+       Changed to flow-direction dependent density</li>
+<li><i>2 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Added to Modelica_Fluid</li>
+</ul>
+</html>"));
+  end GenericStaticHead;
 
 model SimpleGenericOrifice
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
@@ -542,59 +590,6 @@ of the modeller.
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
   end TeeJunctionVolume;
-
-  model StaticHead
-    "Models the static head between two ports at different heights"
-
-    // Static head
-    parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
-        annotation(Dialog(group="Static head"));
-
-    extends BaseClasses.PartialPressureLoss(pressureLoss(
-       dp_nominal = 1,
-       m_flow_nominal = 1));
-
-    annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics={
-          Rectangle(
-            extent={{-100,60},{100,-60}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-100,48},{100,-48}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255}),
-          Text(
-            extent={{-150,80},{150,120}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name")}),           Documentation(info="<html>
-<p>
-This component is intended for early designs and later replacement 
-by more detailed models. It describes the static head due to the relative height between the two connectors. 
-No mass, energy and momentum storage, and no pressure drop due to friction are considered. 
-</p>
-<p>
-Per default a small regularization with a linear loss of 1Pa per 1kg/s is configured. 
-The regularization can be changed for the pressureLoss model on the Advanced tab.
-</p>
-</html>", revisions="<html>
-<ul>
-<li><i>8 Dec 2008</i>
-    by Ruediger Franke:<br>
-       Introduce small nominal pressure loss for regularization</li>
-<li><i>31 Oct 2007</i>
-    by <a href=\"mailto:jonas@modelon.se\">Jonas Eborn</a>:<br>
-       Changed to flow-direction dependent density</li>
-<li><i>2 Nov 2005</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Added to Modelica_Fluid</li>
-</ul>
-</html>"));
-  end StaticHead;
 
   annotation (Documentation(info="<html>
 <p>
@@ -1995,7 +1990,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     end if;
   end PartialTwoPortTransport;
 
-  partial model PartialPressureLoss
+  partial model PartialGenericPressureLoss
       "Two port transport model with replaceable pressure loss correlation"
     extends PartialTwoPortTransport;
 
@@ -2046,14 +2041,14 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
           Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
 
     // Geometry
-    parameter SI.Length length=1 "Hydraulic length for pressure loss model" 
+    parameter SI.Length length=0 "Hydraulic length for pressure loss model" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Diameter diameter=1
+    parameter SI.Diameter diameter=0
         "Hydraulic diameter for pressure loss model" 
        annotation(Dialog(tab="Advanced", group="Geometry", enable=isCircular));
 
     // Static head
-    parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
+    parameter SI.Length height_ab=0 "Height(port_b) - Height(port_a)" 
         annotation(Dialog(tab="Advanced", group="Static head"), Evaluate=true);
 
   equation
@@ -2069,10 +2064,10 @@ design phases, when no detailed geometrical information is available.
 On the Advanced tab the linear pressure loss can be replaced with any pressure loss model 
 defined for the interface
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">
-          Pipes.BaseClasses.PartialFlowPressureLoss</a>,
-together with required geometry parameters.
+          Pipes.BaseClasses.PartialFlowPressureLoss</a>.
+The specified geometry is passed to the pressure loss model.
 </p>
 </html>"));
-  end PartialPressureLoss;
+  end PartialGenericPressureLoss;
   end BaseClasses;
 end Fittings;
