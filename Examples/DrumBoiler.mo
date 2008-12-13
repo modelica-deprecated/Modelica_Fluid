@@ -232,7 +232,8 @@ Simulate for 7200 seconds.
       parameter Medium.SpecificHeatCapacity cp_D
         "specific heat capacity of drum metal";
       parameter SI.Volume V_t "total volume inside drum";
-      parameter Types.Init initType=Types.Init.NoInit "Initialization option" 
+      parameter Types.Init initType=Types.Init.GuessValues
+        "Initialization option" 
       annotation(Dialog(tab = "Initialization"));
       parameter Medium.AbsolutePressure p_start=system.p_start
         "Start value of pressure" 
@@ -312,7 +313,7 @@ Simulate for 7200 seconds.
         "Evaporator model requires subcritical pressure");
     initial equation
     // Initial conditions
-      if initType == Types.Init.NoInit then
+      if initType == Types.Init.GuessValues then
       // no initial equations
       elseif initType == Types.Init.InitialValues then
         p = p_start;

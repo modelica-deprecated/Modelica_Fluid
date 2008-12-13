@@ -98,7 +98,7 @@ equation
   ports_p_static = level*system.g*medium.d + p_ambient;
 
 initial equation
-    if initType == Types.Init.NoInit then
+    if initType == Types.Init.GuessValues then
     // no initial equations
     elseif initType == Types.Init.InitialValues then
       level = level_start;
@@ -205,10 +205,10 @@ model Tank
     final use_d_nominal = false,
     final d_nominal = 0);
 
-  import Modelica.Constants;
-  import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
-  import Modelica_Fluid.Utilities.regRoot2;
-  import Modelica_Fluid.Vessels.BaseClasses.TankPortData;
+    import Modelica.Constants;
+    import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
+    import Modelica_Fluid.Utilities.regRoot2;
+    import Modelica_Fluid.Vessels.BaseClasses.TankPortData;
 
   SI.Height level(stateSelect=StateSelect.prefer, start=level_start)
       "Fluid level in the tank";
@@ -401,7 +401,7 @@ initial equation
        pre(aboveLevel[i]) = level_start >= portsData[i].portLevel;
     end for;
 
-    if initType == Types.Init.NoInit then
+    if initType == Types.Init.GuessValues then
     // no initial equations
     elseif initType == Types.Init.InitialValues then
       level = level_start;
@@ -434,8 +434,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 3))),
           Line(
             points={{-100,100},{100,100}},
@@ -644,7 +644,7 @@ end Tank;
 
       initial equation
       // Initial conditions
-        if initType == Types.Init.NoInit then
+        if initType == Types.Init.GuessValues then
         // no initial equations
         elseif initType == Types.Init.InitialValues then
           if initialize_p then
@@ -967,7 +967,7 @@ An extending class still needs to define:
 
   initial equation
     // Initial conditions
-    if initType == Types.Init.NoInit then
+    if initType == Types.Init.GuessValues then
     // no initial equations
     elseif initType == Types.Init.SteadyState then
     //steady state initialization

@@ -522,7 +522,7 @@ This also allows for taking into account friction losses with respect to the act
           annotation(Dialog(group="Geometry",enable=WallFriction.use_roughness));
 
       // Static head
-      parameter SI.Length height_ab=0.0 "Height(port_b) - Height(port_a)" 
+      parameter SI.Length height_ab=0 "Height(port_b) - Height(port_a)" 
           annotation(Dialog(group="Static head"), Evaluate=true);
 
       // Pressure loss

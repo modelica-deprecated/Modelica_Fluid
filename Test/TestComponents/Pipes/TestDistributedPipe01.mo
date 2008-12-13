@@ -10,7 +10,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -46,7 +46,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -64,7 +64,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     T_start=300,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -99,7 +99,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -139,7 +139,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -165,7 +165,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -182,7 +182,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     T_start=300,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -211,7 +211,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     T_start=360,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -231,7 +231,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -259,7 +259,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     modelStructure=Modelica_Fluid.Types.ModelStructure.av_b,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -275,7 +275,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -304,7 +304,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,

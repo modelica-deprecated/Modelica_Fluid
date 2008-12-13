@@ -11,7 +11,7 @@ extends Modelica.Icons.Example;
     T_start=280,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -45,7 +45,7 @@ Test of different distributed pipe models with trace substances. This model is t
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -63,7 +63,7 @@ Test of different distributed pipe models with trace substances. This model is t
     T_start=300,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -98,7 +98,7 @@ Test of different distributed pipe models with trace substances. This model is t
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -139,7 +139,7 @@ Test of different distributed pipe models with trace substances. This model is t
     T_start=280,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -164,7 +164,7 @@ Test of different distributed pipe models with trace substances. This model is t
     use_T_start=true,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -181,7 +181,7 @@ Test of different distributed pipe models with trace substances. This model is t
     T_start=300,
     diameter=0.01,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
@@ -210,7 +210,7 @@ Test of different distributed pipe models with trace substances. This model is t
     diameter=0.01,
     T_start=360,
     nNodes=5,
-    initType=Modelica_Fluid.Types.Init.NoInit,
+    initType=Modelica_Fluid.Types.Init.GuessValues,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,

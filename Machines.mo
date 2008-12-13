@@ -274,7 +274,7 @@ package Machines
     outer Modelica_Fluid.System system "System properties";
     parameter SI.Acceleration g=system.g;
     parameter Types.Init initType=
-              Types.Init.NoInit "Initialization option" 
+              Types.Init.GuessValues "Initialization option" 
       annotation(Evaluate=true, Dialog(tab = "Initialization"));
     SI.Pressure dp = port_b.p - port_a.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
@@ -364,7 +364,7 @@ package Machines
     end if;
 
   initial equation
-    if initType == Types.Init.NoInit or not M > 0 then
+    if initType == Types.Init.GuessValues or not M > 0 then
     // no initial equations
     elseif initType == Types.Init.InitialValues then
       h = h_start;

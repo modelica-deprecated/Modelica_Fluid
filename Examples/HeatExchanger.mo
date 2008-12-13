@@ -411,7 +411,7 @@ The design flow direction with positive m_flow variables is counterflow.
         "Distribution of wall mass";
     //Initialization
       parameter Types.Init initType=Types.
-            Init.NoInit "Initialization option" 
+            Init.GuessValues "Initialization option" 
         annotation(Evaluate=true);
       parameter SI.Temperature T_start "Wall temperature start value";
       parameter SI.Temperature dT "Start value for port_b.T - port_a.T";
