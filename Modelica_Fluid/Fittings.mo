@@ -12,7 +12,8 @@ model GenericPressureLoss "Generic pressure loss model"
     redeclare replaceable model PressureLoss = 
     Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
      dp_nominal = dp_nominal,
-     m_flow_nominal = m_flow_nominal));
+     m_flow_nominal = m_flow_nominal),
+     height_ab=0);
 
   // Nominal values
   parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
@@ -58,7 +59,7 @@ end GenericPressureLoss;
   model GenericStaticHead "Models two ports at different heights"
 
     // Static head
-    parameter SI.Length height_ab=0 "Height(port_b) - Height(port_a)" 
+    parameter SI.Length height_ab "Height(port_b) - Height(port_a)" 
         annotation(Dialog(group="Static head"));
 
     extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
@@ -2047,7 +2048,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
        annotation(Dialog(tab="Advanced", group="Geometry"));
 
     // Static head
-    parameter SI.Length height_ab=0 "Height(port_b) - Height(port_a)" 
+    parameter SI.Length height_ab "Height(port_b) - Height(port_a)" 
         annotation(Dialog(tab="Advanced", group="Static head"), Evaluate=true);
 
   equation
