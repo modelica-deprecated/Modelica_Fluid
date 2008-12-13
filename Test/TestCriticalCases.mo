@@ -1623,12 +1623,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             extent={{-54,-34},{48,-54}},
             lineColor={0,0,255},
             textString=
-                "a) Select WallFriction = \"No pipe wall friction\" and it works!?"),
+                "a) Select WallFriction = \"No pipe wall friction\" and it works!?"), 
+
           Text(
             extent={{-90,-20},{36,-38}},
             lineColor={0,0,255},
             textString=
-                "How to get correct result from steady-state initialization:"),
+                "How to get correct result from steady-state initialization:"), 
+
           Text(
             extent={{-57,-64},{92,-72}},
             lineColor={0,0,255},
