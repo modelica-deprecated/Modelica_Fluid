@@ -507,19 +507,23 @@ This also allows for taking into account friction losses with respect to the act
       // Note: define nPipes as Real to support inverse calculations
       parameter Real nPipes(min=1)=1 "Number of identical parallel pipes" 
         annotation(Dialog(group="Geometry"));
-      parameter SI.Length length "Length"   annotation(Dialog(tab="General", group="Geometry"));
+      parameter SI.Length length "Length" 
+        annotation(Dialog(tab="General", group="Geometry"));
       parameter Boolean isCircular=true
         "= true if cross sectional area is circular" 
         annotation (Evaluate, Dialog(tab="General", group="Geometry"));
-      parameter SI.Diameter diameter "Diameter of circular pipe"      annotation(Dialog(group="Geometry", enable=isCircular));
+      parameter SI.Diameter diameter "Diameter of circular pipe" 
+        annotation(Dialog(group="Geometry", enable=isCircular));
       parameter SI.Length perimeter=Modelica.Constants.pi*diameter
-        "Inner perimeter"                                                                                       annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
+        "Inner perimeter" 
+        annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
       parameter SI.Area crossArea=Modelica.Constants.pi*diameter*diameter/4
-        "Inner cross section area"            annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
+        "Inner cross section area" 
+        annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
       final parameter SI.Volume V=crossArea*length*nPipes "volume size";
       parameter SI.Length roughness(min=0)=2.5e-5
         "Average height of surface asperities (default = smooth steel pipe)" 
-          annotation(Dialog(group="Geometry",enable=WallFriction.use_roughness));
+          annotation(Dialog(group="Geometry"));
 
       // Static head
       parameter SI.Length height_ab=0 "Height(port_b) - Height(port_a)" 
