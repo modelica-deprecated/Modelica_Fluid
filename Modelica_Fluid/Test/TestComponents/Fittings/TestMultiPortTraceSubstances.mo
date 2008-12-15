@@ -88,7 +88,7 @@ model TestMultiPortTraceSubstances
     diameter=0.1,
     redeclare package Medium = Medium,
     length=1,
-    nPipes=1) annotation (Placement(transformation(extent={{52,-90},{72,-70}})));
+    nParallel=1) annotation (Placement(transformation(extent={{52,-90},{72,-70}})));
   Modelica_Fluid.Fittings.MultiPort multiPort(
                                        nPorts_b=2, redeclare package Medium = 
         Medium)                             annotation (Placement(
@@ -108,7 +108,7 @@ model TestMultiPortTraceSubstances
     diameter=0.1,
     redeclare package Medium = Medium,
     length=1,
-    nPipes=1) annotation (Placement(transformation(extent={{-16,-90},{4,-70}})));
+    nParallel=1) annotation (Placement(transformation(extent={{-16,-90},{4,-70}})));
 equation
   connect(P.y, source1.p_in)    annotation (Line(points={{-79,34},{-74,34},{-74,
           -10},{-70,-10}},

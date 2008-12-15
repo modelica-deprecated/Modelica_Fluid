@@ -35,7 +35,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     V=50/1000,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_N_input=true,
-    nPumps=1) 
+    nParallel=1) 
     annotation (Placement(transformation(extent={{-68,-80},{-48,-60}}, rotation=
            0)));
 

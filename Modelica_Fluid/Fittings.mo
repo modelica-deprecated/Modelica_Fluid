@@ -2029,11 +2029,11 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
             final p_a_start=p_a_start,
             final p_b_start=p_a_start - dp_start,
             final m_flow_start=m_flow_start,
-            final nPipes=1,
+            final nParallel=1,
             final length={length},
             final perimeter={perimeter},
             final crossArea={crossArea_a, crossArea_b},
-            final roughness=roughness,
+            final roughness={roughness},
             final height_ab=height_ab,
             final g=system.g) "Pressure loss model instance" 
        annotation(Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
@@ -2041,11 +2041,11 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     // Geometry
     parameter SI.Length length=0 "Length of flow path" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
+    parameter SI.Area crossArea_a=0 "Inner cross sectional area at port_a" 
+       annotation(Dialog(tab="Advanced", group="Geometry"));
+    parameter SI.Area crossArea_b=0 "Inner cross sectional area at port_b" 
+       annotation(Dialog(tab="Advanced", group="Geometry"));
     parameter SI.Length perimeter=0 "Inner perimeter" 
-       annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Area crossArea_a=0 "Inner cross section area at port_a" 
-       annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Area crossArea_b=0 "Inner cross section area at port_b" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
     parameter SI.Length roughness(min=0)=0
         "Average height of surface asperities" 
