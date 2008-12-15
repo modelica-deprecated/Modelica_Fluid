@@ -32,9 +32,10 @@ package Pipes "Devices for conveying fluid"
             final p_b_start=p_b_start,
             final m_flow_start=m_flow_start,
             final nPipes=nPipes,
+            final length={length},
+            final crossArea={crossArea, crossArea},
+            final perimeter={perimeter},
             final roughness=roughness,
-            final diameter=4*crossArea/perimeter,
-            final length=length,
             final height_ab=height_ab,
             final g=system.g) "Pressure loss model" 
        annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
@@ -101,10 +102,9 @@ package Pipes "Devices for conveying fluid"
       redeclare final package Medium = Medium,
       final n=1,
       final nPipes=nPipes,
-      final diameter=4*crossArea/perimeter,
-      final area=perimeter*length,
-      final crossArea=crossArea,
-      final length=length,
+      final length={length},
+      final crossArea={crossArea, crossArea},
+      final perimeter={perimeter},
       final use_fluidHeatPort=true,
       state={volume.medium.state},
       m_flow = {0.5*(port_a.m_flow - port_b.m_flow)}) "Heat transfer model" 
@@ -263,9 +263,12 @@ pipe wall/environment).
             final p_b_start=p_b_start,
             final m_flow_start=m_flow_start,
             final nPipes=nPipes,
+            final length=if modelStructure == Types.ModelStructure.a_v_b then 
+                              cat(1, {length/n/2}, fill(length/n, n-1), {length/n/2}) else 
+                              fill(length/nFlows, nFlows),
+            final crossArea=fill(crossArea, nFlows+1),
+            final perimeter=fill(perimeter, nFlows),
             final roughness=roughness,
-            final diameter=4*crossArea/perimeter,
-            final length=length,
             final height_ab=height_ab,
             final g=system.g) "Pressure loss model" 
        annotation (Placement(transformation(extent={{-77,-57},{77,-23}},rotation=0)));
@@ -290,10 +293,9 @@ pipe wall/environment).
       redeclare each final package Medium = Medium,
       final n=n,
       final nPipes=nPipes,
-      final diameter=4*crossArea/perimeter,
-      final area=perimeter*length,
-      final crossArea=crossArea,
-      final length=length,
+      final length=fill(length/n, n),
+      final crossArea=fill(crossArea, n+1),
+      final perimeter=fill(perimeter, n),
       state=medium.state,
       m_flow = 0.5*(m_flow[1:n]+m_flow[2:n+1])) "Heat transfer model" 
         annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
@@ -598,11 +600,14 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             // Mandadory geometry parameters
             parameter Real nPipes "number of parallel pipes" 
                annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
-            parameter SI.Length length "Length of flow path" 
+            parameter SI.Length[n] length "Length of segments along flow path" 
                annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
-            parameter SI.Diameter diameter
-          "Hydraulic diameter (typically 4*crossArea/perimeter)" 
-               annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
+            parameter SI.Area[n+1] crossArea
+          "Cross flow area at segment boundaries" 
+              annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
+            parameter SI.Length[n] perimeter
+          "Mean perimeter of segments, used for hydraulic diameter" 
+              annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
             parameter SI.Length roughness(min=0)
           "Average height of surface asperities" 
                 annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry",enable=WallFriction.use_roughness));
@@ -652,7 +657,8 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 thickness=1)}));
           end PartialFlowPressureLoss;
 
-          model LinearPressureLoss "Linear pressure drop for nominal values"
+          model NominalPressureLoss
+        "Simple pressure loss for nominal values (currently linear)"
             extends PartialFlowPressureLoss;
 
             parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
@@ -689,7 +695,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 dp = g*height_ab*Utilities.regStep(m_flow, d[1:n], d[2:n+1], m_flow_small) + dp_nominal/m_flow_nominal*m_flow*nPipes;
               end if;
             end if;
-          end LinearPressureLoss;
+          end NominalPressureLoss;
 
           partial model PartialWallFrictionAndGravity
         "Base class for pressure drop in pipe due to wall friction and gravity (for both flow directions)"
@@ -731,6 +737,8 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 diameter) if show_Re "Reynolds numbers of pipe flow";
 
             // internal variables
+            SI.Diameter[n] diameter = {4*(crossArea[i]+crossArea[i+1])/2/perimeter[i] for i in 1:n}
+          "Hydraulic diameter";
             SI.DynamicViscosity[n+1] eta = if not WallFriction.use_eta then fill(1e-10, n+1) else 
                                         (if use_eta_nominal then fill(eta_nominal, n+1) else Medium.dynamicViscosity(state));
             SI.Density[n+1] d = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(state);
@@ -752,7 +760,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 d[2:n+1],
                 eta[1:n],
                 eta[2:n+1],
-                length/n,
+                length,
                 diameter,
                 g_times_height_ab/n,
                 roughness,
@@ -764,7 +772,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 d[2:n+1],
                 eta[1:n],
                 eta[2:n+1],
-                length/n,
+                length,
                 diameter,
                 g_times_height_ab/n,
                 roughness,
@@ -778,7 +786,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 d[2:n+1],
                 eta[1:n],
                 eta[2:n+1],
-                length/n,
+                length,
                 diameter,
                 roughness,
                 dp_small)*nPipes;
@@ -789,7 +797,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 d[2:n+1],
                 eta[1:n],
                 eta[2:n+1],
-                length/n,
+                length,
                 diameter,
                 roughness,
                 m_flow_small/nPipes) + g*height_ab/n*(d[1:n] + d[2:n+1])/2;
@@ -923,15 +931,17 @@ simulation and/or might give a more robust simulation.
         annotation(Dialog(tab="Internal Interface", enable=false), Evaluate=true);
       parameter Real nPipes "Number of parallel pipes" 
         annotation(Dialog(tab="Internal Interface", enable=false));
-      parameter SI.Length length "Pipe length" 
+      parameter SI.Length[n] length "Length of segments along flow path" 
         annotation(Dialog(tab="Internal Interface", enable=false));
-      parameter SI.Length diameter
-          "Hydraulic diameter (typically 4*crossArea/perimeter)" 
+      parameter SI.Area[n+1] crossArea "Cross flow area at segment boundaries" 
         annotation(Dialog(tab="Internal Interface", enable=false));
-      parameter SI.Area crossArea "Cross flow area" 
+      parameter SI.Length[n] perimeter
+          "Mean perimeter for heat transfer area and hydraulic diameter" 
         annotation(Dialog(tab="Internal Interface", enable=false));
-      parameter SI.Area area "Heat transfer area (typically perimeter*length)" 
-        annotation(Dialog(tab="Internal Interface", enable=false));
+      final parameter SI.Length[n] diameter = {4*(crossArea[i]+crossArea[i+1])/2/perimeter[i] for i in 1:n}
+          "Hydraulic diameter";
+      final parameter SI.Area[n] area = {perimeter[i]*length[i] for i in 1:n}
+          "Heat transfer area";
       parameter Boolean use_fluidHeatPort=false
           "= true to use fluidHeatPort instead of output Q_flow" 
         annotation(Dialog(tab="Internal Interface", enable=false));
@@ -1010,9 +1020,9 @@ Base class for heat transfer models that can be used in distributed pipe models.
       eta=Medium.dynamicViscosity(state);
       lambda=Medium.thermalConductivity(state);
       Pr = Medium.prandtlNumber(state);
-      Re = CharacteristicNumbers.ReynoldsNumber(m_flow/nPipes, diameter, crossArea, eta);
+      Re = CharacteristicNumbers.ReynoldsNumber(m_flow/nPipes, diameter, (crossArea[1:n]+crossArea[2:n+1])/2, eta);
       Nu = CharacteristicNumbers.NusseltNumber(alpha, diameter, lambda);
-      Q_flow={alpha[i]*area/n*(wallHeatPort[i].T - T[i])*nPipes for i in 1:n};
+      Q_flow={alpha[i]*area[i]*(wallHeatPort[i].T - T[i])*nPipes for i in 1:n};
         annotation (Documentation(info="<html>
 Base class for heat transfer models that are expressed in terms of the Nusselt number and which can be used in distributed pipe models.
 </html>"));
@@ -1047,7 +1057,7 @@ Ideal heat transfer without thermal resistance.
 Simple heat transfer correlation with constant heat transfer coefficient, used as default component in <a distributed pipe models.
 </html>"));
     equation
-      Q_flow = alpha0*area/n*(wallHeatPort.T - T)*nPipes;
+      Q_flow = {alpha0*area[i]*(wallHeatPort[i].T - T[i])*nPipes for i in 1:n};
     end PipeHT_constAlpha;
     annotation (Documentation(info="<html>
 Heat transfer correlations for pipe models
@@ -1062,16 +1072,15 @@ Heat transfer correlations for pipe models
       Real Nu_1;
       Real[n] Nu_2;
       Real[n] Xi;
-      parameter SI.Length dx=length/n;
     equation
       Nu_1=3.66;
       for i in 1:n loop
-       Nu_turb[i]=smooth(0,(Xi[i]/8)*abs(Re[i])*Pr[i]/(1+12.7*(Xi[i]/8)^0.5*(Pr[i]^(2/3)-1))*(1+1/3*(diameter/dx/(if m_flow[i]>=0 then (i-0.5) else (n-i+0.5)))^(2/3)));
+       Nu_turb[i]=smooth(0,(Xi[i]/8)*abs(Re[i])*Pr[i]/(1+12.7*(Xi[i]/8)^0.5*(Pr[i]^(2/3)-1))*(1+1/3*(diameter[i]/length[i]/(if m_flow[i]>=0 then (i-0.5) else (n-i+0.5)))^(2/3)));
        Xi[i]=(1.8*Modelica.Math.log10(max(1e-10,Re[i]))-1.5)^(-2);
        Nu_lam[i]=(Nu_1^3+0.7^3+(Nu_2[i]-0.7)^3)^(1/3);
-       Nu_2[i]=smooth(0,1.077*(abs(Re[i])*Pr[i]*diameter/dx/(if m_flow[i]>=0 then (i-0.5) else (n-i+0.5)))^(1/3));
+       Nu_2[i]=smooth(0,1.077*(abs(Re[i])*Pr[i]*diameter[i]/length[i]/(if m_flow[i]>=0 then (i-0.5) else (n-i+0.5)))^(1/3));
        Nu[i]=spliceFunction(Nu_turb[i], Nu_lam[i], Re[i]-6150, 3850);
-    end for;
+      end for;
       annotation (Documentation(info="<html>
 Heat transfer model for laminar and turbulent flow in pipes. Range of validity:
 <ul>

@@ -261,7 +261,7 @@ present that are regulated by a central control system.
           origin={-56,-200},
           extent={{10,10},{-10,-10}},
           rotation=180)));
-    Modelica_Fluid.Machines.ControlledPumpNPSH P1(
+    Modelica_Fluid.Machines.PrescribedPumpNPSH P1(
       redeclare package Medium = BatchMedium,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
@@ -276,7 +276,7 @@ present that are regulated by a central control system.
       p_b_start=100000) 
       annotation (Placement(transformation(extent={{-128,-260},{-148,-240}},
             rotation=0)));
-    Modelica_Fluid.Machines.ControlledPumpNPSH P2(
+    Modelica_Fluid.Machines.PrescribedPumpNPSH P2(
       redeclare package Medium = BatchMedium,
       checkValve=false,
       m_flow_start=0.1,
@@ -366,7 +366,7 @@ present that are regulated by a central control system.
       diameter=pipeDiameter,
       length=1,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
             dp_nominal=1, m_flow_nominal=1)) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
             rotation=0)));
@@ -376,7 +376,7 @@ present that are regulated by a central control system.
       length=1,
       diameter=pipeDiameter,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
             dp_nominal=1, m_flow_nominal=1)) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
              0)));
@@ -1279,8 +1279,7 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},

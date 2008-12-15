@@ -110,7 +110,7 @@ package Machines
               100,100}}),
             graphics),
     Documentation(info="<HTML>
-<p>This model describes a centrifugal pump (or a group of <tt>nPumps</tt> pumps in parallel) with a mechanical rotational connector for the shaft, to be used when the pump drive has to be modelled explicitly. In the case of <tt>nPumps</tt> pumps in parallel, the mechanical connector is relative to a single pump.
+<p>This model describes a centrifugal pump (or a group of <tt>nPumps</tt> parallel pumps) with a mechanical rotational connector for the shaft, to be used when the pump drive has to be modelled explicitly. In the case of <tt>nPumps</tt> pumps in parallel, the mechanical connector is relative to a single pump.
 <p>The model extends <tt>PartialPump</tt>
  </HTML>",
        revisions="<html>
@@ -122,7 +122,116 @@ package Machines
 </html>"));
   end Pump;
 
-  model ControlledPumpSpeed "Centrifugal pump with ideally controlled speed"
+  model ControlledPump
+    "Centrifugal pump with ideally controlled mass flow rate"
+    import Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm;
+    extends Modelica_Fluid.Machines.BaseClasses.PartialPump(
+      N(start=N_nominal),
+      p_a_start = system.p_start,
+      p_b_start = 2*p_a_start,
+      m_flow_start = 1,
+      redeclare replaceable function flowCharacteristic = 
+          Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow
+          ( q_nominal={0, q_op, 1.5*q_op},
+            head_nominal={2*head_op, head_op, 0}));
+
+    // nominal values
+    parameter Medium.AbsolutePressure p_a_nominal = p_a_start
+      "Nominal inlet pressure for predefined pump characteristics";
+    parameter Medium.AbsolutePressure p_b_nominal = p_b_start
+      "Nominal outlet pressure, fixed if not control_m_flow and not use_p_set";
+    parameter Medium.MassFlowRate m_flow_nominal = m_flow_start
+      "Nominal mass flow rate, fixed if control_m_flow and not use_m_flow_set";
+
+    // what to control
+    parameter Boolean control_m_flow = true
+      "= false to control outlet pressure port_b.p instead of m_flow" 
+      annotation(Evaluate = true);
+    parameter Boolean use_m_flow_set = false
+      "= true to use input signal m_flow_set instead of m_flow_nominal" 
+      annotation (Dialog(enable = control_m_flow));
+    parameter Boolean use_p_set = false
+      "= true to use input signal p_set instead of p_b_nominal" 
+      annotation (Dialog(enable = not control_m_flow));
+
+    // exemplary characteristics
+    final parameter SI.VolumeFlowRate q_op = m_flow_nominal/d_nominal
+      "operational volume flow rate according to nominal values";
+    final parameter SI.Height head_op = (p_b_nominal-p_a_nominal)/(d_nominal*g)
+      "operational pump head according to nominal values";
+
+    Modelica.Blocks.Interfaces.RealInput m_flow_set if use_m_flow_set
+      "Prescribed mass flow rate" 
+      annotation (Placement(transformation(
+          extent={{-20,-20},{20,20}},
+          rotation=-90,
+          origin={-50,82})));
+    Modelica.Blocks.Interfaces.RealInput p_set if use_p_set
+      "Prescribed outlet pressure" 
+      annotation (Placement(transformation(
+          extent={{-20,-20},{20,20}},
+          rotation=-90,
+          origin={50,82})));
+
+  protected
+    Modelica.Blocks.Interfaces.RealInput m_flow_set_internal
+      "Needed to connect to conditional connector";
+    Modelica.Blocks.Interfaces.RealInput p_set_internal
+      "Needed to connect to conditional connector";
+  equation
+    // Ideal control
+    if control_m_flow then
+      m_flow = m_flow_set_internal;
+    else
+      dp = p_set_internal - port_a.p;
+    end if;
+
+    // Internal connector value when use_m_flow_set = false
+    if not use_m_flow_set then
+      m_flow_set_internal = m_flow_nominal;
+    end if;
+    if not use_p_set then
+      p_set_internal = p_b_nominal;
+    end if;
+    connect(m_flow_set, m_flow_set_internal);
+    connect(p_set, p_set_internal);
+
+    annotation (defaultComponentName="pump",
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
+            visible=use_p_set,
+            extent={{82,108},{176,92}},
+            textString="p_set"), Text(
+            visible=use_m_flow_set,
+            extent={{-20,108},{170,92}},
+            textString="m_flow_set")}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics),
+      Documentation(info="<HTML>
+<p>
+This model describes a centrifugal pump (or a group of <tt>nPumps</tt> parallel pumps) 
+with ideally controlled mass flow rate or pressure.
+</p>
+<p>
+Nominal values are used to predefine an exemplary pump characteristics and to define the operation of the pump. 
+The input connectors <tt>m_flow_set</tt> or <tt>p_set</tt> can optionally be enabled to provide time varying set points. 
+</p>
+<p>
+Use this model if the pump characteristics is of secondary interest. 
+The actual characteristics can be configured later on for the appropriate rotational speed N. 
+Then the model can be replaced with a Pump with rotational shaft or with a PrescribedPump.
+</p>
+</HTML>",
+        revisions="<html>
+<ul>
+<li><i>15 Dec 2008</i>
+    by Ruediger Franke</a>:<br>
+       Model added to the Fluid library</li>
+</ul>
+</html>"));
+  end ControlledPump;
+
+  model PrescribedPump "Centrifugal pump with ideally controlled speed"
     extends Modelica_Fluid.Machines.BaseClasses.PartialPump;
     parameter Boolean use_N_input = false
       "Get the rotational speed from the input connector";
@@ -138,7 +247,7 @@ package Machines
           extent={{-20,-20},{20,20}},
           rotation=-90,
           origin={0,100})));
-    annotation (
+    annotation (defaultComponentName="pump",
       Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
               100}}), graphics={Text(
             visible=use_N_input,
@@ -147,7 +256,7 @@ package Machines
       Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics),
       Documentation(info="<HTML>
-<p>This model describes a centrifugal pump (or a group of <tt>nPumps</tt> pumps in parallel) with controlled speed, either fixed or provided by an external signal.
+<p>This model describes a centrifugal pump (or a group of <tt>nPumps</tt> parallel pumps) with prescribed speed, either fixed or provided by an external signal.
 <p>The model extends <tt>PartialPump</tt>
 <p>If the <tt>N_in</tt> input connector is wired, it provides rotational speed of the pumps (rpm); otherwise, a constant rotational speed equal to <tt>n_const</tt> (which can be different from <tt>N_nominal</tt>) is assumed.</p>
 </HTML>",
@@ -172,11 +281,11 @@ package Machines
     // Set N with a lower limit to avoid singularities at zero speed
     N = max(N_in_internal,1e-3) "Rotational speed";
 
-  end ControlledPumpSpeed;
+  end PrescribedPump;
 
-  model ControlledPumpNPSH
+  model PrescribedPumpNPSH
     "Centrifugal pump with ideally controlled speed and NPSHa computation"
-    extends Modelica_Fluid.Machines.ControlledPumpSpeed(
+    extends Modelica_Fluid.Machines.PrescribedPump(
                  redeclare replaceable package Medium = 
       Modelica.Media.Water.WaterIF97_ph constrainedby
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);
@@ -190,7 +299,8 @@ package Machines
 
     // Check for cavitation
     assert(port_a.p >= pv, "Cavitation occurs at the inlet");
-    annotation (Documentation(info="<html>Same as the Pump model, with added computation of Net Positive Suction Head available. Requires a two-phase medium model.
+    annotation (defaultComponentName="pump",
+  Documentation(info="<html>Same as the PrescribedPump model, with added computation of Net Positive Suction Head available. Requires a two-phase medium model.
 </html>", revisions="<html>
 <ul>
 <li><i>30 Jul 2007</i>
@@ -200,7 +310,7 @@ package Machines
  
 </html>"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
               -100},{100,100}}), graphics));
-  end ControlledPumpNPSH;
+  end PrescribedPumpNPSH;
 
   package BaseClasses "Base classes for Turbomachinery components"
     extends Modelica_Fluid.Icons.BaseClassLibrary;

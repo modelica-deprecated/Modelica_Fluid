@@ -14,7 +14,7 @@ model HeatingSystem "Simple model of a heating system"
     portDiameters={0.025,0.025}) 
               annotation (Placement(transformation(extent={{-76,6},{-54,28}},
           rotation=0)));
-  Modelica_Fluid.Machines.ControlledPumpSpeed pump(
+  Modelica_Fluid.Machines.PrescribedPump pump(
     redeclare package Medium = Medium,
     N_nominal=1500,
     N_const=1500,
@@ -67,7 +67,7 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
           m_flow_nominal=1, dp_nominal=100),
     p_a_start=400000,
     p_b_start=390000) 
@@ -82,7 +82,7 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
           m_flow_nominal=1, dp_nominal=100),
     p_a_start=110000,
     p_b_start=105000) 
@@ -157,7 +157,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
