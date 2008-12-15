@@ -40,7 +40,7 @@ package Pipes "Devices for conveying fluid"
             final g=system.g) "Pressure loss model" 
        annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
   equation
-    port_a.m_flow = pressureLoss.m_flow[1]*nParallel;
+    port_a.m_flow = pressureLoss.m_flow[1];
     0 = port_a.m_flow + port_b.m_flow;
     port_a.h_outflow = inStream(port_b.h_outflow);
     port_b.h_outflow = inStream(port_a.h_outflow);
@@ -306,12 +306,14 @@ pipe wall/environment).
     assert(nNodes > 1 or modelStructure <> ModelStructure.av_vb,
        "nNodes needs to be at least 2 for modelStructure av_vb, as flow model disappears otherwise!");
 
+    // distributed volume
+    /* Note: don't use half mass balances as this makes connections (unnecessary?) stiff; 
+           and as one might wonder about the uneven distribution of heat capacities behind heatPort
+  if modelStructure == Types.ModelStructure.av_vb then
+    fluidVolume = cat(1, {V/(n-1)/2}, fill(V/(n-1), n-2), {V/(n-1)/2});
+  */
+    fluidVolume=fill(V/n, n);
     // Source/sink terms for mass and energy balances
-    if modelStructure == Types.ModelStructure.av_vb then
-      fluidVolume = cat(1, {V/(n-1)/2}, fill(V/(n-1), n-2), {V/(n-1)/2});
-    else
-      fluidVolume=fill(V/n, n);
-    end if;
     Ws_flow=zeros(n);
     for i in 1:n loop
       ms_flow[i] = m_flow[i] - m_flow[i + 1];
@@ -426,8 +428,7 @@ pipe wall/environment).
     connect(heatPorts, heatTransfer.wallHeatPort) 
       annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
     annotation (defaultComponentName="pipe",
-  Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-              100}},
+  Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={Ellipse(
             extent={{-72,10},{-52,-10}},
             lineColor={0,0,0},
@@ -437,8 +438,8 @@ pipe wall/environment).
             lineColor={0,0,0},
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid)}),
-  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}},
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}},
           grid={1,1}),
           graphics),
   Documentation(info="<html>
@@ -462,7 +463,7 @@ An alternative symmetric variation with nNodes+1 momentum balances, half a momen
 non-symmetric variations can be obtained by chosing a different value for the parameter <tt><b>modelStructure</b></tt>. 
 The options include:
 <ul>
-<li><tt>av_vb</tt>: nNodes-1 equal momentum balances between nNodes pipe segments, half segment volume at each port. 
+<li><tt>av_vb</tt>: nNodes-1 equal momentum balances between nNodes pipe segments. 
 This results in potential pressure states at both ports.
 <li><tt>a_v_b</tt>: Alternative symmetric setting with nNodes+1 momentum balances across nNodes equal pipe segments, 
 half a momentum balance at each port. Connecting two pipes therefore results in algebraic pressures at the ports. 
@@ -530,7 +531,7 @@ This also allows for taking into account friction losses with respect to the act
       parameter SI.Length perimeter=Modelica.Constants.pi*diameter
         "Inner perimeter" 
         annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
-      parameter SI.Length roughness(min=0)=2.5e-5
+      parameter SI.Height roughness(min=0)=2.5e-5
         "Average height of surface asperities (default = smooth steel pipe)" 
           annotation(Dialog(group="Geometry"));
       final parameter SI.Volume V=crossArea*length*nParallel "volume size";
@@ -616,7 +617,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             parameter SI.Length[n] perimeter
           "Mean perimeter of segments, used for hydraulic diameter" 
               annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
-            parameter SI.Length[n] roughness(each min=0)
+            parameter SI.Height[n] roughness(each min=0)
           "Average height of surface asperities" 
                 annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry",enable=WallFriction.use_roughness));
             parameter SI.Length height_ab
@@ -665,14 +666,22 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 thickness=1)}));
           end PartialFlowPressureLoss;
 
-          model NominalPressureLoss
-        "Simple pressure loss for nominal values (currently linear)"
+          model NominalPressureLoss "Simple pressure loss for nominal values"
             extends PartialFlowPressureLoss;
 
-            parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
-            parameter SI.MassFlowRate m_flow_nominal
+            parameter Medium.AbsolutePressure dp_nominal
+          "Nominal pressure drop";
+            parameter Medium.MassFlowRate m_flow_nominal
           "Mass flow rate for dp_nominal";
 
+            parameter SI.AbsolutePressure dp_small = max(0.01*dp_nominal, 1)
+          "Within regularization if |dp| < dp_small" 
+              annotation(Dialog(group="Advanced"));
+          /*
+  parameter SI.MassFlowRate m_flow_small = 0.01 
+    "Within regularization if |m_flow| < m_flow_small"
+    annotation(Dialog(group="Advanced"));
+*/
             parameter Boolean use_d_nominal = false
           "= true to use d_nominal for static head, otherwise computed from medium"
               annotation(Dialog(group="Advanced"), Evaluate=true);
@@ -680,29 +689,71 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
               annotation(Dialog(group="Advanced", enable=use_d_nominal));
 
-            parameter Boolean smoothFlowReversal=false
-          "=true for numerical regularization around zero flow" 
-              annotation(Dialog(group="Advanced",enable=allowFlowReversal and not use_d_nominal));
-            parameter SI.MassFlowRate m_flow_small = 0.01
-          "Within regularization if |m_flow| < m_flow_small" 
-              annotation(Dialog(group="Advanced",enable=smoothFlowReversal));
-
             SI.Density[n+1] d = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(state);
-
+            SI.Density[n] d_av = 0.5*(d[1:n] + d[2:n+1])
+          "average density per flow segment";
+            SI.Length[n] diameter_h "hydraulic diameter for nominal values";
+            SI.Height[n] roughness_h "hydraulic roughness for nominal values";
+            SI.Length[n] length_nominal "length for nominal values";
+            Real[n] k_inv "coefficient for quadratic flow";
+            Real[n] zeta "coefficient for quadratic flow";
           equation
-            if not allowFlowReversal or use_d_nominal then
-              dp = g*height_ab*d[1:n] + dp_nominal/m_flow_nominal*m_flow*nParallel;
-            else
-              if not smoothFlowReversal then
-                // exact switching
-                for i in 1:n loop
-                  dp[i] = g*height_ab*(if m_flow[i] > 0 then d[i] else d[i+1]) + dp_nominal/m_flow_nominal*m_flow[i]*nParallel;
-                end for;
+            if dp_small >= dp_nominal then
+              // laminar (linear) flow
+              if not allowFlowReversal then
+                dp = g*height_ab*d[1:n] + dp_nominal/m_flow_nominal*m_flow*nParallel;
               else
-                // regularization around zero flow
-                dp = g*height_ab*Utilities.regStep(m_flow, d[1:n], d[2:n+1], m_flow_small) + dp_nominal/m_flow_nominal*m_flow*nParallel;
+                dp = g*height_ab*d_av[1:n] + dp_nominal/m_flow_nominal*m_flow*nParallel;
               end if;
+            else
+              m_flow = Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent.massFlowRate_dp_staticHead(
+                dp,
+                d_av,
+                d_av,
+                zeros(n),
+                zeros(n),
+                length_nominal,
+                diameter_h,
+                g*height_ab/n,
+                roughness_h,
+                dp_small/n)*nParallel;
             end if;
+            // Inverse parameterization for WallFriction.QuadraticTurbulent.massFlowRate_dp_staticHead
+            //Real zeta = (length/diameter)/(2*Math.log10(3.7 /(roughness/diameter)))^2;
+            //Real k_inv = (pi*diameter*diameter)^2/(8*zeta);
+            //Real k1 = d_a*k_inv "Factor in m_flow =  sqrt(k1*(dp-dp_grav_a))";
+            for i in 1:n loop
+              if perimeter[i] > 0 then
+                diameter_h[i] = 4*(crossArea[i]+crossArea[i+1])/2/perimeter[i];
+              else
+                diameter_h[i] = 2.54e-2 "default: one inch";
+              end if;
+              if roughness[i] > 0 then
+                roughness_h[i] = roughness[i];
+              else
+                roughness_h[i] = 2.5e-5 "default: smooth steel pipe";
+              end if;
+              k_inv[i] = (m_flow_nominal/nParallel)^2/(dp_nominal/n)/d_av[i];
+              zeta[i] = (Modelica.Constants.pi*diameter_h[i]*diameter_h[i])^2/(8*k_inv[i]);
+              length_nominal[i] =
+                zeta[i]*diameter_h[i]*(2*Modelica.Math.log10(3.7 /(roughness_h[i]/diameter_h[i])))^2;
+            end for;
+
+            annotation (Documentation(info="<html>
+<p>
+This model defines a pressure loss assuming turbulent flow for 
+specified <tt>dp_nominal</tt> and <tt>m_flow_nominal</tt>.
+It takes into account the average fluid density of each flow segment, 
+obtaines appropriate <tt>length_nominal</tt> values 
+and calls the functions provided by
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent\">
+          Pipes.BaseClasses.WallFriction.QuadraticTurbulent</a>.
+</p>
+<p>
+The parameter <tt>dp_small</tt> can be used to account for the laminar zone. 
+A very simple linear pressure loss correlation is obtained for <tt>dp_small >= dp_nominal</tt>.
+</p>
+</html>"));
           end NominalPressureLoss;
 
           partial model PartialWallFrictionAndGravity
@@ -812,15 +863,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             end if;
           end if;
 
-              annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
-                  preserveAspectRatio=false,
-                  extent={{-100,-100},{100,100}},
-                  grid={1,1}), graphics={Text(
-                extent={{-150,80},{150,120}},
-                lineColor={0,0,255},
-                fillPattern=FillPattern.HorizontalCylinder,
-                fillColor={0,127,255},
-                textString="%name")}),               Documentation(info="<html>
+              annotation (Documentation(info="<html>
 <p>
 This model describes pressure losses due to <b>wall friction</b> in a pipe
 and due to gravity.
@@ -946,7 +989,7 @@ simulation and/or might give a more robust simulation.
       parameter SI.Length[n] perimeter
           "Mean perimeter for heat transfer area and hydraulic diameter" 
         annotation(Dialog(tab="Internal Interface", enable=false));
-      parameter SI.Length[n] roughness(each min=0)
+      parameter SI.Height[n] roughness(each min=0)
           "Average height of surface asperities" 
           annotation(Dialog(tab="Internal Interface", enable=false));
       final parameter SI.Length[n] diameter = {4*(crossArea[i]+crossArea[i+1])/2/perimeter[i] for i in 1:n}
