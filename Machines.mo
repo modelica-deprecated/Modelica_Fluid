@@ -110,7 +110,7 @@ package Machines
               100,100}}),
             graphics),
     Documentation(info="<HTML>
-<p>This model describes a centrifugal pump (or a group of <tt>nPumps</tt> parallel pumps) with a mechanical rotational connector for the shaft, to be used when the pump drive has to be modelled explicitly. In the case of <tt>nPumps</tt> pumps in parallel, the mechanical connector is relative to a single pump.
+<p>This model describes a centrifugal pump (or a group of <tt>nParallel</tt> pumps) with a mechanical rotational connector for the shaft, to be used when the pump drive has to be modelled explicitly. In the case of <tt>nParallel</tt> pumps, the mechanical connector is relative to a single pump.
 <p>The model extends <tt>PartialPump</tt>
  </HTML>",
        revisions="<html>
@@ -207,7 +207,7 @@ package Machines
               100,100}}), graphics),
       Documentation(info="<HTML>
 <p>
-This model describes a centrifugal pump (or a group of <tt>nPumps</tt> parallel pumps) 
+This model describes a centrifugal pump (or a group of <tt>nParallel</tt> pumps) 
 with ideally controlled mass flow rate or pressure.
 </p>
 <p>
@@ -254,7 +254,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics),
       Documentation(info="<HTML>
-<p>This model describes a centrifugal pump (or a group of <tt>nPumps</tt> parallel pumps) with prescribed speed, either fixed or provided by an external signal.
+<p>This model describes a centrifugal pump (or a group of <tt>nParallel</tt> pumps) with prescribed speed, either fixed or provided by an external signal.
 <p>The model extends <tt>PartialPump</tt>
 <p>If the <tt>N_in</tt> input connector is wired, it provides rotational speed of the pumps (rpm); otherwise, a constant rotational speed equal to <tt>n_const</tt> (which can be different from <tt>N_nominal</tt>) is assumed.</p>
 </HTML>",
@@ -327,6 +327,9 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         p(start=p_b_start),
         m_flow(start = -m_flow_start,
                max = if allowFlowReversal and not checkValve then +Constants.inf else 0)));
+
+    parameter Integer nParallel(min=1) = 1 "Number of pumps in parallel" 
+      annotation(Dialog(group="Characteristics"));
     replaceable function flowCharacteristic = 
         PumpCharacteristics.baseFlow
         "Head vs. q_flow characteristic at nominal speed and density" 
@@ -352,7 +355,6 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal fluid density" 
       annotation(Dialog(group="Characteristics"));
-    parameter Integer nPumps(min=1) = 1 "Number of pumps in parallel";
 
     // Assumptions
     parameter Boolean checkValve=false "= true to prevent reverse flow" 
@@ -395,14 +397,14 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         "Enthalpy of the liquid stored in the pump if M>0";
     Medium.Temperature Tin "Liquid inlet temperature";
     SI.MassFlowRate m_flow = port_a.m_flow "Mass flow rate (total)";
-    SI.MassFlowRate m_flow_single = m_flow/nPumps
+    SI.MassFlowRate m_flow_single = m_flow/nParallel
         "Mass flow rate (single pump)";
     SI.VolumeFlowRate q_flow = m_flow/d "Volume flow rate (total)";
-    SI.VolumeFlowRate q_flow_single = q_flow/nPumps
+    SI.VolumeFlowRate q_flow_single = q_flow/nParallel
         "Volume flow rate (single pump)";
     AngularVelocity_rpm N "Shaft rotational speed";
     SI.Power W_single "Power Consumption (single pump)";
-    SI.Power W_tot = W_single*nPumps "Power Consumption (total)";
+    SI.Power W_tot = W_single*nParallel "Power Consumption (total)";
     constant SI.Power W_eps=1e-8
         "Small coefficient to avoid numerical singularities in efficiency computations";
     Real eta "Global Efficiency";
@@ -456,7 +458,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     if V > 0 then
        // Dynamic energy balance
        // mass variations and p/d are neglected
-       nPumps*V*d_nominal*der(h) = port_a.m_flow*actualStream(port_a.h_outflow) +
+       nParallel*V*d_nominal*der(h) = port_a.m_flow*actualStream(port_a.h_outflow) +
                      port_b.m_flow*actualStream(port_b.h_outflow) +
                      W_tot;
        port_b.h_outflow  = h;
@@ -465,8 +467,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       /* In the following two equations the extra term W_tot/m_flow is
        present where a 0/0 term appears if m_flow = 0. In order to avoid
        numerical problems, this term is analytically simplified:
-         W_tot/m_flow = nPumps*W_single/(d*q_flow_single*nPumps)
-                      = nPumps*dp*q_flow_single/(eta*d*q_flow_single*nPumps)
+         W_tot/m_flow = nParallel*W_single/(d*q_flow_single*nParallel)
+                      = nParallel*dp*q_flow_single/(eta*d*q_flow_single*nParallel)
                       = dp/(eta*d)
     */
       port_b.h_outflow  = inStream(port_a.h_outflow) + dp/(d*eta);
@@ -522,7 +524,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>Pump</tt> and <tt>
 PumpMech</tt> pump models.
-<p>The model describes a centrifugal pump, or a group of <tt>nPumps</tt> identical pumps in parallel. The pump model is based on the theory of kinematic similarity: the pump characteristics are given for nominal operating conditions (rotational speed and fluid density), and then adapted to actual operating condition, according to the similarity equations. 
+<p>The model describes a centrifugal pump, or a group of <tt>nParallel</tt> identical pumps. The pump model is based on the theory of kinematic similarity: the pump characteristics are given for nominal operating conditions (rotational speed and fluid density), and then adapted to actual operating condition, according to the similarity equations. 
 <p><b>Modelling options</b></p>
 <p> The nominal hydraulic characteristic (head vs. volume flow rate) is given by the the replaceable function <tt>flowCharacteristic</tt>. 
 <p> The pump energy balance can be specified in two alternative ways:
@@ -533,9 +535,9 @@ PumpMech</tt> pump models.
 <p>
 Several functions are provided in the package <tt>PumpCharacteristics</tt> to specify the characteristics as a function of some operating points at nominal conditions.
 <p>Depending on the value of the <tt>checkValve</tt> parameter, the model either supports reverse flow conditions, or includes a built-in check valve to avoid flow reversal.
-<p>If the <tt>in_nPumps</tt> input connector is wired, it provides the number of pumps in parallel; otherwise,  <tt>nPumps_n</tt> parallel pumps are assumed.</p>
-<p>It is possible to take into account the heat capacity of the fluid inside the pump by specifying its mass <tt>M</tt> at nominal conditions; this is necessary to avoid singularities in the computation of the outlet enthalpy in case of zero flow rate. If zero flow rate conditions are always avoided, this dynamic effect can be neglected by leaving the default value <tt>M = 0</tt>, thus avoiding a fast state variable in the model.
-<p>If <tt>computeNPSHa = true</tt>, the available net positive suction head is also computed; this requires a two-phase medium model to provide the fluid saturation pressure.
+<p>It is possible to take into account the heat capacity of the fluid inside the pump by specifying its volume <tt>V</tt>; 
+this is necessary to avoid singularities in the computation of the outlet enthalpy in case of zero flow rate. 
+If zero flow rate conditions are always avoided, this dynamic effect can be neglected by leaving the default value <tt>V = 0</tt>, thus avoiding a fast state variable in the model.
 </HTML>",
         revisions="<html>
 <ul>

@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -922,10 +921,13 @@ Modelica_Fluid was refactored and finalized for the release:
      new pressure loss and heat transfer correlations can be added to existing models,
      e.g. to consider two phase flow. The geometry is considered in the interfaces with:
      <ul>
-     <li><tt>SI.Length[n] length</tt> of n flow segments along the flow path</li>
-     <li><tt>SI.Area[n+1] crossArea</tt> of the boundaries of n flow segments along the flow path</li>
-     <li><tt>SI.Length[n] perimeter</tt> of n flow segments (to determine heat transfer area and hydraulic diameter)</li>
+     <li><tt>SI.Length[n] length</tt>: length of n flow segments along the flow path,</li>
+     <li><tt>SI.Area[n+1] crossArea</tt>: cross sectional area of n+1 boundaries of n flow segments along the flow path,</li>
+     <li><tt>SI.Length[n] perimeter</tt>: perimeter of n flow segments (to determine heat transfer area and hydraulic diameter),</li>
+     <li><tt>SI.Length roughness</tt>: average height of surface asperities.</li>
      </ul>
+     See <a href=\"Modelica:Modelica_Fluid.Fittings.GenericPressureLoss\">Fittings.GenericPressureLoss</a>
+     for the simplest model using the PressureLoss interface.
      </li>
  
 <li> New approach for the connection of pipe models<br>
@@ -2104,7 +2106,6 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
 
 annotation (
   version="1.0 Release Candidate 1",

@@ -27,8 +27,8 @@ package Vessels "Devices for storing fluid"
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
       annotation (defaultComponentName="volume",
-        Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Ellipse(
+        Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+              {100,100}}), graphics={Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
