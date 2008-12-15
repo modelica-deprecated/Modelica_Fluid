@@ -39,9 +39,9 @@ annotation (
     checkValve=true,
     V=0.1/1000,
     initType=Modelica_Fluid.Types.Init.SteadyState,
+    use_N_input=true,
     p_a_start=100000,
-    p_b_start=700000,
-    use_N_input=true)      annotation (Placement(transformation(extent={{-40,-40},
+    p_b_start=700000)      annotation (Placement(transformation(extent={{-40,-40},
             {-20,-20}},rotation=0)));
   inner Modelica_Fluid.System system 
                                    annotation (Placement(transformation(extent={{80,60},

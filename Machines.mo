@@ -126,21 +126,19 @@ package Machines
     "Centrifugal pump with ideally controlled mass flow rate"
     import Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm;
     extends Modelica_Fluid.Machines.BaseClasses.PartialPump(
+      N_nominal=1500,
       N(start=N_nominal),
-      p_a_start = system.p_start,
-      p_b_start = 2*p_a_start,
-      m_flow_start = 1,
       redeclare replaceable function flowCharacteristic = 
           Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow
           ( q_nominal={0, q_op, 1.5*q_op},
             head_nominal={2*head_op, head_op, 0}));
 
     // nominal values
-    parameter Medium.AbsolutePressure p_a_nominal = p_a_start
+    parameter Medium.AbsolutePressure p_a_nominal
       "Nominal inlet pressure for predefined pump characteristics";
-    parameter Medium.AbsolutePressure p_b_nominal = p_b_start
+    parameter Medium.AbsolutePressure p_b_nominal
       "Nominal outlet pressure, fixed if not control_m_flow and not use_p_set";
-    parameter Medium.MassFlowRate m_flow_nominal = m_flow_start
+    parameter Medium.MassFlowRate m_flow_nominal
       "Nominal mass flow rate, fixed if control_m_flow and not use_m_flow_set";
 
     // what to control
@@ -333,7 +331,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         PumpCharacteristics.baseFlow
         "Head vs. q_flow characteristic at nominal speed and density" 
       annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
-    parameter AngularVelocity_rpm N_nominal = 1500 "Nominal rotational speed" 
+    parameter AngularVelocity_rpm N_nominal "Nominal rotational speed" 
       annotation(Dialog(group="Characteristics"));
     parameter Boolean usePowerCharacteristic = false
         "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
@@ -363,10 +361,10 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         "Fluid volume inside the pump; consider if checkValve" 
       annotation(Dialog(tab="Assumptions"));
 
-    parameter Medium.AbsolutePressure p_a_start
+    parameter Medium.AbsolutePressure p_a_start=system.p_start
         "Guess value for inlet pressure" 
       annotation(Dialog(tab="Initialization"));
-    parameter Medium.AbsolutePressure p_b_start
+    parameter Medium.AbsolutePressure p_b_start=2*p_a_start
         "Guess value for outlet pressure" 
       annotation(Dialog(tab="Initialization"));
     parameter Boolean use_T_start = true
@@ -383,7 +381,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default
         "Guess value for mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-    parameter SI.MassFlowRate m_flow_start = 0
+    parameter SI.MassFlowRate m_flow_start = 1
         "Guess value for mass flow rate (total)" 
       annotation(Dialog(tab="Initialization"));
     final parameter SI.Acceleration g=system.g;

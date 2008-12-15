@@ -35,9 +35,9 @@ annotation (
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
           q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     N_nominal=1500,
+    use_N_input=true,
     p_a_start=100000,
-    p_b_start=700000,
-    use_N_input=true)      annotation (Placement(transformation(extent={{-66,20},
+    p_b_start=700000)      annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));
   Modelica.Blocks.Sources.Ramp valveOpening(
     height=-1,

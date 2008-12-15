@@ -105,7 +105,7 @@ package HeatExchanger "Demo of a heat exchanger model"
     model BasicHX "Simple heat exchanger model"
       outer Modelica_Fluid.System system "System properties";
       //General
-      parameter Integer nNodes(min=1) = 1 "Spatial segmentation";
+      parameter Integer nNodes(min=1) = 2 "Spatial segmentation";
       replaceable package Medium_1 = Modelica.Media.Water.StandardWater constrainedby
         Modelica.Media.Interfaces.PartialMedium "Fluid 1" 
                                                         annotation(choicesAllMatching, Dialog(tab="General",group="Fluid 1"));

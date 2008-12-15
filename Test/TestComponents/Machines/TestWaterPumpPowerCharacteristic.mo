@@ -25,10 +25,10 @@ model TestWaterPumpPowerCharacteristic
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticPower
         ( q_nominal={0,0.001,0.0015}, W_nominal={550,650,800}),
     V=0.1/1000,
+    initType=Modelica_Fluid.Types.Init.SteadyState,
+    N_nominal=1500,
     p_a_start=100000,
-    p_b_start=700000,
-    initType=Modelica_Fluid.Types.Init.SteadyState) 
-                           annotation (Placement(transformation(extent={{-66,20},
+    p_b_start=700000)      annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));
   Modelica.Blocks.Sources.Constant valveOpening(k=1) 
   annotation (Placement(transformation(extent={{-60,60},{-40,80}}, rotation=0)));
@@ -58,8 +58,8 @@ equation
                                      annotation (Line(points={{-66,35},{-70,35},
           {-70,30},{-80,30}}, color={0,127,255}));
   connect(downstreamPressure.y, Sink.p_in) 
-                                annotation (Line(points={{25,84},{58,84},{58,42},
-          {36,42}}, color={0,0,127}));
+                                annotation (Line(points={{25,84},{58,84},{58,44},
+          {36,44}}, color={0,0,127}));
   annotation (experiment(StopTime=10), Diagram(coordinateSystem(
           preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics));
   connect(valveOpening.y, Valve.opening) annotation (Line(
