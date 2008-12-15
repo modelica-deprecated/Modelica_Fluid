@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -921,10 +922,10 @@ Modelica_Fluid was refactored and finalized for the release:
      new pressure loss and heat transfer correlations can be added to existing models,
      e.g. to consider two phase flow. The geometry is considered in the interfaces with:
      <ul>
-     <li><tt>SI.Length[n] length</tt>: length of n flow segments along the flow path,</li>
-     <li><tt>SI.Area[n+1] crossArea</tt>: cross sectional area of n+1 boundaries of n flow segments along the flow path,</li>
-     <li><tt>SI.Length[n] perimeter</tt>: perimeter of n flow segments (to determine heat transfer area and hydraulic diameter),</li>
-     <li><tt>SI.Length roughness</tt>: average height of surface asperities.</li>
+     <li><tt>SI.Length length[n]</tt>: length of n flow segments along the flow path,</li>
+     <li><tt>SI.Area crossArea[n+1]</tt>: cross sectional area of n+1 boundaries of n flow segments along the flow path,</li>
+     <li><tt>SI.Length perimeter[n]</tt>: perimeter of n flow segments (to determine heat transfer area and hydraulic diameter),</li>
+     <li><tt>SI.Height roughness[n]</tt>: average height of surface asperities per flow segment.</li>
      </ul>
      See <a href=\"Modelica:Modelica_Fluid.Fittings.GenericPressureLoss\">Fittings.GenericPressureLoss</a>
      for the simplest model using the PressureLoss interface.
@@ -935,7 +936,7 @@ Modelica_Fluid was refactored and finalized for the release:
      into the pipes and expose half momentum balances through the ports (ModelStructure a_v_b). 
      This resulted in nonlinear equation systems for pressure/flow correlations in connection sets. 
      A new default ModelStructure av_vb has been introduced putting full momentum balances into the pipes and 
-     exposing half mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
+     exposing mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
      High-index DAEs need to be treated instead in connection sets.</li>
  
 <li> Finalization of trace substrances<br>
@@ -952,7 +953,8 @@ Modelica_Fluid was refactored and finalized for the release:
  
 <li> System (former Ambient)<br> 
      The use of the global System object has been extended towards common default values for
-     modeling assumptions and initialization.</li>
+     modeling assumptions and initialization. In particular steady-state initialization and 
+     complete steady-state simulation can now be specified system-wide.</li>
  
 <li> Common base classes implementing mass and energy balances<br>
      Mass and energy balances are now defined in the common base classes
@@ -972,8 +974,9 @@ Modelica_Fluid was refactored and finalized for the release:
 <li> Vectorized ports for volumes<br>
      The ports of models that typically have large volumes, like Vessels and Sources, 
      have been vectorized. Formerly the connection of multiple flow models to the same port 
-     of such volume models resulted in unintended mixing equations for stream variables. 
-     Moreover a 
+     of such volume models resulted in unintended mixing equations for stream variables
+     in connection sets outside the volumes. The mixing takes place inside the volumes 
+     when using multiple ports. Moreover a 
      <a href=\"Modelica:Modelica_Fluid.Fittings.MultiPort\">Fittings.MultiPort</a> 
      has been introduced. It can be attached to components like pipes, 
      which don't have vectorized ports on their own.</li>
@@ -2106,6 +2109,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0 Release Candidate 1",

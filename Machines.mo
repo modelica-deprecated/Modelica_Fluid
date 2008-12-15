@@ -334,7 +334,11 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         PumpCharacteristics.baseFlow
         "Head vs. q_flow characteristic at nominal speed and density" 
       annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
-    parameter AngularVelocity_rpm N_nominal "Nominal rotational speed" 
+    parameter AngularVelocity_rpm N_nominal
+        "Nominal rotational speed for flow characteristic" 
+      annotation(Dialog(group="Characteristics"));
+    parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+        "Nominal fluid density" 
       annotation(Dialog(group="Characteristics"));
     parameter Boolean usePowerCharacteristic = false
         "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
@@ -351,10 +355,6 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         "Power consumption vs. q_flow at nominal speed and density" 
       annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
                  choicesAllMatching=true);
-
-    parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
-        "Nominal fluid density" 
-      annotation(Dialog(group="Characteristics"));
 
     // Assumptions
     parameter Boolean checkValve=false "= true to prevent reverse flow" 

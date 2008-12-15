@@ -66,11 +66,13 @@ model HeatingSystem "Simple model of a heating system"
     length=2,
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-          m_flow_nominal=1, dp_nominal=100),
     p_a_start=400000,
-    p_b_start=390000) 
+    p_b_start=390000,
+    redeclare model PressureLoss =
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
+        m_flow_nominal=1,
+        dp_nominal=100,
+        dp_small=100)) 
     annotation (Placement(transformation(extent={{12,-14},{32,6}}, rotation=0)));
 
   Modelica_Fluid.Pipes.LumpedPipe radiator(
@@ -81,11 +83,13 @@ model HeatingSystem "Simple model of a heating system"
     T_start=Modelica.SIunits.Conversions.from_degC(40),
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_ideal,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-          m_flow_nominal=1, dp_nominal=100),
     p_a_start=110000,
-    p_b_start=105000) 
+    p_b_start=105000,
+    redeclare model PressureLoss =
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
+        m_flow_nominal=1,
+        dp_nominal=100,
+        dp_small=100)) 
     annotation (Placement(transformation(extent={{28,-76},{8,-56}}, rotation=
             0)));
 
@@ -157,8 +161,8 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,
-              -100}}, lineColor={0,0,255}), Text(
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+            lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
           textString="H")}), Documentation(info="<html>

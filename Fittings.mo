@@ -2039,6 +2039,9 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
        annotation(Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
 
     // Geometry
+    parameter Real nParallel(min=1)=1
+        "Number of identical parallel pressure losses" 
+      annotation(Dialog(tab="Advanced", group="Geometry"));
     parameter SI.Length length=0 "Length of flow path" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
     parameter SI.Area crossArea_a=0 "Inner cross sectional area at port_a" 
@@ -2047,7 +2050,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
        annotation(Dialog(tab="Advanced", group="Geometry"));
     parameter SI.Length perimeter=0 "Inner perimeter" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Length roughness(min=0)=0
+    parameter SI.Height roughness(min=0)=0
         "Average height of surface asperities" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
 
