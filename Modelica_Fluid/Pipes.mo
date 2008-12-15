@@ -305,7 +305,11 @@ pipe wall/environment).
        "nNodes needs to be at least 2 for modelStructure av_vb, as flow model disappears otherwise!");
 
     // Source/sink terms for mass and energy balances
-    fluidVolume=fill(V/n, n);
+    if modelStructure == Types.ModelStructure.av_vb then
+      fluidVolume = cat(1, {V/(n-1)/2}, fill(V/(n-1), n-2), {V/(n-1)/2});
+    else
+      fluidVolume=fill(V/n, n);
+    end if;
     Ws_flow=zeros(n);
     for i in 1:n loop
       ms_flow[i] = m_flow[i] - m_flow[i + 1];
@@ -451,13 +455,14 @@ The momentum balance is determined by the <b><tt>PressureLoss</tt></b> component
 The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow\">DetailedFlow</a>.
 The momentum balances are formed across the segment boundaries along the flow path according to the staggered grid approach. 
 The default symmetric model is characterized by one momentum balance inside the pipe with nNodes=2 fluid segments.
-An alternative symmetric variation with nNodes+1 momentum balances, one at each port, as well as  
+An alternative symmetric variation with nNodes+1 momentum balances, half a momentum balance at each port, as well as  
 non-symmetric variations can be obtained by chosing a different value for the parameter <tt><b>modelStructure</b></tt>. 
 The options include:
 <ul>
-<li><tt>av_vb</tt>: nNodes-1 momentum balances between nNodes pipe segments, potential pressure states at both ports.
-<li><tt>a_v_b</tt>: Alternative symmetric setting with nNodes+1 momentum balances across nNodes pipe segments, one momentum balance at each port. 
-Connecting two pipes therefore results in algebraic pressures at the ports. 
+<li><tt>av_vb</tt>: nNodes-1 equal momentum balances between nNodes pipe segments, half segment volume at each port. 
+This results in potential pressure states at both ports.
+<li><tt>a_v_b</tt>: Alternative symmetric setting with nNodes+1 momentum balances across nNodes equal pipe segments, 
+half a momentum balance at each port. Connecting two pipes therefore results in algebraic pressures at the ports. 
 The specification of good start values for the port pressures is essential in order to solve large systems.</li>
 <li><tt>av_b</tt>: nNodes momentum balances, one between nth volume and <tt>port_b</tt>, potential pressure state at <tt>port_a</tt></li>
 <li><tt>a_vb</tt>: nNodes momentum balance, one between first volume and <tt>port_a</tt>, potential pressure state at <tt>port_b</tt></li>

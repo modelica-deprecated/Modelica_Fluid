@@ -904,7 +904,7 @@ Modelica_Fluid was refactored and finalized for the release:
 <ul>
 <li> Refactoring of the code<br>
      This became necessary as the previous release Modelica_Fluid Streams Beta3 
-     still reflected the long development history, while the basic concepts had been settled.
+     still reflected the long development history, while the basic concepts had been crystalized.
      Please consult the subversion control (SVN) logs for individual changes.</li>
  
 <li> Replaceable PressureLoss and HeatTransfer models<br>
@@ -919,20 +919,34 @@ Modelica_Fluid was refactored and finalized for the release:
      <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">
           Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer</a></li>,
      </ul>
-     new pressure loss and heat transfer correlations can be added to existing pipe models,
-     e.g. to consider two phase flow.</li>
+     new pressure loss and heat transfer correlations can be added to existing models,
+     e.g. to consider two phase flow. The geometry is considered in the interfaces with:
+     <ul>
+     <li><tt>SI.Length[n] length</tt> of n flow segments along the flow path</li>
+     <li><tt>SI.Area[n+1] crossArea</tt> of the boundaries of n flow segments along the flow path</li>
+     <li><tt>SI.Length[n] perimeter</tt> of n flow segments (to determine heat transfer area and hydraulic diameter)</li>
+     </ul>
+     </li>
  
 <li> New approach for the connection of pipe models<br>
      So far the preferred modeling was to put full mass balances 
      into the pipes and expose half momentum balances through the ports (ModelStructure a_v_b). 
      This resulted in nonlinear equation systems for pressure/flow correlations in connection sets. 
      A new default ModelStructure av_vb has been introduced putting full momentum balances into the pipes and 
-     exposing mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
+     exposing half mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
      High-index DAEs need to be treated instead in connection sets.</li>
  
 <li> Finalization of trace substrances<br>
      Modelica_Fluid now provides a sound implementation for trace substances, 
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
+ 
+<li> Parameterization of flow models with nominal values<br> 
+     New flow models have been added that support the parameterization with nominal values
+     (Machines.ControlledPump, Orifices.GenericPressureLoss, Pipes.BaseClasses.PressureLoss.NominalPressureLoss).
+     They are intended for early phases of system modeling, if geometries and flow characteristics
+     are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
+     they can easily be replaced with more detailed models later on 
+     as more information shall be taken into account.</li>
  
 <li> System (former Ambient)<br> 
      The use of the global System object has been extended towards common default values for
