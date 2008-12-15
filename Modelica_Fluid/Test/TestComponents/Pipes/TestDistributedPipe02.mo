@@ -17,8 +17,8 @@ extends Modelica.Icons.Example;
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
-    useInnerPortProperties=true,
     heatTransfer(each alpha0=500),
+    modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,68},{-10,88}},
           rotation=0)));
@@ -49,11 +49,10 @@ Test of different distributed pipe models with trace substances. This model is t
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
-    useInnerPortProperties=true,
-    p_a_start=100000,
     p_b_start=100000,
     T_start=340,
-    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b) 
+    modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{20,54},{40,74}},
           rotation=0)));
 
@@ -69,7 +68,7 @@ Test of different distributed pipe models with trace substances. This model is t
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
-    useInnerPortProperties=true,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-82,54},{-62,74}},
           rotation=0)));
@@ -103,10 +102,10 @@ Test of different distributed pipe models with trace substances. This model is t
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     heatTransfer(each alpha0=1000),
-    useInnerPortProperties=true,
-    p_a_start=100000,
     p_b_start=100000,
-    T_start=360) 
+    T_start=360,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,38},{-10,58}},
           rotation=0)));
 
@@ -145,7 +144,6 @@ Test of different distributed pipe models with trace substances. This model is t
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=2,
-    useInnerPortProperties=true,
     heatTransfer(each alpha0=500),
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
@@ -168,11 +166,10 @@ Test of different distributed pipe models with trace substances. This model is t
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
-    useInnerPortProperties=true,
-    p_a_start=100000,
     p_b_start=100000,
     T_start=340,
-    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b) 
+    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b,
+    p_a_start=100000) 
             annotation (Placement(transformation(extent={{14,-2},{34,18}},
           rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe7(
@@ -187,7 +184,6 @@ Test of different distributed pipe models with trace substances. This model is t
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
-    useInnerPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-74,-2},{-54,18}},
           rotation=0)));
@@ -216,7 +212,6 @@ Test of different distributed pipe models with trace substances. This model is t
     m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(each alpha0=1000),
-    useInnerPortProperties=true,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,-12},{-10,8}},
           rotation=0)));

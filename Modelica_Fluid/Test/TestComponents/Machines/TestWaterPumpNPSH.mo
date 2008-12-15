@@ -20,7 +20,7 @@ annotation (
     T=system.T_ambient,
     usePressureInput=true) 
   annotation (Placement(transformation(extent={{34,26},{14,46}}, rotation=0)));
-  Modelica_Fluid.Machines.ControlledPumpNPSH pump(
+  Modelica_Fluid.Machines.PrescribedPumpNPSH pump(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_start=1,
     redeclare function flowCharacteristic = 

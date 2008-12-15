@@ -30,7 +30,7 @@ annotation (
     p=100000) 
   annotation (Placement(transformation(extent={{62,-30},{42,-10}},
                                                                  rotation=0)));
-  Modelica_Fluid.Machines.ControlledPumpSpeed pump(
+  Modelica_Fluid.Machines.PrescribedPump pump(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_start=1,
     redeclare function flowCharacteristic = 

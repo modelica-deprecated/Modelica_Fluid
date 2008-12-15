@@ -10,7 +10,7 @@ package Fittings
 model GenericPressureLoss "Generic pressure loss model"
   extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
     redeclare replaceable model PressureLoss = 
-    Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
+    Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
      dp_nominal = dp_nominal,
      m_flow_nominal = m_flow_nominal),
      height_ab=0);
@@ -44,7 +44,7 @@ model GenericPressureLoss "Generic pressure loss model"
     Documentation(info="<html>
 <p>
 This pressure drop component is intended for early designs and later replacement 
-by more detailed models. Per default a LinearPressureLoss is used for specified 
+by more detailed models. Per default a NominalPressureLoss is used for specified 
 nominal values.
 </p>
 <p>
@@ -64,7 +64,7 @@ end GenericPressureLoss;
 
     extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
       redeclare replaceable model PressureLoss = 
-      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss (
+      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
        dp_nominal = 1,
        m_flow_nominal = 1));
 
@@ -2012,7 +2012,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 
     // Pressure loss
     replaceable model PressureLoss = 
-      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LinearPressureLoss 
+      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss 
       constrainedby
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss
         "Pressure loss model" 
@@ -2030,18 +2030,22 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
             final p_b_start=p_a_start - dp_start,
             final m_flow_start=m_flow_start,
             final nPipes=1,
+            final length={length},
+            final perimeter={perimeter},
+            final crossArea={crossArea_a, crossArea_b},
             final roughness=roughness,
-            final diameter=diameter,
-            final length=length,
             final height_ab=height_ab,
             final g=system.g) "Pressure loss model instance" 
        annotation(Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
 
     // Geometry
-    parameter SI.Length length=0 "Hydraulic length for pressure loss model" 
+    parameter SI.Length length=0 "Length of flow path" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Diameter diameter=0
-        "Hydraulic diameter for pressure loss model" 
+    parameter SI.Length perimeter=0 "Inner perimeter" 
+       annotation(Dialog(tab="Advanced", group="Geometry"));
+    parameter SI.Area crossArea_a=0 "Inner cross section area at port_a" 
+       annotation(Dialog(tab="Advanced", group="Geometry"));
+    parameter SI.Area crossArea_b=0 "Inner cross section area at port_b" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
     parameter SI.Length roughness(min=0)=0
         "Average height of surface asperities" 
@@ -2057,7 +2061,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     annotation (Documentation(info="<html>
 <p>
 This partial model extends a TwoPortTransport with a replaceable pressure loss model.
-A LinearPressureLoss is configured by default, because the model is intended for early model 
+A NominalPressureLoss is configured by default, because the model is intended for early model 
 design phases, when no detailed geometrical information is available. 
 </p>
 <p>
