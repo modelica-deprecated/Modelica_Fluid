@@ -11,13 +11,12 @@ model TestVolume
     neglectPortDiameters=true) 
          annotation (Placement(transformation(extent={{-40,14},{-20,34}},
           rotation=0)));
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource(
+  Modelica_Fluid.Sources.MassFlowSource_h FlowSource(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow=1,
     h=3e6) annotation (Placement(transformation(extent={{-82,0},{-62,20}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX Sink(
-                                           redeclare package Medium = 
+  Modelica_Fluid.Sources.Boundary_pT Sink( redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=101325,
     T=system.T_ambient) 
     annotation (Placement(transformation(extent={{60,0},{40,20}}, rotation=0)));

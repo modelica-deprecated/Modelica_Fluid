@@ -246,8 +246,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
           rotation=-90,
           origin={0,100})));
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-              100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics={Text(
             visible=use_N_input,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
@@ -270,9 +270,9 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     Modelica.Blocks.Interfaces.RealInput N_in_internal(unit="1/min")
       "Needed to connect to conditional connector";
   equation
-    // Connect statement active only if usePressureInput = true
+    // Connect statement active only if use_p_in = true
     connect(N_in, N_in_internal);
-    // Internal connector value when usePressureInput = false
+    // Internal connector value when use_p_in = false
     if not use_N_input then
       N_in_internal = N_const;
     end if;
@@ -488,8 +488,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       assert(false, "Unsupported initialization option");
     end if;
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-                100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+                100,100}}), graphics={
             Polygon(
               points={{-48,-60},{-72,-100},{72,-100},{48,-60},{-48,-60}},
               lineColor={0,0,255},

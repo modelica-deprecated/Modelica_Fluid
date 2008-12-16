@@ -9,13 +9,13 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       annotation (Placement(transformation(extent={{-100,-28},{-80,-8}})));
     Sources.FixedBoundary boundary4(redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{80,-20},{60,0}})));
-    Sensors.TraceSubstancesOnePort traceSubstanceVolume(redeclare package
-        Medium = Medium) 
+    Sensors.TraceSubstances traceSubstanceVolume(redeclare package Medium = 
+                 Medium) 
       annotation (Placement(transformation(extent={{0,20},{20,40}})));
     inner System system              annotation (Placement(transformation(extent={{60,60},
               {80,80}},          rotation=0)));
-    Sources.PrescribedMassFlowRate_TX boundary1(
-      useTraceInput=true,
+    Sources.MassFlowSource_T boundary1(
+      use_C_in=true,
       m_flow=100/1.2/3600*5,
       redeclare package Medium = Medium,
       nPorts=2,
@@ -37,8 +37,8 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss
           (show_Re=true)) 
       annotation (Placement(transformation(extent={{20,-20},{40,0}})));
-    Sensors.TraceSubstancesOnePort traceSubstanceSource(redeclare package
-        Medium = Medium) 
+    Sensors.TraceSubstances traceSubstanceSource(redeclare package Medium = 
+                 Medium) 
       annotation (Placement(transformation(extent={{-40,20},{-20,40}})));
   equation
     connect(C.y, boundary1.C_in[1]) annotation (Line(
@@ -89,13 +89,13 @@ concentration of the fresh air.
       annotation (Placement(transformation(extent={{-100,-50},{-80,-30}})));
     Sources.FixedBoundary boundary4(redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{92,-40},{72,-20}})));
-    Sensors.TraceSubstancesOnePort traceSubstanceVolume(redeclare package
-        Medium = Medium) 
+    Sensors.TraceSubstances traceSubstanceVolume(redeclare package Medium = 
+                 Medium) 
       annotation (Placement(transformation(extent={{0,-2},{20,18}})));
     inner System system              annotation (Placement(transformation(extent={{60,80},
               {80,100}},         rotation=0)));
-    Sources.PrescribedMassFlowRate_TX freshAir(
-      useTraceInput=true,
+    Sources.MassFlowSource_T freshAir(
+      use_C_in=true,
       redeclare package Medium = Medium,
       nPorts=2,
       useFlowRateInput=true) 
@@ -114,15 +114,15 @@ concentration of the fresh air.
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss
           (show_Re=true)) 
       annotation (Placement(transformation(extent={{32,-40},{52,-20}})));
-    Sensors.TraceSubstancesOnePort traceSubstanceSource(redeclare package
-        Medium = Medium) 
+    Sensors.TraceSubstances traceSubstanceSource(redeclare package Medium = 
+                 Medium) 
       annotation (Placement(transformation(extent={{-40,-2},{-20,18}})));
-    Sources.PrescribedMassFlowRate_TX peopleSource(
+    Sources.MassFlowSource_T peopleSource(
       m_flow=100/1.2/3600*5,
       redeclare package Medium = Medium,
       nPorts=1,
       useFlowRateInput=true,
-      useTraceInput=false,
+      use_C_in=false,
       C={100}) "CO2 emitted by room occupants." 
       annotation (Placement(transformation(extent={{-38,-98},{-18,-78}})));
     Modelica.Blocks.Sources.CombiTimeTable NumberOfPeople(table=[0,0; 9*3600,0;

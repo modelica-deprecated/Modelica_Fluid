@@ -32,12 +32,12 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     Documentation(info="<html>
 Test of different distributed pipe models. The first system uses explicit junctions, in the third system some of the pipe models are replaced by non-symmetric components.
 </html>"));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary2(
+  Modelica_Fluid.Sources.Boundary_pT boundary2(
     redeclare package Medium = Medium,
     p=1e5,
     T=300,
-    usePressureInput=true,
-    useTemperatureInput=false)                                      annotation (Placement(
+    use_p_in=true,
+    use_T_in=false)                                      annotation (Placement(
         transformation(extent={{70,54},{50,74}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe3(
     redeclare package Medium=Medium,
@@ -69,7 +69,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
             annotation (Placement(transformation(extent={{-82,54},{-62,74}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.FixedBoundary_pTX boundary1(
+  Modelica_Fluid.Sources.Boundary_pT boundary1(
     T=280,
     redeclare package Medium = Medium,
     p=1.5e5)                                                        annotation (Placement(
@@ -141,12 +141,12 @@ Test of different distributed pipe models. The first system uses explicit juncti
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
           rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary4(
+  Modelica_Fluid.Sources.Boundary_pT boundary4(
     redeclare package Medium = Medium,
     p=1e5,
     T=300,
-    usePressureInput=true,
-    useTemperatureInput=false)                                      annotation (Placement(
+    use_p_in=true,
+    use_T_in=false)                                      annotation (Placement(
         transformation(extent={{68,-2},{48,18}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe6(
     redeclare package Medium=Medium,
@@ -175,7 +175,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-74,-2},{-54,18}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX boundary3(
+  Modelica_Fluid.Sources.Boundary_pT boundary3(
     redeclare package Medium = Medium,
     p=150000,
     T=280)                                                          annotation (Placement(
@@ -223,12 +223,12 @@ Test of different distributed pipe models. The first system uses explicit juncti
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-29,-50},{-9,-30}},
           rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary5(
+  Modelica_Fluid.Sources.Boundary_pT boundary5(
     redeclare package Medium = Medium,
     p=1e5,
     T=300,
-    usePressureInput=true,
-    useTemperatureInput=false)                                      annotation (Placement(
+    use_p_in=true,
+    use_T_in=false)                                      annotation (Placement(
         transformation(extent={{70,-62},{50,-42}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe10(
     redeclare package Medium=Medium,
@@ -258,7 +258,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-74,-62},{-54,-42}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX boundary6(
+  Modelica_Fluid.Sources.Boundary_pT boundary6(
     redeclare package Medium = Medium,
     p=150000,
     T=280)                                                          annotation (Placement(

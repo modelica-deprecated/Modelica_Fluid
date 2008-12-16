@@ -6,7 +6,7 @@ model TestMultiPortTraceSubstances
   package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}), graphics));
-  Modelica_Fluid.Sources.FixedBoundary_pTX source2(
+  Modelica_Fluid.Sources.Boundary_pT source2(
     redeclare package Medium = Medium,
     X=Medium.X_default,
     nPorts=3,
@@ -19,12 +19,12 @@ model TestMultiPortTraceSubstances
   inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,80},{-80,100}}, rotation=
            0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(
+  Modelica_Fluid.Sources.Boundary_pT source1(
     T=system.T_ambient,
-    usePressureInput=true,
+    use_p_in=true,
     redeclare package Medium = Medium,
-    useTraceInput=true,
-    useCompositionInput=true,
+    use_C_in=true,
+    use_X_in=true,
     nPorts=3,
     p=500000) 
     annotation (Placement(transformation(extent={{-68,-28},{-48,-8}},  rotation=
@@ -64,16 +64,13 @@ model TestMultiPortTraceSubstances
     neglectPortDiameters=false,
     zeta_out={0,0,0}) 
     annotation (Placement(transformation(extent={{12,-80},{32,-60}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance1(
-                                                               redeclare
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance1(      redeclare
       package Medium = Medium) 
     annotation (Placement(transformation(extent={{36,24},{56,44}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance2(
-                                                               redeclare
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance2(      redeclare
       package Medium = Medium) 
     annotation (Placement(transformation(extent={{34,-16},{54,4}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance3(
-                                                               redeclare
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance3(      redeclare
       package Medium = Medium) 
     annotation (Placement(transformation(extent={{36,-76},{56,-56}})));
   Modelica_Fluid.Pipes.StaticPipe pipe1(
@@ -93,8 +90,8 @@ model TestMultiPortTraceSubstances
                                        nPorts_b=2, redeclare package Medium = 
         Medium)                             annotation (Placement(
         transformation(extent={{-36,-10},{-28,10}},rotation=0)));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{-54,18},{-34,38}})));
   Modelica_Fluid.Pipes.StaticPipe pipe4(
     diameter=0.1,

@@ -29,10 +29,10 @@ extends Modelica.Icons.Example;
 Test of different distributed pipe models with trace substances. This model is the same as
 <tt>TestDistributedPipe01</tt>, except that trace substances are modeled and another medium has been used.
 </html>"));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary2(
+  Modelica_Fluid.Sources.Boundary_pT boundary2(
     redeclare package Medium = Medium,
-    usePressureInput=true,
-    useTemperatureInput=false,
+    use_p_in=true,
+    use_T_in=false,
     p=100000,
     T=300,
     C={1.5E-3,0.05E-3})                                             annotation (Placement(
@@ -67,7 +67,7 @@ Test of different distributed pipe models with trace substances. This model is t
             annotation (Placement(transformation(extent={{-82,54},{-62,74}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.FixedBoundary_pTX boundary1(
+  Modelica_Fluid.Sources.Boundary_pT boundary1(
     T=280,
     redeclare package Medium = Medium,
     p=1.5e5)                                                        annotation (Placement(
@@ -138,10 +138,10 @@ Test of different distributed pipe models with trace substances. This model is t
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
           rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary4(
+  Modelica_Fluid.Sources.Boundary_pT boundary4(
     redeclare package Medium = Medium,
-    usePressureInput=true,
-    useTemperatureInput=false,
+    use_p_in=true,
+    use_T_in=false,
     p=100000,
     T=300,
     C={1.5E-3,0.05E-3})                                             annotation (Placement(
@@ -173,7 +173,7 @@ Test of different distributed pipe models with trace substances. This model is t
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-74,-2},{-54,18}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX boundary3(
+  Modelica_Fluid.Sources.Boundary_pT boundary3(
     redeclare package Medium = Medium,
     p=150000,
     T=280)                                                          annotation (Placement(
@@ -204,17 +204,17 @@ Test of different distributed pipe models with trace substances. This model is t
       each alpha=10000,
       each T_ref=350) 
     annotation (Placement(transformation(extent={{-72,22},{-52,42}}, rotation=0)));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance3(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance3(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{-98,22},{-78,42}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance1(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance1(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{-90,80},{-70,100}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance2(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance2(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{32,80},{52,100}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance4(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance4(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{2,22},{22,42}})));
   Modelica_Fluid.Fittings.MultiPort multiPort(redeclare package Medium = 
         Medium, nPorts_b=2) 

@@ -1,7 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Valves;
 model TestValveCompressible "Test case for incompressible fluid valve"
   extends Modelica.Icons.Example;
-  Modelica_Fluid.Sources.FixedBoundary_pTX SourceP1(
+  Modelica_Fluid.Sources.Boundary_pT SourceP1(
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=1000000,
     T(displayUnit="degC") = 673.15) 
@@ -16,9 +16,9 @@ model TestValveCompressible "Test case for incompressible fluid valve"
     p_nominal=1000000) 
             annotation (Placement(transformation(extent={{-26,-22},{-6,-2}},
           rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX SinkP1(
+  Modelica_Fluid.Sources.Boundary_pT SinkP1(
   redeclare package Medium = Modelica.Media.Water.StandardWater,
-    usePressureInput=true,
+    use_p_in=true,
     p=100000,
     T=673.15) 
   annotation (Placement(transformation(extent={{46,-22},{26,-2}},

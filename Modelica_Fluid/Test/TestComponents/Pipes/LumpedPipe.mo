@@ -6,7 +6,7 @@ model LumpedPipe
       Modelica.Media.Water.ConstantPropertyLiquidWater;
   //Modelica.Media.Water.StandardWater;
 
-  Modelica_Fluid.Sources.FixedBoundary_pTX source(
+  Modelica_Fluid.Sources.Boundary_pT source(
     redeclare package Medium = Medium,
     p=5.0e5,
     T=300) annotation (Placement(transformation(extent={{-76,4},{-64,16}},
@@ -31,7 +31,7 @@ model LumpedPipe
     Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-  Modelica_Fluid.Sources.FixedBoundary_pTX sink(
+  Modelica_Fluid.Sources.Boundary_pT sink(
     redeclare package Medium = Medium,
     p=100000,
     T=300)   annotation (Placement(transformation(extent={{56,4},{44,16}},

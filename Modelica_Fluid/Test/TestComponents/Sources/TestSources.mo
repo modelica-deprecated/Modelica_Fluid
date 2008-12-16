@@ -2,34 +2,34 @@ within Modelica_Fluid.Test.TestComponents.Sources;
 model TestSources "Test model for models in source package"
   import Modelica_Fluid;
   package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary(redeclare package
-      Medium = Medium,
-    useTraceInput=true,
-    usePressureInput=true) 
+  Modelica_Fluid.Sources.Boundary_pT boundary(redeclare package Medium = 
+               Medium,
+    use_C_in=true,
+    use_p_in=true) 
     annotation (Placement(transformation(extent={{-50,40},{-30,60}})));
-  Modelica_Fluid.Sources.PrescribedBoundary_phX boundary1(redeclare package
-      Medium = Medium,
-    usePressureInput=true,
-    useCompositionInput=false,
-    useTraceInput=true) 
+  Modelica_Fluid.Sources.Boundary_ph boundary1(redeclare package Medium = 
+               Medium,
+    use_p_in=true,
+    use_X_in=false,
+    use_C_in=true) 
     annotation (Placement(transformation(extent={{-50,0},{-30,20}})));
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX boundary2(redeclare package
-      Medium = Medium,
-    useTraceInput=true,
+  Modelica_Fluid.Sources.MassFlowSource_T boundary2(redeclare package Medium = 
+               Medium,
+    use_C_in=true,
     m_flow=0.1) 
     annotation (Placement(transformation(extent={{-50,-50},{-30,-30}})));
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_hX boundary3(redeclare package
-      Medium = Medium,
-    useTraceInput=true,
+  Modelica_Fluid.Sources.MassFlowSource_h boundary3(redeclare package Medium = 
+               Medium,
+    use_C_in=true,
     m_flow=0.1) 
     annotation (Placement(transformation(extent={{-50,-90},{-30,-70}})));
   Modelica_Fluid.Sources.FixedBoundary boundary4(redeclare package Medium = 
         Medium) 
     annotation (Placement(transformation(extent={{80,40},{60,60}})));
-  Modelica_Fluid.Sources.FixedBoundary_pTX boundary5(redeclare package Medium
-      = Medium) annotation (Placement(transformation(extent={{80,0},{60,20}})));
-  Modelica_Fluid.Sources.FixedBoundary_phX boundary6(nPorts=2, redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sources.Boundary_pT boundary5(redeclare package Medium = 
+        Medium) annotation (Placement(transformation(extent={{80,0},{60,20}})));
+  Modelica_Fluid.Sources.Boundary_ph boundary6(nPorts=2, redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{96,-70},{76,-50}})));
   Modelica_Fluid.Pipes.StaticPipe pipe(
     length=1,
@@ -64,20 +64,20 @@ model TestSources "Test model for models in source package"
     height=-100,
     offset=101325 + 50) "Pressure" 
     annotation (Placement(transformation(extent={{-100,0},{-80,20}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{0,70},{20,90}})));
   Modelica_Fluid.Sensors.TraceSubstancesTwoPort traceSubstance1(redeclare
       package Medium = Medium) 
     annotation (Placement(transformation(extent={{22,40},{42,60}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance2(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance2(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{-22,14},{-2,34}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance3(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance3(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{26,-26},{46,-6}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance4(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance4(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{-20,-74},{0,-54}})));
   Modelica_Fluid.Fittings.TeeJunctionIdeal junction(
                                                   redeclare package Medium = 

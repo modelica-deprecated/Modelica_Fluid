@@ -12,7 +12,7 @@ model TestOpenTank
     crossArea=0.2,
     V0=0.1) 
     annotation (Placement(transformation(extent={{-40,20},{0,60}}, rotation=0)));
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate(
+  Modelica_Fluid.Sources.MassFlowSource_T massFlowRate(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow=0.2,
     useFlowRateInput=true) 

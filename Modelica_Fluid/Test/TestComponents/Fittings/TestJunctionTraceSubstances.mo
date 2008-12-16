@@ -9,7 +9,7 @@ model TestJunctionTraceSubstances
         transformation(extent={{0,-30},{20,-10}},  rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}), graphics));
-  Modelica_Fluid.Sources.FixedBoundary_pTX source2(
+  Modelica_Fluid.Sources.Boundary_pT source2(
     T=278.15,
     redeclare package Medium = Medium,
     p=100000,
@@ -18,7 +18,7 @@ model TestJunctionTraceSubstances
         origin={90,-20},
         extent={{-10,-10},{10,10}},
         rotation=180)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX source3(
+  Modelica_Fluid.Sources.Boundary_pT source3(
     T=283.15,
     redeclare package Medium = Medium,
     p=100000,
@@ -30,12 +30,12 @@ model TestJunctionTraceSubstances
   inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,80},{-80,100}}, rotation=
            0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(
+  Modelica_Fluid.Sources.Boundary_pT source1(
     T=system.T_ambient,
-    usePressureInput=true,
+    use_p_in=true,
     redeclare package Medium = Medium,
-    useTraceInput=true,
-    useCompositionInput=true,
+    use_C_in=true,
+    use_X_in=true,
     nPorts=1,
     p=500000) 
     annotation (Placement(transformation(extent={{-68,-28},{-48,-8}},  rotation=
@@ -72,7 +72,7 @@ model TestJunctionTraceSubstances
     initType=Modelica_Fluid.Types.Init.InitialValues,
     X_start=Medium.X_default)               annotation (Placement(
         transformation(extent={{30,-30},{50,-10}}, rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX source4(
+  Modelica_Fluid.Sources.Boundary_pT source4(
     T=283.15,
     redeclare package Medium = Medium,
     p=100000,
@@ -89,7 +89,7 @@ model TestJunctionTraceSubstances
         origin={10,30},
         extent={{-10,-10},{10,10}},
         rotation=90)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX source5(
+  Modelica_Fluid.Sources.Boundary_pT source5(
     T=283.15,
     redeclare package Medium = Medium,
     p=100000,
@@ -106,11 +106,11 @@ model TestJunctionTraceSubstances
         origin={40,30},
         extent={{-10,-10},{10,10}},
         rotation=90)));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance2(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance2(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{56,4},{76,24}})));
-  Modelica_Fluid.Sensors.TraceSubstancesOnePort traceSubstance(redeclare
-      package Medium = Medium) 
+  Modelica_Fluid.Sensors.TraceSubstances traceSubstance(redeclare package
+      Medium =         Medium) 
     annotation (Placement(transformation(extent={{-70,16},{-50,36}})));
   Modelica.Blocks.Sources.Ramp C(duration=1, height=1.519E-3)
     "substance concentration, raising to 1000 PPM CO2" 
