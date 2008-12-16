@@ -68,12 +68,8 @@ model HeatingSystem "Simple model of a heating system"
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
     p_a_start=400000,
     p_b_start=390000,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-        m_flow_nominal=1,
-        dp_nominal=100,
-        dp_small=100,
-        mixingStreamProperties=true)) 
+    redeclare model PressureLoss =
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow) 
     annotation (Placement(transformation(extent={{12,-14},{32,6}}, rotation=0)));
 
   Modelica_Fluid.Pipes.LumpedPipe radiator(
@@ -86,12 +82,8 @@ model HeatingSystem "Simple model of a heating system"
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
     p_a_start=110000,
     p_b_start=105000,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-        m_flow_nominal=1,
-        dp_nominal=100,
-        dp_small=100,
-        mixingStreamProperties=true)) 
+    redeclare model PressureLoss =
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow) 
     annotation (Placement(transformation(extent={{28,-76},{8,-56}}, rotation=
             0)));
 
@@ -133,8 +125,8 @@ tankLevel = tank.level;
         color={0,127,255}));
   connect(thermalConductor1.port_b, radiator.heatPort) annotation (Line(
         points={{18,-56},{18,-60.6}}, color={191,0,0}));
-  connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{22,
-          22},{22,1.4}}, color={191,0,0}));
+  connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{22,22},
+          {22,1.4}},     color={191,0,0}));
   connect(ambientTemperature.port, thermalConductor1.port_a) annotation (Line(
         points={{2,-33},{18,-33},{18,-40}}, color={191,0,0}));
   connect(sensor_T_1.T, hotWaterTemperature) annotation (Line(points={{39,-46},
@@ -163,7 +155,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
