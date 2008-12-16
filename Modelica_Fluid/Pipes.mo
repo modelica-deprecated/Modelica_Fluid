@@ -703,7 +703,8 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           "Nominal dynamic viscosity (only for m_flow_turbulent and dp_turbulent)"
                   annotation(Dialog(group="Advanced"), Dialog(enable=use_eta_nominal));
 
-            parameter Boolean mixingStreamProperties = false
+            // it's questionable if this should be supported ... it is proposed to use regularized WallFriction instead
+            final parameter Boolean mixingStreamProperties = false
           "= true to use average density and viscosity across flow segments" 
                annotation(Dialog(group="Advanced"), Evaluate=true);
 
@@ -730,40 +731,42 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             Medium.AbsolutePressure[n] dp_turbulent "Start of turbulent flow";
 
           equation
-            if mixingStreamProperties then
+            if not allowFlowReversal then
+              d_act = d[1:n];
+              eta_act = eta[1:n];
+            elseif mixingStreamProperties then
               d_act = 0.5*(d[1:n] + d[2:n+1]);
               eta_act = 0.5*(eta[1:n] + eta[2:n+1]);
             else
-              if not allowFlowReversal then
-                d_act = d[1:n];
-                eta_act = eta[1:n];
+              // these values are only used to obtain length_nominal;
+              // this is why no events are raised
+              if from_dp then
+                for i in 1:n loop
+                  d_act[i] = noEvent(if dp[i] > 0 then d[i] else d[i+1]);
+                  eta_act[i] = noEvent(if dp[i] > 0 then eta[i] else eta[i+1]);
+                end for;
               else
-                if from_dp then
-                  for i in 1:n loop
-                    d_act[i] = noEvent(if dp[i] > 0 then d[i] else d[i+1]);
-                    eta_act[i] = noEvent(if dp[i] > 0 then eta[i] else eta[i+1]);
-                  end for;
-                else
-                  for i in 1:n loop
-                    d_act[i] = noEvent(if m_flow[i] > 0 then d[i] else d[i+1]);
-                    eta_act[i] = noEvent(if m_flow[i] > 0 then eta[i] else eta[i+1]);
-                  end for;
-                end if;
+                for i in 1:n loop
+                  d_act[i] = noEvent(if m_flow[i] > 0 then d[i] else d[i+1]);
+                  eta_act[i] = noEvent(if m_flow[i] > 0 then eta[i] else eta[i+1]);
+                end for;
               end if;
             end if;
-            if (from_dp and dp_small >= dp_nominal and dp_small > 0)
-            or (not from_dp and m_flow_small >= m_flow_nominal and m_flow_small > 0) then
+            if (from_dp and dp_small >= dp_nominal and dp_nominal > 0)
+              or (not from_dp and m_flow_small >= m_flow_nominal and m_flow_nominal > 0) then
               // linear (laminar) flow
-              if mixingStreamProperties or (height_ab <= 0 and 0 <= height_ab) or not allowFlowReversal then
+              if not allowFlowReversal or use_d_nominal or (height_ab <= 0 and 0 <= height_ab) or mixingStreamProperties then
                 dp = g*height_ab/n*d_act + dp_nominal/m_flow_nominal*m_flow*nParallel;
               else
                 // Note: events occur as the static head jumps for flow reversal
+                //       use regularization, i.e. dp_small < dp_nominal, if this is not wanted
                 for i in 1:n loop
                   dp[i] = g*height_ab/n*(if m_flow[i]>0 then d[i] else d[i+1]) + dp_nominal/m_flow_nominal*m_flow[i]*nParallel;
                 end for;
               end if;
             else
-              if mixingStreamProperties then
+              if not allowFlowReversal or use_d_nominal or mixingStreamProperties then
+                // simple regularization
                 if from_dp then
                   m_flow = Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent.massFlowRate_dp(
                     dp - g*height_ab/n*d_act,
@@ -788,6 +791,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                     m_flow_small/nParallel) + g*height_ab/n*d_act;
                 end if;
               else
+                // regularization with jumping static head
                 if from_dp then
                   m_flow = Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent.massFlowRate_dp_staticHead(
                     dp,
@@ -849,7 +853,7 @@ The parameters <tt>dp_small</tt> and <tt>m_flow_small</tt> can be adjusted to ac
 and to numerically regularize the model around zero flow. 
 The simplest linear (laminar) pressure loss correlation is obtained with <tt>dp_small >= dp_nominal</tt> for
 <tt>from_dp = true</tt>. Moreover a smooth static head subject to flow reversal is obtained with
-<tt>mixingStreamProperties = true</tt>.
+<tt>use_d_nominal = true</tt>.
 </p>
 <p>
 The geometry parameters <tt>crossArea</tt>, <tt>perimeter</tt> and <tt>roughness</tt> are taken into account if specified. 
@@ -917,6 +921,7 @@ Reynolds numbers, i.e., the values at the right ordinate where
                                                                Medium.p_default, Medium.T_default, Medium.X_default))
           "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
                                                                                       annotation(Dialog(enable=use_eta_nominal));
+            final parameter Boolean use_nominal = use_d_nominal and (use_eta_nominal or not WallFriction.use_eta);
 
             parameter Boolean show_Re = false
           "= true, if Reynolds number is included for plotting" 
@@ -932,7 +937,8 @@ Reynolds numbers, i.e., the values at the right ordinate where
               annotation(Dialog(group="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
 
             // basing static head on average density is sensible for a distributed pipe with small segments
-            parameter Boolean mixingStreamProperties = false
+            // it's questionable if this should be supported ... it is proposed to use regularized WallFriction instead
+            final parameter Boolean mixingStreamProperties = false
           "= true to use average density and viscosity across flow segments" 
                annotation(Dialog(group="Advanced"), Evaluate=true);
 
@@ -944,67 +950,73 @@ Reynolds numbers, i.e., the values at the right ordinate where
             // internal variables
             SI.Diameter[n] diameter = {4*(crossArea[i]+crossArea[i+1])/2/perimeter[i] for i in 1:n}
           "Hydraulic diameter";
+            SI.Density[n+1] d = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(state);
+            SI.Density[n] d_act "Actual density per segment";
             SI.DynamicViscosity[n+1] eta = if not WallFriction.use_eta then fill(1e-10, n+1) else 
                                         (if use_eta_nominal then fill(eta_nominal, n+1) else Medium.dynamicViscosity(state));
-            SI.DynamicViscosity[n] eta_av = (eta[1:n]+eta[2:n+1])/2
-          "Average viscosity per segment";
-            SI.Density[n+1] d = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(state);
-            SI.Density[n] d_av = (d[1:n]+d[2:n+1])/2
-          "Average density per segment";
+            SI.DynamicViscosity[n] eta_act "Actual viscosity per segment";
 
           equation
-          if mixingStreamProperties then
-            if from_dp and not WallFriction.dp_is_zero then
-              m_flow = WallFriction.massFlowRate_dp(
-                dp - g*height_ab/n*d_av/2,
-                d_av,
-                d_av,
-                eta_av,
-                eta_av,
-                length,
-                diameter,
-                roughness,
-                dp_small)*nParallel;
-            else
-              dp = WallFriction.pressureLoss_m_flow(
-                m_flow/nParallel,
-                d_av,
-                d_av,
-                eta_av,
-                eta_av,
-                length,
-                diameter,
-                roughness,
-                m_flow_small/nParallel) + g*height_ab/n*d_av;
+            if not allowFlowReversal or use_nominal then
+              d_act = d[1:n];
+              eta_act = eta[1:n];
+            else //if mixingStreamProperties then
+              d_act = 0.5*(d[1:n] + d[2:n+1]);
+              eta_act = 0.5*(eta[1:n] + eta[2:n+1]);
             end if;
-          else
-            // regularization with static head
-            if from_dp and not WallFriction.dp_is_zero then
-              m_flow = WallFriction.massFlowRate_dp_staticHead(
-                dp,
-                d[1:n],
-                d[2:n+1],
-                eta[1:n],
-                eta[2:n+1],
-                length,
-                diameter,
-                g*height_ab/n,
-                roughness,
-                dp_small/n)*nParallel;
+            if not allowFlowReversal or use_nominal or mixingStreamProperties then
+              // simple regularization
+              if from_dp and not WallFriction.dp_is_zero then
+                m_flow = WallFriction.massFlowRate_dp(
+                  dp - g*height_ab/n*d_act,
+                  d_act,
+                  d_act,
+                  eta_act,
+                  eta_act,
+                  length,
+                  diameter,
+                  roughness,
+                  dp_small)*nParallel;
+              else
+                dp = WallFriction.pressureLoss_m_flow(
+                  m_flow/nParallel,
+                  d_act,
+                  d_act,
+                  eta_act,
+                  eta_act,
+                  length,
+                  diameter,
+                  roughness,
+                  m_flow_small/nParallel) + g*height_ab/n*d_act;
+              end if;
             else
-              dp = WallFriction.pressureLoss_m_flow_staticHead(
-                m_flow/nParallel,
-                d[1:n],
-                d[2:n+1],
-                eta[1:n],
-                eta[2:n+1],
-                length,
-                diameter,
-                g*height_ab/n,
-                roughness,
-                m_flow_small/nParallel);
+              // regularization with jumping static head
+              if from_dp and not WallFriction.dp_is_zero then
+                m_flow = WallFriction.massFlowRate_dp_staticHead(
+                  dp,
+                  d[1:n],
+                  d[2:n+1],
+                  eta[1:n],
+                  eta[2:n+1],
+                  length,
+                  diameter,
+                  g*height_ab/n,
+                  roughness,
+                  dp_small/n)*nParallel;
+              else
+                dp = WallFriction.pressureLoss_m_flow_staticHead(
+                  m_flow/nParallel,
+                  d[1:n],
+                  d[2:n+1],
+                  eta[1:n],
+                  eta[2:n+1],
+                  length,
+                  diameter,
+                  g*height_ab/n,
+                  roughness,
+                  m_flow_small/nParallel);
+              end if;
             end if;
-          end if;
 
               annotation (Documentation(info="<html>
 <p>
