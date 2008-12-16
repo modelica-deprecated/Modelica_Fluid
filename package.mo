@@ -913,11 +913,11 @@ Modelica_Fluid was refactored and finalized for the release:
      The pipe heat transfer models have been further developed accordingly.<br>
      Based on the new model interfaces 
      <ul>
-     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">
-          Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss</a></li>
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss\">
+          Pipes.BaseClasses.PressureLoss.PartialPressureLoss</a></li>
      and
-     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">
-          Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer</a></li>,
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialHeatTransfer\">
+          Pipes.BaseClasses.HeatTransfer.PartialHeatTransfer</a></li>,
      </ul>
      new pressure loss and heat transfer correlations can be added to existing models,
      e.g. to consider two phase flow. The geometry is considered in the interfaces with:
@@ -927,8 +927,9 @@ Modelica_Fluid was refactored and finalized for the release:
      <li><tt>SI.Length perimeter[n]</tt>: perimeter of n flow segments (to determine heat transfer area and hydraulic diameter),</li>
      <li><tt>SI.Height roughness[n]</tt>: average height of surface asperities per flow segment.</li>
      </ul>
-     See <a href=\"Modelica:Modelica_Fluid.Fittings.GenericPressureLoss\">Fittings.GenericPressureLoss</a>
-     for the simplest model using the PressureLoss interface.
+     See <a href=\"Modelica:Modelica_Fluid.Pipes.StaticPipe\">Pipes.StaticPipe</a> 
+     or <a href=\"Modelica:Modelica_Fluid.Fittings.GenericPressureLoss\">Fittings.GenericPressureLoss</a>
+     for simple models using the PressureLoss interface.
      </li>
  
 <li> New approach for the connection of pipe models<br>

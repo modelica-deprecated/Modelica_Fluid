@@ -23,13 +23,13 @@ model TestGenericPressureLoss
     usePressureInput=true,
     nPorts=1) 
     annotation (Placement(transformation(extent={{-40,40},{-20,60}}, rotation=0)));
-  Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 
+  Modelica.Blocks.Sources.TimeTable p_table(table=[0,1e5; 10,3e5]) 
     annotation (Placement(transformation(extent={{-80,40},{-60,60}}, rotation=0)));
 
   Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p1(
     redeclare package Medium = Medium,
     T=Modelica.SIunits.Conversions.from_degC(80),
-    p=100000) 
+    p=200000) 
     annotation (Placement(transformation(extent={{60,40},{40,60}}, rotation=0)));
   Modelica_Fluid.Fittings.GenericPressureLoss pressureLoss(
     redeclare package Medium = Medium,

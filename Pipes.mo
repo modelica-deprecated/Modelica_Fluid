@@ -5,9 +5,9 @@ package Pipes "Devices for conveying fluid"
   model StaticPipe
     "Basic pipe flow model without storage of momentum, mass or energy"
 
-    // extending PartialPipe
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
-          redeclare model HeatTransfer=BaseClasses.HeatTransfer.PipeHT_none(nParallel=nParallel));
+    // extending PartialStraightPipe
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe(
+          redeclare model HeatTransfer=BaseClasses.HeatTransfer.NoHeatTransfer(nParallel=nParallel));
 
     // Initialization
     parameter Medium.AbsolutePressure p_a_start=system.p_start
@@ -54,8 +54,8 @@ package Pipes "Devices for conveying fluid"
 
   model LumpedPipe "Example for a composite pipe model"
 
-    // extending PartialPipe
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe;
+    // extending PartialStraightPipe
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe;
 
     // Assumptions
     parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
@@ -209,8 +209,8 @@ pipe wall/environment).
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.ModelStructure;
 
-    // extending PartialPipe
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialPipe(
+    // extending PartialStraightPipe
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe(
       final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.av_vb),
       final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.av_vb));
 
@@ -443,7 +443,7 @@ pipe wall/environment).
           grid={1,1}),
           graphics),
   Documentation(info="<html>
-<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialPipe\">PartialPipe</a>. 
+<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe\">PartialStraightPipe</a>. 
 The total volume is determined by geometry parameters. It is split into nNodes pipe segments of equal size along the flow path. 
 The default value is nNodes=2.
 <p><b>Mass and Energy balance</b></p>
@@ -452,10 +452,10 @@ The mass and energy balances are inherited from <a href=\"Modelica:Modelica_Flui
 The additional component <b><tt>HeatTransfer</tt></b> specifies the source term <tt>Qs_flow</tt> in the energy balance. 
 The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
 The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.PartialFlowHeatTransfer</a>.</p>
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialHeatTransfer\">BaseClasses.PartialHeatTransfer</a>.</p>
 <p><b>Momentum balance</b></p>
 The momentum balance is determined by the <b><tt>PressureLoss</tt></b> component, which can be replaced with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">BaseClasses.PartialFlowPressureLoss</a>.
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss\">BaseClasses.PartialPressureLoss</a>.
 The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow\">DetailedFlow</a>.
 The momentum balances are formed across the segment boundaries along the flow path according to the staggered grid approach. 
 The default symmetric model is characterized by one momentum balance inside the pipe with nNodes=2 fluid segments.
@@ -510,7 +510,7 @@ This also allows for taking into account friction losses with respect to the act
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
-    partial model PartialPipe "Base class for pipe models"
+    partial model PartialStraightPipe "Base class for straight pipe models"
       extends Modelica_Fluid.Interfaces.PartialTwoPort;
 
       // Geometry
@@ -542,16 +542,16 @@ This also allows for taking into account friction losses with respect to the act
 
       // Pressure loss
       replaceable model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow 
-        constrainedby BaseClasses.PressureLoss.PartialFlowPressureLoss
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss 
+        constrainedby BaseClasses.PressureLoss.PartialPressureLoss
         "Characteristics of wall friction and gravity" 
           annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
 
       // Heat transfer
       replaceable model HeatTransfer = 
-          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha 
+          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.ConstantHeatTransfer 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialHeatTransfer
         "Wall heat transfer" 
           annotation (Dialog(group="Heat transfer"),choicesAllMatching=true);
     equation
@@ -586,11 +586,11 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             extent={{-100,-100},{100,100}},
             grid={1,1}), graphics));
 
-    end PartialPipe;
+    end PartialStraightPipe;
 
     package PressureLoss
       "Pressure loss models for pipes, including wall friction and static head"
-          partial model PartialFlowPressureLoss
+          partial model PartialPressureLoss
         "Base class for pipe wall friction models"
 
             replaceable package Medium = 
@@ -664,119 +664,193 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 color={0,0,255},
                 smooth=Smooth.None,
                 thickness=1)}));
-          end PartialFlowPressureLoss;
+          end PartialPressureLoss;
 
-          model NominalPressureLoss "Simple pressure loss for nominal values"
-            extends PartialFlowPressureLoss;
+          model NominalPressureLoss
+        "NominalPressureLoss: Simple pressure loss for nominal values"
+            extends PartialPressureLoss;
+            import Modelica.Constants.pi;
 
             parameter Medium.AbsolutePressure dp_nominal
           "Nominal pressure drop";
             parameter Medium.MassFlowRate m_flow_nominal
           "Mass flow rate for dp_nominal";
 
-            parameter SI.AbsolutePressure dp_small = max(0.01*dp_nominal, 1)
+            parameter Boolean from_dp=true
+          " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
+              annotation (Evaluate=true, Dialog(group="Advanced"));
+            parameter SI.AbsolutePressure dp_small = 0.01*dp_nominal
           "Within regularization if |dp| < dp_small" 
-              annotation(Dialog(group="Advanced"));
-          /*
-  parameter SI.MassFlowRate m_flow_small = 0.01 
-    "Within regularization if |m_flow| < m_flow_small"
-    annotation(Dialog(group="Advanced"));
-*/
+              annotation(Dialog(group="Advanced", enable=from_dp));
+            parameter SI.MassFlowRate m_flow_small = 0.01*m_flow_nominal
+          "Within regularization if |m_flow| < m_flow_small" 
+              annotation(Dialog(group="Advanced", enable=not from_dp));
+
             parameter Boolean use_d_nominal = false
-          "= true to use d_nominal for static head, otherwise computed from medium"
+          "= true, if d_nominal is used, otherwise computed from medium" 
               annotation(Dialog(group="Advanced"), Evaluate=true);
             parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
           "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
               annotation(Dialog(group="Advanced", enable=use_d_nominal));
 
+            parameter Boolean use_eta_nominal = false
+          "= true, if eta_nominal is used, otherwise computed from medium" 
+               annotation(Dialog(group="Advanced"), Evaluate=true);
+            parameter SI.DynamicViscosity eta_nominal = Medium.dynamicViscosity(
+                                                           Medium.setState_pTX(
+                                                               Medium.p_default, Medium.T_default, Medium.X_default))
+          "Nominal dynamic viscosity (only for m_flow_turbulent and dp_turbulent)"
+                  annotation(Dialog(group="Advanced"), Dialog(enable=use_eta_nominal));
+
+            final parameter SI.Area[n+1] crossArea_h = {if crossArea[i] > 0 then crossArea[i] else pi/4*2.54e-2^2 for i in 1:n+1}
+          "used perimeter, default: diameter of one inch";
+            final parameter SI.Length[n] perimeter_h = {if perimeter[i] > 0 then perimeter[i] else pi*2.54e-2 for i in 1:n}
+          "used perimeter, default: diameter of one inch";
+            final parameter SI.Length[n] roughness_h = {if roughness[i] > 0 then roughness[i] else 2.5e-5 for i in 1:n}
+          "used roughness, default: smooth steel pipe";
+
             SI.Density[n+1] d = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(state);
             SI.Density[n] d_av = 0.5*(d[1:n] + d[2:n+1])
           "average density per flow segment";
+
+            SI.DynamicViscosity[n+1] eta = if use_eta_nominal then fill(eta_nominal, n+1) else Medium.dynamicViscosity(state);
+            SI.DynamicViscosity[n] eta_av = 0.5*(eta[1:n] + eta[2:n+1])
+          "average viscosity per flow segment";
+
             SI.Length[n] diameter_h "hydraulic diameter for nominal values";
-            SI.Height[n] roughness_h "hydraulic roughness for nominal values";
-            SI.Length[n] length_nominal "length for nominal values";
+            SI.Length[n] length_nominal
+          "length resulting from nominal pressure drop and geometry";
             Real[n] k_inv "coefficient for quadratic flow";
             Real[n] zeta "coefficient for quadratic flow";
+            constant Real Re_turbulent = 4000 "Start of turbulent regime";
+            Medium.MassFlowRate[n] m_flow_turbulent "Start of turbulent flow";
+            Medium.AbsolutePressure[n] dp_turbulent "Start of turbulent flow";
           equation
-            if dp_small >= dp_nominal then
-              // laminar (linear) flow
+            if (from_dp and dp_small >= dp_nominal) or (not from_dp and m_flow_small >= m_flow_nominal) then
+              // linear (laminar) flow
               if not allowFlowReversal then
-                dp = g*height_ab*d[1:n] + dp_nominal/m_flow_nominal*m_flow*nParallel;
+                dp = g*height_ab/n*d[1:n] + dp_nominal/m_flow_nominal*m_flow*nParallel;
               else
-                dp = g*height_ab*d_av[1:n] + dp_nominal/m_flow_nominal*m_flow*nParallel;
+                dp = g*height_ab/n*d_av + dp_nominal/m_flow_nominal*m_flow*nParallel;
               end if;
             else
-              m_flow = Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent.massFlowRate_dp_staticHead(
-                dp,
-                d_av,
-                d_av,
-                zeros(n),
-                zeros(n),
-                length_nominal,
-                diameter_h,
-                g*height_ab/n,
-                roughness_h,
-                dp_small/n)*nParallel;
+              if from_dp then
+                m_flow = Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent.massFlowRate_dp(
+                  dp - g*height_ab/n*d_av,
+                  d_av,
+                  d_av,
+                  eta_av,
+                  eta_av,
+                  length_nominal,
+                  diameter_h,
+                  roughness_h,
+                  dp_small)*nParallel;
+               else
+                dp = Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent.pressureLoss_m_flow(
+                  m_flow/nParallel,
+                  d_av,
+                  d_av,
+                  eta_av,
+                  eta_av,
+                  length_nominal,
+                  diameter_h,
+                  roughness_h,
+                  m_flow_small/nParallel) + g*height_ab/n*d_av;
+               end if;
             end if;
-            // Inverse parameterization for WallFriction.QuadraticTurbulent.massFlowRate_dp_staticHead
-            //Real zeta = (length/diameter)/(2*Math.log10(3.7 /(roughness/diameter)))^2;
-            //Real k_inv = (pi*diameter*diameter)^2/(8*zeta);
-            //Real k1 = d_a*k_inv "Factor in m_flow =  sqrt(k1*(dp-dp_grav_a))";
+            // Inverse parameterization for WallFriction.QuadraticTurbulent.massFlowRate_dp
+            //   zeta = (length_nominal/diameter)/(2*Math.log10(3.7 /(roughness/diameter)))^2;
+            //   k_inv = (pi*diameter*diameter)^2/(8*zeta);
+            //   k = d*k_inv "Factor in m_flow = sqrt(k*dp)";
+            // and for WallFriction.Laminar.massFlowRate_dp
+            //   m_flow = dp*pi*diameter_h^4*d_av/(128*length_laminar*eta_av);
             for i in 1:n loop
-              if perimeter[i] > 0 then
-                diameter_h[i] = 4*(crossArea[i]+crossArea[i+1])/2/perimeter[i];
-              else
-                diameter_h[i] = 2.54e-2 "default: one inch";
-              end if;
-              if roughness[i] > 0 then
-                roughness_h[i] = roughness[i];
-              else
-                roughness_h[i] = 2.5e-5 "default: smooth steel pipe";
-              end if;
-              k_inv[i] = (m_flow_nominal/nParallel)^2/(dp_nominal/n)/d_av[i];
+              diameter_h[i] = 4*(crossArea[i]+crossArea[i+1])/2/perimeter[i];
+              k_inv[i] = (m_flow_nominal/nParallel)^2/((dp_nominal-g*height_ab*d_av[i])/n)/d_av[i];
               zeta[i] = (Modelica.Constants.pi*diameter_h[i]*diameter_h[i])^2/(8*k_inv[i]);
               length_nominal[i] =
                 zeta[i]*diameter_h[i]*(2*Modelica.Math.log10(3.7 /(roughness_h[i]/diameter_h[i])))^2;
+              m_flow_turbulent[i] = (pi/4)*diameter_h[i]*eta_av[i]*Re_turbulent;
+              dp_turbulent[i] = (eta_av[i]*diameter_h[i]*pi/4)^2*Re_turbulent^2/(k_inv[i]*d_av[i]);
             end for;
 
             annotation (Documentation(info="<html>
 <p>
-This model defines a pressure loss assuming turbulent flow for 
+This model defines the pressure loss assuming turbulent flow for 
 specified <tt>dp_nominal</tt> and <tt>m_flow_nominal</tt>.
 It takes into account the average fluid density of each flow segment, 
-obtaines appropriate <tt>length_nominal</tt> values 
-and calls the functions provided by
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent\">
-          Pipes.BaseClasses.WallFriction.QuadraticTurbulent</a>.
+obtaines appropriate <tt>length_nominal</tt> of the flow path  
+and uses the 
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow\">
+          QuadraticTurbulentFlow</a>
+model.
 </p>
 <p>
-The parameter <tt>dp_small</tt> can be used to account for the laminar zone. 
-A very simple linear pressure loss correlation is obtained for <tt>dp_small >= dp_nominal</tt>.
+The parameters <tt>dp_small</tt> and <tt>m_flow_small</tt> can be adjusted to account for the laminar zone 
+and to regularize the model around zero flow. 
+A very simple linear pressure loss correlation is obtained for <tt>dp_small >= dp_nominal</tt>
+and <tt>m_flow_small >= m_flow_nominal</tt>.
+</p>
+<p>
+The geometry parameters <tt>crossArea</tt>, <tt>perimeter</tt> and <tt>roughness</tt> are taken into account if specified. 
+Otherwise a smooth steel pipe with a diameter of one inch is used as default. 
+The geometry does not effect simulation results of this nominal pressure loss model.
+As the geometry is specified however, the internally calculated <tt>m_flow_turbulent</tt> and <tt>dp_turbulent</tt> 
+become meaningful and can be related to <tt>m_flow_small</tt> and <tt>dp_small</tt>. 
 </p>
 </html>"));
           end NominalPressureLoss;
 
-          partial model PartialWallFrictionAndGravity
-        "Base class for pressure drop in pipe due to wall friction and gravity (for both flow directions)"
-            extends PartialFlowPressureLoss;
+          model QuadraticTurbulentFlow
+        "Pipe wall friction in the quadratic turbulent regime (simple characteristic, eta not used)"
+           extends WallFrictionPressureLoss(
+              redeclare package WallFriction = 
+              Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent);
+            annotation (Documentation(info="<html>
+<p>
+This component defines only the quadratic turbulent regime of wall friction:
+dp = k*m_flow*|m_flow|, where \"k\" depends on density and the roughness
+of the pipe and is not a function of the Reynolds number.
+This relationship is only valid for large Reynolds numbers.
+</p>
+ 
+<p>
+In the following figure the complete friction regime is shown.
+This component describes only the asymptotic behaviour for large
+Reynolds numbers, i.e., the values at the right ordinate where
+&lambda; is constant.
+</p>
+ 
+<img src=\"../Images/Components/PipeFriction1.png\">
+ 
+</html>"));
+          end QuadraticTurbulentFlow;
+
+          model WallFrictionPressureLoss
+        "WallFrictionPressureLoss: Pipe wall friction in the whole regime (default: detailed characteristic)"
+            extends PartialPressureLoss;
 
             replaceable package WallFriction = 
-            Modelica_Fluid.Pipes.BaseClasses.WallFriction.PartialWallFriction
-          "wall friction model";
+              Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed 
+                constrainedby
+          Modelica_Fluid.Pipes.BaseClasses.WallFriction.PartialWallFriction
+          "Wall friction model" 
+                annotation(choicesAllMatching=true,editButton=false);
+
+            parameter Boolean use_d_nominal = false
+          "= true, if d_nominal is used, otherwise computed from medium" 
+               annotation(Evaluate=true);
+            parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+          "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)"    annotation(Dialog(enable=use_d_nominal));
 
             parameter Boolean use_eta_nominal = false
-          "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
+          "= true, if eta_nominal is used, otherwise computed from medium" 
                annotation(Evaluate=true);
             parameter SI.DynamicViscosity eta_nominal = Medium.dynamicViscosity(
                                                            Medium.setState_pTX(
                                                                Medium.p_default, Medium.T_default, Medium.X_default))
           "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
                                                                                       annotation(Dialog(enable=use_eta_nominal));
-            parameter Boolean use_d_nominal = false
-          "= true, if eta_nominal and d_nominal are used, otherwise computed from medium"
-               annotation(Evaluate=true);
-            parameter SI.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
-          "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)"    annotation(Dialog(enable=use_d_nominal));
 
             parameter Boolean show_Re = false
           "= true, if Reynolds number is included for plotting" 
@@ -929,50 +1003,12 @@ simulation and/or might give a more robust simulation.
                 fillColor={0,0,255},
                 fillPattern=FillPattern.Solid,
                 textString="length")}));
-          end PartialWallFrictionAndGravity;
+          end WallFrictionPressureLoss;
 
-          partial model NoWallFriction
-        "No pipe wall friction ... partial as height_ab is not supported"
-           extends PartialWallFrictionAndGravity(
-              redeclare package WallFriction = 
-              Modelica_Fluid.Pipes.BaseClasses.WallFriction.NoFriction,
-              final from_dp = false);
-          equation
-            assert(abs(height_ab) < Modelica.Constants.small,
-             "Current implementation of WallFriction.NoFriction (r1953) does not consider static head!");
-          end NoWallFriction;
-
-          model LaminarFlow
-        "Pipe wall friction in the laminar regime (linear correlation)"
-           extends PartialWallFrictionAndGravity(
-              redeclare package WallFriction = 
-              Modelica_Fluid.Pipes.BaseClasses.WallFriction.Laminar);
-          end LaminarFlow;
-
-          model QuadraticTurbulentFlow
-        "Pipe wall friction in the quadratic turbulent regime (simple characteristic, eta not used)"
-           extends PartialWallFrictionAndGravity(
-              redeclare package WallFriction = 
-              Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent);
-          end QuadraticTurbulentFlow;
-
-          model LaminarAndQuadraticTurbulentFlow
-        "Pipe wall friction in the laminar and quadratic turbulent regime (simple characteristic)"
-           extends PartialWallFrictionAndGravity(
-              redeclare package WallFriction = 
-              Modelica_Fluid.Pipes.BaseClasses.WallFriction.LaminarAndQuadraticTurbulent);
-          end LaminarAndQuadraticTurbulentFlow;
-
-          model DetailedFlow
-        "Pipe wall friction in the whole regime (detailed characteristic)"
-           extends PartialWallFrictionAndGravity(
-              redeclare package WallFriction = 
-              Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed);
-          end DetailedFlow;
     end PressureLoss;
 
   package HeatTransfer
-    partial model PartialFlowHeatTransfer
+    partial model PartialHeatTransfer
         "base class for any pipe heat transfer correlation"
 
       // Parameters
@@ -1056,11 +1092,11 @@ Base class for heat transfer models that can be used in distributed pipe models.
         Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
                   {100,100}}),
                         graphics));
-    end PartialFlowHeatTransfer;
+    end PartialHeatTransfer;
 
-    partial model PartialPipeHT_Nu
+    partial model PartialPipeFlowHeatTransfer
         "Base class for pipe heat transfer correlation in terms of Nusselt numberheat transfer in a circular pipe for laminar and turbulent one-phase flow"
-      extends PartialFlowHeatTransfer;
+      extends PartialHeatTransfer;
       parameter SI.CoefficientOfHeatTransfer alpha0=100
           "guess value for heat transfer coefficients";
       SI.CoefficientOfHeatTransfer[n] alpha(each start=alpha0)
@@ -1080,31 +1116,31 @@ Base class for heat transfer models that can be used in distributed pipe models.
         annotation (Documentation(info="<html>
 Base class for heat transfer models that are expressed in terms of the Nusselt number and which can be used in distributed pipe models.
 </html>"));
-    end PartialPipeHT_Nu;
+    end PartialPipeFlowHeatTransfer;
 
-    model PipeHT_none
-        "PipeHT_none: No heat transfer assuming perfect isolation"
-      extends PartialFlowHeatTransfer;
+    model NoHeatTransfer
+        "NoHeatTransfer: No heat transfer assuming perfect isolation"
+      extends PartialHeatTransfer;
     equation
       Q_flow = zeros(n);
       annotation(Documentation(info="<html>
 Ideal heat transfer without thermal resistance.
 </html>"));
-    end PipeHT_none;
+    end NoHeatTransfer;
 
-    model PipeHT_ideal
-        "PipeHT_ideal: Ideal heat transfer without thermal resistance"
-      extends PartialFlowHeatTransfer;
+    model IdealHeatTransfer
+        "IdealHeatTransfer: Ideal heat transfer without thermal resistance"
+      extends PartialHeatTransfer;
     equation
       T = wallHeatPort.T;
       annotation(Documentation(info="<html>
 Ideal heat transfer without thermal resistance.
 </html>"));
-    end PipeHT_ideal;
+    end IdealHeatTransfer;
 
-    model PipeHT_constAlpha
-        "PipeHT_constAlpha: Constant heat transfer coefficient"
-      extends PartialFlowHeatTransfer;
+    model ConstantHeatTransfer
+        "ConstantHeatTransfer: Constant heat transfer coefficient"
+      extends PartialHeatTransfer;
       parameter SI.CoefficientOfHeatTransfer alpha0=200
           "heat transfer coefficient";
       annotation(Documentation(info="<html>
@@ -1112,14 +1148,14 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
 </html>"));
     equation
       Q_flow = {alpha0*area[i]*(wallHeatPort[i].T - T[i])*nParallel for i in 1:n};
-    end PipeHT_constAlpha;
+    end ConstantHeatTransfer;
     annotation (Documentation(info="<html>
 Heat transfer correlations for pipe models
 </html>"));
 
-    model PipeHT_localLamTurb
-        "PipeHT_localLamTurb: Laminar and turbulent forced convection in pipes, local coefficients"
-      extends PartialPipeHT_Nu;
+    model LocalPipeFlowHeatTransfer
+        "LocalPipeFlowHeatTransfer: Laminar and turbulent forced convection in pipes, local coefficients"
+      extends PartialPipeFlowHeatTransfer;
       protected
       Real[n] Nu_turb "Nusselt number for turbulent flow";
       Real[n] Nu_lam "Nusselt number for laminar flow";
@@ -1153,7 +1189,7 @@ The correlation takes into account the spatial position along the pipe flow, whi
          Springer Verlag, Ed. 8, 1997.</dd>
 </dl>
 </html>"));
-    end PipeHT_localLamTurb;
+    end LocalPipeFlowHeatTransfer;
   end HeatTransfer;
 
     package CharacteristicNumbers
@@ -1206,7 +1242,7 @@ The correlation takes into account the spatial position along the pipe flow, whi
       // pressure loss characteristic functions
         replaceable partial function massFlowRate_dp
           "Return mass flow rate m_flow as function of pressure loss dp, i.e., m_flow = f(dp), due to wall friction"
-          extends Icons.ObsoleteFunction;
+          extends Modelica.Icons.Function;
 
           input SI.Pressure dp "Pressure loss (dp = port_a.p - port_b.p)";
           input SI.Density d_a "Density at port_a";
@@ -1256,7 +1292,7 @@ The correlation takes into account the spatial position along the pipe flow, whi
 
         replaceable partial function pressureLoss_m_flow
           "Return pressure loss dp as function of mass flow rate m_flow, i.e., dp = f(m_flow), due to wall friction"
-          extends Icons.ObsoleteFunction;
+          extends Modelica.Icons.Function;
 
           input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
           input SI.Density d_a "Density at port_a";

@@ -355,10 +355,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=pipeDiameter,
-      height_ab=0,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow) 
-                   annotation (Placement(transformation(extent={{10,230},{-10,
+      height_ab=0) annotation (Placement(transformation(extent={{10,230},{-10,
               250}}, rotation=0)));
     Pipes.StaticPipe pipeB1B3(
       redeclare package Medium = BatchMedium,
@@ -368,8 +365,9 @@ present that are regulated by a central control system.
       redeclare model PressureLoss =
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
           m_flow_nominal=1,
+          use_d_nominal=true,
           dp_nominal=1,
-          use_d_nominal=true)) 
+          dp_small=1)) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
             rotation=0)));
     Pipes.StaticPipe pipeB2B3(
@@ -380,8 +378,9 @@ present that are regulated by a central control system.
       redeclare model PressureLoss =
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
           m_flow_nominal=1,
+          use_d_nominal=true,
           dp_nominal=1,
-          use_d_nominal=true)) 
+          dp_small=1)) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
              0)));
     Pipes.DistributedPipe pipeB1B1(
@@ -389,8 +388,6 @@ present that are regulated by a central control system.
       height_ab=0.5,
       diameter=pipeDiameter,
       length=1,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       nNodes=1,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
       annotation (Placement(transformation(
@@ -401,9 +398,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       length=0.5,
       diameter=pipeDiameter,
-      height_ab=0.5,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow) 
+      height_ab=0.5) 
                    annotation (Placement(transformation(
           origin={60,-106},
           extent={{-10,10},{10,-10}},
@@ -412,9 +407,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=pipeDiameter,
-      height_ab=0.1,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow) 
+      height_ab=0.1) 
                    annotation (Placement(transformation(
           origin={-80,-170},
           extent={{-10,10},{10,-10}},
@@ -423,8 +416,6 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       diameter=pipeDiameter,
       height_ab=3,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=3,
       nNodes=1,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
@@ -436,8 +427,6 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       diameter=pipeDiameter,
       height_ab=3,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow,
       length=3,
       nNodes=1,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
