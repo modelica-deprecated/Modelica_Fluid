@@ -751,11 +751,13 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                 end if;
               end if;
             end if;
-            if (from_dp and dp_small >= dp_nominal) or (not from_dp and m_flow_small >= m_flow_nominal) then
+            if (from_dp and dp_small >= dp_nominal and dp_small > 0)
+            or (not from_dp and m_flow_small >= m_flow_nominal and m_flow_small > 0) then
               // linear (laminar) flow
-              if mixingStreamProperties or not allowFlowReversal then
+              if mixingStreamProperties or (height_ab <= 0 and 0 <= height_ab) or not allowFlowReversal then
                 dp = g*height_ab/n*d_act + dp_nominal/m_flow_nominal*m_flow*nParallel;
               else
+                // Note: events occur as the static head jumps for flow reversal
                 for i in 1:n loop
                   dp[i] = g*height_ab/n*(if m_flow[i]>0 then d[i] else d[i+1]) + dp_nominal/m_flow_nominal*m_flow[i]*nParallel;
                 end for;
@@ -814,7 +816,8 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                end if;
             end if;
             // Inverse parameterization for WallFriction.QuadraticTurbulent
-            // Note: this should be done automatically with a common base class (see e.g. ControlledPump)
+            // Note: the code should be shared with the WallFriction.QuadraticTurbulent model,
+            //       but this required a re-design of the WallFriction interfaces ...
             //   zeta = (length_nominal/diameter)/(2*Math.log10(3.7 /(roughness/diameter)))^2;
             //   k_inv = (pi*diameter*diameter)^2/(8*zeta);
             //   k = d*k_inv "Factor in m_flow = sqrt(k*dp)";
@@ -844,12 +847,13 @@ model.
 <p>
 The parameters <tt>dp_small</tt> and <tt>m_flow_small</tt> can be adjusted to account for the laminar zone 
 and to numerically regularize the model around zero flow. 
-A very simple linear pressure loss correlation is obtained for <tt>dp_small >= dp_nominal</tt>
-and <tt>m_flow_small >= m_flow_nominal</tt>.
+The simplest linear (laminar) pressure loss correlation is obtained with <tt>dp_small >= dp_nominal</tt> for
+<tt>from_dp = true</tt>. Moreover a smooth static head subject to flow reversal is obtained with
+<tt>mixingStreamProperties = true</tt>.
 </p>
 <p>
 The geometry parameters <tt>crossArea</tt>, <tt>perimeter</tt> and <tt>roughness</tt> are taken into account if specified. 
-Otherwise a smooth steel pipe with a diameter of one inch is used as default. 
+Otherwise a smooth steel pipe with a diameter of one inch is used as default for the definition of <tt>length_nominal</tt>. 
 The geometry does not effect simulation results of this nominal pressure loss model.
 As the geometry is specified however, the internally calculated <tt>m_flow_turbulent</tt> and <tt>dp_turbulent</tt> 
 become meaningful and can be related to <tt>m_flow_small</tt> and <tt>dp_small</tt>. 
