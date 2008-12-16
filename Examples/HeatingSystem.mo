@@ -68,7 +68,7 @@ model HeatingSystem "Simple model of a heating system"
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
     p_a_start=400000,
     p_b_start=390000,
-    redeclare model PressureLoss =
+    redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow) 
     annotation (Placement(transformation(extent={{12,-14},{32,6}}, rotation=0)));
 
@@ -82,7 +82,7 @@ model HeatingSystem "Simple model of a heating system"
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
     p_a_start=110000,
     p_b_start=105000,
-    redeclare model PressureLoss =
+    redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow) 
     annotation (Placement(transformation(extent={{28,-76},{8,-56}}, rotation=
             0)));
@@ -155,7 +155,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
