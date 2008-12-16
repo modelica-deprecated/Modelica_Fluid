@@ -37,8 +37,6 @@ model TestOpenTank
   Modelica_Fluid.Pipes.StaticPipe pipe(
     height_ab=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.LaminarAndQuadraticTurbulentFlow,
     diameter=0.02,
     length=200) annotation (Placement(transformation(
         origin={0,-10},

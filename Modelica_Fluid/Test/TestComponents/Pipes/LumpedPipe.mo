@@ -14,8 +14,6 @@ model LumpedPipe
   Modelica_Fluid.Pipes.LumpedPipe pipe1(
     redeclare package Medium = Medium,
     use_T_start=true,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
     length=10,
     diameter=2.54e-2,
     initType=Modelica_Fluid.Types.Init.InitialValues,

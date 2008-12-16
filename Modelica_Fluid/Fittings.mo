@@ -9,11 +9,16 @@ package Fittings
 
 model GenericPressureLoss "Generic pressure loss model"
   extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
-    redeclare replaceable model PressureLoss = 
-    Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-     dp_nominal = dp_nominal,
-     m_flow_nominal = m_flow_nominal),
-     height_ab=0);
+    PressureLoss(
+      dp_nominal = dp_nominal,
+      m_flow_nominal = m_flow_nominal),
+    height_ab=0);
+  // Note: don't use
+  //   redeclare replaceable model PressureLoss =
+  //     Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
+  //       dp_nominal = dp_nominal,
+  //       m_flow_nominal = m_flow_nominal),
+  // as Dymola 7.1 then fails when modifying PressureLoss parameters such as dp_small.
 
   // Nominal values
   parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
@@ -49,8 +54,8 @@ nominal values.
 </p>
 <p>
 On the Advanced tab any pressure loss model defined for the interface
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">
-          Pipes.BaseClasses.PartialFlowPressureLoss</a>.
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss\">
+          Pipes.BaseClasses.PartialPressureLoss</a>.
 can be configured, together with required geometry parameters.
 </p>
 </html>"));
@@ -66,6 +71,7 @@ end GenericPressureLoss;
       redeclare replaceable model PressureLoss = 
       Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
        dp_nominal = 1,
+       dp_small = 1,
        m_flow_nominal = 1));
 
     annotation (defaultComponentName="staticHead",
@@ -2014,7 +2020,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     replaceable model PressureLoss = 
       Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss 
       constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss
         "Pressure loss model" 
         annotation(Dialog(tab="Advanced", group="Pressure loss"), choicesAllMatching=true);
 
@@ -2070,8 +2076,8 @@ design phases, when no detailed geometrical information is available.
 <p>
 On the Advanced tab the linear pressure loss can be replaced with any pressure loss model 
 defined for the interface
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">
-          Pipes.BaseClasses.PartialFlowPressureLoss</a>.
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss\">
+          Pipes.BaseClasses.PartialPressureLoss</a>.
 The specified geometry is passed to the pressure loss model.
 </p>
 </html>"));

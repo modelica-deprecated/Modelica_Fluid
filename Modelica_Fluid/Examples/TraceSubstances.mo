@@ -33,7 +33,9 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       redeclare package Medium = Medium,
       length=1,
       diameter=0.15,
-      PressureLoss(show_Re=true)) 
+      redeclare model PressureLoss = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss
+          (show_Re=true)) 
       annotation (Placement(transformation(extent={{20,-20},{40,0}})));
     Sensors.TraceSubstancesOnePort traceSubstanceSource(redeclare package
         Medium = Medium) 
@@ -64,8 +66,8 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
         color={0,127,255},
         smooth=Smooth.None));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
-              {100,100}}),graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
+              100,100}}), graphics),
       experiment(StopTime=3600),
       Documentation(info="<html>
 This example consists of a volume with a carbon dioxide concentration that corresponds to about 1000 PPM.
@@ -108,7 +110,9 @@ concentration of the fresh air.
       redeclare package Medium = Medium,
       length=1,
       diameter=0.15,
-      PressureLoss(show_Re=true)) 
+      redeclare model PressureLoss = 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss
+          (show_Re=true)) 
       annotation (Placement(transformation(extent={{32,-40},{52,-20}})));
     Sensors.TraceSubstancesOnePort traceSubstanceSource(redeclare package
         Medium = Medium) 
@@ -170,8 +174,8 @@ concentration of the fresh air.
         color={0,127,255},
         smooth=Smooth.None));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
-              {100,100}}),graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
+              100,100}}), graphics),
       experiment(StopTime=86400, tolerance=1e-006),
       Commands(file(ensureSimulated=true)="Scripts/Examples/RoomCO2WithControls/plotStatesWithControl.mos"
           "plot states and controls"),

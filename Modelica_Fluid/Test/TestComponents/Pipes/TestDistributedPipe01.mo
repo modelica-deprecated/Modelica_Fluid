@@ -11,14 +11,13 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     length=2,
     p_b_start=100000,
     T_start=280,
     redeclare model HeatTransfer = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha (alpha0=
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.ConstantHeatTransfer (
+                                                                         alpha0=
            500),
     modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b,
     p_a_start=100000) 
@@ -47,8 +46,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=100000,
     T_start=340,
@@ -64,8 +61,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
@@ -99,8 +94,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     heatTransfer(each alpha0=1000),
     p_b_start=100000,
@@ -139,14 +132,12 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     length=2,
     p_b_start=100000,
     T_start=280,
     redeclare model HeatTransfer = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_localLamTurb,
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.LocalPipeFlowHeatTransfer,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
           rotation=0)));
@@ -164,8 +155,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=100000,
     T_start=340,
@@ -180,8 +169,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     length=0.4,
@@ -208,8 +195,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     T_start=360,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=1.0e5,
     heatTransfer(each alpha0=1000),
@@ -227,14 +212,13 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     length=2,
     p_b_start=100000,
     T_start=280,
     redeclare model HeatTransfer = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PipeHT_constAlpha (alpha0=
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.ConstantHeatTransfer (
+                                                                         alpha0=
            500),
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-29,-50},{-9,-30}},
@@ -254,8 +238,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     nNodes=5,
     modelStructure=Modelica_Fluid.Types.ModelStructure.av_b,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     p_b_start=100000,
     T_start=340,
@@ -269,8 +251,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     nNodes=5,
     modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     length=0.4,
     p_b_start=100000,
@@ -297,8 +277,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     initType=Modelica_Fluid.Types.Init.GuessValues,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow(from_dp=true),
     m_flow_start=0.1,
     heatTransfer(each alpha0=1000),
     p_b_start=100000,

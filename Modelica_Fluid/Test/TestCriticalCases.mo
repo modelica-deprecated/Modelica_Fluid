@@ -10,18 +10,12 @@ package TestCriticalCases
     Pipes.StaticPipe pipeFriction1(
       length=1,
       diameter=0.2,
-      redeclare package Medium = Medium,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow) 
-                                         annotation (Placement(transformation(
+      redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{-32,-40},{-12,-20}}, rotation=0)));
     Pipes.StaticPipe pipeFriction2(
       length=1,
       diameter=0.2,
-      redeclare package Medium = Medium,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow) 
-                                         annotation (Placement(transformation(
+      redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{12,-40},{32,-20}}, rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -31,9 +25,7 @@ package TestCriticalCases
     Pipes.StaticPipe pipeFriction3(
       length=1,
       diameter=0.2,
-      redeclare package Medium = Medium,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow) 
+      redeclare package Medium = Medium) 
       annotation (Placement(transformation(
           origin={0,0},
           extent={{-10,-10},{10,10}},
@@ -587,7 +579,9 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       minOpening=0.01)              annotation (Placement(transformation(
             extent={{52,-10},{72,10}}, rotation=0)));
     annotation (
-      Diagram(graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+              graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
       Documentation(info="<html>
@@ -639,7 +633,7 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
     connect(valveIncompressible.port_b, sink.ports[1]) 
       annotation (Line(points={{72,0},{82,0}}, color={0,127,255}));
     connect(valveOpening1.y, valveIncompressible.opening) annotation (Line(
-          points={{1,80},{62,80},{62,9}}, color={0,0,127}));
+          points={{1,80},{62,80},{62,8}}, color={0,0,127}));
     connect(pipe1.port_b, simpleGenericOrifice.port_a) annotation (Line(points=
             {{-56,0},{-46,0}}, color={0,127,255}));
     connect(pipe2.port_a, simpleGenericOrifice.port_b) annotation (Line(points=
