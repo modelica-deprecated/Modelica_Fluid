@@ -309,7 +309,7 @@ explained in detail in the
             lineColor={0,0,0},
             fillPattern=FillPattern.Solid),
           Text(
-            extent={{-150,-80},{150,-120}},
+            extent={{-150,-112},{150,-152}},
             textString="%name",
             lineColor={0,0,255})}),
     Diagram(coordinateSystem(
@@ -407,7 +407,7 @@ it is open.
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics={
             Text(
-              extent={{-150,-94},{150,-134}},
+              extent={{-150,-112},{150,-152}},
               textString="%name",
               lineColor={0,0,255}),
             Line(points={{0,52},{0,0}}, color={0,0,0}),
