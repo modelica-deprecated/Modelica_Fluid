@@ -104,9 +104,8 @@ Simulate for 7200 seconds.
           origin={30,-20},
           extent={{10,-10},{-10,10}},
           rotation=180)));
-    Modelica_Fluid.Sensors.TemperatureOnePort temperature(    redeclare package
-        Medium = 
-          Modelica.Media.Water.StandardWater) 
+    Modelica_Fluid.Sensors.Temperature temperature(    redeclare package Medium
+        = Modelica.Media.Water.StandardWater) 
       annotation (Placement(transformation(
           origin={-3,-1},
           extent={{-10,10},{10,-10}},
@@ -118,7 +117,7 @@ Simulate for 7200 seconds.
     Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
       annotation (Placement(transformation(extent={{-51,23},{-65,37}}, rotation=
              0)));
-    Modelica_Fluid.Sources.PrescribedMassFlowRate_hX pump(
+    Modelica_Fluid.Sources.MassFlowSource_h pump(
                                              h=5e5, redeclare package Medium = 
           Modelica.Media.Water.StandardWater,
       useFlowRateInput=true) 

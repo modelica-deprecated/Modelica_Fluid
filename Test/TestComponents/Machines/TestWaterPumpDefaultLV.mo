@@ -8,16 +8,15 @@ annotation (
           graphics),
   experiment(StopTime=10, Tolerance=1e-006),
   Documentation(info=""));
-  Modelica_Fluid.Sources.FixedBoundary_pTX Source(
-                                             redeclare package Medium = 
+  Modelica_Fluid.Sources.Boundary_pT Source( redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=1e5,
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,20},{-80,40}}, rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX Sink(
+  Modelica_Fluid.Sources.Boundary_pT Sink(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=5e5,
     T=system.T_ambient,
-    usePressureInput=true) 
+    use_p_in=true) 
   annotation (Placement(transformation(extent={{34,26},{14,46}}, rotation=0)));
   Modelica_Fluid.Machines.PrescribedPump pump(
     redeclare package Medium = Modelica.Media.Water.StandardWater,

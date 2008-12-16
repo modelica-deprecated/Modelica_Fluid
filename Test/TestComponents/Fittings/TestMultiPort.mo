@@ -11,7 +11,7 @@ model TestMultiPort
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}}),
                       graphics));
-  Modelica_Fluid.Sources.FixedBoundary_pTX source2(
+  Modelica_Fluid.Sources.Boundary_pT source2(
     T=278.15,
     p=5e5,
     redeclare package Medium = Modelica.Media.Air.MoistAir) 
@@ -19,7 +19,7 @@ model TestMultiPort
         origin={80,-20},
         extent={{-10,-10},{10,10}},
         rotation=180)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX source3(
+  Modelica_Fluid.Sources.Boundary_pT source3(
     T=283.15,
     p=2e5,
     redeclare package Medium = Modelica.Media.Air.MoistAir) 
@@ -30,9 +30,9 @@ model TestMultiPort
   inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,80},{-80,100}}, rotation=
            0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX source1(
+  Modelica_Fluid.Sources.Boundary_pT source1(
     T=system.T_ambient,
-    usePressureInput=true,
+    use_p_in=true,
     redeclare package Medium = Modelica.Media.Air.MoistAir,
     p=500000) 
     annotation (Placement(transformation(extent={{-60,-30},{-40,-10}}, rotation=

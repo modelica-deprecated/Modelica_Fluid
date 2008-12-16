@@ -48,26 +48,26 @@ package HeatExchanger "Demo of a heat exchanger model"
       T_start_2=300)       annotation (Placement(transformation(extent={{
               -26,-14},{34,46}}, rotation=0)));
 
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient2(
+    Modelica_Fluid.Sources.Boundary_pT ambient2(
       p=1e5,
       T=280,
       redeclare package Medium = Medium)                              annotation (Placement(
           transformation(extent={{82,-28},{62,-8}}, rotation=0)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient1(
+    Modelica_Fluid.Sources.Boundary_pT ambient1(
       p=1e5,
       T=300,
       redeclare package Medium = Medium)                              annotation (Placement(
           transformation(extent={{82,24},{62,44}}, rotation=0)));
-    Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate2(
+    Modelica_Fluid.Sources.MassFlowSource_T massFlowRate2(
       m_flow=0.2,
       T=360,
       redeclare package Medium = Medium,
       useFlowRateInput=true,
-      useTemperatureInput=false,
-      useCompositionInput=false) 
+      use_T_in=false,
+      use_X_in=false) 
                   annotation (Placement(transformation(extent={{-66,24},{-46,44}},
             rotation=0)));
-    Modelica_Fluid.Sources.PrescribedMassFlowRate_TX massFlowRate1(
+    Modelica_Fluid.Sources.MassFlowSource_T massFlowRate1(
       T=300,
       m_flow=0.5,
       redeclare package Medium = Medium) 

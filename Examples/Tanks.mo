@@ -19,7 +19,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       stiffCharacteristicForEmptyPort=true) 
       annotation (Placement(transformation(extent={{-40,28},{0,68}}, rotation=0)));
 
-    Sources.PrescribedMassFlowRate_TX flowSource(
+    Sources.MassFlowSource_T flowSource(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       m_flow=20,
@@ -38,7 +38,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-10,72},
               {10,92}}, rotation=0)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -120,7 +120,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     import Modelica.SIunits.Conversions.from_bar;
     extends Modelica.Icons.Example;
 
-    Sources.PrescribedMassFlowRate_TX flowSource(
+    Sources.MassFlowSource_T flowSource(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       m_flow=50,
@@ -139,7 +139,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -212,7 +212,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -252,7 +252,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           origin={30,-60},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -288,7 +288,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed1(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(
                                             redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -328,7 +328,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           origin={40,-40},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed2(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed2(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -396,7 +396,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient_fixed(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,

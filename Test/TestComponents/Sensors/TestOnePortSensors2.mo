@@ -15,7 +15,7 @@ model TestOnePortSensors2
     nPorts=2)    annotation (Placement(transformation(extent={{-34,30},{-14,50}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
+  Modelica_Fluid.Sources.MassFlowSource_h FlowSource2(
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium,
@@ -29,7 +29,7 @@ model TestOnePortSensors2
     h_start=1.5e5,
     nPorts=2)    annotation (Placement(transformation(extent={{32,30},{52,50}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_phX Sink2(             redeclare package
+  Modelica_Fluid.Sources.Boundary_ph Sink2(             redeclare package
       Medium = Medium,
     p=101325,
     h=5e4) 
@@ -50,7 +50,7 @@ model TestOnePortSensors2
     h_start=1e5,
     nPorts=2)    annotation (Placement(transformation(extent={{-34,-30},{-14,
             -10}}, rotation=0)));
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource1(
+  Modelica_Fluid.Sources.MassFlowSource_h FlowSource1(
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium,
@@ -64,7 +64,7 @@ model TestOnePortSensors2
     h_start=1.5e5,
     nPorts=2)    annotation (Placement(transformation(extent={{32,-30},{52,-10}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_phX Sink1(             redeclare package
+  Modelica_Fluid.Sources.Boundary_ph Sink1(             redeclare package
       Medium = Medium,
     p=101325,
     h=5e4) 

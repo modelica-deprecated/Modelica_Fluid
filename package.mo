@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -1149,9 +1148,9 @@ library 3.0 (by automatic conversion). Further changes:
 <li> Modelica_Fluid.Sources.FixedBoundary<br>
      Introduced p_default, T_default, h_default as default values, since
      otherwise warnings will always be printed because parameter value is missing.</li>
-<li> Modelica_Fluid.Sources.PrescribedBoundary_pTX<br>
-     Modelica_Fluid.Sources.PrescribedBoundary_phX<br>
-     Modelica_Fluid.Sources.PrescribedMassFlowRate_TX<br>
+<li> Modelica_Fluid.Sources.Boundary_pT<br>
+     Modelica_Fluid.Sources.Boundary_ph<br>
+     Modelica_Fluid.Sources.MassFlowSource_T<br>
      Changed default values of parameters reference_p, reference_T to 
      p_default, T_default (some have been xx_default, some reference_xx,
      it seems best to always use the same approach)</li>
@@ -2110,7 +2109,6 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
 
 annotation (
   version="1.0 Release Candidate 1",

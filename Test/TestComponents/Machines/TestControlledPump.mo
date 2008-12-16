@@ -15,16 +15,15 @@ annotation (
     offset=0,
     height=1)   annotation (Placement(transformation(extent={{-70,60},{-50,80}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX source(
-                                             redeclare package Medium = 
+  Modelica_Fluid.Sources.Boundary_pT source( redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{-90,20},{-70,40}},  rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX sink(
+  Modelica_Fluid.Sources.Boundary_pT sink(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
-    usePressureInput=true,
+    use_p_in=true,
     p=200000) 
   annotation (Placement(transformation(extent={{50,20},{30,40}}, rotation=0)));
   Modelica_Fluid.Machines.ControlledPump pump(
@@ -55,16 +54,15 @@ annotation (
     height=2e5,
     offset=8e5) annotation (Placement(transformation(extent={{-70,-40},{-50,-20}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX source1(
-                                             redeclare package Medium = 
+  Modelica_Fluid.Sources.Boundary_pT source1(redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{-90,-80},{-70,-60}},rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX sink1(
+  Modelica_Fluid.Sources.Boundary_pT sink1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
-    usePressureInput=true,
+    use_p_in=true,
     p=200000) 
   annotation (Placement(transformation(extent={{50,-80},{30,-60}},
                                                                  rotation=0)));

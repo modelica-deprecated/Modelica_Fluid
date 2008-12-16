@@ -20,12 +20,12 @@ model TestDensity
   Modelica.Blocks.Sources.Sine sine1 
                                     annotation (Placement(transformation(extent=
            {{-100,-20},{-80,0}}, rotation=0)));
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_hX massFlowRate2(
+  Modelica_Fluid.Sources.MassFlowSource_h massFlowRate2(
     useFlowRateInput=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     h=3200e3)                       annotation (Placement(transformation(extent=
            {{-60,-20},{-40,0}}, rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_phX boundary_fixed1(
+  Modelica_Fluid.Sources.Boundary_ph boundary_fixed1(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=system.p_ambient,
     h=3000e3) annotation (Placement(transformation(extent={{100,-30},{80,-10}},
@@ -33,7 +33,7 @@ model TestDensity
   Modelica_Fluid.Sensors.DensityTwoPort density2_2(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{50,-30},{70,-10}}, rotation=0)));
-  Modelica_Fluid.Sensors.DensityOnePort density1_1(redeclare package Medium = 
+  Modelica_Fluid.Sensors.Density density1_1(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{-20,50},{0,70}}, rotation=0)));
   Modelica_Fluid.Fittings.SimpleGenericOrifice simpleGenericOrifice(
@@ -43,17 +43,17 @@ model TestDensity
           rotation=0)));
   Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent=
            {{-100,50},{-80,70}}, rotation=0)));
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_hX massFlowRate1(
+  Modelica_Fluid.Sources.MassFlowSource_h massFlowRate1(
     useFlowRateInput=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     h=3200e3)                       annotation (Placement(transformation(extent=
            {{-60,50},{-40,70}}, rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_phX boundary_fixed(
+  Modelica_Fluid.Sources.Boundary_ph boundary_fixed(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=system.p_ambient,
     h=3000e3) annotation (Placement(transformation(extent={{100,40},{80,60}},
           rotation=0)));
-  Modelica_Fluid.Sensors.DensityOnePort density1_2(redeclare package Medium = 
+  Modelica_Fluid.Sensors.Density density1_2(redeclare package Medium = 
         Modelica.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{50,50},{70,70}}, rotation=0)));
 equation

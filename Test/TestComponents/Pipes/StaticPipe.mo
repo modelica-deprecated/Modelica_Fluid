@@ -25,7 +25,7 @@ model StaticPipe
     Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-  Modelica_Fluid.Sources.FixedBoundary_pTX sink(
+  Modelica_Fluid.Sources.Boundary_pT sink(
     redeclare package Medium = Medium,
     p=200000,
     T=300)   annotation (Placement(transformation(extent={{56,4},{44,16}},
@@ -36,11 +36,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
             {-80,80}}, rotation=0)));
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,1e5; 10,3e5]) 
     annotation (Placement(transformation(extent={{-90,20},{-70,40}}, rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX source(
+  Modelica_Fluid.Sources.Boundary_pT source(
     redeclare package Medium = Medium,
     p=system.p_ambient,
     T=system.T_ambient,
-    usePressureInput=true,
+    use_p_in=true,
     nPorts=1) 
     annotation (Placement(transformation(extent={{-56,4},{-44,16}},  rotation=0)));
 equation

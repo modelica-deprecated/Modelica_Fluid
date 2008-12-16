@@ -75,7 +75,7 @@ ideal, i.e., it does not influence the fluid.
     p = port.p;
   end Pressure;
 
-  model DensityOnePort "Ideal one port density sensor"
+  model Density "Ideal one port density sensor"
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput d(final quantity="Density",
@@ -112,7 +112,7 @@ ideal, i.e., it does not influence the fluid.
 "));
   equation
     d = Medium.density(Medium.setState_phX(port.p, inStream(port.h_outflow), inStream(port.Xi_outflow)));
-  end DensityOnePort;
+  end Density;
 
   model DensityTwoPort "Ideal two port density sensor"
     extends Sensors.BaseClasses.PartialFlowSensor;
@@ -180,7 +180,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
     end if;
   end DensityTwoPort;
 
-  model TemperatureOnePort "Ideal one port temperature sensor"
+  model Temperature "Ideal one port temperature sensor"
       extends Sensors.BaseClasses.PartialAbsoluteSensor;
 
     Modelica.Blocks.Interfaces.RealOutput T(final quantity="ThermodynamicTemperature",
@@ -221,8 +221,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{-40,20},{-12,20}}, color={0,0,0}),
           Line(points={{-40,60},{-12,60}}, color={0,0,0}),
           Line(points={{12,0},{60,0}}, color={0,0,127})}),
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-              100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={
           Ellipse(
             extent={{-20,-88},{20,-50}},
             lineColor={0,0,0},
@@ -235,8 +235,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
             fillColor={191,0,0},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},{
-                12,90},{12,50},{-12,50}},
+            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},
+                {12,90},{12,50},{-12,50}},
             lineColor={0,0,0},
             lineThickness=0.5),
           Line(
@@ -269,7 +269,7 @@ ideal, i.e., it does not influence the fluid.
 "));
   equation
     T = Medium.temperature(Medium.setState_phX(port.p, inStream(port.h_outflow), inStream(port.Xi_outflow)));
-  end TemperatureOnePort;
+  end Temperature;
 
   model TemperatureTwoPort "Ideal two port temperature sensor"
     extends Sensors.BaseClasses.PartialFlowSensor;
@@ -365,7 +365,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
     end if;
   end TemperatureTwoPort;
 
-  model SpecificEnthalpyOnePort "Ideal one port specific enthalphy sensor"
+  model SpecificEnthalpy "Ideal one port specific enthalphy sensor"
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput h_out(final quantity="SpecificEnergy",
@@ -398,7 +398,7 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 "));
   equation
     h_out = inStream(port.h_outflow);
-  end SpecificEnthalpyOnePort;
+  end SpecificEnthalpy;
 
   model SpecificEnthalpyTwoPort
     "Ideal two port sensor for the specific enthalpy"
@@ -457,7 +457,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
     end if;
   end SpecificEnthalpyTwoPort;
 
-  model SpecificEntropyOnePort "Ideal one port specific entropy sensor"
+  model SpecificEntropy "Ideal one port specific entropy sensor"
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput s(final quantity="SpecificEntropy",
@@ -490,7 +490,7 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
 "));
   equation
     s = Medium.specificEntropy(Medium.setState_phX(port.p, inStream(port.h_outflow), inStream(port.Xi_outflow)));
-  end SpecificEntropyOnePort;
+  end SpecificEntropy;
 
   model SpecificEntropyTwoPort "Ideal two port sensor for the specific entropy"
     extends Sensors.BaseClasses.PartialFlowSensor;
@@ -556,7 +556,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
     end if;
   end SpecificEntropyTwoPort;
 
-  model TraceSubstancesOnePort "Ideal one port trace substances sensor"
+  model TraceSubstances "Ideal one port trace substances sensor"
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     parameter String substanceName = "CO2" "Name of trace substance";
@@ -606,7 +606,7 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
   equation
     CVec = inStream(port.C_outflow);
     C = CVec[ind];
-  end TraceSubstancesOnePort;
+  end TraceSubstances;
 
   model TraceSubstancesTwoPort "Ideal two port sensor for trace substance"
     extends Sensors.BaseClasses.PartialFlowSensor;

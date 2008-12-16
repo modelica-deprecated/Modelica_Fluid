@@ -18,23 +18,22 @@ model TestSimpleGenericOrifice
     experimentSetupOutput,
     Documentation(info="<html>
 </html>"));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient_a(
-                                                     redeclare package Medium
-      = Medium,
+  Modelica_Fluid.Sources.Boundary_pT ambient_a(     redeclare package Medium = 
+        Medium,
     p=system.p_ambient,
     T=system.T_ambient,
-    usePressureInput=true,
+    use_p_in=true,
     nPorts=4) 
     annotation (Placement(transformation(extent={{-40,40},{-20,60}}, rotation=0)));
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 
     annotation (Placement(transformation(extent={{-80,40},{-60,60}}, rotation=0)));
 
-  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p1(
+  Modelica_Fluid.Sources.Boundary_pT ambient_p1(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (Placement(transformation(extent={{60,40},{40,60}}, rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p2(
+  Modelica_Fluid.Sources.Boundary_pT ambient_p2(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -58,7 +57,7 @@ model TestSimpleGenericOrifice
     diameter_a=diameter_a,
     diameter_b=diameter_b) annotation (Placement(transformation(extent={{0,-20},{20,0}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p3(
+  Modelica_Fluid.Sources.Boundary_pT ambient_p3(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -71,7 +70,7 @@ model TestSimpleGenericOrifice
     from_dp=false) 
              annotation (Placement(transformation(extent={{0,-60},{20,-40}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p4(
+  Modelica_Fluid.Sources.Boundary_pT ambient_p4(
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 

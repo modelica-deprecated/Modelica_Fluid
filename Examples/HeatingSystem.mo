@@ -72,7 +72,8 @@ model HeatingSystem "Simple model of a heating system"
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
         m_flow_nominal=1,
         dp_nominal=100,
-        dp_small=100)) 
+        dp_small=100,
+        mixingStreamProperties=true)) 
     annotation (Placement(transformation(extent={{12,-14},{32,6}}, rotation=0)));
 
   Modelica_Fluid.Pipes.LumpedPipe radiator(
@@ -89,7 +90,8 @@ model HeatingSystem "Simple model of a heating system"
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
         m_flow_nominal=1,
         dp_nominal=100,
-        dp_small=100)) 
+        dp_small=100,
+        mixingStreamProperties=true)) 
     annotation (Placement(transformation(extent={{28,-76},{8,-56}}, rotation=
             0)));
 
@@ -99,11 +101,11 @@ model HeatingSystem "Simple model of a heating system"
   Modelica.Blocks.Interfaces.RealOutput coldWaterTemperature 
     annotation (Placement(transformation(extent={{88,-78},{108,-58}},
           rotation=0)));
-  Modelica_Fluid.Sensors.TemperatureOnePort sensor_T_1(
+  Modelica_Fluid.Sensors.Temperature sensor_T_1(
                                  redeclare package Medium = Medium) 
     annotation (Placement(transformation(extent={{56,-56},{36,-36}}, rotation=
            0)));
-  Modelica_Fluid.Sensors.TemperatureOnePort sensor_T_2(
+  Modelica_Fluid.Sensors.Temperature sensor_T_2(
                                  redeclare package Medium = Medium) 
     annotation (Placement(transformation(extent={{-16,-56},{-36,-36}},
           rotation=0)));
@@ -131,8 +133,8 @@ tankLevel = tank.level;
         color={0,127,255}));
   connect(thermalConductor1.port_b, radiator.heatPort) annotation (Line(
         points={{18,-56},{18,-60.6}}, color={191,0,0}));
-  connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{22,22},
-          {22,1.4}},     color={191,0,0}));
+  connect(burner.port, pipe.heatPort) annotation (Line(points={{18,22},{22,
+          22},{22,1.4}}, color={191,0,0}));
   connect(ambientTemperature.port, thermalConductor1.port_a) annotation (Line(
         points={{2,-33},{18,-33},{18,-40}}, color={191,0,0}));
   connect(sensor_T_1.T, hotWaterTemperature) annotation (Line(points={{39,-46},

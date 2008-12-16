@@ -83,163 +83,59 @@ with exception of boundary pressure, do not have an effect.
     ports.C_outflow = fill(C, nPorts);
   end FixedBoundary;
 
-  model FixedBoundary_pTX
-    "Boundary pressure, temperature, mass fraction and trace substances source"
-    extends Sources.BaseClasses.PartialSource;
-    parameter Medium.AbsolutePressure p=Medium.p_default "Boundary pressure";
-    parameter Medium.Temperature T=Medium.T_default "Boundary temperature";
-    parameter Medium.MassFraction X[Medium.nX](
-         quantity=Medium.substanceNames) = Medium.X_default
-      "Boundary mass fractions m_i/m" 
-      annotation (Dialog(group = "Only for multi-substance flow",
-                  enable=Medium.nXi > 0));
-    parameter Medium.ExtraProperty C[Medium.nC](
-         quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Boundary trace substances" 
-      annotation (Dialog(group = "Only for trace-substance flow", enable=Medium.nC > 0));
-    annotation (defaultComponentName="boundary",
-      Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={2,2}), graphics={Ellipse(
-            extent={{-100,100},{100,-100}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.Sphere,
-            fillColor={0,127,255}), Text(
-            extent={{-150,110},{150,150}},
-            textString="%name",
-            lineColor={0,0,255})}),
-      Documentation(info="<html>
-<p>
-Defines constant values for boundary conditions:
-</p>
-<ul>
-<li> Boundary pressure.</li>
-<li> Boundary temperature.</li>
-<li> Boundary composition (only for multi-substance or trace-substance flow).</li>
-</ul>
-<p>
-Note, that boundary temperature,
-mass fractions and trace substances have only an effect if the mass flow
-is from the boundary into the port. If mass is flowing from
-the port into the boundary, the boundary definitions,
-with exception of boundary pressure, do not have an effect.
-</p>
-</html>"));
-  equation
-    Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-                                          Medium.singleState, true, X, "FixedBoundary_pTX");
-    medium.p   = p;
-    medium.T   = T;
-    medium.Xi = X[1:Medium.nXi];
-    ports.C_outflow = fill(C, nPorts);
-  end FixedBoundary_pTX;
-
-  model FixedBoundary_phX
-    "Boundary pressure, specific enthalpy, mass fraction and trace substances source"
-    extends Sources.BaseClasses.PartialSource;
-    parameter Medium.AbsolutePressure p=Medium.p_default "Boundary pressure";
-    parameter Medium.SpecificEnthalpy h=Medium.h_default
-      "Boundary specific enthalpy";
-    parameter Medium.MassFraction X[
-      Medium.nX](quantity=Medium.substanceNames) = Medium.X_default
-      "Boundary mass fractions m_i/m"  annotation (Dialog(group=
-            "Only for multi-substance flow", enable=Medium.nXi > 0));
-    parameter Medium.ExtraProperty C[Medium.nC](
-         quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Boundary trace substances" 
-      annotation (Dialog(group = "Only for trace-substance flow", enable=Medium.nC > 0));
-    annotation (defaultComponentName="boundary",
-      Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={2,2}), graphics={Ellipse(
-            extent={{-100,100},{100,-100}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.Sphere,
-            fillColor={0,127,255}), Text(
-            extent={{-150,110},{150,150}},
-            textString="%name",
-            lineColor={0,0,255})}),
-      Documentation(info="<html>
-<p>
-Defines constant values for boundary conditions:
-</p>
-<ul>
-<li> Boundary pressure.</li>
-<li> Boundary specific enthalpy.</li>
-<li> Boundary composition (only for multi-substance or trace-substance flow).</li>
-</ul>
-<p>
-Note, that boundary specific enthalpy,
-mass fractions and trace substances have only an effect if the mass flow
-is from the boundary into the port. If mass is flowing from
-the port into the boundary, the boundary definitions,
-with exception of boundary pressure, do not have an effect.
-</p>
-</html>"));
-  equation
-    Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-                                          Medium.singleState, true, X, "FixedBoundary_phX");
-    medium.p = p;
-    medium.h = h;
-    medium.Xi = X[1:Medium.nXi];
-    ports.C_outflow = fill(C, nPorts);
-  end FixedBoundary_phX;
-
   annotation (Documentation(info="<html>
 <p>
 Package <b>Sources</b> contains generic sources for fluid connectors
 to define fixed or prescribed ambient conditions.
 </p>
 </html>"));
-  model PrescribedBoundary_pTX
+  model Boundary_pT
     "Boundary with prescribed pressure, temperature, composition and trace substances"
     extends Sources.BaseClasses.PartialSource;
-    parameter Boolean usePressureInput = false
+    parameter Boolean use_p_in = false
       "Get the pressure from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useTemperatureInput= false
+    parameter Boolean use_T_in= false
       "Get the temperature from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useCompositionInput = false
+    parameter Boolean use_X_in = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useTraceInput = false
+    parameter Boolean use_C_in = false
       "Get the trace substances from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Medium.AbsolutePressure p = Medium.p_default
       "Fixed value of pressure" 
       annotation (Evaluate = true,
-                  Dialog(enable = not usePressureInput));
+                  Dialog(enable = not use_p_in));
     parameter Medium.Temperature T = Medium.T_default
       "Fixed value of temperature" 
       annotation (Evaluate = true,
-                  Dialog(enable = not useTemperatureInput));
+                  Dialog(enable = not use_T_in));
     parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
+                  Dialog(enable = (not use_X_in) and Medium.nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Boundary trace substances" 
       annotation (Evaluate=true,
-                  Dialog(enable = (not useTraceInput) and Medium.nC > 0));
-    Modelica.Blocks.Interfaces.RealInput p_in if              usePressureInput
+                  Dialog(enable = (not use_C_in) and Medium.nC > 0));
+    Modelica.Blocks.Interfaces.RealInput p_in if              use_p_in
       "Prescribed boundary pressure" 
       annotation (Placement(transformation(extent={{-140,60},{-100,100}},
             rotation=0)));
-    Modelica.Blocks.Interfaces.RealInput T_in if         useTemperatureInput
+    Modelica.Blocks.Interfaces.RealInput T_in if         use_T_in
       "Prescribed boundary temperature" 
       annotation (Placement(transformation(extent={{-140,20},{-100,60}},
             rotation=0)));
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
-                                                          useCompositionInput
+                                                          use_X_in
       "Prescribed boundary composition" 
       annotation (Placement(transformation(extent={{-140,-60},{-100,-20}},
             rotation=0)));
     Modelica.Blocks.Interfaces.RealInput C_in[Medium.nC] if 
-                                                          useTraceInput
+                                                          use_C_in
       "Prescribed boundary trace substances" 
       annotation (Placement(transformation(extent={{-140,-100},{-100,-60}},
             rotation=0)));
@@ -267,44 +163,44 @@ to define fixed or prescribed ambient conditions.
             textString="%name",
             lineColor={0,0,255}),
           Line(
-            visible=usePressureInput,
+            visible=use_p_in,
             points={{-100,80},{-58,80}},
             color={0,0,255}),
           Line(
-            visible=useTemperatureInput,
+            visible=use_T_in,
             points={{-100,40},{-92,40}},
             color={0,0,255}),
           Line(
-            visible=useCompositionInput,
+            visible=use_X_in,
             points={{-100,-40},{-92,-40}},
             color={0,0,255}),
           Line(
-            visible=useTraceInput,
+            visible=use_C_in,
             points={{-100,-80},{-60,-80}},
             color={0,0,255}),
           Text(
-            visible=usePressureInput,
+            visible=use_p_in,
             extent={{-152,134},{-68,94}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="p"),
           Text(
-            visible=useCompositionInput,
+            visible=use_X_in,
             extent={{-164,4},{-62,-36}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="X"),
           Text(
-            visible=useTraceInput,
+            visible=use_C_in,
             extent={{-164,-90},{-62,-130}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="C"),
           Text(
-            visible=useTemperatureInput,
+            visible=use_T_in,
             extent={{-162,34},{-60,-6}},
             lineColor={0,0,0},
             fillColor={255,255,255},
@@ -319,8 +215,8 @@ Defines prescribed values for boundary conditions:
 <li> Prescribed boundary temperature.</li>
 <li> Boundary composition (only for multi-substance or trace-substance flow).</li>
 </ul>
-<p>If <tt>usePressureInput</tt> is false (default option), the <tt>p</tt> parameter
-is used as boundary pressure, and the <tt>p_in</tt> input connector is disabled; if <tt>usePressureInput</tt> is true, then the <tt>p</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
+<p>If <tt>use_p_in</tt> is false (default option), the <tt>p</tt> parameter
+is used as boundary pressure, and the <tt>p_in</tt> input connector is disabled; if <tt>use_p_in</tt> is true, then the <tt>p</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
 <p>The same thing goes for the temperature, composition and trace substances.</p>
 <p>
 Note, that boundary temperature,
@@ -336,76 +232,76 @@ with exception of boundary pressure, do not have an effect.
           grid={2,2}), graphics));
   equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-      Medium.singleState, true, X_in_internal, "PrescribedBoundary_pTX");
+      Medium.singleState, true, X_in_internal, "Boundary_pT");
     connect(p_in, p_in_internal);
     connect(T_in, T_in_internal);
     connect(X_in, X_in_internal);
     connect(C_in, C_in_internal);
-    if not usePressureInput then
+    if not use_p_in then
       p_in_internal = p;
     end if;
-    if not useTemperatureInput then
+    if not use_T_in then
       T_in_internal = T;
     end if;
-    if not useCompositionInput then
+    if not use_X_in then
       X_in_internal = X;
     end if;
-    if not useTraceInput then
+    if not use_C_in then
       C_in_internal = C;
     end if;
     medium.p = p_in_internal;
     medium.T = T_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
     ports.C_outflow = fill(C_in_internal, nPorts);
-  end PrescribedBoundary_pTX;
+  end Boundary_pT;
 
-  model PrescribedBoundary_phX
+  model Boundary_ph
     "Boundary with prescribed pressure, specific enthalpy, composition and trace substances"
     extends Sources.BaseClasses.PartialSource;
-    parameter Boolean usePressureInput = false
+    parameter Boolean use_p_in = false
       "Get the pressure from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useEnthalpyInput= false
+    parameter Boolean use_h_in= false
       "Get the specific enthalpy from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useCompositionInput = false
+    parameter Boolean use_X_in = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useTraceInput = false
+    parameter Boolean use_C_in = false
       "Get the trace substances from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Medium.AbsolutePressure p = Medium.p_default
       "Fixed value of pressure" 
       annotation (Evaluate = true,
-                  Dialog(enable = not usePressureInput));
+                  Dialog(enable = not use_p_in));
     parameter Medium.SpecificEnthalpy h = Medium.h_default
       "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
-                  Dialog(enable = not useEnthalpyInput));
+                  Dialog(enable = not use_h_in));
     parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
+                  Dialog(enable = (not use_X_in) and Medium.nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Boundary trace substances" 
       annotation (Evaluate=true,
-                  Dialog(enable = (not useTraceInput) and Medium.nC > 0));
-    Modelica.Blocks.Interfaces.RealInput p_in if              usePressureInput
+                  Dialog(enable = (not use_C_in) and Medium.nC > 0));
+    Modelica.Blocks.Interfaces.RealInput p_in if              use_p_in
       "Prescribed boundary pressure" 
       annotation (Placement(transformation(extent={{-140,60},{-100,100}},
             rotation=0)));
-    Modelica.Blocks.Interfaces.RealInput h_in if              useEnthalpyInput
+    Modelica.Blocks.Interfaces.RealInput h_in if              use_h_in
       "Prescribed boundary specific enthalpy" 
       annotation (Placement(transformation(extent={{-140,20},{-100,60}},
             rotation=0)));
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
-                                                          useCompositionInput
+                                                          use_X_in
       "Prescribed boundary composition" 
       annotation (Placement(transformation(extent={{-140,-60},{-100,-20}},
             rotation=0)));
     Modelica.Blocks.Interfaces.RealInput C_in[Medium.nC] if 
-                                                          useTraceInput
+                                                          use_C_in
       "Prescribed boundary trace substances" 
       annotation (Placement(transformation(extent={{-140,-100},{-100,-60}},
             rotation=0)));
@@ -424,44 +320,44 @@ with exception of boundary pressure, do not have an effect.
             textString="%name",
             lineColor={0,0,255}),
           Line(
-            visible=usePressureInput,
+            visible=use_p_in,
             points={{-100,80},{-60,80}},
             color={0,0,255}),
           Line(
-            visible=useEnthalpyInput,
+            visible=use_h_in,
             points={{-100,40},{-92,40}},
             color={0,0,255}),
           Line(
-            visible=useCompositionInput,
+            visible=use_X_in,
             points={{-100,-40},{-92,-40}},
             color={0,0,255}),
           Line(
-            visible=useTraceInput,
+            visible=use_C_in,
             points={{-100,-80},{-60,-80}},
             color={0,0,255}),
           Text(
-            visible=usePressureInput,
+            visible=use_p_in,
             extent={{-150,134},{-72,94}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="p"),
           Text(
-            visible=useEnthalpyInput,
+            visible=use_h_in,
             extent={{-166,34},{-64,-6}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="h"),
           Text(
-            visible=useCompositionInput,
+            visible=use_X_in,
             extent={{-164,4},{-62,-36}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="X"),
           Text(
-            visible=useTraceInput,
+            visible=use_C_in,
             extent={{-164,-90},{-62,-130}},
             lineColor={0,0,0},
             fillColor={255,255,255},
@@ -476,8 +372,8 @@ Defines prescribed values for boundary conditions:
 <li> Prescribed boundary temperature.</li>
 <li> Boundary composition (only for multi-substance or trace-substance flow).</li>
 </ul>
-<p>If <tt>usePressureInput</tt> is false (default option), the <tt>p</tt> parameter
-is used as boundary pressure, and the <tt>p_in</tt> input connector is disabled; if <tt>usePressureInput</tt> is true, then the <tt>p</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
+<p>If <tt>use_p_in</tt> is false (default option), the <tt>p</tt> parameter
+is used as boundary pressure, and the <tt>p_in</tt> input connector is disabled; if <tt>use_p_in</tt> is true, then the <tt>p</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
 <p>The same thing goes for the specific enthalpy and composition</p>
 <p>
 Note, that boundary temperature,
@@ -498,42 +394,42 @@ with exception of boundary pressure, do not have an effect.
       "Needed to connect to conditional connector";
   equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-      Medium.singleState, true, X_in_internal, "PrescribedBoundary_phX");
+      Medium.singleState, true, X_in_internal, "Boundary_ph");
     connect(p_in, p_in_internal);
     connect(h_in, h_in_internal);
     connect(X_in, X_in_internal);
     connect(C_in, C_in_internal);
-    if not usePressureInput then
+    if not use_p_in then
       p_in_internal = p;
     end if;
-    if not useEnthalpyInput then
+    if not use_h_in then
       h_in_internal = h;
     end if;
-    if not useCompositionInput then
+    if not use_X_in then
       X_in_internal = X;
     end if;
-    if not useTraceInput then
+    if not use_C_in then
       C_in_internal = C;
     end if;
     medium.p = p_in_internal;
     medium.h = h_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
     ports.C_outflow = fill(C_in_internal, nPorts);
-  end PrescribedBoundary_phX;
+  end Boundary_ph;
 
-  model PrescribedMassFlowRate_TX
+  model MassFlowSource_T
     "Ideal flow source that produces a prescribed mass flow with prescribed temperature, mass fraction and trace substances"
     extends Sources.BaseClasses.PartialSource;
     parameter Boolean useFlowRateInput = false
       "Get the mass flow rate from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useTemperatureInput= false
+    parameter Boolean use_T_in= false
       "Get the temperature from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useCompositionInput = false
+    parameter Boolean use_X_in = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useTraceInput = false
+    parameter Boolean use_C_in = false
       "Get the trace substances from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Medium.MassFlowRate m_flow = 0
@@ -543,31 +439,31 @@ with exception of boundary pressure, do not have an effect.
     parameter Medium.Temperature T = Medium.T_default
       "Fixed value of temperature" 
       annotation (Evaluate = true,
-                  Dialog(enable = not useTemperatureInput));
+                  Dialog(enable = not use_T_in));
     parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
+                  Dialog(enable = (not use_X_in) and Medium.nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Boundary trace substances" 
       annotation (Evaluate=true,
-                  Dialog(enable = (not useTraceInput) and Medium.nC > 0));
+                  Dialog(enable = (not use_C_in) and Medium.nC > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in if     useFlowRateInput
       "Prescribed mass flow rate" 
       annotation (Placement(transformation(extent={{-120,60},{-80,100}},
             rotation=0), iconTransformation(extent={{-120,60},{-80,100}})));
-    Modelica.Blocks.Interfaces.RealInput T_in if         useTemperatureInput
+    Modelica.Blocks.Interfaces.RealInput T_in if         use_T_in
       "Prescribed fluid temperature" 
       annotation (Placement(transformation(extent={{-140,20},{-100,60}},
             rotation=0), iconTransformation(extent={{-140,20},{-100,60}})));
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
-                                                          useCompositionInput
+                                                          use_X_in
       "Prescribed fluid composition" 
       annotation (Placement(transformation(extent={{-140,-60},{-100,-20}},
             rotation=0)));
     Modelica.Blocks.Interfaces.RealInput C_in[Medium.nC] if 
-                                                          useTraceInput
+                                                          use_C_in
       "Prescribed boundary trace substances" 
       annotation (Placement(transformation(extent={{-120,-100},{-80,-60}},
             rotation=0)));
@@ -628,21 +524,21 @@ with exception of boundary pressure, do not have an effect.
             fillPattern=FillPattern.Solid,
             textString="m_flow"),
           Text(
-            visible=useTemperatureInput,
+            visible=use_T_in,
             extent={{-111,71},{-71,37}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="T"),
           Text(
-            visible=useCompositionInput,
+            visible=use_X_in,
             extent={{-153,-44},{-33,-72}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="X"),
           Text(
-            visible=useTraceInput,
+            visible=use_C_in,
             extent={{-155,-98},{-35,-126}},
             lineColor={0,0,0},
             fillColor={255,255,255},
@@ -679,7 +575,7 @@ with exception of boundary flow rate, do not have an effect.
 </html>"));
   equation
     Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-      Medium.singleState, true, X_in_internal, "PrescribedMassFlowRate_TX");
+      Medium.singleState, true, X_in_internal, "MassFlowSource_T");
     connect(m_flow_in, m_flow_in_internal);
     connect(T_in, T_in_internal);
     connect(X_in, X_in_internal);
@@ -687,34 +583,34 @@ with exception of boundary flow rate, do not have an effect.
     if not useFlowRateInput then
       m_flow_in_internal = m_flow;
     end if;
-    if not useTemperatureInput then
+    if not use_T_in then
       T_in_internal = T;
     end if;
-    if not useCompositionInput then
+    if not use_X_in then
       X_in_internal = X;
     end if;
-    if not useTraceInput then
+    if not use_C_in then
       C_in_internal = C;
     end if;
     sum(ports.m_flow) = -m_flow_in_internal;
     medium.T = T_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
     ports.C_outflow = fill(C_in_internal, nPorts);
-  end PrescribedMassFlowRate_TX;
+  end MassFlowSource_T;
 
-  model PrescribedMassFlowRate_hX
+  model MassFlowSource_h
     "Ideal flow source that produces a prescribed mass flow with prescribed specific enthalpy, mass fraction and trace substances"
     extends Sources.BaseClasses.PartialSource;
     parameter Boolean useFlowRateInput = false
       "Get the mass flow rate from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useEnthalpyInput= false
+    parameter Boolean use_h_in= false
       "Get the specific enthalpy from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useCompositionInput = false
+    parameter Boolean use_X_in = false
       "Get the composition from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
-    parameter Boolean useTraceInput = false
+    parameter Boolean use_C_in = false
       "Get the trace substances from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Medium.MassFlowRate m_flow = 0
@@ -724,31 +620,31 @@ with exception of boundary flow rate, do not have an effect.
     parameter Medium.SpecificEnthalpy h = Medium.h_default
       "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
-                  Dialog(enable = not useEnthalpyInput));
+                  Dialog(enable = not use_h_in));
     parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not useCompositionInput) and Medium.nXi > 0));
+                  Dialog(enable = (not use_X_in) and Medium.nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Boundary trace substances" 
       annotation (Evaluate=true,
-                  Dialog(enable = (not useTraceInput) and Medium.nC > 0));
+                  Dialog(enable = (not use_C_in) and Medium.nC > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in if     useFlowRateInput
       "Prescribed mass flow rate" 
       annotation (Placement(transformation(extent={{-120,60},{-80,100}},
             rotation=0)));
-    Modelica.Blocks.Interfaces.RealInput h_in if              useEnthalpyInput
+    Modelica.Blocks.Interfaces.RealInput h_in if              use_h_in
       "Prescribed fluid specific enthalpy" 
       annotation (Placement(transformation(extent={{-140,20},{-100,60}},
             rotation=0), iconTransformation(extent={{-140,20},{-100,60}})));
     Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
-                                                          useCompositionInput
+                                                          use_X_in
       "Prescribed fluid composition" 
       annotation (Placement(transformation(extent={{-140,-60},{-100,-20}},
             rotation=0)));
     Modelica.Blocks.Interfaces.RealInput C_in[Medium.nC] if 
-                                                          useTraceInput
+                                                          use_C_in
       "Prescribed boundary trace substances" 
       annotation (Placement(transformation(extent={{-120,-100},{-80,-60}},
             rotation=0), iconTransformation(extent={{-120,-100},{-80,-60}})));
@@ -805,21 +701,21 @@ with exception of boundary flow rate, do not have an effect.
             fillPattern=FillPattern.Solid,
             textString="m_flow"),
           Text(
-            visible=useEnthalpyInput,
+            visible=use_h_in,
             extent={{-113,72},{-73,38}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="h"),
           Text(
-            visible=useCompositionInput,
+            visible=use_X_in,
             extent={{-153,-44},{-33,-72}},
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             textString="X"),
           Text(
-            visible=useCompositionInput,
+            visible=use_X_in,
             extent={{-155,-98},{-35,-126}},
             lineColor={0,0,0},
             fillColor={255,255,255},
@@ -860,7 +756,7 @@ with exception of boundary flow rate, do not have an effect.
 </html>"));
   equation
     Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-      Medium.singleState, true, X_in_internal, "PrescribedMassFlowRate_hX");
+      Medium.singleState, true, X_in_internal, "MassFlowSource_h");
     connect(m_flow_in, m_flow_in_internal);
     connect(h_in, h_in_internal);
     connect(X_in, X_in_internal);
@@ -868,20 +764,20 @@ with exception of boundary flow rate, do not have an effect.
     if not useFlowRateInput then
       m_flow_in_internal = m_flow;
     end if;
-    if not useEnthalpyInput then
+    if not use_h_in then
       h_in_internal = h;
     end if;
-    if not useCompositionInput then
+    if not use_X_in then
       X_in_internal = X;
     end if;
-    if not useTraceInput then
+    if not use_C_in then
       C_in_internal = C;
     end if;
     sum(ports.m_flow) = -m_flow_in_internal;
     medium.h = h_in_internal;
     medium.Xi = X_in_internal[1:Medium.nXi];
     ports.C_outflow = fill(C_in_internal, nPorts);
-  end PrescribedMassFlowRate_hX;
+  end MassFlowSource_h;
 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;

@@ -30,21 +30,21 @@ package TestCriticalCases
           origin={0,0},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Sources.PrescribedBoundary_pTX boundary1(
-      usePressureInput=true,
-      useTemperatureInput=true,
+    Sources.Boundary_pT boundary1(
+      use_p_in=true,
+      use_T_in=true,
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{-68,-40},{-48,-20}}, rotation=0)));
-    Sources.PrescribedBoundary_pTX boundary2(
-      usePressureInput=false,
-      useTemperatureInput=false,
+    Sources.Boundary_pT boundary2(
+      use_p_in=false,
+      use_T_in=false,
       p=101000,
       T=320,
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{66,-40},{46,-20}}, rotation=0)));
-    Sources.PrescribedBoundary_pTX boundary3(
-      usePressureInput=true,
-      useTemperatureInput=false,
+    Sources.Boundary_pT boundary3(
+      use_p_in=true,
+      use_T_in=false,
       T=340,
       redeclare package Medium = Medium) 
       annotation (Placement(transformation(
@@ -73,7 +73,7 @@ package TestCriticalCases
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-88,60},
               {-68,80}}, rotation=0)));
-    Sensors.TemperatureOnePort temperature(redeclare package Medium = Medium) 
+    Sensors.Temperature temperature(redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{-10,-60},{10,-80}},
             rotation=0)));
   equation
@@ -123,7 +123,7 @@ package TestCriticalCases
     replaceable package Medium = 
         Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=200000,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -166,7 +166,7 @@ package TestCriticalCases
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       nPorts=2,
       p=100000,
@@ -232,7 +232,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   model BranchingPipes2
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -271,7 +271,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       nPorts=2,
       p=100000,
@@ -332,7 +332,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   model BranchingPipes3
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -371,7 +371,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       nPorts=2,
       p=100000,
@@ -441,7 +441,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   model BranchingPipes4
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -480,7 +480,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes. The simulation fails at t=0 due to lack of initialization of the splitter state variables.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       nPorts=2,
       p=100000,
@@ -553,7 +553,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
   model SeriesPipes1
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=500000,
       T=300) annotation (Placement(transformation(extent={{-100,-6},{-88,6}},
@@ -587,7 +587,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       Documentation(info="<html>
 Simulation starts with the valve open. At t=1, the valve is closed, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       p=100000,
       T=300)                             annotation (Placement(transformation(
@@ -674,7 +674,7 @@ fails for zero flow rate.
   model BranchingPipes12
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -713,7 +713,7 @@ fails for zero flow rate.
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       nPorts=2,
       p=100000,
@@ -776,7 +776,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -819,7 +819,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       nPorts=2,
       p=100000,
@@ -890,7 +890,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -929,7 +929,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       nPorts=2,
       p=100000,
@@ -1006,7 +1006,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     // replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1045,7 +1045,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       nPorts=2,
       p=100000,
@@ -1122,7 +1122,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     // replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1161,7 +1161,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       nPorts=2,
       p=100000,
@@ -1236,7 +1236,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     // replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1275,7 +1275,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (Placement(transformation(extent={{94,-18},{82,-6}},
@@ -1357,7 +1357,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1394,7 +1394,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (Placement(transformation(extent={{94,-18},{82,-6}},
@@ -1475,7 +1475,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.FixedBoundary_pTX source(
+    Sources.Boundary_pT source(
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1510,7 +1510,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.FixedBoundary_pTX sink(
+    Sources.Boundary_pT sink(
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (Placement(transformation(extent={{74,-20},{62,-8}},

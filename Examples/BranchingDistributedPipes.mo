@@ -23,12 +23,12 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
             annotation (Placement(transformation(extent={{-14,50},{6,70}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary2(
+  Modelica_Fluid.Sources.Boundary_pT boundary2(
     redeclare package Medium = Medium,
     p=1e5,
     T=300,
-    usePressureInput=true,
-    useTemperatureInput=false)                                      annotation (Placement(
+    use_p_in=true,
+    use_T_in=false)                                      annotation (Placement(
         transformation(extent={{90,30},{70,50}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe3(
     redeclare package Medium=Medium,
@@ -60,7 +60,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
             annotation (Placement(transformation(extent={{-68,30},{-48,50}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.FixedBoundary_pTX boundary1(
+  Modelica_Fluid.Sources.Boundary_pT boundary1(
     T=280,
     redeclare package Medium = Medium,
     p=1.2e5)                                                        annotation (Placement(
@@ -116,12 +116,12 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     T_start=280) 
             annotation (Placement(transformation(extent={{-14,-40},{6,-20}},
           rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX boundary4(
+  Modelica_Fluid.Sources.Boundary_pT boundary4(
     redeclare package Medium = Medium,
     p=1e5,
     T=300,
-    usePressureInput=true,
-    useTemperatureInput=false)                                      annotation (Placement(
+    use_p_in=true,
+    use_T_in=false)                                      annotation (Placement(
         transformation(extent={{88,-60},{68,-40}}, rotation=0)));
   Modelica_Fluid.Pipes.DistributedPipe pipe6(
     redeclare package Medium=Medium,
@@ -150,7 +150,7 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-68,-60},{-48,-40}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX boundary3(
+  Modelica_Fluid.Sources.Boundary_pT boundary3(
     T=280,
     redeclare package Medium = Medium,
     p=1.2e5)                                                        annotation (Placement(

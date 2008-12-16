@@ -152,9 +152,8 @@ This example is based on
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.2,
           portLevel=0)})      annotation (Placement(transformation(extent={{60,
               -50},{100,-10}}, rotation=0)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX ambient1(
-                                                     redeclare package Medium
-        = Medium,
+    Modelica_Fluid.Sources.Boundary_pT ambient1(redeclare package Medium = 
+          Medium,
       p=system.p_ambient,
       T=system.T_ambient) 
       annotation (Placement(transformation(extent={{10,-100},{30,-80}},
@@ -162,8 +161,7 @@ This example is based on
     Modelica.Blocks.Sources.RealExpression level2(y=tank2.level) 
       annotation (Placement(transformation(extent={{-70,-80},{-33,-60}},
             rotation=0)));
-    Modelica_Fluid.Sources.FixedBoundary_pTX source(
-                                                   redeclare package Medium = 
+    Modelica_Fluid.Sources.Boundary_pT source(redeclare package Medium = 
           Medium, p=2.5e6,
       T=system.T_ambient) 
       annotation (Placement(transformation(

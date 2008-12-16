@@ -16,16 +16,15 @@ annotation (
     height=-1500) 
                 annotation (Placement(transformation(extent={{-80,0},{-60,20}},
           rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_pTX Source(
-                                             redeclare package Medium = 
+  Modelica_Fluid.Sources.Boundary_pT Source( redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{-80,-40},{-60,-20}},rotation=0)));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX Sink(
+  Modelica_Fluid.Sources.Boundary_pT Sink(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
-    usePressureInput=false,
+    use_p_in=false,
     p=500000) 
   annotation (Placement(transformation(extent={{60,-40},{40,-20}},
                                                                  rotation=0)));

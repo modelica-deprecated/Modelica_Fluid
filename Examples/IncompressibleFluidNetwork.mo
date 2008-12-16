@@ -8,7 +8,7 @@ model IncompressibleFluidNetwork
   //model Pipe = Modelica_Fluid.Pipes.LumpedPipe;
   model Pipe = Modelica_Fluid.Pipes.DistributedPipe(nNodes=2,modelStructure=Types.ModelStructure.av_vb);
 
-  Sources.FixedBoundary_pTX source(
+  Sources.Boundary_pT source(
     redeclare package Medium = Medium,
     p=5.0e5,
     T=300) annotation (Placement(transformation(extent={{-98,4},{-86,16}},
@@ -100,7 +100,7 @@ model IncompressibleFluidNetwork
     minOpening=0.01) 
                 annotation (Placement(transformation(extent={{60,0},{80,20}},
           rotation=0)));
-  Sources.FixedBoundary_pTX sink(
+  Sources.Boundary_pT sink(
     redeclare package Medium = Medium,
     T=300,
     p=1.0e5) 

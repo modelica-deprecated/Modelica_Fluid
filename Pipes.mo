@@ -7,7 +7,8 @@ package Pipes "Devices for conveying fluid"
 
     // extending PartialStraightPipe
     extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe(
-          redeclare model HeatTransfer=BaseClasses.HeatTransfer.NoHeatTransfer(nParallel=nParallel));
+          redeclare model HeatTransfer = 
+          BaseClasses.HeatTransfer.NoHeatTransfer (                            nParallel=nParallel));
 
     // Initialization
     parameter Medium.AbsolutePressure p_a_start=system.p_start
@@ -702,7 +703,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           "Nominal dynamic viscosity (only for m_flow_turbulent and dp_turbulent)"
                   annotation(Dialog(group="Advanced"), Dialog(enable=use_eta_nominal));
 
-            parameter Boolean averageFluidProperties = false
+            parameter Boolean mixingStreamProperties = false
           "= true to use average density and viscosity across flow segments" 
                annotation(Dialog(group="Advanced"), Evaluate=true);
 
@@ -729,7 +730,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             Medium.AbsolutePressure[n] dp_turbulent "Start of turbulent flow";
 
           equation
-            if averageFluidProperties then
+            if mixingStreamProperties then
               d_act = 0.5*(d[1:n] + d[2:n+1]);
               eta_act = 0.5*(eta[1:n] + eta[2:n+1]);
             else
@@ -752,9 +753,15 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             end if;
             if (from_dp and dp_small >= dp_nominal) or (not from_dp and m_flow_small >= m_flow_nominal) then
               // linear (laminar) flow
-              dp = g*height_ab/n*d_act + dp_nominal/m_flow_nominal*m_flow*nParallel;
+              if mixingStreamProperties or not allowFlowReversal then
+                dp = g*height_ab/n*d_act + dp_nominal/m_flow_nominal*m_flow*nParallel;
+              else
+                for i in 1:n loop
+                  dp[i] = g*height_ab/n*(if m_flow[i]>0 then d[i] else d[i+1]) + dp_nominal/m_flow_nominal*m_flow[i]*nParallel;
+                end for;
+              end if;
             else
-              if averageFluidProperties then
+              if mixingStreamProperties then
                 if from_dp then
                   m_flow = Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent.massFlowRate_dp(
                     dp - g*height_ab/n*d_act,
@@ -919,6 +926,12 @@ Reynolds numbers, i.e., the values at the right ordinate where
             parameter SI.MassFlowRate m_flow_small = 0.01
           "Within regularization if |m_flow| < m_flow_small (may be wider for large discontinuities in static head)"
               annotation(Dialog(group="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
+
+            // basing static head on average density is sensible for a distributed pipe with small segments
+            parameter Boolean mixingStreamProperties = false
+          "= true to use average density and viscosity across flow segments" 
+               annotation(Dialog(group="Advanced"), Evaluate=true);
+
             SI.ReynoldsNumber[n] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
                 m_flow/nParallel,
                 (eta[1:n] + eta[2:n+1])*0.5,
@@ -929,18 +942,38 @@ Reynolds numbers, i.e., the values at the right ordinate where
           "Hydraulic diameter";
             SI.DynamicViscosity[n+1] eta = if not WallFriction.use_eta then fill(1e-10, n+1) else 
                                         (if use_eta_nominal then fill(eta_nominal, n+1) else Medium.dynamicViscosity(state));
+            SI.DynamicViscosity[n] eta_av = (eta[1:n]+eta[2:n+1])/2
+          "Average viscosity per segment";
             SI.Density[n+1] d = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(state);
-
-            Real g_times_height_ab(final unit="m2/s2") = g*height_ab
-          "Gravitiy times height_ab = dp_grav/d";
-
-            // basing static head on average density is sensible for a distributed pipe with small segments
-            parameter Boolean averageFluidProperties = false
-          "= true to use average density and viscosity across flow segments" 
-               annotation(Dialog(group="Advanced"), Evaluate=true);
+            SI.Density[n] d_av = (d[1:n]+d[2:n+1])/2
+          "Average density per segment";
 
           equation
-          if not averageFluidProperties then
+          if mixingStreamProperties then
+            if from_dp and not WallFriction.dp_is_zero then
+              m_flow = WallFriction.massFlowRate_dp(
+                dp - g*height_ab/n*d_av/2,
+                d_av,
+                d_av,
+                eta_av,
+                eta_av,
+                length,
+                diameter,
+                roughness,
+                dp_small)*nParallel;
+            else
+              dp = WallFriction.pressureLoss_m_flow(
+                m_flow/nParallel,
+                d_av,
+                d_av,
+                eta_av,
+                eta_av,
+                length,
+                diameter,
+                roughness,
+                m_flow_small/nParallel) + g*height_ab/n*d_av;
+            end if;
+          else
             // regularization with static head
             if from_dp and not WallFriction.dp_is_zero then
               m_flow = WallFriction.massFlowRate_dp_staticHead(
@@ -951,7 +984,7 @@ Reynolds numbers, i.e., the values at the right ordinate where
                 eta[2:n+1],
                 length,
                 diameter,
-                g_times_height_ab/n,
+                g*height_ab/n,
                 roughness,
                 dp_small/n)*nParallel;
             else
@@ -963,33 +996,9 @@ Reynolds numbers, i.e., the values at the right ordinate where
                 eta[2:n+1],
                 length,
                 diameter,
-                g_times_height_ab/n,
+                g*height_ab/n,
                 roughness,
                 m_flow_small/nParallel);
-            end if;
-          else
-            if from_dp and not WallFriction.dp_is_zero then
-              m_flow = WallFriction.massFlowRate_dp(
-                dp - g*height_ab/n*(d[1:n] + d[2:n+1])/2,
-                (d[1:n]+d[2:n+1])/2,
-                (d[1:n]+d[2:n+1])/2,
-                (eta[1:n]+eta[2:n+1])/2,
-                (eta[1:n]+eta[2:n+1])/2,
-                length,
-                diameter,
-                roughness,
-                dp_small)*nParallel;
-            else
-              dp = WallFriction.pressureLoss_m_flow(
-                m_flow/nParallel,
-                (d[1:n]+d[2:n+1])/2,
-                (d[1:n]+d[2:n+1])/2,
-                (eta[1:n]+eta[2:n+1])/2,
-                (eta[1:n]+eta[2:n+1])/2,
-                length,
-                diameter,
-                roughness,
-                m_flow_small/nParallel) + g*height_ab/n*(d[1:n] + d[2:n+1])/2;
             end if;
           end if;
 

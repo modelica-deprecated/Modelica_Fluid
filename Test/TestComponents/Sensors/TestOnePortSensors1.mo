@@ -22,17 +22,17 @@ model TestOnePortSensors1
     nPorts=2)    annotation (Placement(transformation(extent={{-30,30},{-10,50}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource2(
+  Modelica_Fluid.Sources.MassFlowSource_h FlowSource2(
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium,
     useFlowRateInput=true) 
                    annotation (Placement(transformation(extent={{-68,30},{-48,
             50}}, rotation=0)));
-  Modelica_Fluid.Sensors.TemperatureOnePort Tmix1(redeclare package Medium = 
+  Modelica_Fluid.Sensors.Temperature Tmix1(redeclare package Medium = 
         Medium) 
     annotation (Placement(transformation(extent={{0,60},{20,80}}, rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_phX sink1(             redeclare package
+  Modelica_Fluid.Sources.Boundary_ph sink1(             redeclare package
       Medium = Medium,
     h=5e4,
     p=101325) 
@@ -54,14 +54,14 @@ model TestOnePortSensors1
     p_start=101325,
     nPorts=2)    annotation (Placement(transformation(extent={{-32,-30},{-12,
             -10}}, rotation=0)));
-  Modelica_Fluid.Sources.PrescribedMassFlowRate_hX FlowSource1(
+  Modelica_Fluid.Sources.MassFlowSource_h FlowSource1(
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium,
     useFlowRateInput=true) 
                    annotation (Placement(transformation(extent={{-68,-30},{-48,
             -10}}, rotation=0)));
-  Modelica_Fluid.Sources.FixedBoundary_phX sink2(             redeclare package
+  Modelica_Fluid.Sources.Boundary_ph sink2(             redeclare package
       Medium = Medium,
     h=5e4,
     p=101325) 

@@ -15,18 +15,17 @@ model TestGenericPressureLoss
     experimentSetupOutput,
     Documentation(info="<html>
 </html>"));
-  Modelica_Fluid.Sources.PrescribedBoundary_pTX ambient_a(
-                                                     redeclare package Medium
-      = Medium,
+  Modelica_Fluid.Sources.Boundary_pT ambient_a(     redeclare package Medium = 
+        Medium,
     p=system.p_ambient,
     T=system.T_ambient,
-    usePressureInput=true,
+    use_p_in=true,
     nPorts=1) 
     annotation (Placement(transformation(extent={{-40,40},{-20,60}}, rotation=0)));
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,1e5; 10,3e5]) 
     annotation (Placement(transformation(extent={{-80,40},{-60,60}}, rotation=0)));
 
-  Modelica_Fluid.Sources.FixedBoundary_pTX ambient_p1(
+  Modelica_Fluid.Sources.Boundary_pT ambient_p1(
     redeclare package Medium = Medium,
     T=Modelica.SIunits.Conversions.from_degC(80),
     p=200000) 
