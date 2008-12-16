@@ -362,7 +362,7 @@ present that are regulated by a central control system.
       height_ab=0.1,
       diameter=pipeDiameter,
       length=1,
-      redeclare model PressureLoss =
+      redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
           m_flow_nominal=1,
           use_d_nominal=true,
@@ -375,7 +375,7 @@ present that are regulated by a central control system.
       height_ab=0.1,
       length=1,
       diameter=pipeDiameter,
-      redeclare model PressureLoss =
+      redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
           m_flow_nominal=1,
           use_d_nominal=true,
@@ -1272,8 +1272,7 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
