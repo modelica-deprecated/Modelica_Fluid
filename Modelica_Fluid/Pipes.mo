@@ -673,17 +673,17 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             import Modelica.Constants.pi;
 
             parameter Medium.AbsolutePressure dp_nominal
-          "Nominal pressure drop";
+          "Nominal pressure loss";
             parameter Medium.MassFlowRate m_flow_nominal
           "Mass flow rate for dp_nominal";
 
             parameter Boolean from_dp=true
           " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
               annotation (Evaluate=true);
-            parameter SI.AbsolutePressure dp_small = 0.05*dp_nominal
+            parameter SI.AbsolutePressure dp_small = 1e-3*dp_nominal
           "Within regularization if |dp| < dp_small" 
               annotation(Dialog(enable=from_dp));
-            parameter SI.MassFlowRate m_flow_small = 0.05*m_flow_nominal
+            parameter SI.MassFlowRate m_flow_small = 1e-2*m_flow_nominal
           "Within regularization if |m_flow| < m_flow_small" 
               annotation(Dialog(enable=not from_dp));
 
@@ -707,9 +707,14 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           "Nominal dynamic viscosity (only for m_flow_turbulent and dp_turbulent)"
                   annotation(Dialog(group="Advanced"), Dialog(enable=use_eta_nominal));
 
+            final parameter Boolean constantPressureLossCoefficient=
+               use_d_nominal
+          "= true if the pressure loss does not depend on fluid states" 
+               annotation(Evaluate=true);
+
             final parameter Boolean continuousFlowReversal=
                mixingStreamProperties
-               or use_d_nominal
+               or constantPressureLossCoefficient
                or not allowFlowReversal
           "= true if the pressure loss is continuous around zero flow" 
                annotation(Evaluate=true);
@@ -732,9 +737,22 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           "length resulting from nominal pressure loss and geometry";
             Real[n] k_inv "coefficient for quadratic flow";
             Real[n] zeta "coefficient for quadratic flow";
+
+            // Reynolds
+            parameter Boolean show_Re = false
+          "= true, if Reynolds number, m_flow_turbulent and dp_turbulent are included for plotting"
+               annotation (Evaluate=true, Dialog(group="Advanced"));
+            SI.ReynoldsNumber[n] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
+                m_flow/nParallel,
+                eta_act,
+                diameter_h) if show_Re "Reynolds numbers of pipe flow";
             constant Real Re_turbulent = 4000 "Start of turbulent regime";
-            Medium.MassFlowRate[n] m_flow_turbulent "Start of turbulent flow";
-            Medium.AbsolutePressure[n] dp_turbulent "Start of turbulent flow";
+            Medium.MassFlowRate[n] m_flow_turbulent=
+                {nParallel*(pi/4)*diameter_h[i]*eta_act[i]*Re_turbulent for i in 1:n} if 
+                   show_Re "Start of turbulent flow";
+            Medium.AbsolutePressure[n] dp_turbulent=
+                {(eta_act[i]*diameter_h[i]*pi/4)^2*Re_turbulent^2/(k_inv[i]*d_act[i]) for i in 1:n} if 
+                   show_Re "Start of turbulent flow";
 
           equation
             if not allowFlowReversal then
@@ -831,8 +849,6 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
               zeta[i] = (pi*diameter_h[i]*diameter_h[i])^2/(8*k_inv[i]);
               length_nominal[i] =
                 zeta[i]*diameter_h[i]*(2*Modelica.Math.log10(3.7 /(roughness_h[i]/diameter_h[i])))^2;
-              m_flow_turbulent[i] = nParallel*(pi/4)*diameter_h[i]*eta_act[i]*Re_turbulent;
-              dp_turbulent[i] = (eta_act[i]*diameter_h[i]*pi/4)^2*Re_turbulent^2/(k_inv[i]*d_act[i]);
             end for;
 
             annotation (Documentation(info="<html>
@@ -862,16 +878,16 @@ As the geometry is specified however, the internally calculated <tt>m_flow_turbu
 become meaningful and can be related to <tt>m_flow_small</tt> and <tt>dp_small</tt>. 
 </p>
 <p>
-<b>Important Variables</b>
+<b>Optional Variables if show_Re</b>
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
-<tr><th><b>Types</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
-<tr><td>Length</td><td>length_nominal[n]</td>
-    <td>length per flow segment, resulting from nominal pressure loss and geometry</td></tr> 
+<tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
+<tr><td>ReynoldsNumber</td><td>Re[n]</td>
+    <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
 <tr><td>MassFlowRate</td><td>m_flow_turbulent[n]</td>
-    <td>start of turbulent flow (Re_turbulent=4000)</td></tr>
+    <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
 <tr><td>AbsolutePressure</td><td>dp_turbulent[n]</td>
-    <td>start of turbulent flow (Re_turbulent=4000)</td></tr>
+    <td>pressure losses corresponding to m_flow_turbulent</td></tr>
 </table>
 </html>", revisions="<html>
 <ul>
@@ -918,13 +934,17 @@ Reynolds numbers, i.e., the values at the right ordinate where
           "Wall friction model" 
                 annotation(choicesAllMatching=true,editButton=false);
 
+            parameter Medium.AbsolutePressure dp_nominal = 1e3
+          "Nominal pressure loss, only to determine dp_small";
+            parameter Medium.MassFlowRate m_flow_nominal = 1
+          "Mass flow rate for dp_nominal, only to determine m_flow_small";
             parameter Boolean from_dp=true
           " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
               annotation (Evaluate=true);
-            parameter SI.AbsolutePressure dp_small = 1
+            parameter SI.AbsolutePressure dp_small = 1e-3*dp_nominal
           "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
               annotation(Dialog(enable=from_dp and WallFriction.use_dp_small));
-            parameter SI.MassFlowRate m_flow_small = 0.01
+            parameter SI.MassFlowRate m_flow_small = 1e-2*m_flow_nominal
           "Within regularization if |m_flow| < m_flow_small (may be wider for large discontinuities in static head)"
               annotation(Dialog(enable=not from_dp and WallFriction.use_m_flow_small));
 
@@ -948,13 +968,13 @@ Reynolds numbers, i.e., the values at the right ordinate where
           "Nominal dynamic viscosity (e.g. eta_liquidWater = 1e-3, eta_air = 1.8e-5)"
               annotation(Dialog(group="Advanced", enable=use_eta_nominal));
 
-            final parameter Boolean use_nominal=
+            final parameter Boolean constantPressureLossCoefficient=
                use_d_nominal and (use_eta_nominal or not WallFriction.use_eta)
           "= true if the pressure loss does not depend on fluid states" 
                annotation(Evaluate=true);
             final parameter Boolean continuousFlowReversal=
                mixingStreamProperties
-               or use_nominal
+               or constantPressureLossCoefficient
                or not allowFlowReversal
           "= true if the pressure loss is continuous around zero flow" 
                annotation(Evaluate=true);
@@ -965,7 +985,7 @@ Reynolds numbers, i.e., the values at the right ordinate where
 
             SI.ReynoldsNumber[n] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
                 m_flow/nParallel,
-                (eta[1:n] + eta[2:n+1])*0.5,
+                eta_act,
                 diameter) if show_Re "Reynolds numbers of pipe flow";
 
             // internal variables
@@ -978,12 +998,24 @@ Reynolds numbers, i.e., the values at the right ordinate where
             SI.DynamicViscosity[n] eta_act "Actual viscosity per segment";
 
           equation
-            if not allowFlowReversal or use_nominal then
+            if not allowFlowReversal or constantPressureLossCoefficient then
               d_act = d[1:n];
               eta_act = eta[1:n];
             elseif mixingStreamProperties then
               d_act = 0.5*(d[1:n] + d[2:n+1]);
               eta_act = 0.5*(eta[1:n] + eta[2:n+1]);
+            elseif show_Re then
+              if from_dp then
+                for i in 1:n loop
+                  d_act[i] = noEvent(if dp[i] > 0 then d[i] else d[i+1]);
+                  eta_act[i] = noEvent(if dp[i] > 0 then eta[i] else eta[i+1]);
+                end for;
+              else
+                for i in 1:n loop
+                  d_act[i] = noEvent(if m_flow[i] > 0 then d[i] else d[i+1]);
+                  eta_act[i] = noEvent(if m_flow[i] > 0 then eta[i] else eta[i+1]);
+                end for;
+              end if;
             else // not used for detailed regularization
               d_act = zeros(n);
               eta_act = zeros(n);
@@ -1074,6 +1106,16 @@ to compute the correlations with constant media values
 at the desired operating point. This might speed-up the
 simulation and/or might give a more robust simulation.
 </p>
+<p>
+<b>Optional Variables if show_Re</b>
+</p>
+<table border=1 cellspacing=0 cellpadding=2>
+<tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
+<tr><td>ReynoldsNumber</td><td>Re[n]</td>
+    <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
+<tr><td>MassFlowRate</td><td>m_flow_turbulent[n]</td>
+    <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
+</table>
 </html>"),    Diagram(coordinateSystem(
                   preserveAspectRatio=false,
                   extent={{-100,-100},{100,100}},
