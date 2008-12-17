@@ -12,8 +12,6 @@ model InverseParameterization
     use_p_in=false,
     p=100000) 
     annotation (Placement(transformation(extent={{-76,-6},{-64,6}},  rotation=0)));
-  Modelica.Blocks.Sources.TimeTable p_table(table=[0,1.9e5; 10,2.1e5]) 
-    annotation (Placement(transformation(extent={{-60,30},{-40,50}}, rotation=0)));
   Modelica_Fluid.Machines.ControlledPump pump(
     m_flow_nominal=1,
     control_m_flow=false,
@@ -53,6 +51,12 @@ model InverseParameterization
     redeclare package Medium = Medium, p=200000) 
              annotation (Placement(transformation(extent={{76,-46},{64,-34}},
           rotation=0)));
+  Modelica.Blocks.Sources.Ramp p_set(
+    height=0.2e5,
+    offset=1.9e5,
+    duration=8,
+    startTime=1) 
+    annotation (Placement(transformation(extent={{-60,30},{-40,50}})));
 equation
   connect(pipe1.port_b, sink1.ports[1]) 
                                        annotation (Line(
@@ -68,10 +72,6 @@ equation
       points={{-20,0},{20,0}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(p_table.y, pump.p_set) annotation (Line(
-      points={{-39,40},{-25,40},{-25,8.2}},
-      color={0,0,127},
-      smooth=Smooth.None));
   connect(pipe2.port_b, sink2.ports[1]) annotation (Line(
       points={{40,-40},{64,-40}},
       color={0,127,255},
@@ -79,6 +79,10 @@ equation
   connect(pipe2.port_a, pump.port_b) annotation (Line(
       points={{20,-40},{0,-40},{0,0},{-20,0}},
       color={0,127,255},
+      smooth=Smooth.None));
+  connect(p_set.y, pump.p_set) annotation (Line(
+      points={{-39,40},{-25,40},{-25,8.2}},
+      color={0,0,127},
       smooth=Smooth.None));
 
   annotation (
