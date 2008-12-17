@@ -943,14 +943,16 @@ Modelica_Fluid was refactored and finalized for the release:
 <li> Finalization of trace substrances<br>
      Modelica_Fluid now provides a sound implementation for trace substances, 
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
+     <br>See <a href=\"Modelica:Modelica_Fluid.Examples.TraceSubstances.RoomCO2WithControls\">Examples.TraceSubstances.RoomCO2WithControls</a></li>.
  
-<li> Parameterization of flow models with nominal values<br> 
+<li> Inverse parameterization of flow models with nominal values<br> 
      New flow models have been added that support the parameterization with nominal values
      (Machines.ControlledPump, Orifices.GenericPressureLoss, Pipes.BaseClasses.PressureLoss.NominalPressureLoss).
      They are intended for early phases of system modeling, if geometries and flow characteristics
      are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
-     they can easily be replaced with more detailed models later on 
-     as more information shall be taken into account.</li>
+     they can easily be replaced with more detailed models  
+     as more information shall be taken into account later on.<br>
+     See <a href=\"Modelica:Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
  
 <li> System (former Ambient)<br> 
      The use of the global System object has been extended towards common default values for
