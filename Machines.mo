@@ -415,6 +415,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     protected
     constant SI.Height unitHead = 1;
     constant SI.MassFlowRate unitMassFlowRate = 1;
+    input SI.HeatFlowRate Qs_flow = 0
+        "Heat flow, e.g. to consider a housing in an extending class";
   equation
     // Flow equations
     if noEvent(s > 0 or (not checkValve)) then
@@ -460,9 +462,9 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
        // mass variations and p/d are neglected
        nParallel*V*d_nominal*der(h) = port_a.m_flow*actualStream(port_a.h_outflow) +
                      port_b.m_flow*actualStream(port_b.h_outflow) +
-                     W_tot;
-       port_b.h_outflow  = h;
-       port_a.h_outflow   = h;
+                     W_tot + Qs_flow;
+       port_b.h_outflow = h;
+       port_a.h_outflow = h;
     else
       /* In the following two equations the extra term W_tot/m_flow is
        present where a 0/0 term appears if m_flow = 0. In order to avoid
@@ -475,6 +477,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       port_a.h_outflow  = inStream(port_b.h_outflow) + dp/(d*eta);
       h = Medium.h_default
           "Unused (set to an arbitrary value within the medium region)";
+      assert(abs(Qs_flow) < Modelica.Constants.small, "Specify V > 0 for using Qs_flow.");
     end if;
 
   initial equation
@@ -541,6 +544,9 @@ If zero flow rate conditions are always avoided, this dynamic effect can be negl
 </HTML>",
         revisions="<html>
 <ul>
+<li><i>Dec 2008</i>
+    by R6uuml;diger Franke:<br>
+       Changed fluid mass M to volume V(*d_nominal) and added Qs_flow</li>
 <li><i>31 Oct 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Model added to the Fluid library</li>
