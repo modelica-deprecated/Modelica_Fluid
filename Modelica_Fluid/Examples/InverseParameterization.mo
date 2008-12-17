@@ -28,9 +28,7 @@ model InverseParameterization
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
           m_flow_nominal=1, dp_nominal=100000),
-    length=50,
-    p_a_start=500000,
-    p_b_start=100000) annotation (Placement(transformation(extent={{20,-10},{40,
+    length=50)        annotation (Placement(transformation(extent={{20,-10},{40,
             10}}, rotation=0)));
 
   Modelica_Fluid.Sources.Boundary_pT sink1(redeclare package Medium = Medium, p=
@@ -49,9 +47,7 @@ model InverseParameterization
         m_flow_nominal=1,
         show_Re=true,
         dp_nominal=100000),
-    length=50,
-    p_a_start=500000,
-    p_b_start=100000) annotation (Placement(transformation(extent={{20,-50},{40,
+    length=50)        annotation (Placement(transformation(extent={{20,-50},{40,
             -30}},rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT sink2(
     redeclare package Medium = Medium, p=200000) 
@@ -75,6 +71,14 @@ equation
   connect(p_table.y, pump.p_set) annotation (Line(
       points={{-39,40},{-25,40},{-25,8.2}},
       color={0,0,127},
+      smooth=Smooth.None));
+  connect(pipe2.port_b, sink2.ports[1]) annotation (Line(
+      points={{40,-40},{64,-40}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(pipe2.port_a, pump.port_b) annotation (Line(
+      points={{20,-40},{0,-40},{0,0},{-20,0}},
+      color={0,127,255},
       smooth=Smooth.None));
 
   annotation (
@@ -102,12 +106,4 @@ WallFrictionPressureLoss correlations. Similarily the ControlledPump can be repl
 to investigate a real controller or with a Pump with rotational shaft to investigate inertia effects. 
 </p>
 </html>"));
-  connect(pipe2.port_b, sink2.ports[1]) annotation (Line(
-      points={{40,-40},{64,-40}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(pipe2.port_a, pump.port_b) annotation (Line(
-      points={{20,-40},{0,-40},{0,0},{-20,0}},
-      color={0,127,255},
-      smooth=Smooth.None));
 end InverseParameterization;
