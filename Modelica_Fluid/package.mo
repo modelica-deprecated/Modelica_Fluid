@@ -895,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-16</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-17</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
