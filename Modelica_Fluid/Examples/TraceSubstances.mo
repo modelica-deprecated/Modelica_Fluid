@@ -25,9 +25,9 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       C_start={1.519E-3},
       V=100,
       redeclare package Medium = Medium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
       nPorts=2,
-      X_start={0.015,0.085}) 
+      X_start={0.015,0.085},
+      massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial) 
                 annotation (Placement(transformation(extent={{-20,0},{0,20}})));
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = Medium,
@@ -92,8 +92,8 @@ concentration of the fresh air.
     Sensors.TraceSubstances traceSubstanceVolume(redeclare package Medium = 
                  Medium) 
       annotation (Placement(transformation(extent={{0,-2},{20,18}})));
-    inner System system              annotation (Placement(transformation(extent={{60,80},
-              {80,100}},         rotation=0)));
+    inner System system              annotation (Placement(transformation(extent={{70,70},
+              {90,90}},          rotation=0)));
     Sources.MassFlowSource_T freshAir(
       use_C_in=true,
       redeclare package Medium = Medium,
@@ -104,8 +104,9 @@ concentration of the fresh air.
       C_start={1.519E-3},
       V=100,
       redeclare package Medium = Medium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
-      nPorts=3) annotation (Placement(transformation(extent={{-20,-22},{0,-2}})));
+      nPorts=3,
+      massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial) 
+                annotation (Placement(transformation(extent={{-20,-22},{0,-2}})));
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = Medium,
       length=1,

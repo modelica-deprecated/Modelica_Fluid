@@ -5,23 +5,36 @@ model System
   replaceable package Medium = 
     Modelica.Media.Interfaces.PartialMedium "Default Medium model" 
       annotation (choicesAllMatching = true);
-  parameter Medium.AbsolutePressure p_ambient=
-                101325 "Default ambient pressure" 
-      annotation(Dialog(group="Environment"));
-  parameter Medium.Temperature T_ambient=
-                293.15 "Default ambient temperature" 
-      annotation(Dialog(group="Environment"));
+  parameter Medium.AbsolutePressure p_ambient=101325 "Default ambient pressure"
+    annotation(Dialog(group="Environment"));
+  parameter Medium.Temperature T_ambient=293.15 "Default ambient temperature" 
+    annotation(Dialog(group="Environment"));
   parameter SI.Acceleration g=Modelica.Constants.g_n
-    "Constant gravity acceleration"                                                  annotation(Dialog(group="Environment"));
+    "Constant gravity acceleration" 
+    annotation(Dialog(group="Environment"));
+
+  // Assumptions
   parameter Boolean allowFlowReversal = true
-    "allow flow reversal, false restricts to design direction (port_a -> port_b)"
+    "= false to restrict to design flow direction (port_a -> port_b)" 
     annotation(Dialog(tab="Assumptions"), Evaluate=true);
-  parameter Types.Dynamics dynamicsType=
-            Types.Dynamics.Dynamic "Default dynamics option" 
-    annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-  parameter Types.Init initType=
-            Types.Init.GuessValues "Default initialization option" 
-    annotation(Evaluate=true, Dialog(tab = "Initialization"));
+  parameter Types.Dynamics energyDynamics=
+    Types.Dynamics.DynamicFreeInitial "Default formulation of energy balances" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+  parameter Types.Dynamics massDynamics=
+    energyDynamics "Default formulation of mass balances" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+  final parameter Types.Dynamics substanceDynamics=
+    massDynamics "Default formulation of substance balances" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+  final parameter Types.Dynamics traceDynamics=
+    massDynamics "Default formulation of trace substance balances" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+  parameter Types.Dynamics momentumDynamics=
+    massDynamics
+    "Default formulation of momentum balances, if options available" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+
+  // Initialization
   parameter Medium.AbsolutePressure p_start = Medium.p_default
     "Default start value for pressures" 
     annotation(Dialog(tab = "Initialization"));

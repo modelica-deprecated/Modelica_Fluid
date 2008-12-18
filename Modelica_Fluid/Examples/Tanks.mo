@@ -543,7 +543,7 @@ package Tanks "Library demonstrating the usage of the tank model"
   
 </html>"));
 
-    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.InitialValues) 
+    inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial) 
                                      annotation (Placement(transformation(
             extent={{70,-90},{90,-70}}, rotation=0)));
     Modelica_Fluid.Vessels.OpenTank tank3(
@@ -631,8 +631,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       levelMax=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
-          diameter=0.1, portLevel=0)},
-      initType=Modelica_Fluid.Types.Init.GuessValues) 
+          diameter=0.1, portLevel=0)}) 
       annotation (Placement(transformation(extent={{-20,-80},{20,-40}},
             rotation=0)));
     inner Modelica_Fluid.System system 

@@ -4,8 +4,8 @@ model TestWaterPumpRecirculation
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
 annotation (
-  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-            100}}),
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+            100,100}}),
           graphics),
   experiment(StopTime=10, Tolerance=1e-006),
   Documentation(info=""));
@@ -37,8 +37,8 @@ annotation (
           q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     N_nominal=1500,
     use_N_input=true,
-    initType=Modelica_Fluid.Types.Init.InitialValues,
     V=0.1/1000,
+    energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     p_a_start=100000,
     p_b_start=700000)     annotation (Placement(transformation(extent={{-46,-40},
             {-14,-10}},rotation=0)));

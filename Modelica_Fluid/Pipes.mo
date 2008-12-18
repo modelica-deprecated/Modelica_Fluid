@@ -10,6 +10,12 @@ package Pipes "Devices for conveying fluid"
           redeclare model HeatTransfer = 
           BaseClasses.HeatTransfer.NoHeatTransfer (                            nParallel=nParallel));
 
+    // Assumptions
+    parameter Types.Dynamics momentumDynamics=
+      system.momentumDynamics
+      "Formulation of momentum balance, if pressureLoss options available" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+
     // Initialization
     parameter Medium.AbsolutePressure p_a_start=system.p_start
       "Start value of pressure at port a" 
@@ -27,8 +33,7 @@ package Pipes "Devices for conveying fluid"
             state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
                    Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
             final allowFlowReversal=allowFlowReversal,
-            final dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyState,
-            final initType=Modelica_Fluid.Types.Init.SteadyState,
+            final momentumDynamics=momentumDynamics,
             final p_a_start=p_a_start,
             final p_b_start=p_b_start,
             final m_flow_start=m_flow_start,
@@ -59,13 +64,17 @@ package Pipes "Devices for conveying fluid"
     extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe;
 
     // Assumptions
-    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-      "Dynamics option" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+    parameter Types.Dynamics energyDynamics=system.energyDynamics
+      "Formulation of energy balance" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+    parameter Types.Dynamics massDynamics=system.massDynamics
+      "Formulation of mass balance" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+    parameter Types.Dynamics momentumDynamics=system.momentumDynamics
+      "Formulation of momentum balance, if pressureLoss options available" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 
     // Initialization
-    parameter Types.Init initType=system.initType "Initialization option" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization"));
     parameter Medium.AbsolutePressure p_a_start=system.p_start
       "Start value of pressure at port a" 
       annotation(Dialog(tab = "Initialization"));
@@ -115,6 +124,7 @@ package Pipes "Devices for conveying fluid"
     StaticPipe staticPipe1(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
+      momentumDynamics=momentumDynamics,
       nParallel=nParallel,
       length=length/2,
       roughness=roughness,
@@ -128,14 +138,14 @@ package Pipes "Devices for conveying fluid"
             rotation=0)));
     Modelica_Fluid.Vessels.Volume volume(
       redeclare package Medium = Medium,
-      initType=initType,
+      energyDynamics=energyDynamics,
+      massDynamics=massDynamics,
       p_start=(p_a_start+p_b_start)/2,
       use_T_start=use_T_start,
       T_start=T_start,
       h_start=h_start,
       X_start=X_start,
       C_start=C_start,
-      dynamicsType=dynamicsType,
       V=V,
       nPorts=2,
       portDiameters={0,0},
@@ -145,6 +155,7 @@ package Pipes "Devices for conveying fluid"
     StaticPipe staticPipe2(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
+      momentumDynamics=momentumDynamics,
       nParallel=nParallel,
       length=length/2,
       roughness=roughness,
@@ -220,6 +231,11 @@ pipe wall/environment).
       final n = nNodes,
       Qs_flow = heatTransfer.Q_flow);
 
+    // Assumptions
+    parameter Types.Dynamics momentumDynamics=system.momentumDynamics
+      "Formulation of momentum balances, if pressureLoss options available" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+
     // Initialization
     parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
       "Start value for mass flow rate" 
@@ -259,8 +275,7 @@ pipe wall/environment).
             final n=nFlows,
             state=flowState,
             final allowFlowReversal=allowFlowReversal,
-            final dynamicsType=dynamicsType,
-            final initType=initType,
+            final momentumDynamics=momentumDynamics,
             final p_a_start=p_a_start,
             final p_b_start=p_b_start,
             final m_flow_start=m_flow_start,
@@ -633,12 +648,9 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             parameter Boolean allowFlowReversal
           "= true to allow flow reversal, false restricts to design direction (state[1] -> state[n+1])"
               annotation(Dialog(tab="Internal Interface", enable=false,group="Assumptions"), Evaluate=true);
-            parameter Modelica_Fluid.Types.Dynamics dynamicsType
-          "Dynamics option, e.g. for models with dynamic momentum balance" 
+            parameter Modelica_Fluid.Types.Dynamics momentumDynamics
+          "Formulation of momentum balance, if options available" 
               annotation(Dialog(tab="Internal Interface", enable=false,group = "Assumptions"), Evaluate=true);
-            parameter Modelica_Fluid.Types.Init initType
-          "Initialization option, e.g. for dynamic momentum balance" 
-              annotation(Evaluate=true, Dialog(tab="Internal Interface", enable=false,group = "Initialization"));
             parameter Medium.AbsolutePressure p_a_start
           "Start value for p[1] at design inflow" 
               annotation(Dialog(tab="Internal Interface", enable=false,group = "Initialization"));

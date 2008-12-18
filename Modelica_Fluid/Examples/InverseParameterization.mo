@@ -26,7 +26,7 @@ model InverseParameterization
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
           m_flow_nominal=1, dp_nominal=100000),
-    length=50)        annotation (Placement(transformation(extent={{20,-10},{40,
+    length=0)         annotation (Placement(transformation(extent={{20,-10},{40,
             10}}, rotation=0)));
 
   Modelica_Fluid.Sources.Boundary_pT sink1(redeclare package Medium = Medium, p=
@@ -45,7 +45,7 @@ model InverseParameterization
         m_flow_nominal=1,
         show_Re=true,
         dp_nominal=100000),
-    length=50)        annotation (Placement(transformation(extent={{20,-50},{40,
+    length=0)         annotation (Placement(transformation(extent={{20,-50},{40,
             -30}},rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT sink2(
     redeclare package Medium = Medium, p=200000) 
@@ -94,11 +94,14 @@ equation
     experiment(StopTime=10, NumberOfIntervals=10000),
     Documentation(info="<html>
 <p>
-A pump and two pipes are parameterized with simple nominal values. The pump controls a pressure ramp from 1.9 bar to 2.1 bar. 
-This causes an appropriate ramp on the mass flow rate for pipe1, which has a boundary pressure of 1 bar. 
-Flow reversal occurs in pipe2, which has a boundary pressure of 2 bar.
+A pump and two pipes are parameterized with simple nominal values. 
+Note that the pipes use the pressureLoss model NominalPressureLoss, which does not require the specification of geometry data. 
+Instead it internally parameterizes a QuadraticTurbulentFlow model for given nominal pressure loss and nominal mass flow rate.
 </p>
 <p>
+The pump controls a pressure ramp from 1.9 bar to 2.1 bar. 
+This causes an appropriate ramp on the mass flow rate for pipe1, which has a boundary pressure of 1 bar. 
+Flow reversal occurs in pipe2, which has a boundary pressure of 2 bar.
 The Command plotResults can be used to see the pump speed N, which is controlled ideally to obtain the pressure ramp.
 Moreover the Reynolds number as well as m_flow_turbulent and dp_turbulent are plotted for pipe2.
 </p>

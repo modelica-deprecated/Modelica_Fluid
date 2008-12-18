@@ -26,7 +26,8 @@ package HeatExchanger "Demo of a heat exchanger model"
           Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
               use_d_nominal=true,use_eta_nominal=true,eta_nominal=0.01),
       k_wall=100,
-      initType=Modelica_Fluid.Types.Init.SteadyStateHydraulic,
+      energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
+      massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
       s_wall=0.005,
       crossArea_1=4.5e-4,
       crossArea_2=4.5e-4,
@@ -154,14 +155,17 @@ package HeatExchanger "Demo of a heat exchanger model"
       parameter Boolean allowFlowReversal = system.allowFlowReversal
         "allow flow reversal, false restricts to design direction (port_a -> port_b)"
         annotation(Dialog(tab="Assumptions"), Evaluate=true);
-      parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-        "Dynamics option" 
-        annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+      parameter Types.Dynamics energyDynamics=system.energyDynamics
+        "Formulation of energy balance" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+      parameter Types.Dynamics massDynamics=system.massDynamics
+        "Formulation of mass balance" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+      parameter Types.Dynamics momentumDynamics=system.momentumDynamics
+        "Formulation of momentum balance, if pressureLoss options available" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 
       //Initialization pipe 1
-      parameter Types.Init initType=Types.Init.InitialValues
-        "Initialization option" 
-        annotation(Evaluate=true, Dialog(tab = "Initialization"));
       parameter SI.Temperature Twall_start "Start value of wall temperature" 
                                                                             annotation(Dialog(tab="Initialization", group="Wall"));
       parameter SI.Temperature dT "Start value for pipe_1.T - pipe_2.T" 
@@ -245,7 +249,7 @@ package HeatExchanger "Demo of a heat exchanger model"
         k_wall=k_wall,
         dT=dT,
         s=s_wall,
-        initType=initType,
+        energyDynamics=energyDynamics,
         n=nNodes,
         area_h=(crossArea_1 + crossArea_2)/2) 
         annotation (Placement(transformation(extent={{-29,-23},{9,35}},  rotation=
@@ -257,10 +261,11 @@ package HeatExchanger "Demo of a heat exchanger model"
         diameter=0,
         nNodes=nNodes,
         allowFlowReversal=allowFlowReversal,
-        dynamicsType=dynamicsType,
+        energyDynamics=energyDynamics,
+        massDynamics=massDynamics,
+        momentumDynamics=momentumDynamics,
         length=length,
         redeclare model HeatTransfer = HeatTransfer_1(perimeter=fill(area_h_1/length*n, n)),
-        initType=initType,
         use_T_start=use_T_start,
         T_start=T_start_1,
         h_start=h_start_1,
@@ -276,7 +281,9 @@ package HeatExchanger "Demo of a heat exchanger model"
         redeclare package Medium = Medium_2,
         nNodes=nNodes,
         allowFlowReversal=allowFlowReversal,
-        dynamicsType=dynamicsType,
+        energyDynamics=energyDynamics,
+        massDynamics=massDynamics,
+        momentumDynamics=momentumDynamics,
         length=length,
         isCircular=false,
         diameter=0,
@@ -285,7 +292,6 @@ package HeatExchanger "Demo of a heat exchanger model"
         T_start=T_start_2,
         h_start=h_start_2,
         X_start=X_start_2,
-        initType=initType,
         m_flow_start=m_flow_start_2,
         perimeter=perimeter_2,
         crossArea=crossArea_2,
@@ -416,9 +422,10 @@ The design flow direction with positive m_flow variables is counterflow.
       parameter SI.Mass[n] m=fill(d_wall*area_h*s/n,n)
         "Distribution of wall mass";
     //Initialization
-      parameter Types.Init initType=Types.
-            Init.GuessValues "Initialization option" 
-        annotation(Evaluate=true);
+      outer Modelica_Fluid.System system;
+      parameter Types.Dynamics energyDynamics=system.energyDynamics
+        "Formulation of energy balance" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
       parameter SI.Temperature T_start "Wall temperature start value";
       parameter SI.Temperature dT "Start value for port_b.T - port_a.T";
     //Temperatures
@@ -435,15 +442,19 @@ The design flow direction with positive m_flow variables is counterflow.
                   0)));
 
     initial equation
-      if initType == Types.Init.SteadyState or initType == Types.Init.SteadyStateHydraulic then
+      if energyDynamics == Types.Dynamics.SteadyState then
         der(T) = zeros(n);
-      elseif initType == Types.Init.InitialValues then
+      elseif energyDynamics == Types.Dynamics.FixedInitial then
         T = ones(n)*T_start;
       end if;
     equation
       for i in 1:n loop
        assert(m[i]>0, "Wall has negative dimensions");
-       c_wall*m[i]*der(T[i]) = heatPort_a[i].Q_flow + heatPort_b[i].Q_flow;
+       if energyDynamics == Types.Dynamics.SteadyState then
+         0 = heatPort_a[i].Q_flow + heatPort_b[i].Q_flow;
+       else
+         c_wall*m[i]*der(T[i]) = heatPort_a[i].Q_flow + heatPort_b[i].Q_flow;
+       end if;
        heatPort_a[i].Q_flow=k_wall/s*(Ta[i]-T[i])*area_h/n;
        heatPort_b[i].Q_flow=k_wall/s*(Tb[i]-T[i])*area_h/n;
       end for;

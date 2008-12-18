@@ -5,9 +5,11 @@ model TestJunctionVolume
   Modelica_Fluid.Fittings.TeeJunctionVolume junction(           redeclare
       package Medium = 
         Modelica.Media.Air.DryAirNasa, V=20e-6,
-    initType=Modelica_Fluid.Types.Init.SteadyState,
+    energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
+    massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
     p_start=100000)                         annotation (Placement(
         transformation(extent={{20,-30},{40,-10}}, rotation=0)));
+
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}),
                       graphics));
@@ -60,7 +62,8 @@ model TestJunctionVolume
         extent={{-10,-10},{10,10}},
         rotation=90)));
 equation
-  connect(ramp.y, source1.p_in) annotation (Line(points={{-69,-14},{-42,-14}},
+  connect(ramp.y, source1.p_in) annotation (Line(points={{-69,-14},{-55.5,
+          -14},{-55.5,-12},{-42,-12}},
         color={0,0,127}));
   connect(source1.ports[1], pipe.port_a) 
                                      annotation (Line(points={{-20,-20},{-12,

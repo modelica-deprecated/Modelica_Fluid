@@ -14,10 +14,11 @@ model TestMixingVolumesPressureStates
     p_start=system.p_ambient,
     use_T_start=true,
     T_start=system.T_ambient,
-    initType=Modelica_Fluid.Types.Init.SteadyState,
     nPorts=2,
     portDiameters={0,0},
-    neglectPortDiameters=true) 
+    neglectPortDiameters=true,
+    energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
+    massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
                  annotation (Placement(transformation(extent={{-30,38},{-10,58}},
           rotation=0)));
 
@@ -33,7 +34,6 @@ model TestMixingVolumesPressureStates
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
-    initType=Modelica_Fluid.Types.Init.GuessValues,
     nPorts=2,
     portDiameters={0,0}) 
                  annotation (Placement(transformation(extent={{10,38},{30,58}},

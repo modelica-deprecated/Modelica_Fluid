@@ -250,7 +250,6 @@ present that are regulated by a central control system.
           rotation=180)));
     Modelica_Fluid.Fittings.TeeJunctionVolume volume5(
       redeclare package Medium = BatchMedium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{50,-260},{70,-240}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveDiscrete V18(
@@ -454,7 +453,6 @@ present that are regulated by a central control system.
           origin={-26,-228})));
     Modelica_Fluid.Fittings.TeeJunctionVolume volume4(
       redeclare package Medium = BatchMedium,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
       V=0.001) annotation (Placement(transformation(extent={{-36,-260},{-16,
               -240}},
             rotation=0)));

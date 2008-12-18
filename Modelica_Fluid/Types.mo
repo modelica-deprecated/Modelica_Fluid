@@ -26,37 +26,29 @@ package Types "Common types for fluid models"
     "Enumeration to define the geometric cross section of pipes";
 
   type Dynamics = enumeration(
-      Dynamic
-        "Dynamic -- Differential equations with accumulation of mass, energy and momentum as applicable", 
+      DynamicFreeInitial
+        "DynamicFreeInitial -- Dynamic balance, Initial guess value",
+      FixedInitial "FixedInitial -- Dynamic balance, Initial value fixed",
+      SteadyStateInitial
+        "SteadyStateInitial -- Dynamic balance, Steady state initial with guess value", 
 
-      SteadyStateMomentum
-        "SteadyStateMomentum -- Steady state momentum equations, accumulation of mass and energy", 
-
-      SteadyStateMass
-        "SteadyStateMass -- No variation of mass, steady state momentum, accumulation of energy", 
-
-      SteadyState
-        "SteadyState -- Algebraic model, no accumulation of mass, energy or momentum")
-    "Enumeration to define dynamics options" 
+      SteadyState "SteadyState -- Steady state balance, Initial guess value")
+    "Enumeration to define definition of balance equations" 
   annotation (Documentation(info="<html>
 <p>
-Enumeration type that can have the following values
+Enumeratioin to define the formulation of balance equations
 (to be selected via choices menu):
 </p>
  
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Types.Dynamics.</b></th><th><b>Meaning</b></th></tr>
-<tr><td>Dynamic</td>
-    <td>Differential equations with accumulation of mass, energy and momentum as applicable</td></tr>
+<tr><td>DynamicFreeInitial</td><td>Dynamic balance, Initial guess value</td></tr>
  
-<tr><td>SteadyStateMomentum</td>
-    <td>Steady state momentum equations, accumulation of mass and energy</td></tr>
+<tr><td>FixedInitial</td><td>Dynamic balance, Initial value fixed</td></tr>
  
-<tr><td>SteadyStateHoldup</td>
-    <td>No variation of mass, steady state momentum, accumulation of energy</td></tr>
+<tr><td>SteadyStateInitial</td><td>Dynamic balance, Steady state initial with guess value</td></tr>
  
-<tr><td>SteadyState</td>
-    <td>Algebraic model, no accumulation of mass, energy or momentum</td></tr>
+<tr><td>SteadyState</td><td>Steady state balance, Initial guess value</td></tr>
 </table>
 </html>"));
 

@@ -68,8 +68,7 @@ model TestJunctionTraceSubstances
     redeclare package Medium = Medium,
     V=0.1,
     C_start={1E-4},
-    dynamicsType=Modelica_Fluid.Types.Dynamics.SteadyStateMomentum,
-    initType=Modelica_Fluid.Types.Init.InitialValues,
+    massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     X_start=Medium.X_default)               annotation (Placement(
         transformation(extent={{30,-30},{50,-10}}, rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT source4(

@@ -75,11 +75,11 @@ model TestOnePortSensors2
           rotation=0)));
 equation
   connect(ramp.y, FlowSource2.m_flow_in) annotation (Line(
-      points={{-79,40},{-74,40},{-74,46},{-67.3,46}},
+      points={{-79,40},{-74,40},{-74,48},{-68,48}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(ramp.y, FlowSource1.m_flow_in) annotation (Line(
-      points={{-79,40},{-76,40},{-76,-14},{-67.3,-14}},
+      points={{-79,40},{-76,40},{-76,-12},{-68,-12}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(FlowSource2.ports[1], MixingVolume1.ports[1]) annotation (Line(
@@ -87,7 +87,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(MixingVolume1.ports[2], MixingVolume2.ports[2]) annotation (Line(
-      points={{-24,28},{10,28},{10,28},{42,28}},
+      points={{-24,28},{42,28}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(MixingVolume2.ports[1], Sink2.ports[1]) annotation (Line(

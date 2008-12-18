@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -895,7 +894,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-17</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-18</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -957,7 +956,10 @@ Modelica_Fluid was refactored and finalized for the release:
 <li> System (former Ambient)<br> 
      The use of the global System object has been extended towards common default values for
      modeling assumptions and initialization. In particular steady-state initialization and 
-     complete steady-state simulation can now be specified system-wide.</li>
+     complete steady-state simulation can now be specified system-wide. A new 
+     Types.Init.Dynamics has been introduced, combining steady-state and initial conditions.
+     The former Types.Init has become obsolete.
+     <br>See <a href=\"Modelica:Modelica_Fluid.Examples.HeatingSystem\">Examples.HeatingSystem</a></li>.
  
 <li> Common base classes implementing mass and energy balances<br>
      Mass and energy balances are now defined in the common base classes
@@ -2112,7 +2114,6 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
 
 annotation (
   version="1.0 Release Candidate 1",
