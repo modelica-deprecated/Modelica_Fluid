@@ -357,12 +357,16 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
                  choicesAllMatching=true);
 
     // Assumptions
+    parameter Types.Dynamics energyDynamics=system.energyDynamics
+        "Formulation of energy balance" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
     parameter Boolean checkValve=false "= true to prevent reverse flow" 
       annotation(Dialog(tab="Assumptions"));
     parameter SI.Volume V = 0
         "Fluid volume inside the pump; consider if checkValve" 
       annotation(Dialog(tab="Assumptions"));
 
+    // Initialization
     parameter Medium.AbsolutePressure p_a_start=system.p_start
         "Guess value for inlet pressure" 
       annotation(Dialog(tab="Initialization"));
@@ -387,9 +391,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         "Guess value for mass flow rate (total)" 
       annotation(Dialog(tab="Initialization"));
     final parameter SI.Acceleration g=system.g;
-    parameter Types.Init initType=
-              Types.Init.GuessValues "Initialization option" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization"));
+
     SI.Pressure dp = port_b.p - port_a.p "Pressure increase";
     SI.Height head = dp/(d*g) "Pump head";
     Medium.Density d "Liquid density at the inlet port_a";
@@ -457,7 +459,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     port_b.C_outflow = inStream(port_a.C_outflow);
 
     // Energy balances
-    if V > 0 then
+    if energyDynamics <> Types.Dynamics.SteadyState and V > 0 then
        // Dynamic energy balance
        // mass variations and p/d are neglected
        nParallel*V*d_nominal*der(h) = port_a.m_flow*actualStream(port_a.h_outflow) +
@@ -481,15 +483,14 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     end if;
 
   initial equation
-    if initType == Types.Init.GuessValues or not V > 0 then
-    // no initial equations
-    elseif initType == Types.Init.InitialValues then
-      h = h_start;
-    elseif initType == Types.Init.SteadyState then
-      der(h) = 0;
-    else
-      assert(false, "Unsupported initialization option");
+    if V > 0 then
+      if energyDynamics == Types.Dynamics.FixedInitial then
+        h = h_start;
+      elseif energyDynamics == Types.Dynamics.SteadyStateInitial then
+        der(h) = 0;
+      end if;
     end if;
+
     annotation (
       Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
                 100}}), graphics={
@@ -521,8 +522,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
               points={{100,0},{80,0}},
               color={0,128,255},
               smooth=Smooth.None)}),
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-                100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+                {100,100}}),
               graphics),
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>Pump</tt> and <tt>

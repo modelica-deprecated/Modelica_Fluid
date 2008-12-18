@@ -16,15 +16,16 @@ model LumpedPipe
     use_T_start=true,
     length=10,
     diameter=2.54e-2,
-    initType=Modelica_Fluid.Types.Init.InitialValues,
+    energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
+    massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     p_a_start=500000,
     p_b_start=100000,
     T_start=300)      annotation (Placement(transformation(extent={{-20,0},{0,
             20}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-            100,100}}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -100},{100,100}}),
             graphics),
     experiment(StopTime=5),
     experimentSetupOutput(equdistant=false),

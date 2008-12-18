@@ -2004,14 +2004,12 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     extends PartialTwoPortTransport;
 
     // Assumptions
-    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-        "Dynamics option" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
+    parameter Types.Dynamics momentumDynamics=
+      system.momentumDynamics
+        "Formulation of momentum balance, if pressureLoss options available" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 
     // Initialization
-    parameter Types.Init initType=
-              system.initType "Initialization option" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
     parameter Medium.AbsolutePressure p_a_start=system.p_start
         "Start value of pressure at port_a" 
       annotation(Dialog(tab = "Advanced"));
@@ -2030,8 +2028,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
             state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
                    Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
             final allowFlowReversal=allowFlowReversal,
-            final dynamicsType=dynamicsType,
-            final initType=initType,
+            final momentumDynamics=momentumDynamics,
             final p_a_start=p_a_start,
             final p_b_start=p_a_start - dp_start,
             final m_flow_start=m_flow_start,

@@ -38,7 +38,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
            0)));
 
   Modelica_Fluid.Vessels.OpenTank reservoir(
-    initType=Modelica_Fluid.Types.Init.InitialValues,
+    massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     T_start=Modelica.SIunits.Conversions.from_degC(20),

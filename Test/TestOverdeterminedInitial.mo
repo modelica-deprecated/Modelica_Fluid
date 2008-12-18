@@ -37,15 +37,15 @@ package TestOverdeterminedInitial
       height=-0.5,
       startTime=2) 
                 annotation (Placement(transformation(extent={{46,30},{26,50}})));
-    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.SteadyState) 
+    inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyState) 
       annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
     discrete Modelica.SIunits.MassFlowRate m_flow_initial;
   equation
     when time > 0.1 then
       m_flow_initial = valve.port_a.m_flow;
     end when;
-    if pipe.initType == Modelica_Fluid.Types.Init.SteadyState or 
-       pipe.dynamicsType == Modelica_Fluid.Types.Dynamics.SteadyState then
+    if pipe.energyDynamics >= Modelica_Fluid.Types.Dynamics.SteadyStateInitial and 
+       pipe.massDynamics >= Modelica_Fluid.Types.Dynamics.SteadyStateInitial then
       when time > 1 then
         assert(abs(valve.port_a.m_flow - m_flow_initial) < 1e-3, "!!!THE SIMULATION DID NOT START IN STEADY-STATE!!!");
       end when;
@@ -122,15 +122,15 @@ The initial equations are consistent however and a tool shall reduce them approp
       height=-0.5,
       startTime=2) 
                 annotation (Placement(transformation(extent={{46,30},{26,50}})));
-    inner Modelica_Fluid.System system(initType=Modelica_Fluid.Types.Init.InitialValues) 
+    inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial) 
       annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
     discrete Modelica.SIunits.MassFlowRate m_flow_initial;
   equation
     when time > 0.1 then
       m_flow_initial = valve.port_a.m_flow;
     end when;
-    if pipe.initType == Modelica_Fluid.Types.Init.SteadyState or 
-       pipe.dynamicsType == Modelica_Fluid.Types.Dynamics.SteadyState then
+    if pipe.energyDynamics >= Modelica_Fluid.Types.Dynamics.SteadyStateInitial and 
+       pipe.massDynamics >= Modelica_Fluid.Types.Dynamics.SteadyStateInitial then
       when time > 1 then
         assert(abs(valve.port_a.m_flow - m_flow_initial) < 1e-3, "!!!THE SIMULATION DID NOT START IN STEADY-STATE!!!");
       end when;
@@ -170,10 +170,10 @@ The initial equations are consistent however and a tool shall reduce them approp
             textString=
                 "A translator should remove consistently overdetermined initial equations."),
           Text(
-            extent={{-80,-60},{64,-80}},
+            extent={{-100,-60},{100,-80}},
             lineColor={0,0,255},
             textString=
-                "Work-around 1: change initType from InitialValues to GuessValues"),
+                "Work-around 1: change system.energyDynamics from FixedInitial to DynamicFreeInitial"),
           Text(
             extent={{-80,-78},{60,-98}},
             lineColor={0,0,255},

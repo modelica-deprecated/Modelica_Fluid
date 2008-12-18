@@ -8,21 +8,6 @@ package Vessels "Devices for storing fluid"
 
       parameter SI.Volume V "Volume";
 
-    //Port definitions
-      parameter Integer nPorts(min=1)=1 "Number of ports" annotation(Dialog(group="Ports"));
-      parameter SI.Diameter portDiameters[nPorts] = ones(nPorts)
-      "Inner (hydraulic) diameters of ports (array)"   annotation(Dialog(group="Ports",enable= not neglectPortDiameters));
-
-    //Transformation of kinetic energy
-        parameter Boolean neglectPortDiameters=true
-      "=true, kinetic energy and dissipation is accounted for in port pressure"
-                                                                                                          annotation(Evaluate=true, Dialog(tab="Assumptions"));
-        parameter Real[nPorts] zeta_in=fill(0, nPorts)
-      "Hydraulic resistance into volume, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-                                                                                                          annotation(Dialog(tab="Assumptions",enable= not neglectPortDiameters));
-        parameter Real[nPorts] zeta_out=fill(1, nPorts)
-      "Hydraulic resistance out of volume, 0 for ideal smooth outlet"   annotation(Dialog(tab="Assumptions",enable= not neglectPortDiameters));
-
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort
       "Thermal port" 
         annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
@@ -52,8 +37,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     Qs_flow = 0,
     final initialize_p = false,
     final p_start = p_ambient,
-    final use_d_nominal = false,
-    final d_nominal = 0);
+    use_d_nominal = false);
 
   // Tank geometry
   parameter SI.Height height "Height of tank";
@@ -98,16 +82,10 @@ equation
   ports_p_static = level*system.g*medium.d + p_ambient;
 
 initial equation
-    if initType == Types.Init.GuessValues then
-    // no initial equations
-    elseif initType == Types.Init.InitialValues then
+    if massDynamics == Types.Dynamics.FixedInitial then
       level = level_start;
-    elseif initType == Types.Init.SteadyState then
+    elseif massDynamics == Types.Dynamics.SteadyStateInitial then
       der(level) = 0;
-    elseif initType == Types.Init.SteadyStateHydraulic then
-      der(level) = 0;
-    else
-      assert(false, "Unsupported initialization option");
     end if;
 
     annotation (
@@ -141,8 +119,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -192,7 +170,6 @@ Implemented trace substances.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-equation
 
 end OpenTank;
 
@@ -202,8 +179,7 @@ model Tank
     Qs_flow = 0,
     final initialize_p = false,
     final p_start = p_ambient,
-    final use_d_nominal = false,
-    final d_nominal = 0);
+    final use_d_nominal = false);
 
     import Modelica.Constants;
     import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
@@ -401,16 +377,10 @@ initial equation
        pre(aboveLevel[i]) = level_start >= portsData[i].portLevel;
     end for;
 
-    if initType == Types.Init.GuessValues then
-    // no initial equations
-    elseif initType == Types.Init.InitialValues then
+    if massDynamics == Types.Dynamics.FixedInitial then
       level = level_start;
-    elseif initType == Types.Init.SteadyState then
+    elseif massDynamics == Types.Dynamics.SteadyStateInitial then
       der(level) = 0;
-    elseif initType == Types.Init.SteadyStateHydraulic then
-      der(level) = 0;
-    else
-      assert(false, "Unsupported initialization option");
     end if;
 
     annotation (
@@ -434,8 +404,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 3))),
           Line(
             points={{-100,100},{100,100}},
@@ -541,26 +511,34 @@ end Tank;
       partial model PartialLumpedVolume
       "Lumped volume with dynamic mass and energy balance"
       import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types.Dynamics;
+
         outer Modelica_Fluid.System system "System properties";
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation (choicesAllMatching = true);
 
         // Assumptions
-        parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-        "Dynamics option" 
-          annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-        parameter Boolean use_d_nominal=dynamicsType==Types.Dynamics.SteadyStateMass
-        "= true, if d_nominal is used, otherwise computed from medium" 
+        parameter Types.Dynamics energyDynamics=system.energyDynamics
+        "Formulation of energy balance" 
+          annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+        parameter Types.Dynamics massDynamics=system.massDynamics
+        "Formulation of mass balance" 
+          annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+        final parameter Types.Dynamics substanceDynamics=massDynamics
+        "Formulation of substance balance" 
+          annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+        final parameter Types.Dynamics traceDynamics=massDynamics
+        "Formulation of trace substance balance" 
+          annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+        parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
+        "= true if d_nominal is used for mass storage, else computed from medium"
           annotation(Evaluate=true, Dialog(tab = "Assumptions"));
         parameter SI.Density d_nominal = Medium.density_pTX(p_start, T_start, X_start)
         "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
            annotation(Dialog(tab="Assumptions",enable=use_d_nominal));
 
         // Initialization
-        parameter Types.Init initType=
-                  system.initType "Initialization option" 
-          annotation(Evaluate=true, Dialog(tab = "Initialization"));
         parameter Medium.AbsolutePressure p_start = system.p_start
         "Start value of pressure" 
           annotation(Dialog(tab = "Initialization"));
@@ -626,64 +604,69 @@ end Tank;
         U = m*medium.u;
         mC = m*C;
 
-        // Mass and energy balances
-        if dynamicsType < Types.Dynamics.SteadyStateMass then
-          der(m) = ms_flow;
-          der(mXi) = msXi_flow;
-          der(mC)  = msC_flow;
-        else
-          0 = ms_flow;
-          zeros(Medium.nXi) = msXi_flow;
-          zeros(Medium.nC)  = msC_flow;
-        end if;
-        if dynamicsType < Types.Dynamics.SteadyState then
-          der(U) = Hs_flow + Qs_flow + Ws_flow;
-        else
+        // Energy and mass balances
+        if energyDynamics == Dynamics.SteadyState then
           0 = Hs_flow + Qs_flow + Ws_flow;
+        else
+          der(U) = Hs_flow + Qs_flow + Ws_flow;
+        end if;
+
+        if massDynamics == Dynamics.SteadyState then
+          0 = ms_flow;
+        else
+          der(m) = ms_flow;
+        end if;
+
+        if substanceDynamics == Dynamics.SteadyState then
+          zeros(Medium.nXi) = msXi_flow;
+        else
+          der(mXi) = msXi_flow;
+        end if;
+
+        if traceDynamics == Dynamics.SteadyState then
+          zeros(Medium.nC)  = msC_flow;
+        else
+          der(mC)  = msC_flow;
         end if;
 
       initial equation
-      // Initial conditions
-        if initType == Types.Init.GuessValues then
-        // no initial equations
-        elseif initType == Types.Init.InitialValues then
-          if initialize_p then
-            medium.p = p_start;
-          end if;
+        // initialization of balances
+        if energyDynamics == Dynamics.FixedInitial then
           if use_T_start then
             medium.T = T_start;
           else
             medium.h = h_start;
           end if;
-          medium.Xi = X_start[1:Medium.nXi];
-          C         = C_start[1:Medium.nC];
-
-        elseif initType == Types.Init.SteadyState then
-          if initialize_p then
-            der(medium.p) = 0;
-          end if;
+        elseif energyDynamics == Dynamics.SteadyStateInitial then
           if use_T_start then
             der(medium.T) = 0;
           else
             der(medium.h) = 0;
           end if;
-          der(medium.Xi) = zeros(Medium.nXi);
-          der(C)         = zeros(Medium.nC);
+        end if;
 
-        elseif initType == Types.Init.SteadyStateHydraulic then
+        if massDynamics == Dynamics.FixedInitial then
+          if initialize_p then
+            medium.p = p_start;
+          end if;
+        elseif massDynamics == Dynamics.SteadyStateInitial then
           if initialize_p then
             der(medium.p) = 0;
           end if;
-          if use_T_start then
-            medium.T = T_start;
-          else
-            medium.h = h_start;
-          end if;
-          medium.Xi = X_start[1:Medium.nXi];
-          C         = C_start[1:Medium.nC];
-        else
-          assert(false, "Unsupported initialization option");
         end if;
+
+        if substanceDynamics == Dynamics.FixedInitial then
+          medium.Xi = X_start[1:Medium.nXi];
+        elseif substanceDynamics == Dynamics.SteadyStateInitial then
+          der(medium.Xi) = zeros(Medium.nXi);
+        end if;
+
+        if traceDynamics == Dynamics.FixedInitial then
+          C = C_start[1:Medium.nC];
+        elseif traceDynamics == Dynamics.SteadyStateInitial then
+          der(C) = zeros(Medium.nC);
+        end if;
+
         annotation (
           Documentation(info="<html>
 Base class for an ideally mixed fluid volume with the ability to store mass and energy. 
@@ -720,9 +703,7 @@ Moreover an input might mislead a tool to break equation systems, resulting in i
         extends PartialLumpedVolume;
 
       //Port definitions
-        parameter Integer nPorts(min=1)=1 "Number of ports" annotation(Dialog(group="Ports"));
-        parameter SI.Diameter portDiameters[nPorts] = ones(nPorts)
-        "Inner (hydraulic) diameters of ports (array)"   annotation(Dialog(group="Ports",enable= not neglectPortDiameters));
+        parameter Integer nPorts(min=1)=1 "Number of ports";
         Interfaces.FluidPorts_b[nPorts] ports(
                                       redeclare each package Medium = Medium)
         "Fluid outlets" 
@@ -736,14 +717,18 @@ Moreover an input might mislead a tool to break equation systems, resulting in i
         "static pressure at the ports, inside the volume";
 
       //Transformation of kinetic energy
-          parameter Boolean neglectPortDiameters=true
+        parameter Boolean neglectPortDiameters=true
         "=true, kinetic energy and dissipation is accounted for in port pressure"
-                                                                                                            annotation(Evaluate=true, Dialog(tab="Assumptions"));
-          parameter Real[nPorts] zeta_in=fill(0, nPorts)
+          annotation(Evaluate=true, Dialog(tab="Assumptions",group="Ports"));
+        parameter SI.Diameter portDiameters[nPorts] = fill(2.54e-2, nPorts)
+        "Inner (hydraulic) diameters of ports (array)" 
+          annotation(Dialog(tab="Assumptions",group="Ports",enable= not neglectPortDiameters));
+        parameter Real[nPorts] zeta_in=fill(0, nPorts)
         "Hydraulic resistance into volume, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-                                                                                                            annotation(Dialog(tab="Assumptions",enable= not neglectPortDiameters));
-          parameter Real[nPorts] zeta_out=fill(1, nPorts)
-        "Hydraulic resistance out of volume, 0 for ideal smooth outlet"   annotation(Dialog(tab="Assumptions",enable= not neglectPortDiameters));
+          annotation(Dialog(tab="Assumptions",group="Ports",enable= not neglectPortDiameters));
+        parameter Real[nPorts] zeta_out=fill(1, nPorts)
+        "Hydraulic resistance out of volume, 0 for ideal smooth outlet" 
+          annotation(Dialog(tab="Assumptions",group="Ports",enable= not neglectPortDiameters));
 
         Medium.EnthalpyFlowRate ports_H_flow[nPorts];
         Medium.MassFlowRate ports_mXi_flow[nPorts,Medium.nXi];
@@ -833,6 +818,7 @@ An extending class still needs to define:
 
   partial model PartialDistributedVolume "Base class for a finite volume model"
       import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types.Dynamics;
     outer Modelica_Fluid.System system "System properties";
 
     replaceable package Medium = 
@@ -843,23 +829,27 @@ An extending class still needs to define:
     parameter Integer n=1 "Number of discrete flow volumes";
 
     // Assumptions
-    parameter Modelica_Fluid.Types.Dynamics dynamicsType=system.dynamicsType
-        "Dynamics option" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-    parameter Boolean use_d_nominal=dynamicsType==Types.Dynamics.SteadyStateMass
-        "= true, if d_nominal is used, otherwise computed from medium" 
+    parameter Types.Dynamics energyDynamics=system.energyDynamics
+        "Formulation of energy balances" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+    parameter Types.Dynamics massDynamics=system.massDynamics
+        "Formulation of mass balances" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+    final parameter Types.Dynamics substanceDynamics=massDynamics
+        "Formulation of substance balances" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+    final parameter Types.Dynamics traceDynamics=massDynamics
+        "Formulation of trace substance balances" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+
+    parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
+        "= true if d_nominal is used for mass storage, else computed from medium"
       annotation(Evaluate=true, Dialog(tab = "Assumptions"));
     parameter SI.Density[n] d_nominal = Medium.density_pTX(p_start, T_start, X_start)
         "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
        annotation(Dialog(tab="Assumptions",enable=use_d_nominal));
 
-    //final parameter Boolean static = dynamicsType == Types.Dynamics.SteadyState
-    //  "= true, static balances, no mass or energy is stored" annotation 2;
-
     //Initialization
-    parameter Types.Init initType=system.initType "Initialization option" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization"));
-
     parameter Medium.AbsolutePressure p_a_start=system.p_start
         "Start value of pressure at port a" 
       annotation(Dialog(tab = "Initialization"));
@@ -902,7 +892,7 @@ An extending class still needs to define:
     Medium.ExtraProperty C[n, Medium.nC] "Trace substance mixture content";
 
     Medium.BaseProperties[n] medium(
-      each preferredMediumStates=if (dynamicsType == Types.Dynamics.SteadyState) then false else true,
+      each preferredMediumStates=true,
       p(start=p_start),
       each h(start=h_start),
       each T(start=T_start),
@@ -937,78 +927,84 @@ An extending class still needs to define:
       U[i] = m[i]*medium[i].u;
     end for;
 
-    // Mass and energy balances
-    if dynamicsType < Types.Dynamics.SteadyStateMass then
-    // dynamic mass balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
+    // Energy and mass balances
+    if energyDynamics == Dynamics.SteadyState then
       for i in 1:n loop
-        der(m[i]) = ms_flow[i];
-        der(mXi[i, :]) = msXi_flow[i, :];
-        der(mC[i, :])  = msC_flow[i, :];
+        0 = Hs_flow[i] + Ws_flow[i] + Qs_flow[i];
       end for;
     else
-    // steady state mass balances, no numerical states, no flow reversal possible
-      for i in 1:n loop
-        0 = ms_flow[i];
-        zeros(Medium.nXi) = msXi_flow[i, :];
-        zeros(Medium.nC)  = msC_flow[i, :];
-      end for;
-    end if;
-    if dynamicsType < Types.Dynamics.SteadyState then
-    // dynamic energy balances, n "thermal" states, n pressure states (if not singleState_hydraulic)
       for i in 1:n loop
         der(U[i]) = Hs_flow[i] + Ws_flow[i] + Qs_flow[i];
       end for;
-    else
-    // steady state energy balances, no numerical states, no flow reversal possible
+    end if;
+    if massDynamics == Dynamics.SteadyState then
       for i in 1:n loop
-        0 = Hs_flow[i] + Ws_flow[i] + Qs_flow[i];
+        0 = ms_flow[i];
+      end for;
+    else
+      for i in 1:n loop
+        der(m[i]) = ms_flow[i];
+      end for;
+    end if;
+    if substanceDynamics == Dynamics.SteadyState then
+      for i in 1:n loop
+        zeros(Medium.nXi) = msXi_flow[i, :];
+      end for;
+    else
+      for i in 1:n loop
+        der(mXi[i, :]) = msXi_flow[i, :];
+      end for;
+    end if;
+    if traceDynamics == Dynamics.SteadyState then
+      for i in 1:n loop
+        zeros(Medium.nC)  = msC_flow[i, :];
+      end for;
+    else
+      for i in 1:n loop
+        der(mC[i, :])  = msC_flow[i, :];
       end for;
     end if;
 
   initial equation
-    // Initial conditions
-    if initType == Types.Init.GuessValues then
-    // no initial equations
-    elseif initType == Types.Init.SteadyState then
-    //steady state initialization
+    // initialization of balances
+    if energyDynamics == Dynamics.FixedInitial then
+      if use_T_start then
+        medium.T = fill(T_start, n);
+      else
+        medium.h = fill(h_start, n);
+      end if;
+    elseif energyDynamics == Dynamics.SteadyStateInitial then
       if use_T_start then
         der(medium.T) = zeros(n);
       else
         der(medium.h) = zeros(n);
       end if;
+    end if;
+
+    if massDynamics == Dynamics.FixedInitial then
+      if initialize_p then
+        medium.p = p_start;
+      end if;
+    elseif massDynamics == Dynamics.SteadyStateInitial then
       if initialize_p then
         der(medium.p) = zeros(n);
       end if;
+    end if;
+
+    if substanceDynamics == Dynamics.FixedInitial then
+      medium.Xi = fill(X_start[1:Medium.nXi], n);
+    elseif substanceDynamics == Dynamics.SteadyStateInitial then
       for i in 1:n loop
         der(medium[i].Xi) = zeros(Medium.nXi);
+      end for;
+    end if;
+
+    if traceDynamics == Dynamics.FixedInitial then
+      C = fill(C_start[1:Medium.nC], n);
+    elseif traceDynamics == Dynamics.SteadyStateInitial then
+      for i in 1:n loop
         der(mC[i,:])      = zeros(Medium.nC);
       end for;
-    elseif initType == Types.Init.InitialValues then
-    //Initialization with initial values
-      if use_T_start then
-        medium.T = ones(n)*T_start;
-      else
-        medium.h = ones(n)*h_start;
-      end if;
-      if initialize_p then
-         medium.p=p_start;
-      end if;
-      medium.Xi = fill(X_start[1:Medium.nXi], n);
-      C         = fill(C_start[1:Medium.nC], n);
-    elseif initType == Types.Init.SteadyStateHydraulic then
-    //Steady state initialization for hydraulic states (p)
-      if use_T_start then
-        medium.T = ones(n)*T_start;
-      else
-        medium.h = ones(n)*h_start;
-      end if;
-      if initialize_p then
-        der(medium.p) = zeros(n);
-      end if;
-      medium.Xi = fill(X_start[1:Medium.nXi], n);
-      C         = fill(C_start[1:Medium.nC], n);
-    else
-      assert(false, "Unsupported initialization option");
     end if;
 
      annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,

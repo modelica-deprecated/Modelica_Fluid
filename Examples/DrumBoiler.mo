@@ -241,9 +241,16 @@ Simulate for 7200 seconds.
         "Start value of liquid volumeStart value of volume" 
       annotation(Dialog(tab = "Initialization"));
 
+      // Assumptions
       parameter Boolean allowFlowReversal = system.allowFlowReversal
         "allow flow reversal, false restricts to design direction (port_a -> port_b)"
         annotation(Dialog(tab="Assumptions"), Evaluate=true);
+      parameter Types.Dynamics energyDynamics=system.energyDynamics
+        "Formulation of energy balance" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+      parameter Types.Dynamics massDynamics=system.massDynamics
+        "Formulation of mass balance" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 
       Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
       annotation (Placement(transformation(extent={{-10,-110},{10,-90}}, rotation=
@@ -284,10 +291,21 @@ Simulate for 7200 seconds.
     // balance equations
       m = rho_v*V_v + rho_l*V_l + m_D "Total mass";
       U = rho_v*V_v*h_v + rho_l*V_l*h_l - p*V_t + m_D*cp_D*T_D "Total energy";
-      der(m) = qm_W + qm_S "Mass balance";
-      der(U) = q_F
+      if massDynamics == Types.Dynamics.SteadyState then
+        0 = qm_W + qm_S "Steady state mass balance";
+      else
+        der(m) = qm_W + qm_S "Dynamic mass balance";
+      end if;
+      if energyDynamics == Types.Dynamics.SteadyState then
+        0 = q_F + port_a.m_flow*actualStream(port_a.h_outflow)
+                + port_b.m_flow*actualStream(port_b.h_outflow)
+          "Steady state energy balance";
+      else
+        der(U) = q_F
                 + port_a.m_flow*actualStream(port_a.h_outflow)
-                + port_b.m_flow*actualStream(port_b.h_outflow) "Energy balance";
+                + port_b.m_flow*actualStream(port_b.h_outflow)
+          "Dynamic energy balance";
+      end if;
       V_t = V_l + V_v;
 
     // Properties of saturated liquid and steam
@@ -312,19 +330,17 @@ Simulate for 7200 seconds.
         "Evaporator model requires subcritical pressure");
     initial equation
     // Initial conditions
-      if initType == Types.Init.GuessValues then
-      // no initial equations
-      elseif initType == Types.Init.InitialValues then
+      // Note: p represents the energy as it is constrained by T_sat
+      if energyDynamics == Types.Dynamics.FixedInitial then
         p = p_start;
-        V_l = V_l_start;
-      elseif initType == Types.Init.SteadyState then
+      elseif energyDynamics == Types.Dynamics.SteadyStateInitial then
         der(p) = 0;
+      end if;
+
+      if massDynamics == Types.Dynamics.FixedInitial then
+        V_l = V_l_start;
+      elseif energyDynamics == Types.Dynamics.SteadyStateInitial then
         der(V_l) = 0;
-      elseif initType == Types.Init.SteadyStateHydraulic then
-        der(p) = 0;
-        V_l = V_l_start;
-      else
-        assert(false, "Unsupported initialization option");
       end if;
 
       annotation (
@@ -410,11 +426,16 @@ Simulate for 7200 seconds.
             Line(points={{100,100},{100,60}}, color={0,0,127})}),
         Documentation(revisions="<html>
 <ul>
+<li><i>Dec 2008</i>
+    by R&uuml;diger Franke:<br>
+     Adapt initialization to new Types.Dynamics</li>
 <li><i>2 Nov 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
      Initialization options fixed</li>
 <li><i>6 Sep 2005</i><br>
-    Model by Ruediger Franke modified after the 45th Design Meeting</li>
+    Model by Ruediger Franke<br>
+    See Franke, Rode, Krueger: On-line Optimization of Drum Boiler Startup, 3rd International Modelica Conference, Linkoping, 2003.<br> 
+    Modified after the 45th Design Meeting</li>
 </ul>
 </html>",     info="<html>
 Model of a simple evaporator with two states. The model assumes two-phase equilibrium inside the component; saturated steam goes out of the steam outlet.

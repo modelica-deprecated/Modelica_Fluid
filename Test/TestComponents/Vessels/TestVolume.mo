@@ -3,12 +3,13 @@ model TestVolume
   extends Modelica.Icons.Example;
   Modelica_Fluid.Vessels.Volume Volume(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    initType=Modelica_Fluid.Types.Init.SteadyState,
     V=1,
     use_T_start=false,
     h_start=3e6,
     nPorts=2,
-    neglectPortDiameters=true) 
+    neglectPortDiameters=true,
+    energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyState,
+    massDynamics=Modelica_Fluid.Types.Dynamics.SteadyState) 
          annotation (Placement(transformation(extent={{-40,14},{-20,34}},
           rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_h FlowSource(
