@@ -3,7 +3,7 @@ removePlots();
 plotSetFilesToKeep(5);
 createPlot(id = 6,
  position = {12, 9, 600, 600},
- y = {"sensor_T_1.T","sensor_T_2.T","tank.medium.T"},
+ y = {"sensor_T_forward.T","sensor_T_return.T","tank.medium.T"},
  range = {0, 90000.0, 20.0, (-5.0)},
  erase = false,
  autoscale = true,
@@ -18,7 +18,7 @@ createPlot(id = 6,
  bottomTitleType = 1);
 createPlot(id = 6,
  position = {12, 9, 600, 150},
- y = {"thermalConductor1.port_b.Q_flow", "pipe.heatPort[1].Q_flow"},
+ y = {"wall.port_b.Q_flow", "pipe.heatPort[1].Q_flow"},
  range = {0, 90000.0, 0.002, 0},
  erase = false,
  autoscale = true,
