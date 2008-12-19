@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -894,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-18</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-19</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -2086,14 +2087,12 @@ The development of this library has been a collaborative effort
 and many have contributed.
 </p>
 <ul>
-<li> The essential design of the Fluid library, especially
-     the component interfaces (Modelica_Fluid.Interfaces.FluidPort)
-     to allow arbitrary connections between components  
-     that fulfill the balance equations, as well as handling
-     reversing flow with the semiLinear() operator,
-     is from Hilding Elmqvist.</li>
+<li> The essential design of the Fluid library is based on the paper
+     Elmqvist H., Tummescheit H., and Otter M.: Object-Oriented Modeling of Thermo-Fluid Systems.
+     Modelica 2003 Conference, Linköping, Sweden, pp. 269-286, Nov. 3-4, 2003.</li>  
 <li> The Fluid library development was organized in 2002-2004 by Martin 
-     Otter and since 2004 it is organized by Francesco Casella.</li>
+     Otter, since 2004 it is organized by Francesco Casella, and
+     since 2008 it is organized jointly by Francesco Casella and R&uuml;diger Franke.</li>
 <li> Francesco Casella included several components of his ThermoPower
      library with some rewriting.</li>
 <li> The following people contributed to the fluid component models, 
@@ -2104,7 +2103,7 @@ and many have contributed.
      R&uuml;diger Franke, Henning Knigge,
      Sven Erik Mattsson, Chuck Newman, Hans Olsson,
      Martin Otter, Katrin Pr&ouml;l&szlig;,
-     Christoph Richter, Mike Tiller, Hubertus Tummescheit,
+     Christoph Richter, Michael Sielemann, Mike Tiller, Hubertus Tummescheit,
      Allan Watson, Michael Wetter.<br><br></li>
 <li> Partial financial support by ABB and by DLR for the further development
      of this library within the <a href=\"http://www.itea2.org\">ITEA</a> project 
@@ -2114,6 +2113,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0 Release Candidate 1",
