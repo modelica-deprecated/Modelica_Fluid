@@ -13,7 +13,7 @@ model HeatingSystem "Simple model of a heating system"
     nPorts=2,
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     use_d_nominal=true) 
-              annotation (Placement(transformation(extent={{-80,20},{-60,40}},
+              annotation (Placement(transformation(extent={{-90,30},{-70,50}},
           rotation=0)));
   Machines.ControlledPump pump(
     redeclare package Medium = Medium,
@@ -28,7 +28,7 @@ model HeatingSystem "Simple model of a heating system"
     p_b_start=400000,
     p_a_nominal=100000,
     p_b_nominal=200000) 
-    annotation (Placement(transformation(extent={{-60,-10},{-40,10}},rotation=
+    annotation (Placement(transformation(extent={{-60,10},{-40,30}}, rotation=
            0)));
   Modelica_Fluid.Valves.ValveIncompressible valve(
     redeclare package Medium = Medium,
@@ -36,20 +36,19 @@ model HeatingSystem "Simple model of a heating system"
     m_flow_nominal=0.01,
     compute_T=true,
     dp_nominal=50000) 
-    annotation (Placement(transformation(extent={{42,-8},{58,8}},  rotation=0)));
-  Modelica.Blocks.Interfaces.RealOutput circuitFlowRate 
-    annotation (Placement(transformation(extent={{88,12},{108,32}}, rotation=
+    annotation (Placement(transformation(extent={{70,-80},{50,-60}},
+                                                                   rotation=0)));
+  Modelica.Blocks.Interfaces.RealOutput flowRate 
+    annotation (Placement(transformation(extent={{-16,34},{-4,46}}, rotation=
             0)));
   Sensors.MassFlowRate massFlowRate(redeclare package Medium = Medium) 
-    annotation (Placement(transformation(extent={{-30,10},{-10,-10}},rotation=
+    annotation (Placement(transformation(extent={{-30,30},{-10,10}}, rotation=
            0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedTemperature ambientTemperature(
                                                                     T=system.T_ambient) 
-    annotation (Placement(transformation(extent={{-24,-38},{-10,-24}},
-                                                                     rotation=
+    annotation (Placement(transformation(extent={{-15,-27},{-1,-13}},rotation=
            0)));
-  Modelica.Thermal.HeatTransfer.Components.ThermalConductor thermalConductor1(
-                                                                   G=1.6e3/20) 
+  Modelica.Thermal.HeatTransfer.Components.ThermalConductor wall(G=1.6e3/20) 
     annotation (Placement(transformation(
         origin={10,-48},
         extent={{8,-10},{-8,10}},
@@ -58,7 +57,7 @@ model HeatingSystem "Simple model of a heating system"
                                                      Q_flow=1.6e3,
     T_ref=343.15,
     alpha=-0.5) 
-    annotation (Placement(transformation(extent={{-4,12},{16,32}}, rotation=0)));
+    annotation (Placement(transformation(extent={{6,30},{26,50}},  rotation=0)));
   inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},   rotation=0)));
@@ -76,7 +75,7 @@ model HeatingSystem "Simple model of a heating system"
     p_b_start=390000,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss)
-    annotation (Placement(transformation(extent={{10,-10},{30,10}},rotation=0)));
+    annotation (Placement(transformation(extent={{20,10},{40,30}}, rotation=0)));
 
   Pipes.DistributedPipe radiator(
     use_T_start=true,
@@ -95,74 +94,73 @@ model HeatingSystem "Simple model of a heating system"
     annotation (Placement(transformation(extent={{20,-80},{0,-60}}, rotation=
             0)));
 
-  Modelica.Blocks.Interfaces.RealOutput hotWaterTemperature 
-    annotation (Placement(transformation(extent={{88,-28},{108,-8}}, rotation=
+  Modelica.Blocks.Interfaces.RealOutput T_forward 
+    annotation (Placement(transformation(extent={{74,34},{86,46}},   rotation=
            0)));
-  Modelica.Blocks.Interfaces.RealOutput coldWaterTemperature 
-    annotation (Placement(transformation(extent={{88,-78},{108,-58}},
+  Modelica.Blocks.Interfaces.RealOutput T_return 
+    annotation (Placement(transformation(extent={{-46,-56},{-58,-44}},
           rotation=0)));
-  Modelica_Fluid.Sensors.Temperature sensor_T_1(
-                                 redeclare package Medium = Medium) 
-    annotation (Placement(transformation(extent={{60,-56},{40,-36}}, rotation=
+  Modelica_Fluid.Sensors.Temperature sensor_T_forward(redeclare package Medium
+      = Medium) 
+    annotation (Placement(transformation(extent={{50,30},{70,50}},   rotation=
            0)));
-  Modelica_Fluid.Sensors.Temperature sensor_T_2(
-                                 redeclare package Medium = Medium) 
-    annotation (Placement(transformation(extent={{-30,-56},{-50,-36}},
+  Modelica_Fluid.Sensors.Temperature sensor_T_return(redeclare package Medium
+      = Medium) 
+    annotation (Placement(transformation(extent={{-20,-60},{-40,-40}},
           rotation=0)));
   Modelica.Blocks.Interfaces.RealOutput tankLevel 
-                                 annotation (Placement(transformation(extent=
-            {{90,60},{110,80}}, rotation=0)));
+                                 annotation (Placement(transformation(extent={{-60,34},
+            {-48,46}},          rotation=0)));
   Modelica.Blocks.Sources.Step valveOpening(
     startTime=2000,
     height=0.9,
-    offset=0.1)   annotation (Placement(transformation(extent={{20,60},{40,80}},
+    offset=0.1)   annotation (Placement(transformation(extent={{36,-27},{50,-13}},
                   rotation=0)));
 equation
 tankLevel = tank.level;
-  connect(massFlowRate.m_flow, circuitFlowRate) annotation (Line(points={{-20,11},
-          {-20,40},{80,40},{80,22},{98,22}},    color={0,0,127}));
-  connect(massFlowRate.port_b, pipe.port_a) annotation (Line(points={{-10,0},{
-          -10,0},{10,0}},
+  connect(massFlowRate.m_flow, flowRate)        annotation (Line(points={{-20,31},
+          {-20,40},{-10,40}},                   color={0,0,127}));
+  connect(massFlowRate.port_b, pipe.port_a) annotation (Line(points={{-10,20},{
+          -10,20},{20,20}},
                     color={0,127,255}));
-  connect(pipe.port_b, valve.port_a) annotation (Line(points={{30,0},{42,0}},
+  connect(pipe.port_b, valve.port_a) annotation (Line(points={{40,20},{80,20},{
+          80,-70},{70,-70}},
         color={0,127,255}));
-  connect(ambientTemperature.port, thermalConductor1.port_a) annotation (Line(
-        points={{-10,-31},{10,-31},{10,-40}},
-                                            color={191,0,0}));
-  connect(sensor_T_1.T, hotWaterTemperature) annotation (Line(points={{43,-46},
-          {43,-80},{76,-80},{76,-18},{98,-18}}, color={0,0,127}));
-  connect(radiator.port_a, valve.port_b) annotation (Line(points={{20,-70},{70,
-          -70},{70,0},{58,0}},      color={0,127,255}));
-  connect(sensor_T_2.port, radiator.port_b) annotation (Line(points={{-40,-56},
-          {-40,-70},{0,-70}}, color={0,127,255}));
-  connect(radiator.port_a, sensor_T_1.port) annotation (Line(points={{20,-70},{
-          50,-70},{50,-56}},  color={0,127,255}));
+  connect(ambientTemperature.port, wall.port_a)              annotation (Line(
+        points={{-1,-20},{10,-20},{10,-40}},color={191,0,0}));
+  connect(sensor_T_forward.T, T_forward)     annotation (Line(points={{67,40},{
+          80,40}},                              color={0,0,127}));
+  connect(radiator.port_a, valve.port_b) annotation (Line(points={{20,-70},{20,
+          -70},{50,-70}},           color={0,127,255}));
+  connect(sensor_T_return.port, radiator.port_b) 
+                                            annotation (Line(points={{-30,-60},
+          {-30,-70},{0,-70}}, color={0,127,255}));
   connect(radiator.port_b, tank.ports[1]) annotation (Line(
-      points={{0,-70},{-70,-70},{-70,22}},
+      points={{0,-70},{-80,-70},{-80,32}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[2], pump.port_a) annotation (Line(
-      points={{-70,18},{-70,0},{-60,0}},
+      points={{-80,28},{-80,20},{-60,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(valveOpening.y, valve.opening) annotation (Line(
-      points={{41,70},{50,70},{50,6.4}},
+      points={{50.7,-20},{60,-20},{60,-62}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(pump.port_b, massFlowRate.port_a) annotation (Line(
-      points={{-40,0},{-30,0}},
+      points={{-40,20},{-30,20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(sensor_T_2.T, coldWaterTemperature) annotation (Line(
-      points={{-47,-46},{-50,-46},{-50,-90},{80,-90},{80,-68},{98,-68}},
+  connect(sensor_T_return.T, T_return)        annotation (Line(
+      points={{-37,-50},{-52,-50}},
       color={0,0,127},
       smooth=Smooth.None));
 
   connect(burner.port, pipe.heatPorts[1]) annotation (Line(
-      points={{16,22},{20.1,22},{20.1,5.2}},
+      points={{26,40},{30.1,40},{30.1,25.2}},
       color={191,0,0},
       smooth=Smooth.None));
-  connect(thermalConductor1.port_b, radiator.heatPorts[1]) annotation (Line(
+  connect(wall.port_b, radiator.heatPorts[1])              annotation (Line(
       points={{10,-56},{10,-64.8},{9.9,-64.8}},
       color={191,0,0},
       smooth=Smooth.None));
@@ -206,4 +204,8 @@ coupling between the tank and its environment should be established.
 "), experiment(StopTime=6000),
     Commands(file(ensureSimulated=true)=
         "Scripts/Examples/HeatingSystem/plotResults.mos" "plotResults"));
+  connect(sensor_T_forward.port, pipe.port_b) annotation (Line(
+      points={{60,30},{60,20},{40,20}},
+      color={0,127,255},
+      smooth=Smooth.None));
 end HeatingSystem;
