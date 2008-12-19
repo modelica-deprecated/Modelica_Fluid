@@ -1,6 +1,6 @@
 within Modelica_Fluid.Test.TestComponents.Utilities;
-model TestRegRootDerivative 
-  "Demonstrate that regRoot cannot be differentiated in a typical pressure drop equation (model fails during simulation)" 
+model TestRegRootDerivative
+  "Demonstrate that regRoot cannot be differentiated in a typical pressure drop equation (model fails during simulation)"
   extends Modelica.Icons.Example;
   parameter Real x_small = 0.01;
   Real x;
@@ -19,11 +19,11 @@ are used. In such a case, the regRoot2(..) function should be used.
 In order to test this behaviour, change the line \"yd=0\" to \"yd = der(y)\".
 </p>
 </html>"));
-equation 
+equation
   x = time - 1;
   k1 = 1 + 0.1*time;
   k2 = 2 + 0.2*time;
-  
+
   y = (if x >= 0 then k1 else k2)*Modelica_Fluid.Utilities.regRoot(x,x_small);
   yd = 0 "model does not translate if y=0 is replaced by y=der(y)";
 end TestRegRootDerivative;

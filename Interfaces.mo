@@ -1,10 +1,13 @@
-package Interfaces 
-  "Interfaces for steady state and unsteady, mixed-phase, multi-substance, incompressible and compressible flow" 
-  
+within Modelica_Fluid;
+package Interfaces
+  "Interfaces for steady state and unsteady, mixed-phase, multi-substance, incompressible and compressible flow"
+
   annotation (Documentation(info="<html>
  
 </html>", revisions="<html>
 <ul>
+<li><i>June 9th, 2008</i>
+       by Michael Sielemann: Introduced stream keyword after decision at 57th Design Meeting (Lund).</li>
 <li><i>May 30, 2007</i>
        by Christoph Richter: moved everything back to its original position in Modelica_Fluid.</li>
 <li><i>Apr. 20, 2007</i>
@@ -35,264 +38,372 @@ package Interfaces
 </li>
 </ul>
 </html>"));
-  
+
   extends Modelica.Icons.Library;
-  
-  connector FluidPort 
-    "Interface for quasi one-dimensional fluid flow in a piping network (incompressible or compressible, one or more phases, one or more substances)" 
-    
-    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium 
+
+  connector FluidPort
+    "Interface for quasi one-dimensional fluid flow in a piping network (incompressible or compressible, one or more phases, one or more substances)"
+
+    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
       "Medium model" annotation (choicesAllMatching=true);
-    
-    Medium.AbsolutePressure p "Pressure in the connection point";
-    flow Medium.MassFlowRate m_flow 
+
+    flow Medium.MassFlowRate m_flow
       "Mass flow rate from the connection point into the component";
-    
-    Medium.SpecificEnthalpy h 
-      "Specific mixing enthalpy in the connection point";
-    flow Medium.EnthalpyFlowRate H_flow 
-      "Enthalpy flow rate into the component (if m_flow > 0, H_flow = m_flow*h)";
-    
-    Medium.MassFraction Xi[Medium.nXi] 
-      "Independent mixture mass fractions m_i/m in the connection point";
-    flow Medium.MassFlowRate mXi_flow[Medium.nXi] 
-      "Mass flow rates of the independent substances from the connection point into the component (if m_flow > 0, mXi_flow = m_flow*Xi)";
-    
-    Medium.ExtraProperty C[Medium.nC] 
-      "properties c_i/m in the connection point";
-    flow Medium.ExtraPropertyFlowRate mC_flow[Medium.nC] 
-      "Flow rates of auxiliary properties from the connection point into the component (if m_flow > 0, mC_flow = m_flow*C)";
-    
+    Medium.AbsolutePressure p "Pressure in the connection point";
+    stream Medium.SpecificEnthalpy h_outflow
+      "Specific enthalpy close to the connection point if m_flow < 0";
+    stream Medium.MassFraction Xi_outflow[Medium.nXi]
+      "Independent mixture mass fractions m_i/m close to the connection point if m_flow < 0";
+    stream Medium.ExtraProperty C_outflow[Medium.nC]
+      "Properties c_i/m close to the connection point if m_flow < 0";
   end FluidPort;
-  
-  connector FluidPort_a "Generic fluid connector at design inlet" 
+
+  connector FluidPort_a "Generic fluid connector at design inlet"
     extends FluidPort;
     annotation (defaultComponentName="port_a",
-                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=69,
-            rgbfillColor={0,127,255})),
-                               Text(extent=[-150,110; 150,50],   string="%name")),
-         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
-              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
-              fillColor=69))));
+                Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}), graphics={Ellipse(
+            extent={{-40,40},{40,-40}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid), Text(extent={{-150,110},{150,50}},
+              textString="%name")}),
+         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={0,127,255},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid), Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid)}));
   end FluidPort_a;
-  
-  connector FluidPort_b "Generic fluid connector at design outlet" 
+
+  connector FluidPort_b "Generic fluid connector at design outlet"
     extends FluidPort;
     annotation (defaultComponentName="port_b",
-                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=69,
-            rgbfillColor={0,127,255})),
-                               Ellipse(extent=[-30,30; 30,-30],   style(color=69,
-               fillColor=7)), Text(extent=[-150,110; 150,50],   string="%name")),
-         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
-              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
-              fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
-               fillColor=7))));
+                Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+              -100},{100,100}}), graphics={
+          Ellipse(
+            extent={{-40,40},{40,-40}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-30,30},{30,-30}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Text(extent={{-150,110},{150,50}}, textString="%name")}),
+         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics={
+          Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={0,127,255},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-100,100},{100,-100}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-80,80},{80,-80}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid)}));
   end FluidPort_b;
-  
-  connector FluidStatePort_a 
-    "Fluid connector at design inlet with potential pressure state" 
-    extends FluidPort;
-    annotation (defaultComponentName="port_a",
-                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=69,
-            rgbfillColor={0,127,255})),
-                               Text(extent=[-150,110; 150,50],   string="%name")),
-         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
-              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
-              fillColor=69)),
-              Ellipse(extent=[-18,20; 22,-20], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=0,
-            rgbfillColor={0,0,0}))));
-  end FluidStatePort_a;
-  
-  connector FluidStatePort_b 
-    "Fluid connector at design outlet with potential pressure state" 
-   extends FluidPort;
-    annotation (defaultComponentName="port_b",
-                Diagram(Ellipse(extent=[-40,40; 40,-40], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=69,
-            rgbfillColor={0,127,255})),
-                               Ellipse(extent=[-30,30; 30,-30],   style(color=69,
-               fillColor=7)), Text(extent=[-150,110; 150,50],   string="%name")),
-         Icon(Ellipse(extent=[-100, 100; 100, -100], style(color=69,
-              fillColor=69)), Ellipse(extent=[-100, 100; 100, -100], style(color=16,
-              fillColor=69)), Ellipse(extent=[-80, 80; 80, -80], style(color=69,
-               fillColor=7)),
-              Ellipse(extent=[-18,20; 22,-20], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=0,
-            rgbfillColor={0,0,0}))));
-  end FluidStatePort_b;
-  
-  connector FluidPorts_a 
-    "Fluid connector with filled, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)" 
+
+  connector FluidPorts_a
+    "Fluid connector with filled, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)"
     extends FluidPort;
     annotation (defaultComponentName="ports_a",
-                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
-        Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-        Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,25; 25,-25],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69))),
-         Icon(
-        Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-                              Ellipse(extent=[-50,180; 50,80],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,50; 50,-50],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,-80; 50,-180],     style(color=16,
-              fillColor=69))),
-      Coordsys(
-        extent=[-50,-200; 50,200],
-        grid=[1,1],
-        scale=0.2));
+                Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-50,-200},{50,200}},
+          grid={1,1},
+          initialScale=0.2), graphics={
+          Text(extent={{-75,130},{75,100}}, textString="%name"),
+          Rectangle(
+            extent={{25,-100},{-25,100}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-25,90},{25,40}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-25,25},{25,-25}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-25,-40},{25,-90}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid)}),
+         Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-50,-200},{50,200}},
+          grid={1,1},
+          initialScale=0.2), graphics={
+          Rectangle(
+            extent={{50,-200},{-50,200}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-50,180},{50,80}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-50,50},{50,-50}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-50,-80},{50,-180}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid)}));
   end FluidPorts_a;
-  
-  connector FluidPorts_b 
-    "Fluid connector with outlined, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)" 
+
+  connector FluidPorts_b
+    "Fluid connector with outlined, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)"
     extends FluidPort;
     annotation (defaultComponentName="ports_b",
-                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
-        Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-        Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,25; 25,-25],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69)),
-        Ellipse(extent=[-15,-50; 15,-80], style(color=69, fillColor=7)),
-        Ellipse(extent=[-15,15; 15,-15], style(color=69, fillColor=7)),
-        Ellipse(extent=[-15,50; 15,80], style(color=69, fillColor=7))),
-         Icon(
-        Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-                              Ellipse(extent=[-50,180; 50,80],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,50; 50,-50],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,-80; 50,-180],     style(color=16,
-              fillColor=69)),
-            Ellipse(extent=[-30,30; 30,-30], style(color=69, fillColor=7)),
-            Ellipse(extent=[-30,100; 30,160], style(color=69, fillColor=7)),
-            Ellipse(extent=[-30,-100; 30,-160], style(color=69, fillColor=7))),
-      Coordsys(
-        extent=[-50,-200; 50,200],
-        grid=[1,1],
-        scale=0.2));
+                Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-50,-200},{50,200}},
+          grid={1,1},
+          initialScale=0.2), graphics={
+          Text(extent={{-75,130},{75,100}}, textString="%name"),
+          Rectangle(
+            extent={{-25,100},{25,-100}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-25,90},{25,40}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-25,25},{25,-25}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-25,-40},{25,-90}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-15,-50},{15,-80}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-15,15},{15,-15}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-15,50},{15,80}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid)}),
+         Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-50,-200},{50,200}},
+          grid={1,1},
+          initialScale=0.2), graphics={
+          Rectangle(
+            extent={{-50,200},{50,-200}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-50,180},{50,80}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-50,50},{50,-50}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-50,-80},{50,-180}},
+            lineColor={0,0,0},
+            fillColor={0,127,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-30,30},{30,-30}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-30,100},{30,160}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Ellipse(
+            extent={{-30,-100},{30,-160}},
+            lineColor={0,127,255},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid)}));
   end FluidPorts_b;
-  
-  connector FluidStatePorts_a 
-    "Fluid connector with filled, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)" 
-    extends FluidPort;
-    annotation (defaultComponentName="ports_a",
-                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
-        Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-        Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,25; 25,-25],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69))),
-         Icon(
-        Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-                              Ellipse(extent=[-50,180; 50,80],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,50; 50,-50],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,-80; 50,-180],     style(color=16,
-              fillColor=69)),
-        Ellipse(extent=[-20,150; 20,110], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=0,
-            rgbfillColor={0,0,0})),
-        Ellipse(extent=[-20,20; 20,-20], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=0,
-            rgbfillColor={0,0,0})),
-        Ellipse(extent=[-19,-111; 21,-151], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=0,
-            rgbfillColor={0,0,0}))),
-      Coordsys(
-        extent=[-50,-200; 50,200],
-        grid=[1,1],
-        scale=0.2));
-  end FluidStatePorts_a;
-  
-  connector FluidStatePorts_b 
-    "Fluid connector with outlined, large icon to be used for vectors of FluidPorts (vector dimensions must be added after dragging)" 
-    extends FluidPort;
-    annotation (defaultComponentName="ports_b",
-                Diagram(       Text(extent=[-75,130; 75,100],  string="%name"),
-        Rectangle(extent=[-25,100; 25,-100], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-        Ellipse(extent=[-25,90; 25,40],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,25; 25,-25],style(color=16,fillColor=69)),
-        Ellipse(extent=[-25,-40; 25,-90], style(color=16,fillColor=69)),
-        Ellipse(extent=[-15,-50; 15,-80], style(color=69, fillColor=7)),
-        Ellipse(extent=[-15,15; 15,-15], style(color=69, fillColor=7)),
-        Ellipse(extent=[-15,50; 15,80], style(color=69, fillColor=7))),
-         Icon(
-        Rectangle(extent=[-50,200; 50,-200], style(
-            color=3,
-            rgbcolor={0,0,255},
-            fillColor=7,
-            rgbfillColor={255,255,255})),
-                              Ellipse(extent=[-50,180; 50,80],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,50; 50,-50],       style(color=16,
-              fillColor=69)), Ellipse(extent=[-50,-80; 50,-180],     style(color=16,
-              fillColor=69)),
-            Ellipse(extent=[-30,30; 30,-30], style(color=69, fillColor=7)),
-            Ellipse(extent=[-30,100; 30,160], style(color=69, fillColor=7)),
-            Ellipse(extent=[-30,-100; 30,-160], style(color=69, fillColor=7)),
-        Ellipse(extent=[-20,151; 20,111], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=0,
-            rgbfillColor={0,0,0})),
-        Ellipse(extent=[-20,21; 20,-19], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=0,
-            rgbfillColor={0,0,0})),
-        Ellipse(extent=[-19,-110; 21,-150], style(
-            color=0,
-            rgbcolor={0,0,0},
-            fillColor=0,
-            rgbfillColor={0,0,0}))),
-      Coordsys(
-        extent=[-50,-200; 50,200],
-        grid=[1,1],
-        scale=0.2));
-  end FluidStatePorts_b;
-  
+
+  connector HeatPorts_a
+    "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)"
+    extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
+    annotation (defaultComponentName="heatPorts_a",
+         Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-200,-50},{200,50}},
+          grid={1,1},
+          initialScale=0.2), graphics={
+          Rectangle(
+            extent={{-201,50},{200,-50}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-171,45},{-83,-45}},
+            lineColor={127,0,0},
+            fillColor={127,0,0},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-45,45},{43,-45}},
+            lineColor={127,0,0},
+            fillColor={127,0,0},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{82,45},{170,-45}},
+            lineColor={127,0,0},
+            fillColor={127,0,0},
+            fillPattern=FillPattern.Solid)}));
+  end HeatPorts_a;
+
+  connector HeatPorts_b
+    "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)"
+    extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
+    annotation (defaultComponentName="heatPorts_b",
+         Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-200,-50},{200,50}},
+          grid={1,1},
+          initialScale=0.2), graphics={
+          Rectangle(
+            extent={{-200,50},{200,-51}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-170,44},{-82,-46}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-44,46},{44,-44}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{82,45},{170,-45}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid)}));
+  end HeatPorts_b;
+
+  partial model PartialTwoPort "Partial component with two ports"
+    import Modelica.Constants;
+    outer Modelica_Fluid.System system "System wide properties";
+
+    replaceable package Medium = 
+        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        annotation (choicesAllMatching = true);
+
+    parameter Boolean allowFlowReversal = system.allowFlowReversal
+      "= true to allow flow reversal, false restricts to design direction (port_a -> port_b)"
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
+
+    Modelica_Fluid.Interfaces.FluidPort_a port_a(
+                                  redeclare package Medium = Medium,
+                       m_flow(min=if allowFlowReversal then -Constants.inf else 0))
+      "Fluid connector a (positive design flow direction is from port_a to port_b)"
+      annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+              rotation=0)));
+    Modelica_Fluid.Interfaces.FluidPort_b port_b(
+                                  redeclare package Medium = Medium,
+                       m_flow(max=if allowFlowReversal then +Constants.inf else 0))
+      "Fluid connector b (positive design flow direction is from port_a to port_b)"
+      annotation (Placement(transformation(extent={{110,-10},{90,10}}, rotation=
+               0), iconTransformation(extent={{110,-10},{90,10}})));
+    // Model structure, e.g. used for visualization
+  protected
+    parameter Boolean port_a_exposesState = false
+      "= true if port_a exposes the state of a fluid volume";
+    parameter Boolean port_b_exposesState = false
+      "= true if port_b.p exposes the state of a fluid volume";
+
+    annotation (
+      Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics),
+      Documentation(info="<html>
+<p>
+This partial model defines an interface for components with two ports. 
+The components may transport fluid and have internal storage. 
+The treatment of design flow direction and flow reversal are predefined. The variable
+</p>
+<ul>
+<li><tt>m_flow</tt> defines the mass flow rate in design direction, which is port_a.m_flow.</li> 
+</ul>
+<p>
+A derived component providing direct access to internal storage of mass or energy through port_a or port_b 
+should redefine the protected parameters port_a_exposesState and port_b_exposesState appropriately. 
+This will be visualized at the port icons, in order to improve the understanding of fluid model diagrams.
+</p>
+</html>"),
+      Icon(coordinateSystem(
+            preserveAspectRatio=true,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics={
+          Polygon(
+            points={{20,-65},{60,-80},{20,-95},{20,-65}},
+            lineColor={0,128,255},
+            smooth=Smooth.None,
+            fillColor={0,128,255},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points={{20,-70},{50,-80},{20,-90},{20,-70}},
+            lineColor={255,255,255},
+            smooth=Smooth.None,
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid,
+            visible=allowFlowReversal),
+          Line(
+            points={{55,-80},{-60,-80}},
+            color={0,128,255},
+            smooth=Smooth.None),
+          Ellipse(
+            extent={{-110,26},{-90,-24}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid,
+            visible=port_a_exposesState),
+          Ellipse(
+            extent={{90,25},{110,-25}},
+            lineColor={0,0,0},
+            fillColor={0,0,0},
+            fillPattern=FillPattern.Solid,
+            visible=port_b_exposesState)}));
+  end PartialTwoPort;
 end Interfaces;

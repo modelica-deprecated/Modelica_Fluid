@@ -1,5 +1,5 @@
 within Modelica_Fluid.Test.TestComponents.Utilities;
-model TestRegFunctions 
+model TestRegFunctions
   extends Modelica.Icons.Example;
   import Modelica_Fluid.Utilities.*;
   parameter Real delta=0.01;
