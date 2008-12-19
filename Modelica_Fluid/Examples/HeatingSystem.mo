@@ -55,12 +55,14 @@ model HeatingSystem "Simple model of a heating system"
         extent={{8,-10},{-8,10}},
         rotation=90)));
   Modelica.Thermal.HeatTransfer.Sources.FixedHeatFlow burner(
-                                                     Q_flow=1.6e3) 
+                                                     Q_flow=1.6e3,
+    T_ref=343.15,
+    alpha=-0.5) 
     annotation (Placement(transformation(extent={{-4,12},{16,32}}, rotation=0)));
-  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyState) 
+  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},   rotation=0)));
-  Modelica_Fluid.Pipes.LumpedPipe pipe(
+  Pipes.DistributedPipe pipe(
     redeclare package Medium = Medium,
     use_T_start=true,
     T_start=Modelica.SIunits.Conversions.from_degC(80),
@@ -68,14 +70,15 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
     diameter=0.01,
+    nNodes=1,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
     p_a_start=400000,
     p_b_start=390000,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss
-        (use_eta_nominal=true)) 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow) 
     annotation (Placement(transformation(extent={{10,-10},{30,10}},rotation=0)));
 
-  Modelica_Fluid.Pipes.LumpedPipe radiator(
+  Pipes.DistributedPipe radiator(
     use_T_start=true,
     redeclare package Medium = Medium,
     length=10,
@@ -83,11 +86,12 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
     diameter=0.01,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b,
     p_a_start=110000,
     p_b_start=105000,
+    nNodes=1,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss
-        (use_eta_nominal=true)) 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow) 
     annotation (Placement(transformation(extent={{20,-80},{0,-60}}, rotation=
             0)));
 
@@ -109,9 +113,9 @@ model HeatingSystem "Simple model of a heating system"
                                  annotation (Placement(transformation(extent=
             {{90,60},{110,80}}, rotation=0)));
   Modelica.Blocks.Sources.Step valveOpening(
-    height=0.1,
     startTime=2000,
-    offset=0.9)   annotation (Placement(transformation(extent={{20,60},{40,80}},
+    height=0.9,
+    offset=0.1)   annotation (Placement(transformation(extent={{20,60},{40,80}},
                   rotation=0)));
 equation
 tankLevel = tank.level;
@@ -122,8 +126,6 @@ tankLevel = tank.level;
                     color={0,127,255}));
   connect(pipe.port_b, valve.port_a) annotation (Line(points={{30,0},{42,0}},
         color={0,127,255}));
-  connect(burner.port, pipe.heatPort) annotation (Line(points={{16,22},{20,22},
-          {20,5.4}},     color={191,0,0}));
   connect(ambientTemperature.port, thermalConductor1.port_a) annotation (Line(
         points={{-10,-31},{10,-31},{10,-40}},
                                             color={191,0,0}));
@@ -147,6 +149,24 @@ tankLevel = tank.level;
       points={{41,70},{50,70},{50,6.4}},
       color={0,0,127},
       smooth=Smooth.None));
+  connect(pump.port_b, massFlowRate.port_a) annotation (Line(
+      points={{-40,0},{-30,0}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(sensor_T_2.T, coldWaterTemperature) annotation (Line(
+      points={{-47,-46},{-50,-46},{-50,-90},{80,-90},{80,-68},{98,-68}},
+      color={0,0,127},
+      smooth=Smooth.None));
+
+  connect(burner.port, pipe.heatPorts[1]) annotation (Line(
+      points={{16,22},{20.1,22},{20.1,5.2}},
+      color={191,0,0},
+      smooth=Smooth.None));
+  connect(thermalConductor1.port_b, radiator.heatPorts[1]) annotation (Line(
+      points={{10,-56},{10,-64.8},{9.9,-64.8}},
+      color={191,0,0},
+      smooth=Smooth.None));
+
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}),
                       graphics),
@@ -157,36 +177,28 @@ tankLevel = tank.level;
           lineColor={0,0,255},
           textString="H")}), Documentation(info="<html>
 <p>
-Simple heating system with a closed flow cycle. It is set up for a steady-state simulation with
-the option system.energyDynamics==Types.Dynamics.SteadyState (see Advanced tab of the system object).
-In order to define a proper initial state and to avoid a circular equality for mass flow rates, 
-the tank.massDynamics, i.e. the tank level, is modified locally to Types.Dynamics.FixedInitial.
-This results in one state left: tank.m, which is constant though as outflow and inflow are equal 
-with a steady-state flow cycle.
+Simple heating system with a closed flow cycle. It is set up for steady-state initial values.
+After 2000s of simulation time the valve fully opens. A simple idealized control is been embedded 
+into the respective components, so that the heating system can be regulated with the valve:
+the pump controls the pressure, the burner controls the temperature. 
 </p>
 <p>
-Note that moreover tank.use_d_nominal was configured to true, in order to decouple the mass balance 
-from the energy balance when using the <tt>Modelica.Media.Water.StandardWater</tt> medium. 
+One can investigate the temperatures and flows for different settings of <tt>system.energyDynamics</tt> 
+(see Assumptions tab of the system object).
+With <tt>system.energyDynamics==Types.Dynamics.SteadyState</tt> all but one dynamic states are eliminated.
+The left state <tt>tank.m</tt> is to account for the closed flow cycle. It is constant as outflow and inflow are equal 
+in a steady-state simulation.
+</p>
+<p>
+Note that a closed flow cycle generally causes circular equalities for the mass flow rates and leaves the pressure undefined.
+This is why the tank.massDynamics, i.e. the tank level determining the port pressure, is modified locally to Types.Dynamics.FixedInitial.
+Moreover tank.use_d_nominal is configured to true, in order to decouple the mass balance 
+from the energy balance when using the <tt>Modelica.Media.Water.StandardWater</tt> medium and performing a steady-state simulation. 
 Alternatively a simpler medium model, such as <tt>Modelica.Media.Water.ConstantPropertyLiquidWater</tt>, 
 could be used.
 </p>
-<p>
-After 2000s of simulation time the valve fully opens. One can investigate the temperatures 
-and mass flow rates for different settings of system.energyDynamics.
-</p>
 </html>
-"), experiment(StopTime=6000));
-  connect(pump.port_b, massFlowRate.port_a) annotation (Line(
-      points={{-40,0},{-30,0}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(thermalConductor1.port_b, radiator.heatPort) annotation (Line(
-      points={{10,-56},{10,-64.6}},
-      color={191,0,0},
-      smooth=Smooth.None));
-  connect(sensor_T_2.T, coldWaterTemperature) annotation (Line(
-      points={{-47,-46},{-50,-46},{-50,-90},{80,-90},{80,-68},{98,-68}},
-      color={0,0,127},
-      smooth=Smooth.None));
-
+"), experiment(StopTime=6000),
+    Commands(file(ensureSimulated=true)=
+        "Scripts/Examples/HeatingSystem/plotResults.mos" "plotResults"));
 end HeatingSystem;
