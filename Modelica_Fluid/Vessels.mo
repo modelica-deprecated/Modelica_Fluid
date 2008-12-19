@@ -37,7 +37,8 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     Qs_flow = 0,
     final initialize_p = false,
     final p_start = p_ambient,
-    use_d_nominal = false);
+    final use_d_nominal = false,
+    final d_nominal = 0);
 
   // Tank geometry
   parameter SI.Height height "Height of tank";
@@ -68,7 +69,7 @@ equation
   medium.p = p_ambient;
 
   // Source termsEnergy balance
-  if Medium.singleState then
+  if Medium.singleState or energyDynamics == Types.Dynamics.SteadyState then
     Ws_flow = 0
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
   else
@@ -170,6 +171,7 @@ Implemented trace substances.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+equation
 
 end OpenTank;
 
@@ -179,7 +181,8 @@ model Tank
     Qs_flow = 0,
     final initialize_p = false,
     final p_start = p_ambient,
-    final use_d_nominal = false);
+    final use_d_nominal = false,
+    final d_nominal = 0);
 
     import Modelica.Constants;
     import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
@@ -309,7 +312,7 @@ end for;
 
   // Energy balance
   Hs_flow = sum(H_flow_top) + sum(port_b_H_flow_bottom);
-  if Medium.singleState then
+  if Medium.singleState or energyDynamics == Types.Dynamics.SteadyState then
     Ws_flow = 0
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
   else
