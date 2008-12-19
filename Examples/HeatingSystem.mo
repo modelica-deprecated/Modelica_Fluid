@@ -11,9 +11,8 @@ model HeatingSystem "Simple model of a heating system"
     height=2,
     level_start=1,
     nPorts=2,
-    massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-    use_d_nominal=true) 
-              annotation (Placement(transformation(extent={{-90,30},{-70,50}},
+    massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial) 
+              annotation (Placement(transformation(extent={{-80,30},{-60,50}},
           rotation=0)));
   Machines.ControlledPump pump(
     redeclare package Medium = Medium,
@@ -28,7 +27,7 @@ model HeatingSystem "Simple model of a heating system"
     p_b_start=400000,
     p_a_nominal=100000,
     p_b_nominal=200000) 
-    annotation (Placement(transformation(extent={{-60,10},{-40,30}}, rotation=
+    annotation (Placement(transformation(extent={{-50,10},{-30,30}}, rotation=
            0)));
   Modelica_Fluid.Valves.ValveIncompressible valve(
     redeclare package Medium = Medium,
@@ -39,10 +38,10 @@ model HeatingSystem "Simple model of a heating system"
     annotation (Placement(transformation(extent={{70,-80},{50,-60}},
                                                                    rotation=0)));
   Modelica.Blocks.Interfaces.RealOutput flowRate 
-    annotation (Placement(transformation(extent={{-16,34},{-4,46}}, rotation=
+    annotation (Placement(transformation(extent={{-6,34},{6,46}},   rotation=
             0)));
   Sensors.MassFlowRate massFlowRate(redeclare package Medium = Medium) 
-    annotation (Placement(transformation(extent={{-30,30},{-10,10}}, rotation=
+    annotation (Placement(transformation(extent={{-20,30},{0,10}},   rotation=
            0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedTemperature ambientTemperature(
                                                                     T=system.T_ambient) 
@@ -57,8 +56,8 @@ model HeatingSystem "Simple model of a heating system"
                                                      Q_flow=1.6e3,
     T_ref=343.15,
     alpha=-0.5) 
-    annotation (Placement(transformation(extent={{6,30},{26,50}},  rotation=0)));
-  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
+    annotation (Placement(transformation(extent={{16,30},{36,50}}, rotation=0)));
+  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial)
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},   rotation=0)));
   Pipes.DistributedPipe pipe(
@@ -75,7 +74,7 @@ model HeatingSystem "Simple model of a heating system"
     p_b_start=390000,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss)
-    annotation (Placement(transformation(extent={{20,10},{40,30}}, rotation=0)));
+    annotation (Placement(transformation(extent={{30,10},{50,30}}, rotation=0)));
 
   Pipes.DistributedPipe radiator(
     use_T_start=true,
@@ -109,8 +108,8 @@ model HeatingSystem "Simple model of a heating system"
     annotation (Placement(transformation(extent={{-20,-60},{-40,-40}},
           rotation=0)));
   Modelica.Blocks.Interfaces.RealOutput tankLevel 
-                                 annotation (Placement(transformation(extent={{-60,34},
-            {-48,46}},          rotation=0)));
+                                 annotation (Placement(transformation(extent={{-56,34},
+            {-44,46}},          rotation=0)));
   Modelica.Blocks.Sources.Step valveOpening(
     startTime=2000,
     height=0.9,
@@ -118,12 +117,12 @@ model HeatingSystem "Simple model of a heating system"
                   rotation=0)));
 equation
 tankLevel = tank.level;
-  connect(massFlowRate.m_flow, flowRate)        annotation (Line(points={{-20,31},
-          {-20,40},{-10,40}},                   color={0,0,127}));
-  connect(massFlowRate.port_b, pipe.port_a) annotation (Line(points={{-10,20},{
-          -10,20},{20,20}},
+  connect(massFlowRate.m_flow, flowRate)        annotation (Line(points={{-10,31},
+          {-10,40},{0,40}},                     color={0,0,127}));
+  connect(massFlowRate.port_b, pipe.port_a) annotation (Line(points={{0,20},{0,
+          20},{30,20}},
                     color={0,127,255}));
-  connect(pipe.port_b, valve.port_a) annotation (Line(points={{40,20},{80,20},{
+  connect(pipe.port_b, valve.port_a) annotation (Line(points={{50,20},{80,20},{
           80,-70},{70,-70}},
         color={0,127,255}));
   connect(ambientTemperature.port, wall.port_a)              annotation (Line(
@@ -136,11 +135,11 @@ tankLevel = tank.level;
                                             annotation (Line(points={{-30,-60},
           {-30,-70},{0,-70}}, color={0,127,255}));
   connect(radiator.port_b, tank.ports[1]) annotation (Line(
-      points={{0,-70},{-80,-70},{-80,32}},
+      points={{0,-70},{-70,-70},{-70,32}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[2], pump.port_a) annotation (Line(
-      points={{-80,28},{-80,20},{-60,20}},
+      points={{-70,28},{-70,20},{-50,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(valveOpening.y, valve.opening) annotation (Line(
@@ -148,7 +147,7 @@ tankLevel = tank.level;
       color={0,0,127},
       smooth=Smooth.None));
   connect(pump.port_b, massFlowRate.port_a) annotation (Line(
-      points={{-40,20},{-30,20}},
+      points={{-30,20},{-20,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(sensor_T_return.T, T_return)        annotation (Line(
@@ -157,7 +156,7 @@ tankLevel = tank.level;
       smooth=Smooth.None));
 
   connect(burner.port, pipe.heatPorts[1]) annotation (Line(
-      points={{26,40},{30.1,40},{30.1,25.2}},
+      points={{36,40},{40.1,40},{40.1,25.2}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(wall.port_b, radiator.heatPorts[1])              annotation (Line(
@@ -190,10 +189,6 @@ in a steady-state simulation.
 <p>
 Note that a closed flow cycle generally causes circular equalities for the mass flow rates and leaves the pressure undefined.
 This is why the tank.massDynamics, i.e. the tank level determining the port pressure, is modified locally to Types.Dynamics.FixedInitial.
-Moreover tank.use_d_nominal is configured to true, in order to decouple the mass balance 
-from the energy balance when using the <tt>Modelica.Media.Water.StandardWater</tt> medium and performing a steady-state simulation. 
-Alternatively a simpler medium model, such as <tt>Modelica.Media.Water.ConstantPropertyLiquidWater</tt>, 
-could be used.
 </p>
 Furthermore note that a steady-state temperature of the tank is only well defined if fluid flows through the cycle. This is because the
 tank is assumed to be perfectly isolated. If a steady-state simultion shall be started with the valve fully closed, then a thermal 
@@ -205,7 +200,7 @@ coupling between the tank and its environment should be established.
     Commands(file(ensureSimulated=true)=
         "Scripts/Examples/HeatingSystem/plotResults.mos" "plotResults"));
   connect(sensor_T_forward.port, pipe.port_b) annotation (Line(
-      points={{60,30},{60,20},{40,20}},
+      points={{60,30},{60,20},{50,20}},
       color={0,127,255},
       smooth=Smooth.None));
 end HeatingSystem;
