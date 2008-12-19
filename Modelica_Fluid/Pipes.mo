@@ -323,12 +323,13 @@ pipe wall/environment).
        "nNodes needs to be at least 2 for modelStructure av_vb, as flow model disappears otherwise!");
 
     // distributed volume
-    /* Note: don't use half mass balances as this makes connections (unnecessary?) stiff; 
-           and as one might wonder about the uneven distribution of heat capacities behind heatPort
-  if modelStructure == Types.ModelStructure.av_vb then
-    fluidVolume = cat(1, {V/(n-1)/2}, fill(V/(n-1), n-2), {V/(n-1)/2});
-  */
-    fluidVolume=fill(V/n, n);
+    if modelStructure == Types.ModelStructure.av_vb then
+      // half volumes at the ports for modelStructure av_vb
+      fluidVolume = cat(1, {V/(n-1)/2}, fill(V/(n-1), n-2), {V/(n-1)/2});
+    else
+      // even distribution of volumes else
+      fluidVolume=fill(V/n, n);
+    end if;
     // Source/sink terms for mass and energy balances
     Ws_flow=zeros(n);
     for i in 1:n loop
