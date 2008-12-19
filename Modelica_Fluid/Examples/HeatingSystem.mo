@@ -75,7 +75,7 @@ model HeatingSystem "Simple model of a heating system"
     p_a_start=400000,
     p_b_start=390000,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow) 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss)
     annotation (Placement(transformation(extent={{10,-10},{30,10}},rotation=0)));
 
   Pipes.DistributedPipe radiator(
@@ -91,7 +91,7 @@ model HeatingSystem "Simple model of a heating system"
     p_b_start=105000,
     nNodes=1,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow) 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss)
     annotation (Placement(transformation(extent={{20,-80},{0,-60}}, rotation=
             0)));
 
@@ -196,6 +196,11 @@ Moreover tank.use_d_nominal is configured to true, in order to decouple the mass
 from the energy balance when using the <tt>Modelica.Media.Water.StandardWater</tt> medium and performing a steady-state simulation. 
 Alternatively a simpler medium model, such as <tt>Modelica.Media.Water.ConstantPropertyLiquidWater</tt>, 
 could be used.
+</p>
+Furthermore note that a steady-state temperature of the tank is only well defined if fluid flows through the cycle. This is because the
+tank is assumed to be perfectly isolated. If a steady-state simultion shall be started with the valve fully closed, then a thermal 
+coupling between the tank and its environment should be established.
+<p>
 </p>
 </html>
 "), experiment(StopTime=6000),
