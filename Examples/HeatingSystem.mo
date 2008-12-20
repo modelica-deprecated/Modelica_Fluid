@@ -26,7 +26,7 @@ model HeatingSystem "Simple model of a heating system"
     p_a_start=110000,
     p_b_start=400000,
     p_a_nominal=100000,
-    p_b_nominal=200000) 
+    p_b_nominal=130000) 
     annotation (Placement(transformation(extent={{-50,10},{-30,30}}, rotation=
            0)));
   Modelica_Fluid.Valves.ValveIncompressible valve(
@@ -34,7 +34,7 @@ model HeatingSystem "Simple model of a heating system"
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=0.01,
     compute_T=true,
-    dp_nominal=50000) 
+    dp_nominal=10000) 
     annotation (Placement(transformation(extent={{70,-80},{50,-60}},
                                                                    rotation=0)));
   Modelica.Blocks.Interfaces.RealOutput flowRate 
