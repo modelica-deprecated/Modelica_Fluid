@@ -57,10 +57,10 @@ model HeatingSystem "Simple model of a heating system"
     T_ref=343.15,
     alpha=-0.5) 
     annotation (Placement(transformation(extent={{16,30},{36,50}}, rotation=0)));
-  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial)
+  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},   rotation=0)));
-  Pipes.DistributedPipe pipe(
+  Pipes.DistributedPipe heater(
     redeclare package Medium = Medium,
     use_T_start=true,
     T_start=Modelica.SIunits.Conversions.from_degC(80),
@@ -70,8 +70,6 @@ model HeatingSystem "Simple model of a heating system"
     diameter=0.01,
     nNodes=1,
     modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
-    p_a_start=400000,
-    p_b_start=390000,
     redeclare model PressureLoss = 
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss)
     annotation (Placement(transformation(extent={{30,10},{50,30}}, rotation=0)));
@@ -84,12 +82,10 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
     diameter=0.01,
-    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b,
-    p_a_start=110000,
-    p_b_start=105000,
     nNodes=1,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss)
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b) 
     annotation (Placement(transformation(extent={{20,-80},{0,-60}}, rotation=
             0)));
 
@@ -115,16 +111,28 @@ model HeatingSystem "Simple model of a heating system"
     height=0.9,
     offset=0.1)   annotation (Placement(transformation(extent={{36,-27},{50,-13}},
                   rotation=0)));
+  Pipes.DistributedPipe pipe(
+    redeclare package Medium = Medium,
+    use_T_start=true,
+    T_start=Modelica.SIunits.Conversions.from_degC(80),
+    redeclare model HeatTransfer = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
+    diameter=0.01,
+    redeclare model PressureLoss = 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss,
+    length=10) 
+    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+                                                                   rotation=-90,
+        origin={80,-20})));
+
 equation
 tankLevel = tank.level;
   connect(massFlowRate.m_flow, flowRate)        annotation (Line(points={{-10,31},
           {-10,40},{0,40}},                     color={0,0,127}));
-  connect(massFlowRate.port_b, pipe.port_a) annotation (Line(points={{0,20},{0,
+  connect(massFlowRate.port_b, heater.port_a) 
+                                            annotation (Line(points={{0,20},{0,
           20},{30,20}},
                     color={0,127,255}));
-  connect(pipe.port_b, valve.port_a) annotation (Line(points={{50,20},{80,20},{
-          80,-70},{70,-70}},
-        color={0,127,255}));
   connect(ambientTemperature.port, wall.port_a)              annotation (Line(
         points={{-1,-20},{10,-20},{10,-40}},color={191,0,0}));
   connect(sensor_T_forward.T, T_forward)     annotation (Line(points={{67,40},{
@@ -134,10 +142,6 @@ tankLevel = tank.level;
   connect(sensor_T_return.port, radiator.port_b) 
                                             annotation (Line(points={{-30,-60},
           {-30,-70},{0,-70}}, color={0,127,255}));
-  connect(radiator.port_b, tank.ports[1]) annotation (Line(
-      points={{0,-70},{-70,-70},{-70,32}},
-      color={0,127,255},
-      smooth=Smooth.None));
   connect(tank.ports[2], pump.port_a) annotation (Line(
       points={{-70,28},{-70,20},{-50,20}},
       color={0,127,255},
@@ -155,13 +159,31 @@ tankLevel = tank.level;
       color={0,0,127},
       smooth=Smooth.None));
 
-  connect(burner.port, pipe.heatPorts[1]) annotation (Line(
+  connect(burner.port, heater.heatPorts[1]) 
+                                          annotation (Line(
       points={{36,40},{40.1,40},{40.1,25.2}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(wall.port_b, radiator.heatPorts[1])              annotation (Line(
       points={{10,-56},{10,-64.8},{9.9,-64.8}},
       color={191,0,0},
+      smooth=Smooth.None));
+  connect(sensor_T_forward.port, heater.port_b) 
+                                              annotation (Line(
+      points={{60,30},{60,20},{50,20}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(heater.port_b, pipe.port_a) annotation (Line(
+      points={{50,20},{80,20},{80,-10}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(pipe.port_b, valve.port_a) annotation (Line(
+      points={{80,-30},{80,-70},{70,-70}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(radiator.port_b, tank.ports[1]) annotation (Line(
+      points={{0,-70},{-70,-70},{-70,32}},
+      color={0,127,255},
       smooth=Smooth.None));
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
@@ -190,17 +212,18 @@ in a steady-state simulation.
 Note that a closed flow cycle generally causes circular equalities for the mass flow rates and leaves the pressure undefined.
 This is why the tank.massDynamics, i.e. the tank level determining the port pressure, is modified locally to Types.Dynamics.FixedInitial.
 </p>
+<p>
 Furthermore note that a steady-state temperature of the tank is only well defined if fluid flows through the cycle. This is because the
 tank is assumed to be perfectly isolated. If a steady-state simultion shall be started with the valve fully closed, then a thermal 
 coupling between the tank and its environment should be established.
+</p>
 <p>
+Last but not least it is worth noting that the idialized direct connection between the heater and the pipe, resulting in equal port pressures,
+is treated as high-index DAE, as opposed to a nonlinear equation system for connected pressure loss correlations. A pressure loss correlation 
+could be additionally introduced to model the fitting between the heater and the pipe, e.g. if diameters change.
 </p>
 </html>
 "), experiment(StopTime=6000),
     Commands(file(ensureSimulated=true)=
         "Scripts/Examples/HeatingSystem/plotResults.mos" "plotResults"));
-  connect(sensor_T_forward.port, pipe.port_b) annotation (Line(
-      points={{60,30},{60,20},{50,20}},
-      color={0,127,255},
-      smooth=Smooth.None));
 end HeatingSystem;
