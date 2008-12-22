@@ -123,40 +123,26 @@ ideal, i.e., it does not influence the fluid.
                                             min=0)
       "Density of the passing fluid" 
       annotation (Placement(transformation(
-          origin={0,-110},
-          extent={{-10,-10},{10,10}},
+          origin={0,110},
+          extent={{10,-10},{-10,10}},
           rotation=270)));
     parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
   annotation (defaultComponentName="density",
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}},
           grid={1,1}),    graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}},
           grid={1,1}), graphics={
           Text(
-            extent={{-150,80},{150,120}},
-            textString="%name",
-            lineColor={0,0,255}),
-          Text(
-            extent={{146,-80},{-14,-132}},
+            extent={{150,142},{-10,90}},
             lineColor={0,0,0},
             textString="d"),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{0,100},{0,70}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(
-            points={{30,-19},{-60,-19}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-4},{60,-19},{20,-34},{20,-4}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+          Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the volume flow rate flowing from port_a to port_b. 
@@ -280,68 +266,54 @@ ideal, i.e., it does not influence the fluid.
                                              displayUnit="degC")
       "Temperature of the passing fluid" 
       annotation (Placement(transformation(
-          origin={0,-110},
-          extent={{-10,-10},{10,10}},
+          origin={0,110},
+          extent={{10,-10},{-10,10}},
           rotation=270)));
     parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, temperature is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
 
   annotation (defaultComponentName="temperature",
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}},
           grid={1,1}),
             graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}},
           grid={1,1}), graphics={
-          Text(
-            extent={{-150,110},{150,150}},
-            textString="%name",
-            lineColor={0,0,255}),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{0,100},{0,50}}, color={0,0,127}),
           Line(points={{-92,0},{100,0}}, color={0,128,255}),
           Ellipse(
-            extent={{-20,-88},{20,-50}},
+            extent={{-20,-68},{20,-30}},
             lineColor={0,0,0},
             lineThickness=0.5,
             fillColor={191,0,0},
             fillPattern=FillPattern.Solid),
           Rectangle(
-            extent={{-12,50},{12,-58}},
+            extent={{-12,50},{12,-34}},
             lineColor={191,0,0},
             fillColor={191,0,0},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},{
-                12,90},{12,50},{-12,50}},
+            points={{-12,50},{-12,70},{-10,76},{-6,78},{0,80},{6,78},{10,76},{
+                12,70},{12,50},{-12,50}},
             lineColor={0,0,0},
             lineThickness=0.5),
           Line(
-            points={{-12,50},{-12,-54}},
+            points={{-12,50},{-12,-35}},
             color={0,0,0},
             thickness=0.5),
           Line(
-            points={{12,50},{12,-54}},
+            points={{12,50},{12,-34}},
             color={0,0,0},
             thickness=0.5),
           Line(points={{-40,-10},{-12,-10}}, color={0,0,0}),
-          Line(points={{-40,30},{-12,30}}, color={0,0,0}),
-          Line(points={{-40,70},{-12,70}}, color={0,0,0}),
+          Line(points={{-40,20},{-12,20}}, color={0,0,0}),
+          Line(points={{-40,50},{-12,50}}, color={0,0,0}),
           Text(
-            extent={{120,-40},{0,-90}},
+            extent={{110,140},{-10,90}},
             lineColor={0,0,0},
-            textString="T"),
-          Line(
-            points={{40,80},{-50,80}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{30,95},{70,80},{30,65},{30,95}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+            textString="T")}),
     Documentation(info="<HTML>
 <p>
 This component monitors the temperature of the passing fluid. 
@@ -408,8 +380,8 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
                                                 final unit="J/kg")
       "Specific enthalpy of the passing fluid" 
       annotation (Placement(transformation(
-          origin={0,-110},
-          extent={{-10,-10},{10,10}},
+          origin={0,110},
+          extent={{10,-10},{-10,10}},
           rotation=270)));
 
     parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
@@ -417,31 +389,17 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
       annotation(Dialog(tab="Advanced"));
 
   annotation (defaultComponentName="specificEnthalpy",
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
           Text(
-            extent={{-150,80},{150,120}},
-            textString="%name",
-            lineColor={0,0,255}),
-          Text(
-            extent={{168,-71},{8,-123}},
+            extent={{140,141},{-20,89}},
             lineColor={0,0,0},
             textString="h"),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{0,100},{0,70}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(
-            points={{28,-15},{-62,-15}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{18,0},{58,-15},{18,-30},{18,0}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+          Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific enthalpy of passing fluid. 
@@ -499,39 +457,25 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
                                             final unit="J/(kg.K)")
       "Specific entropy of the passing fluid" 
       annotation (Placement(transformation(
-          origin={0,-110},
-          extent={{-10,-10},{10,10}},
+          origin={0,110},
+          extent={{10,-10},{-10,10}},
           rotation=270)));
     parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, specific entropy is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
 
   annotation (defaultComponentName="specificEntropy",
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
           Text(
-            extent={{-150,80},{150,120}},
-            textString="%name",
-            lineColor={0,0,255}),
-          Text(
-            extent={{168,-71},{8,-123}},
+            extent={{140,141},{-20,89}},
             lineColor={0,0,0},
             textString="s"),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{0,100},{0,70}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(
-            points={{30,-19},{-60,-19}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-4},{60,-19},{20,-34},{20,-4}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+          Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the specific entropy of the passing fluid. 
@@ -614,8 +558,8 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
     Modelica.Blocks.Interfaces.RealOutput C
       "Trace substance of the passing fluid" 
       annotation (Placement(transformation(
-          origin={0,-110},
-          extent={{-10,-10},{10,10}},
+          origin={0,110},
+          extent={{10,-10},{-10,10}},
           rotation=270)));
     parameter String substanceName = "CO2" "Name of trace substance";
     parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
@@ -623,31 +567,17 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
       annotation(Dialog(tab="Advanced"));
 
   annotation (defaultComponentName="traceSubstance",
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
           Text(
-            extent={{-150,80},{150,120}},
-            textString="%name",
-            lineColor={0,0,255}),
-          Text(
-            extent={{168,-71},{8,-123}},
+            extent={{140,141},{-20,89}},
             lineColor={0,0,0},
             textString="C"),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{0,100},{0,70}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(
-            points={{30,-19},{-60,-19}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-4},{60,-19},{20,-34},{20,-4}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+          Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the trace substance of the passing fluid. 
@@ -683,36 +613,22 @@ The sensor is ideal, i.e. it does not influence the fluid.
                                                  final unit="kg/s")
       "Mass flow rate from port_a to port_b" annotation (Placement(
           transformation(
-          origin={0,-110},
-          extent={{-10,-10},{10,10}},
+          origin={0,110},
+          extent={{10,-10},{-10,10}},
           rotation=270)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
-          Text(
-            extent={{-150,80},{150,120}},
-            textString="%name",
-            lineColor={0,0,255}),
           Line(points={{70,0},{100,0}}, color={0,128,255}),
           Text(
-            extent={{178,-81},{18,-133}},
+            extent={{170,141},{10,89}},
             lineColor={0,0,0},
             textString="m_flow"),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
-          Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(
-            points={{32,-21},{-58,-21}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{22,-6},{62,-21},{22,-36},{22,-6}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+          Line(points={{0,100},{0,70}}, color={0,0,127}),
+          Line(points={{-100,0},{-70,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the mass flow rate flowing from port_a to port_b. 
@@ -731,39 +647,25 @@ The sensor is ideal, i.e., it does not influence the fluid.
                                                  final unit="m3/s")
       "Volume flow rate from port_a to port_b" 
       annotation (Placement(transformation(
-          origin={0,-110},
-          extent={{-10,-10},{10,10}},
+          origin={0,110},
+          extent={{10,-10},{-10,10}},
           rotation=270)));
     parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}), graphics={
           Text(
-            extent={{-150,80},{150,120}},
-            textString="%name",
-            lineColor={0,0,255}),
-          Text(
-            extent={{188,-71},{28,-123}},
+            extent={{160,141},{0,89}},
             lineColor={0,0,0},
             textString="V_flow"),
-          Line(points={{0,-70},{0,-100}}, color={0,0,127}),
+          Line(points={{0,100},{0,70}}, color={0,0,127}),
           Line(points={{-100,0},{-70,0}}, color={0,128,255}),
-          Line(points={{70,0},{100,0}}, color={0,128,255}),
-          Line(
-            points={{30,-27},{-60,-27}},
-            color={0,128,255},
-            smooth=Smooth.None),
-          Polygon(
-            points={{20,-12},{60,-27},{20,-42},{20,-12}},
-            lineColor={0,128,255},
-            smooth=Smooth.None,
-            fillColor={0,128,255},
-            fillPattern=FillPattern.Solid)}),
+          Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
 This component monitors the volume flow rate flowing from port_a to port_b. 
@@ -1172,27 +1074,7 @@ as signal.
 
     partial model PartialFlowSensor
       "Partial component to model sensors that measure flow properties"
-      import Modelica.Constants;
-      outer Modelica_Fluid.System system "System properties";
-
-      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
-        "Medium in the sensor" 
-        annotation(choicesAllMatching=true);
-
-      Modelica_Fluid.Interfaces.FluidPort_a port_a(
-        redeclare package Medium=Medium,
-        m_flow(min=if allowFlowReversal then -Constants.inf else 0.0)) 
-        annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
-              rotation=0)));
-      Modelica_Fluid.Interfaces.FluidPort_b port_b(
-        redeclare package Medium=Medium,
-        m_flow(max=if allowFlowReversal then +Constants.inf else 0.0)) 
-        annotation (Placement(transformation(extent={{110,-10},{90,10}},
-              rotation=0)));
-
-      parameter Boolean allowFlowReversal = system.allowFlowReversal
-        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
-        annotation(Dialog(tab="Assumptions"), Evaluate=true);
+      extends Modelica_Fluid.Interfaces.PartialTwoPort;
 
       annotation (Documentation(info="<html>
 <p>

@@ -97,11 +97,11 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(sine.y, massFlowRate1.m_flow_in) annotation (Line(
-      points={{-79,20},{-70,20},{-70,46},{-59.3,46}},
+      points={{-79,20},{-70,20},{-70,48},{-60,48}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(sine.y, massFlowRate2.m_flow_in) annotation (Line(
-      points={{-79,20},{-70,20},{-70,-4},{-59.3,-4}},
+      points={{-79,20},{-70,20},{-70,-2},{-60,-2}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(massFlowRate3.ports[1], TemperatureJunction.port)    annotation (Line(
@@ -109,7 +109,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(sine.y, massFlowRate3.m_flow_in) annotation (Line(
-      points={{-79,20},{-70,20},{-70,-74},{-59.3,-74}},
+      points={{-79,20},{-70,20},{-70,-72},{-60,-72}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(TemperatureJunction.port, junctionIdeal.port_1) annotation (Line(
@@ -117,17 +117,16 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(temperatureTwoPort.port_b, openTankCold2.ports[1]) annotation (Line(
-        points={{0,-10},{0,-6},{29.5,-6},{29.5,0}},color={0,127,255}));
+        points={{0,-10},{0,-6},{30,-6},{30,0}},    color={0,127,255}));
   connect(Temperature.port, openTankCold1.ports[1]) annotation (Line(
-        points={{-10,40},{6,40},{6,56},{29.5,56},{29.5,60}},
-                                                           color={0,127,255}));
+        points={{-10,40},{6,40},{6,56},{30,56},{30,60}},   color={0,127,255}));
   connect(Temperature.port, openTankHot1.ports[1]) annotation (Line(
-        points={{-10,40},{30,40},{30,40},{69.5,40}},   color={0,127,255}));
+        points={{-10,40},{30,40},{30,40},{70,40}},     color={0,127,255}));
   connect(temperatureTwoPort.port_b, openTankHot2.ports[1]) annotation (Line(
-        points={{0,-10},{34,-10},{34,-20},{69.5,-20}},   color={0,127,255}));
+        points={{0,-10},{34,-10},{34,-20},{70,-20}},     color={0,127,255}));
   connect(junctionIdeal.port_3, openTankCold3.ports[1]) annotation (Line(points={{30,-70},
-          {30,-65},{30,-60},{29.5,-60}},
+          {30,-65},{30,-60},{30,-60}},
                                 color={0,127,255}));
   connect(junctionIdeal.port_2, openTankHot3.ports[1]) annotation (Line(points={{40,-80},
-          {55.5,-80},{55.5,-80},{69.5,-80}},             color={0,127,255}));
+          {55.5,-80},{55.5,-80},{70,-80}},               color={0,127,255}));
 end TestTemperatureSensor;

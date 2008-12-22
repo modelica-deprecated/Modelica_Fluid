@@ -92,8 +92,8 @@ equation
   annotation (
     Commands(file(ensureSimulated=true)="Scripts/Examples/InverseParameterization/plotResults.mos"
         "plotResults"),
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-            {100,100}}),
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+            100,100}}),
             graphics),
     experiment(StopTime=10, NumberOfIntervals=10000),
     Documentation(info="<html>

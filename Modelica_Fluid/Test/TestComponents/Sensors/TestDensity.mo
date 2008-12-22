@@ -58,7 +58,7 @@ model TestDensity
         transformation(extent={{50,50},{70,70}}, rotation=0)));
 equation
   connect(sine1.y, massFlowRate2.m_flow_in) annotation (Line(
-      points={{-79,-10},{-70,-10},{-70,-4},{-59.3,-4}},
+      points={{-79,-10},{-70,-10},{-70,-2},{-60,-2}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(massFlowRate2.ports[1], density2_1.port_a) 
@@ -80,7 +80,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(sine.y, massFlowRate1.m_flow_in) annotation (Line(
-      points={{-79,60},{-70,60},{-70,66},{-59.3,66}},
+      points={{-79,60},{-70,60},{-70,68},{-60,68}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(massFlowRate1.ports[1], density1_1.port) 

@@ -90,8 +90,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-            {100,100}},
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+            100,100}},
         grid={1,1}),
             graphics),
     Documentation(info="<html>
