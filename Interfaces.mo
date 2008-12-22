@@ -449,12 +449,7 @@ are obtained as function of the thermodynamic <tt>state</tt> of the flow segment
 An extending model implementing this interface needs to define the relation between the predefined pressure drops <tt>dp[n]</tt> 
 and <tt>m_flow[n]</tt>.
 </p>
-</html>"), Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}), graphics={Line(
-            points={{-80,-50},{-80,50},{80,-50},{80,50}},
-            color={0,0,255},
-            smooth=Smooth.None,
-            thickness=1)}));
+</html>"));
 
       end PartialPressureLoss;
 
@@ -497,20 +492,6 @@ and the boundary temperatures <tt>heatPorts[n].T</tt>.
 An extending model implementing this interface needs to define the relation between the predefined fluid temperatures <tt>T[n]</tt>,
 the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q_flow[n]</tt>.
 </p>
-</html>"),
-        Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Ellipse(
-            extent={{-60,64},{60,-56}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.Sphere,
-            fillColor={232,0,0}), Text(
-            extent={{-38,26},{40,-14}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.Sphere,
-            fillColor={232,0,0},
-            textString="%name")}),
-      Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
-              100,100}}),
-                      graphics));
+</html>"));
   end PartialHeatTransfer;
 end Interfaces;

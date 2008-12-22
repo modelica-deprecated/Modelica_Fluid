@@ -711,7 +711,12 @@ as well as the actual densities d_act[n] and the actual viscosities eta_act[n] o
 Note that no events are raised on flow reversal. This needs to be treated by an extending model, 
 e.g. with numerical smoothing or by raising events as appropriate.
 </p>
-</html>"));
+</html>"),     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}}), graphics={Line(
+                points={{-80,-50},{-80,50},{80,-50},{80,50}},
+                color={0,0,255},
+                smooth=Smooth.None,
+                thickness=1)}));
 
           end PartialFlowPressureLoss;
 
@@ -1164,16 +1169,18 @@ b has the same sign of the change of density.</p>
 
       annotation (Documentation(info="<html>
 Base class for heat transfer models that can be used in pipe models.
-</html>"),
-        Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
-                100,100}}),
-                        graphics),
-          Icon(graphics={Rectangle(
-                extent={{-80,60},{82,-60}},
+</html>"),Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+                  {100,100}}), graphics={Rectangle(
+                extent={{-80,60},{80,-60}},
                 pattern=LinePattern.None,
                 lineColor={0,0,0},
                 fillColor={255,0,0},
-                fillPattern=FillPattern.HorizontalCylinder)}));
+                fillPattern=FillPattern.HorizontalCylinder), Text(
+                extent={{-40,22},{38,-18}},
+                lineColor={0,0,0},
+                fillPattern=FillPattern.Sphere,
+                fillColor={232,0,0},
+                textString="%name")}));
     end PartialFlowHeatTransfer;
 
     model IdealFlowHeatTransfer
