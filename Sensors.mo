@@ -25,17 +25,20 @@ A potential drawback is that the obtained value jumps as flow reverts.
 <a href= \"Modelica_Fluid.Test.TestComponents.Sensors.TestTemperatureSensor\">Modelica_Fluid.Test.TestComponents.Sensors.TestTemperatureSensor </a> provides a test case, 
 which demonstrates this.</li> 
  
-<li> The <b>two port</b> sensors offer the advantages of a numerically regularized step function around zero flow.
+<li> The <b>two port</b> sensors offer the advantages of an adjustable regularized step function around zero flow.
 Moreover the obtained result is restricted to the value flowing into port_a if allowFlowReversal is false.</li>
 </ul>
-
+ 
  
 </html>",
       revisions="<html>
 <ul>
 <li><i>22 Dec 2008</i>
     by R;uumldiger Franke<br>
-       flow sensors based on Interfaces.PartialTwoPort; adapted docu to stream connectors, i.e. no tricky results anymore</li>
+    <ul>
+    <li>flow sensors based on Interfaces.PartialTwoPort</li>
+    <li>adapted docu to stream connectors, i.e. less need for two port sensors</li>
+    </ul>
 <li><i>4 Dec 2008</i>
     by Michael Wetter<br>
        included sensors for trace substance</li>
