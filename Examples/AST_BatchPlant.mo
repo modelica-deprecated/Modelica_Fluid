@@ -268,16 +268,15 @@ present that are regulated by a central control system.
           (                                                                   q_nominal={0,
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
-      checkValve=false,
       use_N_input=true,
       V(displayUnit="ml") = 0.0001,
+      checkValve=false,
       p_a_start=100000,
       p_b_start=100000) 
       annotation (Placement(transformation(extent={{-128,-260},{-148,-240}},
             rotation=0)));
     Modelica_Fluid.Machines.PrescribedPumpNPSH P2(
       redeclare package Medium = BatchMedium,
-      checkValve=false,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
           Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow
@@ -285,6 +284,8 @@ present that are regulated by a central control system.
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
       use_N_input=true,
+      V(displayUnit="ml") = 0.0001,
+      checkValve=true,
       p_a_start=100000,
       p_b_start=100000) 
       annotation (Placement(transformation(extent={{110,-260},{130,-240}},
@@ -296,7 +297,9 @@ present that are regulated by a central control system.
       crossArea=0.05,
       V0=0.0001,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
-          portLevel=0)}) annotation (Placement(transformation(extent={{-100,180},
+          portLevel=0)},
+      stiffCharacteristicForEmptyPort=false) 
+                         annotation (Placement(transformation(extent={{-100,180},
               {-60,220}}, rotation=0)));
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{180,250},
@@ -314,7 +317,9 @@ present that are regulated by a central control system.
       crossArea=0.05,
       V0=0.0001,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
-          portLevel=0)}) annotation (Placement(transformation(extent={{60,180},
+          portLevel=0)},
+      stiffCharacteristicForEmptyPort=false) 
+                         annotation (Placement(transformation(extent={{60,180},
               {100,220}}, rotation=0)));
     Modelica_Fluid.Vessels.Tank B3(
       redeclare package Medium = BatchMedium,
@@ -325,7 +330,9 @@ present that are regulated by a central control system.
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0),Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=
            0.011, portLevel=0)},
-      level_start=0.02)  annotation (Placement(transformation(extent={{-20,100},
+      level_start=0.02,
+      stiffCharacteristicForEmptyPort=false) 
+                         annotation (Placement(transformation(extent={{-20,100},
               {20,140}}, rotation=0)));
     Vessels.Tank B4(
       redeclare package Medium = BatchMedium,
@@ -335,7 +342,9 @@ present that are regulated by a central control system.
       level_start=0.015,
       nTopPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
-          portLevel=0)}) annotation (Placement(transformation(extent={{-100,30},
+          portLevel=0)},
+      stiffCharacteristicForEmptyPort=false) 
+                         annotation (Placement(transformation(extent={{-100,30},
               {-60,70}}, rotation=0)));
     Vessels.Tank B7(
       redeclare package Medium = BatchMedium,
@@ -362,26 +371,20 @@ present that are regulated by a central control system.
               250}}, rotation=0)));
     Pipes.StaticPipe pipeB1B3(
       redeclare package Medium = BatchMedium,
-      height_ab=0.1,
-      diameter=pipeDiameter,
       length=1,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
-          m_flow_nominal=1,
-          use_d_nominal=true,
-          dp_nominal=1)) 
+      redeclare model PressureLoss =
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
+      diameter=100*pipeDiameter,
+      height_ab=0.1) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
             rotation=0)));
     Pipes.StaticPipe pipeB2B3(
       redeclare package Medium = BatchMedium,
-      height_ab=0.1,
       length=1,
-      diameter=pipeDiameter,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
-          m_flow_nominal=1,
-          use_d_nominal=true,
-          dp_nominal=1)) 
+      redeclare model PressureLoss =
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
+      diameter=100*pipeDiameter,
+      height_ab=0.1) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
              0)));
     Pipes.DistributedPipe pipeB1B1(
@@ -1829,6 +1832,7 @@ Integer type that can have the following values
     <td>Steady state (guess values for p, T or h, X, C)</td></tr>
 </table>
 </html>"));
+
   end BaseClasses;
 
 end AST_BatchPlant;
