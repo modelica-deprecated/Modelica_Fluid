@@ -517,10 +517,6 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
               pattern=LinePattern.None,
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={255,255,255}),
-            Text(
-              extent={{-148,-110},{152,-150}},
-              textString="%name",
-              lineColor={0,0,255}),
             Line(
               points={{-80,0},{-100,0}},
               color={0,128,255},
@@ -529,8 +525,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
               points={{100,0},{80,0}},
               color={0,128,255},
               smooth=Smooth.None)}),
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-                {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+                100,100}}),
               graphics),
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>Pump</tt> and <tt>
