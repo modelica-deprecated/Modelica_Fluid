@@ -24,8 +24,8 @@ model LumpedPipe
             20}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}),
+    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+            100,100}}),
             graphics),
     experiment(StopTime=5),
     experimentSetupOutput(equdistant=false),

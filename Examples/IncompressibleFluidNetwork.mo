@@ -19,7 +19,7 @@ model IncompressibleFluidNetwork
     diameter=2.5e-2,
     redeclare package Medium = Medium,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
           extent={{-80,0},{-60,20}}, rotation=0)));
 
@@ -29,7 +29,7 @@ model IncompressibleFluidNetwork
     redeclare package Medium = Medium,
     length=0.5,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
         origin={-50,30},
         extent={{-10,-10},{10,10}},
@@ -41,7 +41,7 @@ model IncompressibleFluidNetwork
     redeclare package Medium = Medium,
     length=0.5,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
         origin={-50,-10},
         extent={{-10,-10},{10,10}},
@@ -52,7 +52,7 @@ model IncompressibleFluidNetwork
     redeclare package Medium = Medium,
     length=2,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
           extent={{-20,-40},{0,-20}}, rotation=0)));
   Pipe pipe6(
@@ -61,7 +61,7 @@ model IncompressibleFluidNetwork
     redeclare package Medium = Medium,
     length=20,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
           extent={{20,-30},{40,-10}}, rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible valve1(
@@ -88,7 +88,7 @@ model IncompressibleFluidNetwork
     diameter=2.5e-2,
     redeclare package Medium = Medium,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
           extent={{-20,40},{0,60}}, rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible valve3(
@@ -130,7 +130,7 @@ model IncompressibleFluidNetwork
     diameter=2.5e-2,
     redeclare package Medium = Medium,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
         origin={10,30},
         extent={{-10,-10},{10,10}},
@@ -141,7 +141,7 @@ model IncompressibleFluidNetwork
     diameter=2.5e-2,
     redeclare package Medium = Medium,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
           extent={{20,40},{40,60}}, rotation=0)));
   Pipe pipe10(
@@ -150,7 +150,7 @@ model IncompressibleFluidNetwork
     diameter=2.5e-2,
     redeclare package Medium = Medium,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
           extent={{20,0},{40,20}},  rotation=0)));
   Pipe pipe5(
@@ -159,7 +159,7 @@ model IncompressibleFluidNetwork
     redeclare package Medium = Medium,
     length=20,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
     p_a_start=500000)                  annotation (Placement(transformation(
           extent={{20,-60},{40,-40}}, rotation=0)));
 equation

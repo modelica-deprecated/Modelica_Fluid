@@ -327,7 +327,7 @@ present that are regulated by a central control system.
            0.011, portLevel=0)},
       level_start=0.02)  annotation (Placement(transformation(extent={{-20,100},
               {20,140}}, rotation=0)));
-    BaseClasses.CoolingTank B4(
+    Vessels.Tank B4(
       redeclare package Medium = BatchMedium,
       levelMax=0.5,
       crossArea=0.05,
@@ -337,7 +337,7 @@ present that are regulated by a central control system.
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)}) annotation (Placement(transformation(extent={{-100,30},
               {-60,70}}, rotation=0)));
-    BaseClasses.CoolingTank B7(
+    Vessels.Tank B7(
       redeclare package Medium = BatchMedium,
       V0=0.0001,
       nTopPorts=1,
@@ -348,7 +348,11 @@ present that are regulated by a central control system.
       crossArea=0.05,
       stiffCharacteristicForEmptyPort=false,
       T_start=298,
-      alpha0=4.9e3)      annotation (Placement(transformation(extent={{-100,
+      use_HeatTransfer=true,
+      redeclare model HeatTransfer = 
+          Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer
+          (alpha0=4.9e3)) 
+                         annotation (Placement(transformation(extent={{-100,
               -140},{-60,-100}}, rotation=0)));
     Pipes.DistributedPipe pipeB1B2(
       redeclare package Medium = BatchMedium,
@@ -362,11 +366,8 @@ present that are regulated by a central control system.
       diameter=pipeDiameter,
       length=1,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-          m_flow_nominal=1,
-          use_d_nominal=true,
-          dp_nominal=1,
-          dp_small=1)) 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
+            m_flow_nominal=1, dp_nominal=1)) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
             rotation=0)));
     Pipes.StaticPipe pipeB2B3(
@@ -375,11 +376,8 @@ present that are regulated by a central control system.
       length=1,
       diameter=pipeDiameter,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-          m_flow_nominal=1,
-          use_d_nominal=true,
-          dp_nominal=1,
-          dp_small=1)) 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
+            m_flow_nominal=1, dp_nominal=1)) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
              0)));
     Pipes.DistributedPipe pipeB1B1(
@@ -433,7 +431,7 @@ present that are regulated by a central control system.
           origin={160,30},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    BaseClasses.CoolingTank B6(
+    Vessels.Tank B6(
       redeclare package Medium = BatchMedium,
       V0=0.0001,
       nTopPorts=1,
@@ -444,7 +442,11 @@ present that are regulated by a central control system.
           portLevel=0)},
       stiffCharacteristicForEmptyPort=false,
       T_start=298,
-      alpha0=4.9e3)      annotation (Placement(transformation(extent={{80,-80},
+      use_HeatTransfer=true,
+      redeclare model HeatTransfer = 
+          Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer
+          (alpha0=4.9e3)) 
+                         annotation (Placement(transformation(extent={{80,-80},
               {40,-40}}, rotation=0)));
     Fittings.MultiPort multiPort(redeclare package Medium = BatchMedium,
         nPorts_b=3) annotation (Placement(transformation(
@@ -1270,7 +1272,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1784,21 +1787,6 @@ Full steady state initialization is not supported, because the corresponding int
                 fillPattern=FillPattern.Solid)}));
       end Port_Sensors;
     end ControllerUtilities;
-
-  model CoolingTank
-      "Tank with heat transfer through the walls and a cooling unit via heatPort connector"
-    extends Modelica_Fluid.Vessels.Tank(Qs_flow = heatPort.Q_flow);
-
-  // Heat transfer
-      parameter SI.CoefficientOfHeatTransfer alpha0=1e3
-        "Coefficient of heat transfer of tank wall";
-     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort annotation (Placement(
-            transformation(extent={{-110,-10},{-90,10}}, rotation=0)));
-
-  equation
-      heatPort.Q_flow = -alpha0*(crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level)*(medium.T-heatPort.T)
-        "Q=-k*A*dT";
-  end CoolingTank;
 
   end BaseClasses;
 

@@ -132,7 +132,7 @@ package TestCriticalCases
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=100000,
@@ -175,7 +175,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=200000,
@@ -187,7 +187,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=200000,
@@ -239,7 +239,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -279,7 +279,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -290,7 +290,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -341,7 +341,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-80,-4},{
               -60,16}}, rotation=0)));
@@ -381,7 +381,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
@@ -392,7 +392,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-40,-50},
               {-20,-30}}, rotation=0)));
@@ -448,7 +448,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -488,7 +488,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -499,7 +499,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -674,7 +674,7 @@ fails for zero flow rate.
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -713,7 +713,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -724,7 +724,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -776,7 +776,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -819,7 +819,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -830,7 +830,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -890,7 +890,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -929,7 +929,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -940,7 +940,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1007,7 +1007,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=500000,
@@ -1047,7 +1047,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1058,7 +1058,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1126,7 +1126,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
@@ -1165,7 +1165,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1176,7 +1176,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1242,7 +1242,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
@@ -1282,7 +1282,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1293,7 +1293,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1367,7 +1367,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
@@ -1405,7 +1405,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1416,7 +1416,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow(dp_small=10),
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow (        dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1489,7 +1489,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -1524,7 +1524,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow,
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.TurbulentFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,

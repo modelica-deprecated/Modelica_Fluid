@@ -406,4 +406,105 @@ This will be visualized at the port icons, in order to improve the understanding
             fillPattern=FillPattern.Solid,
             visible=port_b_exposesState)}));
   end PartialTwoPort;
+
+      partial model PartialPressureLoss
+    "Common interface for pressure loss models"
+
+        // Medium
+        replaceable package Medium = 
+          Modelica.Media.Interfaces.PartialMedium "fluid medium" 
+            annotation(Dialog(tab="Internal Interface", enable=false));
+
+        // Discretization
+        parameter Integer n=1 "number of flow segments" 
+          annotation(Dialog(tab="Internal Interface", enable=false));
+
+        input Medium.ThermodynamicState[n+1] state "states along design flow" 
+           annotation(Dialog(tab="Internal Interface", enable=false,group="Inputs"));
+        output Medium.MassFlowRate[n] m_flow
+      "mass flow rates along design flow" 
+           annotation(Dialog(tab="Internal Interface", enable=false,group="Outputs"));
+
+        // Variables
+        Medium.AbsolutePressure[n+1] p "pressures of states";
+        Medium.AbsolutePressure[n] dp "pressure loss between states";
+
+      equation
+        p = Medium.pressure(state);
+        dp = p[1:n] - p[2:n+1];
+
+        annotation (
+           Documentation(info="<html>
+<p>
+The mass flow rates <tt>m_flow[n]</tt> between n+1 flow segments 
+are obtained as function of the thermodynamic <tt>state</tt> of the flow segments for a given fluid <tt>Medium</tt>.
+</p>
+<p>
+An extending model implementing this interface needs to define the relation between the predefined pressure drops <tt>dp[n]</tt> 
+and <tt>m_flow[n]</tt>.
+</p>
+</html>"), Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+              {100,100}}), graphics={Line(
+            points={{-80,-50},{-80,50},{80,-50},{80,50}},
+            color={0,0,255},
+            smooth=Smooth.None,
+            thickness=1)}));
+
+      end PartialPressureLoss;
+
+  partial model PartialHeatTransfer "Common interface for heat transfer models"
+
+    // Parameters
+    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
+      annotation(Dialog(tab="Internal Interface", enable=false));
+
+    parameter Integer n=1 "Number of heat transfer segments" 
+      annotation(Dialog(tab="Internal Interface", enable=false), Evaluate=true);
+
+    // Inputs provided to heat transfer model
+    input Medium.ThermodynamicState[n] state 
+      annotation(Dialog(tab="Internal Interface", enable=false));
+
+    // Output defined by heat transfer model
+    output SI.HeatFlowRate[n] Q_flow "Heat flow rates per tube";
+
+    // Heat ports
+    Modelica_Fluid.Interfaces.HeatPorts_a[n] heatPorts
+      "Heat port to component boundary" 
+      annotation (Placement(transformation(extent={{-10,60},{10,80}},
+              rotation=0), iconTransformation(extent={{-20,60},{20,80}})));
+
+    // Variables
+    SI.Temperature[n] T;
+
+  equation
+    T = Medium.temperature(state);
+    heatPorts.Q_flow = Q_flow;
+
+    annotation (Documentation(info="<html>
+<p>
+The heat flow rates <tt>Q_flow[n]</tt> through the boundaries of n flow segments 
+are obtained as function of the thermodynamic <tt>state</tt> of the flow segments for a given fluid <tt>Medium</tt>
+and the boundary temperatures <tt>heatPorts[n].T</tt>.
+</p>
+<p>
+An extending model implementing this interface needs to define the relation between the predefined fluid temperatures <tt>T[n]</tt>,
+the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q_flow[n]</tt>.
+</p>
+</html>"),
+        Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics={Ellipse(
+            extent={{-60,64},{60,-56}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.Sphere,
+            fillColor={232,0,0}), Text(
+            extent={{-38,26},{40,-14}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.Sphere,
+            fillColor={232,0,0},
+            textString="%name")}),
+      Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
+              100,100}}),
+                      graphics));
+  end PartialHeatTransfer;
 end Interfaces;

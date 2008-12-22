@@ -11,7 +11,11 @@ model HeatingSystem "Simple model of a heating system"
     height=2,
     level_start=1,
     nPorts=2,
-    massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial) 
+    massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
+    use_HeatTransfer=true,
+    redeclare model HeatTransfer = 
+        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer (
+          alpha0=10)) 
               annotation (Placement(transformation(extent={{-80,30},{-60,50}},
           rotation=0)));
   Machines.ControlledPump pump(
@@ -66,12 +70,13 @@ model HeatingSystem "Simple model of a heating system"
     T_start=Modelica.SIunits.Conversions.from_degC(80),
     length=2,
     redeclare model HeatTransfer = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer,
     diameter=0.01,
     nNodes=1,
     modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss)
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
+    use_HeatTransfer=true) 
     annotation (Placement(transformation(extent={{30,10},{50,30}}, rotation=0)));
 
   Pipes.DistributedPipe radiator(
@@ -80,12 +85,13 @@ model HeatingSystem "Simple model of a heating system"
     length=10,
     T_start=Modelica.SIunits.Conversions.from_degC(40),
     redeclare model HeatTransfer = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer,
     diameter=0.01,
     nNodes=1,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss,
-    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b) 
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.av_b,
+    use_HeatTransfer=true) 
     annotation (Placement(transformation(extent={{20,-80},{0,-60}}, rotation=
             0)));
 
@@ -116,15 +122,19 @@ model HeatingSystem "Simple model of a heating system"
     use_T_start=true,
     T_start=Modelica.SIunits.Conversions.from_degC(80),
     redeclare model HeatTransfer = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealHeatTransfer,
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer,
     diameter=0.01,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
     length=10) 
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
                                                                    rotation=-90,
         origin={80,-20})));
 
+  Modelica.Thermal.HeatTransfer.Sources.FixedTemperature ambientTemperature1(
+                                                                    T=system.T_ambient) 
+    annotation (Placement(transformation(extent={{-95,35},{-85,45}}, rotation=
+           0)));
 equation
 tankLevel = tank.level;
   connect(massFlowRate.m_flow, flowRate)        annotation (Line(points={{-10,31},
@@ -185,6 +195,10 @@ tankLevel = tank.level;
       points={{0,-70},{-70,-70},{-70,32}},
       color={0,127,255},
       smooth=Smooth.None));
+  connect(ambientTemperature1.port, tank.heatPort) annotation (Line(
+      points={{-85,40},{-80,40}},
+      color={191,0,0},
+      smooth=Smooth.None));
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}),
@@ -213,14 +227,15 @@ Note that a closed flow cycle generally causes circular equalities for the mass 
 This is why the tank.massDynamics, i.e. the tank level determining the port pressure, is modified locally to Types.Dynamics.FixedInitial.
 </p>
 <p>
-Furthermore note that a steady-state temperature of the tank is only well defined if fluid flows through the cycle. This is because the
-tank is assumed to be perfectly isolated. If a steady-state simultion shall be started with the valve fully closed, then a thermal 
-coupling between the tank and its environment should be established.
+Also note that the tank is thermally isolated againts its ambient. This way the temperature of the tank is also
+well defined for zero flow rate in the heating system. The pipe however is assumed to be perfectly isolated. 
+If a steady-state simultion shall be started with the valve fully closed, then a thermal 
+coupling between the pipe and its ambient should be established.
 </p>
 <p>
-Last but not least it is worth noting that the idialized direct connection between the heater and the pipe, resulting in equal port pressures,
+Moreover it is worth noting that the idialized direct connection between the heater and the pipe, resulting in equal port pressures,
 is treated as high-index DAE, as opposed to a nonlinear equation system for connected pressure loss correlations. A pressure loss correlation 
-could be additionally introduced to model the fitting between the heater and the pipe, e.g. if diameters change.
+could be additionally introduced to model the fitting between the heater and the pipe, e.g. to adapt different diameters.
 </p>
 </html>
 "), experiment(StopTime=6000),

@@ -3,38 +3,43 @@ package Vessels "Devices for storing fluid"
    extends Modelica_Fluid.Icons.VariantLibrary;
 
     model Volume "Fixed volume with ports, closed to the environment"
+      import Modelica.Constants.pi;
       extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolumePorts(
-        Qs_flow=heatPort.Q_flow);
+        heatTransfer(transferArea={4*pi*(3/4*V/pi)^(2/3)}));
 
       parameter SI.Volume V "Volume";
 
-      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort
-      "Thermal port" 
-        annotation (Placement(transformation(extent={{-20,88},{20,108}}, rotation=0)));
+    equation
+      fluidVolume = V;
+      Ws_flow = 0;
+      ports_p_static = medium.p;
+
       annotation (defaultComponentName="volume",
         Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}), graphics={Ellipse(
             extent={{-100,100},{100,-100}},
             lineColor={0,0,0},
             fillPattern=FillPattern.Sphere,
-            fillColor={170,213,255})}),
+            fillColor={170,213,255}), Text(
+            extent={{-150,12},{150,-18}},
+            lineColor={0,0,0},
+            textString="V=%V")}),
       Documentation(info="<html>
-Ideally mixed volume of constant size with two fluid ports and one medium model. The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. The thermal port temperature is equal to the medium temperature.
+Ideally mixed volume of constant size with two fluid ports and one medium model. 
+The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. 
+Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. 
+A spherical shape is assumed for the heat transfer area, with V=4/3*pi*r^3, A=4*pi*r^2.
+Ideal heat transfer is assumed per default; the thermal port temperature is equal to the medium temperature.
 </html>"),
       Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}),
               graphics));
-
-    equation
-      fluidVolume = V;
-      Ws_flow = 0;
-      heatPort.T = medium.T;
-      ports_p_static = medium.p;
     end Volume;
 
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
+  import Modelica.Constants.pi;
   extends BaseClasses.PartialLumpedVolumePorts(
-    Qs_flow = 0,
+    heatTransfer(transferArea={crossArea+2*sqrt(crossArea*pi)*level}),
     final initialize_p = false,
     final p_start = p_ambient,
     final use_d_nominal = false,
@@ -178,7 +183,6 @@ end OpenTank;
 model Tank
     "Open tank with top and bottom inlet/outlet ports at a defineable height"
   extends BaseClasses.PartialLumpedVolume(
-    Qs_flow = 0,
     final initialize_p = false,
     final p_start = p_ambient,
     final use_d_nominal = false,
@@ -234,6 +238,27 @@ model Tank
   //Initialization
   parameter SI.Height level_start(min=0) "Start value of tank level" 
     annotation(Dialog(tab="Initialization"));
+
+  // Heat transfer through boundary
+  parameter Boolean use_HeatTransfer = false
+      "= true to use the HeatTransfer model" 
+      annotation (Dialog(group="Heat transfer"));
+  replaceable model HeatTransfer = 
+      BaseClasses.HeatTransfer.IdealHeatTransfer 
+    constrainedby BaseClasses.HeatTransfer.PartialVesselHeatTransfer
+      "Wall heat transfer" 
+      annotation (Dialog(group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
+  HeatTransfer heatTransfer(
+    redeclare final package Medium = Medium,
+    n=1,
+    state = {medium.state},
+    transferArea={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level}) 
+      annotation (Placement(transformation(
+        extent={{-10,-10},{30,30}},
+        rotation=90,
+        origin={-50,-10})));
+  Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort if use_HeatTransfer 
+    annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
 
   // Advanced
   parameter Real hysteresisFactor(min=0) = 0.1
@@ -312,6 +337,7 @@ end for;
 
   // Energy balance
   Hs_flow = sum(H_flow_top) + sum(port_b_H_flow_bottom);
+  Qs_flow = heatTransfer.Q_flow[1];
   if Medium.singleState or energyDynamics == Types.Dynamics.SteadyState then
     Ws_flow = 0
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
@@ -496,20 +522,16 @@ Implemented trace substances and missing equation for outflow of multi substance
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+
+equation
+    connect(heatPort, heatTransfer.heatPorts[1]) annotation (Line(
+        points={{-100,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
+        color={191,0,0},
+        smooth=Smooth.None));
 end Tank;
 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
-
-    record TankPortData
-      "Data to describe inlet/outlet pipes at the bottom or side of the tank"
-          extends Modelica.Icons.Record;
-
-      parameter SI.Diameter diameter
-        "Inner (hydraulic) diameter of inlet/outlet port";
-      parameter SI.Height portLevel=0
-        "level of inlet/outlet port (height over the tank base)";
-    end TankPortData;
 
       partial model PartialLumpedVolume
       "Lumped volume with dynamic mass and energy balance"
@@ -579,8 +601,6 @@ end Tank;
         Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
 
         // variables that need to be defined by an extending class
-        // make Qs_flow an input, allowing its definition and modification with binding equations,
-        // e.g. to add a HeatPort to an existing model.
         SI.Volume fluidVolume "Volume";
         SI.MassFlowRate ms_flow "Mass flows across boundaries";
         SI.MassFlowRate[Medium.nXi] msXi_flow
@@ -589,7 +609,7 @@ end Tank;
         "Trace substance mass flows across boundaries";
         SI.EnthalpyFlowRate Hs_flow
         "Enthalpy flow across boundaries or energy source/sink";
-        input SI.HeatFlowRate Qs_flow
+        SI.HeatFlowRate Qs_flow
         "Heat flow across boundaries or energy source/sink";
         SI.Power Ws_flow "Work flow across boundaries or source term";
     protected
@@ -675,7 +695,7 @@ end Tank;
 Base class for an ideally mixed fluid volume with the ability to store mass and energy. 
 The following source terms are part of the energy balance and must be specified in an extending class:
 <ul>
-<li><tt><b>input Qs_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
+<li><tt><b>Qs_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
 <li><tt><b>Ws_flow</b></tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
 </ul>
 The component volume <tt><b>fluidVolume</b></tt> is a variable which needs to be set in the extending class to complete the model.
@@ -688,14 +708,6 @@ Further source terms must be defined by an extending class for fluid flow across
 <li><tt><b>msXi_flow</b></tt>, substance mass flow, and</li> 
 <li><tt><b>msC_flow</b></tt>, trace substance mass flow.</li> 
 </ul>
-<b>Note:</b>
-<p>
-<tt>Qs_flow</tt> is defined as input allowing its definition and modification by extending classes, e.g. to add a HeatPort to an existing model.
-</p>
-<p>
-<tt>Hs_flow</tt> is not defined as input as it needs to be defined carefully together with <tt>ms_flow</tt> and modifications can easily lead to bad models. 
-Moreover an input might mislead a tool to break equation systems, resulting in inefficient models for the treatment of flow reversal. 
-</p>
 </html>"),Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
                 -100},{100,100}}),
                   graphics));
@@ -741,6 +753,27 @@ Moreover an input might mislead a tool to break equation systems, resulting in i
         Medium.ExtraPropertyFlowRate[Medium.nC] sum_ports_mC_flow
         "Trace substance mass flows through ports";
 
+        // Heat transfer through boundary
+        parameter Boolean use_HeatTransfer = false
+        "= true to use the HeatTransfer model" 
+            annotation (Dialog(group="Heat transfer"));
+        replaceable model HeatTransfer = 
+            Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer 
+          constrainedby
+        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.PartialVesselHeatTransfer
+        "Wall heat transfer" 
+            annotation (Dialog(group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
+        HeatTransfer heatTransfer(
+          redeclare final package Medium = Medium,
+          n=1,
+          state = {medium.state}) 
+            annotation (Placement(transformation(
+              extent={{-10,-10},{30,30}},
+              rotation=90,
+              origin={-50,-10})));
+        Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort if use_HeatTransfer 
+          annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+
     protected
         parameter SI.Area[nPorts] portArea=Modelica.Constants.pi/4*{portDiameters[i]^2 for i in 1:nPorts};
 
@@ -749,6 +782,7 @@ Moreover an input might mislead a tool to break equation systems, resulting in i
         msXi_flow = sum_ports_mXi_flow;
         msC_flow  = sum_ports_mC_flow;
         Hs_flow = sum(ports_H_flow);
+        Qs_flow = heatTransfer.Q_flow[1];
 
         // Only one connection allowed to a port to avoid unwanted ideal mixing
         for i in 1:nPorts loop
@@ -789,6 +823,10 @@ of the modeller. Increase nPorts to add an additional port.
           sum_ports_mC_flow[i]  = sum(ports_mC_flow[:,i]);
         end for;
 
+        connect(heatPort, heatTransfer.heatPorts[1]) annotation (Line(
+            points={{-100,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
+            color={191,0,0},
+            smooth=Smooth.None));
        annotation (
         Documentation(info="<html>
 This base class extends PartialLumpedVolume by adding a vector of fluid ports 
@@ -813,10 +851,8 @@ An extending class still needs to define:
                 {100,100}}), graphics={Text(
               extent={{-150,110},{150,150}},
               textString="%name",
-              lineColor={0,0,255}), Text(
-              extent={{-150,-110},{150,-140}},
-              lineColor={0,0,0},
-              textString="V=%V")}));
+              lineColor={0,0,255})}));
+
       end PartialLumpedVolumePorts;
 
   partial model PartialDistributedVolume "Base class for a finite volume model"
@@ -910,7 +946,7 @@ An extending class still needs to define:
     Medium.ExtraPropertyFlowRate[n,Medium.nC] msC_flow
         "Trace substance mass flow rates, source or sink";
     SI.EnthalpyFlowRate[n] Hs_flow "Enthalpy flow rate, source or sink";
-    input SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
+    SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
     SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
 
     protected
@@ -1020,7 +1056,7 @@ Base class for <tt><b>n</b></tt> ideally mixed fluid volumes with the ability to
 It is inteded to model a one-dimensional spatial discretization of fluid flow according to the finite volume method. 
 The following source terms are part of the energy balance and must be specified in an extending class:
 <ul>
-<li><tt><b>input Qs_flow[n]</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
+<li><tt><b>Qs_flow[n]</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
 <li><tt><b>Ws_flow[n]</b></tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
 </ul>
 The component volume <tt><b>fluidVolume[n]</b></tt> is a variable which needs to be set in the extending class to complete the model.
@@ -1033,16 +1069,59 @@ Further source terms must be defined by an extending class for fluid flow across
 <li><tt><b>msXi_flow[n]</b></tt>, substance mass flow, and</li> 
 <li><tt><b>msC_flow[n]</b></tt>, trace substance mass flow.</li> 
 </ul>
-<b>Note:</b>
-<p>
-<tt>Qs_flow</tt> is defined as input allowing its definition and modification by extending classes, e.g. to add a HeatPort to an existing model.
-</p>
-<p>
-<tt>Hs_flow</tt> is not defined as input as it needs to be defined carefully together with <tt>ms_flow</tt> and modifications can easily lead to bad models. 
-Moreover an input might mislead a tool to break equation systems, resulting in inefficient models for the treatment of flow reversal. 
-</p>
 </html>"));
   end PartialDistributedVolume;
+
+  package HeatTransfer
+
+    partial model PartialVesselHeatTransfer
+        "Base class for vessel heat transfer models"
+      extends Modelica_Fluid.Interfaces.PartialHeatTransfer;
+
+      input SI.Area[n] transferArea "Heat transfer area" 
+        annotation(Dialog(tab="Internal Interface", enable=false));
+
+      annotation(Documentation(info="<html>
+Base class for vessel heat transfer models.
+</html>"));
+    end PartialVesselHeatTransfer;
+
+    model IdealHeatTransfer
+        "IdealHeatTransfer: Ideal heat transfer without thermal resistance"
+      extends PartialVesselHeatTransfer;
+    equation
+      T = heatPorts.T;
+      annotation(Documentation(info="<html>
+Ideal heat transfer without thermal resistance.
+</html>"));
+    end IdealHeatTransfer;
+
+    model ConstantHeatTransfer
+        "ConstantHeatTransfer: Constant heat transfer coefficient"
+      extends PartialVesselHeatTransfer;
+      parameter SI.CoefficientOfHeatTransfer alpha0
+          "constant heat transfer coefficient";
+      annotation(Documentation(info="<html>
+Simple heat transfer correlation with constant heat transfer coefficient.
+</html>"));
+    equation
+      Q_flow = {alpha0*transferArea[i]*(heatPorts[i].T - T[i]) for i in 1:n};
+    end ConstantHeatTransfer;
+    annotation (Documentation(info="<html>
+Heat transfer correlations for pipe models
+</html>"));
+
+  end HeatTransfer;
+
+    record TankPortData
+      "Data to describe inlet/outlet pipes at the bottom or side of the tank"
+          extends Modelica.Icons.Record;
+
+      parameter SI.Diameter diameter
+        "Inner (hydraulic) diameter of inlet/outlet port";
+      parameter SI.Height portLevel=0
+        "level of inlet/outlet port (height over the tank base)";
+    end TankPortData;
   end BaseClasses;
   annotation (Documentation(info="<html>
  

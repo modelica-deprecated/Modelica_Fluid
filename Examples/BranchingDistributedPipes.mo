@@ -15,10 +15,11 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     length=2,
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.LocalPipeFlowHeatTransfer,
+    modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b,
+    use_HeatTransfer=true,
     p_a_start=100000,
     p_b_start=100000,
-    T_start=280,
-    modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b) 
+    T_start=280) 
             annotation (Placement(transformation(extent={{-14,50},{6,70}},
           rotation=0)));
 
@@ -83,7 +84,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     diameter=0.01,
     nNodes=5,
     m_flow_start=0.1,
-    heatTransfer(alpha0=1000),
     p_a_start=100000,
     p_b_start=100000,
     T_start=360,
@@ -106,11 +106,13 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     length=2,
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.LocalPipeFlowHeatTransfer,
+    use_HeatTransfer=true,
     p_a_start=100000,
     p_b_start=100000,
     T_start=280) 
             annotation (Placement(transformation(extent={{-14,-40},{6,-20}},
           rotation=0)));
+
   Modelica_Fluid.Sources.Boundary_pT boundary4(
     redeclare package Medium = Medium,
     p=1e5,
@@ -162,7 +164,6 @@ replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
     diameter=0.01,
     nNodes=5,
     m_flow_start=0.1,
-    heatTransfer(alpha0=1000),
     p_a_start=100000,
     p_b_start=100000,
     T_start=360) 

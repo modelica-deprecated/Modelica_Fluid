@@ -4,7 +4,9 @@ package Machines
   extends Modelica_Fluid.Icons.VariantLibrary;
   model SweptVolume
     "varying cylindric volume depending on the postition of the piston"
-    extends Vessels.BaseClasses.PartialLumpedVolumePorts(Qs_flow=0);
+    import Modelica.Constants.pi;
+    extends Vessels.BaseClasses.PartialLumpedVolumePorts(
+      heatTransfer(transferArea={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*flange.s}));
     parameter SI.Area pistonCrossArea "cross sectional area of pistion";
     parameter SI.Volume clearance "remaining volume at zero piston stroke";
 
@@ -14,26 +16,26 @@ package Machines
                          Icon(coordinateSystem(preserveAspectRatio=true,
             extent={{-100,-100},{100,100}}), graphics={
           Rectangle(
-            extent={{-44,36},{44,-90}},
+            extent={{-50,36},{50,-90}},
             lineColor={0,0,255},
             pattern=LinePattern.None,
             lineThickness=1,
             fillColor={170,213,255},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-44,60},{-40,60},{-40,-32},{-44,-32},{-44,60}},
+            points={{-52,62},{-48,62},{-48,-30},{-52,-30},{-52,62}},
             lineColor={95,95,95},
             smooth=Smooth.None,
             fillColor={135,135,135},
             fillPattern=FillPattern.Backward),
           Polygon(
-            points={{40,60},{44,60},{44,-34},{40,-34},{40,60}},
+            points={{48,60},{52,60},{52,-34},{48,-34},{48,60}},
             lineColor={95,95,95},
             smooth=Smooth.None,
             fillColor={135,135,135},
             fillPattern=FillPattern.Backward),
           Rectangle(
-            extent={{-40,40},{40,30}},
+            extent={{-48,40},{48,30}},
             lineColor={95,95,95},
             fillColor={135,135,135},
             fillPattern=FillPattern.Forward),
@@ -43,12 +45,17 @@ package Machines
             fillColor={135,135,135},
             fillPattern=FillPattern.Forward),
           Polygon(
-            points={{-40,-86},{40,-86},{40,70},{44,70},{44,-90},{-44,-90},{-44,
-                70},{-40,70},{-40,-86}},
+            points={{-48,-90},{48,-90},{48,70},{52,70},{52,-94},{-52,-94},{-52,
+                70},{-48,70},{-48,-90}},
             lineColor={95,95,95},
             smooth=Smooth.None,
             fillColor={135,135,135},
-            fillPattern=FillPattern.Backward)}),
+            fillPattern=FillPattern.Backward),
+          Line(
+            visible=use_HeatTransfer,
+            points={{-100,0},{-52,0}},
+            smooth=Smooth.None,
+            color={198,0,0})}),
       Documentation(info="<html>
 <p> Mixing volume with varying size. The size of the volume is given by:</p>
 <ul>
@@ -195,8 +202,8 @@ package Machines
     connect(p_set, p_set_internal);
 
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-              100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics={Text(
             visible=use_p_set,
             extent={{82,108},{176,92}},
             textString="p_set"), Text(

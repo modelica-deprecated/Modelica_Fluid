@@ -12,14 +12,15 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     nNodes=5,
     m_flow_start=0.1,
     length=2,
-    p_b_start=100000,
-    T_start=280,
     redeclare model HeatTransfer = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.ConstantHeatTransfer (
-                                                                         alpha0=
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.ConstantFlowHeatTransfer
+        (                                                                alpha0=
            500),
     modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b,
-    p_a_start=100000) 
+    use_HeatTransfer=true,
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=280) 
             annotation (Placement(transformation(extent={{-30,68},{-10,88}},
           rotation=0)));
 
@@ -91,7 +92,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     m_flow_start=0.1,
-    heatTransfer(each alpha0=1000),
     p_b_start=100000,
     T_start=360,
     modelStructure=Modelica_Fluid.Types.ModelStructure.a_v_b,
@@ -129,13 +129,15 @@ Test of different distributed pipe models. The first system uses explicit juncti
     nNodes=5,
     m_flow_start=0.1,
     length=2,
-    p_b_start=100000,
-    T_start=280,
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.LocalPipeFlowHeatTransfer,
-    p_a_start=100000) 
+    use_HeatTransfer=true,
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=280) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
           rotation=0)));
+
   Modelica_Fluid.Sources.Boundary_pT boundary4(
     redeclare package Medium = Medium,
     p=1e5,
@@ -189,7 +191,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     nNodes=5,
     m_flow_start=0.1,
     p_b_start=1.0e5,
-    heatTransfer(each alpha0=1000),
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-30,-12},{-10,8}},
           rotation=0)));
@@ -205,13 +206,14 @@ Test of different distributed pipe models. The first system uses explicit juncti
     nNodes=5,
     m_flow_start=0.1,
     length=2,
-    p_b_start=100000,
-    T_start=280,
     redeclare model HeatTransfer = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.ConstantHeatTransfer (
-                                                                         alpha0=
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.ConstantFlowHeatTransfer
+        (                                                                alpha0=
            500),
-    p_a_start=100000) 
+    use_HeatTransfer=true,
+    p_a_start=100000,
+    p_b_start=100000,
+    T_start=280) 
             annotation (Placement(transformation(extent={{-29,-50},{-9,-30}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT boundary5(
@@ -266,7 +268,6 @@ Test of different distributed pipe models. The first system uses explicit juncti
     diameter=0.01,
     nNodes=5,
     m_flow_start=0.1,
-    heatTransfer(each alpha0=1000),
     p_b_start=100000,
     T_start=360,
     p_a_start=100000) 
