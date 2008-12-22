@@ -23,10 +23,13 @@ model InverseParameterization
   Modelica_Fluid.Pipes.StaticPipe pipe1(
     redeclare package Medium = Medium,
     diameter=2.54e-2,
+    length=0,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-          m_flow_nominal=1, dp_nominal=100000),
-    length=0)         annotation (Placement(transformation(extent={{20,-10},{40,
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow (
+        dp_nominal=100000,
+        m_flow_nominal=1,
+        show_Re=true)) 
+                      annotation (Placement(transformation(extent={{20,-10},{40,
             10}}, rotation=0)));
 
   Modelica_Fluid.Sources.Boundary_pT sink1(redeclare package Medium = Medium, p=
@@ -40,12 +43,13 @@ model InverseParameterization
   Modelica_Fluid.Pipes.StaticPipe pipe2(
     redeclare package Medium = Medium,
     diameter=2.54e-2,
+    length=0,
     redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow (
+        dp_nominal=100000,
         m_flow_nominal=1,
-        show_Re=true,
-        dp_nominal=100000),
-    length=0)         annotation (Placement(transformation(extent={{20,-50},{40,
+        show_Re=true)) 
+                      annotation (Placement(transformation(extent={{20,-50},{40,
             -30}},rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT sink2(
     redeclare package Medium = Medium, p=200000) 
@@ -88,14 +92,14 @@ equation
   annotation (
     Commands(file(ensureSimulated=true)="Scripts/Examples/InverseParameterization/plotResults.mos"
         "plotResults"),
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-            100,100}}),
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+            {100,100}}),
             graphics),
     experiment(StopTime=10, NumberOfIntervals=10000),
     Documentation(info="<html>
 <p>
 A pump and two pipes are parameterized with simple nominal values. 
-Note that the pipes use the pressureLoss model NominalPressureLoss, which does not require the specification of geometry data. 
+Note that the pipes use the pressureLoss model NominalTurbulentFlow, which does not require the specification of geometry data. 
 Instead it internally parameterizes a QuadraticTurbulentFlow model for given nominal pressure loss and nominal mass flow rate.
 </p>
 <p>
@@ -108,7 +112,7 @@ Moreover the Reynolds number as well as m_flow_turbulent and dp_turbulent are pl
 <p>
 Next the pressureLoss models of the pipes could be investigated for <tt>length_nominal</tt>, 
 which are obtained internally to fulfill the nominal pressure loss for given pipe diameter and roughness. 
-Once the geometry has been designed, the NominalPressureLoss correlations can easily be replaced with 
+Once the geometry has been designed, the NominalTurbulentFlow correlations can easily be replaced with 
 WallFrictionPressureLoss correlations. Similarily the ControlledPump can be replaced with a PrescribedPump 
 to investigate a real controller or with a Pump with rotational shaft to investigate inertia effects. 
 </p>

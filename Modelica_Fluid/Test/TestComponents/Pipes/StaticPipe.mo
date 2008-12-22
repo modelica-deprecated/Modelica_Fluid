@@ -9,9 +9,6 @@ model StaticPipe
   Modelica_Fluid.Pipes.StaticPipe pipe1(
     redeclare package Medium = Medium,
     length=10,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-          m_flow_nominal=1, dp_nominal=100000),
     diameter=2.54e-2,
     p_a_start=500000,
     p_b_start=100000) annotation (Placement(transformation(extent={{-10,0},{10,

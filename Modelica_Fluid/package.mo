@@ -895,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-19</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-22</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -908,29 +908,16 @@ Modelica_Fluid was refactored and finalized for the release:
      Please consult the subversion control (SVN) logs for individual changes.</li>
  
 <li> Replaceable PressureLoss and HeatTransfer models<br>
-     The pipes now have replaceable PressureLoss models,
-     which are parameterized with the Medium and the ThermodynamicState of involved flow segments. 
-     The pipe heat transfer models have been further developed accordingly.<br>
-     Based on the new model interfaces 
+     The Vessels (former Volumes) now have replaceable HeatTransfer models.
+     The Pipes now additionally have replaceable PressureLoss models.
+     The heat transfer and pressure loss models are parameterized with the Medium and the ThermodynamicState 
+     of involved flow segments. See
      <ul>
-     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss\">
-          Pipes.BaseClasses.PressureLoss.PartialPressureLoss</a></li>
-     and
-     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialHeatTransfer\">
-          Pipes.BaseClasses.HeatTransfer.PartialHeatTransfer</a></li>,
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialHeatTransfer\">
+          Interfaces.PartialHeatTransfer</a>.</li> 
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialPressureLoss\">
+          Interfaces.PartialPressureLoss</a>.</li>
      </ul>
-     new pressure loss and heat transfer correlations can be added to existing models,
-     e.g. to consider two phase flow. The geometry is considered in the interfaces with:
-     <ul>
-     <li><tt>SI.Length length[n]</tt>: length of n flow segments along the flow path,</li>
-     <li><tt>SI.Area crossArea[n+1]</tt>: cross sectional area of n+1 boundaries of n flow segments along the flow path,</li>
-     <li><tt>SI.Length perimeter[n]</tt>: perimeter of n flow segments (to determine heat transfer area and hydraulic diameter),</li>
-     <li><tt>SI.Height roughness[n]</tt>: average height of surface asperities per flow segment.</li>
-     </ul>
-     See <a href=\"Modelica:Modelica_Fluid.Pipes.StaticPipe\">Pipes.StaticPipe</a> 
-     or <a href=\"Modelica:Modelica_Fluid.Fittings.GenericPressureLoss\">Fittings.GenericPressureLoss</a>
-     for simple models using the PressureLoss interface.
-     </li>
  
 <li> New approach for the connection of pipe models<br>
      So far the preferred modeling was to put full mass balances 
@@ -947,7 +934,7 @@ Modelica_Fluid was refactored and finalized for the release:
  
 <li> Inverse parameterization of flow models with nominal values<br> 
      New flow models have been added that support the parameterization with nominal values
-     (Machines.ControlledPump, Orifices.GenericPressureLoss, Pipes.BaseClasses.PressureLoss.NominalPressureLoss).
+     (Machines.ControlledPump, Orifices.GenericPressureLoss, Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow).
      They are intended for early phases of system modeling, if geometries and flow characteristics
      are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
      they can easily be replaced with more detailed models  
@@ -973,7 +960,9 @@ Modelica_Fluid was refactored and finalized for the release:
      </ul>
      These balances are used across the library for Vessels, Pipes, Machines and Fittings.
  
-<li> The former MixingVolume has been turned into 
+<li> The vessels now have replaceable HeatTransfer models,
+     which are parameterized with the Medium and the ThermodynamicState of the fluid. 
+     The former MixingVolume has been turned into 
      <a href=\"Modelica:Modelica_Fluid.Vessels.Volume\">Vessels.Volume</a> 
      with optional consideration of port diameters.</li>
  

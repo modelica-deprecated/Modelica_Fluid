@@ -34,8 +34,8 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       length=1,
       diameter=0.15,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss
-          (show_Re=true)) 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction (
+           show_Re=true)) 
       annotation (Placement(transformation(extent={{20,-20},{40,0}})));
     Sensors.TraceSubstances traceSubstanceSource(redeclare package Medium = 
                  Medium) 
@@ -112,8 +112,8 @@ concentration of the fresh air.
       length=1,
       diameter=0.15,
       redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.WallFrictionPressureLoss
-          (show_Re=true)) 
+          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction (
+           show_Re=true)) 
       annotation (Placement(transformation(extent={{32,-40},{52,-20}})));
     Sensors.TraceSubstances traceSubstanceSource(redeclare package Medium = 
                  Medium) 

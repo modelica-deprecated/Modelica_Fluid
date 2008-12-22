@@ -15,7 +15,7 @@ model GenericPressureLoss "Generic pressure loss model"
     height_ab=0);
   // Note: don't use
   //   redeclare replaceable model PressureLoss =
-  //     Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
+  //     Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow (
   //       dp_nominal = dp_nominal,
   //       m_flow_nominal = m_flow_nominal),
   // as Dymola 7.1 then fails when modifying PressureLoss parameters such as dp_small.
@@ -49,7 +49,7 @@ model GenericPressureLoss "Generic pressure loss model"
     Documentation(info="<html>
 <p>
 This pressure drop component is intended for early designs and later replacement 
-by more detailed models. Per default a NominalPressureLoss is used for specified 
+by more detailed models. Per default a NominalTurbulentFlow is used for specified 
 nominal values.
 </p>
 <p>
@@ -69,10 +69,9 @@ end GenericPressureLoss;
 
     extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
       redeclare replaceable model PressureLoss = 
-      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss (
-       dp_nominal = 1,
-       dp_small = 1,
-       m_flow_nominal = 1));
+      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
+        dp_nominal = 1,
+        m_flow_nominal = 1));
 
     annotation (defaultComponentName="staticHead",
           Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
@@ -520,8 +519,7 @@ of the modeller. Increase nPorts_b to add an additional port.
   model TeeJunctionVolume
     "Splitting/joining component with static balances for a dynamic control volume"
     extends Modelica_Fluid.Fittings.BaseClasses.PartialTeeJunction;
-    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume(
-                                                    Qs_flow = 0);
+    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume;
 
     parameter SI.Volume V "Mixing volume inside junction";
 
@@ -581,6 +579,7 @@ of the modeller.
     Hs_flow = port_1.m_flow*actualStream(port_1.h_outflow)
               + port_2.m_flow*actualStream(port_2.h_outflow)
               + port_3.m_flow*actualStream(port_3.h_outflow);
+    Qs_flow = 0;
     Ws_flow = 0;
 
     annotation (Documentation(info="<html>
@@ -2002,6 +2001,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
   partial model PartialGenericPressureLoss
       "Two port transport model with replaceable pressure loss correlation"
     extends PartialTwoPortTransport;
+    import Modelica.Constants.pi;
 
     // Assumptions
     parameter Types.Dynamics momentumDynamics=
@@ -2016,9 +2016,9 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 
     // Pressure loss
     replaceable model PressureLoss = 
-      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalPressureLoss 
+      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow 
       constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss
+        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss
         "Pressure loss model" 
         annotation(Dialog(tab="Advanced", group="Pressure loss"), choicesAllMatching=true);
 
@@ -2042,19 +2042,21 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
        annotation(Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
 
     // Geometry
+    parameter SI.Length length=0 "Length of flow path" 
+       annotation(Dialog(tab="Advanced", group="Geometry"));
     parameter Real nParallel(min=1)=1
         "Number of identical parallel pressure losses" 
       annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Length length=0 "Length of flow path" 
+    parameter SI.Area crossArea_a=pi/4*2.54e-2^2
+        "Inner cross sectional area at port_a" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Area crossArea_a=0 "Inner cross sectional area at port_a" 
+    parameter SI.Area crossArea_b=pi/4*2.54e-2^2
+        "Inner cross sectional area at port_b" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Area crossArea_b=0 "Inner cross sectional area at port_b" 
+    parameter SI.Length perimeter=pi*2.54e-2 "Inner perimeter" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Length perimeter=0 "Inner perimeter" 
-       annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Height roughness(min=0)=0
-        "Average height of surface asperities" 
+    parameter SI.Height roughness(min=0)=2.5e-5
+        "Average height of surface asperities (default = smooth steel pipe)" 
        annotation(Dialog(tab="Advanced", group="Geometry"));
 
     // Static head
@@ -2067,7 +2069,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     annotation (Documentation(info="<html>
 <p>
 This partial model extends a TwoPortTransport with a replaceable pressure loss model.
-A NominalPressureLoss is configured by default, because the model is intended for early model 
+A NominalTurbulentFlow is configured by default, because the model is intended for early model 
 design phases, when no detailed geometrical information is available. 
 </p>
 <p>
