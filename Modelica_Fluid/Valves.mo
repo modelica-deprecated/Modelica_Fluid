@@ -307,11 +307,7 @@ explained in detail in the
             points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
             fillColor={255,255,255},
             lineColor={0,0,0},
-            fillPattern=FillPattern.Solid),
-          Text(
-            extent={{-150,-112},{150,-152}},
-            textString="%name",
-            lineColor={0,0,255})}),
+            fillPattern=FillPattern.Solid)}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -406,10 +402,6 @@ it is open.
             preserveAspectRatio=true,
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics={
-            Text(
-              extent={{-150,-112},{150,-152}},
-              textString="%name",
-              lineColor={0,0,255}),
             Line(points={{0,52},{0,0}}, color={0,0,0}),
             Polygon(
               points={{-100,50},{-100,-50},{0,0},{-100,50}},

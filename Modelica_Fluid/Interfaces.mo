@@ -393,6 +393,12 @@ This will be visualized at the port icons, in order to improve the understanding
             points={{55,-80},{-60,-80}},
             color={0,128,255},
             smooth=Smooth.None),
+          Text(
+            extent={{-149,-111},{151,-151}},
+            lineColor={0,0,255},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255},
+            textString="%name"),
           Ellipse(
             extent={{-110,26},{-90,-24}},
             lineColor={0,0,0},

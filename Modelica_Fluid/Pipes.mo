@@ -576,23 +576,15 @@ This also allows for taking into account friction losses with respect to the act
       annotation (defaultComponentName="pipe",Icon(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={
-            Rectangle(
+            grid={1,1}), graphics={Rectangle(
               extent={{-100,46},{100,-47}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={192,192,192}),
-            Rectangle(
+              fillColor={192,192,192}), Rectangle(
               extent={{-100,40},{100,-40}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={0,127,255}),
-            Text(
-              extent={{-150,-92},{150,-132}},
-              lineColor={0,0,255},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={0,127,255},
-              textString="%name")}),        Documentation(info="<html>
+              fillColor={0,127,255})}),        Documentation(info="<html>
 <p>
 Base class for one dimensional flow models. It specializes a PartialTwoPort with a parameter interface and icon graphics.
 </p>
