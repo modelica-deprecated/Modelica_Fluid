@@ -15,18 +15,27 @@ model the time constant of the sensor).
  
 </p>
  
-<p align = justify>For the thermodynamic state variables temperature, specific entalpy, specific entropy and density the fluid library provides two different types of sensors: <b>one port</b> and <b>two port</b> sensors. </p>
+<p align = justify>For the thermodynamic state variables temperature, specific entalpy, specific entropy and density 
+the fluid library provides two different types of sensors: <b>regular one port</b> and <b>two port</b> sensors. </p>
  
 <ul>
 <li>
-The <b>one port</b> sensors have the advantage of easily introducing them to and removing them from a complete model, due to no connections have to be broken. But if the sensor is placed in a three or more way connection without any explicit junction model, the resulting temperature signal can be something unexpected. <a href= \"Modelica_Fluid.Test.TestComponents.Sensors.TestTemperatureSensor\">Modelica_Fluid.Test.TestComponents.Sensors.TestTemperatureSensor </a> provides a test case, which shows the arising trouble. That means, that one port sensors should only be used in combination with explicit junction models (<a href= \"Modelica_Fluid.Fittings\">Modelica_Fluid.Fittings</a>) or in the case that the user is really sure to connect the sensor only between two other components! </li> 
+The <b>regular one port</b> sensors have the advantage of easy introduction and removal from a model, as no connections have to be broken. 
+A potential drawback is that the obtained value jumps as flow reverts.
+<a href= \"Modelica_Fluid.Test.TestComponents.Sensors.TestTemperatureSensor\">Modelica_Fluid.Test.TestComponents.Sensors.TestTemperatureSensor </a> provides a test case, 
+which demonstrates this.</li> 
  
-<li> The <b>two port</b> sensors are the save way for getting the expecting results. If they are connected in series the output signal corresponds to the passing fluid. To provide a temperature signal of a volume, e.g. a tank, the two port sensors can be used only with one port connected to the volume.</li>
+<li> The <b>two port</b> sensors offer the advantages of a numerically regularized step function around zero flow.
+Moreover the obtained result is restricted to the value flowing into port_a if allowFlowReversal is false.</li>
 </ul>
+
  
 </html>",
       revisions="<html>
 <ul>
+<li><i>22 Dec 2008</i>
+    by R;uumldiger Franke<br>
+       flow sensors based on Interfaces.PartialTwoPort; adapted docu to stream connectors, i.e. no tricky results anymore</li>
 <li><i>4 Dec 2008</i>
     by Michael Wetter<br>
        included sensors for trace substance</li>
@@ -102,9 +111,8 @@ ideal, i.e., it does not influence the fluid.
           Line(points={{70,0},{100,0}}, color={0,0,127})}),
     Documentation(info="<HTML>
 <p>
-This component monitors the density of the medium in the flow
-between fluid ports. The sensor is 
-ideal, i.e., it does not influence the fluid.
+This component monitors the density of the fluid passing its port. 
+The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 <p>If using the one port sensor please read the <a href = Modelica_Fluid.Sensors>Information</a>  first.</p>
  
@@ -145,7 +153,7 @@ ideal, i.e., it does not influence the fluid.
           Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
-This component monitors the volume flow rate flowing from port_a to port_b. 
+This component monitors the density of the fluid flowing from port_a to port_b. 
 The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
@@ -176,7 +184,13 @@ The sensor is ideal, i.e. it does not influence the fluid.
               0)));
 
   annotation (defaultComponentName="temperature",
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+      Documentation(info="<HTML>
+<p>
+This component monitors the temperature of the fluid passing its port. 
+The sensor is ideal, i.e. it does not influence the fluid.
+</p>
+</HTML>
+"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
               100,100}}), graphics={
           Line(points={{0,-70},{0,-100}}, color={0,0,127}),
           Ellipse(
@@ -244,15 +258,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
             extent={{-150,110},{150,150}},
             textString="%name",
             lineColor={0,0,255}),
-          Line(points={{12,0},{60,0}}, color={0,0,127})}),
-      Documentation(info="<HTML>
-<p>
-This component monitors the temperature of the medium in the flow
-between fluid ports. The sensor is 
-ideal, i.e., it does not influence the fluid.
-</p>
-</HTML>
-"));
+          Line(points={{12,0},{60,0}}, color={0,0,127})}));
   equation
     T = Medium.temperature(Medium.setState_phX(port.p, inStream(port.h_outflow), inStream(port.Xi_outflow)));
   end Temperature;
@@ -363,8 +369,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{70,0},{100,0}}, color={0,0,127})}),
     Documentation(info="<HTML>
 <p>
-This component monitors the specific enthalphy of the medium in the flow
-between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
+This component monitors the specific enthalpy of the fluid passing its port. 
+The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
@@ -402,7 +408,7 @@ between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
           Line(points={{70,0},{100,0}}, color={0,128,255})}),
     Documentation(info="<HTML>
 <p>
-This component monitors the specific enthalpy of passing fluid. 
+This component monitors the specific enthalpy of a passing fluid. 
 The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
@@ -441,8 +447,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{70,0},{100,0}}, color={0,0,127})}),
     Documentation(info="<HTML>
 <p>
-This component monitors the specific enthalphy of the medium in the flow
-between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
+This component monitors the specific entropy of the fluid passing its port. 
+The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
@@ -526,8 +532,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{70,0},{100,0}}, color={0,0,127})}),
     Documentation(info="<HTML>
 <p>
-This component monitors the trace substance of the medium in the flow
-between fluid ports. The sensor is ideal, i.e., it does not influence the fluid.
+This component monitors the trace substances contained in the fluid passing its port. 
+The sensor is ideal, i.e. it does not influence the fluid.
 </p>
 </HTML>
 "));
@@ -810,7 +816,7 @@ through the sensor is allowed.
       Diagram(graphics),
       Documentation(info="<HTML>
 <p>
-The relative temperature \"port_a.T - port_b.T\" is determined between
+The relative temperature \"T(port_a) - T(port_b)\" is determined between
 the two ports of this component and is provided as output signal. The
 sensor should be connected in parallel with other equipment, no flow
 through the sensor is allowed.

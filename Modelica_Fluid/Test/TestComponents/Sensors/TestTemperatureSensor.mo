@@ -55,7 +55,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
                       graphics),
                        Documentation(info="<html>
 <p align = justify>In that test model the behaviour of one port temperature sensors with and without explicit junction models and two port temperature sensor are compared. Therefor each sensor is connected to two tanks with different temperatures and a flow source with changing flow direction.<p>
-<p align = justify>The one port sensor with explicit junction model and the two port sensor are showing the same expected results. The one port sensor without explicit junction model shows a different and unexpected behaviour. That test case shows that in all case where more are the sensor is between more than two components connected the one port sensor with explicit junction model or the two port sensor should be used!</p>
+<p align = justify>With Modelica_Fluid stream connectors, all three sensors show the same expected result.</p>
 </html>"));
   Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent=
            {{-100,10},{-80,30}}, rotation=0)));
