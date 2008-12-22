@@ -253,11 +253,7 @@ explained in detail in the
             points={{100,50},{0,0},{100,-50},{100,50}},
             lineColor={0,0,0},
             fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Text(
-            extent={{-150,-80},{150,-120}},
-            textString="%name",
-            lineColor={0,0,255})}),
+            fillPattern=FillPattern.Solid)}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},

@@ -36,11 +36,11 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(sine1.y, boundary_prescribed_1.h_in) annotation (Line(
-      points={{-59,0},{-52,0},{-52,20},{-42,20}},
+      points={{-59,0},{-52,0},{-52,24},{-42,24}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(sine1.y, boundary_prescribed_2.h_in) annotation (Line(
-      points={{-59,0},{-52,0},{-52,-20},{-42,-20}},
+      points={{-59,0},{-52,0},{-52,-16},{-42,-16}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(boundary_prescribed_2.ports[1], specificEntropy1.port_a) 

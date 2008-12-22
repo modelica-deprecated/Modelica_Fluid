@@ -102,13 +102,13 @@ Simulate for 7200 seconds.
           Modelica.Media.Water.StandardWater) 
       annotation (Placement(transformation(
           origin={30,-20},
-          extent={{10,-10},{-10,10}},
+          extent={{10,10},{-10,-10}},
           rotation=180)));
     Modelica_Fluid.Sensors.Temperature temperature(    redeclare package Medium
         = Modelica.Media.Water.StandardWater) 
       annotation (Placement(transformation(
           origin={-3,-1},
-          extent={{-10,10},{10,-10}},
+          extent={{10,10},{-10,-10}},
           rotation=180)));
     Modelica_Fluid.Sensors.Pressure pressure(           redeclare package
         Medium = 
@@ -192,8 +192,9 @@ Simulate for 7200 seconds.
             30}}, color={0,0,127}));
     connect(limiter.y, pump.m_flow_in) annotation (Line(points={{-85.7,30},{-90,
             30},{-90,-12},{-80,-12}},   color={0,0,127}));
-    connect(temperature.T, K2degC.Kelvin) annotation (Line(points={{-10,-1},{
-            -10,60},{37,60}}, color={0,0,127}));
+    connect(temperature.T, K2degC.Kelvin) annotation (Line(points={{4,-1},{4,-1},
+            {10,-1},{10,60},{37,60}},
+                              color={0,0,127}));
     connect(pressure.port, massFlowRate.port_a) annotation (Line(points={{20,14},
             {20,-20}}, color={0,127,255}));
     connect(pump.ports[1], evaporator.port_a) annotation (Line(points={{-60,-20},

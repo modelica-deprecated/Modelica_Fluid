@@ -35,7 +35,7 @@ model TestFlowRate
         transformation(extent={{50,-10},{70,10}}, rotation=0)));
 equation
   connect(sine.y, massFlowRate1.m_flow_in) annotation (Line(
-      points={{-79,10},{-70,10},{-70,16},{-59.3,16}},
+      points={{-79,10},{-70,10},{-70,18},{-60,18}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(massFlowRate1.ports[1], simpleGenericOrifice.port_a) 

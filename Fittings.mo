@@ -33,12 +33,6 @@ model GenericPressureLoss "Generic pressure loss model"
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
-          Text(
-            extent={{-150,60},{150,100}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name"),
           Line(
             points={{-60,-50},{-60,50},{60,-50},{60,50}},
             color={0,0,255},
@@ -79,12 +73,7 @@ end GenericPressureLoss;
             extent={{-100,60},{100,-60}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255}), Text(
-            extent={{-150,80},{150,120}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name")}),           Documentation(info="<html>
+            fillColor={0,127,255})}),        Documentation(info="<html>
 <p>
 This component is intended for early designs and later replacement by more detailed models. 
 It describes the static head due to the height difference between its two ports. 
@@ -127,12 +116,6 @@ model SimpleGenericOrifice
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
-          Text(
-            extent={{-150,60},{150,100}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name"),
           Line(
             points={{-60,-50},{-60,50},{60,-50},{60,50}},
             color={0,0,0},
@@ -140,7 +123,7 @@ model SimpleGenericOrifice
           Line(points={{-60,0},{-100,0}}, color={0,127,255}),
           Line(points={{60,0},{100,0}}, color={0,127,255}),
           Text(
-            extent={{-168,-96},{180,-138}},
+            extent={{-173,104},{175,62}},
             lineColor={0,0,0},
             textString="zeta=%zeta")}),
     Documentation(info="<html>
@@ -701,7 +684,7 @@ polynomials. The monotonicity is guaranteed using results from:
               fillPattern=FillPattern.VerticalCylinder,
               fillColor={0,127,255}),
             Text(
-              extent={{-150,-60},{150,-100}},
+              extent={{-150,-89},{150,-129}},
               lineColor={0,0,255},
               textString="%name")}),
         Diagram(coordinateSystem(

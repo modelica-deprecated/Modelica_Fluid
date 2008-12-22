@@ -45,7 +45,7 @@ model HeatingSystem "Simple model of a heating system"
     annotation (Placement(transformation(extent={{-6,34},{6,46}},   rotation=
             0)));
   Sensors.MassFlowRate massFlowRate(redeclare package Medium = Medium) 
-    annotation (Placement(transformation(extent={{-20,30},{0,10}},   rotation=
+    annotation (Placement(transformation(extent={{-20,10},{0,30}},   rotation=
            0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedTemperature ambientTemperature(
                                                                     T=system.T_ambient) 

@@ -604,11 +604,6 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
               dp(each start = (p_a_start - p_b_start)/n),
               m_flow(each start = m_flow_start));
 
-            // Operational conditions (needed for nominal models and for numerics)
-            parameter SI.AbsolutePressure dp_nominal "Nominal pressure loss";
-            parameter SI.MassFlowRate m_flow_nominal
-          "Mass flow rate for dp_nominal";
-
             // Geometry parameters
             parameter Real nParallel "number of parallel pipes" 
                annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
@@ -726,6 +721,11 @@ e.g. with numerical smoothing or by raising events as appropriate.
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss(
            use_eta_nominal = not show_Re);
 
+        // Operational conditions
+        parameter SI.AbsolutePressure dp_nominal "Nominal pressure loss";
+        parameter SI.MassFlowRate m_flow_nominal
+          "Mass flow rate for dp_nominal";
+
         // inverse parameterization of WallFriction.Laminar
         SI.Length[n] length_nominal=
           {(dp_nominal-g*height_ab)/n*Modelica.Constants.pi*diameter[i]^4*d_act[i]/(128*eta_act[i])/
@@ -779,6 +779,11 @@ specified nominal values for given geometry parameters <tt>crossArea</tt>, <tt>p
             input SI.Length[n] length_internal
           "length of flow path used internally; to be defined by extending class";
 
+            // Parameters
+            parameter SI.AbsolutePressure dp_nominal
+          "Nominal pressure loss (to determine dp_small and for nominal models)";
+            parameter SI.MassFlowRate m_flow_nominal
+          "Mass flow rate for dp_nominal (to determine m_flow_small and for nominal models)";
             parameter Boolean from_dp=true
           " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
               annotation (Evaluate=true);

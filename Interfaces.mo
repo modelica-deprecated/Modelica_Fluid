@@ -377,24 +377,24 @@ This will be visualized at the port icons, in order to improve the understanding
             extent={{-100,-100},{100,100}},
             grid={1,1}), graphics={
           Polygon(
-            points={{20,-65},{60,-80},{20,-95},{20,-65}},
+            points={{20,-70},{60,-85},{20,-100},{20,-70}},
             lineColor={0,128,255},
             smooth=Smooth.None,
             fillColor={0,128,255},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{20,-70},{50,-80},{20,-90},{20,-70}},
+            points={{20,-75},{50,-85},{20,-95},{20,-75}},
             lineColor={255,255,255},
             smooth=Smooth.None,
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
             visible=allowFlowReversal),
           Line(
-            points={{55,-80},{-60,-80}},
+            points={{55,-85},{-60,-85}},
             color={0,128,255},
             smooth=Smooth.None),
           Text(
-            extent={{-149,-111},{151,-151}},
+            extent={{-149,-114},{151,-154}},
             lineColor={0,0,255},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255},
@@ -433,7 +433,7 @@ This will be visualized at the port icons, in order to improve the understanding
 
         // Variables
         Medium.AbsolutePressure[n+1] p "pressures of states";
-        SI.Pressure[n] dp "pressure loss between states";
+        Modelica.SIunits.Pressure[n] dp "pressure loss between states";
 
       equation
         p = Medium.pressure(state);
