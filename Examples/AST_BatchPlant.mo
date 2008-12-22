@@ -372,7 +372,7 @@ present that are regulated by a central control system.
     Pipes.StaticPipe pipeB1B3(
       redeclare package Medium = BatchMedium,
       length=1,
-      redeclare model PressureLoss =
+      redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
       diameter=100*pipeDiameter,
       height_ab=0.1) 
@@ -381,7 +381,7 @@ present that are regulated by a central control system.
     Pipes.StaticPipe pipeB2B3(
       redeclare package Medium = BatchMedium,
       length=1,
-      redeclare model PressureLoss =
+      redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
       diameter=100*pipeDiameter,
       height_ab=0.1) 
@@ -1280,8 +1280,7 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},

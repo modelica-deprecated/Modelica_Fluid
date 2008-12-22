@@ -211,7 +211,7 @@ tankLevel = tank.level;
           textString="H")}), Documentation(info="<html>
 <p>
 Simple heating system with a closed flow cycle. It is set up for steady-state initial values.
-After 2000s of simulation time the valve fully opens. A simple idealized control is been embedded 
+After 2000s of simulation time the valve fully opens. A simple idealized control is embedded 
 into the respective components, so that the heating system can be regulated with the valve:
 the pump controls the pressure, the burner controls the temperature. 
 </p>

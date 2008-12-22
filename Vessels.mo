@@ -53,10 +53,10 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
   // Ambient
   parameter Medium.AbsolutePressure p_ambient=system.p_ambient
       "Tank surface pressure" 
-    annotation(Dialog(tab = "Ambient", group = "Ambient"));
+    annotation(Dialog(tab = "Advanced", group = "Ambient"));
   parameter Medium.Temperature T_ambient=system.T_ambient
       "Tank surface Temperature" 
-    annotation(Dialog(tab = "Ambient", group = "Ambient"));
+    annotation(Dialog(tab = "Advanced", group = "Ambient"));
 
   // Initialization
   parameter SI.Height level_start "Start value of tank level" 
@@ -176,7 +176,6 @@ Implemented trace substances.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-equation
 
 end OpenTank;
 
@@ -227,14 +226,6 @@ model Tank
         rotation=90,
         origin={0,-100})));
 
-  //Ambient
-  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
-      "Tank surface pressure" 
-    annotation(Dialog(tab = "Ambient", group = "Ambient"));
-  parameter Medium.Temperature T_ambient=system.T_ambient
-      "Tank surface Temperature" 
-    annotation(Dialog(tab = "Ambient", group = "Ambient"));
-
   //Initialization
   parameter SI.Height level_start(min=0) "Start value of tank level" 
     annotation(Dialog(tab="Initialization"));
@@ -263,16 +254,24 @@ model Tank
   // Advanced
   parameter Real hysteresisFactor(min=0) = 0.1
       "Hysteresis for empty pipe = diameter*hysteresisFactor" 
-    annotation(Dialog(tab="Advanced", group="Numerical properties"));
-  parameter SI.MassFlowRate m_flow_small(min=0) = 1e-5
-      "Regularization range at zero mass flow rate" 
-    annotation(Dialog(tab="Advanced", group="Numerical properties"));
-  parameter Boolean stiffCharacteristicForEmptyPort = true
+    annotation(Dialog(tab="Advanced", group="Port properties"));
+  parameter Boolean stiffCharacteristicForEmptyPort = false
       "=true, if steep pressure loss characteristic for empty pipe port" 
-    annotation(Dialog(tab="Advanced", group="Numerical properties"), Evaluate=true);
+    annotation(Dialog(tab="Advanced", group="Port properties"), Evaluate=true);
   parameter Real zetaLarge(min=0) = 1e5
       "Large pressure loss factor if mass flows out of empty pipe port" 
-    annotation(Dialog(tab="Advanced", group="Numerical properties", enable=stiffCharacteristicForEmptyPort));
+    annotation(Dialog(tab="Advanced", group="Port properties", enable=stiffCharacteristicForEmptyPort));
+  parameter SI.MassFlowRate m_flow_small(min=0) = 1e-5
+      "Regularization range at zero mass flow rate" 
+    annotation(Dialog(tab="Advanced", group="Port properties", enable=stiffCharacteristicForEmptyPort));
+
+  //Ambient
+  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
+      "Tank surface pressure" 
+    annotation(Dialog(tab = "Advanced", group = "Ambient"));
+  parameter Medium.Temperature T_ambient=system.T_ambient
+      "Tank surface Temperature" 
+    annotation(Dialog(tab = "Advanced", group = "Ambient"));
 
   // Tank properties
   final parameter Integer nPorts = size(ports,1) "Number of inlet/outlet ports";
@@ -522,8 +521,8 @@ Implemented trace substances and missing equation for outflow of multi substance
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-
 equation
+
     connect(heatPort, heatTransfer.heatPorts[1]) annotation (Line(
         points={{-100,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
         color={191,0,0},
@@ -734,16 +733,16 @@ Further source terms must be defined by an extending class for fluid flow across
       //Transformation of kinetic energy
         parameter Boolean neglectPortDiameters=true
         "=true, kinetic energy and dissipation is accounted for in port pressure"
-          annotation(Evaluate=true, Dialog(tab="Assumptions",group="Ports"));
+          annotation(Evaluate=true, Dialog(tab="Advanced",group="Ports"));
         parameter SI.Diameter portDiameters[nPorts] = fill(2.54e-2, nPorts)
         "Inner (hydraulic) diameters of ports (array)" 
-          annotation(Dialog(tab="Assumptions",group="Ports",enable= not neglectPortDiameters));
+          annotation(Dialog(tab="Advanced",group="Ports",enable= not neglectPortDiameters));
         parameter Real[nPorts] zeta_in=fill(0, nPorts)
         "Hydraulic resistance into volume, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-          annotation(Dialog(tab="Assumptions",group="Ports",enable= not neglectPortDiameters));
+          annotation(Dialog(tab="Advanced",group="Ports",enable= not neglectPortDiameters));
         parameter Real[nPorts] zeta_out=fill(1, nPorts)
         "Hydraulic resistance out of volume, 0 for ideal smooth outlet" 
-          annotation(Dialog(tab="Assumptions",group="Ports",enable= not neglectPortDiameters));
+          annotation(Dialog(tab="Advanced",group="Ports",enable= not neglectPortDiameters));
 
         Medium.EnthalpyFlowRate ports_H_flow[nPorts];
         Medium.MassFlowRate ports_mXi_flow[nPorts,Medium.nXi];
