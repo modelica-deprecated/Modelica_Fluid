@@ -64,7 +64,7 @@ present that are regulated by a central control system.
       min_level_for_heating=0.0001,
       level_start=0.0009,
       crossArea=0.05,
-      initType=Modelica_Fluid.Types.Init.InitialValues,
+      initType=BaseClasses.Init.InitialValues,
       side_pipeArea={0.0001}) 
       annotation (Placement(transformation(extent={{-100,-60},{-20,-20}},
             rotation=0)));
@@ -992,7 +992,7 @@ handled properly.</p>
     model TankWith3InletOutletArraysWithEvaporatorCondensor
       "Tank with Heating and Evaporation"
       import Modelica.SIunits.Conversions.*;
-      import Modelica_Fluid.Types.Init;
+      import Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.Init;
       replaceable package Medium = Modelica.Media.Water.WaterIF97_ph 
         constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium
         "Medium in the component" 
@@ -1010,7 +1010,8 @@ handled properly.</p>
       parameter Real top_heights[n_TopPorts]=fill(height, n_TopPorts);
       parameter SI.Height level_start(min=0) "Initial tank level" 
         annotation(Dialog(tab="Initialization"));
-      parameter Modelica_Fluid.Types.Init initType=Init.GuessValues
+      parameter Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.Init
+        initType =                                 Init.GuessValues
         "Initialization option" 
         annotation(Dialog(tab = "Initialization"));
       parameter Boolean use_T_start=true
@@ -1792,6 +1793,42 @@ Full steady state initialization is not supported, because the corresponding int
       end Port_Sensors;
     end ControllerUtilities;
 
+    type Init = enumeration(
+        GuessValues
+          "GuessValues -- Guess values (not fixed) for p, T or h, X, C",
+        InitialValues "InitialValues -- Initial values for p, T or h, X, C",
+        SteadyStateMomentum "SteadyStateMomentum: Steady state momentum",
+        SteadyStateHydraulic
+          "SteadyStateHydraulic -- Hydraulic steady state (der(p)=0), guess value for p, initial values for T or h, X, C", 
+
+        SteadyState
+          "SteadyState -- Steady state (guess values for p, T or h, X, C)")
+      "Enumeration to define initialization options" 
+    annotation (Documentation(info="<html>
+<p>
+Integer type that can have the following values
+(to be selected via choices menu):
+</p>
+ 
+<table border=1 cellspacing=0 cellpadding=2>
+<tr><th><b>Types.Init.</b></th><th><b>Meaning</b></th></tr>
+<tr><td>GuessValues</td>
+    <td>GuessValues -- Guess values (not fixed) for p, T or h, X, C</td></tr>
+ 
+<tr><td>InitialValues</td>
+    <td>Initial values for p, T or h, X, C</td></tr>
+ 
+<tr><td>SteadyStateMomentum</td>
+    <td>Steady state momentum</td></tr>
+ 
+<tr><td>SteadyStateHydraulic</td>
+    <td>Hydraulic steady state (der(p)=0), guess value for p, 
+        initial values for T or h, X, C</td></tr>
+ 
+<tr><td>SteadyState</td>
+    <td>Steady state (guess values for p, T or h, X, C)</td></tr>
+</table>
+</html>"));
   end BaseClasses;
 
 end AST_BatchPlant;
