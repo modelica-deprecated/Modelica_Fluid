@@ -40,11 +40,11 @@ Simulate for 7200 seconds.
       m_D=300e3,
       cp_D=500,
       V_t=100,
-      p_start=1e5,
       V_l_start=67,
       redeclare package Medium = Modelica.Media.Water.StandardWater,
-      initType=Modelica_Fluid.Types.Init.InitialValues) 
-                          annotation (Placement(transformation(extent={{-46,-30},
+      energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
+      massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
+      p_start=100000)     annotation (Placement(transformation(extent={{-46,-30},
               {-26,-10}}, rotation=0)));
     annotation (
       uses(Modelica_Fluid(version="0.72")),
@@ -232,9 +232,6 @@ Simulate for 7200 seconds.
       parameter Medium.SpecificHeatCapacity cp_D
         "specific heat capacity of drum metal";
       parameter SI.Volume V_t "total volume inside drum";
-      parameter Types.Init initType=Types.Init.GuessValues
-        "Initialization option" 
-      annotation(Dialog(tab = "Initialization"));
       parameter Medium.AbsolutePressure p_start=system.p_start
         "Start value of pressure" 
       annotation(Dialog(tab = "Initialization"));

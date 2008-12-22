@@ -906,7 +906,7 @@ Modelica_Fluid was refactored and finalized for the release:
      This became necessary as the previous release Modelica_Fluid Streams Beta3 
      still reflected the long development history, while the basic concepts had been crystalized.
      Please consult the subversion control (SVN) logs for individual changes.</li>
- 
+  
 <li> Replaceable PressureLoss and HeatTransfer models<br>
      The Vessels (former Volumes) now have replaceable HeatTransfer models.
      The Pipes now additionally have replaceable PressureLoss models.
@@ -927,6 +927,8 @@ Modelica_Fluid was refactored and finalized for the release:
      exposing mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
      High-index DAEs need to be treated instead in connection sets.</li>
  
+<li> The former sub-packages Junctions and PressureLosses have been combined into the new subpackage Fittings.</li>
+
 <li> Finalization of trace substrances<br>
      Modelica_Fluid now provides a sound implementation for trace substances, 
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
@@ -959,12 +961,6 @@ Modelica_Fluid was refactored and finalized for the release:
           Vessels.BaseClasses.PartialDistributedVolume</a></li>.
      </ul>
      These balances are used across the library for Vessels, Pipes, Machines and Fittings.
- 
-<li> The vessels now have replaceable HeatTransfer models,
-     which are parameterized with the Medium and the ThermodynamicState of the fluid. 
-     The former MixingVolume has been turned into 
-     <a href=\"Modelica:Modelica_Fluid.Vessels.Volume\">Vessels.Volume</a> 
-     with optional consideration of port diameters.</li>
  
 <li> Vectorized ports for volumes<br>
      The ports of models that typically have large volumes, like Vessels and Sources, 
