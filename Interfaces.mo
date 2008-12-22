@@ -427,7 +427,7 @@ This will be visualized at the port icons, in order to improve the understanding
 
         // Variables
         Medium.AbsolutePressure[n+1] p "pressures of states";
-        Medium.AbsolutePressure[n] dp "pressure loss between states";
+        SI.Pressure[n] dp "pressure loss between states";
 
       equation
         p = Medium.pressure(state);

@@ -202,8 +202,8 @@ package Machines
     connect(p_set, p_set_internal);
 
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
             visible=use_p_set,
             extent={{82,108},{176,92}},
             textString="p_set"), Text(

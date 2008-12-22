@@ -367,7 +367,9 @@ present that are regulated by a central control system.
       length=1,
       redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
-            m_flow_nominal=1, dp_nominal=1)) 
+          m_flow_nominal=1,
+          use_d_nominal=true,
+          dp_nominal=1)) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
             rotation=0)));
     Pipes.StaticPipe pipeB2B3(
@@ -377,7 +379,9 @@ present that are regulated by a central control system.
       diameter=pipeDiameter,
       redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
-            m_flow_nominal=1, dp_nominal=1)) 
+          m_flow_nominal=1,
+          use_d_nominal=true,
+          dp_nominal=1)) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
              0)));
     Pipes.DistributedPipe pipeB1B1(
