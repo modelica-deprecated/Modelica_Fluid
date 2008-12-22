@@ -1082,7 +1082,17 @@ Further source terms must be defined by an extending class for fluid flow across
 
       annotation(Documentation(info="<html>
 Base class for vessel heat transfer models.
-</html>"));
+</html>"),Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+                  {100,100}}), graphics={Ellipse(
+                extent={{-60,64},{60,-56}},
+                lineColor={0,0,0},
+                fillPattern=FillPattern.Sphere,
+                fillColor={232,0,0}), Text(
+                extent={{-38,26},{40,-14}},
+                lineColor={0,0,0},
+                fillPattern=FillPattern.Sphere,
+                fillColor={232,0,0},
+                textString="%name")}));
     end PartialVesselHeatTransfer;
 
     model IdealHeatTransfer
