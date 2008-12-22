@@ -52,7 +52,6 @@ Enumeratioin to define the formulation of balance equations
 </table>
 </html>"));
 
-
   type CvTypes = enumeration(
       Av "Av (metric) flow coefficient",
       Kv "Kv (metric) flow coefficient",

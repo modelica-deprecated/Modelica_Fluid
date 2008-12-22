@@ -927,8 +927,9 @@ Modelica_Fluid was refactored and finalized for the release:
      exposing mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
      High-index DAEs need to be treated instead in connection sets.</li>
  
-<li> The former sub-packages Junctions and PressureLosses have been combined into the new subpackage Fittings.</li>
-
+<li> The former sub-packages Junctions and PressureLosses have been combined into the new subpackage Fittings.
+     The former Pumps and Volumes.SweptVolume have become the initial version of fluid Machines.</li>
+ 
 <li> Finalization of trace substrances<br>
      Modelica_Fluid now provides a sound implementation for trace substances, 
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
