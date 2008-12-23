@@ -265,7 +265,7 @@ present that are regulated by a central control system.
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
           Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow
-          (                                                                   q_nominal={0,
+          (                                                                   V_flow_nominal={0,
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
       use_N_input=true,
@@ -280,7 +280,7 @@ present that are regulated by a central control system.
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
           Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow
-          (                                                                  q_nominal={0,
+          (                                                                  V_flow_nominal={0,
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
       use_N_input=true,

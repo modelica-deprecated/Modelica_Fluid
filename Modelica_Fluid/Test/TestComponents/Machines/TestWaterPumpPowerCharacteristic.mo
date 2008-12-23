@@ -18,11 +18,11 @@ model TestWaterPumpPowerCharacteristic
     m_flow_start=1,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
-          q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
+          V_flow_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     usePowerCharacteristic=true,
     redeclare function powerCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticPower
-        ( q_nominal={0,0.001,0.0015}, W_nominal={550,650,800}),
+        ( V_flow_nominal={0,0.001,0.0015}, W_nominal={550,650,800}),
     V=0.1/1000,
     N_nominal=1500,
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,

@@ -600,7 +600,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       "Pressure loss models for pipes, including wall friction and static head"
           partial model PartialFlowPressureLoss
         "Base class for pressure losses in flow models"
-            extends Modelica_Fluid.Interfaces.PartialPressureLoss(
+            extends Modelica_Fluid.Interfaces.PartialPressureDrop(
               dp(each start = (p_a_start - p_b_start)/n),
               m_flow(each start = m_flow_start));
 
