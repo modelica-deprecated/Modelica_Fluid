@@ -2950,7 +2950,7 @@ b has the same sign of the change of density.</p>
 
       model TestWallFrictionAndGravity
         "Pressure loss in pipe due to wall friction and gravity (only for test purposes; if needed use Pipes.StaticPipe instead)"
-        extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+        extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
 
         replaceable package WallFriction = 
           Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent 

@@ -919,7 +919,7 @@ handled properly.</p>
     end setReal;
 
     model ValveDiscrete "Valve for water/steam flows with linear pressure drop"
-      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
       parameter Modelica_Fluid.Types.HydraulicConductance Kv
         "Hydraulic conductance at full opening";
       Modelica.Blocks.Interfaces.BooleanInput open annotation (Placement(
