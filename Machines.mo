@@ -186,9 +186,9 @@ package Machines
   equation
     // Ideal control
     if control_m_flow then
-      m_flow = m_flow_set_internal;
+      m_flow_total = m_flow_set_internal;
     else
-      dp = p_set_internal - port_a.p;
+      dp_pump = p_set_internal - port_a.p;
     end if;
 
     // Internal connector value when use_m_flow_set = false
@@ -299,8 +299,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
   equation
     // NPSHa computation
-    pv = Medium.saturationPressure(Tin);
-    NPSHa = (port_a.p-pv)/(d*Modelica.Constants.g_n);
+    pv = Medium.saturationPressure(Medium.temperature(state[1]));
+    NPSHa = (port_a.p-pv)/(d_in*Modelica.Constants.g_n);
 
     // Check for cavitation
     assert(port_a.p >= pv, "Cavitation occurs at the inlet");
@@ -323,9 +323,11 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
   partial model PartialPump "Base model for centrifugal pumps"
       import Modelica.SIunits.Conversions.NonSIunits.*;
       import Modelica.Constants;
-    extends Modelica_Fluid.Interfaces.PartialTwoPort(
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
       port_a_exposesState = (V > 0),
       port_b_exposesState = (V > 0),
+      m_flow_start = 1,
+      final dp_start = p_a_start - p_b_start,
       port_a(
         p(start=p_a_start),
         m_flow(start = m_flow_start,
@@ -394,33 +396,28 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default
         "Guess value for mass fractions m_i/m" 
       annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-    parameter SI.MassFlowRate m_flow_start = 1
-        "Guess value for mass flow rate (total)" 
-      annotation(Dialog(tab="Initialization"));
     final parameter SI.Acceleration g=system.g;
 
-    SI.Pressure dp = port_b.p - port_a.p "Pressure increase";
-    SI.Height head = dp/(d*g) "Pump head";
-    Medium.Density d "Liquid density at the inlet port_a";
+    SI.Pressure dp_pump = port_b.p - port_a.p "Pressure increase";
+    SI.Height head = dp_pump/(d_in*g) "Pump head";
+    Medium.Density d_in = Medium.density(state[1])
+        "Liquid density at the inlet port_a";
     Medium.SpecificEnthalpy h(start=h_start)
         "Enthalpy of the liquid stored in the pump if M>0";
-    Medium.Temperature Tin "Liquid inlet temperature";
-    SI.MassFlowRate m_flow = port_a.m_flow "Mass flow rate (total)";
-    SI.MassFlowRate m_flow_single = m_flow/nParallel
+    SI.MassFlowRate m_flow_total = port_a.m_flow "Mass flow rate (total)";
+    SI.MassFlowRate m_flow_single = m_flow_total/nParallel
         "Mass flow rate (single pump)";
-    SI.VolumeFlowRate V_flow_in = m_flow/d "Volume flow rate (total)";
+    SI.VolumeFlowRate V_flow_in = m_flow_total/d_in "Volume flow rate (total)";
     SI.VolumeFlowRate V_flow_single = V_flow_in/nParallel
         "Volume flow rate (single pump)";
     AngularVelocity_rpm N "Shaft rotational speed";
     SI.Power W_single "Power Consumption (single pump)";
-    SI.Power W_tot = W_single*nParallel "Power Consumption (total)";
+    SI.Power W_total = W_single*nParallel "Power Consumption (total)";
     constant SI.Power W_eps=1e-8
         "Small coefficient to avoid numerical singularities in efficiency computations";
     Real eta "Global Efficiency";
     Real s(start = m_flow_start)
         "Curvilinear abscissa for the flow curve in parametric form (either mass flow rate or head)";
-    Medium.ThermodynamicState port_a_state_inflow
-        "Medium state close to inlet for inflowing mass flow";
     protected
     constant SI.Height unitHead = 1;
     constant SI.MassFlowRate unitMassFlowRate = 1;
@@ -431,7 +428,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     if noEvent(s > 0 or (not checkValve)) then
       // Flow characteristics when check valve is open or with no check valve
       head = (N/N_nominal)^2*flowCharacteristic(V_flow_single*(N_nominal/N));
-      V_flow_single = s*unitMassFlowRate/d;
+      V_flow_single = s*unitMassFlowRate/d_in;
     else
       // Flow characteristics when check valve is closed
       head = (N/N_nominal)^2*flowCharacteristic(0) - s*unitHead;
@@ -440,30 +437,13 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
     // Power consumption
     if usePowerCharacteristic then
-      W_single = (N/N_nominal)^3*(d/d_nominal)*powerCharacteristic(V_flow_single*(N_nominal/N))
+      W_single = (N/N_nominal)^3*(d_in/d_nominal)*powerCharacteristic(V_flow_single*(N_nominal/N))
           "Power consumption (single pump)";
-      eta = (dp*V_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
+      eta = (dp_pump*V_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
     else
       eta = efficiencyCharacteristic(V_flow_single*(N_nominal/N));
-      W_single = dp*V_flow_single/eta;
+      W_single = dp_pump*V_flow_single/eta;
     end if;
-
-    // Medium states close to the ports when mass flows in to the respective port
-    // The inlet inflow state is used also in case of flow reversal, to avoid
-    // discontinuities.
-    port_a_state_inflow = Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow));
-    // port_b_state_inflow = Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow));
-
-    // Inflow density and temperature at the inlet port
-    d = Medium.density(port_a_state_inflow);
-    Tin = Medium.temperature(port_a_state_inflow);
-
-    // Mass balances
-    port_a.m_flow + port_b.m_flow = 0 "Mass balance";
-    port_a.Xi_outflow  = inStream(port_b.Xi_outflow);
-    port_b.Xi_outflow = inStream(port_a.Xi_outflow);
-    port_a.C_outflow = inStream(port_b.C_outflow);
-    port_b.C_outflow = inStream(port_a.C_outflow);
 
     // Energy balances
     if energyDynamics <> Types.Dynamics.SteadyState and V > 0 then
@@ -471,19 +451,19 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
        // mass variations and p/d are neglected
        nParallel*V*d_nominal*der(h) = port_a.m_flow*actualStream(port_a.h_outflow) +
                      port_b.m_flow*actualStream(port_b.h_outflow) +
-                     W_tot + Qs_flow;
+                     W_total + Qs_flow;
        port_b.h_outflow = h;
        port_a.h_outflow = h;
     else
-      /* In the following two equations the extra term W_tot/m_flow is
-       present where a 0/0 term appears if m_flow = 0. In order to avoid
+      /* In the following two equations the extra term W_total/m_flow_total is
+       present where a 0/0 term appears if m_flow_total = 0. In order to avoid
        numerical problems, this term is analytically simplified:
-         W_tot/m_flow = nParallel*W_single/(d*V_flow_single*nParallel)
-                      = nParallel*dp*V_flow_single/(eta*d*V_flow_single*nParallel)
-                      = dp/(eta*d)
+         W_total/m_flow_total = nParallel*W_single/(d*V_flow_single*nParallel)
+                      = nParallel*dp_pump*V_flow_single/(eta*d*V_flow_single*nParallel)
+                      = dp_pump/(eta*d)
     */
-      port_b.h_outflow  = inStream(port_a.h_outflow) + dp/(d*eta);
-      port_a.h_outflow  = inStream(port_b.h_outflow) + dp/(d*eta);
+      port_b.h_outflow  = inStream(port_a.h_outflow) + dp_pump/(d_in*eta);
+      port_a.h_outflow  = inStream(port_b.h_outflow) + dp_pump/(d_in*eta);
       h = Medium.h_default
           "Unused (set to an arbitrary value within the medium region)";
       assert(abs(Qs_flow) < Modelica.Constants.small, "Specify V > 0 for using Qs_flow.");
@@ -525,8 +505,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
               points={{100,0},{80,0}},
               color={0,128,255},
               smooth=Smooth.None)}),
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-                {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+                100,100}}),
               graphics),
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>Pump</tt> and <tt>
