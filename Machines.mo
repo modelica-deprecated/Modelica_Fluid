@@ -137,7 +137,7 @@ package Machines
       N(start=N_nominal),
       redeclare replaceable function flowCharacteristic = 
           Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow
-          ( q_nominal={0, q_op, 1.5*q_op},
+          ( V_flow_nominal={0, q_op, 1.5*q_op},
             head_nominal={2*head_op, head_op, 0}));
 
     // nominal values
@@ -339,7 +339,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       annotation(Dialog(group="Characteristics"));
     replaceable function flowCharacteristic = 
         PumpCharacteristics.baseFlow
-        "Head vs. q_flow characteristic at nominal speed and density" 
+        "Head vs. V_flow characteristic at nominal speed and density" 
       annotation(Dialog(group="Characteristics"), choicesAllMatching=true);
     parameter AngularVelocity_rpm N_nominal
         "Nominal rotational speed for flow characteristic" 
@@ -353,13 +353,13 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     replaceable function efficiencyCharacteristic = 
       PumpCharacteristics.constantEfficiency(eta_nominal = 0.8) constrainedby
         PumpCharacteristics.baseEfficiency
-        "Efficiency vs. q_flow at nominal speed and density" 
+        "Efficiency vs. V_flow at nominal speed and density" 
       annotation(Dialog(group="Characteristics",enable = not usePowerCharacteristic),
                  choicesAllMatching=true);
     replaceable function powerCharacteristic = 
           PumpCharacteristics.quadraticPower (
-         q_nominal={0,0,0},W_nominal={0,0,0})
-        "Power consumption vs. q_flow at nominal speed and density" 
+         V_flow_nominal={0,0,0},W_nominal={0,0,0})
+        "Power consumption vs. V_flow at nominal speed and density" 
       annotation(Dialog(group="Characteristics", enable = usePowerCharacteristic),
                  choicesAllMatching=true);
 
@@ -408,8 +408,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     SI.MassFlowRate m_flow = port_a.m_flow "Mass flow rate (total)";
     SI.MassFlowRate m_flow_single = m_flow/nParallel
         "Mass flow rate (single pump)";
-    SI.VolumeFlowRate q_flow = m_flow/d "Volume flow rate (total)";
-    SI.VolumeFlowRate q_flow_single = q_flow/nParallel
+    SI.VolumeFlowRate V_flow_in = m_flow/d "Volume flow rate (total)";
+    SI.VolumeFlowRate V_flow_single = V_flow_in/nParallel
         "Volume flow rate (single pump)";
     AngularVelocity_rpm N "Shaft rotational speed";
     SI.Power W_single "Power Consumption (single pump)";
@@ -430,22 +430,22 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     // Flow equations
     if noEvent(s > 0 or (not checkValve)) then
       // Flow characteristics when check valve is open or with no check valve
-      head = (N/N_nominal)^2*flowCharacteristic(q_flow_single*(N_nominal/N));
-      q_flow_single = s*unitMassFlowRate/d;
+      head = (N/N_nominal)^2*flowCharacteristic(V_flow_single*(N_nominal/N));
+      V_flow_single = s*unitMassFlowRate/d;
     else
       // Flow characteristics when check valve is closed
       head = (N/N_nominal)^2*flowCharacteristic(0) - s*unitHead;
-      q_flow_single = 0;
+      V_flow_single = 0;
     end if;
 
     // Power consumption
     if usePowerCharacteristic then
-      W_single = (N/N_nominal)^3*(d/d_nominal)*powerCharacteristic(q_flow_single*(N_nominal/N))
+      W_single = (N/N_nominal)^3*(d/d_nominal)*powerCharacteristic(V_flow_single*(N_nominal/N))
           "Power consumption (single pump)";
-      eta = (dp*q_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
+      eta = (dp*V_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
     else
-      eta = efficiencyCharacteristic(q_flow_single*(N_nominal/N));
-      W_single = dp*q_flow_single/eta;
+      eta = efficiencyCharacteristic(V_flow_single*(N_nominal/N));
+      W_single = dp*V_flow_single/eta;
     end if;
 
     // Medium states close to the ports when mass flows in to the respective port
@@ -478,8 +478,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       /* In the following two equations the extra term W_tot/m_flow is
        present where a 0/0 term appears if m_flow = 0. In order to avoid
        numerical problems, this term is analytically simplified:
-         W_tot/m_flow = nParallel*W_single/(d*q_flow_single*nParallel)
-                      = nParallel*dp*q_flow_single/(eta*d*q_flow_single*nParallel)
+         W_tot/m_flow = nParallel*W_single/(d*V_flow_single*nParallel)
+                      = nParallel*dp*V_flow_single/(eta*d*V_flow_single*nParallel)
                       = dp/(eta*d)
     */
       port_b.h_outflow  = inStream(port_a.h_outflow) + dp/(d*eta);
@@ -525,8 +525,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
               points={{100,0},{80,0}},
               color={0,128,255},
               smooth=Smooth.None)}),
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-                100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+                {100,100}}),
               graphics),
       Documentation(info="<HTML>
 <p>This is the base model for the <tt>Pump</tt> and <tt>
@@ -565,83 +565,83 @@ If zero flow rate conditions are always avoided, this dynamic effect can be negl
 
     partial function baseFlow "Base class for pump flow characteristics"
       extends Modelica.Icons.Function;
-      input SI.VolumeFlowRate q_flow "Volumetric flow rate";
+      input SI.VolumeFlowRate V_flow "Volumetric flow rate";
       output SI.Height head "Pump head";
     end baseFlow;
 
     partial function basePower
         "Base class for pump power consumption characteristics"
       extends Modelica.Icons.Function;
-      input SI.VolumeFlowRate q_flow "Volumetric flow rate";
+      input SI.VolumeFlowRate V_flow "Volumetric flow rate";
       output SI.Power consumption "Power consumption";
     end basePower;
 
     partial function baseEfficiency "Base class for efficiency characteristics"
       extends Modelica.Icons.Function;
-      input SI.VolumeFlowRate q_flow "Volumetric flow rate";
+      input SI.VolumeFlowRate V_flow "Volumetric flow rate";
       output Real eta "Efficiency";
     end baseEfficiency;
 
     function linearFlow "Linear flow characteristic"
       extends baseFlow;
-      input SI.VolumeFlowRate q_nominal[2]
+      input SI.VolumeFlowRate V_flow_nominal[2]
           "Volume flow rate for two operating points (single pump)" 
                                                                   annotation(Dialog);
       input SI.Height head_nominal[2] "Pump head for two operating points" annotation(Dialog);
       /* Linear system to determine the coefficients:
-  head_nominal[1] = c[1] + q_nominal[1]*c[2];
-  head_nominal[2] = c[1] + q_nominal[2]*c[2];
+  head_nominal[1] = c[1] + V_flow_nominal[1]*c[2];
+  head_nominal[2] = c[1] + V_flow_nominal[2]*c[2];
   */
       protected
-      Real c[2] = Modelica.Math.Matrices.solve([ones(2),q_nominal],head_nominal)
+      Real c[2] = Modelica.Math.Matrices.solve([ones(2),V_flow_nominal],head_nominal)
           "Coefficients of linear head curve";
     algorithm
       // Flow equation: head = q*c[1] + c[2];
-      head := c[1] + q_flow*c[2];
+      head := c[1] + V_flow*c[2];
     end linearFlow;
 
     function quadraticFlow "Quadratic flow characteristic"
       extends baseFlow;
-      input SI.VolumeFlowRate q_nominal[3]
+      input SI.VolumeFlowRate V_flow_nominal[3]
           "Volume flow rate for three operating points (single pump)" 
                                                                     annotation(Dialog);
       input SI.Height head_nominal[3] "Pump head for three operating points" annotation(Dialog);
       protected
-      Real q_nominal2[3] = {q_nominal[1]^2,q_nominal[2]^2, q_nominal[3]^2}
+      Real V_flow_nominal2[3] = {V_flow_nominal[1]^2,V_flow_nominal[2]^2, V_flow_nominal[3]^2}
           "Squared nominal flow rates";
       /* Linear system to determine the coefficients:
-  head_nominal[1] = c[1] + q_nominal[1]*c[2] + q_nominal[1]^2*c[3];
-  head_nominal[2] = c[1] + q_nominal[2]*c[2] + q_nominal[2]^2*c[3];
-  head_nominal[3] = c[1] + q_nominal[3]*c[2] + q_nominal[3]^2*c[3];
+  head_nominal[1] = c[1] + V_flow_nominal[1]*c[2] + V_flow_nominal[1]^2*c[3];
+  head_nominal[2] = c[1] + V_flow_nominal[2]*c[2] + V_flow_nominal[2]^2*c[3];
+  head_nominal[3] = c[1] + V_flow_nominal[3]*c[2] + V_flow_nominal[3]^2*c[3];
   */
-      Real c[3] = Modelica.Math.Matrices.solve([ones(3), q_nominal, q_nominal2],head_nominal)
+      Real c[3] = Modelica.Math.Matrices.solve([ones(3), V_flow_nominal, V_flow_nominal2],head_nominal)
           "Coefficients of quadratic head curve";
     algorithm
-      // Flow equation: head  = c[1] + q_flow*c[2] + q_flow^2*c[3];
-      head := c[1] + q_flow*c[2] + q_flow^2*c[3];
+      // Flow equation: head  = c[1] + V_flow*c[2] + V_flow^2*c[3];
+      head := c[1] + V_flow*c[2] + V_flow^2*c[3];
     end quadraticFlow;
 
     function polynomialFlow "Polynomial flow characteristic"
       extends baseFlow;
-      input SI.VolumeFlowRate q_nominal[:]
+      input SI.VolumeFlowRate V_flow_nominal[:]
           "Volume flow rate for N operating points (single pump)" 
                                                                 annotation(Dialog);
       input SI.Height head_nominal[:] "Pump head for N operating points" annotation(Dialog);
       protected
-      Integer N = size(q_nominal,1) "Number of nominal operating points";
-      Real q_nominal_pow[N,N] = {{q_nominal[j]^(i-1) for j in 1:N} for i in 1:N}
+      Integer N = size(V_flow_nominal,1) "Number of nominal operating points";
+      Real V_flow_nominal_pow[N,N] = {{V_flow_nominal[j]^(i-1) for j in 1:N} for i in 1:N}
           "Rows: different operating points; columns: increasing powers";
       /* Linear system to determine the coefficients (example N=3):
-  head_nominal[1] = c[1] + q_nominal[1]*c[2] + q_nominal[1]^2*c[3];
-  head_nominal[2] = c[1] + q_nominal[2]*c[2] + q_nominal[2]^2*c[3];
-  head_nominal[3] = c[1] + q_nominal[3]*c[2] + q_nominal[3]^2*c[3];
+  head_nominal[1] = c[1] + V_flow_nominal[1]*c[2] + V_flow_nominal[1]^2*c[3];
+  head_nominal[2] = c[1] + V_flow_nominal[2]*c[2] + V_flow_nominal[2]^2*c[3];
+  head_nominal[3] = c[1] + V_flow_nominal[3]*c[2] + V_flow_nominal[3]^2*c[3];
   */
-      Real c[N] = Modelica.Math.Matrices.solve(q_nominal_pow,head_nominal)
+      Real c[N] = Modelica.Math.Matrices.solve(V_flow_nominal_pow,head_nominal)
           "Coefficients of polynomial head curve";
     algorithm
-      // Flow equation (example N=3): head  = c[1] + q_flow*c[2] + q_flow^2*c[3];
+      // Flow equation (example N=3): head  = c[1] + V_flow*c[2] + V_flow^2*c[3];
       // Note: the implementation is numerically efficient only for low values of Na
-      head := sum(q_flow^(i-1)*c[i] for i in 1:N);
+      head := sum(V_flow^(i-1)*c[i] for i in 1:N);
     end polynomialFlow;
 
     function constantEfficiency "Constant efficiency characteristic"
@@ -653,39 +653,39 @@ If zero flow rate conditions are always avoided, this dynamic effect can be negl
 
     function linearPower "Linear power consumption characteristic"
       extends basePower;
-      input SI.VolumeFlowRate q_nominal[2]
+      input SI.VolumeFlowRate V_flow_nominal[2]
           "Volume flow rate for two operating points (single pump)" annotation(Dialog);
       input SI.Power W_nominal[2] "Power consumption for two operating points"   annotation(Dialog);
       /* Linear system to determine the coefficients:
-  W_nominal[1] = c[1] + q_nominal[1]*c[2];
-  W_nominal[2] = c[1] + q_nominal[2]*c[2];
+  W_nominal[1] = c[1] + V_flow_nominal[1]*c[2];
+  W_nominal[2] = c[1] + V_flow_nominal[2]*c[2];
   */
       protected
-      Real c[2] = Modelica.Math.Matrices.solve([ones(3),q_nominal],W_nominal)
+      Real c[2] = Modelica.Math.Matrices.solve([ones(3),V_flow_nominal],W_nominal)
           "Coefficients of linear power consumption curve";
     algorithm
-      consumption := c[1] + q_flow*c[2];
+      consumption := c[1] + V_flow*c[2];
     end linearPower;
 
     function quadraticPower "Quadratic power consumption characteristic"
       extends basePower;
-      input SI.VolumeFlowRate q_nominal[3]
+      input SI.VolumeFlowRate V_flow_nominal[3]
           "Volume flow rate for three operating points (single pump)" 
                                                                     annotation(Dialog);
       input SI.Power W_nominal[3]
           "Power consumption for three operating points"                         annotation(Dialog);
       protected
-      Real q_nominal2[3] = {q_nominal[1]^2,q_nominal[2]^2, q_nominal[3]^2}
+      Real V_flow_nominal2[3] = {V_flow_nominal[1]^2,V_flow_nominal[2]^2, V_flow_nominal[3]^2}
           "Squared nominal flow rates";
       /* Linear system to determine the coefficients:
-  W_nominal[1] = c[1] + q_nominal[1]*c[2] + q_nominal[1]^2*c[3];
-  W_nominal[2] = c[1] + q_nominal[2]*c[2] + q_nominal[2]^2*c[3];
-  W_nominal[3] = c[1] + q_nominal[3]*c[2] + q_nominal[3]^2*c[3];
+  W_nominal[1] = c[1] + V_flow_nominal[1]*c[2] + V_flow_nominal[1]^2*c[3];
+  W_nominal[2] = c[1] + V_flow_nominal[2]*c[2] + V_flow_nominal[2]^2*c[3];
+  W_nominal[3] = c[1] + V_flow_nominal[3]*c[2] + V_flow_nominal[3]^2*c[3];
   */
-      Real c[3] = Modelica.Math.Matrices.solve([ones(3),q_nominal,q_nominal2],W_nominal)
+      Real c[3] = Modelica.Math.Matrices.solve([ones(3),V_flow_nominal,V_flow_nominal2],W_nominal)
           "Coefficients of quadratic power consumption curve";
     algorithm
-      consumption := c[1] + q_flow*c[2] + q_flow^2*c[3];
+      consumption := c[1] + V_flow*c[2] + V_flow^2*c[3];
     end quadraticPower;
 
   end PumpCharacteristics;

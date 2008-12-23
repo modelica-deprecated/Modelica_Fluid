@@ -23,7 +23,7 @@ annotation (
     m_flow_start=1,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
-          q_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
+          V_flow_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     N_nominal=1500,
     p_a_start=100000,
     p_b_start=700000)     annotation (Placement(transformation(extent={{-66,20},

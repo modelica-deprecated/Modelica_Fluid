@@ -455,8 +455,8 @@ This will be visualized at the port icons, in order to improve the understanding
             visible=port_b_exposesState)}));
   end PartialTwoPort;
 
-      partial model PartialPressureLoss
-    "Common interface for pressure loss models"
+      partial model PartialPressureDrop
+    "Common interface for pressure drop models"
 
         // Medium
         replaceable package Medium = 
@@ -493,16 +493,14 @@ and <tt>m_flow[n]</tt>.
 </p>
 </html>"));
 
-      end PartialPressureLoss;
+      end PartialPressureDrop;
 
 partial model PartialTwoPortTransport
     "Partial element transporting fluid between two ports without storage of mass or energy"
 
-  extends PartialTwoPort(
-    final port_a_exposesState=false,
-    final port_b_exposesState=false);
+  extends PartialTwoPort;
 
-  extends PartialPressureLoss(
+  extends Modelica_Fluid.Interfaces.PartialPressureDrop(
     final n = 1,
     final state = {Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
                    Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))},
@@ -570,7 +568,7 @@ equation
     Documentation(info="<html>
 <p>
 This component transports fluid between its two ports, without
-storing mass or energy. It is intended as base class for devices like orifices, valves and pumps.
+storing mass. It is intended as base class for devices like orifices, valves and pumps.
 <p>
 When using this partial component, three equations have to be added:
 <ul>

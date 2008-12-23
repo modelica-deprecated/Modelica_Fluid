@@ -29,7 +29,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     N_nominal=1200,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
-          q_nominal={0,0.25,0.5}, head_nominal={100,60,0}),
+          V_flow_nominal={0,0.25,0.5}, head_nominal={100,60,0}),
     V=50/1000,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_N_input=true,
