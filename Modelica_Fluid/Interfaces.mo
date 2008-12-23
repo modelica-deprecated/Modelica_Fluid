@@ -473,26 +473,16 @@ This will be visualized at the port icons, in order to improve the understanding
         output Medium.MassFlowRate[n] m_flow
       "mass flow rates along design flow";
 
-        // Variables
-        Medium.AbsolutePressure[n+1] p "pressures of states";
-        Modelica.SIunits.Pressure[n] dp "pressure loss between states";
-
-      equation
-        p = Medium.pressure(state);
-        dp = p[1:n] - p[2:n+1];
-
         annotation (
            Documentation(info="<html>
 <p>
 The mass flow rates <tt>m_flow[n]</tt> between n+1 flow segments 
-are obtained as function of the thermodynamic <tt>state</tt> of the flow segments for a given fluid <tt>Medium</tt>.
+are obtained as function of the thermodynamic <tt>state[n+1]</tt> of the flow segments for a given fluid <tt>Medium</tt>.
 </p>
 <p>
-An extending model implementing this interface needs to define the relation between the predefined pressure drops <tt>dp[n]</tt> 
-and <tt>m_flow[n]</tt>.
+An extending model implementing this interface needs to define the mass flow rates <tt>m_flow[n]</tt>.
 </p>
 </html>"));
-
       end PartialPressureDrop;
 
 partial model PartialTwoPortTransport
@@ -504,13 +494,9 @@ partial model PartialTwoPortTransport
     final n = 1,
     final state = {Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
                    Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))},
-    dp(start = {dp_start}),
     m_flow(start = {m_flow_start}));
 
   // Advanced
-  parameter Medium.AbsolutePressure dp_start = 0.01*system.p_start
-      "Guess value of dp = port_a.p - port_b.p" 
-    annotation(Dialog(tab = "Advanced"));
   parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
       "Guess value of m_flow = port_a.m_flow" 
     annotation(Dialog(tab = "Advanced"));

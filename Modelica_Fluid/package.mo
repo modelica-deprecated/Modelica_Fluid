@@ -895,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-22</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-23</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -987,6 +987,8 @@ with the exception:
 </p>
  
 <ul>
+<li> Test.TestComponents.Density and Test.TestComponents.Vessels.TestMixingVolumesPressureStates<br>
+     The simulation fails since Fittings.BaseClasses.PartialTwoPortFittings is based on Interfaces.PartialTwoPortTransport.</li>
 <li> Test.TestOverdeterminedInitialization.DistributedPipeInitialValues<br>
      The translation fails due to an initial value for pipe.medium[1].p, which is fixed by source.p.</li>
 <li> Test.TestCriticalCases.DistributedPipeInitialization<br>
