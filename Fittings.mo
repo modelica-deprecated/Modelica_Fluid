@@ -107,6 +107,9 @@ model SimpleGenericOrifice
   parameter Boolean from_dp = true
       "= true, use m_flow = f(dp) else dp = f(m_flow)" 
     annotation (Evaluate=true, Dialog(tab="Advanced"));
+  parameter Medium.AbsolutePressure dp_small = 1
+      "Turbulent flow if |dp| >= dp_small" 
+    annotation(Dialog(tab="Advanced", enable=from_dp));
   annotation (
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
@@ -171,14 +174,16 @@ equation
         port_a_d_inflow,
         port_b_d_inflow,
         diameter,
-        zeta);
+        zeta,
+        dp_small);
   else
       dp = BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(
         m_flow,
         port_a_d_inflow,
         port_b_d_inflow,
         diameter,
-        zeta);
+        zeta,
+        m_flow_small);
   end if;
 end SimpleGenericOrifice;
 
@@ -1664,7 +1669,7 @@ Laminar region:
         parameter Boolean from_dp = true
           "= true, use m_flow = f(dp) else dp = f(m_flow)" 
           annotation (Evaluate=true, Dialog(tab="Advanced"));
-        parameter SI.AbsolutePressure dp_small = 1
+        parameter Medium.AbsolutePressure dp_small = 1
           "Turbulent flow if |dp| >= dp_small" 
           annotation(Dialog(tab="Advanced", enable=not use_Re and from_dp));
         parameter Boolean use_Re = false
