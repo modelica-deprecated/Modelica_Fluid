@@ -270,7 +270,7 @@ present that are regulated by a central control system.
       N_nominal=200,
       use_N_input=true,
       V(displayUnit="ml") = 0.0001,
-      checkValve=false,
+      checkValve=true,
       p_a_start=100000,
       p_b_start=100000) 
       annotation (Placement(transformation(extent={{-128,-260},{-148,-240}},
@@ -1206,7 +1206,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
