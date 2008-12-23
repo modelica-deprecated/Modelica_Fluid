@@ -37,7 +37,7 @@ model HeatingSystem "Simple model of a heating system"
     redeclare package Medium = Medium,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=0.01,
-    compute_T=true,
+    show_T=true,
     dp_nominal=10000) 
     annotation (Placement(transformation(extent={{70,-80},{50,-60}},
                                                                    rotation=0)));
@@ -204,7 +204,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},

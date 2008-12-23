@@ -2987,9 +2987,6 @@ b has the same sign of the change of density.</p>
         parameter SI.AbsolutePressure dp_small = 1
           "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
           annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
-        parameter SI.MassFlowRate m_flow_small = reg_m_flow_small
-          "Within regularizatio if |m_flow| < m_flow_small (may be wider for large discontinuities in static head)"
-          annotation(Dialog(tab="Advanced", enable=not from_dp and WallFriction.use_m_flow_small));
         SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, noEvent(if m_flow>0 then eta_a else eta_b), diameter) if show_Re
           "Reynolds number of pipe";
 

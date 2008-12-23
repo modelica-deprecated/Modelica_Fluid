@@ -1661,21 +1661,18 @@ Laminar region:
               m_flow, (Medium.dynamicViscosity(port_a_state_inflow) + Medium.dynamicViscosity(port_b_state_inflow))/2,
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
         parameter LossFactorData data "Loss factor data";
-        parameter Boolean show_Re = false
-          "= true, if Reynolds number is included for plotting" 
-           annotation (Evaluate=true, Dialog(tab="Advanced"));
         parameter Boolean from_dp = true
           "= true, use m_flow = f(dp) else dp = f(m_flow)" 
           annotation (Evaluate=true, Dialog(tab="Advanced"));
-        parameter Boolean use_Re = false
-          "= true, if turbulent region is defined by Re, otherwise by dp_small or m_flow_small"
-          annotation(Evaluate=true, Dialog(tab="Advanced"));
         parameter SI.AbsolutePressure dp_small = 1
           "Turbulent flow if |dp| >= dp_small" 
           annotation(Dialog(tab="Advanced", enable=not use_Re and from_dp));
-        parameter SI.MassFlowRate m_flow_small = 0.01
-          "Turbulent flow if |m_flow| >= m_flow_small" 
-          annotation(Dialog(tab="Advanced", enable=not use_Re and not from_dp));
+        parameter Boolean use_Re = false
+          "= true, if turbulent region is defined by Re, otherwise by dp_small or m_flow_small"
+          annotation(Evaluate=true, Dialog(tab="Advanced"));
+        parameter Boolean show_Re = false
+          "= true, if Reynolds number is included for plotting" 
+           annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnosis"));
 
         annotation (
           Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -1880,18 +1877,18 @@ The used sufficient criteria for monotonicity follows from:
       annotation(Dialog(tab="Assumptions"), Evaluate=true);
 
     //Initialization
-    parameter Boolean compute_T = true
-        "= true, if temperatures at port_a and port_b are computed" 
-      annotation(Dialog(tab="Advanced"), choices(__Dymola_checkBox=true));
     parameter Medium.AbsolutePressure dp_start = 0.01*system.p_start
         "Guess value of dp = port_a.p - port_b.p" 
       annotation(Dialog(tab = "Advanced"));
     parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
         "Guess value of m_flow = port_a.m_flow" 
       annotation(Dialog(tab = "Advanced"));
-    parameter Medium.MassFlowRate reg_m_flow_small = 0.01
-        "Small mass flow rate that is used to regularize port_a_T and V_flow_a"
+    parameter Medium.MassFlowRate m_flow_small = 0.01
+        "Small mass flow rate for regularization of zero flow" 
       annotation(Dialog(tab = "Advanced"));
+    parameter Boolean show_T = true
+        "= true, if temperatures at port_a and port_b are computed" 
+      annotation(Dialog(tab="Advanced", group="Diagnosis"));
 
     Medium.MassFlowRate m_flow(start=m_flow_start)
         "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
@@ -1919,10 +1916,8 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
             grid={1,1})));
-    Medium.Temperature port_a_T
-        "Temperature close to port_a, if compute_T = true";
-    Medium.Temperature port_b_T
-        "Temperature close to port_b, if compute_T = true";
+    Medium.Temperature port_a_T "Temperature close to port_a, if show_T = true";
+    Medium.Temperature port_b_T "Temperature close to port_b, if show_T = true";
     Medium.ThermodynamicState port_a_state_inflow
         "Medium state close to port_a for inflowing mass flow";
     Medium.ThermodynamicState port_b_state_inflow
@@ -1962,18 +1957,18 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 
     // Computation of Volume flow rate, just for plotting
     V_flow = m_flow/Modelica_Fluid.Utilities.regStep(
-                     m_flow, port_a_d_inflow, port_b_d_inflow, reg_m_flow_small);
+                     m_flow, port_a_d_inflow, port_b_d_inflow, m_flow_small);
 
     // Computation of temperature, just for plotting
-    if compute_T then
+    if show_T then
        port_a_T = Modelica_Fluid.Utilities.regStep(port_a.m_flow,
                     Medium.temperature(port_a_state_inflow),
                     Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow)),
-                    reg_m_flow_small);
+                    m_flow_small);
        port_b_T = Modelica_Fluid.Utilities.regStep(port_b.m_flow,
                     Medium.temperature(port_b_state_inflow),
                     Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)),
-                    reg_m_flow_small);
+                    m_flow_small);
     else
        port_a_T = Medium.reference_T;
        port_b_T = Medium.reference_T;

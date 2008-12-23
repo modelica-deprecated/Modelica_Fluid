@@ -55,7 +55,7 @@ explained in detail in the
     "Valve for possibly vaporizing (almost) incompressible fluids, accounts for choked flow conditions"
     import Modelica_Fluid.Types.CvTypes;
     extends BaseClasses.PartialValve(
-      final compute_T = true,
+      final show_T = true,
       redeclare replaceable package Medium = 
           Modelica.Media.Water.WaterIF97_ph                                    constrainedby
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);

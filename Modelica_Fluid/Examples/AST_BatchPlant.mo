@@ -682,7 +682,8 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
+
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -695,7 +696,7 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
@@ -918,79 +919,6 @@ handled properly.</p>
 
     end setReal;
 
-    model ValveDiscrete "Valve for water/steam flows with linear pressure drop"
-      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
-      parameter Modelica_Fluid.Types.HydraulicConductance Kv
-        "Hydraulic conductance at full opening";
-      Modelica.Blocks.Interfaces.BooleanInput open annotation (Placement(
-            transformation(
-            origin={0,84},
-            extent={{10,-10},{-10,10}},
-            rotation=90)));
-      parameter Real m_flow_small = 1e-7 "massflow when valve is closed";
-      parameter Boolean finiteRiseTime = false
-        "= true, if valve is opened/closed linearly in riseTime time";
-      parameter Real riseTime = 0 "Time to open or close the valve" 
-                                           annotation(Dialog(enable=finiteRiseTime));
-    protected
-      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TriggeredTrapezoid
-        trapezoid(rising=riseTime) if finiteRiseTime 
-        annotation (Placement(transformation(
-            origin={0,50},
-            extent={{-10,-10},{10,10}},
-            rotation=270)));
-      Modelica.Blocks.Sources.RealExpression m_flow_trapezoid(y=if trapezoid.y_high then 
-                  trapezoid.y*Kv*dp else Kv*dp*m_flow_small) if finiteRiseTime 
-        annotation (Placement(transformation(extent={{-90,-40},{40,-20}},
-              rotation=0)));
-      Modelica.Blocks.Sources.RealExpression m_flow_pulse(y=if open then Kv*dp else 
-                  Kv*dp*m_flow_small) if not finiteRiseTime 
-        annotation (Placement(transformation(extent={{-90,-60},{40,-40}},
-              rotation=0)));
-      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.setReal set(u=m_flow) 
-        annotation (Placement(transformation(extent={{70,-50},{90,-30}},
-              rotation=0)));
-    annotation (
-      Icon(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={
-            Line(points={{0,50},{0,0}}, color={0,0,0}),
-            Rectangle(
-              extent={{-20,60},{20,50}},
-              lineColor={0,0,0},
-              fillColor={0,0,0},
-              fillPattern=FillPattern.Solid),
-            Text(extent={{-145,-58},{146,-98}}, textString="%name"),
-            Polygon(
-              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
-              fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,
-                  0} else {255,255,255}),
-              lineColor={0,0,0})}),
-      Diagram(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics),
-      Documentation(info="<HTML>
-<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>opening</tt> signal, without computing any fluid property.
-<p>A medium model must be nevertheless be specified, so that the fluid ports can be connected to other components using the same medium model.
-</HTML>",
-        revisions="<html>
-<ul>
-<li><i>2 Nov 2005</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Adapted from the ThermoPower library.</li>
-</ul>
-</html>"));
-
-    equation
-      connect(trapezoid.u, open) annotation (Line(points={{2.20436e-015,62},{0,
-              62},{0,84}}, color={255,0,255}));
-      connect(m_flow_trapezoid.y, set.u) annotation (Line(points={{46.5,-30},{
-              60,-30},{60,-40},{68,-40}}, color={0,0,127}));
-      connect(m_flow_pulse.y, set.u) annotation (Line(points={{46.5,-50},{60,
-              -50},{60,-40},{68,-40}}, color={0,0,127}));
-    end ValveDiscrete;
 
     model TankWith3InletOutletArraysWithEvaporatorCondensor
       "Tank with Heating and Evaporation"
@@ -1280,7 +1208,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
