@@ -99,7 +99,7 @@ The regularization can be changed for the pressureLoss model on the Advanced tab
 
 model SimpleGenericOrifice
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
-      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
 
   parameter Real zeta "Loss factor for flow of port_a -> port_b";
   parameter SI.Diameter diameter
@@ -1655,7 +1655,7 @@ Laminar region:
       partial model BaseModel
         "Generic pressure drop component with constant turbulent loss factor data and without an icon"
 
-        extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+        extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
 
         SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(
               m_flow, (Medium.dynamicViscosity(port_a_state_inflow) + Medium.dynamicViscosity(port_b_state_inflow))/2,
@@ -1868,8 +1868,8 @@ The used sufficient criteria for monotonicity follows from:
       k :=8*zeta/(Modelica.Constants.pi*Modelica.Constants.pi*D*D*D*D);
     end lossConstant_D_zeta;
 
-  partial model PartialTwoPortTransport
-      "Partial element transporting fluid between two ports without storing mass or energy"
+  partial model PartialTwoPortFitting
+      "Partial element transporting fluid between two ports without storage or loss of mass or energy"
     extends Modelica_Fluid.Interfaces.PartialTwoPort(
       final port_a_exposesState=false,
       final port_b_exposesState=false);
@@ -1908,8 +1908,7 @@ The used sufficient criteria for monotonicity follows from:
       Documentation(info="<html>
 <p>
 This component transports fluid between its two ports, without
-storing mass or energy. Reversal and zero mass flow rate is taken
-care of, for details see definition of built-in operator semiLinear().
+storing mass or energy and without changing the enthalpy of the fluid. 
 <p>
 When using this partial component, an equation for the momentum
 balance has to be added by specifying a relationship
@@ -1979,11 +1978,11 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
        port_a_T = Medium.reference_T;
        port_b_T = Medium.reference_T;
     end if;
-  end PartialTwoPortTransport;
+  end PartialTwoPortFitting;
 
   partial model PartialGenericPressureLoss
       "Two port transport model with replaceable pressure loss correlation"
-    extends PartialTwoPortTransport;
+    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
     import Modelica.Constants.pi;
 
     // Assumptions

@@ -321,6 +321,48 @@ package Interfaces
             fillPattern=FillPattern.Solid)}));
   end HeatPorts_b;
 
+  partial model PartialHeatTransfer "Common interface for heat transfer models"
+
+    // Parameters
+    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
+      annotation(Dialog(tab="Internal Interface", enable=false));
+
+    parameter Integer n=1 "Number of heat transfer segments" 
+      annotation(Dialog(tab="Internal Interface", enable=false), Evaluate=true);
+
+    // Inputs provided to heat transfer model
+    input Medium.ThermodynamicState[n] state 
+      annotation(Dialog(tab="Internal Interface", enable=false));
+
+    // Output defined by heat transfer model
+    output SI.HeatFlowRate[n] Q_flow "Heat flow rates per tube";
+
+    // Heat ports
+    Modelica_Fluid.Interfaces.HeatPorts_a[n] heatPorts
+      "Heat port to component boundary" 
+      annotation (Placement(transformation(extent={{-10,60},{10,80}},
+              rotation=0), iconTransformation(extent={{-20,60},{20,80}})));
+
+    // Variables
+    SI.Temperature[n] T;
+
+  equation
+    T = Medium.temperature(state);
+    heatPorts.Q_flow = Q_flow;
+
+    annotation (Documentation(info="<html>
+<p>
+The heat flow rates <tt>Q_flow[n]</tt> through the boundaries of n flow segments 
+are obtained as function of the thermodynamic <tt>state</tt> of the flow segments for a given fluid <tt>Medium</tt>
+and the boundary temperatures <tt>heatPorts[n].T</tt>.
+</p>
+<p>
+An extending model implementing this interface needs to define the relation between the predefined fluid temperatures <tt>T[n]</tt>,
+the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q_flow[n]</tt>.
+</p>
+</html>"));
+  end PartialHeatTransfer;
+
   partial model PartialTwoPort "Partial component with two ports"
     import Modelica.Constants;
     outer Modelica_Fluid.System system "System wide properties";
@@ -418,7 +460,7 @@ This will be visualized at the port icons, in order to improve the understanding
 
         // Medium
         replaceable package Medium = 
-          Modelica.Media.Interfaces.PartialMedium "fluid medium" 
+          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation(Dialog(tab="Internal Interface", enable=false));
 
         // Discretization
@@ -426,10 +468,10 @@ This will be visualized at the port icons, in order to improve the understanding
           annotation(Dialog(tab="Internal Interface", enable=false));
 
         input Medium.ThermodynamicState[n+1] state "states along design flow" 
-           annotation(Dialog(tab="Internal Interface", enable=false,group="Inputs"));
+          annotation(Dialog(tab="Internal Interface", enable=false));
+
         output Medium.MassFlowRate[n] m_flow
-      "mass flow rates along design flow" 
-           annotation(Dialog(tab="Internal Interface", enable=false,group="Outputs"));
+      "mass flow rates along design flow";
 
         // Variables
         Medium.AbsolutePressure[n+1] p "pressures of states";
@@ -453,45 +495,94 @@ and <tt>m_flow[n]</tt>.
 
       end PartialPressureLoss;
 
-  partial model PartialHeatTransfer "Common interface for heat transfer models"
+partial model PartialTwoPortTransport
+    "Partial element transporting fluid between two ports without storage of mass or energy"
 
-    // Parameters
-    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
-      annotation(Dialog(tab="Internal Interface", enable=false));
+  extends PartialTwoPort(
+    final port_a_exposesState=false,
+    final port_b_exposesState=false);
 
-    parameter Integer n=1 "Number of heat transfer segments" 
-      annotation(Dialog(tab="Internal Interface", enable=false), Evaluate=true);
+  extends PartialPressureLoss(
+    final n = 1,
+    final state = {Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
+                   Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))},
+    dp(start = {dp_start}),
+    m_flow(start = {m_flow_start}));
 
-    // Inputs provided to heat transfer model
-    input Medium.ThermodynamicState[n] state 
-      annotation(Dialog(tab="Internal Interface", enable=false));
+  // Advanced
+  parameter Medium.AbsolutePressure dp_start = 0.01*system.p_start
+      "Guess value of dp = port_a.p - port_b.p" 
+    annotation(Dialog(tab = "Advanced"));
+  parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
+      "Guess value of m_flow = port_a.m_flow" 
+    annotation(Dialog(tab = "Advanced"));
+  parameter Medium.MassFlowRate m_flow_small = 0.01
+      "Small mass flow rate for regularization of zero flow" 
+    annotation(Dialog(tab = "Advanced"));
 
-    // Output defined by heat transfer model
-    output SI.HeatFlowRate[n] Q_flow "Heat flow rates per tube";
+  // Diagnosis
+  parameter Boolean show_T = true
+      "= true, if temperatures at port_a and port_b are computed" 
+    annotation(Dialog(tab="Advanced",group="Diagnosis"));
+  parameter Boolean show_V_flow = true
+      "= true, if volume flow rate at inflowing port is computed" 
+    annotation(Dialog(tab="Advanced",group="Diagnosis"));
 
-    // Heat ports
-    Modelica_Fluid.Interfaces.HeatPorts_a[n] heatPorts
-      "Heat port to component boundary" 
-      annotation (Placement(transformation(extent={{-10,60},{10,80}},
-              rotation=0), iconTransformation(extent={{-20,60},{20,80}})));
+  Modelica.SIunits.VolumeFlowRate V_flow=
+      m_flow[1]/Modelica_Fluid.Utilities.regStep(m_flow[1],
+                  Medium.density(state[1]),
+                  Medium.density(state[2]),
+                  m_flow_small) if show_V_flow
+      "Volume flow rate at inflowing port (positive when flow from port_a to port_b)";
 
-    // Variables
-    SI.Temperature[n] T;
+  Medium.Temperature port_a_T=
+      Modelica_Fluid.Utilities.regStep(port_a.m_flow,
+                  Medium.temperature(state[1]),
+                  Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow)),
+                  m_flow_small) if show_T
+      "Temperature close to port_a, if show_T = true";
+  Medium.Temperature port_b_T=
+      Modelica_Fluid.Utilities.regStep(port_b.m_flow,
+                  Medium.temperature(state[2]),
+                  Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)),
+                  m_flow_small) if show_T
+      "Temperature close to port_b, if show_T = true";
 
-  equation
-    T = Medium.temperature(state);
-    heatPorts.Q_flow = Q_flow;
+equation
+  // Mass balance (no storage)
+  port_a.m_flow + port_b.m_flow = 0;
 
-    annotation (Documentation(info="<html>
+  // Transport of substances
+  port_a.Xi_outflow = inStream(port_b.Xi_outflow);
+  port_b.Xi_outflow = inStream(port_a.Xi_outflow);
+
+  port_a.C_outflow = inStream(port_b.C_outflow);
+  port_b.C_outflow = inStream(port_a.C_outflow);
+
+  // Design direction of mass flow rate
+  port_a.m_flow = m_flow[1];
+
+  annotation (
+    Diagram(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1}), graphics),
+    Documentation(info="<html>
 <p>
-The heat flow rates <tt>Q_flow[n]</tt> through the boundaries of n flow segments 
-are obtained as function of the thermodynamic <tt>state</tt> of the flow segments for a given fluid <tt>Medium</tt>
-and the boundary temperatures <tt>heatPorts[n].T</tt>.
-</p>
+This component transports fluid between its two ports, without
+storing mass or energy. It is intended as base class for devices like orifices, valves and pumps.
 <p>
-An extending model implementing this interface needs to define the relation between the predefined fluid temperatures <tt>T[n]</tt>,
-the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q_flow[n]</tt>.
+When using this partial component, three equations have to be added:
+<ul>
+<li> the energy balances for flow from port_a to port_b and from port_b to port_a</li>
+<li> the momentum balance specifying the relationship 
+     between the pressure drop <tt>dp[1]</tt> and the mass flow rate <tt>m_flow[1]</tt></li>.
+</ul>
 </p>
-</html>"));
-  end PartialHeatTransfer;
+</html>"),
+    Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-100,-100},{100,100}},
+          grid={1,1})));
+end PartialTwoPortTransport;
 end Interfaces;

@@ -207,7 +207,7 @@ explained in detail in the
   end ValveCompressible;
 
   model ValveLinear "Valve for water/steam flows with linear pressure drop"
-    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
     parameter SI.AbsolutePressure dp_nominal
       "Nominal pressure drop at full opening";
     parameter Medium.MassFlowRate m_flow_nominal
@@ -272,7 +272,7 @@ explained in detail in the
   end ValveLinear;
 
   model ValveDiscrete "Valve for water/steam flows with linear pressure drop"
-    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport;
+    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
     parameter SI.Pressure dp_nominal "Nominal pressure drop at full opening";
     parameter Medium.MassFlowRate m_flow_nominal
       "Nominal mass flowrate at full opening";
@@ -336,7 +336,7 @@ it is open.
     partial model PartialValve "Base model for valves"
 
       import Modelica_Fluid.Types.CvTypes;
-      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortTransport(
+      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting(
           dp_start=dp_nominal, m_flow_start=m_flow_nominal);
       parameter CvTypes CvData=CvTypes.OpPoint "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
