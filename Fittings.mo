@@ -169,18 +169,18 @@ can appear, this component should not be used.
 </html>"));
 equation
   if from_dp then
-      m_flow = BaseClasses.SimpleGenericOrifice.massFlowRate_dp(
+      m_flow[1] = BaseClasses.SimpleGenericOrifice.massFlowRate_dp(
         dp,
-        port_a_d_inflow,
-        port_b_d_inflow,
+        Medium.density(state[1]),
+        Medium.density(state[2]),
         diameter,
         zeta,
         dp_small);
   else
       dp = BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(
-        m_flow,
-        port_a_d_inflow,
-        port_b_d_inflow,
+        m_flow[1],
+        Medium.density(state[1]),
+        Medium.density(state[2]),
         diameter,
         zeta,
         m_flow_small);
@@ -1663,18 +1663,18 @@ Laminar region:
         extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
 
         SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(
-              m_flow, (Medium.dynamicViscosity(port_a_state_inflow) + Medium.dynamicViscosity(port_b_state_inflow))/2,
+              m_flow[1], (Medium.dynamicViscosity(state[1]) + Medium.dynamicViscosity(state[2]))/2,
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
         parameter LossFactorData data "Loss factor data";
         parameter Boolean from_dp = true
           "= true, use m_flow = f(dp) else dp = f(m_flow)" 
           annotation (Evaluate=true, Dialog(tab="Advanced"));
-        parameter Medium.AbsolutePressure dp_small = 1
-          "Turbulent flow if |dp| >= dp_small" 
-          annotation(Dialog(tab="Advanced", enable=not use_Re and from_dp));
         parameter Boolean use_Re = false
           "= true, if turbulent region is defined by Re, otherwise by dp_small or m_flow_small"
           annotation(Evaluate=true, Dialog(tab="Advanced"));
+        parameter Medium.AbsolutePressure dp_small = 1
+          "Turbulent flow if |dp| >= dp_small" 
+          annotation(Dialog(tab="Advanced", enable=not use_Re and from_dp));
         parameter Boolean show_Re = false
           "= true, if Reynolds number is included for plotting" 
            annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnosis"));
@@ -1794,21 +1794,21 @@ The used sufficient criteria for monotonicity follows from:
 </html>"));
       equation
         if from_dp then
-           m_flow = if use_Re then 
+           m_flow[1] = if use_Re then 
                        massFlowRate_dp_and_Re(
-                          dp, port_a_d_inflow, port_b_d_inflow,
-                          Medium.dynamicViscosity(port_a_state_inflow),
-                          Medium.dynamicViscosity(port_b_state_inflow),
+                          dp, Medium.density(state[1]), Medium.density(state[2]),
+                          Medium.dynamicViscosity(state[1]),
+                          Medium.dynamicViscosity(state[2]),
                           data) else 
-                       massFlowRate_dp(dp, port_a_d_inflow, port_b_d_inflow, data, dp_small);
+                       massFlowRate_dp(dp, Medium.density(state[1]), Medium.density(state[2]), data, dp_small);
         else
            dp = if use_Re then 
                    pressureLoss_m_flow_and_Re(
-                       m_flow, port_a_d_inflow, port_b_d_inflow,
-                       Medium.dynamicViscosity(port_a_state_inflow),
-                       Medium.dynamicViscosity(port_b_state_inflow),
+                       m_flow[1], Medium.density(state[1]), Medium.density(state[2]),
+                       Medium.dynamicViscosity(state[1]),
+                       Medium.dynamicViscosity(state[2]),
                        data) else 
-                   pressureLoss_m_flow(m_flow, port_a_d_inflow, port_b_d_inflow, data, m_flow_small);
+                   pressureLoss_m_flow(m_flow[1], Medium.density(state[1]), Medium.density(state[2]), data, m_flow_small);
         end if;
       end BaseModel;
 
@@ -1872,35 +1872,25 @@ The used sufficient criteria for monotonicity follows from:
 
   partial model PartialTwoPortFitting
       "Partial element transporting fluid between two ports without storage or loss of mass or energy"
-    extends Modelica_Fluid.Interfaces.PartialTwoPort(
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
       final port_a_exposesState=false,
       final port_b_exposesState=false);
-
-    //Assumptions
-    parameter Boolean allowFlowReversal = system.allowFlowReversal
-        "allow flow reversal, false restricts to design direction (port_a -> port_b)"
-      annotation(Dialog(tab="Assumptions"), Evaluate=true);
 
     //Initialization
     parameter Medium.AbsolutePressure dp_start = 0.01*system.p_start
         "Guess value of dp = port_a.p - port_b.p" 
       annotation(Dialog(tab = "Advanced"));
-    parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
-        "Guess value of m_flow = port_a.m_flow" 
-      annotation(Dialog(tab = "Advanced"));
-    parameter Medium.MassFlowRate m_flow_small = 0.01
-        "Small mass flow rate for regularization of zero flow" 
-      annotation(Dialog(tab = "Advanced"));
-    parameter Boolean show_T = true
-        "= true, if temperatures at port_a and port_b are computed" 
-      annotation(Dialog(tab="Advanced", group="Diagnosis"));
 
-    Medium.MassFlowRate m_flow(start=m_flow_start)
-        "Mass flow rate from port_a to port_b (m_flow > 0 is design flow direction)";
-    Modelica.SIunits.VolumeFlowRate V_flow
-        "Volume flow rate at inflowing port (positive when flow from port_a to port_b)";
     Modelica.SIunits.Pressure dp(start=dp_start)
         "Pressure difference between port_a and port_b (= port_a.p - port_b.p)";
+
+  equation
+    // Isenthalpic state transformation (no storage and no loss of energy)
+    port_a.h_outflow = inStream(port_b.h_outflow);
+    port_b.h_outflow = inStream(port_a.h_outflow);
+
+    // Pressure difference between ports
+    dp = port_a.p - port_b.p;
 
     annotation (
       Diagram(coordinateSystem(
@@ -1921,63 +1911,6 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
             grid={1,1})));
-    Medium.Temperature port_a_T "Temperature close to port_a, if show_T = true";
-    Medium.Temperature port_b_T "Temperature close to port_b, if show_T = true";
-    Medium.ThermodynamicState port_a_state_inflow
-        "Medium state close to port_a for inflowing mass flow";
-    Medium.ThermodynamicState port_b_state_inflow
-        "Medium state close to port_b for inflowing mass flow";
-    protected
-    Medium.Density port_a_d_inflow
-        "Density close to port_a for inflowing mass flow";
-    Medium.Density port_b_d_inflow
-        "Density close to port_b for inflowing mass flow";
-  equation
-    // Isenthalpic state transformation (no storage and no loss of energy)
-    port_a.h_outflow = inStream(port_b.h_outflow);
-    port_b.h_outflow = inStream(port_a.h_outflow);
-
-    port_a.Xi_outflow = inStream(port_b.Xi_outflow);
-    port_b.Xi_outflow = inStream(port_a.Xi_outflow);
-
-    port_a.C_outflow = inStream(port_b.C_outflow);
-    port_b.C_outflow = inStream(port_a.C_outflow);
-
-    // Medium states close to the ports when mass flows into the respective port
-    port_a_state_inflow = Medium.setState_phX(port_a.p, port_b.h_outflow, port_b.Xi_outflow);
-    port_b_state_inflow = Medium.setState_phX(port_b.p, port_a.h_outflow, port_a.Xi_outflow);
-
-    // Densities close to the parts when mass flows in to the respective port
-    port_a_d_inflow = Medium.density(port_a_state_inflow);
-    port_b_d_inflow = Medium.density(port_b_state_inflow);
-
-    // Mass balance
-    port_a.m_flow + port_b.m_flow = 0;
-
-    // Design direction of mass flow rate
-    m_flow = port_a.m_flow;
-
-    // Pressure difference between ports
-    dp = port_a.p - port_b.p;
-
-    // Computation of Volume flow rate, just for plotting
-    V_flow = m_flow/Modelica_Fluid.Utilities.regStep(
-                     m_flow, port_a_d_inflow, port_b_d_inflow, m_flow_small);
-
-    // Computation of temperature, just for plotting
-    if show_T then
-       port_a_T = Modelica_Fluid.Utilities.regStep(port_a.m_flow,
-                    Medium.temperature(port_a_state_inflow),
-                    Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow)),
-                    m_flow_small);
-       port_b_T = Modelica_Fluid.Utilities.regStep(port_b.m_flow,
-                    Medium.temperature(port_b_state_inflow),
-                    Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)),
-                    m_flow_small);
-    else
-       port_a_T = Medium.reference_T;
-       port_b_T = Medium.reference_T;
-    end if;
   end PartialTwoPortFitting;
 
   partial model PartialGenericPressureLoss
@@ -2046,7 +1979,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
         annotation(Dialog(tab="Advanced", group="Static head"), Evaluate=true);
 
   equation
-    m_flow = pressureLoss.m_flow[1];
+    m_flow = pressureLoss.m_flow;
 
     annotation (Documentation(info="<html>
 <p>

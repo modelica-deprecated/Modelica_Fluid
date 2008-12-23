@@ -327,7 +327,6 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       port_a_exposesState = (V > 0),
       port_b_exposesState = (V > 0),
       m_flow_start = 1,
-      final dp_start = p_a_start - p_b_start,
       port_a(
         p(start=p_a_start),
         m_flow(start = m_flow_start,

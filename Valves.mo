@@ -42,11 +42,11 @@ explained in detail in the
 
     equation
       if CheckValve then
-          m_flow = valveCharacteristic(modifiedOpening)*Av*sqrt(port_a_d_inflow)*
+          m_flow[1] = valveCharacteristic(modifiedOpening)*Av*sqrt(Medium.density(state[1]))*
                       smooth(0,if dp>=0 then Utilities.regRoot(dp, delta*dp_nominal) else 0);
       else
         // m_flow = valveCharacteristic(opening)*Av*sqrt(d)*sqrtR(dp);
-        m_flow = valveCharacteristic(modifiedOpening)*Av*sqrt(port_a_d_inflow)*
+        m_flow[1] = valveCharacteristic(modifiedOpening)*Av*sqrt(Medium.density(state[1]))*
           Utilities.regRoot(dp, delta*dp_nominal);
       end if;
     end ValveIncompressible;
@@ -112,13 +112,13 @@ explained in detail in the
               Fl^2*(pin - Ff*pv) else dp
       "Effective pressure drop, accounting for possible choked conditions";
     if CheckValve then
-       m_flow = valveCharacteristic(modifiedOpening)*Av*sqrt(port_a_d_inflow)*
+       m_flow[1] = valveCharacteristic(modifiedOpening)*Av*sqrt(Medium.density(state[1]))*
            smooth(0,if dpEff>=0 then sqrtR(dpEff) else 0);
      else
-       // m_flow = valveCharacteristic(opening)*Av*sqrt(d)*sqrtR(dpEff);
-       m_flow = valveCharacteristic(modifiedOpening)*Av*sqrt(port_a_d_inflow)*sqrtR(dpEff);
+       // m_flow[1] = valveCharacteristic(opening)*Av*sqrt(d)*sqrtR(dpEff);
+       m_flow[1] = valveCharacteristic(modifiedOpening)*Av*sqrt(Medium.density(state[1]))*sqrtR(dpEff);
     end if;
-    assert(m_flow > -0.1 * m_flow_nominal, "Too big backflow");
+    assert(m_flow[1] > -0.1 * m_flow_nominal, "Too big backflow");
   end ValveVaporizing;
 
   model ValveCompressible
@@ -197,12 +197,12 @@ explained in detail in the
     xs = smooth(0, if x < -Fxt then -Fxt else if x > Fxt then Fxt else x);
     Y = 1 - abs(xs)/(3*Fxt);
     if CheckValve then
-      m_flow = valveCharacteristic(modifiedOpening)*Av*Y*sqrt(port_a_d_inflow)*
+      m_flow[1] = valveCharacteristic(modifiedOpening)*Av*Y*sqrt(Medium.density(state[1]))*
         smooth(0,if xs>=0 then sqrtR(p*xs) else 0);
     else
       // m_flow = valveCharacteristic(opening)*Av*Y*sqrt(d)*sqrtR(p*xs);
-      m_flow = valveCharacteristic(modifiedOpening)*Av*Y*
-                    Modelica_Fluid.Utilities.regRoot2(p*xs, delta*dp_nominal, port_a_d_inflow, port_b_d_inflow);
+      m_flow[1] = valveCharacteristic(modifiedOpening)*Av*Y*
+                    Modelica_Fluid.Utilities.regRoot2(p*xs, delta*dp_nominal, Medium.density(state[1]), Medium.density(state[2]));
     end if;
   end ValveCompressible;
 
@@ -231,7 +231,7 @@ explained in detail in the
 
   equation
     modifiedOpening = smooth(0,noEvent(if opening > minOpening then opening else minOpening));
-    m_flow = Kv*modifiedOpening*dp;
+    m_flow[1] = Kv*modifiedOpening*dp;
 
   annotation (
     Icon(coordinateSystem(
@@ -286,7 +286,7 @@ explained in detail in the
           extent={{-20,-20},{20,20}},
           rotation=270)));
   equation
-    m_flow = if open then Kv*dp else Kv_small_rel*Kv*dp;
+    m_flow[1] = if open then Kv*dp else Kv_small_rel*Kv*dp;
 
   annotation (
     Icon(coordinateSystem(
