@@ -114,13 +114,9 @@ initial equation
           Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
                 0}),
           Text(
-            extent={{-95,90},{95,60}},
-            lineColor={0,0,255},
-            textString="%name"),
-          Text(
-            extent={{-129,53},{130,39}},
+            extent={{-129,40},{130,26}},
             lineColor={0,0,0},
-            textString="start = %level_start m"),
+            textString="%level_start m"),
           Text(
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
@@ -131,7 +127,11 @@ initial equation
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
-            pattern=LinePattern.Dot)}),
+            pattern=LinePattern.Dot),
+          Text(
+            extent={{-126,81},{133,67}},
+            lineColor={0,0,0},
+            textString="level_start =")}),
       Documentation(info="<HTML>
 <p>
 This is a simplified model of a tank. 
