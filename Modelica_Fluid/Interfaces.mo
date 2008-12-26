@@ -493,7 +493,7 @@ partial model PartialTwoPortTransport
   extends Modelica_Fluid.Interfaces.PartialPressureDrop(
     final n = 1,
     final state = {Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
-                   Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow))},
+                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
     m_flow(start = {m_flow_start}));
 
   // Advanced
