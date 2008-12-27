@@ -7,100 +7,20 @@ package Fittings
  
 </html>"));
 
-model GenericPressureLoss "Generic pressure loss model"
-  extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
-    PressureLoss(
-      dp_nominal = dp_nominal,
-      m_flow_nominal = m_flow_nominal),
-    height_ab=0);
-  // Note: don't use
-  //   redeclare replaceable model PressureLoss =
-  //     Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow (
-  //       dp_nominal = dp_nominal,
-  //       m_flow_nominal = m_flow_nominal),
-  // as Dymola 7.1 then fails when modifying PressureLoss parameters such as dp_small.
-
-  // Nominal values
-  parameter SI.AbsolutePressure dp_nominal "Nominal pressure drop";
-  parameter SI.MassFlowRate m_flow_nominal "Mass flow rate for dp_nominal";
-
-  annotation (defaultComponentName="pressureLoss",
-    Diagram(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics),
-    Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={
-          Line(
-            points={{-60,-50},{-60,50},{60,-50},{60,50}},
-            color={0,0,255},
-            thickness=0.5),
-          Line(points={{-60,0},{-100,0}}, color={0,127,255}),
-          Line(points={{60,0},{100,0}}, color={0,127,255}),
-          Text(extent={{-168,-96},{180,-138}}, lineColor={0,0,0})}),
-    Documentation(info="<html>
-<p>
-This pressure drop component is intended for early designs and later replacement 
-by more detailed models. Per default a NominalTurbulentFlow is used for specified 
-nominal values.
-</p>
-<p>
-On the Advanced tab any pressure loss model defined for the interface
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss\">
-          Pipes.BaseClasses.PartialPressureLoss</a>.
-can be configured, together with required geometry parameters.
-</p>
-</html>"));
-end GenericPressureLoss;
-
-  model GenericStaticHead "Models two ports at different heights"
-
-    // Static head
-    parameter SI.Length height_ab "Height(port_b) - Height(port_a)" 
-        annotation(Dialog(group="Static head"));
-
-    extends Modelica_Fluid.Fittings.BaseClasses.PartialGenericPressureLoss(
-      redeclare replaceable model PressureLoss = 
-      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
-        dp_nominal = 1,
-        m_flow_nominal = 1));
-
-    annotation (defaultComponentName="staticHead",
-          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}), graphics={Rectangle(
-            extent={{-100,60},{100,-60}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255})}),        Documentation(info="<html>
-<p>
-This component is intended for early designs and later replacement by more detailed models. 
-It describes the static head due to the height difference between its two ports. 
-</p>
-<p>
-Per default a small regularization with a linear pressure loss of 1Pa per 1kg/s is configured. 
-The regularization can be changed for the pressureLoss model on the Advanced tab.
-</p>
-</html>", revisions="<html>
-<ul>
-<li><i>8 Dec 2008</i>
-    by Ruediger Franke:<br>
-       Introduce small nominal pressure loss for regularization</li>
-<li><i>31 Oct 2007</i>
-    by <a href=\"mailto:jonas@modelon.se\">Jonas Eborn</a>:<br>
-       Changed to flow-direction dependent density</li>
-<li><i>2 Nov 2005</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Added to Modelica_Fluid</li>
-</ul>
-</html>"));
-  end GenericStaticHead;
-
 model SimpleGenericOrifice
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
-  extends BaseClasses.PartialTwoPortFitting(
-    m_flow_small = 1e-2*m_flow_nominal);
+
+  extends BaseClasses.PartialGenericPressureLoss(
+    m_flow_small = 1e-2*m_flow_nominal,
+    redeclare replaceable model PressureLoss = 
+          BaseClasses.SimpleGenericPressureLoss (
+      zeta = zeta_nominal,
+      diameter = diameter,
+      dp_start = dp_start,
+      m_flow_start = m_flow_start,
+      from_dp = from_dp,
+      dp_small = dp_small,
+      m_flow_small = m_flow_small));
 
   parameter SI.Diameter diameter "Diameter of orifice";
   parameter Real zeta "Loss factor for flow of port_a -> port_b" 
@@ -119,22 +39,10 @@ model SimpleGenericOrifice
       "Turbulent flow if |dp| >= dp_small" 
     annotation(Dialog(tab="Advanced", enable=from_dp));
 
-  BaseClasses.SimpleGenericPressureLoss pressureDrop(
-    redeclare package Medium = Medium,
-    state = {state_a, state_b},
-    zeta = zeta_nominal,
-    diameter = diameter,
-    dp_start = dp_start,
-    m_flow_start = m_flow_start,
-    from_dp = from_dp,
-    dp_small = dp_small,
-    m_flow_small = m_flow_small);
-
   Real zeta_nominal(start = zeta);
   Medium.Density d = 0.5*(Medium.density(state_a) + Medium.density(state_b));
 
 equation
-  m_flow = pressureDrop.m_flow[1];
   if use_zeta then
     zeta_nominal = zeta;
   else
@@ -600,6 +508,61 @@ of the modeller.
           grid={1,1}), graphics));
   end TeeJunctionVolume;
 
+  model GenericStaticHead "Models two ports at different heights"
+    import Modelica.Constants.pi;
+
+    // Static head
+    parameter SI.Length height_ab "Height(port_b) - Height(port_a)" 
+        annotation(Dialog(group="Static head"));
+
+    extends BaseClasses.PartialGenericPressureLoss(
+      redeclare replaceable model PressureLoss = 
+      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
+        height_ab = height_ab,
+        g = system.g,
+        dp_nominal = 1,
+        m_flow_nominal = 1,
+        m_flow_start = m_flow_start,
+        p_a_start = system.p_start + 0.5*dp_start,
+        p_b_start = system.p_start - 0.5*dp_start,
+        nParallel = 1,
+        length = {0},
+        crossArea=fill(Modelica.Constants.pi/4*2.54e-2^2, 2),
+        perimeter={Modelica.Constants.pi*2.54e-2},
+        roughness={2.5e-5},
+        allowFlowReversal=allowFlowReversal,
+        momentumDynamics=Types.Dynamics.SteadyState));
+
+    annotation (defaultComponentName="staticHead",
+          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+              {100,100}}), graphics={Rectangle(
+            extent={{-100,60},{100,-60}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255})}),        Documentation(info="<html>
+<p>
+This component is intended for early designs and later replacement by more detailed models. 
+It describes the static head due to the height difference between its two ports. 
+</p>
+<p>
+Per default a small regularization with a linear pressure loss of 1Pa per 1kg/s is configured. 
+The regularization can be changed for the PressureLoss model.
+</p>
+</html>", revisions="<html>
+<ul>
+<li><i>8 Dec 2008</i>
+    by Ruediger Franke:<br>
+       Introduce small nominal pressure loss for regularization</li>
+<li><i>31 Oct 2007</i>
+    by <a href=\"mailto:jonas@modelon.se\">Jonas Eborn</a>:<br>
+       Changed to flow-direction dependent density</li>
+<li><i>2 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Added to Modelica_Fluid</li>
+</ul>
+</html>"));
+  end GenericStaticHead;
+
   annotation (Documentation(info="<html>
 <p>
 This sublibrary contains models and functions providing pressure 
@@ -649,12 +612,10 @@ polynomials. The monotonicity is guaranteed using results from:
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
-
-
     model SimpleGenericPressureLoss
       "Simple pressure loss component defined by two constants (diameter, zeta) for the quadratic turbulent regime"
 
-      extends Modelica_Fluid.Interfaces.PartialPressureDrop(
+      extends Modelica_Fluid.Interfaces.PartialPressureLoss(
         final n = 1,
         m_flow(start = {m_flow_start}),
         dp(start = {dp_start}));
@@ -703,7 +664,14 @@ polynomials. The monotonicity is guaranteed using results from:
             lossConstant_D_zeta(diameter, zeta)/Medium.density(state[2]));
       end if;
 
-      annotation (Documentation(info="<html>
+      annotation (Icon(coordinateSystem(
+              preserveAspectRatio=false,
+              extent={{-100,-100},{100,100}},
+              grid={1,1}), graphics={Line(
+              points={{-60,-50},{-60,50},{60,-50},{60,50}},
+              color={0,0,0},
+              thickness=0.5)}),
+    Documentation(info="<html>
 <p>
 This pressure drop component defines a
 simple, generic orifice, where the loss factor &zeta;=zeta is provided
@@ -757,7 +725,6 @@ can appear, this component should not be used.
     algorithm
       k :=8*zeta/(Modelica.Constants.pi*Modelica.Constants.pi*D*D*D*D);
     end lossConstant_D_zeta;
-
 
     package QuadraticTurbulent
       "Pressure loss components that are mainly defined by a quadratic turbulent regime with constant loss factor data"
@@ -1832,83 +1799,30 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
 
   partial model PartialGenericPressureLoss
       "Two port transport model with replaceable pressure loss correlation"
-    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
-    import Modelica.Constants.pi;
-
-    // Assumptions
-    parameter Types.Dynamics momentumDynamics=
-      system.momentumDynamics
-        "Formulation of momentum balance, if pressureLoss options available" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-
-    // Initialization
-    parameter Medium.AbsolutePressure p_a_start=system.p_start
-        "Start value of pressure at port_a" 
-      annotation(Dialog(tab = "Advanced"));
+    extends PartialTwoPortFitting;
 
     // Pressure loss
     replaceable model PressureLoss = 
-      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow 
-      constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss
+      Modelica_Fluid.Fittings.BaseClasses.SimpleGenericPressureLoss 
+      constrainedby Modelica_Fluid.Interfaces.PartialPressureLoss
         "Pressure loss model" 
-        annotation(Dialog(tab="Advanced", group="Pressure loss"), choicesAllMatching=true);
+        annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
 
     PressureLoss pressureLoss(
-            redeclare final package Medium = Medium,
-            final n=1,
-            state={state_a, state_b},
-            final allowFlowReversal=allowFlowReversal,
-            final momentumDynamics=momentumDynamics,
-            final p_a_start=p_a_start,
-            final p_b_start=p_a_start - dp_start,
-            final m_flow_start=m_flow_start,
-            final nParallel=1,
-            final length={length},
-            final perimeter={perimeter},
-            final crossArea={crossArea_a, crossArea_b},
-            final roughness={roughness},
-            final height_ab=height_ab,
-            final g=system.g) "Pressure loss model instance" 
-       annotation(Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
-
-    // Geometry
-    parameter SI.Length length=0 "Length of flow path" 
-       annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter Real nParallel(min=1)=1
-        "Number of identical parallel pressure losses" 
-      annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Area crossArea_a=pi/4*2.54e-2^2
-        "Inner cross sectional area at port_a" 
-       annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Area crossArea_b=pi/4*2.54e-2^2
-        "Inner cross sectional area at port_b" 
-       annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Length perimeter=pi*2.54e-2 "Inner perimeter" 
-       annotation(Dialog(tab="Advanced", group="Geometry"));
-    parameter SI.Height roughness(min=0)=2.5e-5
-        "Average height of surface asperities (default = smooth steel pipe)" 
-       annotation(Dialog(tab="Advanced", group="Geometry"));
-
-    // Static head
-    parameter SI.Length height_ab "Height(port_b) - Height(port_a)" 
-        annotation(Dialog(tab="Advanced", group="Static head"), Evaluate=true);
+      redeclare final package Medium = Medium,
+      state = {state_a, state_b});
 
   equation
     m_flow = pressureLoss.m_flow[1];
 
     annotation (Documentation(info="<html>
 <p>
-This partial model extends a TwoPortTransport with a replaceable pressure loss model.
-A NominalTurbulentFlow is configured by default, because the model is intended for early model 
-design phases, when no detailed geometrical information is available. 
-</p>
-<p>
-On the Advanced tab the linear pressure loss can be replaced with any pressure loss model 
-defined for the interface
+This partial model extends a PartialTwoPortFitting with a PressureLoss model, which
+can be replaced with any model providing the interface
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss\">
           Pipes.BaseClasses.PartialPressureLoss</a>.
-The specified geometry is passed to the pressure loss model.
+It is intended as base class for various pressure loss models with two ports, like
+SimpleGenericOrifice and GenericStaticHead.
 </p>
 </html>"));
   end PartialGenericPressureLoss;
