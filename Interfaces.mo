@@ -496,9 +496,14 @@ This will be visualized at the port icons, in order to improve the understanding
 partial model PartialTwoPortTransport
     "Partial element transporting fluid between two ports without storage of mass or energy"
 
-  extends PartialTwoPort;
+  extends PartialTwoPort(
+    final port_a_exposesState=false,
+    final port_b_exposesState=false);
 
   // Advanced
+  parameter Medium.AbsolutePressure dp_start = 0.01*system.p_start
+      "Guess value of dp = port_a.p - port_b.p" 
+    annotation(Dialog(tab = "Advanced"));
   parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
       "Guess value of m_flow = port_a.m_flow" 
     annotation(Dialog(tab = "Advanced"));
@@ -518,7 +523,9 @@ partial model PartialTwoPortTransport
   Medium.ThermodynamicState state_a "state for medium inflowing through port_a";
   Medium.ThermodynamicState state_b "state for medium inflowing through port_b";
   Medium.MassFlowRate m_flow(start = m_flow_start)
-      "mass flow rates along design flow";
+      "Mass flow rate in design flow direction";
+  Modelica.SIunits.Pressure dp(start=dp_start)
+      "Pressure difference between port_a and port_b (= port_a.p - port_b.p)";
 
   Modelica.SIunits.VolumeFlowRate V_flow=
       m_flow/Modelica_Fluid.Utilities.regStep(m_flow,
@@ -545,6 +552,9 @@ equation
   state_a = Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow));
   state_b = Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow));
 
+  // Pressure drop in design flow direction
+  dp = port_a.p - port_b.p;
+
   // Design direction of mass flow rate
   m_flow = port_a.m_flow;
 
@@ -566,13 +576,14 @@ equation
     Documentation(info="<html>
 <p>
 This component transports fluid between its two ports, without
-storing mass. It is intended as base class for devices like orifices, valves and pumps.
+storing mass. Energy may be exchanged with the environment, e.g. in the form of work or of heat.
+<tt>PartialTwoPortTransport</tt> is intended as base class for devices like orifices, valves and pumps.
 <p>
 When using this partial component, three equations have to be added:
 <ul>
 <li> the energy balances for flow from port_a to port_b and from port_b to port_a</li>
 <li> the momentum balance specifying the relationship 
-     between the pressure drop <tt>dp[1]</tt> and the mass flow rate <tt>m_flow[1]</tt></li>.
+     between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt></li>.
 </ul>
 </p>
 </html>"),

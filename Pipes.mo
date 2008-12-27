@@ -2951,7 +2951,7 @@ b has the same sign of the change of density.</p>
 
       model TestWallFrictionAndGravity
         "Pressure loss in pipe due to wall friction and gravity (only for test purposes; if needed use Pipes.StaticPipe instead)"
-        extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
+        extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
 
         replaceable package WallFriction = 
           Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent 
@@ -3022,6 +3022,10 @@ b has the same sign of the change of density.</p>
           dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
             g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
         end if;
+
+        // Isenthalpic state transformation (no storage and no loss of energy)
+        port_a.h_outflow = inStream(port_b.h_outflow);
+        port_b.h_outflow = inStream(port_a.h_outflow);
 
           annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
               preserveAspectRatio=false,
