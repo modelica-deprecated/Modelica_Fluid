@@ -600,52 +600,52 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       "Pressure loss models for pipes, including wall friction and static head"
           partial model PartialFlowPressureLoss
         "Base class for pressure losses in flow models"
-            extends Modelica_Fluid.Interfaces.PartialPressureDrop(
+            extends Modelica_Fluid.Interfaces.PartialPressureLoss(
               m_flow(each start = m_flow_start),
               dp(each start = (p_a_start - p_b_start)/n));
 
             // Geometry parameters
             parameter Real nParallel "number of parallel pipes" 
-               annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
+               annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
             parameter SI.Length[n] length "Length of segments along flow path" 
-               annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
+               annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
             parameter SI.Area[n+1] crossArea
           "Cross flow area at segment boundaries" 
-              annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
+              annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
             parameter SI.Length[n] perimeter
           "Mean perimeter of segments, used for hydraulic diameter" 
-              annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry"));
+              annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
             parameter SI.Height[n] roughness(each min=0)
           "Average height of surface asperities" 
-                annotation(Dialog(tab="Internal Interface", enable=false,group="Geometry",enable=WallFriction.use_roughness));
+                annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry",enable=WallFriction.use_roughness));
             final SI.Diameter[n] diameter = {4*(crossArea[i]+crossArea[i+1])/2/perimeter[i] for i in 1:n}
           "Hydraulic diameter";
 
             // Static head
             parameter SI.Length height_ab
           "Height(state[n+1]) - Height(state[1])" 
-                annotation(Dialog(tab="Internal Interface", enable=false,group="Static head"));
+                annotation(Dialog(tab="Internal Interface",enable=false,group="Static head"));
 
             // Additional parameters
             // Note: no outer system is used for default values,
             // as a PressureLoss model is intended as sub-component of other models
             parameter SI.Acceleration g "Constant gravity acceleration" 
-              annotation(Dialog(tab="Internal Interface", enable=false,group="Static head"));
+              annotation(Dialog(tab="Internal Interface",enable=false,group="Static head"));
             parameter Boolean allowFlowReversal
           "= true to allow flow reversal, false restricts to design direction (state[1] -> state[n+1])"
-              annotation(Dialog(tab="Internal Interface", enable=false,group="Assumptions"), Evaluate=true);
+              annotation(Dialog(tab="Internal Interface",enable=false,group="Assumptions"), Evaluate=true);
             parameter Modelica_Fluid.Types.Dynamics momentumDynamics
           "Formulation of momentum balance, if options available" 
-              annotation(Dialog(tab="Internal Interface", enable=false,group = "Assumptions"), Evaluate=true);
+              annotation(Dialog(tab="Internal Interface",enable=false,group = "Assumptions"), Evaluate=true);
             parameter Medium.AbsolutePressure p_a_start
           "Start value for p[1] at design inflow" 
-              annotation(Dialog(tab="Internal Interface", enable=false,group = "Initialization"));
+              annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
             parameter Medium.AbsolutePressure p_b_start
           "Start value for p[n+1] at design outflow" 
-              annotation(Dialog(tab="Internal Interface", enable=false,group = "Initialization"));
+              annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
             parameter Medium.MassFlowRate m_flow_start
           "Start value of mass flow rate" 
-              annotation(Dialog(tab="Internal Interface", enable=false,group = "Initialization"));
+              annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
 
             // Advanced
             parameter Boolean mixingStreamProperties = false
@@ -1147,17 +1147,17 @@ b has the same sign of the change of density.</p>
 
       // Additional parameters for flow heat transfer
       parameter Real nParallel "Number of parallel pipes" 
-        annotation(Dialog(tab="Internal Interface", enable=false));
+        annotation(Dialog(tab="Internal Interface",enable=false));
       parameter SI.Length[n] length "Length of segments along flow path" 
-        annotation(Dialog(tab="Internal Interface", enable=false));
+        annotation(Dialog(tab="Internal Interface",enable=false));
       parameter SI.Area[n+1] crossArea "Cross flow area at segment boundaries" 
-        annotation(Dialog(tab="Internal Interface", enable=false));
+        annotation(Dialog(tab="Internal Interface",enable=false));
       parameter SI.Length[n] perimeter
           "Mean perimeter for heat transfer area and hydraulic diameter" 
-        annotation(Dialog(tab="Internal Interface", enable=false));
+        annotation(Dialog(tab="Internal Interface",enable=false));
       parameter SI.Height[n] roughness(each min=0)
           "Average height of surface asperities" 
-          annotation(Dialog(tab="Internal Interface", enable=false));
+          annotation(Dialog(tab="Internal Interface",enable=false));
 
       final parameter SI.Area[n] transferArea = {perimeter[i]*length[i] for i in 1:n}
           "Heat transfer area";
@@ -1166,7 +1166,7 @@ b has the same sign of the change of density.</p>
 
       // Additional inputs provided to flow heat transfer model
       input SI.MassFlowRate[n] m_flow 
-        annotation(Dialog(tab="Internal Interface", enable=false));
+        annotation(Dialog(tab="Internal Interface",enable=false));
 
       annotation (Documentation(info="<html>
 Base class for heat transfer models that can be used in pipe models.

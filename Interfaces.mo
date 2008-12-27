@@ -325,14 +325,14 @@ package Interfaces
 
     // Parameters
     replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
-      annotation(Dialog(tab="Internal Interface", enable=false));
+      annotation(Dialog(tab="Internal Interface",enable=false));
 
     parameter Integer n=1 "Number of heat transfer segments" 
-      annotation(Dialog(tab="Internal Interface", enable=false), Evaluate=true);
+      annotation(Dialog(tab="Internal Interface",enable=false), Evaluate=true);
 
     // Inputs provided to heat transfer model
     input Medium.ThermodynamicState[n] state 
-      annotation(Dialog(tab="Internal Interface", enable=false));
+      annotation(Dialog(tab="Internal Interface",enable=false));
 
     // Output defined by heat transfer model
     output SI.HeatFlowRate[n] Q_flow "Heat flow rates per tube";
@@ -352,7 +352,7 @@ package Interfaces
 
     annotation (Documentation(info="<html>
 <p>
-The heat flow rates <tt>Q_flow[n]</tt> through the boundaries of n flow segments 
+This component is a common interface for heat transfer models. The heat flow rates <tt>Q_flow[n]</tt> through the boundaries of n flow segments 
 are obtained as function of the thermodynamic <tt>state</tt> of the flow segments for a given fluid <tt>Medium</tt>
 and the boundary temperatures <tt>heatPorts[n].T</tt>.
 </p>
@@ -363,20 +363,20 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
 </html>"));
   end PartialHeatTransfer;
 
-      partial model PartialPressureDrop
-    "Common interface for pressure drop models"
+      partial model PartialPressureLoss
+    "Common interface for pressure loss models"
 
         // Medium
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-            annotation(Dialog(tab="Internal Interface", enable=false));
+            annotation(Dialog(tab="Internal Interface",enable=false));
 
         // Discretization
         parameter Integer n=1 "number of flow segments" 
-          annotation(Dialog(tab="Internal Interface", enable=false));
+          annotation(Dialog(tab="Internal Interface",enable=false));
 
         input Medium.ThermodynamicState[n+1] state "states along design flow" 
-          annotation(Dialog(tab="Internal Interface", enable=false));
+          annotation(Dialog(tab="Internal Interface",enable=false));
 
         output Medium.MassFlowRate[n] m_flow
       "mass flow rates along design flow";
@@ -391,7 +391,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         annotation (
            Documentation(info="<html>
 <p>
-The mass flow rates <tt>m_flow[n]</tt> between n+1 flow segments 
+This component is a common interface for pressure loss models. The mass flow rates <tt>m_flow[n]</tt> between n+1 flow segments 
 are obtained as function of the thermodynamic <tt>state[n+1]</tt> of the flow segments for a given fluid <tt>Medium</tt>.
 </p>
 <p>
@@ -399,7 +399,7 @@ An extending model implementing this interface needs to define the mass flow rat
 pressure drops <tt>dp[n]</tt> between the states.
 </p>
 </html>"));
-      end PartialPressureDrop;
+      end PartialPressureLoss;
 
   partial model PartialTwoPort "Partial component with two ports"
     import Modelica.Constants;
@@ -492,7 +492,6 @@ This will be visualized at the port icons, in order to improve the understanding
             fillPattern=FillPattern.Solid,
             visible=port_b_exposesState)}));
   end PartialTwoPort;
-
 
 partial model PartialTwoPortTransport
     "Partial element transporting fluid between two ports without storage of mass or energy"
