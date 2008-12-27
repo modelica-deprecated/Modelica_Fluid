@@ -260,7 +260,7 @@ present that are regulated by a central control system.
           origin={-56,-200},
           extent={{10,10},{-10,-10}},
           rotation=180)));
-    Modelica_Fluid.Machines.PrescribedPumpNPSH P1(
+    Machines.PrescribedPump P1(
       redeclare package Medium = BatchMedium,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
@@ -269,13 +269,14 @@ present that are regulated by a central control system.
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
       use_N_input=true,
-      V(displayUnit="ml") = 0.0001,
+      show_NPSHa=true,
       checkValve=true,
+      V(displayUnit="ml") = 0,
       p_a_start=100000,
       p_b_start=100000) 
       annotation (Placement(transformation(extent={{-128,-260},{-148,-240}},
             rotation=0)));
-    Modelica_Fluid.Machines.PrescribedPumpNPSH P2(
+    Machines.PrescribedPump P2(
       redeclare package Medium = BatchMedium,
       m_flow_start=0.1,
       redeclare function flowCharacteristic = 
@@ -284,8 +285,9 @@ present that are regulated by a central control system.
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
       use_N_input=true,
-      V(displayUnit="ml") = 0.0001,
       checkValve=true,
+      show_NPSHa=true,
+      V(displayUnit="ml") = 0,
       p_a_start=100000,
       p_b_start=100000) 
       annotation (Placement(transformation(extent={{110,-260},{130,-240}},
@@ -374,8 +376,8 @@ present that are regulated by a central control system.
       length=1,
       redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
-      diameter=100*pipeDiameter,
-      height_ab=0.1) 
+      height_ab=0.1,
+      diameter=100*pipeDiameter) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
             rotation=0)));
     Pipes.StaticPipe pipeB2B3(
@@ -383,8 +385,8 @@ present that are regulated by a central control system.
       length=1,
       redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
-      diameter=100*pipeDiameter,
-      height_ab=0.1) 
+      height_ab=0.1,
+      diameter=100*pipeDiameter) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
              0)));
     Pipes.DistributedPipe pipeB1B1(
@@ -1206,7 +1208,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},

@@ -3,8 +3,8 @@ model TestWaterPumpNPSH "Test PumpNPSH"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
 annotation (
-  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-            100,100}}),
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+            100}}),
           graphics),
   experiment(StopTime=10, Tolerance=1e-006),
   Documentation(info=""));
@@ -19,7 +19,7 @@ annotation (
     T=system.T_ambient,
     use_p_in=true) 
   annotation (Placement(transformation(extent={{34,26},{14,46}}, rotation=0)));
-  Modelica_Fluid.Machines.PrescribedPumpNPSH pump(
+  Modelica_Fluid.Machines.PrescribedPump pump(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_start=1,
     redeclare function flowCharacteristic = 
@@ -27,7 +27,8 @@ annotation (
           V_flow_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     N_nominal=1500,
     p_a_start=100000,
-    p_b_start=700000)     annotation (Placement(transformation(extent={{-66,20},
+    p_b_start=700000,
+    show_NPSHa=true)      annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));
   Modelica.Blocks.Sources.Constant valveOpening(k=1) 
   annotation (Placement(transformation(extent={{-60,60},{-40,80}}, rotation=0)));
