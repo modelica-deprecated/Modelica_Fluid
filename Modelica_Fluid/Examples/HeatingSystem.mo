@@ -39,7 +39,7 @@ model HeatingSystem "Simple model of a heating system"
     m_flow_nominal=0.01,
     show_T=true,
     dp_nominal=10000) 
-    annotation (Placement(transformation(extent={{70,-80},{50,-60}},
+    annotation (Placement(transformation(extent={{60,-80},{40,-60}},
                                                                    rotation=0)));
   Modelica.Blocks.Interfaces.RealOutput flowRate 
     annotation (Placement(transformation(extent={{-6,34},{6,46}},   rotation=
@@ -49,7 +49,7 @@ model HeatingSystem "Simple model of a heating system"
            0)));
   Modelica.Thermal.HeatTransfer.Sources.FixedTemperature ambientTemperature(
                                                                     T=system.T_ambient) 
-    annotation (Placement(transformation(extent={{-15,-27},{-1,-13}},rotation=
+    annotation (Placement(transformation(extent={{-14,-27},{0,-13}}, rotation=
            0)));
   Modelica.Thermal.HeatTransfer.Components.ThermalConductor wall(G=1.6e3/20) 
     annotation (Placement(transformation(
@@ -115,7 +115,7 @@ model HeatingSystem "Simple model of a heating system"
   Modelica.Blocks.Sources.Step valveOpening(
     startTime=2000,
     height=0.9,
-    offset=0.1)   annotation (Placement(transformation(extent={{36,-27},{50,-13}},
+    offset=0.1)   annotation (Placement(transformation(extent={{26,-27},{40,-13}},
                   rotation=0)));
   Pipes.DistributedPipe pipe(
     redeclare package Medium = Medium,
@@ -144,11 +144,12 @@ tankLevel = tank.level;
           20},{30,20}},
                     color={0,127,255}));
   connect(ambientTemperature.port, wall.port_a)              annotation (Line(
-        points={{-1,-20},{10,-20},{10,-40}},color={191,0,0}));
+        points={{1.77636e-015,-20},{10,-20},{10,-40}},
+                                            color={191,0,0}));
   connect(sensor_T_forward.T, T_forward)     annotation (Line(points={{67,40},{
           80,40}},                              color={0,0,127}));
   connect(radiator.port_a, valve.port_b) annotation (Line(points={{20,-70},{20,
-          -70},{50,-70}},           color={0,127,255}));
+          -70},{40,-70}},           color={0,127,255}));
   connect(sensor_T_return.port, radiator.port_b) 
                                             annotation (Line(points={{-30,-60},
           {-30,-70},{0,-70}}, color={0,127,255}));
@@ -157,7 +158,7 @@ tankLevel = tank.level;
       color={0,127,255},
       smooth=Smooth.None));
   connect(valveOpening.y, valve.opening) annotation (Line(
-      points={{50.7,-20},{60,-20},{60,-62}},
+      points={{40.7,-20},{50,-20},{50,-62}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(pump.port_b, massFlowRate.port_a) annotation (Line(
@@ -188,7 +189,7 @@ tankLevel = tank.level;
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe.port_b, valve.port_a) annotation (Line(
-      points={{80,-30},{80,-70},{70,-70}},
+      points={{80,-30},{80,-70},{60,-70}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(radiator.port_b, tank.ports[1]) annotation (Line(

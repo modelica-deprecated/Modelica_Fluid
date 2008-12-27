@@ -20,15 +20,13 @@ model InverseParameterization
     p_a_nominal=100000,
     p_b_nominal=200000) 
     annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
-  Modelica_Fluid.Pipes.StaticPipe pipe1(
+  Modelica_Fluid.Fittings.SimpleGenericOrifice orifice(
     redeclare package Medium = Medium,
     diameter=2.54e-2,
-    length=0,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow (
-        dp_nominal=100000,
-        m_flow_nominal=1,
-        show_Re=true)) 
+    m_flow_nominal=1,
+    use_zeta=false,
+    zeta=0,
+    dp_nominal=100000) 
                       annotation (Placement(transformation(extent={{20,-10},{40,
             10}}, rotation=0)));
 
@@ -40,7 +38,7 @@ model InverseParameterization
   inner Modelica_Fluid.System system 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},  rotation=0)));
-  Modelica_Fluid.Pipes.StaticPipe pipe2(
+  Modelica_Fluid.Pipes.StaticPipe pipe(
     redeclare package Medium = Medium,
     diameter=2.54e-2,
     length=0,
@@ -62,7 +60,7 @@ model InverseParameterization
     startTime=1) 
     annotation (Placement(transformation(extent={{-60,30},{-40,50}})));
 equation
-  connect(pipe1.port_b, sink1.ports[1]) 
+  connect(orifice.port_b, sink1.ports[1]) 
                                        annotation (Line(
       points={{40,0},{64,0}},
       color={0,127,255},
@@ -71,16 +69,16 @@ equation
       points={{-64,0},{-40,0}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(pump.port_b, pipe1.port_a) 
+  connect(pump.port_b, orifice.port_a) 
                                     annotation (Line(
       points={{-20,0},{20,0}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(pipe2.port_b, sink2.ports[1]) annotation (Line(
+  connect(pipe.port_b, sink2.ports[1])  annotation (Line(
       points={{40,-40},{64,-40}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(pipe2.port_a, pump.port_b) annotation (Line(
+  connect(pipe.port_a, pump.port_b)  annotation (Line(
       points={{20,-40},{0,-40},{0,0},{-20,0}},
       color={0,127,255},
       smooth=Smooth.None));
@@ -98,20 +96,21 @@ equation
     experiment(StopTime=10, NumberOfIntervals=10000),
     Documentation(info="<html>
 <p>
-A pump and two pipes are parameterized with simple nominal values. 
-Note that the pipes use the pressureLoss model NominalTurbulentFlow, which does not require the specification of geometry data. 
+A pump, an orifice and a pipe are parameterized with simple nominal values. 
+Note that the pipe uses the pressureLoss model NominalTurbulentFlow, which does not require the specification of geometry data. 
 Instead it internally parameterizes a QuadraticTurbulentFlow model for given nominal pressure loss and nominal mass flow rate.
 </p>
 <p>
 The pump controls a pressure ramp from 1.9 bar to 2.1 bar. 
 This causes an appropriate ramp on the mass flow rate for pipe1, which has a boundary pressure of 1 bar. 
-Flow reversal occurs in pipe2, which has a boundary pressure of 2 bar.
+Flow reversal occurs in the pipe, which has a boundary pressure of 2 bar.
 The Command plotResults can be used to see the pump speed N, which is controlled ideally to obtain the pressure ramp.
-Moreover the Reynolds number as well as m_flow_turbulent and dp_turbulent are plotted for pipe2.
+Moreover the Reynolds number as well as m_flow_turbulent and dp_turbulent are plotted for the pipe.
 </p>
 <p>
-Next the pressureLoss models of the pipes could be investigated for <tt>length_nominal</tt>, 
-which are obtained internally to fulfill the nominal pressure loss for given pipe diameter and roughness. 
+Next the pressureLoss model of the pipe could be investigated for <tt>length_nominal</tt>, 
+which is obtained internally to fulfill the nominal pressure loss for given pipe diameter and roughness. 
+Similarily the orifice could be investigated for <tt>zeta_nominal</tt>. 
 Once the geometry has been designed, the NominalTurbulentFlow correlations can easily be replaced with 
 WallFrictionPressureLoss correlations. Similarily the ControlledPump can be replaced with a PrescribedPump 
 to investigate a real controller or with a Pump with rotational shaft to investigate inertia effects. 

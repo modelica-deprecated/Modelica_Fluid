@@ -299,7 +299,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
   equation
     // NPSHa computation
-    pv = Medium.saturationPressure(Medium.temperature(state[1]));
+    pv = Medium.saturationPressure(Medium.temperature(state_a));
     NPSHa = (port_a.p-pv)/(d_in*Modelica.Constants.g_n);
 
     // Check for cavitation
@@ -399,7 +399,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
     SI.Pressure dp_pump = port_b.p - port_a.p "Pressure increase";
     SI.Height head = dp_pump/(d_in*g) "Pump head";
-    Medium.Density d_in = Medium.density(state[1])
+    Medium.Density d_in = Medium.density(state_a)
         "Liquid density at the inlet port_a";
     Medium.SpecificEnthalpy h(start=h_start)
         "Enthalpy of the liquid stored in the pump if M>0";

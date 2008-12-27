@@ -895,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-26</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-27</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -935,9 +935,9 @@ Modelica_Fluid was refactored and finalized for the release:
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
      <br>See <a href=\"Modelica:Modelica_Fluid.Examples.TraceSubstances.RoomCO2WithControls\">Examples.TraceSubstances.RoomCO2WithControls</a></li>.
  
-<li> Inverse parameterization of flow models with nominal values<br> 
-     New flow models have been added that support the parameterization with nominal values
-     (Machines.ControlledPump, Orifices.GenericPressureLoss, Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow).
+<li> Inverse parameterization of flow models with nominal operational conditions<br> 
+     Flow models have been added or extended to support the parameterization with nominal values
+     (Machines.ControlledPump, Orifices.SimpleGenericOrifice, Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow).
      They are intended for early phases of system modeling, if geometries and flow characteristics
      are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
      they can easily be replaced with more detailed models  
