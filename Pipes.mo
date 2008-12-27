@@ -601,7 +601,8 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           partial model PartialFlowPressureLoss
         "Base class for pressure losses in flow models"
             extends Modelica_Fluid.Interfaces.PartialPressureDrop(
-              m_flow(each start = m_flow_start));
+              m_flow(each start = m_flow_start),
+              dp(each start = (p_a_start - p_b_start)/n));
 
             // Geometry parameters
             parameter Real nParallel "number of parallel pipes" 
@@ -668,10 +669,6 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
               annotation(Dialog(group="Advanced", enable=use_eta_nominal));
 
             // Variables
-            Medium.AbsolutePressure[n+1] p "pressures of states";
-            Modelica.SIunits.Pressure[n] dp(each start = (p_a_start - p_b_start)/n)
-          "pressure loss between states";
-
             SI.Density[n+1] d = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(state);
             SI.Density[n] d_act "Actual density per segment";
 
@@ -692,8 +689,6 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
                    show_Re "Start of turbulent flow";
 
           equation
-            p = Medium.pressure(state);
-            dp = p[1:n] - p[2:n+1];
             if not allowFlowReversal then
               d_act = d[1:n];
               eta_act = eta[1:n];
@@ -2993,18 +2988,18 @@ b has the same sign of the change of density.</p>
         parameter SI.AbsolutePressure dp_small = 1
           "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
           annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
-        SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow[1], noEvent(if m_flow[1]>0 then eta_a else eta_b), diameter) if show_Re
+        SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, noEvent(if m_flow>0 then eta_a else eta_b), diameter) if show_Re
           "Reynolds number of pipe";
 
         outer Modelica_Fluid.System system "System properties";
 
       protected
         SI.DynamicViscosity eta_a = if not WallFriction.use_eta then 1.e-10 else 
-                                    (if use_nominal then eta_nominal else Medium.dynamicViscosity(state[1]));
+                                    (if use_nominal then eta_nominal else Medium.dynamicViscosity(state_a));
         SI.DynamicViscosity eta_b = if not WallFriction.use_eta then 1.e-10 else 
-                                    (if use_nominal then eta_nominal else Medium.dynamicViscosity(state[2]));
-        SI.Density d_a = if use_nominal then d_nominal else Medium.density(state[1]);
-        SI.Density d_b = if use_nominal then d_nominal else Medium.density(state[2]);
+                                    (if use_nominal then eta_nominal else Medium.dynamicViscosity(state_b));
+        SI.Density d_a = if use_nominal then d_nominal else Medium.density(state_a);
+        SI.Density d_b = if use_nominal then d_nominal else Medium.density(state_b);
 
         Real g_times_height_ab(final unit="m2/s2") = system.g*height_ab
           "Gravitiy times height_ab = dp_grav/d";
@@ -3021,10 +3016,10 @@ b has the same sign of the change of density.</p>
 
       equation
         if from_dp and not WallFriction.dp_is_zero then
-          m_flow[1] = WallFriction.massFlowRate_dp_staticHead(dp, d_a, d_b, eta_a, eta_b, length, diameter,
+          m_flow = WallFriction.massFlowRate_dp_staticHead(dp, d_a, d_b, eta_a, eta_b, length, diameter,
             g_times_height_ab, roughness, if use_x_small_staticHead then dp_small_staticHead else dp_small);
         else
-          dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow[1], d_a, d_b, eta_a, eta_b, length, diameter,
+          dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
             g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
         end if;
 

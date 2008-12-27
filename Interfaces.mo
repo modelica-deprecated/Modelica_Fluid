@@ -363,6 +363,44 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
 </html>"));
   end PartialHeatTransfer;
 
+      partial model PartialPressureDrop
+    "Common interface for pressure drop models"
+
+        // Medium
+        replaceable package Medium = 
+          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+            annotation(Dialog(tab="Internal Interface", enable=false));
+
+        // Discretization
+        parameter Integer n=1 "number of flow segments" 
+          annotation(Dialog(tab="Internal Interface", enable=false));
+
+        input Medium.ThermodynamicState[n+1] state "states along design flow" 
+          annotation(Dialog(tab="Internal Interface", enable=false));
+
+        output Medium.MassFlowRate[n] m_flow
+      "mass flow rates along design flow";
+
+        Medium.AbsolutePressure[n+1] p "pressures of states";
+        Modelica.SIunits.Pressure[n] dp "pressure drop between states";
+
+      equation
+        p = Medium.pressure(state);
+        dp = p[1:n] - p[2:n+1];
+
+        annotation (
+           Documentation(info="<html>
+<p>
+The mass flow rates <tt>m_flow[n]</tt> between n+1 flow segments 
+are obtained as function of the thermodynamic <tt>state[n+1]</tt> of the flow segments for a given fluid <tt>Medium</tt>.
+</p>
+<p>
+An extending model implementing this interface needs to define the mass flow rates <tt>m_flow[n]</tt> for the predefined
+pressure drops <tt>dp[n]</tt> between the states.
+</p>
+</html>"));
+      end PartialPressureDrop;
+
   partial model PartialTwoPort "Partial component with two ports"
     import Modelica.Constants;
     outer Modelica_Fluid.System system "System wide properties";
@@ -455,46 +493,11 @@ This will be visualized at the port icons, in order to improve the understanding
             visible=port_b_exposesState)}));
   end PartialTwoPort;
 
-      partial model PartialPressureDrop
-    "Common interface for pressure drop models"
-
-        // Medium
-        replaceable package Medium = 
-          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-            annotation(Dialog(tab="Internal Interface", enable=false));
-
-        // Discretization
-        parameter Integer n=1 "number of flow segments" 
-          annotation(Dialog(tab="Internal Interface", enable=false));
-
-        input Medium.ThermodynamicState[n+1] state "states along design flow" 
-          annotation(Dialog(tab="Internal Interface", enable=false));
-
-        output Medium.MassFlowRate[n] m_flow
-      "mass flow rates along design flow";
-
-        annotation (
-           Documentation(info="<html>
-<p>
-The mass flow rates <tt>m_flow[n]</tt> between n+1 flow segments 
-are obtained as function of the thermodynamic <tt>state[n+1]</tt> of the flow segments for a given fluid <tt>Medium</tt>.
-</p>
-<p>
-An extending model implementing this interface needs to define the mass flow rates <tt>m_flow[n]</tt>.
-</p>
-</html>"));
-      end PartialPressureDrop;
 
 partial model PartialTwoPortTransport
     "Partial element transporting fluid between two ports without storage of mass or energy"
 
   extends PartialTwoPort;
-
-  extends Modelica_Fluid.Interfaces.PartialPressureDrop(
-    final n = 1,
-    final state = {Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
-                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
-    m_flow(start = {m_flow_start}));
 
   // Advanced
   parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
@@ -512,27 +515,40 @@ partial model PartialTwoPortTransport
       "= true, if volume flow rate at inflowing port is computed" 
     annotation(Dialog(tab="Advanced",group="Diagnosis"));
 
+  // Variables
+  Medium.ThermodynamicState state_a "state for medium inflowing through port_a";
+  Medium.ThermodynamicState state_b "state for medium inflowing through port_b";
+  Medium.MassFlowRate m_flow(start = m_flow_start)
+      "mass flow rates along design flow";
+
   Modelica.SIunits.VolumeFlowRate V_flow=
-      m_flow[1]/Modelica_Fluid.Utilities.regStep(m_flow[1],
-                  Medium.density(state[1]),
-                  Medium.density(state[2]),
+      m_flow/Modelica_Fluid.Utilities.regStep(m_flow,
+                  Medium.density(state_a),
+                  Medium.density(state_b),
                   m_flow_small) if show_V_flow
       "Volume flow rate at inflowing port (positive when flow from port_a to port_b)";
 
   Medium.Temperature port_a_T=
       Modelica_Fluid.Utilities.regStep(port_a.m_flow,
-                  Medium.temperature(state[1]),
+                  Medium.temperature(state_a),
                   Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow)),
                   m_flow_small) if show_T
       "Temperature close to port_a, if show_T = true";
   Medium.Temperature port_b_T=
       Modelica_Fluid.Utilities.regStep(port_b.m_flow,
-                  Medium.temperature(state[2]),
+                  Medium.temperature(state_b),
                   Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)),
                   m_flow_small) if show_T
       "Temperature close to port_b, if show_T = true";
 
 equation
+  // medium states
+  state_a = Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow));
+  state_b = Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow));
+
+  // Design direction of mass flow rate
+  m_flow = port_a.m_flow;
+
   // Mass balance (no storage)
   port_a.m_flow + port_b.m_flow = 0;
 
@@ -542,9 +558,6 @@ equation
 
   port_a.C_outflow = inStream(port_b.C_outflow);
   port_b.C_outflow = inStream(port_a.C_outflow);
-
-  // Design direction of mass flow rate
-  port_a.m_flow = m_flow[1];
 
   annotation (
     Diagram(coordinateSystem(

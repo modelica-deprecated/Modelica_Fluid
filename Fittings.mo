@@ -99,18 +99,49 @@ The regularization can be changed for the pressureLoss model on the Advanced tab
 
 model SimpleGenericOrifice
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
-      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
+  extends BaseClasses.PartialTwoPortFitting(
+    m_flow_small = 1e-2*m_flow_nominal);
 
-  parameter Real zeta "Loss factor for flow of port_a -> port_b";
-  parameter SI.Diameter diameter
-      "Diameter at which zeta is defined (either port_a or port_b)";
+  parameter SI.Diameter diameter "Diameter of orifice";
+  parameter Real zeta "Loss factor for flow of port_a -> port_b" 
+    annotation(Dialog(enable=use_zeta));
+  parameter Boolean use_zeta = true
+      "= false to obtain zeta from dp_nominal and m_flow_nominal";
+
+  // Operational conditions
+  parameter SI.AbsolutePressure dp_nominal = 1e3 "Nominal pressure drop";
+  parameter SI.MassFlowRate m_flow_nominal = 1 "Mass flow rate for dp_nominal";
+
   parameter Boolean from_dp = true
       "= true, use m_flow = f(dp) else dp = f(m_flow)" 
     annotation (Evaluate=true, Dialog(tab="Advanced"));
-  parameter Medium.AbsolutePressure dp_small = 1
+  parameter Medium.AbsolutePressure dp_small = 1e-3*dp_nominal
       "Turbulent flow if |dp| >= dp_small" 
     annotation(Dialog(tab="Advanced", enable=from_dp));
-  annotation (
+
+  BaseClasses.SimpleGenericPressureLoss pressureDrop(
+    redeclare package Medium = Medium,
+    state = {state_a, state_b},
+    zeta = zeta_nominal,
+    diameter = diameter,
+    dp_start = dp_start,
+    m_flow_start = m_flow_start,
+    from_dp = from_dp,
+    dp_small = dp_small,
+    m_flow_small = m_flow_small);
+
+  Real zeta_nominal(start = zeta);
+  Medium.Density d = 0.5*(Medium.density(state_a) + Medium.density(state_b));
+
+equation
+  m_flow = pressureDrop.m_flow[1];
+  if use_zeta then
+    zeta_nominal = zeta;
+  else
+    dp_nominal = BaseClasses.lossConstant_D_zeta(diameter, zeta_nominal)/d*m_flow_nominal^2;
+  end if;
+
+  annotation (defaultComponentName="orifice",
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -167,24 +198,6 @@ this is most likely uncritical. If significant reversing flow
 can appear, this component should not be used.
 </p>
 </html>"));
-equation
-  if from_dp then
-      m_flow[1] = BaseClasses.SimpleGenericOrifice.massFlowRate_dp(
-        dp,
-        Medium.density(state[1]),
-        Medium.density(state[2]),
-        diameter,
-        zeta,
-        dp_small);
-  else
-      dp = BaseClasses.SimpleGenericOrifice.pressureLoss_m_flow(
-        m_flow[1],
-        Medium.density(state[1]),
-        Medium.density(state[2]),
-        diameter,
-        zeta,
-        m_flow_small);
-  end if;
 end SimpleGenericOrifice;
 
 model SharpEdgedOrifice
@@ -636,105 +649,38 @@ polynomials. The monotonicity is guaranteed using results from:
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
-    partial model PartialTeeJunction
-      "Base class for a splitting/joining component with three ports"
-      import Modelica_Fluid.Types;
-      import Modelica_Fluid.Types.PortFlowDirection;
 
-      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
-        "Medium in the component" 
-        annotation (choicesAllMatching=true);
 
-      Modelica_Fluid.Interfaces.FluidPort_a port_1(redeclare package Medium = 
-            Medium, m_flow(min=if (portFlowDirection_1 == PortFlowDirection.Entering) then 
-                    0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_1
-               == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-        annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
-              rotation=0)));
-      Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
-            Medium, m_flow(min=if (portFlowDirection_2 == PortFlowDirection.Entering) then 
-                    0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_2
-               == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-        annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation=
-               0)));
-      Modelica_Fluid.Interfaces.FluidPort_a port_3(
-        redeclare package Medium=Medium,
-        m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
-        max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
-        annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
-               0)));
-
-      annotation(Icon(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics={
-            Rectangle(
-              extent={{-100,41},{100,-47}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={192,192,192}),
-            Rectangle(
-              extent={{-100,37},{100,-43}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={0,127,255}),
-            Rectangle(
-              extent={{-34,100},{34,37}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.VerticalCylinder,
-              fillColor={192,192,192}),
-            Rectangle(
-              extent={{-30,100},{30,35}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.VerticalCylinder,
-              fillColor={0,127,255}),
-            Text(
-              extent={{-150,-89},{150,-129}},
-              lineColor={0,0,255},
-              textString="%name")}),
-        Diagram(coordinateSystem(
-            preserveAspectRatio=false,
-            extent={{-100,-100},{100,100}},
-            grid={1,1}), graphics));
-
-    protected
-      parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
-        "Flow direction for port_1" 
-       annotation(Dialog(tab="Advanced"));
-      parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
-        "Flow direction for port_2" 
-       annotation(Dialog(tab="Advanced"));
-      parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
-        "Flow direction for port_3" 
-       annotation(Dialog(tab="Advanced"));
-
-    end PartialTeeJunction;
-
-    package SimpleGenericOrifice
+    model SimpleGenericPressureLoss
       "Simple pressure loss component defined by two constants (diameter, zeta) for the quadratic turbulent regime"
 
-      function massFlowRate_dp
-        "Return mass flow rate from pressure drop (m_flow = f(dp))"
-        extends Modelica.Icons.Function;
-        input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
-        input SI.Density d_a "Density at port_a";
-        input SI.Density d_b "Density at port_b";
-        input SI.Diameter D "Diameter at port_a or port_b";
-        input Real zeta
-          "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
-        input SI.AbsolutePressure dp_small = 1
-          "Turbulent flow if |dp| >= dp_small";
-        output SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+      extends Modelica_Fluid.Interfaces.PartialPressureDrop(
+        final n = 1,
+        m_flow(start = {m_flow_start}),
+        dp(start = {dp_start}));
 
-        annotation (Documentation(info="<html>
-<p>
-Compute mass flow rate from constant loss factor and pressure drop (m_flow = f(dp)).
-For small pressure drops (dp &lt; dp_small), the characteristic is approximated by 
-a polynomial in order to have a finite derivative at zero mass flow rate.
-</p>
-</html>"));
-      algorithm
-        /*
+      input Real zeta "Loss factor for flow of state[1] -> state[2]";
+      parameter SI.Diameter diameter
+        "Diameter at which zeta is defined (either state[1] or state[2])";
+
+      // Advanced
+      parameter SI.Pressure dp_start = 0
+        "Guess value for dp = pressure(state[1]) - pressure(state[2])" 
+        annotation(Dialog(tab = "Advanced"));
+      parameter Medium.MassFlowRate m_flow_start = 0
+        "Guess value for m_flow of state[1] -> state[2]" 
+        annotation(Dialog(tab = "Advanced"));
+      parameter Boolean from_dp = true
+        "= true to use m_flow = f(dp) else dp = f(m_flow)" 
+        annotation (Evaluate=true, Dialog(tab="Advanced"));
+      parameter SI.Pressure dp_small = 1 "Turbulent flow if |dp| >= dp_small" 
+        annotation(Dialog(tab="Advanced", enable=from_dp));
+      parameter Medium.MassFlowRate m_flow_small = 0.01
+        "Turbulent flow if |m_flow| >= m_flow_small" 
+        annotation(Dialog(tab = "Advanced", enable=not from_dp));
+
+    equation
+      /*
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
       = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
@@ -743,50 +689,20 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2 
   */
-        m_flow := Utilities.regRoot2(
-            dp,
+      if from_dp then
+        m_flow[1] = Utilities.regRoot2(
+            dp[1],
             dp_small,
-            d_a/lossConstant_D_zeta(D, zeta),
-            d_b/lossConstant_D_zeta(D, zeta));
-      end massFlowRate_dp;
-
-      function pressureLoss_m_flow
-        "Return pressure drop from mass flow rate (dp = f(m_flow))"
-              extends Modelica.Icons.Function;
-
-        input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
-        input SI.Density d_a "Density at port_a";
-        input SI.Density d_b "Density at port_b";
-        input SI.Diameter D "Diameter at port_a or port_b";
-        input Real zeta
-          "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
-        input SI.MassFlowRate m_flow_small = 0.01
-          "Turbulent flow if |m_flow| >= m_flow_small";
-        output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
-
-        annotation (Documentation(info="<html>
-<p>
-Compute pressure drop from mass flow rate (dp = f(m_flow)).
-For small mass flow rates(|m_flow| &lt; m_flow_small), the characteristic is approximated by 
-a polynomial in order to have a finite derivative at zero mass flow rate.
-</p>
-</html>"));
-      algorithm
-        /*
-   dp = 0.5*zeta*d*v*|v|
-      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
-      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
-      = k/d * m_flow * |m_flow| 
-   k  = 0.5*zeta/A^2
-      = 0.5*zeta/(pi*(D/2)^2)^2
-      = 8*zeta/(pi*D^2)^2
-  */
-        dp := Utilities.regSquare2(
-            m_flow,
+            Medium.density(state[1])/lossConstant_D_zeta(diameter, zeta),
+            Medium.density(state[2])/lossConstant_D_zeta(diameter, zeta));
+      else
+        dp[1] = Utilities.regSquare2(
+            m_flow[1],
             m_flow_small,
-            lossConstant_D_zeta(D, zeta)/d_a,
-            lossConstant_D_zeta(D, zeta)/d_b);
-      end pressureLoss_m_flow;
+            lossConstant_D_zeta(diameter, zeta)/Medium.density(state[1]),
+            lossConstant_D_zeta(diameter, zeta)/Medium.density(state[2]));
+      end if;
+
       annotation (Documentation(info="<html>
 <p>
 This pressure drop component defines a
@@ -825,7 +741,23 @@ this is most likely uncritical. If significant reversing flow
 can appear, this component should not be used.
 </p>
 </html>"));
-    end SimpleGenericOrifice;
+    end SimpleGenericPressureLoss;
+
+    function lossConstant_D_zeta "Return the loss constant 8*zeta/(pi^2*D^4)"
+          extends Modelica.Icons.Function;
+
+      input SI.Diameter D "Diameter at port_a or port_b";
+      input Real zeta
+        "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
+      output Real k "Loss constant (= 8*zeta/(pi^2*D^4))";
+
+      annotation (Documentation(info="<html>
+ 
+</html>"));
+    algorithm
+      k :=8*zeta/(Modelica.Constants.pi*Modelica.Constants.pi*D*D*D*D);
+    end lossConstant_D_zeta;
+
 
     package QuadraticTurbulent
       "Pressure loss components that are mainly defined by a quadratic turbulent regime with constant loss factor data"
@@ -1663,7 +1595,7 @@ Laminar region:
         extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
 
         SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(
-              m_flow[1], (Medium.dynamicViscosity(state[1]) + Medium.dynamicViscosity(state[2]))/2,
+              m_flow, (Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b))/2,
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
         parameter LossFactorData data "Loss factor data";
         parameter Boolean from_dp = true
@@ -1794,21 +1726,21 @@ The used sufficient criteria for monotonicity follows from:
 </html>"));
       equation
         if from_dp then
-           m_flow[1] = if use_Re then 
+           m_flow = if use_Re then 
                        massFlowRate_dp_and_Re(
-                          dp, Medium.density(state[1]), Medium.density(state[2]),
-                          Medium.dynamicViscosity(state[1]),
-                          Medium.dynamicViscosity(state[2]),
+                          dp, Medium.density(state_a), Medium.density(state_b),
+                          Medium.dynamicViscosity(state_a),
+                          Medium.dynamicViscosity(state_b),
                           data) else 
-                       massFlowRate_dp(dp, Medium.density(state[1]), Medium.density(state[2]), data, dp_small);
+                       massFlowRate_dp(dp, Medium.density(state_a), Medium.density(state_b), data, dp_small);
         else
            dp = if use_Re then 
                    pressureLoss_m_flow_and_Re(
-                       m_flow[1], Medium.density(state[1]), Medium.density(state[2]),
-                       Medium.dynamicViscosity(state[1]),
-                       Medium.dynamicViscosity(state[2]),
+                       m_flow, Medium.density(state_a), Medium.density(state_b),
+                       Medium.dynamicViscosity(state_a),
+                       Medium.dynamicViscosity(state_b),
                        data) else 
-                   pressureLoss_m_flow(m_flow[1], Medium.density(state[1]), Medium.density(state[2]), data, m_flow_small);
+                   pressureLoss_m_flow(m_flow, Medium.density(state_a), Medium.density(state_b), data, m_flow_small);
         end if;
       end BaseModel;
 
@@ -1854,21 +1786,6 @@ The used sufficient criteria for monotonicity follows from:
 </html>"));
     end TestWallFriction;
     end QuadraticTurbulent;
-
-    function lossConstant_D_zeta "Return the loss constant 8*zeta/(pi^2*D^4)"
-          extends Modelica.Icons.Function;
-
-      input SI.Diameter D "Diameter at port_a or port_b";
-      input Real zeta
-        "Constant pressure loss factor with respect to D (i.e., either port_a or port_b)";
-      output Real k "Loss constant (= 8*zeta/(pi^2*D^4))";
-
-      annotation (Documentation(info="<html>
- 
-</html>"));
-    algorithm
-      k :=8*zeta/(Modelica.Constants.pi*Modelica.Constants.pi*D*D*D*D);
-    end lossConstant_D_zeta;
 
   partial model PartialTwoPortFitting
       "Partial element transporting fluid between two ports without storage or loss of mass or energy"
@@ -1940,8 +1857,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
     PressureLoss pressureLoss(
             redeclare final package Medium = Medium,
             final n=1,
-            state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
-                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
+            state={state_a, state_b},
             final allowFlowReversal=allowFlowReversal,
             final momentumDynamics=momentumDynamics,
             final p_a_start=p_a_start,
@@ -1979,7 +1895,7 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt>.
         annotation(Dialog(tab="Advanced", group="Static head"), Evaluate=true);
 
   equation
-    m_flow = pressureLoss.m_flow;
+    m_flow = pressureLoss.m_flow[1];
 
     annotation (Documentation(info="<html>
 <p>
@@ -1996,5 +1912,79 @@ The specified geometry is passed to the pressure loss model.
 </p>
 </html>"));
   end PartialGenericPressureLoss;
+
+    partial model PartialTeeJunction
+      "Base class for a splitting/joining component with three ports"
+      import Modelica_Fluid.Types;
+      import Modelica_Fluid.Types.PortFlowDirection;
+
+      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
+        "Medium in the component" 
+        annotation (choicesAllMatching=true);
+
+      Modelica_Fluid.Interfaces.FluidPort_a port_1(redeclare package Medium = 
+            Medium, m_flow(min=if (portFlowDirection_1 == PortFlowDirection.Entering) then 
+                    0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_1
+               == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}},
+              rotation=0)));
+      Modelica_Fluid.Interfaces.FluidPort_b port_2(redeclare package Medium = 
+            Medium, m_flow(min=if (portFlowDirection_2 == PortFlowDirection.Entering) then 
+                    0.0 else -Modelica.Constants.inf, max=if (portFlowDirection_2
+               == PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+        annotation (Placement(transformation(extent={{90,-10},{110,10}}, rotation=
+               0)));
+      Modelica_Fluid.Interfaces.FluidPort_a port_3(
+        redeclare package Medium=Medium,
+        m_flow(min=if (portFlowDirection_3==PortFlowDirection.Entering) then 0.0 else -Modelica.Constants.inf,
+        max=if (portFlowDirection_3==PortFlowDirection.Leaving) then 0.0 else Modelica.Constants.inf)) 
+        annotation (Placement(transformation(extent={{-10,90},{10,110}}, rotation=
+               0)));
+
+      annotation(Icon(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics={
+            Rectangle(
+              extent={{-100,41},{100,-47}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.HorizontalCylinder,
+              fillColor={192,192,192}),
+            Rectangle(
+              extent={{-100,37},{100,-43}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.HorizontalCylinder,
+              fillColor={0,127,255}),
+            Rectangle(
+              extent={{-34,100},{34,37}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.VerticalCylinder,
+              fillColor={192,192,192}),
+            Rectangle(
+              extent={{-30,100},{30,35}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.VerticalCylinder,
+              fillColor={0,127,255}),
+            Text(
+              extent={{-150,-89},{150,-129}},
+              lineColor={0,0,255},
+              textString="%name")}),
+        Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-100,-100},{100,100}},
+            grid={1,1}), graphics));
+
+    protected
+      parameter PortFlowDirection portFlowDirection_1=PortFlowDirection.Bidirectional
+        "Flow direction for port_1" 
+       annotation(Dialog(tab="Advanced"));
+      parameter PortFlowDirection portFlowDirection_2=PortFlowDirection.Bidirectional
+        "Flow direction for port_2" 
+       annotation(Dialog(tab="Advanced"));
+      parameter PortFlowDirection portFlowDirection_3=PortFlowDirection.Bidirectional
+        "Flow direction for port_3" 
+       annotation(Dialog(tab="Advanced"));
+
+    end PartialTeeJunction;
   end BaseClasses;
 end Fittings;
