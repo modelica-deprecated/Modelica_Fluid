@@ -207,7 +207,7 @@ explained in detail in the
   end ValveCompressible;
 
   model ValveLinear "Valve for water/steam flows with linear pressure drop"
-    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     parameter SI.AbsolutePressure dp_nominal
       "Nominal pressure drop at full opening";
     parameter Medium.MassFlowRate m_flow_nominal
@@ -232,6 +232,10 @@ explained in detail in the
   equation
     modifiedOpening = smooth(0,noEvent(if opening > minOpening then opening else minOpening));
     m_flow = Kv*modifiedOpening*dp;
+
+    // Isenthalpic state transformation (no storage and no loss of energy)
+    port_a.h_outflow = inStream(port_b.h_outflow);
+    port_b.h_outflow = inStream(port_a.h_outflow);
 
   annotation (
     Icon(coordinateSystem(
@@ -272,7 +276,7 @@ explained in detail in the
   end ValveLinear;
 
   model ValveDiscrete "Valve for water/steam flows with linear pressure drop"
-    extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting;
+    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
     parameter SI.Pressure dp_nominal "Nominal pressure drop at full opening";
     parameter Medium.MassFlowRate m_flow_nominal
       "Nominal mass flowrate at full opening";
@@ -287,6 +291,10 @@ explained in detail in the
           rotation=270)));
   equation
     m_flow = if open then Kv*dp else Kv_small_rel*Kv*dp;
+
+    // Isenthalpic state transformation (no storage and no loss of energy)
+    port_a.h_outflow = inStream(port_b.h_outflow);
+    port_b.h_outflow = inStream(port_a.h_outflow);
 
   annotation (
     Icon(coordinateSystem(
@@ -336,8 +344,11 @@ it is open.
     partial model PartialValve "Base model for valves"
 
       import Modelica_Fluid.Types.CvTypes;
-      extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortFitting(
-          dp_start=dp_nominal, m_flow_start=m_flow_nominal);
+      extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+        dp_start = dp_nominal,
+        m_flow_start = m_flow_nominal,
+        m_flow_small = 0.01*m_flow_nominal);
+
       parameter CvTypes CvData=CvTypes.OpPoint "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
       parameter SI.Area Av(
@@ -393,6 +404,24 @@ it is open.
       Real modifiedOpening
         "Modified, actually used opening, so that the valve is not completely closed to improve numerics";
 
+    protected
+      function sqrtR = Utilities.regRoot(delta = delta*dp_nominal);
+
+    initial equation
+      if CvData == CvTypes.Kv then
+        Av = Kv*Kv2Av "Unit conversion";
+      elseif CvData == CvTypes.Cv then
+        Av = Cv*Cv2Av "Unit conversion";
+      end if;
+
+    equation
+      modifiedOpening = noEvent(if opening > minOpening then 
+        opening else minOpening);
+
+      // Isenthalpic state transformation (no storage and no loss of energy)
+      port_a.h_outflow = inStream(port_b.h_outflow);
+      port_b.h_outflow = inStream(port_a.h_outflow);
+
       annotation (
         Icon(coordinateSystem(
             preserveAspectRatio=true,
@@ -446,19 +475,6 @@ explained in detail in the
        Adapted from the ThermoPower library.</li>
 </ul>
 </html>"));
-    protected
-      function sqrtR = Utilities.regRoot(delta = delta*dp_nominal);
-
-    initial equation
-      if CvData == CvTypes.Kv then
-        Av = Kv*Kv2Av "Unit conversion";
-      elseif CvData == CvTypes.Cv then
-        Av = Cv*Cv2Av "Unit conversion";
-      end if;
-
-    equation
-      modifiedOpening = noEvent(if opening > minOpening then 
-        opening else minOpening);
     end PartialValve;
 
   package ValveCharacteristics "Functions for valve characteristics"
