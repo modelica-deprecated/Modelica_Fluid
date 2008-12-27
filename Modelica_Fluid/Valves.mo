@@ -67,10 +67,10 @@ explained in detail in the
       "Pressure recovery characteristic";
     Real Ff "Ff coefficient (see IEC/ISA standard)";
     Real Fl "Pressure recovery coefficient Fl (see IEC/ISA standard)";
-    Medium.AbsolutePressure pv "Saturation pressure";
+    Medium.AbsolutePressure p_sat "Saturation pressure";
     SI.Pressure dpEff "Effective pressure drop";
-    Medium.AbsolutePressure pin "Inlet pressure";
-    Medium.AbsolutePressure pout "Outlet pressure";
+    Medium.AbsolutePressure p_in "Inlet pressure";
+    Medium.AbsolutePressure p_out "Outlet pressure";
     annotation (
       Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}}),
@@ -103,13 +103,13 @@ explained in detail in the
   initial equation
     assert(not CvData == CvTypes.OpPoint, "OpPoint option not supported for vaporizing valve");
   equation
-    pin = port_a.p;
-    pout = port_b.p;
-    pv = Medium.saturationPressure(port_a_T);
-    Ff = 0.96 - 0.28*sqrt(pv/Medium.fluidConstants[1].criticalPressure);
+    p_in = port_a.p;
+    p_out = port_b.p;
+    p_sat = Medium.saturationPressure(port_a_T);
+    Ff = 0.96 - 0.28*sqrt(p_sat/Medium.fluidConstants[1].criticalPressure);
     Fl = Fl_nominal*FlCharacteristic(opening);
-    dpEff = if pout < (1 - Fl^2)*pin + Ff*Fl^2*pv then 
-              Fl^2*(pin - Ff*pv) else dp
+    dpEff = if p_out < (1 - Fl^2)*p_in + Ff*Fl^2*p_sat then 
+              Fl^2*(p_in - Ff*p_sat) else dp
       "Effective pressure drop, accounting for possible choked conditions";
     if CheckValve then
        m_flow = valveCharacteristic(modifiedOpening)*Av*sqrt(Medium.density(state_a))*

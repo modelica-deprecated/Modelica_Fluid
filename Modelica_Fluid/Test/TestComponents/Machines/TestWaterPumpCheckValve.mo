@@ -3,8 +3,8 @@ model TestWaterPumpCheckValve "Test pump with check valve behaviour"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
 annotation (
-  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-            100,100}}),
+  Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+            100}}),
           graphics),
   experiment(StopTime=3, Tolerance=1e-006),
   Documentation(info=""));
