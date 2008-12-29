@@ -55,7 +55,6 @@ explained in detail in the
     "Valve for possibly vaporizing (almost) incompressible fluids, accounts for choked flow conditions"
     import Modelica_Fluid.Types.CvTypes;
     extends BaseClasses.PartialValve(
-      final show_T = true,
       redeclare replaceable package Medium = 
           Modelica.Media.Water.WaterIF97_ph                                    constrainedby
         Modelica.Media.Interfaces.PartialTwoPhaseMedium);
@@ -67,8 +66,9 @@ explained in detail in the
       "Pressure recovery characteristic";
     Real Ff "Ff coefficient (see IEC/ISA standard)";
     Real Fl "Pressure recovery coefficient Fl (see IEC/ISA standard)";
-    Medium.AbsolutePressure p_sat "Saturation pressure";
     SI.Pressure dpEff "Effective pressure drop";
+    Medium.Temperature T_in "Inlet temperature";
+    Medium.AbsolutePressure p_sat "Saturation pressure";
     Medium.AbsolutePressure p_in "Inlet pressure";
     Medium.AbsolutePressure p_out "Outlet pressure";
     annotation (
@@ -105,7 +105,8 @@ explained in detail in the
   equation
     p_in = port_a.p;
     p_out = port_b.p;
-    p_sat = Medium.saturationPressure(port_a_T);
+    T_in = Medium.temperature(state_a);
+    p_sat = Medium.saturationPressure(T_in);
     Ff = 0.96 - 0.28*sqrt(p_sat/Medium.fluidConstants[1].criticalPressure);
     Fl = Fl_nominal*FlCharacteristic(opening);
     dpEff = if p_out < (1 - Fl^2)*p_in + Ff*Fl^2*p_sat then 
@@ -233,10 +234,6 @@ explained in detail in the
     modifiedOpening = smooth(0,noEvent(if opening > minOpening then opening else minOpening));
     m_flow = Kv*modifiedOpening*dp;
 
-    // Isenthalpic state transformation (no storage and no loss of energy)
-    port_a.h_outflow = inStream(port_b.h_outflow);
-    port_b.h_outflow = inStream(port_a.h_outflow);
-
   annotation (
     Icon(coordinateSystem(
           preserveAspectRatio=true,
@@ -291,10 +288,6 @@ explained in detail in the
           rotation=270)));
   equation
     m_flow = if open then Kv*dp else Kv_small_rel*Kv*dp;
-
-    // Isenthalpic state transformation (no storage and no loss of energy)
-    port_a.h_outflow = inStream(port_b.h_outflow);
-    port_b.h_outflow = inStream(port_a.h_outflow);
 
   annotation (
     Icon(coordinateSystem(
@@ -417,10 +410,6 @@ it is open.
     equation
       modifiedOpening = noEvent(if opening > minOpening then 
         opening else minOpening);
-
-      // Isenthalpic state transformation (no storage and no loss of energy)
-      port_a.h_outflow = inStream(port_b.h_outflow);
-      port_b.h_outflow = inStream(port_a.h_outflow);
 
       annotation (
         Icon(coordinateSystem(

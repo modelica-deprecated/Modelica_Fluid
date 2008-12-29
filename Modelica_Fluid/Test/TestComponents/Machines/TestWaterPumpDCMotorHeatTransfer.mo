@@ -1,5 +1,6 @@
 within Modelica_Fluid.Test.TestComponents.Machines;
-model TestWaterPumpDCMotor "Test pump with dc motor (startup transient)"
+model TestWaterPumpDCMotorHeatTransfer
+  "Test pump with dc motor (startup transient)"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
 annotation (
@@ -23,17 +24,22 @@ annotation (
   Modelica_Fluid.Machines.Pump pump(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_start=1,
+    N_nominal=1500,
+    use_HeatTransfer=true,
+    use_powerCharacteristic=true,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
           V_flow_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
-    N_nominal=1500,
+    redeclare function powerCharacteristic = 
+        Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticPower
+        (V_flow_nominal={0,0.001,0.0015}, W_nominal={550,650,800}),
     p_a_start=100000,
-    p_b_start=700000)     annotation (Placement(transformation(extent={{-10,-5},
+    p_b_start=100000)     annotation (Placement(transformation(extent={{-10,-5},
             {20,25}},  rotation=0)));
   Modelica.Blocks.Sources.Step valveOpening(
-    height=-0.5,
     offset=1,
-    startTime=5) 
+    startTime=5,
+    height=-1) 
   annotation (Placement(transformation(extent={{70,40},{50,60}},   rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible Valve(
                                              redeclare package Medium = 
@@ -55,8 +61,9 @@ annotation (
         start=0.10471975511966)),
     VaNominal=400,
     wNominal(displayUnit="1/min") = 157.07963267949,
-    IaNominal=10,
-    Ra=10) annotation (Placement(transformation(extent={{-54,3},{-30,27}})));
+    Ra=10,
+    IaNominal=10) 
+           annotation (Placement(transformation(extent={{-54,3},{-30,27}})));
   Modelica.Electrical.Analog.Sources.StepVoltage stepVoltage(
     startTime=1,
     offset=0.1,
@@ -66,6 +73,8 @@ annotation (
         origin={-80,15})));
   Modelica.Electrical.Analog.Basic.Ground ground 
     annotation (Placement(transformation(extent={{-90,-23},{-70,-1}})));
+  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor housing(C=460*1) 
+    annotation (Placement(transformation(extent={{-5,-20},{15,-40}})));
 equation
   connect(Valve.port_b,Sink.ports[1])    annotation (Line(points={{49,10},{60,
           10}},
@@ -96,4 +105,8 @@ equation
       points={{-80,5},{-80,-1}},
       color={0,0,255},
       smooth=Smooth.None));
-end TestWaterPumpDCMotor;
+  connect(pump.heatPort, housing.port) annotation (Line(
+      points={{5,-3.5},{5,-20}},
+      color={191,0,0},
+      smooth=Smooth.None));
+end TestWaterPumpDCMotorHeatTransfer;

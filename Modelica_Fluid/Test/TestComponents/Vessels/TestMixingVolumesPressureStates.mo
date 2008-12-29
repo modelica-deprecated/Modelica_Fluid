@@ -16,7 +16,7 @@ model TestMixingVolumesPressureStates
     T_start=system.T_ambient,
     nPorts=2,
     portDiameters={0,0},
-    neglectPortDiameters=true,
+    use_portDiameters=false,
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
                  annotation (Placement(transformation(extent={{-30,38},{-10,58}},

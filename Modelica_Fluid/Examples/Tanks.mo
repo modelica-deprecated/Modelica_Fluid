@@ -515,7 +515,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Vessels.OpenTank tank1(
       crossArea=1,
       redeclare package Medium = Medium,
-      neglectPortDiameters=false,
+      use_portDiameters=true,
       height=12,
       level_start=8,
       zeta_in={1.05},
@@ -526,7 +526,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Vessels.OpenTank tank2(
       crossArea=1,
       redeclare package Medium = Medium,
-      neglectPortDiameters=false,
+      use_portDiameters=true,
       height=12,
       level_start=3,
       zeta_in={1.05},
@@ -549,7 +549,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     Modelica_Fluid.Vessels.OpenTank tank3(
       crossArea=1,
       redeclare package Medium = Medium,
-      neglectPortDiameters=false,
+      use_portDiameters=true,
       height=12,
       level_start=3,
       zeta_in={1.05},

@@ -511,13 +511,13 @@ partial model PartialTwoPortTransport
       "Small mass flow rate for regularization of zero flow" 
     annotation(Dialog(tab = "Advanced"));
 
-  // Diagnosis
+  // Diagnostics
   parameter Boolean show_T = true
       "= true, if temperatures at port_a and port_b are computed" 
-    annotation(Dialog(tab="Advanced",group="Diagnosis"));
+    annotation(Dialog(tab="Advanced",group="Diagnostics"));
   parameter Boolean show_V_flow = true
       "= true, if volume flow rate at inflowing port is computed" 
-    annotation(Dialog(tab="Advanced",group="Diagnosis"));
+    annotation(Dialog(tab="Advanced",group="Diagnostics"));
 
   // Variables
   Medium.ThermodynamicState state_a "state for medium inflowing through port_a";
@@ -568,6 +568,10 @@ equation
   port_a.C_outflow = inStream(port_b.C_outflow);
   port_b.C_outflow = inStream(port_a.C_outflow);
 
+  // Isenthalpic state transformation (no storage and no loss of energy)
+  port_a.h_outflow = inStream(port_b.h_outflow);
+  port_b.h_outflow = inStream(port_a.h_outflow);
+
   annotation (
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
@@ -575,15 +579,11 @@ equation
           grid={1,1}), graphics),
     Documentation(info="<html>
 <p>
-This component transports fluid between its two ports, without
-storing mass. Energy may be exchanged with the environment, e.g. in the form of work or of heat.
-<tt>PartialTwoPortTransport</tt> is intended as base class for devices like orifices, valves and pumps.
+This component transports fluid between its two ports, without storing mass or energy.
+<tt>PartialTwoPortTransport</tt> is intended as base class for devices like orifices and valves.
 <p>
-When using this partial component, three equations have to be added:
-<ul>
-<li> the energy balances for flow from port_a to port_b and from port_b to port_a</li>
-<li> the momentum balance specifying the relationship 
-     between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt></li>.
+When using this partial component, the momentum balance specifying the relationship 
+between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt> needs to be added.
 </ul>
 </p>
 </html>"),

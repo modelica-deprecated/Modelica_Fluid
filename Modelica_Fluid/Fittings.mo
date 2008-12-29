@@ -1736,10 +1736,10 @@ The used sufficient criteria for monotonicity follows from:
           "Turbulent flow if |m_flow| >= m_flow_small" 
           annotation(Dialog(tab = "Advanced", enable=not from_dp));
 
-        // Diagnosis
+        // Diagnostics
         parameter Boolean show_Re = false
           "= true, if Reynolds number is included for plotting" 
-           annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnosis"));
+           annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnostics"));
         SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(
               m_flow, (Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b))/2,
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
@@ -1902,7 +1902,6 @@ The used sufficient criteria for monotonicity follows from:
     end TestWallFriction;
     end QuadraticTurbulent;
 
-
   partial model PartialTwoPortPressureLoss
       "Two port transport model with replaceable pressure loss correlation"
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
@@ -1920,10 +1919,6 @@ The used sufficient criteria for monotonicity follows from:
 
   equation
     m_flow = pressureLoss.m_flow[1];
-
-    // Isenthalpic state transformation (no storage and no loss of energy)
-    port_a.h_outflow = inStream(port_b.h_outflow);
-    port_b.h_outflow = inStream(port_a.h_outflow);
 
     annotation (Documentation(info="<html>
 <p>
