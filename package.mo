@@ -895,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-27</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-29</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -907,8 +907,11 @@ Modelica_Fluid was refactored and finalized for the release:
      still reflected the long development history, while the basic concepts had been crystalized.
      Please consult the subversion control (SVN) logs for individual changes.</li>
   
+<li> The former sub-packages Junctions and PressureLosses have been combined into the new subpackage Fittings.
+     The former Pumps and Volumes.SweptVolume have become the initial version of fluid Machines.</li>
+ 
 <li> Replaceable PressureLoss and HeatTransfer models<br>
-     The Vessels (former Volumes) now have replaceable HeatTransfer models.
+     The Vessels (former Volumes) and the Machines now have replaceable HeatTransfer models.
      The Pipes now additionally have replaceable PressureLoss models.
      The heat transfer and pressure loss models are parameterized with the Medium and the ThermodynamicState 
      of involved flow segments. See
@@ -927,13 +930,10 @@ Modelica_Fluid was refactored and finalized for the release:
      exposing mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
      High-index DAEs need to be treated instead in connection sets.</li>
  
-<li> The former sub-packages Junctions and PressureLosses have been combined into the new subpackage Fittings.
-     The former Pumps and Volumes.SweptVolume have become the initial version of fluid Machines.</li>
- 
-<li> Finalization of trace substrances<br>
-     Modelica_Fluid now provides a sound implementation for trace substances, 
-     which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
-     <br>See <a href=\"Modelica:Modelica_Fluid.Examples.TraceSubstances.RoomCO2WithControls\">Examples.TraceSubstances.RoomCO2WithControls</a></li>.
+<li> Extension of pumps for better consideration of zero flow and heat transfer with environment<br>
+     The simplified mass and energy balances have been replaced with a rigorous formulation. 
+     Moreover an optional heat transfer model can be configured for heat exchanged with the environment or the housing.<br>
+     See <a href=\"Modelica:Modelica_Fluid.Machines.BaseClasses.PartialPump\">Machines.BaseClasses.PartialPump</a></li>
  
 <li> Inverse parameterization of flow models with nominal operational conditions<br> 
      Flow models have been added or extended to support the parameterization with nominal values
@@ -952,8 +952,13 @@ Modelica_Fluid was refactored and finalized for the release:
      The former Types.Init has become obsolete.
      <br>See <a href=\"Modelica:Modelica_Fluid.Examples.HeatingSystem\">Examples.HeatingSystem</a></li>.
  
+<li> Finalization of trace substrances<br>
+     Modelica_Fluid now provides a sound implementation for trace substances, 
+     which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
+     <br>See <a href=\"Modelica:Modelica_Fluid.Examples.TraceSubstances.RoomCO2WithControls\">Examples.TraceSubstances.RoomCO2WithControls</a></li>.
+ 
 <li> Common base classes implementing mass and energy balances<br>
-     Mass and energy balances are now defined in the common base classes
+     All non-trivial mass and energy balances are now defined in the common base classes
      <ul>
      <li><a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume\">
           Vessels.BaseClasses.PartialLumpedVolume</a></li>

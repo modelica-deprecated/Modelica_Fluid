@@ -99,8 +99,8 @@ package Machines
     SI.Angle phi "Shaft angle";
     SI.AngularVelocity omega "Shaft angular velocity";
     Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft 
-    annotation (Placement(transformation(extent={{80,4},{110,32}}, rotation=0),
-          iconTransformation(extent={{80,-34},{110,-6}})));
+    annotation (Placement(transformation(extent={{-110,20},{-90,40}},
+                                                                   rotation=0)));
   equation
     phi = shaft.phi;
     omega = der(phi);
@@ -109,11 +109,11 @@ package Machines
   annotation (
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
               100}}), graphics={Rectangle(
-            extent={{60,-12},{84,-26}},
+            extent={{-95,37},{-71,23}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={95,95,95})}),
-    Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}),
             graphics),
     Documentation(info="<HTML>
@@ -137,7 +137,7 @@ package Machines
       N(start=N_nominal),
       redeclare replaceable function flowCharacteristic = 
           Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow
-          ( V_flow_nominal={0, q_op, 1.5*q_op},
+          ( V_flow_nominal={0, V_flow_op, 1.5*V_flow_op},
             head_nominal={2*head_op, head_op, 0}));
 
     // nominal values
@@ -160,7 +160,7 @@ package Machines
       annotation (Dialog(enable = not control_m_flow));
 
     // exemplary characteristics
-    final parameter SI.VolumeFlowRate q_op = m_flow_nominal/d_nominal
+    final parameter SI.VolumeFlowRate V_flow_op = m_flow_nominal/d_nominal
       "operational volume flow rate according to nominal values";
     final parameter SI.Height head_op = (p_b_nominal-p_a_nominal)/(d_nominal*g)
       "operational pump head according to nominal values";
@@ -186,7 +186,7 @@ package Machines
   equation
     // Ideal control
     if control_m_flow then
-      m_flow_total = m_flow_set_internal;
+      m_flow = m_flow_set_internal;
     else
       dp_pump = p_set_internal - port_a.p;
     end if;
@@ -202,8 +202,8 @@ package Machines
     connect(p_set, p_set_internal);
 
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-              100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics={Text(
             visible=use_p_set,
             extent={{82,108},{176,92}},
             textString="p_set"), Text(
@@ -294,9 +294,9 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
   partial model PartialPump "Base model for centrifugal pumps"
       import Modelica.SIunits.Conversions.NonSIunits.*;
       import Modelica.Constants;
-    extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
-      m_flow_start = 1,
-      final dp_start = p_a_start - p_b_start,
+
+    extends Modelica_Fluid.Interfaces.PartialTwoPort(
+      port_b_exposesState = use_V,
       port_a(
         p(start=p_a_start),
         m_flow(start = m_flow_start,
@@ -306,6 +306,18 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         m_flow(start = -m_flow_start,
                max = if allowFlowReversal and not checkValve then +Constants.inf else 0)));
 
+    // Initialization
+    parameter Medium.AbsolutePressure p_a_start=system.p_start
+        "Guess value for inlet pressure" 
+      annotation(Dialog(tab="Initialization"));
+    parameter Medium.AbsolutePressure p_b_start=2*p_a_start
+        "Guess value for outlet pressure" 
+      annotation(Dialog(tab="Initialization"));
+    parameter Medium.MassFlowRate m_flow_start = 1
+        "Guess value of m_flow = port_a.m_flow" 
+      annotation(Dialog(tab = "Initialization"));
+
+    // Characteristics
     parameter Integer nParallel(min=1) = 1 "Number of pumps in parallel" 
       annotation(Dialog(group="Characteristics"));
     replaceable function flowCharacteristic = 
@@ -316,27 +328,42 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         "Nominal rotational speed for flow characteristic" 
       annotation(Dialog(group="Characteristics"));
     parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
-        "Nominal fluid density" 
+        "Nominal fluid density for characteristic" 
       annotation(Dialog(group="Characteristics"));
     parameter Boolean use_powerCharacteristic = false
         "Use powerCharacteristic (vs. efficiencyCharacteristic)" 
        annotation(Evaluate=true,Dialog(group="Characteristics"));
-    replaceable function efficiencyCharacteristic = 
-      PumpCharacteristics.constantEfficiency(eta_nominal = 0.8) constrainedby
-        PumpCharacteristics.baseEfficiency
-        "Efficiency vs. V_flow at nominal speed and density" 
-      annotation(Dialog(group="Characteristics",enable = not use_powerCharacteristic),
-                 choicesAllMatching=true);
     replaceable function powerCharacteristic = 
           PumpCharacteristics.quadraticPower (
          V_flow_nominal={0,0,0},W_nominal={0,0,0})
         "Power consumption vs. V_flow at nominal speed and density" 
       annotation(Dialog(group="Characteristics", enable = use_powerCharacteristic),
                  choicesAllMatching=true);
+    replaceable function efficiencyCharacteristic = 
+      PumpCharacteristics.constantEfficiency(eta_nominal = 0.8) constrainedby
+        PumpCharacteristics.baseEfficiency
+        "Efficiency vs. V_flow at nominal speed and density" 
+      annotation(Dialog(group="Characteristics",enable = not use_powerCharacteristic),
+                 choicesAllMatching=true);
+
+    // Energy and mass balance
+    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume(
+        energyDynamics = if use_V then system.energyDynamics else Types.Dynamics.SteadyState,
+        massDynamics = if use_V then system.massDynamics else Types.Dynamics.SteadyState,
+        final p_start = p_b_start);
+
+    // Assumptions
+    parameter Boolean checkValve=false "= true to prevent reverse flow" 
+      annotation(Dialog(tab="Assumptions"));
+    parameter Boolean use_V = false
+        "= true to consider the fluid volume and storage inside the pump" 
+      annotation(Dialog(tab="Assumptions"));
+    parameter SI.Volume V = 1e-3 "Fluid volume inside the pump" 
+      annotation(Dialog(tab="Assumptions",enable=use_V));
 
     // Heat transfer through boundary, e.g. to add a housing
     parameter Boolean use_HeatTransfer = false
-        "= true to use the HeatTransfer model, e.g. for housing" 
+        "= true to use a HeatTransfer model, e.g. for a housing" 
         annotation (Dialog(tab="Assumptions",group="Heat transfer"));
     replaceable model HeatTransfer = 
         Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer 
@@ -348,7 +375,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       redeclare final package Medium = Medium,
       final n=1,
       transferArea={4*Modelica.Constants.pi*(3/4*V/Modelica.Constants.pi)^(2/3)},
-      state = {Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)}) 
+      state = {medium.state}) 
         annotation (Placement(transformation(
           extent={{-10,-10},{30,30}},
           rotation=180,
@@ -356,69 +383,41 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort if use_HeatTransfer 
       annotation (Placement(transformation(extent={{-10,-100},{10,-80}})));
 
-    // Assumptions
-    parameter Types.Dynamics energyDynamics=system.energyDynamics
-        "Formulation of energy balance" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-    parameter Boolean checkValve=false "= true to prevent reverse flow" 
-      annotation(Dialog(tab="Assumptions"));
-    parameter SI.Volume V = 0
-        "Fluid volume inside the pump; consider if use_HeatTransfer or checkValve"
-      annotation(Dialog(tab="Assumptions"));
-
-    // Initialization
-    parameter Medium.AbsolutePressure p_a_start=system.p_start
-        "Guess value for inlet pressure" 
-      annotation(Dialog(tab="Initialization"));
-    parameter Medium.AbsolutePressure p_b_start=2*p_a_start
-        "Guess value for outlet pressure" 
-      annotation(Dialog(tab="Initialization"));
-    parameter Boolean use_T_start = true
-        "Use T_start if true, otherwise h_start" 
-      annotation(Dialog(tab = "Initialization"), Evaluate = true);
-    parameter Medium.Temperature T_start=
-      if use_T_start then system.T_start else Medium.temperature_phX(p_a_start,h_start,X_start)
-        "Guess value for temperature" 
-      annotation(Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=
-      if use_T_start then Medium.specificEnthalpy_pTX(p_a_start, T_start, X_start) else Medium.h_default
-        "Guess value for specific enthalpy" 
-      annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default
-        "Guess value for mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    // Variables
     final parameter SI.Acceleration g=system.g;
-
+    Medium.Density d = if use_d_nominal then d_nominal else medium.d;
     SI.Pressure dp_pump = port_b.p - port_a.p "Pressure increase";
-    SI.Height head = dp_pump/(d_in*g) "Pump head";
-    Medium.Density d_in = Medium.density(state_a)
-        "Liquid density at the inlet port_a";
-    Medium.SpecificEnthalpy h(start=h_start)
-        "Enthalpy of the liquid stored in the pump if M>0";
-    SI.MassFlowRate m_flow_total = port_a.m_flow "Mass flow rate (total)";
-    SI.MassFlowRate m_flow_single = m_flow_total/nParallel
+    SI.Height head = dp_pump/(d*g) "Pump head";
+    SI.MassFlowRate m_flow = port_a.m_flow "Mass flow rate (total)";
+    SI.MassFlowRate m_flow_single = m_flow/nParallel
         "Mass flow rate (single pump)";
-    SI.VolumeFlowRate V_flow_in = m_flow_total/d_in "Volume flow rate (total)";
-    SI.VolumeFlowRate V_flow_single = V_flow_in/nParallel
+    SI.VolumeFlowRate V_flow = m_flow/d "Volume flow rate (total)";
+    SI.VolumeFlowRate V_flow_single(start = m_flow_start/d_nominal/nParallel) = V_flow/nParallel
         "Volume flow rate (single pump)";
     AngularVelocity_rpm N "Shaft rotational speed";
     SI.Power W_single "Power Consumption (single pump)";
     SI.Power W_total = W_single*nParallel "Power Consumption (total)";
-    constant SI.Power W_eps=1e-8
-        "Small coefficient to avoid numerical singularities in efficiency computations";
     Real eta "Global Efficiency";
     Real s(start = m_flow_start)
         "Curvilinear abscissa for the flow curve in parametric form (either mass flow rate or head)";
 
-    // Diagnosis
+    // Diagnostics
     parameter Boolean show_NPSHa = false
         "= true to compute Net Positive Suction Head available" 
-      annotation(Dialog(tab="Advanced", group="Diagnosis"));
-    SI.Length NPSHa=NPSPa/(d_in*Modelica.Constants.g_n) if show_NPSHa
+      annotation(Dialog(tab="Advanced", group="Diagnostics"));
+    Medium.ThermodynamicState state_a=
+      Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)) if 
+         show_NPSHa "state for medium inflowing through port_a";
+    Medium.Density d_in = Medium.density(state_a) if show_NPSHa
+        "Liquid density at the inlet port_a";
+    SI.Length NPSHa=NPSPa/(d_in*system.g) if show_NPSHa
         "Net Positive Suction Head available";
     SI.Pressure NPSPa=assertPositiveDifference(port_a.p, Medium.saturationPressure(Medium.temperature(state_a)),
-                                               "Cavitation occurs at the inlet") if show_NPSHa
+                                               "Cavitation occurs at the pump inlet") if show_NPSHa
         "Net Positive Suction Pressure available";
+    SI.Pressure NPDPa=assertPositiveDifference(port_b.p, Medium.saturationPressure(medium.T),
+                                               "Cavitation occurs in the pump") if show_NPSHa
+        "Net Positive Discharge Pressure available";
     protected
     constant SI.Height unitHead = 1;
     constant SI.MassFlowRate unitMassFlowRate = 1;
@@ -428,7 +427,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     if noEvent(s > 0 or (not checkValve)) then
       // Flow characteristics when check valve is open or with no check valve
       head = (N/N_nominal)^2*flowCharacteristic(V_flow_single*(N_nominal/N));
-      V_flow_single = s*unitMassFlowRate/d_in;
+      V_flow_single = s*unitMassFlowRate/d;
     else
       // Flow characteristics when check valve is closed
       head = (N/N_nominal)^2*flowCharacteristic(0) - s*unitHead;
@@ -437,51 +436,59 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
     // Power consumption
     if use_powerCharacteristic then
-      W_single = (N/N_nominal)^3*(d_in/d_nominal)*powerCharacteristic(V_flow_single*(N_nominal/N))
-          "Power consumption (single pump)";
-      eta = (dp_pump*V_flow_single)/(W_single + W_eps) "Hydraulic efficiency";
+      W_single = (N/N_nominal)^3*(d/d_nominal)*powerCharacteristic(V_flow_single*(N_nominal/N));
+      eta = dp_pump*V_flow_single/W_single;
     else
       eta = efficiencyCharacteristic(V_flow_single*(N_nominal/N));
       W_single = dp_pump*V_flow_single/eta;
     end if;
 
-    // Energy balances
-    if energyDynamics <> Types.Dynamics.SteadyState and V > 0 then
-       // Dynamic energy balance
-       // mass variations and p/d are neglected
-       nParallel*V*d_nominal*der(h) = port_a.m_flow*actualStream(port_a.h_outflow) +
-                     port_b.m_flow*actualStream(port_b.h_outflow) +
-                     W_total + heatTransfer.Q_flow[1];
-       port_b.h_outflow = h;
-       port_a.h_outflow = h;
+    // Energy balance
+    Ws_flow = W_total;
+    Qs_flow = heatTransfer.Q_flow[1];
+    Hs_flow = port_a.m_flow*actualStream(port_a.h_outflow) +
+              port_b.m_flow*actualStream(port_b.h_outflow);
+    if use_V then
+      // Regular energy balance
+      fluidVolume = V;
     else
-      /* In the following two equations the extra term W_total/m_flow_total is
-       present where a 0/0 term appears if m_flow_total = 0. In order to avoid
+      // Neglect fluid volume
+      fluidVolume = 0;
+      /* In the following two equations the extra term W_total/m_flow is
+       present where a 0/0 term appears if m_flow = 0. In order to avoid
        numerical problems, this term is analytically simplified:
-         W_total/m_flow_total = nParallel*W_single/(d*V_flow_single*nParallel)
+         W_total/m_flow = nParallel*W_single/(d*V_flow_single*nParallel)
                       = nParallel*dp_pump*V_flow_single/(eta*d*V_flow_single*nParallel)
                       = dp_pump/(eta*d)
     */
-      port_b.h_outflow  = inStream(port_a.h_outflow) + dp_pump/(d_in*eta);
-      port_a.h_outflow  = inStream(port_b.h_outflow) + dp_pump/(d_in*eta);
-      h = Medium.h_default
-          "Unused (set to an arbitrary value within the medium region)";
-      assert(abs(heatTransfer.Q_flow[1]) < Modelica.Constants.small, "Specify V > 0 if use_HeatTransfer.");
+      //port_b.h_outflow  = inStream(port_a.h_outflow) + dp_pump/(d_in*eta);
+      //port_a.h_outflow  = inStream(port_b.h_outflow) + dp_pump/(d_in*eta);
+      //assert(abs(heatTransfer.Q_flow[1]) < Modelica.Constants.small, "Specify V > 0 if use_HeatTransfer.");
     end if;
+
+    // Ports
+    port_a.h_outflow = medium.h;
+    port_b.h_outflow = medium.h;
+    port_b.p = medium.p
+        "outlet pressure is equal to medium pressure, which includes Ws_flow";
+
+    // Mass balance
+    ms_flow = port_a.m_flow + port_b.m_flow;
+
+    msXi_flow = port_a.m_flow*actualStream(port_a.Xi_outflow) +
+                port_b.m_flow*actualStream(port_b.Xi_outflow);
+    port_a.Xi_outflow = medium.Xi;
+    port_b.Xi_outflow = medium.Xi;
+
+    msC_flow = port_a.m_flow*actualStream(port_a.C_outflow) +
+               port_b.m_flow*actualStream(port_b.C_outflow);
+    port_a.C_outflow = C;
+    port_b.C_outflow = C;
 
     connect(heatTransfer.heatPorts[1], heatPort) annotation (Line(
         points={{-1.55431e-015,-64},{0,-64},{0,-90}},
         color={127,0,0},
         smooth=Smooth.None));
-
-  initial equation
-    if V > 0 then
-      if energyDynamics == Types.Dynamics.FixedInitial then
-        h = h_start;
-      elseif energyDynamics == Types.Dynamics.SteadyStateInitial then
-        der(h) = 0;
-      end if;
-    end if;
 
     annotation (
       Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
@@ -510,18 +517,21 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
               points={{100,0},{80,0}},
               color={0,128,255},
               smooth=Smooth.None)}),
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-                100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+                {100,100}}),
               graphics),
       Documentation(info="<HTML>
 <p>This is the base model for pumps.
 <p>The model describes a centrifugal pump, or a group of <tt>nParallel</tt> identical pumps. The pump model is based on the theory of kinematic similarity: the pump characteristics are given for nominal operating conditions (rotational speed and fluid density), and then adapted to actual operating condition, according to the similarity equations. 
-<p><b>Modelling options</b></p>
+ 
+<p><b>Pump characteristics</b></p>
 <p> The nominal hydraulic characteristic (head vs. volume flow rate) is given by the the replaceable function <tt>flowCharacteristic</tt>. 
 <p> The pump energy balance can be specified in two alternative ways:
 <ul>
-<li><tt>use_powerCharacteristic = false</tt> (default option): the replaceable function <tt>efficiencyCharacteristic</tt> (efficiency vs. volume flow rate in nominal conditions) is used to determine the efficiency, and then the power consumption. The default is a constant efficiency of 0.8.
+<li><tt>use_powerCharacteristic = false</tt> (default option): the replaceable function <tt>efficiencyCharacteristic</tt> (efficiency vs. volume flow rate in nominal conditions) is used to determine the efficiency, and then the power consumption. 
+    The default is a constant efficiency of 0.8.</li>
 <li><tt>use_powerCharacteristic = true</tt>: the replaceable function <tt>powerCharacteristic</tt> (power consumption vs. volume flow rate in nominal conditions) is used to determine the power consumption, and then the efficiency.
+    Use <tt>powerCharacteristic</tt> to specify a non-zero power consumption for zero flow rate.
 </ul>
 <p>
 Several functions are provided in the package <tt>PumpCharacteristics</tt> to specify the characteristics as a function of some operating points at nominal conditions.
@@ -531,6 +541,24 @@ Several functions are provided in the package <tt>PumpCharacteristics</tt> to sp
 this is necessary to avoid singularities in the computation of the outlet enthalpy in case of zero flow rate. 
 If zero flow rate conditions are always avoided, this dynamic effect can be neglected by leaving the default value <tt>V = 0</tt>, thus avoiding a fast state variable in the model.
 </p>
+ 
+<p><b>Dynamics options</b></p>
+<p>
+Steady-state mass and energy balances are assumed per default, neglecting the holdup of fluid in the pump. 
+The boolean parameter <tt>use_V</tt> can be set to true to consider the fluid volume with 
+regular mass and energy balances. This might be desirable if the pump is assembled together with valves before port_a and behind port_b. 
+If both valves are closed, then the fluid is useful to define the thermodynamic state and in particular the absolute pressure in the pump. 
+Note that the <tt>flowCharacteristic</tt> only specifies a pressure difference.
+</p>
+ 
+<p><b>Heat transfer</b></p>
+<p>
+The boolean paramter <tt>use_HeatTransfer</tt> can be set to true if heat exchanged with the environment 
+should be taken into account or to model a housing. This might be desirable if a pump with realistic
+<tt>powerCharacteristic</tt> for zero flow operates while a valve prevents fluid flow. 
+</p>
+ 
+<p><b>Diagnostics of Cavitation</b></p>
 <p>The boolean parameter show_NPSHa can set true to compute the Net Positive Suction Head available and check for cavitation,
 provided a two-phase medium model is used.
 </p>
@@ -538,13 +566,17 @@ provided a two-phase medium model is used.
         revisions="<html>
 <ul>
 <li><i>Dec 2008</i>
-    by R6uuml;diger Franke:<br>
-       Changed fluid mass M to volume V(*d_nominal) and added Qs_flow</li>
+    by R&uuml;diger Franke:<br>
+    <ul>
+    <li>Replaced simplified mass and energy balances with rigorous formulation (base class PartialLumpedVolume)</li>
+    <li>Introduced optional HeatTransfer model</li>
+    </ul></li>
 <li><i>31 Oct 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Model added to the Fluid library</li>
 </ul>
 </html>"));
+
   end PartialPump;
 
   package PumpCharacteristics "Functions for pump characteristics"
@@ -687,6 +719,7 @@ provided a two-phase medium model is used.
       dp := p - p_sat;
       assert(p >= p_sat, message);
     end assertPositiveDifference;
+
   end BaseClasses;
   annotation (Documentation(info="<html>
  

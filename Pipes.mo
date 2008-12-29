@@ -150,7 +150,7 @@ package Pipes "Devices for conveying fluid"
       V=V,
       nPorts=2,
       portDiameters={0,0},
-      neglectPortDiameters=true,
+      use_portDiameters=false,
       use_HeatTransfer=true) 
       annotation (Placement(transformation(extent={{-10,10},{10,30}},  rotation=
              0)));
@@ -3022,10 +3022,6 @@ b has the same sign of the change of density.</p>
           dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, eta_a, eta_b, length, diameter,
             g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
         end if;
-
-        // Isenthalpic state transformation (no storage and no loss of energy)
-        port_a.h_outflow = inStream(port_b.h_outflow);
-        port_b.h_outflow = inStream(port_a.h_outflow);
 
           annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
               preserveAspectRatio=false,

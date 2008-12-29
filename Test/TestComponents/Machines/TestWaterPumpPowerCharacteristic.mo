@@ -23,9 +23,11 @@ model TestWaterPumpPowerCharacteristic
     redeclare function powerCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticPower
         ( V_flow_nominal={0,0.001,0.0015}, W_nominal={550,650,800}),
+    use_V=true,
     V=0.1/1000,
     N_nominal=1500,
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
+    massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
     p_a_start=100000,
     p_b_start=700000)      annotation (Placement(transformation(extent={{-66,20},
             {-34,50}}, rotation=0)));

@@ -97,7 +97,7 @@ present that are regulated by a central control system.
           rotation=180)));
 
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.Controller controller(
-        Transition3(enableTimer=true, waitTime=30), Transition7(
+        Transition3(enableTimer=true, waitTime=60), Transition7(
         condition=true,
         enableTimer=true,
         waitTime=300))       annotation (Placement(transformation(extent={{80,
@@ -105,7 +105,7 @@ present that are regulated by a central control system.
 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-300,
               -300},{300,300}}),      graphics),
-      experiment(StopTime=3100),
+      experiment(StopTime=3200),
       experimentSetupOutput,
       Commands(file=
             "../Scripts/Examples/AST_BatchPlant_StandardWater/plot level.mos"
@@ -189,7 +189,7 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={-180,-56},
+          origin={-180,-170},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Modelica_Fluid.Valves.ValveDiscrete V5(
@@ -213,7 +213,7 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={160,-20},
+          origin={160,-170},
           extent={{10,-10},{-10,10}},
           rotation=270)));
     Modelica_Fluid.Valves.ValveDiscrete V20(
@@ -237,7 +237,7 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={20,70},
+          origin={20,50},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Modelica_Fluid.Valves.ValveDiscrete V21(
@@ -270,8 +270,8 @@ present that are regulated by a central control system.
       N_nominal=200,
       use_N_input=true,
       show_NPSHa=true,
-      checkValve=true,
-      V(displayUnit="ml") = 0,
+      V(displayUnit="ml") = 0.0001,
+      use_V=true,
       p_a_start=100000,
       p_b_start=100000) 
       annotation (Placement(transformation(extent={{-128,-260},{-148,-240}},
@@ -285,9 +285,9 @@ present that are regulated by a central control system.
               0.001,0.0015}, head_nominal={100,50,0}),
       N_nominal=200,
       use_N_input=true,
-      checkValve=true,
       show_NPSHa=true,
-      V(displayUnit="ml") = 0,
+      V(displayUnit="ml") = 0.0001,
+      use_V=true,
       p_a_start=100000,
       p_b_start=100000) 
       annotation (Placement(transformation(extent={{110,-260},{130,-240}},
@@ -377,7 +377,7 @@ present that are regulated by a central control system.
       redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
       height_ab=0.1,
-      diameter=100*pipeDiameter) 
+      diameter=pipeDiameter) 
       annotation (Placement(transformation(extent={{-42,134},{-62,154}},
             rotation=0)));
     Pipes.StaticPipe pipeB2B3(
@@ -386,7 +386,7 @@ present that are regulated by a central control system.
       redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
       height_ab=0.1,
-      diameter=100*pipeDiameter) 
+      diameter=pipeDiameter) 
       annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
              0)));
     Pipes.DistributedPipe pipeB1B1(
@@ -397,7 +397,7 @@ present that are regulated by a central control system.
       nNodes=1,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
       annotation (Placement(transformation(
-          origin={20,30},
+          origin={20,10},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Pipes.StaticPipe pipeB6Pump(
@@ -426,7 +426,7 @@ present that are regulated by a central control system.
       nNodes=1,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
                    annotation (Placement(transformation(
-          origin={-180,30},
+          origin={-180,10},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Pipes.DistributedPipe pipePump2B2(
@@ -437,7 +437,7 @@ present that are regulated by a central control system.
       nNodes=1,
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
                    annotation (Placement(transformation(
-          origin={160,30},
+          origin={160,10},
           extent={{-10,10},{10,-10}},
           rotation=90)));
     Vessels.Tank B6(
@@ -525,7 +525,7 @@ present that are regulated by a central control system.
     connect(V11.port_b, B3.ports[1]) annotation (Line(points={{-40,88},{-1,88},
             {-1,100}},
                     color={0,127,255}));
-    connect(V10.port_b, B3.ports[2]) annotation (Line(points={{20,80},{20,88},{
+    connect(V10.port_b, B3.ports[2]) annotation (Line(points={{20,60},{20,88},{
             -1,88},{-1,100}},
                            color={0,127,255}));
     connect(B4.ports[1], V12.port_b) annotation (Line(points={{-81,30},{-81,21},
@@ -547,8 +547,8 @@ present that are regulated by a central control system.
             144},{80,152}}, color={0,127,255}));
     connect(V11.port_a, B4.topPorts[1]) annotation (Line(points={{-60,88},{-79,
             88},{-79,70}}, color={0,127,255}));
-    connect(V10.port_a, pipeB1B1.port_b) annotation (Line(points={{20,60},{20,
-            40}}, color={0,127,255}));
+    connect(V10.port_a, pipeB1B1.port_b) annotation (Line(points={{20,40},{20,
+            20}}, color={0,127,255}));
     connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-80,-19.6},
             {-80,-8}}, color={0,0,255}));
     connect(V15.port_b, B7.topPorts[1]) annotation (Line(points={{-80,-92},{-80,
@@ -557,10 +557,10 @@ present that are regulated by a central control system.
     connect(B7.ports[1], pipeB7Pump.port_b) annotation (Line(points={{-81,-140},
             {-81,-150},{-80,-150},{-80,-160}},
                          color={0,127,255}));
-    connect(pipePump1B1.port_a, V22.port_b) annotation (Line(points={{-180,20},
-            {-180,-46}}, color={0,127,255}));
-    connect(V25.port_b, pipePump2B2.port_a) annotation (Line(points={{160,-10},
-            {160,20}},color={0,127,255}));
+    connect(pipePump1B1.port_a, V22.port_b) annotation (Line(points={{-180,0},{
+            -180,-160}}, color={0,127,255}));
+    connect(V25.port_b, pipePump2B2.port_a) annotation (Line(points={{160,-160},
+            {160,0}}, color={0,127,255}));
     connect(B6.ports[1], pipeB6Pump.port_b) annotation (Line(points={{61,-80},{
             61,-88},{60,-88},{60,-96}},
                       color={0,127,255}));
@@ -609,19 +609,19 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(P2.port_b, V25.port_a) annotation (Line(
-        points={{130,-250},{160,-250},{160,-30}},
+        points={{130,-250},{160,-250},{160,-180}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V22.port_a, P1.port_b) annotation (Line(
-        points={{-180,-66},{-180,-250},{-148,-250}},
+        points={{-180,-180},{-180,-250},{-148,-250}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V5.port_a, pipePump2B2.port_b) annotation (Line(
-        points={{160,100},{160,40}},
+        points={{160,100},{160,20}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V1.port_a, pipePump1B1.port_b) annotation (Line(
-        points={{-180,100},{-180,40}},
+        points={{-180,100},{-180,20}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(P1.port_a, V23.port_b) annotation (Line(
@@ -641,7 +641,7 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(pipeB1B1.port_a, multiPort.ports_b[2]) annotation (Line(
-        points={{20,20},{20,-100},{-26,-100},{-26,-224}},
+        points={{20,0},{20,-100},{-26,-100},{-26,-224}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(multiPort.ports_b[3], V19.port_b) annotation (Line(
@@ -1208,7 +1208,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},

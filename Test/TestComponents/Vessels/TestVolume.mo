@@ -7,7 +7,7 @@ model TestVolume
     use_T_start=false,
     h_start=3e6,
     nPorts=2,
-    neglectPortDiameters=true,
+    use_portDiameters=false,
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyState,
     massDynamics=Modelica_Fluid.Types.Dynamics.SteadyState) 
          annotation (Placement(transformation(extent={{-40,14},{-20,34}},

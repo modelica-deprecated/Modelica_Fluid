@@ -9,11 +9,10 @@ annotation (
   experiment(StopTime=7, Tolerance=1e-006),
   Documentation(info=""));
 
-  Modelica.Blocks.Sources.Ramp massFlowRate(
-    startTime=1,
-    duration=1,
-    offset=0,
-    height=1)   annotation (Placement(transformation(extent={{-70,60},{-50,80}},
+  Modelica.Blocks.Sources.Sine massFlowRate(
+    amplitude=0.5,
+    offset=1,
+    freqHz=1/7) annotation (Placement(transformation(extent={{-70,60},{-50,80}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT source( redeclare package Medium = 
         Modelica.Media.Water.StandardWater,
@@ -48,11 +47,11 @@ annotation (
     height=-0.5,
     offset=1)   annotation (Placement(transformation(extent={{30,60},{10,80}},
           rotation=0)));
-  Modelica.Blocks.Sources.Ramp pressure1(
-    startTime=1,
-    duration=1,
-    height=2e5,
-    offset=8e5) annotation (Placement(transformation(extent={{-70,-40},{-50,-20}},
+  Modelica.Blocks.Sources.Sine pressure1(
+    amplitude=5e5,
+    freqHz=1/7,
+    offset=10e5) 
+                annotation (Placement(transformation(extent={{-70,-40},{-50,-20}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT source1(redeclare package Medium = 
         Modelica.Media.Water.StandardWater,

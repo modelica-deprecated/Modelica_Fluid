@@ -7,7 +7,7 @@ model TestOpenTank
     nPorts=2,
     height=20,
     portDiameters={0.1,0.1},
-    neglectPortDiameters=true,
+    use_portDiameters=false,
     level_start=2,
     crossArea=0.2,
     V0=0.1) 
@@ -48,7 +48,7 @@ model TestOpenTank
     height=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     portDiameters={0.1},
-    neglectPortDiameters=true,
+    use_portDiameters=false,
     level_start=2,
     crossArea=1,
     V0=0.1) 

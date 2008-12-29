@@ -111,8 +111,8 @@ initial equation
             lineColor={0,127,255},
             fillColor={85,170,255},
             fillPattern=FillPattern.Solid),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
-                0}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
+                0,0}),
           Text(
             extent={{-129,40},{130,26}},
             lineColor={0,0,0},
@@ -121,9 +121,9 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
-                integer(precision)))),
+                  level,
+                  1,
+                  integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -557,10 +557,10 @@ end Tank;
           annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
         parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
         "= true if d_nominal is used for mass storage, else computed from medium"
-          annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-        parameter SI.Density d_nominal = Medium.density_pTX(p_start, T_start, X_start)
+          annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+        parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
-           annotation(Dialog(tab="Assumptions",enable=use_d_nominal));
+           annotation(Dialog(tab="Assumptions", group="Dynamics", enable=use_d_nominal));
 
         // Initialization
         parameter Medium.AbsolutePressure p_start = system.p_start
@@ -731,18 +731,18 @@ Further source terms must be defined by an extending class for fluid flow across
         "static pressure at the ports, inside the volume";
 
       //Transformation of kinetic energy
-        parameter Boolean neglectPortDiameters=true
+        parameter Boolean use_portDiameters=false
         "=true, kinetic energy and dissipation is accounted for in port pressure"
           annotation(Evaluate=true, Dialog(tab="Advanced",group="Ports"));
         parameter SI.Diameter portDiameters[nPorts] = fill(2.54e-2, nPorts)
         "Inner (hydraulic) diameters of ports (array)" 
-          annotation(Dialog(tab="Advanced",group="Ports",enable= not neglectPortDiameters));
+          annotation(Dialog(tab="Advanced",group="Ports",enable= use_portDiameters));
         parameter Real[nPorts] zeta_in=fill(0, nPorts)
         "Hydraulic resistance into volume, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-          annotation(Dialog(tab="Advanced",group="Ports",enable= not neglectPortDiameters));
+          annotation(Dialog(tab="Advanced",group="Ports",enable= use_portDiameters));
         parameter Real[nPorts] zeta_out=fill(1, nPorts)
         "Hydraulic resistance out of volume, 0 for ideal smooth outlet" 
-          annotation(Dialog(tab="Advanced",group="Ports",enable= not neglectPortDiameters));
+          annotation(Dialog(tab="Advanced",group="Ports",enable= use_portDiameters));
 
         Medium.EnthalpyFlowRate ports_H_flow[nPorts];
         Medium.MassFlowRate ports_mXi_flow[nPorts,Medium.nXi];
@@ -795,7 +795,7 @@ of the modeller. Increase nPorts to add an additional port.
 
         // Boundary conditions
         for i in 1:nPorts loop
-          if neglectPortDiameters then
+          if not use_portDiameters then
             ports[i].p = ports_p_static;
           else
             ports[i].p = ports_p_static - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
@@ -882,10 +882,10 @@ An extending class still needs to define:
 
     parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
         "= true if d_nominal is used for mass storage, else computed from medium"
-      annotation(Evaluate=true, Dialog(tab = "Assumptions"));
-    parameter SI.Density[n] d_nominal = Medium.density_pTX(p_start, T_start, X_start)
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+    parameter Medium.Density[n] d_nominal = fill(Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default), n)
         "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
-       annotation(Dialog(tab="Assumptions",enable=use_d_nominal));
+       annotation(Dialog(tab="Assumptions", group="Dynamics", enable=use_d_nominal));
 
     //Initialization
     parameter Medium.AbsolutePressure p_a_start=system.p_start

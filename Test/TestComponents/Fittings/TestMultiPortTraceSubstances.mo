@@ -46,14 +46,14 @@ model TestMultiPortTraceSubstances
     redeclare package Medium = Medium,
     nPorts=3,
     C_start={1E-4},
-    neglectPortDiameters=false,
+    use_portDiameters=true,
     zeta_out={0,0,0},
     V=1) annotation (Placement(transformation(extent={{12,20},{32,40}})));
   Modelica_Fluid.Vessels.Volume volume2(
     redeclare package Medium = Medium,
     nPorts=3,
     C_start={1E-4},
-    neglectPortDiameters=false,
+    use_portDiameters=true,
     zeta_out={0,0,0},
     V=1) annotation (Placement(transformation(extent={{12,-20},{32,0}})));
   Modelica_Fluid.Vessels.Volume volume3(
@@ -61,7 +61,7 @@ model TestMultiPortTraceSubstances
     V=1,
     nPorts=3,
     C_start={1E-4},
-    neglectPortDiameters=false,
+    use_portDiameters=true,
     zeta_out={0,0,0}) 
     annotation (Placement(transformation(extent={{12,-80},{32,-60}})));
   Modelica_Fluid.Sensors.TraceSubstances traceSubstance1(      redeclare

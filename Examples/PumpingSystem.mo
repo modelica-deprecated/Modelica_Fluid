@@ -30,6 +30,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
           V_flow_nominal={0,0.25,0.5}, head_nominal={100,60,0}),
+    use_V=true,
     V=50/1000,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_N_input=true,
@@ -42,7 +43,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
-    neglectPortDiameters=false,
+    use_portDiameters=true,
     portDiameters={1},
     crossArea=50,
     level_start=2.2,
@@ -90,8 +91,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-            100,100}},
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+            {100,100}},
         grid={1,1}),
             graphics),
     Documentation(info="<html>
