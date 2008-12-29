@@ -346,20 +346,20 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       annotation(Dialog(group="Characteristics",enable = not use_powerCharacteristic),
                  choicesAllMatching=true);
 
-    // Energy and mass balance
-    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume(
-        energyDynamics = if use_V then system.energyDynamics else Types.Dynamics.SteadyState,
-        massDynamics = if use_V then system.massDynamics else Types.Dynamics.SteadyState,
-        final p_start = p_b_start);
-
     // Assumptions
     parameter Boolean checkValve=false "= true to prevent reverse flow" 
       annotation(Dialog(tab="Assumptions"));
     parameter Boolean use_V = false
         "= true to consider the fluid volume and storage inside the pump" 
       annotation(Dialog(tab="Assumptions"));
-    parameter SI.Volume V = 1e-3 "Fluid volume inside the pump" 
-      annotation(Dialog(tab="Assumptions",enable=use_V));
+    parameter SI.Volume V = 0 "Volume inside the pump" 
+      annotation(Dialog(tab="Assumptions",enable=use_V or use_HeatTransfer));
+
+    // Energy and mass balance
+    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume(
+        energyDynamics = if use_V then system.energyDynamics else Types.Dynamics.SteadyState,
+        massDynamics = if use_V then system.massDynamics else Types.Dynamics.SteadyState,
+        final p_start = p_b_start);
 
     // Heat transfer through boundary, e.g. to add a housing
     parameter Boolean use_HeatTransfer = false
