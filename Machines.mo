@@ -202,8 +202,8 @@ package Machines
     connect(p_set, p_set_internal);
 
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
             visible=use_p_set,
             extent={{82,108},{176,92}},
             textString="p_set"), Text(
@@ -379,9 +379,9 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         annotation (Placement(transformation(
           extent={{-10,-10},{30,30}},
           rotation=180,
-          origin={10,-40})));
+          origin={50,-10})));
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort if use_HeatTransfer 
-      annotation (Placement(transformation(extent={{-10,-100},{10,-80}})));
+      annotation (Placement(transformation(extent={{30,-70},{50,-50}})));
 
     // Variables
     final parameter SI.Acceleration g=system.g;
@@ -486,7 +486,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     port_b.C_outflow = C;
 
     connect(heatTransfer.heatPorts[1], heatPort) annotation (Line(
-        points={{-1.55431e-015,-64},{0,-64},{0,-90}},
+        points={{40,-34},{40,-60}},
         color={127,0,0},
         smooth=Smooth.None));
 
@@ -517,8 +517,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
               points={{100,0},{80,0}},
               color={0,128,255},
               smooth=Smooth.None)}),
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-                {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+                100,100}}),
               graphics),
       Documentation(info="<HTML>
 <p>This is the base model for pumps.

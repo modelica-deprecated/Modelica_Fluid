@@ -74,7 +74,7 @@ annotation (
   Modelica.Electrical.Analog.Basic.Ground ground 
     annotation (Placement(transformation(extent={{-90,-23},{-70,-1}})));
   Modelica.Thermal.HeatTransfer.Components.HeatCapacitor housing(C=460*1) 
-    annotation (Placement(transformation(extent={{-5,-20},{15,-40}})));
+    annotation (Placement(transformation(extent={{-1,-20},{19,-40}})));
 equation
   connect(Valve.port_b,Sink.ports[1])    annotation (Line(points={{49,10},{60,
           10}},
@@ -106,7 +106,7 @@ equation
       color={0,0,255},
       smooth=Smooth.None));
   connect(pump.heatPort, housing.port) annotation (Line(
-      points={{5,-3.5},{5,-20}},
+      points={{11,1},{20,1},{20,-20},{9,-20}},
       color={191,0,0},
       smooth=Smooth.None));
 end TestWaterPumpDCMotorHeatTransfer;
