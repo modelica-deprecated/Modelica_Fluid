@@ -121,8 +121,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -233,12 +233,12 @@ model Tank
   // Heat transfer through boundary
   parameter Boolean use_HeatTransfer = false
       "= true to use the HeatTransfer model" 
-      annotation (Dialog(group="Heat transfer"));
+      annotation (Dialog(tab="Assumptions", group="Heat transfer"));
   replaceable model HeatTransfer = 
       BaseClasses.HeatTransfer.IdealHeatTransfer 
     constrainedby BaseClasses.HeatTransfer.PartialVesselHeatTransfer
       "Wall heat transfer" 
-      annotation (Dialog(group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
+      annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
   HeatTransfer heatTransfer(
     redeclare final package Medium = Medium,
     n=1,
@@ -755,13 +755,13 @@ Further source terms must be defined by an extending class for fluid flow across
         // Heat transfer through boundary
         parameter Boolean use_HeatTransfer = false
         "= true to use the HeatTransfer model" 
-            annotation (Dialog(group="Heat transfer"));
+            annotation (Dialog(tab="Assumptions", group="Heat transfer"));
         replaceable model HeatTransfer = 
             Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer 
           constrainedby
         Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.PartialVesselHeatTransfer
         "Wall heat transfer" 
-            annotation (Dialog(group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
+            annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
         HeatTransfer heatTransfer(
           redeclare final package Medium = Medium,
           n=1,
@@ -1077,8 +1077,7 @@ Further source terms must be defined by an extending class for fluid flow across
         "Base class for vessel heat transfer models"
       extends Modelica_Fluid.Interfaces.PartialHeatTransfer;
 
-      input SI.Area[n] transferAreas "Heat transfer area" 
-        annotation(Dialog(tab="Internal Interface",enable=false));
+      input SI.Area[n] transferAreas "Heat transfer area";
 
       annotation(Documentation(info="<html>
 Base class for vessel heat transfer models.

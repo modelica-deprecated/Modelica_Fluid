@@ -324,18 +324,19 @@ package Interfaces
   partial model PartialHeatTransfer "Common interface for heat transfer models"
 
     // Parameters
-    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium 
+    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
+      "Medium in the component" 
       annotation(Dialog(tab="Internal Interface",enable=false));
 
     parameter Integer n=1 "Number of heat transfer segments" 
       annotation(Dialog(tab="Internal Interface",enable=false), Evaluate=true);
 
     // Inputs provided to heat transfer model
-    input Medium.ThermodynamicState[n] states 
-      annotation(Dialog(tab="Internal Interface",enable=false));
+    input Medium.ThermodynamicState[n] states
+      "Thermodynamic states of flow segments";
 
-    // Output defined by heat transfer model
-    output SI.HeatFlowRate[n] Q_flows "Heat flow rates per tube";
+    // Outputs defined by heat transfer model
+    output SI.HeatFlowRate[n] Q_flows "Heat flow rates";
 
     // Heat ports
     Modelica_Fluid.Interfaces.HeatPorts_a[n] heatPorts
@@ -375,12 +376,15 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         parameter Integer n=1 "number of flow segments" 
           annotation(Dialog(tab="Internal Interface",enable=false));
 
-        input Medium.ThermodynamicState[n+1] states "states along design flow" 
-          annotation(Dialog(tab="Internal Interface",enable=false));
+        // Inputs provided to pressure loss model
+        input Medium.ThermodynamicState[n+1] states
+      "Thermodynamic states along design flow";
 
+        // Outputs defined by pressure loss model
         output Medium.MassFlowRate[n] m_flows
       "mass flow rates along design flow";
 
+        // Variables
         Medium.AbsolutePressure[n+1] ps "pressures of states";
         Modelica.SIunits.Pressure[n] dps "pressure drop between states";
 
