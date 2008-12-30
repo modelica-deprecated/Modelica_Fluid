@@ -46,7 +46,7 @@ model InverseParameterization
         Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow (
         dp_nominal=100000,
         m_flow_nominal=1,
-        show_Re=true)) 
+        show_Res=true)) 
                       annotation (Placement(transformation(extent={{20,-50},{40,
             -30}},rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT sink2(
