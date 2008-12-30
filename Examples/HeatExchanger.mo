@@ -379,8 +379,8 @@ The design flow direction with positive m_flow variables is counterflow.
                 -36}}, rotation=0)));
 
     equation
-      Q_flow_1 = sum(pipe_1.heatTransfer.Q_flow);
-      Q_flow_2 = sum(pipe_2.heatTransfer.Q_flow);
+      Q_flow_1 = sum(pipe_1.heatTransfer.Q_flows);
+      Q_flow_2 = sum(pipe_2.heatTransfer.Q_flows);
       connect(pipe_2.port_b, port_b2) annotation (Line(
           points={{-40,58},{-76,58},{-76,46},{-110,46}},
           color={0,127,255},

@@ -28,7 +28,7 @@ package Pipes "Devices for conveying fluid"
     PressureLoss pressureLoss(
             redeclare final package Medium = Medium,
             final n=1,
-            state={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
+            states={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
                    Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
             final allowFlowReversal=allowFlowReversal,
             final momentumDynamics=momentumDynamics,
@@ -36,15 +36,15 @@ package Pipes "Devices for conveying fluid"
             final p_b_start=p_b_start,
             final m_flow_start=m_flow_start,
             final nParallel=nParallel,
-            final length={length},
-            final crossArea={crossArea, crossArea},
-            final perimeter={perimeter},
-            final roughness={roughness},
+            final lengths={length},
+            final crossAreas={crossArea, crossArea},
+            final perimeters={perimeter},
+            final roughnesses={roughness},
             final height_ab=height_ab,
             final g=system.g) "Pressure loss model" 
        annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
   equation
-    port_a.m_flow = pressureLoss.m_flow[1];
+    port_a.m_flow = pressureLoss.m_flows[1];
     0 = port_a.m_flow + port_b.m_flow;
     port_a.h_outflow = inStream(port_b.h_outflow);
     port_b.h_outflow = inStream(port_a.h_outflow);
@@ -138,7 +138,7 @@ package Pipes "Devices for conveying fluid"
     Modelica_Fluid.Vessels.Volume volume(
       redeclare package Medium = Medium,
       redeclare model HeatTransfer = HeatTransfer,
-      heatTransfer(transferArea={perimeter*length}),
+      heatTransfer(transferAreas={perimeter*length}),
       energyDynamics=energyDynamics,
       massDynamics=massDynamics,
       p_start=(p_a_start+p_b_start)/2,
@@ -261,40 +261,40 @@ pipe wall/environment).
       annotation(Dialog(tab="Advanced"),Evaluate=true);
     Medium.ThermodynamicState state_a "state defined by volume outside port_a";
     Medium.ThermodynamicState state_b "state defined by volume outside port_b";
-    Medium.ThermodynamicState[nFlows+1] flowState
+    Medium.ThermodynamicState[nFlows+1] flowStates
       "state vector for pressureLoss model";
 
     // Pressure loss model
     PressureLoss pressureLoss(
             redeclare final package Medium = Medium,
             final n=nFlows,
-            state=flowState,
+            states=flowStates,
             final allowFlowReversal=allowFlowReversal,
             final momentumDynamics=momentumDynamics,
             final p_a_start=p_a_start,
             final p_b_start=p_b_start,
             final m_flow_start=m_flow_start,
             final nParallel=nParallel,
-            final length=if modelStructure == Types.ModelStructure.a_v_b then 
+            final lengths=if modelStructure == Types.ModelStructure.a_v_b then 
                               cat(1, {length/n/2}, fill(length/n, n-1), {length/n/2}) else 
                               fill(length/nFlows, nFlows),
-            final crossArea=fill(crossArea, nFlows+1),
-            final perimeter=fill(perimeter, nFlows),
-            final roughness=fill(roughness, nFlows),
+            final crossAreas=fill(crossArea, nFlows+1),
+            final perimeters=fill(perimeter, nFlows),
+            final roughnesses=fill(roughness, nFlows),
             final height_ab=height_ab,
             final g=system.g) "Pressure loss model" 
        annotation (Placement(transformation(extent={{-77,-57},{77,-23}},rotation=0)));
 
     // Flow quantities
-    Medium.MassFlowRate[n+1] m_flow(
+    Medium.MassFlowRate[n+1] m_flows(
        each min=if allowFlowReversal then -Modelica.Constants.inf else 0,
        each start=m_flow_start)
       "Mass flow rates of fluid across segment boundaries";
-    Medium.MassFlowRate[n+1, Medium.nXi] mXi_flow
+    Medium.MassFlowRate[n+1, Medium.nXi] mXi_flows
       "Independent mass flow rates across segment boundaries";
-    Medium.MassFlowRate[n+1, Medium.nC] mC_flow
+    Medium.MassFlowRate[n+1, Medium.nC] mC_flows
       "Trace substance mass flow rates across segment boundaries";
-    Medium.EnthalpyFlowRate[n+1] H_flow
+    Medium.EnthalpyFlowRate[n+1] H_flows
       "Enthalpy flow rates of fluid across segment boundaries";
 
     // Wall heat transfer
@@ -314,12 +314,12 @@ pipe wall/environment).
       redeclare each final package Medium = Medium,
       final n=n,
       final nParallel=nParallel,
-      final length=fill(length/n, n),
-      final crossArea=fill(crossArea, n+1),
-      final perimeter=fill(perimeter, n),
-      final roughness=fill(roughness, n),
-      state=medium.state,
-      m_flow = 0.5*(m_flow[1:n]+m_flow[2:n+1])) "Heat transfer model" 
+      final lengths=fill(length/n, n),
+      final crossAreas=fill(crossArea, n+1),
+      final perimeters=fill(perimeter, n),
+      final roughnesses=fill(roughness, n),
+      states=mediums.state,
+      m_flows = 0.5*(m_flows[1:n]+m_flows[2:n+1])) "Heat transfer model" 
         annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
 
   equation
@@ -329,51 +329,51 @@ pipe wall/environment).
     // distributed volume
     if modelStructure == Types.ModelStructure.av_vb then
       // half volumes at the ports for modelStructure av_vb
-      fluidVolume = cat(1, {V/(n-1)/2}, fill(V/(n-1), n-2), {V/(n-1)/2});
+      fluidVolumes = cat(1, {V/(n-1)/2}, fill(V/(n-1), n-2), {V/(n-1)/2});
     else
       // even distribution of volumes else
-      fluidVolume=fill(V/n, n);
+      fluidVolumes=fill(V/n, n);
     end if;
     // Source/sink terms for mass and energy balances
-    Qs_flow = heatTransfer.Q_flow;
-    Ws_flow = zeros(n);
+    Qs_flows = heatTransfer.Q_flows;
+    Ws_flows = zeros(n);
     for i in 1:n loop
-      ms_flow[i] = m_flow[i] - m_flow[i + 1];
-      msXi_flow[i, :] = mXi_flow[i, :] - mXi_flow[i + 1, :];
-      msC_flow[i, :]  = mC_flow[i, :]  - mC_flow[i + 1, :];
-      Hs_flow[i] = H_flow[i] - H_flow[i + 1];
+      ms_flows[i] = m_flows[i] - m_flows[i + 1];
+      msXi_flows[i, :] = mXi_flows[i, :] - mXi_flows[i + 1, :];
+      msC_flows[i, :]  = mC_flows[i, :]  - mC_flows[i + 1, :];
+      Hs_flows[i] = H_flows[i] - H_flows[i + 1];
     end for;
 
     // Distributed flow quantities, upwind discretization
     for i in 2:n loop
-      H_flow[i] = semiLinear(m_flow[i], medium[i - 1].h, medium[i].h);
-      mXi_flow[i, :] = semiLinear(m_flow[i], medium[i - 1].Xi, medium[i].Xi);
-      mC_flow[i, :]  = semiLinear(m_flow[i], C[i - 1, :],         C[i, :]);
+      H_flows[i] = semiLinear(m_flows[i], mediums[i - 1].h, mediums[i].h);
+      mXi_flows[i, :] = semiLinear(m_flows[i], mediums[i - 1].Xi, mediums[i].Xi);
+      mC_flows[i, :]  = semiLinear(m_flows[i], Cs[i - 1, :],         Cs[i, :]);
     end for;
-    H_flow[1] = semiLinear(port_a.m_flow, inStream(port_a.h_outflow), medium[1].h);
-    H_flow[n + 1] = -semiLinear(port_b.m_flow, inStream(port_b.h_outflow), medium[n].h);
-    mXi_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.Xi_outflow), medium[1].Xi);
-    mXi_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.Xi_outflow), medium[n].Xi);
-    mC_flow[1, :] = semiLinear(port_a.m_flow, inStream(port_a.C_outflow), C[1, :]);
-    mC_flow[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.C_outflow), C[n, :]);
+    H_flows[1] = semiLinear(port_a.m_flow, inStream(port_a.h_outflow), mediums[1].h);
+    H_flows[n + 1] = -semiLinear(port_b.m_flow, inStream(port_b.h_outflow), mediums[n].h);
+    mXi_flows[1, :] = semiLinear(port_a.m_flow, inStream(port_a.Xi_outflow), mediums[1].Xi);
+    mXi_flows[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.Xi_outflow), mediums[n].Xi);
+    mC_flows[1, :] = semiLinear(port_a.m_flow, inStream(port_a.C_outflow), Cs[1, :]);
+    mC_flows[n + 1, :] = -semiLinear(port_b.m_flow, inStream(port_b.C_outflow), Cs[n, :]);
 
     // Boundary conditions
-    port_a.m_flow    = m_flow[1];
-    port_b.m_flow    = -m_flow[n + 1];
-    port_a.h_outflow = medium[1].h;
-    port_b.h_outflow = medium[n].h;
-    port_a.Xi_outflow = medium[1].Xi;
-    port_b.Xi_outflow = medium[n].Xi;
-    port_a.C_outflow = C[1, :];
-    port_b.C_outflow = C[n, :];
+    port_a.m_flow    = m_flows[1];
+    port_b.m_flow    = -m_flows[n + 1];
+    port_a.h_outflow = mediums[1].h;
+    port_b.h_outflow = mediums[n].h;
+    port_a.Xi_outflow = mediums[1].Xi;
+    port_b.Xi_outflow = mediums[n].Xi;
+    port_a.C_outflow = Cs[1, :];
+    port_b.C_outflow = Cs[n, :];
     // The two equations below are not correct if C is stored in volumes.
     // C should be treated the same way as Xi.
     //port_a.C_outflow = inStream(port_b.C_outflow);
     //port_b.C_outflow = inStream(port_a.C_outflow);
 
     if useInnerPortProperties and n > 0 then
-      state_a = Medium.setState_phX(port_a.p, medium[1].h, medium[1].Xi);
-      state_b = Medium.setState_phX(port_b.p, medium[n].h, medium[n].Xi);
+      state_a = Medium.setState_phX(port_a.p, mediums[1].h, mediums[1].Xi);
+      state_b = Medium.setState_phX(port_b.p, mediums[n].h, mediums[n].Xi);
     else
       state_a = Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow));
       state_b = Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow));
@@ -382,68 +382,68 @@ pipe wall/environment).
     if lumpedPressure then
       if modelStructure <> ModelStructure.av_vb then
         // all pressures are equal
-        fill(medium[1].p, n-1) = medium[2:n].p;
+        fill(mediums[1].p, n-1) = mediums[2:n].p;
       elseif n > 2 then
         // need two pressures
-        fill(medium[1].p, iLumped-2) = medium[2:iLumped-1].p;
-        fill(medium[n].p, n-iLumped) = medium[iLumped:n-1].p;
+        fill(mediums[1].p, iLumped-2) = mediums[2:iLumped-1].p;
+        fill(mediums[n].p, n-iLumped) = mediums[iLumped:n-1].p;
       end if;
       if modelStructure == ModelStructure.a_v_b then
-        m_flow[1] = pressureLoss.m_flow[1];
-        flowState[1] = state_a;
-        flowState[2] = medium[iLumped].state;
-        flowState[3] = state_b;
-        m_flow[n+1] = pressureLoss.m_flow[2];
+        m_flows[1] = pressureLoss.m_flows[1];
+        flowStates[1] = state_a;
+        flowStates[2] = mediums[iLumped].state;
+        flowStates[3] = state_b;
+        m_flows[n+1] = pressureLoss.m_flows[2];
       elseif modelStructure == ModelStructure.av_b then
-        port_a.p = medium[1].p;
-        flowState[1] = medium[iLumped].state;
-        flowState[2] = state_b;
-        m_flow[n+1] = pressureLoss.m_flow[1];
+        port_a.p = mediums[1].p;
+        flowStates[1] = mediums[iLumped].state;
+        flowStates[2] = state_b;
+        m_flows[n+1] = pressureLoss.m_flows[1];
       elseif modelStructure == ModelStructure.a_vb then
-        m_flow[1] = pressureLoss.m_flow[1];
-        flowState[1] = state_a;
-        flowState[2] = medium[iLumped].state;
-        port_b.p = medium[n].p;
+        m_flows[1] = pressureLoss.m_flows[1];
+        flowStates[1] = state_a;
+        flowStates[2] = mediums[iLumped].state;
+        port_b.p = mediums[n].p;
       else // av_vb
-        port_a.p = medium[1].p;
-        flowState[1] = medium[1].state;
-        m_flow[iLumped] = pressureLoss.m_flow[1];
-        flowState[2] = medium[n].state;
-        port_b.p = medium[n].p;
+        port_a.p = mediums[1].p;
+        flowStates[1] = mediums[1].state;
+        m_flows[iLumped] = pressureLoss.m_flows[1];
+        flowStates[2] = mediums[n].state;
+        port_b.p = mediums[n].p;
       end if;
     else
       if modelStructure == ModelStructure.a_v_b then
-        flowState[1] = state_a;
-        flowState[2:n+1] = medium[1:n].state;
-        flowState[n+2] = state_b;
-        //m_flow = pressureLoss.m_flow;
+        flowStates[1] = state_a;
+        flowStates[2:n+1] = mediums[1:n].state;
+        flowStates[n+2] = state_b;
+        //m_flows = pressureLoss.m_flows;
         for i in 1:n+1 loop
-          m_flow[i] = pressureLoss.m_flow[i];
+          m_flows[i] = pressureLoss.m_flows[i];
         end for;
       elseif modelStructure == ModelStructure.av_b then
-        flowState[1:n] = medium[1:n].state;
-        flowState[n+1] = state_b;
-        //m_flow[2:n+1] = pressureLoss.m_flow;
+        flowStates[1:n] = mediums[1:n].state;
+        flowStates[n+1] = state_b;
+        //m_flows[2:n+1] = pressureLoss.m_flows;
         for i in 2:n+1 loop
-          m_flow[i] = pressureLoss.m_flow[i-1];
+          m_flows[i] = pressureLoss.m_flows[i-1];
         end for;
-        port_a.p = medium[1].p;
+        port_a.p = mediums[1].p;
       elseif modelStructure == ModelStructure.a_vb then
-        flowState[1] = state_a;
-        flowState[2:n+1] = medium[1:n].state;
-        //m_flow[1:n] = pressureLoss.m_flow;
+        flowStates[1] = state_a;
+        flowStates[2:n+1] = mediums[1:n].state;
+        //m_flows[1:n] = pressureLoss.m_flows;
         for i in 1:n loop
-          m_flow[i] = pressureLoss.m_flow[i];
+          m_flows[i] = pressureLoss.m_flows[i];
         end for;
-        port_b.p = medium[n].p;
+        port_b.p = mediums[n].p;
       else // av_vb
-        flowState[1:n] = medium[1:n].state;
-        //m_flow[2:n] = pressureLoss.m_flow[1:n-1];
+        flowStates[1:n] = mediums[1:n].state;
+        //m_flows[2:n] = pressureLoss.m_flows[1:n-1];
         for i in 2:n loop
-          m_flow[i] = pressureLoss.m_flow[i-1];
+          m_flows[i] = pressureLoss.m_flows[i-1];
         end for;
-        port_a.p = medium[1].p;
-        port_b.p = medium[n].p;
+        port_a.p = mediums[1].p;
+        port_b.p = mediums[n].p;
       end if;
     end if;
 
@@ -471,7 +471,7 @@ The default value is nNodes=2.
 <p><b>Mass and Energy balance</b></p>
 One mass and one energy balance if formulated for each pipe segment. 
 The mass and energy balances are inherited from <a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume\">PartialDistributedVolume</a>. 
-The additional component <b><tt>HeatTransfer</tt></b> specifies the source term <tt>Qs_flow</tt> in the energy balance. 
+The additional component <b><tt>HeatTransfer</tt></b> specifies the source term <tt>Qs_flows</tt> in the energy balance. 
 The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
 The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.PartialFlowHeatTransfer</a>.</p>
@@ -601,29 +601,29 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           partial model PartialFlowPressureLoss
         "Base class for pressure losses in flow models"
             extends Modelica_Fluid.Interfaces.PartialPressureLoss(
-              m_flow(each start = m_flow_start),
-              dp(each start = (p_a_start - p_b_start)/n));
+              m_flows(each start = m_flow_start),
+              dps(each start = (p_a_start - p_b_start)/n));
 
             // Geometry parameters
             parameter Real nParallel "number of parallel pipes" 
                annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
-            parameter SI.Length[n] length "Length of segments along flow path" 
+            parameter SI.Length[n] lengths "Length of segments along flow path"
                annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
-            parameter SI.Area[n+1] crossArea
+            parameter SI.Area[n+1] crossAreas
           "Cross flow area at segment boundaries" 
               annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
-            parameter SI.Length[n] perimeter
-          "Mean perimeter of segments, used for hydraulic diameter" 
+            parameter SI.Length[n] perimeters
+          "Mean perimeters of segments, used for hydraulic diameter" 
               annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
-            parameter SI.Height[n] roughness(each min=0)
+            parameter SI.Height[n] roughnesses(each min=0)
           "Average height of surface asperities" 
                 annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry",enable=WallFriction.use_roughness));
-            final SI.Diameter[n] diameter = {4*(crossArea[i]+crossArea[i+1])/2/perimeter[i] for i in 1:n}
-          "Hydraulic diameter";
+            final SI.Diameter[n] diameters = {4*(crossAreas[i]+crossAreas[i+1])/2/perimeters[i] for i in 1:n}
+          "Hydraulic diameters";
 
             // Static head
             parameter SI.Length height_ab
-          "Height(state[n+1]) - Height(state[1])" 
+          "Height(states[n+1]) - Height(states[1])" 
                 annotation(Dialog(tab="Internal Interface",enable=false,group="Static head"));
 
             // Additional parameters
@@ -632,7 +632,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             parameter SI.Acceleration g "Constant gravity acceleration" 
               annotation(Dialog(tab="Internal Interface",enable=false,group="Static head"));
             parameter Boolean allowFlowReversal
-          "= true to allow flow reversal, false restricts to design direction (state[1] -> state[n+1])"
+          "= true to allow flow reversal, false restricts to design direction (states[1] -> states[n+1])"
               annotation(Dialog(tab="Internal Interface",enable=false,group="Assumptions"), Evaluate=true);
             parameter Modelica_Fluid.Types.Dynamics momentumDynamics
           "Formulation of momentum balance, if options available" 
@@ -669,44 +669,44 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
               annotation(Dialog(group="Advanced", enable=use_eta_nominal));
 
             // Variables
-            SI.Density[n+1] d = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(state);
-            SI.Density[n] d_act "Actual density per segment";
+            SI.Density[n+1] ds = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(states);
+            SI.Density[n] ds_act "Actual density per segment";
 
-            SI.DynamicViscosity[n+1] eta = if use_eta_nominal then fill(eta_nominal, n+1) else Medium.dynamicViscosity(state);
-            SI.DynamicViscosity[n] eta_act "Actual viscosity per segment";
+            SI.DynamicViscosity[n+1] etas = if use_eta_nominal then fill(eta_nominal, n+1) else Medium.dynamicViscosity(states);
+            SI.DynamicViscosity[n] etas_act "Actual viscosity per segment";
 
             // Reynolds Number
-            parameter Boolean show_Re = false
-          "= true, if Reynolds number is included for plotting" 
+            parameter Boolean show_Res = false
+          "= true, if Reynolds numbers are included for plotting" 
                annotation (Evaluate=true, Dialog(group="Advanced"));
-            SI.ReynoldsNumber[n] Re=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
-                m_flow/nParallel,
-                eta_act,
-                diameter) if show_Re "Reynolds numbers of pipe flow";
+            SI.ReynoldsNumber[n] Res=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
+                m_flows/nParallel,
+                etas_act,
+                diameters) if show_Res "Reynolds numbers of pipe flow";
             constant Real Re_turbulent = 4000 "Start of turbulent regime";
-            Medium.MassFlowRate[n] m_flow_turbulent=
-                {nParallel*(Modelica.Constants.pi/4)*diameter[i]*eta_act[i]*Re_turbulent for i in 1:n} if 
-                   show_Re "Start of turbulent flow";
+            Medium.MassFlowRate[n] m_flows_turbulent=
+                {nParallel*(Modelica.Constants.pi/4)*diameters[i]*etas_act[i]*Re_turbulent for i in 1:n} if 
+                   show_Res "Start of turbulent flow";
 
           equation
             if not allowFlowReversal then
-              d_act = d[1:n];
-              eta_act = eta[1:n];
+              ds_act = ds[1:n];
+              etas_act = etas[1:n];
             elseif mixingStreamProperties then
-              d_act = 0.5*(d[1:n] + d[2:n+1]);
-              eta_act = 0.5*(eta[1:n] + eta[2:n+1]);
+              ds_act = 0.5*(ds[1:n] + ds[2:n+1]);
+              etas_act = 0.5*(etas[1:n] + etas[2:n+1]);
             else
               for i in 1:n loop
-                d_act[i] = noEvent(if m_flow[i] > 0 then d[i] else d[i+1]);
-                eta_act[i] = noEvent(if m_flow[i] > 0 then eta[i] else eta[i+1]);
+                ds_act[i] = noEvent(if m_flows[i] > 0 then ds[i] else ds[i+1]);
+                etas_act[i] = noEvent(if m_flows[i] > 0 then etas[i] else etas[i+1]);
               end for;
             end if;
 
             annotation (Documentation(info="<html>
 <p>
 This paratial model defines common variables for flow models, including parameters to define the geometry and 
-the optional calculation of Reynolds Numbers. The densities d[n+1] and the dynamic viscosities eta[n+1] of flow segments 
-as well as the actual densities d_act[n] and the actual viscosities eta_act[n] of the flows are predefined.
+the optional calculation of Reynolds Numbers. The densities ds[n+1] and the dynamic viscosities etas[n+1] of flow segments 
+as well as the actual densities ds_act[n] and the actual viscosities etas_act[n] of the flows are predefined.
 </p>
 <p>
 Note that no events are raised on flow reversal. This needs to be treated by an extending model, 
@@ -725,7 +725,7 @@ e.g. with numerical smoothing or by raising events as appropriate.
         "NominalLaminarFlow: Linear pressure loss for nominal values"
         extends
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss(
-           use_eta_nominal = not show_Re);
+           use_eta_nominal = not show_Res);
 
         // Operational conditions
         parameter SI.AbsolutePressure dp_nominal "Nominal pressure loss";
@@ -733,16 +733,16 @@ e.g. with numerical smoothing or by raising events as appropriate.
           "Mass flow rate for dp_nominal";
 
         // inverse parameterization of WallFriction.Laminar
-        SI.Length[n] length_nominal=
-          {(dp_nominal-g*height_ab)/n*Modelica.Constants.pi*diameter[i]^4*d_act[i]/(128*eta_act[i])/
-           (m_flow_nominal/nParallel) for i in 1:n} if show_Re;
+        SI.Length[n] lengths_nominal=
+          {(dp_nominal-g*height_ab)/n*Modelica.Constants.pi*diameters[i]^4*ds_act[i]/(128*etas_act[i])/
+           (m_flow_nominal/nParallel) for i in 1:n} if show_Res;
 
       equation
         // linear pressure loss
         if  not allowFlowReversal or use_d_nominal or mixingStreamProperties then
-          dp = g*height_ab*d_act + dp_nominal/m_flow_nominal*m_flow*nParallel;
+          dps = g*height_ab*ds_act + dp_nominal/m_flow_nominal*m_flows*nParallel;
         else
-          dp = g*height_ab*{if m_flow[i] > 0 then d[i] else d[i+1] for i in 1:n} + dp_nominal/m_flow_nominal*m_flow*nParallel;
+          dps = g*height_ab*{if m_flows[i] > 0 then ds[i] else ds[i+1] for i in 1:n} + dp_nominal/m_flow_nominal*m_flows*nParallel;
         end if;
 
         annotation (Documentation(info="<html>
@@ -751,19 +751,19 @@ This model defines a simple lineaer pressure loss assuming laminar flow for
 specified <tt>dp_nominal</tt> and <tt>m_flow_nominal</tt>. 
 </p>
 <p>
-Select <tt>show_Re = true</tt> to analyze the actual flow and the length of a pipe that would fulfill the 
-specified nominal values for given geometry parameters <tt>crossArea</tt>, <tt>perimeter</tt> and <tt>roughness</tt>.
+Select <tt>show_Res = true</tt> to analyze the actual flow and the lengths of a pipe that would fulfill the 
+specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>perimeters</tt> and <tt>roughnesses</tt>.
 </p>
 <p>
-<b>Optional Variables if show_Re</b>
+<b>Optional Variables if show_Res</b>
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
-<tr><td>Length</td><td>length_nominal[n]</td>
-    <td>length of pipe segment that corresponds to this laminar flow</td></tr>
+<tr><td>Length</td><td>lengths_nominal[n]</td>
+    <td>lengths of pipe segment that corresponds to this laminar flow</td></tr>
 <tr><td>ReynoldsNumber</td><td>Re[n]</td>
     <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
-<tr><td>MassFlowRate</td><td>m_flow_turbulent[n]</td>
+<tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
     <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
 </table>
 </html>"));
@@ -782,8 +782,8 @@ specified nominal values for given geometry parameters <tt>crossArea</tt>, <tt>p
           "Wall friction model" 
                 annotation(choicesAllMatching=true,editButton=false);
 
-            input SI.Length[n] length_internal
-          "length of flow path used internally; to be defined by extending class";
+            input SI.Length[n] lengths_internal
+          "lengths of flow path used internally; to be defined by extending class";
 
             // Parameters
             parameter SI.AbsolutePressure dp_nominal
@@ -797,7 +797,7 @@ specified nominal values for given geometry parameters <tt>crossArea</tt>, <tt>p
           "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
               annotation(Dialog(enable=from_dp and WallFriction.use_dp_small));
             parameter SI.MassFlowRate m_flow_small = 1e-2*m_flow_nominal
-          "Within regularization if |m_flow| < m_flow_small (may be wider for large discontinuities in static head)"
+          "Within regularization if |m_flows| < m_flow_small (may be wider for large discontinuities in static head)"
               annotation(Dialog(enable=not from_dp and WallFriction.use_m_flow_small));
 
             final parameter Boolean constantPressureLossCoefficient=
@@ -815,53 +815,53 @@ specified nominal values for given geometry parameters <tt>crossArea</tt>, <tt>p
             if continuousFlowReversal then
               // simple regularization for laminar flow
               if from_dp and not WallFriction.dp_is_zero then
-                m_flow = WallFriction.massFlowRate_dp(
-                  dp - g*height_ab/n*d_act,
-                  d_act,
-                  d_act,
-                  eta_act,
-                  eta_act,
-                  length_internal,
-                  diameter,
-                  roughness,
+                m_flows = WallFriction.massFlowRate_dp(
+                  dps - g*height_ab/n*ds_act,
+                  ds_act,
+                  ds_act,
+                  etas_act,
+                  etas_act,
+                  lengths_internal,
+                  diameters,
+                  roughnesses,
                   dp_small)*nParallel;
               else
-                dp = WallFriction.pressureLoss_m_flow(
-                  m_flow/nParallel,
-                  d_act,
-                  d_act,
-                  eta_act,
-                  eta_act,
-                  length_internal,
-                  diameter,
-                  roughness,
-                  m_flow_small/nParallel) + g*height_ab/n*d_act;
+                dps = WallFriction.pressureLoss_m_flow(
+                  m_flows/nParallel,
+                  ds_act,
+                  ds_act,
+                  etas_act,
+                  etas_act,
+                  lengths_internal,
+                  diameters,
+                  roughnesses,
+                  m_flow_small/nParallel) + g*height_ab/n*ds_act;
               end if;
             else
               // regularization for discontinuous flow reversal and static head
               if from_dp and not WallFriction.dp_is_zero then
-                m_flow = WallFriction.massFlowRate_dp_staticHead(
-                  dp,
-                  d[1:n],
-                  d[2:n+1],
-                  eta[1:n],
-                  eta[2:n+1],
-                  length_internal,
-                  diameter,
+                m_flows = WallFriction.massFlowRate_dp_staticHead(
+                  dps,
+                  ds[1:n],
+                  ds[2:n+1],
+                  etas[1:n],
+                  etas[2:n+1],
+                  lengths_internal,
+                  diameters,
                   g*height_ab/n,
-                  roughness,
+                  roughnesses,
                   dp_small/n)*nParallel;
               else
-                dp = WallFriction.pressureLoss_m_flow_staticHead(
-                  m_flow/nParallel,
-                  d[1:n],
-                  d[2:n+1],
-                  eta[1:n],
-                  eta[2:n+1],
-                  length_internal,
-                  diameter,
+                dps = WallFriction.pressureLoss_m_flow_staticHead(
+                  m_flows/nParallel,
+                  ds[1:n],
+                  ds[2:n+1],
+                  etas[1:n],
+                  etas[2:n+1],
+                  lengths_internal,
+                  diameters,
                   g*height_ab/n,
-                  roughness,
+                  roughnesses,
                   m_flow_small/nParallel);
               end if;
             end if;
@@ -899,13 +899,13 @@ at the desired operating point. This might speed-up the
 simulation and/or might give a more robust simulation.
 </p>
 <p>
-<b>Optional Variables if show_Re</b>
+<b>Optional Variables if show_Res</b>
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
 <tr><td>ReynoldsNumber</td><td>Re[n]</td>
     <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
-<tr><td>MassFlowRate</td><td>m_flow_turbulent[n]</td>
+<tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
     <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
 </table>
 </html>"),    Diagram(coordinateSystem(
@@ -931,7 +931,7 @@ simulation and/or might give a more robust simulation.
                 lineColor={0,0,255},
                 fillColor={0,0,255},
                 fillPattern=FillPattern.Solid,
-                textString="diameter"),
+                textString="diameters"),
               Line(
                 points={{-100,74},{100,74}},
                 color={0,0,255},
@@ -941,7 +941,7 @@ simulation and/or might give a more robust simulation.
                 lineColor={0,0,255},
                 fillColor={0,0,255},
                 fillPattern=FillPattern.Solid,
-                textString="length")}));
+                textString="lengths")}));
           end PartialWallFrictionPressureLoss;
 
           model NominalTurbulentFlow
@@ -949,21 +949,21 @@ simulation and/or might give a more robust simulation.
             extends PartialWallFrictionPressureLoss(
               redeclare package WallFriction = 
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent,
-              length_internal = length_nominal,
+              lengths_internal = lengths_nominal,
               mixingStreamProperties = true);
 
             import Modelica.Constants.pi;
 
             // variables for nominal pressure loss
-            SI.Length[n] length_nominal
-          "length resulting from nominal pressure loss and geometry";
-            Real[n] k_inv "coefficient for quadratic flow";
-            Real[n] zeta "coefficient for quadratic flow";
+            SI.Length[n] lengths_nominal
+          "lengths resulting from nominal pressure loss and geometry";
+            Real[n] ks_inv "coefficient for quadratic flow";
+            Real[n] zetas "coefficient for quadratic flow";
 
             // Reynolds Number
-            Medium.AbsolutePressure[n] dp_turbulent=
-                {(eta_act[i]*diameter[i]*pi/4)^2*Re_turbulent^2/(k_inv[i]*d_act[i]) for i in 1:n} if 
-                   show_Re "Start of turbulent flow";
+            Medium.AbsolutePressure[n] dps_turbulent=
+                {(etas_act[i]*diameters[i]*pi/4)^2*Re_turbulent^2/(ks_inv[i]*ds_act[i]) for i in 1:n} if 
+                   show_Res "Start of turbulent flow";
 
           equation
             // Inverse parameterization for WallFriction.QuadraticTurbulent
@@ -975,10 +975,10 @@ simulation and/or might give a more robust simulation.
             // and for WallFriction.Laminar.massFlowRate_dp
             //   m_flow = dp*pi*diameter^4*d_act/(128*length_laminar*eta_act);
             for i in 1:n loop
-              k_inv[i] = (m_flow_nominal/nParallel)^2/((dp_nominal-g*height_ab*d_act[i])/n)/d_act[i];
-              zeta[i] = (pi*diameter[i]*diameter[i])^2/(8*k_inv[i]);
-              length_nominal[i] =
-                zeta[i]*diameter[i]*(2*Modelica.Math.log10(3.7 /(roughness[i]/diameter[i])))^2;
+              ks_inv[i] = (m_flow_nominal/nParallel)^2/((dp_nominal-g*height_ab*ds_act[i])/n)/ds_act[i];
+              zetas[i] = (pi*diameters[i]*diameters[i])^2/(8*ks_inv[i]);
+              lengths_nominal[i] =
+                zetas[i]*diameters[i]*(2*Modelica.Math.log10(3.7 /(roughnesses[i]/diameters[i])))^2;
             end for;
 
             annotation (Documentation(info="<html>
@@ -986,31 +986,31 @@ simulation and/or might give a more robust simulation.
 This model defines the pressure loss assuming turbulent flow for 
 specified <tt>dp_nominal</tt> and <tt>m_flow_nominal</tt>. 
 It takes into account the fluid density of each flow segment and 
-obtaines appropriate <tt>length_nominal</tt> values   
+obtaines appropriate <tt>lengths_nominal</tt> values   
 for an inverse parameterization of the 
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.QuadraticTurbulentFlow\">
           QuadraticTurbulentFlow</a>
 model. Per default the upstream and downstream densities are averaged with the setting <tt>mixingStreamProperties = true</tt>,
-in order to avoid discontinuous <tt>length_nominal</tt> values in the case of flow reversal.
+in order to avoid discontinuous <tt>lengths_nominal</tt> values in the case of flow reversal.
 </p>
 <p>
-The geometry parameters <tt>crossArea</tt>, <tt>perimeter</tt> and <tt>roughness</tt> do
+The geometry parameters <tt>crossAreas</tt>, <tt>perimeters</tt> and <tt>roughnesses</tt> do
 not effect simulation results of this nominal pressure loss model.
 As the geometry is specified however, the optionally calculated Reynolds number as well as
-<tt>m_flow_turbulent</tt> and <tt>dp_turbulent</tt> become meaningful 
+<tt>m_flows_turbulent</tt> and <tt>dps_turbulent</tt> become meaningful 
 and can be related to <tt>m_flow_small</tt> and <tt>dp_small</tt>. 
 </p>
 <p>
-<b>Optional Variables if show_Re</b>
+<b>Optional Variables if show_Res</b>
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
 <tr><td>ReynoldsNumber</td><td>Re[n]</td>
     <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
-<tr><td>MassFlowRate</td><td>m_flow_turbulent[n]</td>
+<tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
     <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
-<tr><td>AbsolutePressure</td><td>dp_turbulent[n]</td>
-    <td>pressure losses corresponding to m_flow_turbulent</td></tr>
+<tr><td>AbsolutePressure</td><td>dps_turbulent[n]</td>
+    <td>pressure losses corresponding to m_flows_turbulent</td></tr>
 </table>
 </html>", revisions="<html>
 <ul>
@@ -1026,8 +1026,8 @@ and can be related to <tt>m_flow_small</tt> and <tt>dp_small</tt>.
            extends PartialWallFrictionPressureLoss(
               redeclare package WallFriction = 
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent,
-              use_eta_nominal = not show_Re,
-              length_internal = length,
+              use_eta_nominal = not show_Res,
+              lengths_internal = lengths,
               dp_nominal = 1e3,
               m_flow_nominal = 1);
 
@@ -1057,7 +1057,7 @@ Reynolds numbers, i.e., the values at the right ordinate where
            extends PartialWallFrictionPressureLoss(
               redeclare package WallFriction = 
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
-              length_internal = length,
+              lengths_internal = lengths,
               dp_nominal = 1e3,
               m_flow_nominal = 1);
 
@@ -1093,13 +1093,13 @@ b has the same sign of the change of density.</p>
  
  
 <p>
-<b>Optional Variables if show_Re</b>
+<b>Optional Variables if show_Res</b>
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
 <tr><td>ReynoldsNumber</td><td>Re[n]</td>
     <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
-<tr><td>MassFlowRate</td><td>m_flow_turbulent[n]</td>
+<tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
     <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
 </table>
 </html>"),    Diagram(coordinateSystem(
@@ -1125,7 +1125,7 @@ b has the same sign of the change of density.</p>
                 lineColor={0,0,255},
                 fillColor={0,0,255},
                 fillPattern=FillPattern.Solid,
-                textString="diameter"),
+                textString="diameters"),
               Line(
                 points={{-100,74},{100,74}},
                 color={0,0,255},
@@ -1135,7 +1135,7 @@ b has the same sign of the change of density.</p>
                 lineColor={0,0,255},
                 fillColor={0,0,255},
                 fillPattern=FillPattern.Solid,
-                textString="length")}));
+                textString="lengths")}));
           end DetailedWallFriction;
 
     end PressureLoss;
@@ -1148,24 +1148,24 @@ b has the same sign of the change of density.</p>
       // Additional parameters for flow heat transfer
       parameter Real nParallel "Number of parallel pipes" 
         annotation(Dialog(tab="Internal Interface",enable=false));
-      parameter SI.Length[n] length "Length of segments along flow path" 
+      parameter SI.Length[n] lengths "Length of segments along flow path" 
         annotation(Dialog(tab="Internal Interface",enable=false));
-      parameter SI.Area[n+1] crossArea "Cross flow area at segment boundaries" 
+      parameter SI.Area[n+1] crossAreas "Cross flow area at segment boundaries"
         annotation(Dialog(tab="Internal Interface",enable=false));
-      parameter SI.Length[n] perimeter
-          "Mean perimeter for heat transfer area and hydraulic diameter" 
+      parameter SI.Length[n] perimeters
+          "Mean perimeters for heat transfer area and hydraulic diameter" 
         annotation(Dialog(tab="Internal Interface",enable=false));
-      parameter SI.Height[n] roughness(each min=0)
-          "Average height of surface asperities" 
+      parameter SI.Height[n] roughnesses(each min=0)
+          "Average heights of surface asperities" 
           annotation(Dialog(tab="Internal Interface",enable=false));
 
-      final parameter SI.Area[n] transferArea = {perimeter[i]*length[i] for i in 1:n}
+      final parameter SI.Area[n] transferAreas = {perimeters[i]*lengths[i] for i in 1:n}
           "Heat transfer area";
-      final parameter SI.Length[n] diameter = {4*(crossArea[i]+crossArea[i+1])/2/perimeter[i] for i in 1:n}
-          "Hydraulic diameter";
+      final parameter SI.Length[n] diameters = {4*(crossAreas[i]+crossAreas[i+1])/2/perimeters[i] for i in 1:n}
+          "Hydraulic diameters";
 
       // Additional inputs provided to flow heat transfer model
-      input SI.MassFlowRate[n] m_flow 
+      input SI.MassFlowRate[n] m_flows 
         annotation(Dialog(tab="Internal Interface",enable=false));
 
       annotation (Documentation(info="<html>
@@ -1188,7 +1188,7 @@ Base class for heat transfer models that can be used in pipe models.
         "IdealHeatTransfer: Ideal heat transfer without thermal resistance"
       extends PartialFlowHeatTransfer;
     equation
-      T = heatPorts.T;
+      Ts = heatPorts.T;
       annotation(Documentation(info="<html>
 Ideal heat transfer without thermal resistance.
 </html>"));
@@ -1202,7 +1202,7 @@ Ideal heat transfer without thermal resistance.
 Simple heat transfer correlation with constant heat transfer coefficient, used as default component in <a distributed pipe models.
 </html>"));
     equation
-      Q_flow = {alpha0*transferArea[i]*(heatPorts[i].T - T[i])*nParallel for i in 1:n};
+      Q_flows = {alpha0*transferAreas[i]*(heatPorts[i].T - Ts[i])*nParallel for i in 1:n};
     end ConstantFlowHeatTransfer;
 
     partial model PartialPipeFlowHeatTransfer
@@ -1210,20 +1210,20 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
       extends PartialFlowHeatTransfer;
       parameter SI.CoefficientOfHeatTransfer alpha0=100
           "guess value for heat transfer coefficients";
-      SI.CoefficientOfHeatTransfer[n] alpha(each start=alpha0)
+      SI.CoefficientOfHeatTransfer[n] alphas(each start=alpha0)
           "CoefficientOfHeatTransfer";
-      Real[n] Re "Reynolds number";
-      Real[n] Pr "Prandtl number";
-      Real[n] Nu "Nusselt number";
-      SI.DynamicViscosity[n] eta "Dynamic viscosity";
-      SI.ThermalConductivity[n] lambda "Thermal conductivity";
+      Real[n] Res "Reynolds numbers";
+      Real[n] Prs "Prandtl numbers";
+      Real[n] Nus "Nusselt numbers";
+      SI.DynamicViscosity[n] etas "Dynamic viscosity";
+      SI.ThermalConductivity[n] lambdas "Thermal conductivity";
     equation
-      eta=Medium.dynamicViscosity(state);
-      lambda=Medium.thermalConductivity(state);
-      Pr = Medium.prandtlNumber(state);
-      Re = CharacteristicNumbers.ReynoldsNumber(m_flow/nParallel, diameter, (crossArea[1:n]+crossArea[2:n+1])/2, eta);
-      Nu = CharacteristicNumbers.NusseltNumber(alpha, diameter, lambda);
-      Q_flow={alpha[i]*transferArea[i]*(heatPorts[i].T - T[i])*nParallel for i in 1:n};
+      etas=Medium.dynamicViscosity(states);
+      lambdas=Medium.thermalConductivity(states);
+      Prs = Medium.prandtlNumber(states);
+      Res = CharacteristicNumbers.ReynoldsNumber(m_flows/nParallel, diameters, (crossAreas[1:n]+crossAreas[2:n+1])/2, etas);
+      Nus = CharacteristicNumbers.NusseltNumber(alphas, diameters, lambdas);
+      Q_flows={alphas[i]*transferAreas[i]*(heatPorts[i].T - Ts[i])*nParallel for i in 1:n};
         annotation (Documentation(info="<html>
 Base class for heat transfer models that are expressed in terms of the Nusselt number and which can be used in distributed pipe models.
 </html>"));
@@ -1236,19 +1236,19 @@ Heat transfer correlations for pipe models
         "LocalPipeFlowHeatTransfer: Laminar and turbulent forced convection in pipes, local coefficients"
       extends PartialPipeFlowHeatTransfer;
       protected
-      Real[n] Nu_turb "Nusselt number for turbulent flow";
-      Real[n] Nu_lam "Nusselt number for laminar flow";
+      Real[n] Nus_turb "Nusselt number for turbulent flow";
+      Real[n] Nus_lam "Nusselt number for laminar flow";
       Real Nu_1;
-      Real[n] Nu_2;
-      Real[n] Xi;
+      Real[n] Nus_2;
+      Real[n] Xis;
     equation
       Nu_1=3.66;
       for i in 1:n loop
-       Nu_turb[i]=smooth(0,(Xi[i]/8)*abs(Re[i])*Pr[i]/(1+12.7*(Xi[i]/8)^0.5*(Pr[i]^(2/3)-1))*(1+1/3*(diameter[i]/length[i]/(if m_flow[i]>=0 then (i-0.5) else (n-i+0.5)))^(2/3)));
-       Xi[i]=(1.8*Modelica.Math.log10(max(1e-10,Re[i]))-1.5)^(-2);
-       Nu_lam[i]=(Nu_1^3+0.7^3+(Nu_2[i]-0.7)^3)^(1/3);
-       Nu_2[i]=smooth(0,1.077*(abs(Re[i])*Pr[i]*diameter[i]/length[i]/(if m_flow[i]>=0 then (i-0.5) else (n-i+0.5)))^(1/3));
-       Nu[i]=spliceFunction(Nu_turb[i], Nu_lam[i], Re[i]-6150, 3850);
+       Nus_turb[i]=smooth(0,(Xis[i]/8)*abs(Res[i])*Prs[i]/(1+12.7*(Xis[i]/8)^0.5*(Prs[i]^(2/3)-1))*(1+1/3*(diameters[i]/lengths[i]/(if m_flows[i]>=0 then (i-0.5) else (n-i+0.5)))^(2/3)));
+       Xis[i]=(1.8*Modelica.Math.log10(max(1e-10,Res[i]))-1.5)^(-2);
+       Nus_lam[i]=(Nu_1^3+0.7^3+(Nus_2[i]-0.7)^3)^(1/3);
+       Nus_2[i]=smooth(0,1.077*(abs(Res[i])*Prs[i]*diameters[i]/lengths[i]/(if m_flows[i]>=0 then (i-0.5) else (n-i+0.5)))^(1/3));
+       Nus[i]=spliceFunction(Nus_turb[i], Nus_lam[i], Res[i]-6150, 3850);
       end for;
       annotation (Documentation(info="<html>
 Heat transfer model for laminar and turbulent flow in pipes. Range of validity:
