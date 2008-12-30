@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -920,14 +921,20 @@ Modelica_Fluid was refactored and finalized for the release:
      <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialPressureLoss\">
           Interfaces.PartialPressureLoss</a>.</li>
      </ul>
+     A generic base model for one-dimensional fluid flow using the finite volume and the staggered grid approach 
+     is available in<br>
+     <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.TwoPortDistributedFlow\">
+          Pipes.BaseClasses.TwoPortDistributedFlow</a>. 
+     The DistributedPipe model, for example, just adds a parameter interface and graphical appearance to the generic TwoPortDistributedFlow.
  
-<li> New approach for the connection of pipe models<br>
-     So far the preferred modeling was to put full mass balances 
+<li> New approach for the connection of distributed flow models<br>
+     The staggered grid approach offers different choices for the connection approach. So far the preferred modeling was to put full mass balances 
      into the pipes and expose half momentum balances through the ports (ModelStructure a_v_b). 
      This resulted in nonlinear equation systems for pressure/flow correlations in connection sets. 
-     A new default ModelStructure av_vb has been introduced putting full momentum balances into the pipes and 
-     exposing mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
-     High-index DAEs need to be treated instead in connection sets.</li>
+     A new default ModelStructure av_vb has been introduced putting full momentum balances into the models and 
+     exposing half mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
+     High-index DAEs need to be treated instead in connection sets. 
+     Alternatively a Fitting like SuddenExpansion can be introduced to account for different cross flow areas of connected flow models.</li>
  
 <li> Extension of pumps for better consideration of zero flow and heat transfer with environment<br>
      The simplified mass and energy balances have been replaced with a rigorous formulation. 
@@ -2103,6 +2110,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0 Release Candidate 1",
