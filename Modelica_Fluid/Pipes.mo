@@ -314,12 +314,14 @@ pipe wall/environment).
       redeclare each final package Medium = Medium,
       final n=n,
       final nParallel=nParallel,
-      final lengths=fill(length/n, n),
-      final crossAreas=fill(crossArea, n+1),
+      final lengths=if modelStructure == Types.ModelStructure.av_vb then 
+                        cat(1, {length/(n-1)/2}, fill(length/(n-1), n-2), {length/(n-1)/2}) else 
+                        fill(length/n, n),
+      final crossAreas=fill(crossArea, n),
       final perimeters=fill(perimeter, n),
       final roughnesses=fill(roughness, n),
       states=mediums.state,
-      m_flows = 0.5*(m_flows[1:n]+m_flows[2:n+1])) "Heat transfer model" 
+      m_flows=m_flows) "Heat transfer model" 
         annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
 
   equation
@@ -1150,7 +1152,7 @@ b has the same sign of the change of density.</p>
         annotation(Dialog(tab="Internal Interface",enable=false));
       parameter SI.Length[n] lengths "Length of segments along flow path" 
         annotation(Dialog(tab="Internal Interface",enable=false));
-      parameter SI.Area[n+1] crossAreas "Cross flow area at segment boundaries"
+      parameter SI.Area[n] crossAreas "Cross flow areas of segments" 
         annotation(Dialog(tab="Internal Interface",enable=false));
       parameter SI.Length[n] perimeters
           "Mean perimeters for heat transfer area and hydraulic diameter" 
@@ -1161,11 +1163,12 @@ b has the same sign of the change of density.</p>
 
       final parameter SI.Area[n] transferAreas = {perimeters[i]*lengths[i] for i in 1:n}
           "Heat transfer area";
-      final parameter SI.Length[n] diameters = {4*(crossAreas[i]+crossAreas[i+1])/2/perimeters[i] for i in 1:n}
+      final parameter SI.Length[n] diameters = {4*crossAreas[i]/perimeters[i] for i in 1:n}
           "Hydraulic diameters";
 
       // Additional inputs provided to flow heat transfer model
-      input SI.MassFlowRate[n] m_flows 
+      input SI.MassFlowRate[n+1] m_flows
+          "Mass flow rates through segment boundaries" 
         annotation(Dialog(tab="Internal Interface",enable=false));
 
       annotation (Documentation(info="<html>
@@ -1217,11 +1220,13 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
       Real[n] Nus "Nusselt numbers";
       SI.DynamicViscosity[n] etas "Dynamic viscosity";
       SI.ThermalConductivity[n] lambdas "Thermal conductivity";
+      Medium.MassFlowRate[n] m_flows_mean = (m_flows[1:n] + m_flows[2:n+1])/2
+          "mean mass flow rate per segment";
     equation
       etas=Medium.dynamicViscosity(states);
       lambdas=Medium.thermalConductivity(states);
       Prs = Medium.prandtlNumber(states);
-      Res = CharacteristicNumbers.ReynoldsNumber(m_flows/nParallel, diameters, (crossAreas[1:n]+crossAreas[2:n+1])/2, etas);
+      Res = CharacteristicNumbers.ReynoldsNumber(m_flows_mean/nParallel, diameters, crossAreas, etas);
       Nus = CharacteristicNumbers.NusseltNumber(alphas, diameters, lambdas);
       Q_flows={alphas[i]*transferAreas[i]*(heatPorts[i].T - Ts[i])*nParallel for i in 1:n};
         annotation (Documentation(info="<html>
@@ -1244,10 +1249,10 @@ Heat transfer correlations for pipe models
     equation
       Nu_1=3.66;
       for i in 1:n loop
-       Nus_turb[i]=smooth(0,(Xis[i]/8)*abs(Res[i])*Prs[i]/(1+12.7*(Xis[i]/8)^0.5*(Prs[i]^(2/3)-1))*(1+1/3*(diameters[i]/lengths[i]/(if m_flows[i]>=0 then (i-0.5) else (n-i+0.5)))^(2/3)));
+       Nus_turb[i]=smooth(0,(Xis[i]/8)*abs(Res[i])*Prs[i]/(1+12.7*(Xis[i]/8)^0.5*(Prs[i]^(2/3)-1))*(1+1/3*(diameters[i]/lengths[i]/(if m_flows_mean[i]>=0 then (i-0.5) else (n-i+0.5)))^(2/3)));
        Xis[i]=(1.8*Modelica.Math.log10(max(1e-10,Res[i]))-1.5)^(-2);
        Nus_lam[i]=(Nu_1^3+0.7^3+(Nus_2[i]-0.7)^3)^(1/3);
-       Nus_2[i]=smooth(0,1.077*(abs(Res[i])*Prs[i]*diameters[i]/lengths[i]/(if m_flows[i]>=0 then (i-0.5) else (n-i+0.5)))^(1/3));
+       Nus_2[i]=smooth(0,1.077*(abs(Res[i])*Prs[i]*diameters[i]/lengths[i]/(if m_flows_mean[i]>=0 then (i-0.5) else (n-i+0.5)))^(1/3));
        Nus[i]=spliceFunction(Nus_turb[i], Nus_lam[i], Res[i]-6150, 3850);
       end for;
       annotation (Documentation(info="<html>
