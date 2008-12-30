@@ -66,14 +66,14 @@ present that are regulated by a central control system.
       crossArea=0.05,
       initType=BaseClasses.Init.InitialValues,
       side_pipeArea={0.0001}) 
-      annotation (Placement(transformation(extent={{-100,-60},{-20,-20}},
+      annotation (Placement(transformation(extent={{-110,-60},{-30,-20}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveDiscrete V12(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={-80,2},
+          origin={-90,2},
           extent={{-10,-10},{10,10}},
           rotation=90)));
     Modelica_Fluid.Valves.ValveDiscrete V15(
@@ -81,14 +81,14 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={-80,-82},
+          origin={-90,-82},
           extent={{10,-10},{-10,10}},
           rotation=90)));
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow HeatB5 
-      annotation (Placement(transformation(extent={{-140,-50},{-120,-30}},
+      annotation (Placement(transformation(extent={{-150,-50},{-130,-30}},
             rotation=0)));
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow CoolingB7 
-      annotation (Placement(transformation(extent={{-140,-130},{-120,-110}},
+      annotation (Placement(transformation(extent={{-150,-130},{-130,-110}},
             rotation=0)));
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow CoolingB6 
       annotation (Placement(transformation(
@@ -100,8 +100,8 @@ present that are regulated by a central control system.
         Transition3(enableTimer=true, waitTime=60), Transition7(
         condition=true,
         enableTimer=true,
-        waitTime=300))       annotation (Placement(transformation(extent={{80,
-              60},{120,100}}, rotation=0)));
+        waitTime=300))       annotation (Placement(transformation(extent={{60,38},
+              {100,78}},      rotation=0)));
 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-300,
               -300},{300,300}}),      graphics),
@@ -114,41 +114,41 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
       dp_nominal = 100) 
-      annotation (Placement(transformation(extent={{-60,78},{-40,98}}, rotation=
+      annotation (Placement(transformation(extent={{-50,80},{-70,100}},rotation=
              0)));
     Modelica_Fluid.Valves.ValveDiscrete V8(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={-80,162},
-          extent={{-10,-10},{10,10}},
+          origin={-90,160},
+          extent={{10,-10},{-10,10}},
           rotation=90)));
     Modelica_Fluid.Valves.ValveDiscrete V9(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={80,162},
-          extent={{-10,10},{10,-10}},
+          origin={70,160},
+          extent={{10,10},{-10,-10}},
           rotation=90)));
     Modelica_Fluid.Valves.ValveDiscrete V2(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
       dp_nominal = 100) 
-      annotation (Placement(transformation(extent={{-30,230},{-50,250}},
+      annotation (Placement(transformation(extent={{-60,230},{-40,250}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveDiscrete V4(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
       dp_nominal = 100) 
-      annotation (Placement(transformation(extent={{50,230},{30,250}}, rotation=
+      annotation (Placement(transformation(extent={{40,230},{20,250}}, rotation=
              0)));
     Modelica_Fluid.Valves.ValveDiscrete V3(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
       dp_nominal = 100) 
-      annotation (Placement(transformation(extent={{-114,210},{-134,230}},
+      annotation (Placement(transformation(extent={{-150,210},{-130,230}},
             rotation=0)));
     Fittings.TeeJunctionIdeal volume2(
       redeclare package Medium = BatchMedium) 
@@ -160,7 +160,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
       dp_nominal = 100) 
-      annotation (Placement(transformation(extent={{112,210},{132,230}},
+      annotation (Placement(transformation(extent={{130,210},{110,230}},
             rotation=0)));
     Fittings.TeeJunctionIdeal volume8(
       redeclare package Medium = BatchMedium) 
@@ -222,14 +222,14 @@ present that are regulated by a central control system.
       dp_nominal = 100) 
       annotation (Placement(transformation(
           origin={60,-210},
-          extent={{-10,10},{10,-10}},
+          extent={{10,10},{-10,-10}},
           rotation=90)));
     Modelica_Fluid.Valves.ValveDiscrete V19(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={4,-200},
+          origin={10,-200},
           extent={{-10,10},{10,-10}},
           rotation=180)));
     Modelica_Fluid.Valves.ValveDiscrete V10(
@@ -237,8 +237,8 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={20,50},
-          extent={{-10,10},{10,-10}},
+          origin={-21,-170},
+          extent={{10,10},{-10,-10}},
           rotation=90)));
     Modelica_Fluid.Valves.ValveDiscrete V21(
       redeclare package Medium = BatchMedium,
@@ -257,7 +257,7 @@ present that are regulated by a central control system.
       m_flow_nominal = 1,
       dp_nominal = 100) 
       annotation (Placement(transformation(
-          origin={-56,-200},
+          origin={-50,-200},
           extent={{10,10},{-10,-10}},
           rotation=180)));
     Machines.PrescribedPump P1(
@@ -274,7 +274,7 @@ present that are regulated by a central control system.
       use_V=true,
       p_a_start=100000,
       p_b_start=100000) 
-      annotation (Placement(transformation(extent={{-128,-260},{-148,-240}},
+      annotation (Placement(transformation(extent={{-140,-260},{-160,-240}},
             rotation=0)));
     Machines.PrescribedPump P2(
       redeclare package Medium = BatchMedium,
@@ -290,7 +290,7 @@ present that are regulated by a central control system.
       use_V=true,
       p_a_start=100000,
       p_b_start=100000) 
-      annotation (Placement(transformation(extent={{110,-260},{130,-240}},
+      annotation (Placement(transformation(extent={{120,-260},{140,-240}},
             rotation=0)));
     Modelica_Fluid.Vessels.Tank B1(
       level_start=0.2,
@@ -301,16 +301,16 @@ present that are regulated by a central control system.
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       stiffCharacteristicForEmptyPort=false) 
-                         annotation (Placement(transformation(extent={{-100,180},
-              {-60,220}}, rotation=0)));
+                         annotation (Placement(transformation(extent={{-110,180},
+              {-70,220}}, rotation=0)));
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{180,250},
               {200,270}},       rotation=0)));
     Modelica.Blocks.Logical.TriggeredTrapezoid P1_on(amplitude=100, rising=0) 
-      annotation (Placement(transformation(extent={{-168,-230},{-148,-210}},
+      annotation (Placement(transformation(extent={{-122,-230},{-142,-210}},
             rotation=0)));
     Modelica.Blocks.Logical.TriggeredTrapezoid P2_on(amplitude=50, rising=0) 
-      annotation (Placement(transformation(extent={{90,-230},{110,-210}},
+      annotation (Placement(transformation(extent={{100,-230},{120,-210}},
             rotation=0)));
     Modelica_Fluid.Vessels.Tank B2(
       level_start=0.2,
@@ -321,8 +321,8 @@ present that are regulated by a central control system.
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       stiffCharacteristicForEmptyPort=false) 
-                         annotation (Placement(transformation(extent={{60,180},
-              {100,220}}, rotation=0)));
+                         annotation (Placement(transformation(extent={{50,180},
+              {90,220}},  rotation=0)));
     Modelica_Fluid.Vessels.Tank B3(
       redeclare package Medium = BatchMedium,
       levelMax=0.5,
@@ -334,8 +334,8 @@ present that are regulated by a central control system.
            0.011, portLevel=0)},
       level_start=0.02,
       stiffCharacteristicForEmptyPort=false) 
-                         annotation (Placement(transformation(extent={{-20,100},
-              {20,140}}, rotation=0)));
+                         annotation (Placement(transformation(extent={{-30,100},
+              {10,140}}, rotation=0)));
     Vessels.Tank B4(
       redeclare package Medium = BatchMedium,
       levelMax=0.5,
@@ -346,8 +346,8 @@ present that are regulated by a central control system.
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       stiffCharacteristicForEmptyPort=false) 
-                         annotation (Placement(transformation(extent={{-100,30},
-              {-60,70}}, rotation=0)));
+                         annotation (Placement(transformation(extent={{-110,30},
+              {-70,70}}, rotation=0)));
     Vessels.Tank B7(
       redeclare package Medium = BatchMedium,
       V0=0.0001,
@@ -363,69 +363,64 @@ present that are regulated by a central control system.
       redeclare model HeatTransfer = 
           Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer
           (alpha0=4.9e3)) 
-                         annotation (Placement(transformation(extent={{-100,
-              -140},{-60,-100}}, rotation=0)));
+                         annotation (Placement(transformation(extent={{-110,
+              -140},{-70,-100}}, rotation=0)));
     Pipes.DistributedPipe pipeB1B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=pipeDiameter,
-      height_ab=0) annotation (Placement(transformation(extent={{10,230},{-10,
+      height_ab=0) annotation (Placement(transformation(extent={{0,230},{-20,
               250}}, rotation=0)));
     Pipes.StaticPipe pipeB1B3(
       redeclare package Medium = BatchMedium,
       length=1,
       redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
-      height_ab=0.1,
-      diameter=pipeDiameter) 
-      annotation (Placement(transformation(extent={{-42,134},{-62,154}},
+      diameter=pipeDiameter,
+      height_ab=-0.1) 
+      annotation (Placement(transformation(extent={{-70,134},{-50,154}},
             rotation=0)));
     Pipes.StaticPipe pipeB2B3(
       redeclare package Medium = BatchMedium,
       length=1,
       redeclare model PressureLoss = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
-      height_ab=0.1,
-      diameter=pipeDiameter) 
-      annotation (Placement(transformation(extent={{36,134},{56,154}}, rotation=
+      diameter=pipeDiameter,
+      height_ab=-0.1) 
+      annotation (Placement(transformation(extent={{50,134},{30,154}}, rotation=
              0)));
-    Pipes.DistributedPipe pipeB1B1(
+    Pipes.StaticPipe pipeB1B1(
       redeclare package Medium = BatchMedium,
-      height_ab=0.5,
       diameter=pipeDiameter,
       length=1,
-      nNodes=1,
-      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
+      height_ab=-0.5) 
       annotation (Placement(transformation(
-          origin={20,10},
-          extent={{-10,10},{10,-10}},
+          origin={-8,10},
+          extent={{10,10},{-10,-10}},
           rotation=90)));
     Pipes.StaticPipe pipeB6Pump(
       redeclare package Medium = BatchMedium,
       length=0.5,
       diameter=pipeDiameter,
-      height_ab=0.5) 
+      height_ab=-0.5) 
                    annotation (Placement(transformation(
-          origin={60,-106},
-          extent={{-10,10},{10,-10}},
+          origin={60,-110},
+          extent={{10,10},{-10,-10}},
           rotation=90)));
     Pipes.StaticPipe pipeB7Pump(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=pipeDiameter,
-      height_ab=0.1) 
+      height_ab=-0.1) 
                    annotation (Placement(transformation(
-          origin={-80,-170},
-          extent={{-10,10},{10,-10}},
+          origin={-90,-170},
+          extent={{10,10},{-10,-10}},
           rotation=90)));
     Pipes.DistributedPipe pipePump1B1(
       redeclare package Medium = BatchMedium,
       diameter=pipeDiameter,
       height_ab=3,
-      length=3,
-      nNodes=1,
-      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
-                   annotation (Placement(transformation(
+      length=3)    annotation (Placement(transformation(
           origin={-180,10},
           extent={{-10,10},{10,-10}},
           rotation=90)));
@@ -433,10 +428,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       diameter=pipeDiameter,
       height_ab=3,
-      length=3,
-      nNodes=1,
-      modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
-                   annotation (Placement(transformation(
+      length=3)    annotation (Placement(transformation(
           origin={160,10},
           extent={{-10,10},{10,-10}},
           rotation=90)));
@@ -461,10 +453,10 @@ present that are regulated by a central control system.
         nPorts_b=3) annotation (Placement(transformation(
           extent={{4,10},{-4,-10}},
           rotation=-90,
-          origin={-26,-228})));
+          origin={-20,-228})));
     Modelica_Fluid.Fittings.TeeJunctionVolume volume4(
       redeclare package Medium = BatchMedium,
-      V=0.001) annotation (Placement(transformation(extent={{-36,-260},{-16,
+      V=0.001) annotation (Placement(transformation(extent={{-30,-260},{-10,
               -240}},
             rotation=0)));
   equation
@@ -504,92 +496,42 @@ present that are regulated by a central control system.
     CoolingB6.Q_flow = if controller.actuators.T6_Cooling then -2000 else 0;
     CoolingB7.Q_flow = if controller.actuators.T7_Cooling then -2000 else 0;
 
-    connect(V24.port_b, P2.port_a) annotation (Line(points={{100,-250},{110,
+    connect(V24.port_b, P2.port_a) annotation (Line(points={{100,-250},{120,
             -250}},                 color={0,127,255}));
-    connect(V15.port_a, B5.BottomFluidPort[1]) annotation (Line(points={{-80,-72},
-            {-80,-60.4}},      color={0,127,255}));
-    connect(V3.port_a, B1.topPorts[1]) annotation (Line(points={{-114,220},{
-            -106,220},{-106,230},{-79,230},{-79,220}}, color={0,127,255}));
-    connect(B1.ports[1], V8.port_b) annotation (Line(points={{-81,180},{-81,176},
-            {-80,176},{-80,172}},
+    connect(V15.port_a, B5.BottomFluidPort[1]) annotation (Line(points={{-90,-72},
+            {-90,-60.4}},      color={0,127,255}));
+    connect(P1_on.y, P1.N_in) annotation (Line(points={{-143,-220},{-150,-220},
+            {-150,-240}},     color={0,0,127}));
+    connect(P2_on.y, P2.N_in) annotation (Line(points={{121,-220},{130,-220},{
+            130,-240}},      color={0,0,127}));
+    connect(B4.ports[1], V12.port_b) annotation (Line(points={{-91,30},{-91,21},
+            {-90,21},{-90,12}},
           color={0,127,255}));
-    connect(P1_on.y, P1.N_in) annotation (Line(points={{-147,-220},{-138,-220},
-            {-138,-240}},     color={0,0,127}));
-    connect(P2_on.y, P2.N_in) annotation (Line(points={{111,-220},{120,-220},{
-            120,-240}},      color={0,0,127}));
-    connect(B2.topPorts[1], V6.port_a) annotation (Line(points={{81,220},{81,
-            228},{106,228},{106,220},{112,220}}, color={0,127,255}));
-    connect(B2.ports[1], V9.port_b) annotation (Line(points={{79,180},{79,176},
-            {80,176},{80,172}},
-          color={0,127,255}));
-    connect(V11.port_b, B3.ports[1]) annotation (Line(points={{-40,88},{-1,88},
-            {-1,100}},
-                    color={0,127,255}));
-    connect(V10.port_b, B3.ports[2]) annotation (Line(points={{20,60},{20,88},{
-            -1,88},{-1,100}},
-                           color={0,127,255}));
-    connect(B4.ports[1], V12.port_b) annotation (Line(points={{-81,30},{-81,21},
-            {-80,21},{-80,12}},
-          color={0,127,255}));
-    connect(CoolingB7.port, B7.heatPort) annotation (Line(points={{-120,-120},{
-            -100,-120}}, color={191,0,0}));
-    connect(V2.port_a, pipeB1B2.port_b) annotation (Line(points={{-30,240},{-10,
+    connect(CoolingB7.port, B7.heatPort) annotation (Line(points={{-130,-120},{
+            -110,-120}}, color={191,0,0}));
+    connect(pipeB1B2.port_a, V4.port_b) annotation (Line(points={{0,240},{20,
             240}}, color={0,127,255}));
-    connect(pipeB1B2.port_a, V4.port_b) annotation (Line(points={{10,240},{30,
-            240}}, color={0,127,255}));
-    connect(pipeB1B3.port_b, V8.port_a) annotation (Line(points={{-62,144},{-80,
-            144},{-80,152}}, color={0,127,255}));
-    connect(pipeB1B3.port_a, B3.topPorts[1]) annotation (Line(points={{-42,144},
-            {1,144},{1,138}}, color={0,127,255}));
-    connect(pipeB2B3.port_a, B3.topPorts[2]) annotation (Line(points={{36,144},
-            {1,144},{1,142}}, color={0,127,255}));
-    connect(pipeB2B3.port_b, V9.port_a) annotation (Line(points={{56,144},{80,
-            144},{80,152}}, color={0,127,255}));
-    connect(V11.port_a, B4.topPorts[1]) annotation (Line(points={{-60,88},{-79,
-            88},{-79,70}}, color={0,127,255}));
-    connect(V10.port_a, pipeB1B1.port_b) annotation (Line(points={{20,40},{20,
-            20}}, color={0,127,255}));
-    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-80,-19.6},
-            {-80,-8}}, color={0,0,255}));
-    connect(V15.port_b, B7.topPorts[1]) annotation (Line(points={{-80,-92},{-80,
-            -96},{-80,-100},{-79,-100}},
+    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-90,-19.6},
+            {-90,-8}}, color={0,0,255}));
+    connect(V15.port_b, B7.topPorts[1]) annotation (Line(points={{-90,-92},{-90,
+            -96},{-90,-100},{-89,-100}},
                     color={0,127,255}));
-    connect(B7.ports[1], pipeB7Pump.port_b) annotation (Line(points={{-81,-140},
-            {-81,-150},{-80,-150},{-80,-160}},
-                         color={0,127,255}));
     connect(pipePump1B1.port_a, V22.port_b) annotation (Line(points={{-180,0},{
             -180,-160}}, color={0,127,255}));
     connect(V25.port_b, pipePump2B2.port_a) annotation (Line(points={{160,-160},
             {160,0}}, color={0,127,255}));
-    connect(B6.ports[1], pipeB6Pump.port_b) annotation (Line(points={{61,-80},{
-            61,-88},{60,-88},{60,-96}},
-                      color={0,127,255}));
     connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{59,-40},{59,
-            -28},{-19.6,-28}}, color={0,127,255}));
+            -28},{-29.6,-28}}, color={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{100,-60},{80,
             -60}}, color={191,0,0}));
-    connect(V20.port_b, pipeB6Pump.port_a) annotation (Line(points={{60,-200},{
-            60,-116}}, color={0,127,255}));
-    connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-120,-40},{-102,
+    connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-130,-40},{-112,
             -40}}, color={191,0,0}));
-    connect(volume2.port_3, V3.port_b)     annotation (Line(
-        points={{-170,220},{-134,220}},
-        color={0,127,255},
-        smooth=Smooth.None));
     connect(V1.port_b, volume2.port_1)     annotation (Line(
         points={{-180,120},{-180,210}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(volume2.port_2, V2.port_b)     annotation (Line(
-        points={{-180,230},{-180,240},{-50,240}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(V6.port_b, volume8.port_3)     annotation (Line(
-        points={{132,220},{150,220}},
-        color={0,127,255},
-        smooth=Smooth.None));
     connect(volume8.port_2, V4.port_a)     annotation (Line(
-        points={{160,230},{160,240},{50,240}},
+        points={{160,230},{160,240},{40,240}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume8.port_1, V5.port_b)     annotation (Line(
@@ -604,16 +546,12 @@ present that are regulated by a central control system.
         points={{70,-250},{80,-250}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(volume5.port_3, V20.port_a)     annotation (Line(
-        points={{60,-240},{60,-220}},
-        color={0,127,255},
-        smooth=Smooth.None));
     connect(P2.port_b, V25.port_a) annotation (Line(
-        points={{130,-250},{160,-250},{160,-180}},
+        points={{140,-250},{160,-250},{160,-180}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V22.port_a, P1.port_b) annotation (Line(
-        points={{-180,-180},{-180,-250},{-148,-250}},
+        points={{-180,-180},{-180,-250},{-160,-250}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V5.port_a, pipePump2B2.port_b) annotation (Line(
@@ -625,39 +563,119 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(P1.port_a, V23.port_b) annotation (Line(
-        points={{-128,-250},{-120,-250}},
+        points={{-140,-250},{-120,-250}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V23.port_a, volume4.port_1) annotation (Line(
-        points={{-100,-250},{-36,-250}},
+        points={{-100,-250},{-30,-250}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume4.port_2, V21.port_a) annotation (Line(
-        points={{-16,-250},{20,-250}},
+        points={{-10,-250},{20,-250}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(multiPort.port_a, volume4.port_3) annotation (Line(
-        points={{-26,-232},{-26,-240}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(pipeB1B1.port_a, multiPort.ports_b[2]) annotation (Line(
-        points={{20,0},{20,-100},{-26,-100},{-26,-224}},
+        points={{-20,-232},{-20,-240}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(multiPort.ports_b[3], V19.port_b) annotation (Line(
-        points={{-23.3333,-224},{-23.3333,-200},{-6,-200}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(pipeB7Pump.port_a, V18.port_a) annotation (Line(
-        points={{-80,-180},{-80,-200},{-66,-200}},
+        points={{-17.3333,-224},{-17.3333,-200},{0,-200}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V18.port_b, multiPort.ports_b[1]) annotation (Line(
-        points={{-46,-200},{-28.6667,-200},{-28.6667,-224}},
+        points={{-40,-200},{-22.6667,-200},{-22.6667,-224}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(V19.port_a, pipeB6Pump.port_a) annotation (Line(
-        points={{14,-200},{30,-200},{30,-160},{60,-160},{60,-116}},
+    connect(V10.port_b, multiPort.ports_b[2]) annotation (Line(
+        points={{-21,-180},{-20,-180},{-20,-224}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V11.port_b, B4.topPorts[1]) annotation (Line(
+        points={{-70,90},{-89,90},{-89,70}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(B3.ports[1], V11.port_a) annotation (Line(
+        points={{-11,100},{-11,90},{-50,90}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V20.port_b, volume5.port_3) annotation (Line(
+        points={{60,-220},{60,-240}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V2.port_b, pipeB1B2.port_b) annotation (Line(
+        points={{-40,240},{-20,240}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(volume2.port_2, V2.port_a) annotation (Line(
+        points={{-180,230},{-180,240},{-60,240}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(volume2.port_3, V3.port_a) annotation (Line(
+        points={{-170,220},{-150,220}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V3.port_b, B1.topPorts[1]) annotation (Line(
+        points={{-130,220},{-120,220},{-120,230},{-89,230},{-89,220}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(volume8.port_3, V6.port_a) annotation (Line(
+        points={{150,220},{130,220}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V6.port_b, B2.topPorts[1]) annotation (Line(
+        points={{110,220},{100,220},{100,230},{71,230},{71,220}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(B2.ports[1], V9.port_a) annotation (Line(
+        points={{69,180},{69,175},{70,175},{70,170}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V9.port_b, pipeB2B3.port_a) annotation (Line(
+        points={{70,150},{70,144},{50,144}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipeB2B3.port_b, B3.topPorts[2]) annotation (Line(
+        points={{30,144},{-8,144},{-8,142},{-9,142}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(B1.ports[1], V8.port_a) annotation (Line(
+        points={{-91,180},{-91,175},{-90,175},{-90,170}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V8.port_b, pipeB1B3.port_a) annotation (Line(
+        points={{-90,150},{-90,144},{-70,144}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(B3.topPorts[1], pipeB1B3.port_b) annotation (Line(
+        points={{-9,138},{-12,138},{-12,144},{-50,144}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(B7.ports[1], pipeB7Pump.port_a) annotation (Line(
+        points={{-91,-140},{-91,-150},{-90,-150},{-90,-160}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipeB7Pump.port_b, V18.port_a) annotation (Line(
+        points={{-90,-180},{-90,-200},{-60,-200}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(B6.ports[1], pipeB6Pump.port_a) annotation (Line(
+        points={{61,-80},{61,-90},{60,-90},{60,-100}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipeB6Pump.port_b, V20.port_a) annotation (Line(
+        points={{60,-120},{60,-200}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(V19.port_a, pipeB6Pump.port_b) annotation (Line(
+        points={{20,-200},{30,-200},{30,-160},{60,-160},{60,-120}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipeB1B1.port_b, V10.port_a) annotation (Line(
+        points={{-8,0},{-8,-80},{-21,-80},{-21,-160}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(B3.ports[2], pipeB1B1.port_a) annotation (Line(
+        points={{-11,100},{-8,100},{-8,20}},
         color={0,127,255},
         smooth=Smooth.None));
   end BatchPlant_StandardWater;
