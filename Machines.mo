@@ -310,7 +310,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     parameter Medium.AbsolutePressure p_a_start=system.p_start
         "Guess value for inlet pressure" 
       annotation(Dialog(tab="Initialization"));
-    parameter Medium.AbsolutePressure p_b_start=2*p_a_start
+    parameter Medium.AbsolutePressure p_b_start=p_a_start
         "Guess value for outlet pressure" 
       annotation(Dialog(tab="Initialization"));
     parameter Medium.MassFlowRate m_flow_start = 1
@@ -489,7 +489,6 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         points={{40,-34},{40,-60}},
         color={127,0,0},
         smooth=Smooth.None));
-
     annotation (
       Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
                 100}}), graphics={
