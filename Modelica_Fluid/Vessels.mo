@@ -5,7 +5,7 @@ package Vessels "Devices for storing fluid"
     model Volume "Fixed volume with ports, closed to the environment"
       import Modelica.Constants.pi;
       extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolumePorts(
-        heatTransfer(transferArea={4*pi*(3/4*V/pi)^(2/3)}));
+        heatTransfer(transferAreas={4*pi*(3/4*V/pi)^(2/3)}));
 
       parameter SI.Volume V "Volume";
 
@@ -39,7 +39,7 @@ Ideal heat transfer is assumed per default; the thermal port temperature is equa
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
   import Modelica.Constants.pi;
   extends BaseClasses.PartialLumpedVolumePorts(
-    heatTransfer(transferArea={crossArea+2*sqrt(crossArea*pi)*level}),
+    heatTransfer(transferAreas={crossArea+2*sqrt(crossArea*pi)*level}),
     final initialize_p = false,
     final p_start = p_ambient,
     final use_d_nominal = false,
@@ -111,8 +111,8 @@ initial equation
             lineColor={0,127,255},
             fillColor={85,170,255},
             fillPattern=FillPattern.Solid),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                0,0}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
+                0}),
           Text(
             extent={{-129,40},{130,26}},
             lineColor={0,0,0},
@@ -121,9 +121,9 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                  level,
-                  1,
-                  integer(precision)))),
+                level, 
+                1, 
+                integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -242,8 +242,8 @@ model Tank
   HeatTransfer heatTransfer(
     redeclare final package Medium = Medium,
     n=1,
-    state = {medium.state},
-    transferArea={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level}) 
+    states = {medium.state},
+    transferAreas={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level}) 
       annotation (Placement(transformation(
         extent={{-10,-10},{30,30}},
         rotation=90,
@@ -336,7 +336,7 @@ end for;
 
   // Energy balance
   Hs_flow = sum(H_flow_top) + sum(port_b_H_flow_bottom);
-  Qs_flow = heatTransfer.Q_flow[1];
+  Qs_flow = heatTransfer.Q_flows[1];
   if Medium.singleState or energyDynamics == Types.Dynamics.SteadyState then
     Ws_flow = 0
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
@@ -765,7 +765,7 @@ Further source terms must be defined by an extending class for fluid flow across
         HeatTransfer heatTransfer(
           redeclare final package Medium = Medium,
           n=1,
-          state = {medium.state}) 
+          states = {medium.state}) 
             annotation (Placement(transformation(
               extent={{-10,-10},{30,30}},
               rotation=90,
@@ -781,7 +781,7 @@ Further source terms must be defined by an extending class for fluid flow across
         msXi_flow = sum_ports_mXi_flow;
         msC_flow  = sum_ports_mC_flow;
         Hs_flow = sum(ports_H_flow);
-        Qs_flow = heatTransfer.Q_flow[1];
+        Qs_flow = heatTransfer.Q_flows[1];
 
         // Only one connection allowed to a port to avoid unwanted ideal mixing
         for i in 1:nPorts loop
@@ -883,7 +883,7 @@ An extending class still needs to define:
     parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
         "= true if d_nominal is used for mass storage, else computed from medium"
       annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-    parameter Medium.Density[n] d_nominal = fill(Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default), n)
+    parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
        annotation(Dialog(tab="Assumptions", group="Dynamics", enable=use_d_nominal));
 
@@ -894,7 +894,7 @@ An extending class still needs to define:
     parameter Medium.AbsolutePressure p_b_start=p_a_start
         "Start value of pressure at port b" 
       annotation(Dialog(tab = "Initialization"));
-    final parameter Medium.AbsolutePressure[n] p_start=if n > 1 then linspace(
+    final parameter Medium.AbsolutePressure[n] ps_start=if n > 1 then linspace(
           p_a_start, p_b_start, n) else {(p_a_start + p_b_start)/2}
         "Start value of pressure";
 
@@ -921,32 +921,32 @@ An extending class still needs to define:
       annotation (Dialog(tab="Initialization", enable=Medium.nC > 0));
 
     // Total quantities
-    SI.Energy[n] U "Internal energy of fluid";
-    SI.Mass[n] m "Fluid mass";
-    SI.Mass[n,Medium.nXi] mXi "Substance mass";
-    SI.Mass[n,Medium.nC] mC "Trace substance mass";
+    SI.Energy[n] Us "Internal energy of fluid";
+    SI.Mass[n] ms "Fluid mass";
+    SI.Mass[n,Medium.nXi] mXis "Substance mass";
+    SI.Mass[n,Medium.nC] mCs "Trace substance mass";
     // C need to be added here because unlike for Xi, which has medium[:].Xi,
     // there is no variable medium[:].C
-    Medium.ExtraProperty C[n, Medium.nC] "Trace substance mixture content";
+    Medium.ExtraProperty Cs[n, Medium.nC] "Trace substance mixture content";
 
-    Medium.BaseProperties[n] medium(
+    Medium.BaseProperties[n] mediums(
       each preferredMediumStates=true,
-      p(start=p_start),
+      p(start=ps_start),
       each h(start=h_start),
       each T(start=T_start),
       each Xi(start=X_start[1:Medium.nXi]));
 
     //Source terms, have to be set in inheriting class (to zero if not used)
-    SI.Volume[n] fluidVolume
+    SI.Volume[n] fluidVolumes
         "Discretized volume, determine in inheriting class";
-    Medium.MassFlowRate[n] ms_flow "Mass flow rate, source or sink";
-    Medium.MassFlowRate[n,Medium.nXi] msXi_flow
+    Medium.MassFlowRate[n] ms_flows "Mass flow rate, source or sink";
+    Medium.MassFlowRate[n,Medium.nXi] msXi_flows
         "Independent mass flow rates, source or sink";
-    Medium.ExtraPropertyFlowRate[n,Medium.nC] msC_flow
+    Medium.ExtraPropertyFlowRate[n,Medium.nC] msC_flows
         "Trace substance mass flow rates, source or sink";
-    SI.EnthalpyFlowRate[n] Hs_flow "Enthalpy flow rate, source or sink";
-    SI.HeatFlowRate[n] Qs_flow "Heat flow rate, source or sink";
-    SI.Power[n] Ws_flow "Mechanical power, p*der(V) etc.";
+    SI.EnthalpyFlowRate[n] Hs_flows "Enthalpy flow rate, source or sink";
+    SI.HeatFlowRate[n] Qs_flows "Heat flow rate, source or sink";
+    SI.Power[n] Ws_flows "Mechanical power, p*der(V) etc.";
 
     protected
     parameter Boolean initialize_p = not Medium.singleState
@@ -956,50 +956,50 @@ An extending class still needs to define:
     // Total quantities
     for i in 1:n loop
       if use_d_nominal then
-        m[i] =fluidVolume[i]*d_nominal[i];
+        ms[i] =fluidVolumes[i]*d_nominal;
       else
-        m[i] =fluidVolume[i]*medium[i].d;
+        ms[i] =fluidVolumes[i]*mediums[i].d;
       end if;
-      mXi[i, :] = m[i]*medium[i].Xi;
-      mC[i, :]  = m[i]*C[i, :];
-      U[i] = m[i]*medium[i].u;
+      mXis[i, :] = ms[i]*mediums[i].Xi;
+      mCs[i, :]  = ms[i]*Cs[i, :];
+      Us[i] = ms[i]*mediums[i].u;
     end for;
 
     // Energy and mass balances
     if energyDynamics == Dynamics.SteadyState then
       for i in 1:n loop
-        0 = Hs_flow[i] + Ws_flow[i] + Qs_flow[i];
+        0 = Hs_flows[i] + Ws_flows[i] + Qs_flows[i];
       end for;
     else
       for i in 1:n loop
-        der(U[i]) = Hs_flow[i] + Ws_flow[i] + Qs_flow[i];
+        der(Us[i]) = Hs_flows[i] + Ws_flows[i] + Qs_flows[i];
       end for;
     end if;
     if massDynamics == Dynamics.SteadyState then
       for i in 1:n loop
-        0 = ms_flow[i];
+        0 = ms_flows[i];
       end for;
     else
       for i in 1:n loop
-        der(m[i]) = ms_flow[i];
+        der(ms[i]) = ms_flows[i];
       end for;
     end if;
     if substanceDynamics == Dynamics.SteadyState then
       for i in 1:n loop
-        zeros(Medium.nXi) = msXi_flow[i, :];
+        zeros(Medium.nXi) = msXi_flows[i, :];
       end for;
     else
       for i in 1:n loop
-        der(mXi[i, :]) = msXi_flow[i, :];
+        der(mXis[i, :]) = msXi_flows[i, :];
       end for;
     end if;
     if traceDynamics == Dynamics.SteadyState then
       for i in 1:n loop
-        zeros(Medium.nC)  = msC_flow[i, :];
+        zeros(Medium.nC)  = msC_flows[i, :];
       end for;
     else
       for i in 1:n loop
-        der(mC[i, :])  = msC_flow[i, :];
+        der(mCs[i, :])  = msC_flows[i, :];
       end for;
     end if;
 
@@ -1007,41 +1007,41 @@ An extending class still needs to define:
     // initialization of balances
     if energyDynamics == Dynamics.FixedInitial then
       if use_T_start then
-        medium.T = fill(T_start, n);
+        mediums.T = fill(T_start, n);
       else
-        medium.h = fill(h_start, n);
+        mediums.h = fill(h_start, n);
       end if;
     elseif energyDynamics == Dynamics.SteadyStateInitial then
       if use_T_start then
-        der(medium.T) = zeros(n);
+        der(mediums.T) = zeros(n);
       else
-        der(medium.h) = zeros(n);
+        der(mediums.h) = zeros(n);
       end if;
     end if;
 
     if massDynamics == Dynamics.FixedInitial then
       if initialize_p then
-        medium.p = p_start;
+        mediums.p = ps_start;
       end if;
     elseif massDynamics == Dynamics.SteadyStateInitial then
       if initialize_p then
-        der(medium.p) = zeros(n);
+        der(mediums.p) = zeros(n);
       end if;
     end if;
 
     if substanceDynamics == Dynamics.FixedInitial then
-      medium.Xi = fill(X_start[1:Medium.nXi], n);
+      mediums.Xi = fill(X_start[1:Medium.nXi], n);
     elseif substanceDynamics == Dynamics.SteadyStateInitial then
       for i in 1:n loop
-        der(medium[i].Xi) = zeros(Medium.nXi);
+        der(mediums[i].Xi) = zeros(Medium.nXi);
       end for;
     end if;
 
     if traceDynamics == Dynamics.FixedInitial then
-      C = fill(C_start[1:Medium.nC], n);
+      Cs = fill(C_start[1:Medium.nC], n);
     elseif traceDynamics == Dynamics.SteadyStateInitial then
       for i in 1:n loop
-        der(mC[i,:])      = zeros(Medium.nC);
+        der(mCs[i,:])      = zeros(Medium.nC);
       end for;
     end if;
 
@@ -1055,18 +1055,18 @@ Base class for <tt><b>n</b></tt> ideally mixed fluid volumes with the ability to
 It is inteded to model a one-dimensional spatial discretization of fluid flow according to the finite volume method. 
 The following source terms are part of the energy balance and must be specified in an extending class:
 <ul>
-<li><tt><b>Qs_flow[n]</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
-<li><tt><b>Ws_flow[n]</b></tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
+<li><tt><b>Qs_flows[n]</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
+<li><tt><b>Ws_flows[n]</b></tt>, work term, e.g. p*der(fluidVolumes) if the volume is not constant.</li>
 </ul>
-The component volume <tt><b>fluidVolume[n]</b></tt> is a variable which needs to be set in the extending class to complete the model.
+The component volume <tt><b>fluidVolumes[n]</b></tt> is a variable which needs to be set in the extending class to complete the model.
 <p>
 Further source terms must be defined by an extending class for fluid flow across the segment boundary:
 </p>
 <ul>
-<li><tt><b>Hs_flow[n]</b></tt>, enthalpy flow,</li> 
-<li><tt><b>ms_flow[n]</b></tt>, mass flow,</li> 
-<li><tt><b>msXi_flow[n]</b></tt>, substance mass flow, and</li> 
-<li><tt><b>msC_flow[n]</b></tt>, trace substance mass flow.</li> 
+<li><tt><b>Hs_flows[n]</b></tt>, enthalpy flow,</li> 
+<li><tt><b>ms_flows[n]</b></tt>, mass flow,</li> 
+<li><tt><b>msXi_flows[n]</b></tt>, substance mass flow, and</li> 
+<li><tt><b>msC_flows[n]</b></tt>, trace substance mass flow.</li> 
 </ul>
 </html>"));
   end PartialDistributedVolume;
@@ -1077,7 +1077,7 @@ Further source terms must be defined by an extending class for fluid flow across
         "Base class for vessel heat transfer models"
       extends Modelica_Fluid.Interfaces.PartialHeatTransfer;
 
-      input SI.Area[n] transferArea "Heat transfer area" 
+      input SI.Area[n] transferAreas "Heat transfer area" 
         annotation(Dialog(tab="Internal Interface",enable=false));
 
       annotation(Documentation(info="<html>
@@ -1099,7 +1099,7 @@ Base class for vessel heat transfer models.
         "IdealHeatTransfer: Ideal heat transfer without thermal resistance"
       extends PartialVesselHeatTransfer;
     equation
-      T = heatPorts.T;
+      Ts = heatPorts.T;
       annotation(Documentation(info="<html>
 Ideal heat transfer without thermal resistance.
 </html>"));
@@ -1114,7 +1114,7 @@ Ideal heat transfer without thermal resistance.
 Simple heat transfer correlation with constant heat transfer coefficient.
 </html>"));
     equation
-      Q_flow = {alpha0*transferArea[i]*(heatPorts[i].T - T[i]) for i in 1:n};
+      Q_flows = {alpha0*transferAreas[i]*(heatPorts[i].T - Ts[i]) for i in 1:n};
     end ConstantHeatTransfer;
     annotation (Documentation(info="<html>
 Heat transfer correlations for pipe models

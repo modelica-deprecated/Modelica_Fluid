@@ -331,11 +331,11 @@ package Interfaces
       annotation(Dialog(tab="Internal Interface",enable=false), Evaluate=true);
 
     // Inputs provided to heat transfer model
-    input Medium.ThermodynamicState[n] state 
+    input Medium.ThermodynamicState[n] states 
       annotation(Dialog(tab="Internal Interface",enable=false));
 
     // Output defined by heat transfer model
-    output SI.HeatFlowRate[n] Q_flow "Heat flow rates per tube";
+    output SI.HeatFlowRate[n] Q_flows "Heat flow rates per tube";
 
     // Heat ports
     Modelica_Fluid.Interfaces.HeatPorts_a[n] heatPorts
@@ -344,21 +344,21 @@ package Interfaces
               rotation=0), iconTransformation(extent={{-20,60},{20,80}})));
 
     // Variables
-    SI.Temperature[n] T;
+    SI.Temperature[n] Ts;
 
   equation
-    T = Medium.temperature(state);
-    heatPorts.Q_flow = Q_flow;
+    Ts = Medium.temperature(states);
+    heatPorts.Q_flow = Q_flows;
 
     annotation (Documentation(info="<html>
 <p>
-This component is a common interface for heat transfer models. The heat flow rates <tt>Q_flow[n]</tt> through the boundaries of n flow segments 
-are obtained as function of the thermodynamic <tt>state</tt> of the flow segments for a given fluid <tt>Medium</tt>
+This component is a common interface for heat transfer models. The heat flow rates <tt>Q_flows[n]</tt> through the boundaries of n flow segments 
+are obtained as function of the thermodynamic <tt>states</tt> of the flow segments for a given fluid <tt>Medium</tt>
 and the boundary temperatures <tt>heatPorts[n].T</tt>.
 </p>
 <p>
-An extending model implementing this interface needs to define the relation between the predefined fluid temperatures <tt>T[n]</tt>,
-the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q_flow[n]</tt>.
+An extending model implementing this interface needs to define the relation between the predefined fluid temperatures <tt>Ts[n]</tt>,
+the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q_flows[n]</tt>.
 </p>
 </html>"));
   end PartialHeatTransfer;
@@ -375,28 +375,28 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         parameter Integer n=1 "number of flow segments" 
           annotation(Dialog(tab="Internal Interface",enable=false));
 
-        input Medium.ThermodynamicState[n+1] state "states along design flow" 
+        input Medium.ThermodynamicState[n+1] states "states along design flow" 
           annotation(Dialog(tab="Internal Interface",enable=false));
 
-        output Medium.MassFlowRate[n] m_flow
+        output Medium.MassFlowRate[n] m_flows
       "mass flow rates along design flow";
 
-        Medium.AbsolutePressure[n+1] p "pressures of states";
-        Modelica.SIunits.Pressure[n] dp "pressure drop between states";
+        Medium.AbsolutePressure[n+1] ps "pressures of states";
+        Modelica.SIunits.Pressure[n] dps "pressure drop between states";
 
       equation
-        p = Medium.pressure(state);
-        dp = p[1:n] - p[2:n+1];
+        ps = Medium.pressure(states);
+        dps = ps[1:n] - ps[2:n+1];
 
         annotation (
            Documentation(info="<html>
 <p>
-This component is a common interface for pressure loss models. The mass flow rates <tt>m_flow[n]</tt> between n+1 flow segments 
-are obtained as function of the thermodynamic <tt>state[n+1]</tt> of the flow segments for a given fluid <tt>Medium</tt>.
+This component is a common interface for pressure loss models. The mass flow rates <tt>m_flows[n]</tt> between n+1 flow segments 
+are obtained as function of the thermodynamic <tt>states[n+1]</tt> of the flow segments for a given fluid <tt>Medium</tt>.
 </p>
 <p>
-An extending model implementing this interface needs to define the mass flow rates <tt>m_flow[n]</tt> for the predefined
-pressure drops <tt>dp[n]</tt> between the states.
+An extending model implementing this interface needs to define the mass flow rates <tt>m_flows[n]</tt> for the predefined
+pressure drops <tt>dps[n]</tt> between the states.
 </p>
 </html>"));
       end PartialPressureLoss;

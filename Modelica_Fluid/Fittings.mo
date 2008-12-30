@@ -526,10 +526,10 @@ of the modeller.
         p_a_start = system.p_start + 0.5*dp_start,
         p_b_start = system.p_start - 0.5*dp_start,
         nParallel = 1,
-        length = {0},
-        crossArea=fill(Modelica.Constants.pi/4*2.54e-2^2, 2),
-        perimeter={Modelica.Constants.pi*2.54e-2},
-        roughness={2.5e-5},
+        lengths = {0},
+        crossAreas=fill(Modelica.Constants.pi/4*2.54e-2^2, 2),
+        perimeters={Modelica.Constants.pi*2.54e-2},
+        roughnesses={2.5e-5},
         allowFlowReversal=allowFlowReversal,
         momentumDynamics=Types.Dynamics.SteadyState));
 
@@ -643,17 +643,17 @@ polynomials. The monotonicity is guaranteed using results from:
       = 8*zeta/(pi*D^2)^2 
   */
       if from_dp then
-        m_flow[1] = Utilities.regRoot2(
-            dp[1],
+        m_flows[1] = Utilities.regRoot2(
+            dps[1],
             dp_small,
-            Medium.density(state[1])/lossConstant_D_zeta(diameter, zeta),
-            Medium.density(state[2])/lossConstant_D_zeta(diameter, zeta));
+            Medium.density(states[1])/lossConstant_D_zeta(diameter, zeta),
+            Medium.density(states[2])/lossConstant_D_zeta(diameter, zeta));
       else
-        dp[1] = Utilities.regSquare2(
-            m_flow[1],
+        dps[1] = Utilities.regSquare2(
+            m_flows[1],
             m_flow_small,
-            lossConstant_D_zeta(diameter, zeta)/Medium.density(state[1]),
-            lossConstant_D_zeta(diameter, zeta)/Medium.density(state[2]));
+            lossConstant_D_zeta(diameter, zeta)/Medium.density(states[1]),
+            lossConstant_D_zeta(diameter, zeta)/Medium.density(states[2]));
       end if;
 
       annotation (Icon(coordinateSystem(
@@ -1572,21 +1572,21 @@ Laminar region:
 
       equation
         if from_dp then
-           m_flow[1] = if use_Re then 
+           m_flows[1] = if use_Re then 
                        massFlowRate_dp_and_Re(
-                          dp[1], Medium.density(state[1]), Medium.density(state[2]),
-                          Medium.dynamicViscosity(state[1]),
-                          Medium.dynamicViscosity(state[2]),
+                          dps[1], Medium.density(states[1]), Medium.density(states[2]),
+                          Medium.dynamicViscosity(states[1]),
+                          Medium.dynamicViscosity(states[2]),
                           data) else 
-                       massFlowRate_dp(dp[1], Medium.density(state[1]), Medium.density(state[2]), data, dp_small);
+                       massFlowRate_dp(dps[1], Medium.density(states[1]), Medium.density(states[2]), data, dp_small);
         else
-           dp[1] = if use_Re then 
+           dps[1] = if use_Re then 
                    pressureLoss_m_flow_and_Re(
-                       m_flow[1], Medium.density(state[1]), Medium.density(state[2]),
-                       Medium.dynamicViscosity(state[1]),
-                       Medium.dynamicViscosity(state[2]),
+                       m_flows[1], Medium.density(states[1]), Medium.density(states[2]),
+                       Medium.dynamicViscosity(states[1]),
+                       Medium.dynamicViscosity(states[2]),
                        data) else 
-                   pressureLoss_m_flow(m_flow[1], Medium.density(state[1]), Medium.density(state[2]), data, m_flow_small);
+                   pressureLoss_m_flow(m_flows[1], Medium.density(states[1]), Medium.density(states[2]), data, m_flow_small);
         end if;
 
         annotation (Icon(coordinateSystem(
@@ -1915,10 +1915,10 @@ The used sufficient criteria for monotonicity follows from:
 
     PressureLoss pressureLoss(
       redeclare final package Medium = Medium,
-      state = {state_a, state_b});
+      states = {state_a, state_b});
 
   equation
-    m_flow = pressureLoss.m_flow[1];
+    m_flow = pressureLoss.m_flows[1];
 
     annotation (Documentation(info="<html>
 <p>
