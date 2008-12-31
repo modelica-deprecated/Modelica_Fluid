@@ -37,7 +37,7 @@ package TestOverdeterminedInitial
       height=-0.5,
       startTime=2) 
                 annotation (Placement(transformation(extent={{46,30},{26,50}})));
-    inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial)
+    inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
       annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
     discrete Modelica.SIunits.MassFlowRate m_flow_initial;
   equation
@@ -77,7 +77,7 @@ The initial equations are consistent however and a tool shall reduce them approp
             extent={{-100,-20},{100,-40}},
             lineColor={0,0,255},
             textString=
-                "Problem: pipe.medium.p[1:5] are equal and have initial equations der(medium.p)=zeros(5);"), 
+                "Problem: pipe.medium.p[1:5] are equal and have initial equations der(medium.p)=zeros(5);"),
             Text(
             extent={{-76,-40},{80,-58}},
             lineColor={0,0,255},

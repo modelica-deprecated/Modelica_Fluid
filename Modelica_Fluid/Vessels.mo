@@ -121,8 +121,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -432,8 +432,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 3))),
           Line(
             points={{-100,100},{100,100}},

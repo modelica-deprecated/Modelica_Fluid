@@ -216,8 +216,8 @@ pipe wall/environment).
 
     import Modelica_Fluid.Types.ModelStructure;
 
-    // extending TwoPortDistributedFlow
-    extends BaseClasses.TwoPortDistributedFlow(
+    // extending PartialDistributedFlow
+    extends BaseClasses.PartialDistributedFlow(
       final lengths=if modelStructure == ModelStructure.av_vb then 
                         cat(1, {length/(n-1)/2}, fill(length/(n-1), n-2), {length/(n-1)/2}) else 
                         fill(length/n, n),
@@ -229,6 +229,38 @@ pipe wall/environment).
     extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe(
       final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.av_vb),
       final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.av_vb));
+
+    // Wall heat transfer
+    parameter Boolean use_HeatTransfer = false
+      "= true to use the HeatTransfer model" 
+        annotation (Dialog(tab="Assumptions", group="Heat transfer"));
+    replaceable model HeatTransfer = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer 
+      constrainedby
+      Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer
+      "Wall heat transfer" 
+        annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
+    Interfaces.HeatPorts_a[nNodes] heatPorts if use_HeatTransfer 
+      annotation (Placement(transformation(extent={{-10,44},{10,64}}), iconTransformation(extent={{-30,44},{32,60}})));
+
+    HeatTransfer heatTransfer(
+      redeclare each final package Medium = Medium,
+      final n=n,
+      final nParallel=nParallel,
+      final lengths=lengths,
+      final crossAreas=crossAreas,
+      final perimeters=perimeters,
+      final roughnesses=roughnesses,
+      states=mediums.state,
+      m_flows=m_flows) "Heat transfer model" 
+        annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
+
+  equation
+    Qs_flows = heatTransfer.Q_flows;
+    Ws_flows = zeros(n);
+
+    connect(heatPorts, heatTransfer.heatPorts) 
+      annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
 
     annotation (defaultComponentName="pipe",
   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
@@ -247,10 +279,18 @@ pipe wall/environment).
           graphics),
   Documentation(info="<html>
 <p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe\">PartialStraightPipe</a>
-and <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.TwoPortDistributedFlow\">TwoPortDistributedFlow</a>. 
+and <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. 
 The total volume is determined by lumped geometry parameters. It is split into nNodes pipe segments of equal size along the flow path. 
 The default value is nNodes=2.
+</p>
 
+<p>
+The <b><tt>HeatTransfer</tt></b> component specifies the source term <tt>Qs_flows</tt> in the energy balance. 
+The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
+The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.PartialFlowHeatTransfer</a>.</p>
+</p>
+ 
 </html>"));
 
   end DistributedPipe;
@@ -322,7 +362,8 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
     end PartialStraightPipe;
 
-    model TwoPortDistributedFlow "Base class for distributed flow models"
+    partial model PartialDistributedFlow
+      "Base class for distributed flow models"
 
       import Modelica_Fluid.Types.ModelStructure;
 
@@ -430,31 +471,6 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       Medium.EnthalpyFlowRate[n+1] H_flows
         "Enthalpy flow rates of fluid across segment boundaries";
 
-      // Wall heat transfer
-      parameter Boolean use_HeatTransfer = false
-        "= true to use the HeatTransfer model" 
-          annotation (Dialog(tab="Assumptions", group="Heat transfer"));
-      replaceable model HeatTransfer = 
-          Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer 
-        constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer
-        "Wall heat transfer" 
-          annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
-      Interfaces.HeatPorts_a[nNodes] heatPorts if use_HeatTransfer 
-        annotation (Placement(transformation(extent={{-10,44},{10,64}}), iconTransformation(extent={{-30,44},{32,60}})));
-
-      HeatTransfer heatTransfer(
-        redeclare each final package Medium = Medium,
-        final n=n,
-        final nParallel=nParallel,
-        final lengths=lengths,
-        final crossAreas=crossAreas,
-        final perimeters=perimeters,
-        final roughnesses=roughnesses,
-        states=mediums.state,
-        m_flows=m_flows) "Heat transfer model" 
-          annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
-
       // Model structure dependent flow geometry
     protected
       SI.Length[nFlows] lengthsFlows "lengths of flow segments";
@@ -543,8 +559,6 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       fluidVolumes = {crossAreas[i]*lengths[i] for i in 1:n};
 
       // Source/sink terms for mass and energy balances
-      Qs_flows = heatTransfer.Q_flows;
-      Ws_flows = zeros(n);
       for i in 1:n loop
         ms_flows[i] = m_flows[i] - m_flows[i + 1];
         msXi_flows[i, :] = mXi_flows[i, :] - mXi_flows[i + 1, :];
@@ -659,8 +673,6 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
         end if;
       end if;
 
-      connect(heatPorts, heatTransfer.heatPorts) 
-        annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
       annotation (defaultComponentName="pipe",
     Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
                 100}},
@@ -685,11 +697,9 @@ The default value is nNodes=2.
 One mass and one energy balance if formulated for each flow segment. 
 The mass and energy balances are inherited from <a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume\">PartialDistributedVolume</a>. 
  
-<p><b>Heat transfer</b></p>
-The additional component <b><tt>HeatTransfer</tt></b> specifies the source term <tt>Qs_flows</tt> in the energy balance. 
-The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
-The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.PartialFlowHeatTransfer</a>.</p>
+<p>
+An extending model needs to define the source terms <tt>Qs_flows</tt> and <tt>Ws_flow</tt>.
+</p>
  
 <p><b>Pressure loss</b></p>
 The momentum balance is determined by the <b><tt>PressureLoss</tt></b> component, which can be replaced with any model extended from 
@@ -743,7 +753,7 @@ This also allows for taking into account friction losses with respect to the act
 </ul>
 </html>"));
 
-    end TwoPortDistributedFlow;
+    end PartialDistributedFlow;
 
     package PressureLoss
       "Pressure loss models for pipes, including wall friction and static head"
