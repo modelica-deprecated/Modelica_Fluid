@@ -105,7 +105,7 @@ present that are regulated by a central control system.
 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-300,
               -300},{300,300}}),      graphics),
-      experiment(StopTime=3200),
+      experiment(StopTime=3600),
       experimentSetupOutput,
       Commands(file=
             "../Scripts/Examples/AST_BatchPlant_StandardWater/plot level.mos"
@@ -273,7 +273,8 @@ present that are regulated by a central control system.
       V(displayUnit="ml") = 0.0001,
       use_V=true,
       p_a_start=100000,
-      p_b_start=100000) 
+      p_b_start=100000,
+      checkValve=true) 
       annotation (Placement(transformation(extent={{-140,-260},{-160,-240}},
             rotation=0)));
     Machines.PrescribedPump P2(
@@ -289,7 +290,8 @@ present that are regulated by a central control system.
       V(displayUnit="ml") = 0.0001,
       use_V=true,
       p_a_start=100000,
-      p_b_start=100000) 
+      p_b_start=100000,
+      checkValve=true) 
       annotation (Placement(transformation(extent={{120,-260},{140,-240}},
             rotation=0)));
     Modelica_Fluid.Vessels.Tank B1(
