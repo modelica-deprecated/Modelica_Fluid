@@ -348,10 +348,10 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
     // Assumptions
     parameter Boolean checkValve=false "= true to prevent reverse flow" 
-      annotation(Dialog(tab="Assumptions"));
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
     parameter Boolean use_V = false
         "= true to consider the fluid volume and storage inside the pump" 
-      annotation(Dialog(tab="Assumptions"));
+      annotation(Dialog(tab="Assumptions"), Evaluate=true);
     parameter SI.Volume V = 0 "Volume inside the pump" 
       annotation(Dialog(tab="Assumptions",enable=use_V or use_HeatTransfer));
 
@@ -424,8 +424,12 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
   equation
     // Flow equations
-    if noEvent(s > 0 or (not checkValve)) then
-      // Flow characteristics when check valve is open or with no check valve
+    if not checkValve then
+      // Regular flow characteristics without check valve
+      head = (N/N_nominal)^2*flowCharacteristic(V_flow_single*(N_nominal/N));
+      s = 0;
+    elseif s > 0 then
+      // Flow characteristics when check valve is open
       head = (N/N_nominal)^2*flowCharacteristic(V_flow_single*(N_nominal/N));
       V_flow_single = s*unitMassFlowRate/d;
     else
@@ -454,16 +458,6 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     else
       // Neglect fluid volume
       fluidVolume = 0;
-      /* In the following two equations the extra term W_total/m_flow is
-       present where a 0/0 term appears if m_flow = 0. In order to avoid
-       numerical problems, this term is analytically simplified:
-         W_total/m_flow = nParallel*W_single/(d*V_flow_single*nParallel)
-                      = nParallel*dp_pump*V_flow_single/(eta*d*V_flow_single*nParallel)
-                      = dp_pump/(eta*d)
-    */
-      //port_b.h_outflow  = inStream(port_a.h_outflow) + dp_pump/(d_in*eta);
-      //port_a.h_outflow  = inStream(port_b.h_outflow) + dp_pump/(d_in*eta);
-      //assert(abs(heatTransfer.Q_flow[1]) < Modelica.Constants.small, "Specify V > 0 if use_HeatTransfer.");
     end if;
 
     // Ports
@@ -568,7 +562,8 @@ provided a two-phase medium model is used.
     by R&uuml;diger Franke:<br>
     <ul>
     <li>Replaced simplified mass and energy balances with rigorous formulation (base class PartialLumpedVolume)</li>
-    <li>Introduced optional HeatTransfer model</li>
+    <li>Introduced optional HeatTransfer model defining Qs_flow</li>
+    <li>Enabled events when the checkValve is operating to support the opening of a discrete valve before port_a</li>
     </ul></li>
 <li><i>31 Oct 2005</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
