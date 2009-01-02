@@ -528,8 +528,8 @@ of the modeller.
         nParallel = 1,
         lengths = {0},
         crossAreas=fill(Modelica.Constants.pi/4*2.54e-2^2, 2),
-        perimeters={Modelica.Constants.pi*2.54e-2},
-        roughnesses={2.5e-5},
+        perimeters=fill(Modelica.Constants.pi*2.54e-2, 2),
+        roughnesses=fill(2.5e-5, 2),
         allowFlowReversal=allowFlowReversal,
         momentumDynamics=Types.Dynamics.SteadyState));
 
@@ -1740,7 +1740,7 @@ The used sufficient criteria for monotonicity follows from:
         parameter Boolean show_Re = false
           "= true, if Reynolds number is included for plotting" 
            annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnostics"));
-        SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(
+        SI.ReynoldsNumber Re = Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber(
               m_flow, (Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b))/2,
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
 

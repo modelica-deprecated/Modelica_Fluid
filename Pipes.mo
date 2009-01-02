@@ -38,8 +38,8 @@ package Pipes "Devices for conveying fluid"
             final nParallel=nParallel,
             final lengths={length},
             final crossAreas={crossArea, crossArea},
-            final perimeters={perimeter},
-            final roughnesses={roughness},
+            final perimeters={perimeter, perimeter},
+            final roughnesses={roughness, roughness},
             final height_ab=height_ab,
             final g=system.g) "Pressure loss model" 
        annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
@@ -216,10 +216,14 @@ pipe wall/environment).
 
     import Modelica_Fluid.Types.ModelStructure;
 
-    // extending PartialDistributedFlow
-    extends BaseClasses.PartialDistributedFlow(
+    // extending PartialTwoPortFlow
+    extends BaseClasses.PartialTwoPortFlow(
       final lengths=if modelStructure == ModelStructure.av_vb then 
                         cat(1, {length/(n-1)/2}, fill(length/(n-1), n-2), {length/(n-1)/2}) else 
+                    if modelStructure == ModelStructure.av_b then 
+                        cat(1, {length/n/2}, fill(length/n, n-1)) else 
+                    if modelStructure == ModelStructure.a_vb then 
+                        cat(1, fill(length/n, n-1), {length/n/2}) else 
                         fill(length/n, n),
       final crossAreas=fill(crossArea, n),
       final perimeters=fill(perimeter, n),
@@ -241,28 +245,54 @@ pipe wall/environment).
       "Wall heat transfer" 
         annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
     Interfaces.HeatPorts_a[nNodes] heatPorts if use_HeatTransfer 
-      annotation (Placement(transformation(extent={{-10,44},{10,64}}), iconTransformation(extent={{-30,44},{32,60}})));
+      annotation (Placement(transformation(extent={{-10,45},{10,65}}), iconTransformation(extent={{-30,44},{32,60}})));
 
     HeatTransfer heatTransfer(
       redeclare each final package Medium = Medium,
       final n=n,
       final nParallel=nParallel,
+      final transferAreas=perimeter*lengths,
       final lengths=lengths,
       final crossAreas=crossAreas,
-      final perimeters=perimeters,
       final roughnesses=roughnesses,
       states=mediums.state,
       m_flows=m_flows) "Heat transfer model" 
-        annotation (Placement(transformation(extent={{-20,-5},{20,35}},  rotation=0)));
+        annotation (Placement(transformation(extent={{-36,15},{-14,37}}, rotation=0)));
 
   equation
     Qs_flows = heatTransfer.Q_flows;
     Ws_flows = zeros(n);
 
     connect(heatPorts, heatTransfer.heatPorts) 
-      annotation (Line(points={{0,54},{0,29}}, color={191,0,0}));
-
+      annotation (Line(points={{0,55},{0,54},{-24,54},{-24,33.7},{-25,33.7}},
+                                               color={191,0,0}));
     annotation (defaultComponentName="pipe",
+  Documentation(info="<html>
+<p>Model of a straight pipe with distributed mass, energy and momentum balances. 
+The pipe is split into nNodes equally spaced segments along the flow path. 
+The default value is nNodes=2. 
+</p>
+<p>
+The first and the last pipe segment may be of half size, depending on the configured <tt>modelStructure</tt>
+(default av_vb): 
+<ul>
+<li><tt>av_vb</tt>: The first and the last pipe segments are of half size. 
+                    The respective thermodynamic states are exposed through <tt>port_a</tt> and <tt>port_b</tt>.</li>
+<li><tt>a_v_b</tt>: Half momentum balances are placed between the first pipe segment and <tt>port_a</tt> 
+                    as well as between the last pipe segment and <tt>port_b</tt>.</li>
+<li><tt>av_b</tt>:  The first pipe segment is of half size and its thermodynamic state is exposed through <tt>port_a</tt>. 
+                    Half a momentum balances is placed between the last pipe segment and <tt>port_b</tt>.</li>
+<li><tt>a_vb</tt>:  Half a momentum balances is placed between <tt>port_a</tt> and the first pipe segment.
+                    The last pipe segment is of half size and its thermodynamic state is exposed through <tt>port_b</tt>.</li>
+</ul></p>
+<p>
+The <b><tt>HeatTransfer</tt></b> component specifies the source term <tt>Qs_flows</tt> of the energy balance. 
+The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
+The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.PartialFlowHeatTransfer</a>.</p>
+</p>
+ 
+</html>"),
   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={Ellipse(
             extent={{-72,10},{-52,-10}},
@@ -275,23 +305,52 @@ pipe wall/environment).
             fillPattern=FillPattern.Solid)}),
   Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
               100}},
-          grid={1,1}),
-          graphics),
-  Documentation(info="<html>
-<p>Distributed pipe model based on <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe\">PartialStraightPipe</a>
-and <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">PartialDistributedFlow</a>. 
-The total volume is determined by lumped geometry parameters. It is split into nNodes pipe segments of equal size along the flow path. 
-The default value is nNodes=2.
-</p>
-
-<p>
-The <b><tt>HeatTransfer</tt></b> component specifies the source term <tt>Qs_flows</tt> in the energy balance. 
-The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
-The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.PartialFlowHeatTransfer</a>.</p>
-</p>
- 
-</html>"));
+          grid={1,1}), graphics={
+          Rectangle(
+            extent={{-100,60},{100,50}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward),
+          Rectangle(
+            extent={{-100,-50},{100,-60}},
+            lineColor={0,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Backward),
+          Line(
+            points={{100,45},{100,50}},
+            arrow={Arrow.None,Arrow.Filled},
+            color={0,0,0},
+            pattern=LinePattern.Dot),
+          Line(
+            points={{0,45},{0,50}},
+            arrow={Arrow.None,Arrow.Filled},
+            color={0,0,0},
+            pattern=LinePattern.Dot),
+          Line(
+            points={{100,-45},{100,-50}},
+            arrow={Arrow.None,Arrow.Filled},
+            color={0,0,0},
+            pattern=LinePattern.Dot),
+          Line(
+            points={{0,-45},{0,-50}},
+            arrow={Arrow.None,Arrow.Filled},
+            color={0,0,0},
+            pattern=LinePattern.Dot),
+          Line(
+            points={{-50,60},{-50,50}},
+            smooth=Smooth.None,
+            color={0,0,0},
+            pattern=LinePattern.Dot),
+          Line(
+            points={{50,60},{50,50}},
+            smooth=Smooth.None,
+            color={0,0,0},
+            pattern=LinePattern.Dot),
+          Line(
+            points={{0,-50},{0,-60}},
+            smooth=Smooth.None,
+            color={0,0,0},
+            pattern=LinePattern.Dot)}));
 
   end DistributedPipe;
 
@@ -326,7 +385,7 @@ The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any mod
 
       // Static head
       parameter SI.Length height_ab=0 "Height(port_b) - Height(port_a)" 
-          annotation(Dialog(group="Static head"), Evaluate=true);
+          annotation(Dialog(group="Static head"));
 
       // Pressure loss
       replaceable model PressureLoss = 
@@ -362,8 +421,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
     end PartialStraightPipe;
 
-    partial model PartialDistributedFlow
-      "Base class for distributed flow models"
+    partial model PartialTwoPortFlow "Base class for distributed flow models"
 
       import Modelica_Fluid.Types.ModelStructure;
 
@@ -377,7 +435,8 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
         final n = nNodes);
 
       // Geometry parameters
-      parameter Real nParallel(min=1)=1 "Number of identical parallel pipes" 
+      parameter Real nParallel(min=1)=1
+        "Number of identical parallel flow devices" 
         annotation(Dialog(group="Geometry"));
       parameter SI.Length[n] lengths "lengths of flow segments" 
         annotation(Dialog(group="Geometry"));
@@ -457,7 +516,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
               final roughnesses=roughnessesFlows,
               final height_ab=height_ab,
               final g=system.g) "Pressure loss model" 
-         annotation (Placement(transformation(extent={{-77,-57},{77,-23}},rotation=0)));
+         annotation (Placement(transformation(extent={{-77,-38},{75,-20}},rotation=0)));
 
       // Flow quantities
       Medium.MassFlowRate[n+1] m_flows(
@@ -473,11 +532,11 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
       // Model structure dependent flow geometry
     protected
-      SI.Length[nFlows] lengthsFlows "lengths of flow segments";
-      SI.Area[nFlows+1] crossAreasFlows "cross flow areas of flow segments";
-      SI.Length[nFlows] perimetersFlows
-        "perimeters of flow segments for heat transfer area and hydraulic diameter";
-      SI.Height[nFlows] roughnessesFlows
+      SI.Length[nFlows] lengthsFlows "Lengths of flow segments";
+      SI.Area[nFlows+1] crossAreasFlows
+        "Cross flow areas at segment boundaries";
+      SI.Length[nFlows+1] perimetersFlows "Perimeters at segment boundaries";
+      SI.Height[nFlows+1] roughnessesFlows
         "Average heights of surface asperities";
     equation
       assert(nNodes > 1 or modelStructure <> ModelStructure.av_vb,
@@ -487,24 +546,26 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       if lumpedPressure then
         if modelStructure <> ModelStructure.a_v_b then
           lengthsFlows[1] = sum(lengths);
-          perimetersFlows[1] = sum(perimeters)/n;
-          roughnessesFlows[1] = sum(roughnesses)/n;
-          if n > 1 then
+          if n == 1 then
+            crossAreasFlows[1:2] = {crossAreas[1], crossAreas[1]};
+            perimetersFlows[1:2] = {perimeters[1], perimeters[1]};
+            roughnessesFlows[1:2] = {roughnesses[1], roughnesses[1]};
+          else // n > 1
             crossAreasFlows[1:2] = {sum(crossAreas[1:iLumped-1])/(iLumped-1), sum(crossAreas[iLumped:n])/(n-iLumped+1)};
-          else // n == 1
-            crossAreasFlows[1:2] = fill(crossAreas[1], 2);
-          end if;
-        else
-          if n > 1 then
-            lengthsFlows[1:2] = {sum(lengths[1:iLumped-1]), sum(lengths[iLumped:n])};
             perimetersFlows[1:2] = {sum(perimeters[1:iLumped-1])/(iLumped-1), sum(perimeters[iLumped:n])/(n-iLumped+1)};
             roughnessesFlows[1:2] = {sum(roughnesses[1:iLumped-1])/(iLumped-1), sum(roughnesses[iLumped:n])/(n-iLumped+1)};
+          end if;
+        else
+          if n == 1 then
+            lengthsFlows[1:2] = {lengths[1]/2, lengths[1]/2};
+            crossAreasFlows[1:3] = {crossAreas[1], crossAreas[1], crossAreas[1]};
+            perimetersFlows[1:3] = {perimeters[1], perimeters[1], perimeters[1]};
+            roughnessesFlows[1:3] = {roughnesses[1], roughnesses[1], roughnesses[1]};
+          else // n > 1
+            lengthsFlows[1:2] = {sum(lengths[1:iLumped-1]), sum(lengths[iLumped:n])};
             crossAreasFlows[1:3] = {sum(crossAreas[1:iLumped-1])/(iLumped-1), sum(crossAreas)/n, sum(crossAreas[iLumped:n])/(n-iLumped+1)};
-          else // n == 1
-            lengthsFlows[1:2] = fill(lengths[1]/2, 2);
-            perimetersFlows[1:2] = fill(perimeters[1], 2);
-            roughnessesFlows[1:2] = fill(roughnesses[1], 2);
-            crossAreasFlows[1:3] = fill(crossAreas[1], 3);
+            perimetersFlows[1:3] = {sum(perimeters[1:iLumped-1])/(iLumped-1), sum(perimeters)/n, sum(perimeters[iLumped:n])/(n-iLumped+1)};
+            roughnessesFlows[1:3] = {sum(roughnesses[1:iLumped-1])/(iLumped-1), sum(roughnesses)/n, sum(roughnesses[iLumped:n])/(n-iLumped+1)};
           end if;
         end if;
       else
@@ -516,40 +577,26 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             lengthsFlows[1:n-1] = cat(1, {lengths[1] + 0.5*lengths[2]}, 0.5*(lengths[2:n-2] + lengths[3:n-1]), {0.5*lengths[n-1] + lengths[n]});
           end if;
           crossAreasFlows[1:n] = crossAreas;
-          perimetersFlows[1:n-1] = 0.5*(perimeters[1:n-1] + perimeters[2:n]);
-          roughnessesFlows[1:n-1] = 0.5*(roughnesses[1:n-1] + roughnesses[2:n]);
+          perimetersFlows[1:n] = perimeters;
+          roughnessesFlows[1:n] = roughnesses;
         elseif modelStructure == ModelStructure.av_b then
           //nFlows = n
-          lengthsFlows[1:n] = lengths[1:n];
-          //crossAreasFlows[1:n+1] = cat(1, crossAreas[1:n], {crossAreas[n]});
-          for i in 1:n-1 loop
-            crossAreasFlows[i] = crossAreas[i];
-            perimetersFlows[i] = 0.5*(perimeters[i] + perimeters[i+1]);
-            roughnessesFlows[i] = 0.5*(roughnesses[i] + roughnesses[i+1]);
-          end for;
-          crossAreasFlows[n] = crossAreas[n];
-          crossAreasFlows[n+1] = crossAreas[n];
-          perimetersFlows[n] = perimeters[n];
-          roughnessesFlows[n] = roughnesses[n];
+          lengthsFlows[1:n] = lengths;
+          crossAreasFlows[1:n+1] = cat(1, crossAreas[1:n], {crossAreas[n]});
+          perimetersFlows[1:n+1] = cat(1, perimeters[1:n], {perimeters[n]});
+          roughnessesFlows[1:n+1] = cat(1, roughnesses[1:n], {roughnesses[n]});
         elseif modelStructure == ModelStructure.a_vb then
           //nFlows = n
-          lengthsFlows[1:n] = lengths[1:n];
-          //crossAreasFlows[1:n+1] = cat(1, {crossAreas[1]}, crossAreas[1:n]);
-          crossAreasFlows[1] = crossAreas[1];
-          perimetersFlows[1] = perimeters[1];
-          roughnessesFlows[1] = roughnesses[1];
-          for i in 2:n loop
-            crossAreasFlows[i] = crossAreas[i-1];
-            perimetersFlows[i] = 0.5*(perimeters[i-1] + perimeters[i]);
-            roughnessesFlows[i] = 0.5*(roughnesses[i-1] + roughnesses[i]);
-          end for;
-          crossAreasFlows[n+1] = crossAreas[n];
+          lengthsFlows[1:n] = lengths;
+          crossAreasFlows[1:n+1] = cat(1, {crossAreas[1]}, crossAreas[1:n]);
+          perimetersFlows[1:n+1] = cat(1, {perimeters[1]}, perimeters[1:n]);
+          roughnessesFlows[1:n+1] = cat(1, {roughnesses[1]}, roughnesses[1:n]);
         elseif modelStructure == ModelStructure.a_v_b then
           //nFlows = n+1;
           lengthsFlows[1:n+1] = cat(1, {0.5*lengths[1]}, 0.5*(lengths[1:n-1] + lengths[2:n]), {0.5*lengths[n]});
           crossAreasFlows[1:n+2] = cat(1, {crossAreas[1]}, crossAreas[1:n], {crossAreas[n]});
-          perimetersFlows[1:n+1] = cat(1, {perimeters[1]}, 0.5*(perimeters[1:n-1]+perimeters[2:n]), {perimeters[n]});
-          roughnessesFlows[1:n+1] = cat(1, {roughnesses[1]}, 0.5*(roughnesses[1:n-1]+roughnesses[2:n]), {roughnesses[n]});
+          perimetersFlows[1:n+2] = cat(1, {perimeters[1]}, perimeters[1:n], {perimeters[n]});
+          roughnessesFlows[1:n+2] = cat(1, {roughnesses[1]}, roughnesses[1:n], {roughnesses[n]});
         else
           assert(true, "Unknown model structure");
         end if;
@@ -601,6 +648,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
         state_b = Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow));
       end if;
 
+      // staggered grid discretization for pressureLoss, depending on modelStructure
       if lumpedPressure then
         if modelStructure <> ModelStructure.av_vb then
           // all pressures are equal
@@ -638,94 +686,74 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       else
         if modelStructure == ModelStructure.av_vb then
           flowStates[1:n] = mediums[1:n].state;
-          //m_flows[2:n] = pressureLoss.m_flows[1:n-1];
-          for i in 2:n loop
-            m_flows[i] = pressureLoss.m_flows[i-1];
-          end for;
+          m_flows[2:n] = pressureLoss.m_flows[1:n-1];
           port_a.p = mediums[1].p;
           port_b.p = mediums[n].p;
         elseif modelStructure == ModelStructure.av_b then
           flowStates[1:n] = mediums[1:n].state;
           flowStates[n+1] = state_b;
-          //m_flows[2:n+1] = pressureLoss.m_flows;
-          for i in 2:n+1 loop
-            m_flows[i] = pressureLoss.m_flows[i-1];
-          end for;
+          m_flows[2:n+1] = pressureLoss.m_flows[1:n];
           port_a.p = mediums[1].p;
         elseif modelStructure == ModelStructure.a_vb then
           flowStates[1] = state_a;
           flowStates[2:n+1] = mediums[1:n].state;
-          //m_flows[1:n] = pressureLoss.m_flows;
-          for i in 1:n loop
-            m_flows[i] = pressureLoss.m_flows[i];
-          end for;
+          m_flows[1:n] = pressureLoss.m_flows[1:n];
           port_b.p = mediums[n].p;
         elseif modelStructure == ModelStructure.a_v_b then
           flowStates[1] = state_a;
           flowStates[2:n+1] = mediums[1:n].state;
           flowStates[n+2] = state_b;
-          //m_flows = pressureLoss.m_flows;
-          for i in 1:n+1 loop
-            m_flows[i] = pressureLoss.m_flows[i];
-          end for;
+          m_flows[1:n+1] = pressureLoss.m_flows[1:n+1];
         else
           assert(true, "Unknown model structure");
         end if;
       end if;
 
       annotation (defaultComponentName="pipe",
-    Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-                100}},
-            grid={1,1}), graphics={Ellipse(
-              extent={{-72,10},{-52,-10}},
-              lineColor={0,0,0},
-              fillColor={0,0,0},
-              fillPattern=FillPattern.Solid), Ellipse(
-              extent={{50,10},{70,-10}},
-              lineColor={0,0,0},
-              fillColor={0,0,0},
-              fillPattern=FillPattern.Solid)}),
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-                100,100}},
-            grid={1,1}),
-            graphics),
     Documentation(info="<html>
 <p>Base class for distributed flow models. The total volume is split into nNodes segments along the flow path. 
 The default value is nNodes=2.
  
-<p><b>Mass and Energy balance</b></p>
-One mass and one energy balance if formulated for each flow segment. 
+<p><b>Mass and Energy balances</b></p>
 The mass and energy balances are inherited from <a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume\">PartialDistributedVolume</a>. 
- 
+One total mass and one energy balance is formed across each segment according to the finite volume approach. 
+Substance mass balances are added if the medium contains more than one component.
 <p>
-An extending model needs to define the source terms <tt>Qs_flows</tt> and <tt>Ws_flow</tt>.
+An extending model needs to define the geometry and the static head (difference in height between <tt>port_a</tt> and <tt>port_b</tt>).
+Moreover it needs to define two vectors of source terms for the distributed energy balance:  
+<ul>
+<li><tt><b>Qs_flows[nNodes]</b></tt>, the heat flow source terms, e.g. conductive heat flows across segment boundaries, and</li> 
+<li><tt><b>Ws_flows[nNodes]</b></tt>, the work source terms.</li>
+</ul>
 </p>
  
-<p><b>Pressure loss</b></p>
+<p><b>Momentum balance</b></p>
 The momentum balance is determined by the <b><tt>PressureLoss</tt></b> component, which can be replaced with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialPressureLoss\">BaseClasses.PartialPressureLoss</a>.
-The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedFlow\">DetailedFlow</a>.
-The momentum balances are formed across the segment boundaries along the flow path according to the staggered grid approach. 
-The default symmetric model is characterized by one momentum balance inside the component with nNodes=2 fluid segments.
-An alternative symmetric variation with nNodes+1 momentum balances, half a momentum balance at each port, as well as  
-non-symmetric variations can be obtained by chosing a different value for the parameter <tt><b>modelStructure</b></tt>. 
-The options include:
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">BaseClasses.PartialFlowPressureLoss</a>.
+The default setting is steady-state <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction\">DetailedWallFriction</a>,
+which contains
 <ul>
-<li><tt>av_vb</tt>: nNodes-1 momentum balances between nNodes pipe segments, half a segment at each port. 
-This results in potential pressure states at both ports.
-<li><tt>a_v_b</tt>: Alternative symmetric setting with nNodes+1 momentum balances across nNodes flow segments, 
-half a momentum balance at each port. Connecting two pipes therefore results in algebraic pressures at the ports. 
-The specification of good start values for the port pressures is essential in order to solve large systems.</li>
-<li><tt>av_b</tt>: nNodes momentum balances, one between nth volume and <tt>port_b</tt>, potential pressure state at <tt>port_a</tt></li>
-<li><tt>a_vb</tt>: nNodes momentum balance, one between first volume and <tt>port_a</tt>, potential pressure state at <tt>port_b</tt></li>
-</ul></p>
- 
-<p>The PressureLoss contains
-<ul>
-<li>pressure drop due to friction and other dissipative losses</li>
-<li>gravity effects for non-horizontal pipes</li>
+<li>pressure drop due to friction and other dissipative losses, and</li>
+<li>gravity effects for non-horizontal devices.</li>
 </ul>
-It does not model changes in pressure resulting from significant variation of flow velocity along the flow path (with the assumption of a constant cross sectional area it must result from fluid density changes, such as in two-phase flow).
+It does not model changes in pressure resulting from significant variation of flow velocity along the flow path 
+(with the assumption of a constant cross sectional area it must result from fluid density changes, such as in two-phase flow).
+ 
+<p><b>Model Structure</b></p>
+The momentum balances are formulated across the segment boundaries along the flow path according to the staggered grid approach. 
+The configurable <b><tt>modelStructure</tt></b> determines the formulation of the boundary conditions at <tt>port_a</tt> and <tt>port_b</tt>.
+The options include (default: av_vb):
+<ul>
+<li><tt>av_vb</tt>: Symmetric setting with nNodes-1 momentum balances between nNodes flow segments. 
+    The ports <tt>port_a</tt> and <tt>port_b</tt> expose the first and the last thermodynamic state, respectively.
+    Connecting two or more flow devices therefore may result in high-index DAEs for the pressures of connected flow segments. 
+<li><tt>a_v_b</tt>: Alternative symmetric setting with nNodes+1 momentum balances across nNodes flow segments.
+    Half momentum balances are placed between <tt>port_a</tt> and the first flow segment as well as between the last flow segment and <tt>port_b</tt>.
+    Connecting two or more flow devices therefore results in algebraic pressures at the ports. 
+    The specification of good start values for the port pressures is essential for the solution of large nonlinear equation systems.</li>
+<li><tt>av_b</tt>: Unsymmetric setting with nNodes momentum balances, one between nth volume and <tt>port_b</tt>, potential pressure state at <tt>port_a</tt></li>
+<li><tt>a_vb</tt>: Unsymmetric setting with nNodes momentum balance, one between first volume and <tt>port_a</tt>, potential pressure state at <tt>port_b</tt></li>
+</ul></p>
  
 When connecting two components, e.g. two pipes, the momentum balance across the connection point reduces to
 </p> 
@@ -744,16 +772,291 @@ This also allows for taking into account friction losses with respect to the act
     by Michael Wetter:<br>
        Modified mass balance for trace substances. With the new formulation, the trace substances masses <tt>mC</tt> are stored
        in the same way as the species <tt>mXi</tt>.</li>
-<li><i>4 Dec 2008</i>
+<li><i>Dec 2008</i>
     by R&uuml;diger Franke:<br>
-       Derived model from original DistributedPipe models</li>
+       Derived model from original DistributedPipe models
+    <ul>
+    <li>moved mass and energy balances to PartialDistributedVolume</li>
+    <li>introduced replaceable pressure loss models</li>
+    <li>combined all model structures and lumped pressure into one model</li>
+    <li>new ModelStructure av_vb, replacing former avb</li>
+    </ul></li>
 <li><i>04 Mar 2006</i>
     by Katrin Pr&ouml;l&szlig;:<br>
        Model added to the Fluid library</li>
 </ul>
-</html>"));
+</html>"),
+    Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+                100}},
+            grid={1,1}), graphics={Ellipse(
+              extent={{-72,10},{-52,-10}},
+              lineColor={0,0,0},
+              fillColor={0,0,0},
+              fillPattern=FillPattern.Solid), Ellipse(
+              extent={{50,10},{70,-10}},
+              lineColor={0,0,0},
+              fillColor={0,0,0},
+              fillPattern=FillPattern.Solid)}),
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+                100,100}},
+            grid={1,1}), graphics={
+            Polygon(
+              points={{-100,-50},{-100,50},{100,60},{100,-60},{-100,-50}},
+              smooth=Smooth.None,
+              fillColor={215,215,215},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              lineColor={0,0,0}),
+            Polygon(
+              points={{-50,-52},{-50,52},{50,58},{50,-58},{-50,-52}},
+              smooth=Smooth.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              lineColor={0,0,0}),
+            Line(
+              points={{-100,-50},{-100,50}},
+              arrow={Arrow.Filled,Arrow.Filled},
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Text(
+              extent={{-100,36},{-70,26}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              textString="crossAreas[1]",
+              pattern=LinePattern.None),
+            Line(
+              points={{-100,70},{-50,70}},
+              arrow={Arrow.Filled,Arrow.Filled},
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Text(
+              extent={{-85,80},{-65,70}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              textString="lengths[1]",
+              pattern=LinePattern.None),
+            Text(
+              extent={{0,36},{38,26}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              textString="crossAreas[2:n-1]",
+              pattern=LinePattern.None),
+            Line(
+              points={{100,-60},{100,60}},
+              arrow={Arrow.Filled,Arrow.Filled},
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Text(
+              extent={{100,37},{130,27}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              textString="crossAreas[n]",
+              pattern=LinePattern.None),
+            Line(
+              points={{-50,52},{-50,-53}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              pattern=LinePattern.Dash),
+            Line(
+              points={{50,57},{50,-58}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              pattern=LinePattern.Dash),
+            Line(
+              points={{50,70},{100,70}},
+              arrow={Arrow.Filled,Arrow.Filled},
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Text(
+              extent={{65,80},{85,70}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              textString="lengths[n]",
+              pattern=LinePattern.None),
+            Line(
+              points={{-50,70},{50,70}},
+              arrow={Arrow.Filled,Arrow.Filled},
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Text(
+              extent={{-13,80},{13.5,70}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              textString="lengths[2:n-1]",
+              pattern=LinePattern.None),
+            Line(
+              points={{-100,-75},{0,-75}},
+              arrow={Arrow.None,Arrow.Half},
+              color={0,0,0}),
+            Text(
+              extent={{-71,-65},{-28,-75}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="pressureLoss.dps[1]"),
+            Line(
+              points={{0,-75},{100,-75}},
+              arrow={Arrow.None,Arrow.Half},
+              color={0,0,0}),
+            Text(
+              extent={{28,-65},{75,-75}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="pressureLoss.dps[2:n-1]"),
+            Line(
+              points={{-95,0},{-5,0}},
+              arrow={Arrow.None,Arrow.Half},
+              color={0,0,0}),
+            Text(
+              extent={{-76,10},{-55,0}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="m_flows[2]"),
+            Line(
+              points={{5,0},{95,0}},
+              arrow={Arrow.None,Arrow.Half},
+              color={0,0,0}),
+            Text(
+              extent={{20,10},{45,0}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="m_flows[3:n]"),
+            Line(
+              points={{-150,0},{-105,0}},
+              arrow={Arrow.None,Arrow.Half},
+              color={0,0,0}),
+            Line(
+              points={{105,0},{150,0}},
+              arrow={Arrow.None,Arrow.Half},
+              color={0,0,0}),
+            Text(
+              extent={{-139,10},{-118,0}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              textString="m_flows[1]",
+              pattern=LinePattern.None),
+            Text(
+              extent={{112,10},{139,0}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              textString="m_flows[n+1]",
+              pattern=LinePattern.None),
+            Text(
+              extent={{40,-85},{100,-95}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="(ModelStructure av_vb, n=3)"),
+            Line(
+              points={{-100,-50},{-100,-78}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Line(
+              points={{0,-55},{0,-78}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Line(
+              points={{100,-60},{100,-78}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Ellipse(
+              extent={{-5,5},{5,-5}},
+              pattern=LinePattern.None,
+              lineColor={0,0,0},
+              fillColor={0,0,0},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{2,-3},{27,-13}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="states[2:n-1]"),
+            Ellipse(
+              extent={{95,5},{105,-5}},
+              pattern=LinePattern.None,
+              lineColor={0,0,0},
+              fillColor={0,0,0},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{102,-3},{120,-13}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="states[n]"),
+            Ellipse(
+              extent={{-105,5},{-95,-5}},
+              pattern=LinePattern.None,
+              lineColor={0,0,0},
+              fillColor={0,0,0},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{-98,-3},{-80,-13}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="states[1]"),
+            Text(
+              extent={{-99.5,29},{-71.5,20}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="perimeters[1]"),
+            Text(
+              extent={{0.5,29},{36.5,20}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="perimeters[2:n-1]"),
+            Text(
+              extent={{100.5,30},{128.5,20}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="perimeters[n]"),
+            Line(
+              points={{-50,73},{-50,52}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Line(
+              points={{50,73},{50,57}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Line(
+              points={{-100,50},{100,60}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              thickness=0.5),
+            Line(
+              points={{-100,-50},{100,-60}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              thickness=0.5),
+            Line(
+              points={{-100,73},{-100,50}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Line(
+              points={{100,73},{100,60}},
+              smooth=Smooth.None,
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Line(
+              points={{0,-55},{0,55}},
+              arrow={Arrow.Filled,Arrow.Filled},
+              color={0,0,0},
+              pattern=LinePattern.Dot)}));
 
-    end PartialDistributedFlow;
+    end PartialTwoPortFlow;
 
     package PressureLoss
       "Pressure loss models for pipes, including wall friction and static head"
@@ -769,10 +1072,9 @@ This also allows for taking into account friction losses with respect to the act
                annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
             input SI.Length[n] lengths "Length of segments along flow path";
             input SI.Area[n+1] crossAreas
-          "Cross flow area at segment boundaries";
-            input SI.Length[n] perimeters
-          "Mean perimeters of segments, used for hydraulic diameter";
-            input SI.Height[n] roughnesses(each min=0)
+          "Cross flow areas at segment boundaries";
+            input SI.Length[n+1] perimeters "Perimeters at segment boundaries";
+            input SI.Height[n+1] roughnesses
           "Average height of surface asperities";
 
             // Static head
@@ -823,19 +1125,21 @@ This also allows for taking into account friction losses with respect to the act
               annotation(Dialog(group="Advanced", enable=use_eta_nominal));
 
             // Variables
-            SI.Diameter[n] diameters = {4*(crossAreas[i]+crossAreas[i+1])/2/perimeters[i] for i in 1:n}
-          "Hydraulic diameters";
             SI.Density[n+1] ds = if use_d_nominal then fill(d_nominal, n+1) else Medium.density(states);
             SI.Density[n] ds_act "Actual density per segment";
 
             SI.DynamicViscosity[n+1] etas = if use_eta_nominal then fill(eta_nominal, n+1) else Medium.dynamicViscosity(states);
             SI.DynamicViscosity[n] etas_act "Actual viscosity per segment";
 
+            // Variables
+            SI.Diameter[n] diameters = {4*(crossAreas[i]+crossAreas[i+1])/(perimeters[i]+perimeters[i+1]) for i in 1:n}
+          "Mean hydraulic diameters of flow segments";
+
             // Reynolds Number
             parameter Boolean show_Res = false
           "= true, if Reynolds numbers are included for plotting" 
                annotation (Evaluate=true, Dialog(group="Advanced"));
-            SI.ReynoldsNumber[n] Res=Modelica_Fluid.Utilities.ReynoldsNumber_m_flow(
+            SI.ReynoldsNumber[n] Res=Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber(
                 m_flows/nParallel,
                 etas_act,
                 diameters) if show_Res "Reynolds numbers of pipe flow";
@@ -860,8 +1164,8 @@ This also allows for taking into account friction losses with respect to the act
 
             annotation (Documentation(info="<html>
 <p>
-This paratial model defines common variables for flow models, including parameters to define the geometry and 
-the optional calculation of Reynolds Numbers. The densities ds[n+1] and the dynamic viscosities etas[n+1] of flow segments 
+This paratial model defines common variables for flow models. 
+The densities ds[n+1] and the dynamic viscosities etas[n+1] of flow segments 
 as well as the actual densities ds_act[n] and the actual viscosities etas_act[n] of the flows are predefined.
 </p>
 <p>
@@ -873,7 +1177,12 @@ e.g. with numerical smoothing or by raising events as appropriate.
                 points={{-80,-50},{-80,50},{80,-50},{80,50}},
                 color={0,0,255},
                 smooth=Smooth.None,
-                thickness=1)}));
+                thickness=1), Text(
+                extent={{-40,-50},{40,-90}},
+                lineColor={0,0,0},
+                fillPattern=FillPattern.Sphere,
+                fillColor={232,0,0},
+                textString="%name")}));
 
           end PartialFlowPressureLoss;
 
@@ -890,8 +1199,8 @@ e.g. with numerical smoothing or by raising events as appropriate.
 
         // inverse parameterization of WallFriction.Laminar
         SI.Length[n] lengths_nominal=
-          {(dp_nominal-g*height_ab)/n*Modelica.Constants.pi*diameters[i]^4*ds_act[i]/(128*etas_act[i])/
-           (m_flow_nominal/nParallel) for i in 1:n} if show_Res;
+          {(dps_nominal-g*height_ab)/n*Modelica.Constants.pi*diameters[i]^4*ds_act[i]/(128*etas_act[i])/
+           (m_flows_nominal/nParallel) for i in 1:n} if show_Res;
 
       equation
         // linear pressure loss
@@ -911,13 +1220,13 @@ Select <tt>show_Res = true</tt> to analyze the actual flow and the lengths of a 
 specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>perimeters</tt> and <tt>roughnesses</tt>.
 </p>
 <p>
-<b>Optional Variables if show_Res</b>
+<b>Optional Variables if show_lenghts_nominal</b>
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
 <tr><td>Length</td><td>lengths_nominal[n]</td>
-    <td>lengths of pipe segment that corresponds to this laminar flow</td></tr>
-<tr><td>ReynoldsNumber</td><td>Re[n]</td>
+    <td>length of pipe segment that corresponds to this laminar flow</td></tr>
+<tr><td>ReynoldsNumber</td><td>Res[n]</td>
     <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
 <tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
     <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
@@ -927,7 +1236,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
       end NominalLaminarFlow;
 
           partial model PartialWallFrictionPressureLoss
-        "WallFrictionPressureLoss: Pipe wall friction with replaceable pressure loss package"
+        "WallFrictionPressureLoss: Pipe flow pressure loss with replaceable WallFriction package"
             extends
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss;
 
@@ -979,7 +1288,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
                   etas_act,
                   lengths_internal,
                   diameters,
-                  roughnesses,
+                  (roughnesses[1:n]+roughnesses[2:n+1])/2,
                   dp_small)*nParallel;
               else
                 dps = WallFriction.pressureLoss_m_flow(
@@ -990,7 +1299,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
                   etas_act,
                   lengths_internal,
                   diameters,
-                  roughnesses,
+                  (roughnesses[1:n]+roughnesses[2:n+1])/2,
                   m_flow_small/nParallel) + g*height_ab/n*ds_act;
               end if;
             else
@@ -1005,7 +1314,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
                   lengths_internal,
                   diameters,
                   g*height_ab/n,
-                  roughnesses,
+                  (roughnesses[1:n]+roughnesses[2:n+1])/2,
                   dp_small/n)*nParallel;
               else
                 dps = WallFriction.pressureLoss_m_flow_staticHead(
@@ -1017,7 +1326,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
                   lengths_internal,
                   diameters,
                   g*height_ab/n,
-                  roughnesses,
+                  (roughnesses[1:n]+roughnesses[2:n+1])/2,
                   m_flow_small/nParallel);
               end if;
             end if;
@@ -1059,7 +1368,7 @@ simulation and/or might give a more robust simulation.
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
-<tr><td>ReynoldsNumber</td><td>Re[n]</td>
+<tr><td>ReynoldsNumber</td><td>Res[n]</td>
     <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
 <tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
     <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
@@ -1134,7 +1443,7 @@ simulation and/or might give a more robust simulation.
               ks_inv[i] = (m_flow_nominal/nParallel)^2/((dp_nominal-g*height_ab*ds_act[i])/n)/ds_act[i];
               zetas[i] = (pi*diameters[i]*diameters[i])^2/(8*ks_inv[i]);
               lengths_nominal[i] =
-                zetas[i]*diameters[i]*(2*Modelica.Math.log10(3.7 /(roughnesses[i]/diameters[i])))^2;
+                zetas[i]*diameters[i]*(2*Modelica.Math.log10(3.7 /((roughnesses[i]+roughnesses[i+1])/2/diameters[i])))^2;
             end for;
 
             annotation (Documentation(info="<html>
@@ -1161,7 +1470,7 @@ and can be related to <tt>m_flow_small</tt> and <tt>dp_small</tt>.
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
-<tr><td>ReynoldsNumber</td><td>Re[n]</td>
+<tr><td>ReynoldsNumber</td><td>Res[n]</td>
     <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
 <tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
     <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
@@ -1304,22 +1613,15 @@ b has the same sign of the change of density.</p>
       // Geometry parameters and inputs for flow heat transfer
       parameter Real nParallel "number of identical parallel flow devices" 
          annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
+      input SI.Area[n] transferAreas "Heat transfer areas";
       input SI.Length[n] lengths "Length of segments along flow path";
       input SI.Area[n] crossAreas "Cross flow areas of segments";
-      input SI.Length[n] perimeters
-          "Mean perimeters for heat transfer area and hydraulic diameter";
       input SI.Height[n] roughnesses(each min=0)
           "Average heights of surface asperities";
 
       // Additional inputs provided to flow heat transfer model
       input SI.MassFlowRate[n+1] m_flows
           "Mass flow rates through segment boundaries";
-
-      // Variables
-      SI.Area[n] transferAreas = {perimeters[i]*lengths[i] for i in 1:n}
-          "Heat transfer area";
-      SI.Length[n] diameters = {4*crossAreas[i]/perimeters[i] for i in 1:n}
-          "Hydraulic diameters";
 
       annotation (Documentation(info="<html>
 Base class for heat transfer models that can be used in pipe models.
@@ -1359,7 +1661,7 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
     end ConstantFlowHeatTransfer;
 
     partial model PartialPipeFlowHeatTransfer
-        "Base class for pipe heat transfer correlation in terms of Nusselt numberheat transfer in a circular pipe for laminar and turbulent one-phase flow"
+        "Base class for pipe heat transfer correlation in terms of Nusselt number heat transfer in a circular pipe for laminar and turbulent one-phase flow"
       extends PartialFlowHeatTransfer;
       parameter SI.CoefficientOfHeatTransfer alpha0=100
           "guess value for heat transfer coefficients";
@@ -1370,13 +1672,16 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
       Real[n] Nus "Nusselt numbers";
       SI.DynamicViscosity[n] etas "Dynamic viscosity";
       SI.ThermalConductivity[n] lambdas "Thermal conductivity";
+      // Variables
+      SI.Length[n] diameters = {4*crossAreas[i]*lengths[i]/transferAreas[i] for i in 1:n}
+          "Hydraulic diameters for pipe flow";
       Medium.MassFlowRate[n] m_flows_mean = (m_flows[1:n] + m_flows[2:n+1])/2
           "mean mass flow rate per segment";
     equation
       etas=Medium.dynamicViscosity(states);
       lambdas=Medium.thermalConductivity(states);
       Prs = Medium.prandtlNumber(states);
-      Res = CharacteristicNumbers.ReynoldsNumber(m_flows_mean/nParallel, diameters, crossAreas, etas);
+      Res = CharacteristicNumbers.ReynoldsNumber(m_flows_mean/nParallel, etas, diameters);
       Nus = CharacteristicNumbers.NusseltNumber(alphas, diameters, lambdas);
       Q_flows={alphas[i]*transferAreas[i]*(heatPorts[i].T - Ts[i])*nParallel for i in 1:n};
         annotation (Documentation(info="<html>
@@ -1429,16 +1734,15 @@ The correlation takes into account the spatial position along the pipe flow, whi
     package CharacteristicNumbers
       function ReynoldsNumber
         input SI.MassFlowRate m_flow "Mass flow rate";
-        input SI.Length d_ch "Characteristic length (hyd. diam. in pipes)";
-        input SI.Area A "Cross sectional area";
         input SI.DynamicViscosity eta "Dynamic viscosity";
+        input SI.Length diameter
+          "Hydraulic diameter in pipes (characteristic length in general)";
+        input SI.Length A_d = Modelica.Constants.pi/4*diameter
+          "Cross sectional area divided by hydraulic diameter";
         output SI.ReynoldsNumber Re "Reynolds number";
-        annotation (Documentation(info="Calculate Re-Number; Re = mdot*Dhyd/A/eta"),
-             Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                  -100},{100,100}}),
-                  graphics));
       algorithm
-        Re := abs(m_flow)*d_ch/A/eta;
+        Re := abs(m_flow)/A_d/eta;
+        annotation (Documentation(info="Calculate Re-Number; Re = m_flow*diameter/A/eta"));
       end ReynoldsNumber;
 
       function NusseltNumber
@@ -1446,9 +1750,9 @@ The correlation takes into account the spatial position along the pipe flow, whi
         input SI.Length d_ch "Characteristic length";
         input SI.ThermalConductivity lambda "Thermal conductivity";
         output SI.NusseltNumber Nu "Nusselt number";
-        annotation (Documentation(info="Nusselt number Nu = alpha*d_ch/lambda"));
       algorithm
         Nu := alpha*d_ch/lambda;
+        annotation (Documentation(info="Nusselt number Nu = alpha*d_ch/lambda"));
       end NusseltNumber;
     end CharacteristicNumbers;
 
@@ -3143,8 +3447,8 @@ b has the same sign of the change of density.</p>
         parameter SI.AbsolutePressure dp_small = 1
           "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
           annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
-        SI.ReynoldsNumber Re = Utilities.ReynoldsNumber_m_flow(m_flow, noEvent(if m_flow>0 then eta_a else eta_b), diameter) if show_Re
-          "Reynolds number of pipe";
+        SI.ReynoldsNumber Re = Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber(m_flow, noEvent(if m_flow>0 then eta_a else eta_b), diameter) if show_Re
+          "Reynolds number of pipe flow";
 
         outer Modelica_Fluid.System system "System properties";
 

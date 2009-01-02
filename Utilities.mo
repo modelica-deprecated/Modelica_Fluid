@@ -580,20 +580,6 @@ k1=1, k2=3 is shown in the next figure:
     y  := xx*(a1 + xx*(a2 + xx*a3));
   end evaluatePoly3_derivativeAtZero;
 
-  function ReynoldsNumber_m_flow
-    "Return Reynolds number as a function of mass flow rate m_flow"
-    extends Modelica.Icons.Function;
-      input SI.MassFlowRate m_flow "Mass flow rate";
-    input SI.DynamicViscosity eta "Dynamic viscosity of medium";
-    input SI.Diameter diameter "Diameter of pipe/orifice";
-    output SI.ReynoldsNumber Re "Reynolds number";
-  algorithm
-    Re :=abs(m_flow)*(4/Modelica.Constants.pi)/(diameter*eta);
-    annotation (Documentation(info="<html>
- 
-</html>"));
-  end ReynoldsNumber_m_flow;
-
   annotation (Documentation(info="<html>
  
 </html>"));

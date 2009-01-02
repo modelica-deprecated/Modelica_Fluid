@@ -894,7 +894,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2008-12-31</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-02</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -922,9 +922,9 @@ Modelica_Fluid was refactored and finalized for the release:
      </ul>
      A generic base model for one-dimensional fluid flow using the finite volume and the staggered grid approach 
      is available in<br>
-     <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow\">
-          Pipes.BaseClasses.PartialDistributedFlow</a>. 
-     The DistributedPipe model, for example, just adds a HeatTransfer model and the source terms Qs_flows and Ws_flows.
+     <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">
+          Pipes.BaseClasses.PartialTwoPortFlow</a>. 
+     The DistributedPipe model, for example, adds a wall HeatTransfer model and defines the source terms Qs_flows and Ws_flows.
  
 <li> New approach for the connection of distributed flow models<br>
      The staggered grid approach offers different choices for the connection approach. So far the preferred modeling was to put full mass balances 

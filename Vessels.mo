@@ -1055,8 +1055,8 @@ Base class for <tt><b>n</b></tt> ideally mixed fluid volumes with the ability to
 It is inteded to model a one-dimensional spatial discretization of fluid flow according to the finite volume method. 
 The following source terms are part of the energy balance and must be specified in an extending class:
 <ul>
-<li><tt><b>Qs_flows[n]</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
-<li><tt><b>Ws_flows[n]</b></tt>, work term, e.g. p*der(fluidVolumes) if the volume is not constant.</li>
+<li><tt><b>Qs_flows[n]</b></tt>, heat flow source term, e.g. conductive heat flows across segment boundaries, and</li> 
+<li><tt><b>Ws_flows[n]</b></tt>, work source term.</li>
 </ul>
 The component volume <tt><b>fluidVolumes[n]</b></tt> is a variable which needs to be set in the extending class to complete the model.
 <p>
