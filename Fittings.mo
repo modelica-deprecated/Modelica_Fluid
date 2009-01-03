@@ -530,7 +530,7 @@ of the modeller.
         nParallel = 1,
         lengths = {0},
         crossAreas=fill(Modelica.Constants.pi/4*2.54e-2^2, 2),
-        hydraulicDiameters=fill(2.54e-2, 2),
+        dimensions=fill(2.54e-2, 2),
         roughnesses=fill(2.5e-5, 2),
         allowFlowReversal=allowFlowReversal,
         momentumDynamics=Types.Dynamics.SteadyState));

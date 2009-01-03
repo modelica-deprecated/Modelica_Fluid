@@ -5,7 +5,7 @@ package Vessels "Devices for storing fluid"
     model Volume "Fixed volume with ports, closed to the environment"
       import Modelica.Constants.pi;
       extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolumePorts(
-        heatTransfer(transferAreas={4*pi*(3/4*V/pi)^(2/3)}));
+        heatTransfer(surfaceAreas={4*pi*(3/4*V/pi)^(2/3)}));
 
       parameter SI.Volume V "Volume";
 
@@ -39,7 +39,7 @@ Ideal heat transfer is assumed per default; the thermal port temperature is equa
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
   import Modelica.Constants.pi;
   extends BaseClasses.PartialLumpedVolumePorts(
-    heatTransfer(transferAreas={crossArea+2*sqrt(crossArea*pi)*level}),
+    heatTransfer(surfaceAreas={crossArea+2*sqrt(crossArea*pi)*level}),
     final initialize_p = false,
     final p_start = p_ambient,
     final use_d_nominal = false,
@@ -121,8 +121,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -176,6 +176,7 @@ Implemented trace substances.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+equation
 
 end OpenTank;
 
@@ -243,7 +244,7 @@ model Tank
     redeclare final package Medium = Medium,
     n=1,
     states = {medium.state},
-    transferAreas={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level}) 
+    surfaceAreas={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level}) 
       annotation (Placement(transformation(
         extent={{-10,-10},{30,30}},
         rotation=90,
@@ -432,8 +433,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 3))),
           Line(
             points={{-100,100},{100,100}},
@@ -883,6 +884,7 @@ An extending class still needs to define:
     parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
         "= true if d_nominal is used for mass storage, else computed from medium"
       annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+
     parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
        annotation(Dialog(tab="Assumptions", group="Dynamics", enable=use_d_nominal));
@@ -1077,7 +1079,7 @@ Further source terms must be defined by an extending class for fluid flow across
         "Base class for vessel heat transfer models"
       extends Modelica_Fluid.Interfaces.PartialHeatTransfer;
 
-      input SI.Area[n] transferAreas "Heat transfer area";
+      input SI.Area[n] surfaceAreas "Heat transfer area";
 
       annotation(Documentation(info="<html>
 Base class for vessel heat transfer models.
@@ -1113,7 +1115,7 @@ Ideal heat transfer without thermal resistance.
 Simple heat transfer correlation with constant heat transfer coefficient.
 </html>"));
     equation
-      Q_flows = {alpha0*transferAreas[i]*(heatPorts[i].T - Ts[i]) for i in 1:n};
+      Q_flows = {alpha0*surfaceAreas[i]*(heatPorts[i].T - Ts[i]) for i in 1:n};
     end ConstantHeatTransfer;
     annotation (Documentation(info="<html>
 Heat transfer correlations for pipe models

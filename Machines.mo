@@ -6,7 +6,7 @@ package Machines
     "varying cylindric volume depending on the postition of the piston"
     import Modelica.Constants.pi;
     extends Vessels.BaseClasses.PartialLumpedVolumePorts(
-      heatTransfer(transferAreas={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*flange.s}));
+      heatTransfer(surfaceAreas={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*flange.s}));
     parameter SI.Area pistonCrossArea "cross sectional area of pistion";
     parameter SI.Volume clearance "remaining volume at zero piston stroke";
 
@@ -374,7 +374,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     HeatTransfer heatTransfer(
       redeclare final package Medium = Medium,
       final n=1,
-      transferAreas={4*Modelica.Constants.pi*(3/4*V/Modelica.Constants.pi)^(2/3)},
+      surfaceAreas={4*Modelica.Constants.pi*(3/4*V/Modelica.Constants.pi)^(2/3)},
       states = {medium.state}) 
         annotation (Placement(transformation(
           extent={{-10,-10},{30,30}},

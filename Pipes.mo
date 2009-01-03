@@ -40,7 +40,7 @@ package Pipes "Devices for conveying fluid"
             final nParallel=nParallel,
             final lengths={length},
             final crossAreas={crossArea, crossArea},
-            final hydraulicDiameters={4*crossArea/perimeter, 4*crossArea/perimeter},
+            final dimensions={4*crossArea/perimeter, 4*crossArea/perimeter},
             final roughnesses={roughness, roughness},
             final height_ab=height_ab,
             final g=system.g) "Pressure loss model" 
@@ -140,7 +140,7 @@ package Pipes "Devices for conveying fluid"
     Modelica_Fluid.Vessels.Volume volume(
       redeclare package Medium = Medium,
       redeclare model HeatTransfer = HeatTransfer,
-      heatTransfer(transferAreas={perimeter*length}),
+      heatTransfer(surfaceAreas={perimeter*length}),
       energyDynamics=energyDynamics,
       massDynamics=massDynamics,
       p_start=(p_a_start+p_b_start)/2,
@@ -228,7 +228,7 @@ pipe wall/environment).
                         cat(1, fill(length/n, n-1), {length/n/2}) else 
                         fill(length/n, n),
       final crossAreas=fill(crossArea, n),
-      final hydraulicDiameters=fill(4*crossArea/perimeter, n),
+      final dimensions=fill(4*crossArea/perimeter, n),
       final roughnesses=fill(roughness, n));
 
     // extending PartialStraightPipe
@@ -253,9 +253,9 @@ pipe wall/environment).
       redeclare each final package Medium = Medium,
       final n=n,
       final nParallel=nParallel,
-      final transferAreas=perimeter*lengths,
+      final surfaceAreas=perimeter*lengths,
       final lengths=lengths,
-      final crossAreas=crossAreas,
+      final dimensions=dimensions,
       final roughnesses=roughnesses,
       states=mediums.state,
       vs = vs) "Heat transfer model" 
@@ -313,7 +313,7 @@ The first and the last pipe segment may be of half size, depending on the config
 The <b><tt>HeatTransfer</tt></b> component specifies the source term <tt>Qs_flows</tt> of the energy balance. 
 The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
 The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.PartialFlowHeatTransfer</a>.</p>
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.PartialFlowHeatTransfer</a>.
 </p>
  
 </html>"),
@@ -466,8 +466,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
         annotation(Dialog(group="Geometry"));
       parameter SI.Area[n] crossAreas "cross flow areas of flow segments" 
         annotation(Dialog(group="Geometry"));
-      parameter SI.Length[n] hydraulicDiameters
-        "hydraulic diameters of flow segments" 
+      parameter SI.Length[n] dimensions "hydraulic diameters of flow segments" 
         annotation(Dialog(group="Geometry"));
       parameter SI.Height[n] roughnesses(each min=0)
         "Average heights of surface asperities" 
@@ -537,7 +536,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
               final nParallel=nParallel,
               final lengths=lengthsPL,
               final crossAreas=crossAreasPL,
-              final hydraulicDiameters=hydraulicDiametersPL,
+              final dimensions=dimensionsPL,
               final roughnesses=roughnessesPL,
               final height_ab=height_ab,
               final g=system.g) "Pressure loss model" 
@@ -563,8 +562,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       SI.Length[nPL] lengthsPL "Lengths of flow segments";
       SI.Area[nPL+1] crossAreasPL "Cross flow areas at segment boundaries";
       SI.Velocity[nPL+1] vsPL "Mean velocities in flow segments";
-      SI.Length[nPL+1] hydraulicDiametersPL
-        "Hydraulic diameters at segment boundaries";
+      SI.Length[nPL+1] dimensionsPL "Hydraulic diameters at segment boundaries";
       SI.Height[nPL+1] roughnessesPL "Average heights of surface asperities";
     equation
       assert(nNodes > 1 or modelStructure <> ModelStructure.av_vb,
@@ -576,23 +574,23 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           lengthsPL[1] = sum(lengths);
           if n == 1 then
             crossAreasPL[1:2] = {crossAreas[1], crossAreas[1]};
-            hydraulicDiametersPL[1:2] = {hydraulicDiameters[1], hydraulicDiameters[1]};
+            dimensionsPL[1:2] = {dimensions[1], dimensions[1]};
             roughnessesPL[1:2] = {roughnesses[1], roughnesses[1]};
           else // n > 1
             crossAreasPL[1:2] = {sum(crossAreas[1:iLumped-1])/(iLumped-1), sum(crossAreas[iLumped:n])/(n-iLumped+1)};
-            hydraulicDiametersPL[1:2] = {sum(hydraulicDiameters[1:iLumped-1])/(iLumped-1), sum(hydraulicDiameters[iLumped:n])/(n-iLumped+1)};
+            dimensionsPL[1:2] = {sum(dimensions[1:iLumped-1])/(iLumped-1), sum(dimensions[iLumped:n])/(n-iLumped+1)};
             roughnessesPL[1:2] = {sum(roughnesses[1:iLumped-1])/(iLumped-1), sum(roughnesses[iLumped:n])/(n-iLumped+1)};
           end if;
         else
           if n == 1 then
             lengthsPL[1:2] = {lengths[1]/2, lengths[1]/2};
             crossAreasPL[1:3] = {crossAreas[1], crossAreas[1], crossAreas[1]};
-            hydraulicDiametersPL[1:3] = {hydraulicDiameters[1], hydraulicDiameters[1], hydraulicDiameters[1]};
+            dimensionsPL[1:3] = {dimensions[1], dimensions[1], dimensions[1]};
             roughnessesPL[1:3] = {roughnesses[1], roughnesses[1], roughnesses[1]};
           else // n > 1
             lengthsPL[1:2] = {sum(lengths[1:iLumped-1]), sum(lengths[iLumped:n])};
             crossAreasPL[1:3] = {sum(crossAreas[1:iLumped-1])/(iLumped-1), sum(crossAreas)/n, sum(crossAreas[iLumped:n])/(n-iLumped+1)};
-            hydraulicDiametersPL[1:3] = {sum(hydraulicDiameters[1:iLumped-1])/(iLumped-1), sum(hydraulicDiameters)/n, sum(hydraulicDiameters[iLumped:n])/(n-iLumped+1)};
+            dimensionsPL[1:3] = {sum(dimensions[1:iLumped-1])/(iLumped-1), sum(dimensions)/n, sum(dimensions[iLumped:n])/(n-iLumped+1)};
             roughnessesPL[1:3] = {sum(roughnesses[1:iLumped-1])/(iLumped-1), sum(roughnesses)/n, sum(roughnesses[iLumped:n])/(n-iLumped+1)};
           end if;
         end if;
@@ -605,25 +603,25 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
             lengthsPL[1:n-1] = cat(1, {lengths[1] + 0.5*lengths[2]}, 0.5*(lengths[2:n-2] + lengths[3:n-1]), {0.5*lengths[n-1] + lengths[n]});
           end if;
           crossAreasPL[1:n] = crossAreas;
-          hydraulicDiametersPL[1:n] = hydraulicDiameters;
+          dimensionsPL[1:n] = dimensions;
           roughnessesPL[1:n] = roughnesses;
         elseif modelStructure == ModelStructure.av_b then
           //nPL = n
           lengthsPL[1:n] = lengths;
           crossAreasPL[1:n+1] = cat(1, crossAreas[1:n], {crossAreas[n]});
-          hydraulicDiametersPL[1:n+1] = cat(1, hydraulicDiameters[1:n], {hydraulicDiameters[n]});
+          dimensionsPL[1:n+1] = cat(1, dimensions[1:n], {dimensions[n]});
           roughnessesPL[1:n+1] = cat(1, roughnesses[1:n], {roughnesses[n]});
         elseif modelStructure == ModelStructure.a_vb then
           //nPL = n
           lengthsPL[1:n] = lengths;
           crossAreasPL[1:n+1] = cat(1, {crossAreas[1]}, crossAreas[1:n]);
-          hydraulicDiametersPL[1:n+1] = cat(1, {hydraulicDiameters[1]}, hydraulicDiameters[1:n]);
+          dimensionsPL[1:n+1] = cat(1, {dimensions[1]}, dimensions[1:n]);
           roughnessesPL[1:n+1] = cat(1, {roughnesses[1]}, roughnesses[1:n]);
         elseif modelStructure == ModelStructure.a_v_b then
           //nPL = n+1;
           lengthsPL[1:n+1] = cat(1, {0.5*lengths[1]}, 0.5*(lengths[1:n-1] + lengths[2:n]), {0.5*lengths[n]});
           crossAreasPL[1:n+2] = cat(1, {crossAreas[1]}, crossAreas[1:n], {crossAreas[n]});
-          hydraulicDiametersPL[1:n+2] = cat(1, {hydraulicDiameters[1]}, hydraulicDiameters[1:n], {hydraulicDiameters[n]});
+          dimensionsPL[1:n+2] = cat(1, {dimensions[1]}, dimensions[1:n], {dimensions[n]});
           roughnessesPL[1:n+2] = cat(1, {roughnesses[1]}, roughnesses[1:n], {roughnesses[n]});
         else
           assert(true, "Unknown model structure");
@@ -886,7 +884,7 @@ This also allows for taking into account friction losses with respect to the act
               textString="lengths[1]",
               pattern=LinePattern.None),
             Text(
-              extent={{-1,36},{37,26}},
+              extent={{0,36},{38,26}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               textString="crossAreas[2:n-1]",
@@ -1052,23 +1050,23 @@ This also allows for taking into account friction losses with respect to the act
               pattern=LinePattern.None,
               textString="states[1]"),
             Text(
-              extent={{-99.5,29},{-55,21}},
+              extent={{-99.5,29},{-70,21}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
-              textString="hydraulicDiameters[1]"),
+              textString="dimensions[1]"),
             Text(
-              extent={{-1.5,29},{53,21}},
+              extent={{0,28},{38.5,22}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
-              textString="hydraulicDiameters[2:n-1]"),
+              textString="dimensions[2:n-1]"),
             Text(
-              extent={{100.5,31},{145,21}},
+              extent={{100.5,31},{130,21}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
-              textString="hydraulicDiameters[n]"),
+              textString="dimensions[n]"),
             Line(
               points={{-50,73},{-50,52}},
               smooth=Smooth.None,
@@ -1155,8 +1153,8 @@ This also allows for taking into account friction losses with respect to the act
             input SI.Length[n] lengths "Length of segments along flow path";
             input SI.Area[n+1] crossAreas
           "Cross flow areas at segment boundaries";
-            input SI.Length[n+1] hydraulicDiameters
-          "Characteristic dimension (hydraulic diameter for pipe flow)";
+            input SI.Length[n+1] dimensions
+          "Characteristic dimensions for fluid flow (diameters for pipe flow)";
             input SI.Height[n+1] roughnesses
           "Average height of surface asperities";
 
@@ -1214,9 +1212,6 @@ This also allows for taking into account friction losses with respect to the act
             SI.DynamicViscosity[n+1] mus = if use_mu_nominal then fill(mu_nominal, n+1) else Medium.dynamicViscosity(states);
             SI.DynamicViscosity[n] mus_act "Actual viscosity per segment";
 
-            SI.Length[n] diameters = 0.5*(hydraulicDiameters[1:n] + hydraulicDiameters[2:n+1])
-          "mean diameters between segments";
-
             // Variables
             Medium.AbsolutePressure[n+1] ps = Medium.pressure(states)
           "pressures of states";
@@ -1224,6 +1219,8 @@ This also allows for taking into account friction losses with respect to the act
           "pressure drop between states";
 
             // Reynolds Number
+            parameter SI.ReynoldsNumber Re_turbulent = 4000
+          "Start of turbulent regime, depending on type of flow device";
             parameter Boolean show_Res = false
           "= true, if Reynolds numbers are included for plotting" 
                annotation (Evaluate=true, Dialog(group="Advanced"));
@@ -1231,13 +1228,10 @@ This also allows for taking into account friction losses with respect to the act
                 vs/nParallel,
                 ds,
                 mus,
-                hydraulicDiameters) if show_Res "Reynolds numbers";
+                dimensions) if show_Res "Reynolds numbers";
             Medium.MassFlowRate[n] m_flows_turbulent=
-                {nParallel*(Modelica.Constants.pi/4)*diameters[i]*mus_act[i]*Re_turbulent for i in 1:n} if 
+                {nParallel*(Modelica.Constants.pi/4)*0.5*(dimensions[i] + dimensions[i+1])*mus_act[i]*Re_turbulent for i in 1:n} if 
                    show_Res "Start of turbulent flow";
-      protected
-            parameter SI.ReynoldsNumber Re_turbulent = 4000
-          "Start of turbulent regime, depending on type of flow device";
 
           equation
             if not allowFlowReversal then
@@ -1278,26 +1272,16 @@ for friction and gravity.
 <p>
 The geometry is specified in the interface with the <tt>lengths[n]</tt> of the flow paths as well as with 
 the <tt>crossAreas[n+1]</tt> and the <tt>roughnesses[n+1]</tt> of the device segments. 
-Moreover the fluid flow is characterized for different types of devices by the <tt>hydraulicDiameters[n+1]</tt> 
-and the average velocities <tt>vs[n+1]</tt> of fluid flow in the device segments. 
-The following table gives some examples:
+Moreover the fluid flow is characterized for different types of devices by the characteristic <tt>dimensions[n+1]</tt> 
+and the average velocities <tt>vs[n+1]</tt> of fluid flow. 
+See <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber\">Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber</a>
+for examplary definitions.
 </p>
-<table border=1 cellspacing=0 cellpadding=2>
-<tr><th><b>Device Type</b></th><th><b>Hydraulic Diameter D</b></th><th><b>Velocity v</b></th></tr>
-<tr><td>Circular Pipe</td><td>diameter</td>
-    <td>m_flow/&rho;/crossArea</td></tr>
-<tr><td>Rectangular Duct</td><td>4*crossArea/perimeter</td>
-    <td>m_flow/&rho;/crossArea</td></tr> 
-<tr><td>Wide Duct</td><td>distance between narrow, parallel walls</td>
-    <td>m_flow/&rho;/crossArea</td></tr>
-<tr><td>Packed Bed</td><td>diameterOfSpericalParticles/(1-fluidFractionOfTotalVolume)</td>
-    <td>m_flow/&rho;/crossArea (without particles)</td></tr>
-<tr><td>Device with rotating agitator</td><td>diameterOfRotor</td>
-    <td>RotationalSpeed*diameterOfRotor</td></tr>
-</table>
 <p> 
-The parameter <tt>Re_turbulent</tt> 
-can be specified to optionally calculate the least mass flow rate for turbulent flow. It defaults to 4000, which is appropriate for pipe flow.
+The parameter <tt>Re_turbulent</tt> can be specified for the least mass flow rate of the turbulent regime. 
+It defaults to 4000, which is appropriate for pipe flow.
+The <tt>m_flows_turbulent[n]</tt> resulting from <tt>Re_turbulent</tt> can optionally be calculated together with the Reynolds numbers
+of the actual flow (<tt>show_Res=true</tt>).
 </p>
 <p>
 Using the thermodynamic states[n+1] of the device segments, the densities ds[n+1] and the dynamic viscosities mus[n+1] 
@@ -1316,6 +1300,7 @@ e.g. with numerical smoothing or by raising events as appropriate.
                 fillPattern=FillPattern.Sphere,
                 fillColor={232,0,0},
                 textString="%name")}));
+          equation
 
           end PartialFlowPressureLoss;
 
@@ -1323,17 +1308,12 @@ e.g. with numerical smoothing or by raising events as appropriate.
         "NominalLaminarFlow: Linear pressure loss for nominal values"
         extends
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss(
-           use_mu_nominal = not show_Res);
+           use_mu_nominal = true);
 
         // Operational conditions
         parameter SI.AbsolutePressure dp_nominal "Nominal pressure loss";
         parameter SI.MassFlowRate m_flow_nominal
           "Mass flow rate for dp_nominal";
-
-        // inverse parameterization of WallFriction.Laminar
-        SI.Length[n] lengths_nominal=
-          {(dps_nominal-g*height_ab)/n*Modelica.Constants.pi*diameters[i]^4*ds_act[i]/(128*mus_act[i])/
-           (m_flows_nominal/nParallel) for i in 1:n} if show_Res;
 
       equation
         // linear pressure loss
@@ -1350,7 +1330,7 @@ specified <tt>dp_nominal</tt> and <tt>m_flow_nominal</tt>.
 </p>
 <p>
 Select <tt>show_Res = true</tt> to analyze the actual flow and the lengths of a pipe that would fulfill the 
-specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>hydraulicDiameters</tt> and <tt>roughnesses</tt>.
+specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>dimensions</tt> and <tt>roughnesses</tt>.
 </p>
 <p>
 <b>Optional Variables if show_lenghts_nominal</b>
@@ -1408,6 +1388,9 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
                or not allowFlowReversal
           "= true if the pressure loss is continuous around zero flow" 
                annotation(Evaluate=true);
+
+            SI.Length[n] diameters = 0.5*(dimensions[1:n] + dimensions[2:n+1])
+          "mean diameters between segments";
 
           equation
             if continuousFlowReversal then
@@ -1749,14 +1732,22 @@ b has the same sign of the change of density.</p>
       // Geometry parameters and inputs for flow heat transfer
       parameter Real nParallel "number of identical parallel flow devices" 
          annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
-      input SI.Area[n] transferAreas "Heat transfer areas";
-      input SI.Length[n] lengths "Length of segments along flow path";
-      input SI.Area[n] crossAreas "Cross flow areas of segments";
-      input SI.Height[n] roughnesses(each min=0)
-          "Average heights of surface asperities";
+      input SI.Area[n] surfaceAreas "Heat transfer areas";
+      input SI.Length[n] lengths "Lengths along flow path";
+      input SI.Length[n] dimensions
+          "Characteristic dimensions for fluid flow (diameter for pipe flow)";
+      input SI.Height[n] roughnesses "Average heights of surface asperities";
 
       annotation (Documentation(info="<html>
-Base class for heat transfer models that can be used in pipe models.
+Base class for heat transfer models of flow devices.
+<p>
+The geometry is specified in the interface with the <tt>surfaceAreas[n]</tt>, the <tt>roughnesses[n]</tt>
+and the lengths[n] along the flow path. 
+Moreover the fluid flow is characterized for different types of devices by the characteristic <tt>dimensions[n+1]</tt> 
+and the average velocities <tt>vs[n+1]</tt> of fluid flow. 
+See <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber\">Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber</a>
+for examplary definitions.
+</p>
 </html>"),Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
                   {100,100}}), graphics={Rectangle(
                 extent={{-80,60},{80,-60}},
@@ -1789,7 +1780,7 @@ Ideal heat transfer without thermal resistance.
 Simple heat transfer correlation with constant heat transfer coefficient, used as default component in <a distributed pipe models.
 </html>"));
     equation
-      Q_flows = {alpha0*transferAreas[i]*(heatPorts[i].T - Ts[i])*nParallel for i in 1:n};
+      Q_flows = {alpha0*surfaceAreas[i]*(heatPorts[i].T - Ts[i])*nParallel for i in 1:n};
     end ConstantFlowHeatTransfer;
 
     partial model PartialPipeFlowHeatTransfer
@@ -1805,11 +1796,7 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
       Medium.Density[n] ds "Densities";
       Medium.DynamicViscosity[n] mus "Dynamic viscosities";
       Medium.ThermalConductivity[n] lambdas "Thermal conductivity";
-      // Variables
-      SI.Length[n] diameters = {4*crossAreas[i]*lengths[i]/transferAreas[i] for i in 1:n}
-          "Hydraulic diameters for pipe flow";
-      Medium.MassFlowRate[n] m_flows_mean = {vs[i]*Medium.density(states[i])*crossAreas[i] for i in 1:n}
-          "mean mass flow rate per segment";
+      SI.Length[n] diameters = dimensions "Hydraulic diameters for pipe flow";
     equation
       ds=Medium.density(states);
       mus=Medium.dynamicViscosity(states);
@@ -1817,7 +1804,7 @@ Simple heat transfer correlation with constant heat transfer coefficient, used a
       Prs = Medium.prandtlNumber(states);
       Res = CharacteristicNumbers.ReynoldsNumber(vs/nParallel, ds, mus, diameters);
       Nus = CharacteristicNumbers.NusseltNumber(alphas, diameters, lambdas);
-      Q_flows={alphas[i]*transferAreas[i]*(heatPorts[i].T - Ts[i])*nParallel for i in 1:n};
+      Q_flows={alphas[i]*surfaceAreas[i]*(heatPorts[i].T - Ts[i])*nParallel for i in 1:n};
         annotation (Documentation(info="<html>
 Base class for heat transfer models that are expressed in terms of the Nusselt number and which can be used in distributed pipe models.
 </html>"));
@@ -1838,10 +1825,10 @@ Heat transfer correlations for pipe models
     equation
       Nu_1=3.66;
       for i in 1:n loop
-       Nus_turb[i]=smooth(0,(Xis[i]/8)*abs(Res[i])*Prs[i]/(1+12.7*(Xis[i]/8)^0.5*(Prs[i]^(2/3)-1))*(1+1/3*(diameters[i]/lengths[i]/(if m_flows_mean[i]>=0 then (i-0.5) else (n-i+0.5)))^(2/3)));
+       Nus_turb[i]=smooth(0,(Xis[i]/8)*abs(Res[i])*Prs[i]/(1+12.7*(Xis[i]/8)^0.5*(Prs[i]^(2/3)-1))*(1+1/3*(diameters[i]/lengths[i]/(if vs[i]>=0 then (i-0.5) else (n-i+0.5)))^(2/3)));
        Xis[i]=(1.8*Modelica.Math.log10(max(1e-10,Res[i]))-1.5)^(-2);
        Nus_lam[i]=(Nu_1^3+0.7^3+(Nus_2[i]-0.7)^3)^(1/3);
-       Nus_2[i]=smooth(0,1.077*(abs(Res[i])*Prs[i]*diameters[i]/lengths[i]/(if m_flows_mean[i]>=0 then (i-0.5) else (n-i+0.5)))^(1/3));
+       Nus_2[i]=smooth(0,1.077*(abs(Res[i])*Prs[i]*diameters[i]/lengths[i]/(if vs[i]>=0 then (i-0.5) else (n-i+0.5)))^(1/3));
        Nus[i]=spliceFunction(Nus_turb[i], Nus_lam[i], Res[i]-6150, 3850);
       end for;
       annotation (Documentation(info="<html>
@@ -1876,11 +1863,29 @@ The correlation takes into account the spatial position along the pipe flow, whi
       algorithm
         Re := abs(v)*rho*D/mu;
         annotation (Documentation(info="<html>
+<p>
 Calculation of Reynolds Number
 <pre>
    Re = |v|&rho;D/&mu;
 </pre>
 a measure of the relationship between inertial forces (v&rho;) and viscous forces (D/&mu;).
+</p>
+<p>
+The following table gives examples for the characteristic dimension D and the velocity v for different fluid flow devices:
+</p>
+<table border=1 cellspacing=0 cellpadding=2>
+<tr><th><b>Device Type</b></th><th><b>Characteristic Dimension D</b></th><th><b>Velocity v</b></th></tr>
+<tr><td>Circular Pipe</td><td>diameter</td>
+    <td>m_flow/&rho;/crossArea</td></tr>
+<tr><td>Rectangular Duct</td><td>4*crossArea/perimeter</td>
+    <td>m_flow/&rho;/crossArea</td></tr> 
+<tr><td>Wide Duct</td><td>distance between narrow, parallel walls</td>
+    <td>m_flow/&rho;/crossArea</td></tr>
+<tr><td>Packed Bed</td><td>diameterOfSpericalParticles/(1-fluidFractionOfTotalVolume)</td>
+    <td>m_flow/&rho;/crossArea (without particles)</td></tr>
+<tr><td>Device with rotating agitator</td><td>diameterOfRotor</td>
+    <td>RotationalSpeed*diameterOfRotor</td></tr>
+</table>
 </html>"));
       end ReynoldsNumber;
 
