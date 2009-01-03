@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -576,12 +577,12 @@ For pipes with circular cross section the pressure drop is computed as:
       = &lambda;2(Re,<font face=\"Symbol\">D</font>)*k2*sign(m_flow);
  
 with
-   Re     = |v|*D*&rho;/&eta;
-          = |m_flow|*4/(&pi;*D*&eta;)     
+   Re     = |v|*D*&rho;/&mu;
+          = |m_flow|*4/(&pi;*D*&mu;)     
    m_flow = A*v*&rho;
    A      = &pi;*(D/2)^2
    &lambda;2     = &lambda;*Re^2
-   k2     = L*&eta;^2/(2*D^3*&rho;)
+   k2     = L*&mu;^2/(2*D^3*&rho;)
 </pre>
  
 <p>
@@ -595,14 +596,14 @@ where
 <li> &lambda; = &lambda;(Re,<font face=\"Symbol\">D</font>) is the \"usual\" wall friction coefficient.</li>
 <li> &lambda;2 = &lambda;*Re^2 is the used friction coefficient to get a numerically
      well-posed formulation.</li>
-<li> Re = |v|*D*&rho;/&eta; is the Reynolds number.</li>
+<li> Re = |v|*D*&rho;/&mu; is the Reynolds number.</li>
 <li> <font face=\"Symbol\">D</font> = <font face=\"Symbol\">d</font>/D is the relative roughness where
      \"<font face=\"Symbol\">d</font>\" is
      the absolute \"roughness\", i.e., the averaged height of asperities in the pipe
      (<font face=\"Symbol\">d</font> may change over time due to growth of surface asperities during
       service, see <i>[Idelchick 1994, p. 85, Tables 2-1, 2-2])</i>.</li>
 <li> &rho; is the upstream density.</li>
-<li> &eta; is the upstream dynamic viscosity.</li>
+<li> &mu; is the upstream dynamic viscosity.</li>
 <li> v is the mean velocity.</li>
 </ul>
 <p>
@@ -637,7 +638,7 @@ The pressure loss characteristic is divided into three regions:
      density and viscosity (= Hagen-Poiseuille flow) leading to &lambda;2 = 64*Re.
      Therefore:
      <pre> 
-        dp = 128*&eta;*L/(&pi;*D^4*&rho;)*m_flow
+        dp = 128*&mu;*L/(&pi;*D^4*&rho;)*m_flow
      </pre>
 </li> 
  
@@ -660,7 +661,7 @@ The pressure loss characteristic is divided into three regions:
          Re = -2*sqrt(&lambda;2)*lg(2.51/sqrt(&lambda;2) + 0.27*<font face=\"Symbol\">D</font>)
      </pre>
      Finally, the mass flow rate m_flow is computed from Re via
-     m_flow = Re*&pi;*D*&eta;/4*sign(dp).
+     m_flow = Re*&pi;*D*&mu;/4*sign(dp).
      These are the <b>red</b> curves in the diagrams above.<br>
      If the mass flow rate is assumed known (and therefore implicitly
      also the Reynolds number), then &lambda;2 is computed by an 
@@ -894,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-02</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-03</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -920,11 +921,23 @@ Modelica_Fluid was refactored and finalized for the release:
      <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialPressureLoss\">
           Interfaces.PartialPressureLoss</a>.</li>
      </ul>
-     A generic base model for one-dimensional fluid flow using the finite volume and the staggered grid approach 
-     is available in<br>
-     <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">
-          Pipes.BaseClasses.PartialTwoPortFlow</a>. 
-     The DistributedPipe model, for example, adds a wall HeatTransfer model and defines the source terms Qs_flows and Ws_flows.
+ 
+<li> Complete implementation of one-dimenstional fluid flow<br>
+     The balance equations as documented in 
+     <a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>
+     are now completely implemented. The implementations find in the following base classes:
+     <ul>
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">Pipes.BaseClasses.PartialTwoPortFlow</a>:
+         Staggered grid discretization of PDEs</li>
+     <li><a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume\">Vessels.BaseClasses.PartialDistributedVolume</a>:
+         Energy, Mass and Substance balances</li>
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss</a>:
+         Momentum balance</li>
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.WallFriction\">Pipes.BaseClasses.PressureLoss.WallFriction</a>:
+         Wall friction and gravity</li>
+      </ul> 
+     The DistributedPipe model adds a wall HeatTransfer model and defines the source terms Qs_flows and Ws_flows for the energy balance.
+     See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDistributedPipes\">Examples.BranchingDistributedPipes</a></li>
  
 <li> New approach for the connection of distributed flow models<br>
      The staggered grid approach offers different choices for the connection approach. So far the preferred modeling was to put full mass balances 
@@ -1164,7 +1177,7 @@ library 3.0 (by automatic conversion). Further changes:
 <li> Modelica_Fluid.Pipes.DistributedPipe<br>
      Modelica_Fluid.Pipes.DistributedPipeSb<br>
      Modelica_Fluid.Pipes.DistributedPipeSa<br>
-     Added default value for parameter \"eta_nominal\"
+     Added default value for parameter \"mu_nominal\"
     (computed with default values of p,T,X from dynamicViscosity(..))</li>
 <li> Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlowLumpedPressure<br>
      Replaced default value \"d_nominal=0.01\" by
@@ -2109,6 +2122,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0 Release Candidate 1",

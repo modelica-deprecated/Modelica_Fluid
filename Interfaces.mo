@@ -381,16 +381,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       "Thermodynamic states along design flow";
 
         // Outputs defined by pressure loss model
-        output Medium.MassFlowRate[n] m_flows
-      "mass flow rates along design flow";
-
-        // Variables
-        Medium.AbsolutePressure[n+1] ps "pressures of states";
-        Modelica.SIunits.Pressure[n] dps "pressure drop between states";
-
-      equation
-        ps = Medium.pressure(states);
-        dps = ps[1:n] - ps[2:n+1];
+        output Medium.MassFlowRate[n] m_flows "mass flow rates between states";
 
         annotation (
            Documentation(info="<html>
@@ -399,8 +390,7 @@ This component is a common interface for pressure loss models. The mass flow rat
 are obtained as function of the thermodynamic <tt>states[n+1]</tt> of the flow segments for a given fluid <tt>Medium</tt>.
 </p>
 <p>
-An extending model implementing this interface needs to define the mass flow rates <tt>m_flows[n]</tt> for the predefined
-pressure drops <tt>dps[n]</tt> between the states.
+An extending model implementing this interface needs to define the mass flow rates <tt>m_flows[n]</tt>.
 </p>
 </html>"));
       end PartialPressureLoss;

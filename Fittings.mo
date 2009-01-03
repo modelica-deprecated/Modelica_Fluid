@@ -518,6 +518,8 @@ of the modeller.
     extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortPressureLoss(
       redeclare replaceable model PressureLoss = 
       Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
+        vs={port_a.m_flow/Medium.density(pressureLoss.states[1])/pressureLoss.crossAreas[1],
+            -port_b.m_flow/Medium.density(pressureLoss.states[2])/pressureLoss.crossAreas[2]},
         height_ab = height_ab,
         g = system.g,
         dp_nominal = 1,
@@ -528,7 +530,7 @@ of the modeller.
         nParallel = 1,
         lengths = {0},
         crossAreas=fill(Modelica.Constants.pi/4*2.54e-2^2, 2),
-        perimeters=fill(Modelica.Constants.pi*2.54e-2, 2),
+        hydraulicDiameters=fill(2.54e-2, 2),
         roughnesses=fill(2.5e-5, 2),
         allowFlowReversal=allowFlowReversal,
         momentumDynamics=Types.Dynamics.SteadyState));
@@ -631,6 +633,10 @@ polynomials. The monotonicity is guaranteed using results from:
       parameter Medium.MassFlowRate m_flow_small = 0.01
         "Turbulent flow if |m_flow| >= m_flow_small" 
         annotation(Dialog(tab = "Advanced", enable=not from_dp));
+
+      // Variables
+      Medium.AbsolutePressure[2] ps = Medium.pressure(states);
+      Modelica.SIunits.Pressure[1] dps = {ps[1] - ps[2]};
 
     equation
       /*
@@ -741,7 +747,7 @@ can appear, this component should not be used.
       Boolean zetaLaminarKnown = false
           "= true, if zeta = c0/Re in laminar region"                              annotation(Dialog);
       Real c0 = 1
-          "zeta = c0/Re; dp = zeta*d_Re*v_Re^2/2, Re=v_Re*D_Re*d_Re/eta_Re)"         annotation(Dialog(enable=zetaLaminarKnown));
+          "zeta = c0/Re; dp = zeta*d_Re*v_Re^2/2, Re=v_Re*D_Re*d_Re/mu_Re)"         annotation(Dialog(enable=zetaLaminarKnown));
 
       annotation (preferedView="info", Documentation(info="<html>
 <p>
@@ -759,7 +765,7 @@ The following equations are used:
 <pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
       = 0.5*&zeta;/A^2 * (1/&rho;) * m_flow*|m_flow|
       = 8*&zeta;/(&pi;^2*D^4*&rho;) * m_flow*|m_flow|
-        Re = |v|*D*&rho;/&eta;
+        Re = |v|*D*&rho;/&mu;
 </pre>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><td><b>flow type</b></td>
@@ -800,7 +806,7 @@ where
      factors are defined with respect to port_a, in other references
      with respect to port_b).</li>
  
-<li> Re = |v|*D_Re*&rho;/&eta; = |m_flow|*D_Re/(A_Re*&eta;) 
+<li> Re = |v|*D_Re*&rho;/&mu; = |m_flow|*D_Re/(A_Re*&mu;) 
      is the Reynolds number at the smallest cross
      section area. This is often at port_a or at port_b, but can
      also be between the two ports. In the record, the diameter
@@ -813,7 +819,7 @@ where
      circular cross section, D = 4*A/P, where A is the cross section
      area and P is the wetted perimeter.</li>
 <li> A is the cross section area with A = &pi;(D/2)^2.
-<li> &eta; is the dynamic viscosity.</li>
+<li> &mu; is the dynamic viscosity.</li>
 </ul>
 <p>
 The laminar and the transition region is usually of
@@ -822,7 +828,7 @@ mostly in the turbulent regime. For simplification and for
 numercial reasons, this whole region is described by two
 polynomials of third order, one polynomial for m_flow &ge; 0 
 and one for m_flow &lt; 0. The polynomials start at 
-Re = |m_flow|*4/(&pi;*D_Re*&eta;), where D_Re is the
+Re = |m_flow|*4/(&pi;*D_Re*&mu;), where D_Re is the
 smallest diameter between port_a and port_b.
 The common derivative
 of the two polynomials at Re = 0 is
@@ -1315,8 +1321,8 @@ where
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
         input SI.Density d_a "Density at port_a";
         input SI.Density d_b "Density at port_b";
-        input SI.DynamicViscosity eta_a "Dynamic viscosity at port_a";
-        input SI.DynamicViscosity eta_b "Dynamic viscosity at port_b";
+        input SI.DynamicViscosity mu_a "Dynamic viscosity at port_a";
+        input SI.DynamicViscosity mu_b "Dynamic viscosity at port_b";
         input LossFactorData data
           "Constant loss factors for both flow directions" annotation (
             choices(
@@ -1370,7 +1376,7 @@ The used sufficient criteria for monotonicity follows from:
       algorithm
       /*
 Turbulent region:
-   Re = m_flow*(4/pi)/(D_Re*eta)  
+   Re = m_flow*(4/pi)/(D_Re*mu)  
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
       = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
@@ -1378,33 +1384,33 @@ Turbulent region:
    k  = 0.5*zeta/A^2
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
-   m_flow_turbulent = (pi/4)*D_Re*eta*Re_turbulent
-   dp_turbulent     =  k/d *(D_Re*eta*pi/4)^2 * Re_turbulent^2
+   m_flow_turbulent = (pi/4)*D_Re*mu*Re_turbulent
+   dp_turbulent     =  k/d *(D_Re*mu*pi/4)^2 * Re_turbulent^2
  
    The start of the turbulent region is computed with mean values
-   of dynamic viscosity eta and density rho. Otherwise, one has
+   of dynamic viscosity mu and density rho. Otherwise, one has
    to introduce different "delta" values for both flow directions.
    In order to simplify the approach, only one delta is used.  
  
 Laminar region:
    dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
-      = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*eta)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
-      = 0.5 * c0*(pi/4)*(D_Re*eta) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
-      = 2*c0/(pi*D_Re^3) * eta/d * m_flow
-      = k0 * eta/d * m_flow
+      = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*mu)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
+      = 0.5 * c0*(pi/4)*(D_Re*mu) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
+      = 2*c0/(pi*D_Re^3) * mu/d * m_flow
+      = k0 * mu/d * m_flow
    k0 = 2*c0/(pi*D_Re^3)
  
    In order that the derivative of dp=f(m_flow) is continuous 
-   at m_flow=0, the mean values of eta and d are used in the
-   laminar region: eta/d = (eta_a + eta_b)/(d_a + d_b)
-   If data.zetaLaminarKnown = false then eta_a and eta_b are potentially zero
+   at m_flow=0, the mean values of mu and d are used in the
+   laminar region: mu/d = (mu_a + mu_b)/(d_a + d_b)
+   If data.zetaLaminarKnown = false then mu_a and mu_b are potentially zero
    (because dummy values) and therefore the division is only performed
    if zetaLaminarKnown = true.
 */
          dp_turbulent :=(k1 + k2)/(d_a + d_b)*
-                        ((eta_a + eta_b)*data.D_Re*pi/8)^2*data.Re_turbulent^2;
+                        ((mu_a + mu_b)*data.D_Re*pi/8)^2*data.Re_turbulent^2;
          yd0 :=if data.zetaLaminarKnown then 
-                  (d_a + d_b)/(k0*(eta_a + eta_b)) else 0;
+                  (d_a + d_b)/(k0*(mu_a + mu_b)) else 0;
          m_flow := Utilities.regRoot2(dp, dp_turbulent, d_a/k1, d_b/k2,
                                                      data.zetaLaminarKnown, yd0);
       end massFlowRate_dp_and_Re;
@@ -1456,8 +1462,8 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
         input SI.Density d_a "Density at port_a";
         input SI.Density d_b "Density at port_b";
-        input SI.DynamicViscosity eta_a "Dynamic viscosity at port_a";
-        input SI.DynamicViscosity eta_b "Dynamic viscosity at port_b";
+        input SI.DynamicViscosity mu_a "Dynamic viscosity at port_a";
+        input SI.DynamicViscosity mu_b "Dynamic viscosity at port_b";
         input LossFactorData data
           "Constant loss factors for both flow directions" annotation (
             choices(
@@ -1511,7 +1517,7 @@ The used sufficient criteria for monotonicity follows from:
       algorithm
       /*
 Turbulent region:
-   Re = m_flow*(4/pi)/(D_Re*eta)  
+   Re = m_flow*(4/pi)/(D_Re*mu)  
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
       = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
@@ -1519,31 +1525,31 @@ Turbulent region:
    k  = 0.5*zeta/A^2
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
-   m_flow_turbulent = (pi/4)*D_Re*eta*Re_turbulent
-   dp_turbulent     =  k/d *(D_Re*eta*pi/4)^2 * Re_turbulent^2
+   m_flow_turbulent = (pi/4)*D_Re*mu*Re_turbulent
+   dp_turbulent     =  k/d *(D_Re*mu*pi/4)^2 * Re_turbulent^2
  
    The start of the turbulent region is computed with mean values
-   of dynamic viscosity eta and density rho. Otherwise, one has
+   of dynamic viscosity mu and density rho. Otherwise, one has
    to introduce different "delta" values for both flow directions.
    In order to simplify the approach, only one delta is used.  
  
 Laminar region:
    dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
-      = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*eta)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
-      = 0.5 * c0*(pi/4)*(D_Re*eta) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
-      = 2*c0/(pi*D_Re^3) * eta/d * m_flow
-      = k0 * eta/d * m_flow
+      = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*mu)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
+      = 0.5 * c0*(pi/4)*(D_Re*mu) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
+      = 2*c0/(pi*D_Re^3) * mu/d * m_flow
+      = k0 * mu/d * m_flow
    k0 = 2*c0/(pi*D_Re^3)
  
    In order that the derivative of dp=f(m_flow) is continuous 
-   at m_flow=0, the mean values of eta and d are used in the
-   laminar region: eta/d = (eta_a + eta_b)/(d_a + d_b)
-   If data.zetaLaminarKnown = false then eta_a and eta_b are potentially zero
+   at m_flow=0, the mean values of mu and d are used in the
+   laminar region: mu/d = (mu_a + mu_b)/(d_a + d_b)
+   If data.zetaLaminarKnown = false then mu_a and mu_b are potentially zero
    (because dummy values) and therefore the division is only performed
    if zetaLaminarKnown = true.
 */
-        m_flow_turbulent :=(pi/8)*data.D_Re*(eta_a + eta_b)*data.Re_turbulent;
-        yd0 :=if data.zetaLaminarKnown then k0*(eta_a + eta_b)/(d_a + d_b) else 0;
+        m_flow_turbulent :=(pi/8)*data.D_Re*(mu_a + mu_b)*data.Re_turbulent;
+        yd0 :=if data.zetaLaminarKnown then k0*(mu_a + mu_b)/(d_a + d_b) else 0;
         dp :=Utilities.regSquare2(m_flow, m_flow_turbulent, k1/d_a, k2/d_b,
                                                  data.zetaLaminarKnown, yd0);
       end pressureLoss_m_flow_and_Re;
@@ -1569,6 +1575,10 @@ Laminar region:
         parameter Medium.MassFlowRate m_flow_small = 0.01
           "Turbulent flow if |m_flow| >= m_flow_small" 
           annotation(Dialog(tab = "Advanced", enable=not from_dp));
+
+        // Variables
+        Medium.AbsolutePressure[2] ps = Medium.pressure(states);
+        Modelica.SIunits.Pressure[1] dps = {ps[1] - ps[2]};
 
       equation
         if from_dp then
@@ -1617,7 +1627,7 @@ The following equations are used:
 </p>
 <pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
       = 0.5*&zeta;/A^2 * (1/&rho;) * m_flow*|m_flow|
-        Re = |v|*D*&rho;/&eta;
+        Re = |v|*D*&rho;/&mu;
 </pre>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><td><b>flow type</b></td>
@@ -1658,7 +1668,7 @@ where
      factors are defined with respect to port_a, in other references
      with respect to port_b).</li>
  
-<li> Re = |v|*D_Re*&rho;/&eta; = |m_flow|*D_Re/(A_Re*&eta;) 
+<li> Re = |v|*D_Re*&rho;/&mu; = |m_flow|*D_Re/(A_Re*&mu;) 
      is the Reynolds number at the smallest cross
      section area. This is often at port_a or at port_b, but can
      also be between the two ports. In the record, the diameter
@@ -1671,7 +1681,7 @@ where
      circular cross section, D = 4*A/P, where A is the cross section
      area and P is the wetted perimeter.</li>
 <li> A is the cross section area with A = &pi;(D/2)^2.
-<li> &eta; is the dynamic viscosity.</li>
+<li> &mu; is the dynamic viscosity.</li>
 </ul>
 <p>
 The laminar and the transition region is usually of
@@ -1680,7 +1690,7 @@ mostly in the turbulent regime. For simplification and for
 numercial reasons, this whole region is described by two
 polynomials of third order, one polynomial for m_flow &ge; 0 
 and one for m_flow &lt; 0. The polynomials start at 
-Re = |m_flow|*4/(&pi;*D_Re*&eta;), where D_Re is the
+Re = |m_flow|*4/(&pi;*D_Re*&mu;), where D_Re is the
 smallest diameter between port_a and port_b.
 The common derivative
 of the two polynomials at Re = 0 is
@@ -1740,8 +1750,9 @@ The used sufficient criteria for monotonicity follows from:
         parameter Boolean show_Re = false
           "= true, if Reynolds number is included for plotting" 
            annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnostics"));
-        SI.ReynoldsNumber Re = Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber(
-              m_flow, (Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b))/2,
+        SI.ReynoldsNumber Re = Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber_m_flow(
+              m_flow,
+              0.5*(Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b)),
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
 
         annotation (
@@ -1767,7 +1778,7 @@ The following equations are used:
 </p>
 <pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
       = 0.5*&zeta;/A^2 * (1/&rho;) * m_flow*|m_flow|
-        Re = |v|*D*&rho;/&eta;
+        Re = |v|*D*&rho;/&mu;
 </pre>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><td><b>flow type</b></td>
@@ -1808,7 +1819,7 @@ where
      factors are defined with respect to port_a, in other references
      with respect to port_b).</li>
  
-<li> Re = |v|*D_Re*&rho;/&eta; = |m_flow|*D_Re/(A_Re*&eta;) 
+<li> Re = |v|*D_Re*&rho;/&mu; = |m_flow|*D_Re/(A_Re*&mu;) 
      is the Reynolds number at the smallest cross
      section area. This is often at port_a or at port_b, but can
      also be between the two ports. In the record, the diameter
@@ -1821,7 +1832,7 @@ where
      circular cross section, D = 4*A/P, where A is the cross section
      area and P is the wetted perimeter.</li>
 <li> A is the cross section area with A = &pi;(D/2)^2.
-<li> &eta; is the dynamic viscosity.</li>
+<li> &mu; is the dynamic viscosity.</li>
 </ul>
 <p>
 The laminar and the transition region is usually of
@@ -1830,7 +1841,7 @@ mostly in the turbulent regime. For simplification and for
 numercial reasons, this whole region is described by two
 polynomials of third order, one polynomial for m_flow &ge; 0 
 and one for m_flow &lt; 0. The polynomials start at 
-Re = |m_flow|*4/(&pi;*D_Re*&eta;), where D_Re is the
+Re = |m_flow|*4/(&pi;*D_Re*&mu;), where D_Re is the
 smallest diameter between port_a and port_b.
 The common derivative
 of the two polynomials at Re = 0 is

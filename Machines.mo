@@ -253,8 +253,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
           rotation=-90,
           origin={0,100})));
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
-              100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}), graphics={Text(
             visible=use_N_input,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
