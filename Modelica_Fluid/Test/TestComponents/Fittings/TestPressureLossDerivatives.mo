@@ -12,8 +12,8 @@ model TestPressureLossDerivatives
 
   SI.Density d_a;
   SI.Density d_b;
-  SI.DynamicViscosity eta_a;
-  SI.DynamicViscosity eta_b;
+  SI.DynamicViscosity mu_a;
+  SI.DynamicViscosity mu_b;
   SI.Pressure dp;
   SI.MassFlowRate m_flow1;
   SI.MassFlowRate m_flow2;
@@ -21,7 +21,7 @@ model TestPressureLossDerivatives
 protected
   constant Real t2p=1 "dummy unit constant";
   constant Real t2d=1 "dummy unit constant";
-  constant Real d2eta=1 "dummy unit constant";
+  constant Real d2mu=1 "dummy unit constant";
 
   annotation (experiment(StopTime=3), experimentSetupOutput,
     Documentation(info="<html>
@@ -31,11 +31,11 @@ equation
   dp = t2p*time - 1;
   d_a = 0.1 + t2d*time;
   d_b = 0.2 + 0.5*t2d*time;
-  eta_a = 0.1*d2eta*d_a;
-  eta_b = 0.4*d2eta*d_b;
+  mu_a = 0.1*d2mu*d_a;
+  mu_b = 0.4*d2mu*d_b;
 
   m_flow1 = QuadraticTurbulent.massFlowRate_dp(dp, d_a, d_b, data, dp_small);
-  m_flow2 = QuadraticTurbulent.massFlowRate_dp_and_Re(dp, d_a, d_b, eta_a, eta_b, data);
+  m_flow2 = QuadraticTurbulent.massFlowRate_dp_and_Re(dp, d_a, d_b, mu_a, mu_b, data);
 
   der_m_flow1 = der(m_flow1);
   // der_m_flow2 = der(m_flow2);

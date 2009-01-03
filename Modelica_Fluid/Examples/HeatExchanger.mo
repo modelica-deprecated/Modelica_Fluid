@@ -17,12 +17,12 @@ package HeatExchanger "Demo of a heat exchanger model"
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction (
         redeclare package WallFriction = 
           Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
-              use_d_nominal=true,use_eta_nominal=true,eta_nominal=0.01),
+              use_d_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
       redeclare model PressureLoss_2 = 
           Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction (
         redeclare package WallFriction = 
           Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
-              use_d_nominal=true,use_eta_nominal=true,eta_nominal=0.01),
+              use_d_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
       k_wall=100,
       energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
       massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,

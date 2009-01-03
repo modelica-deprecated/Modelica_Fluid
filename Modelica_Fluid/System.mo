@@ -30,7 +30,7 @@ model System
     massDynamics "Default formulation of trace substance balances" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
   parameter Types.Dynamics momentumDynamics=
-    massDynamics
+    Types.Dynamics.SteadyState
     "Default formulation of momentum balances, if options available" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 

@@ -24,12 +24,11 @@ model HeatingSystem "Simple model of a heating system"
     use_T_start=true,
     T_start=Modelica.SIunits.Conversions.from_degC(40),
     m_flow_start=0.01,
-    checkValve=false,
     m_flow_nominal=0.01,
     control_m_flow=false,
     p_a_start=110000,
-    p_b_start=400000,
-    p_a_nominal=100000,
+    p_b_start=130000,
+    p_a_nominal=110000,
     p_b_nominal=130000) 
     annotation (Placement(transformation(extent={{-50,10},{-30,30}}, rotation=
            0)));
@@ -61,7 +60,8 @@ model HeatingSystem "Simple model of a heating system"
     T_ref=343.15,
     alpha=-0.5) 
     annotation (Placement(transformation(extent={{16,30},{36,50}}, rotation=0)));
-  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
+  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
+      allowFlowReversal=false) 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},   rotation=0)));
   Pipes.DistributedPipe heater(
@@ -205,7 +205,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
