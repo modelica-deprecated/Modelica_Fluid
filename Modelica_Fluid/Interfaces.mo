@@ -974,7 +974,8 @@ end PartialFiniteVolumes;
         // Outputs defined by momentum model
         output Medium.MassFlowRate[n-1] m_flows(
            each start = m_flow_start,
-           each stateSelect = StateSelect.prefer)
+           each stateSelect = if momentumDynamics == Types.Dynamics.SteadyState then StateSelect.default else 
+                                     StateSelect.prefer)
       "mass flow rates between states";
 
         // Parameters
@@ -990,7 +991,7 @@ end PartialFiniteVolumes;
         SI.Momentum[n-1] Is "Momentums of fluid flow";
 
         // Source terms and forces to be defined by an extending model (zero if not used)
-        SI.Force[n-1] Is_flows "Convection of momentum";
+        SI.Force[n-1] Is_flows "Flow of momentum across boudaries";
         SI.Force[n-1] Fs_p "Pressure forces";
         SI.Force[n-1] Fs_fg "Friction and gravity forces";
 
