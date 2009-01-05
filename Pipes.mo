@@ -777,10 +777,9 @@ with momentumDynamics==Types.Dynamics.SteadyState. This considers
 <ul>
 <li>pressure drop due to friction and other dissipative losses, and</li>
 <li>gravity effects for non-horizontal devices.</li>
+<li>variation of flow velocity along the flow path, 
+which occur due to changes in the cross sectional area or the fluid density, provided that <tt>flowMomentum.use_Is_flows</tt> is true.
 </ul>
-Changes in pressure resulting from significant variation of flow velocity along the flow path, 
-which occur due to changes in the cross sectional area or the fluid density, are only covered by the dynamic momentum balance
-(momentumDynamics must not be configured to Types.Dynamics.SteadyState).
  
 <p><b>Model Structure</b></p>
 The momentum balances are formulated across the segment boundaries along the flow path according to the staggered grid approach. 
@@ -1211,6 +1210,10 @@ This also allows for taking into account friction losses with respect to the act
           "Nominal dynamic viscosity (e.g. mu_liquidWater = 1e-3, mu_air = 1.8e-5)"
               annotation(Dialog(group="Advanced", enable=use_mu_nominal));
 
+            parameter Boolean use_Is_flows = momentumDynamics <> Types.Dynamics.SteadyState
+          "= true to consider differences in flow of momentum through boundaries"
+               annotation(Dialog(group="Advanced"), Evaluate=true);
+
             // Variables
             SI.Density[n] ds = if use_d_nominal then fill(d_nominal, n) else Medium.density(states);
             SI.Density[n-1] ds_act "Actual density per segment";
@@ -1219,8 +1222,6 @@ This also allows for taking into account friction losses with respect to the act
             SI.DynamicViscosity[n-1] mus_act "Actual viscosity per segment";
 
             // Variables
-            //Medium.AbsolutePressure[n+1] ps = Medium.pressure(states)
-            //  "pressures of states";
             Modelica.SIunits.Pressure[n-1] dps_fg(each start = (p_a_start - p_b_start)/(n-1))
           "pressure drop between states";
 
@@ -1229,7 +1230,7 @@ This also allows for taking into account friction losses with respect to the act
           "Start of turbulent regime, depending on type of flow device";
             parameter Boolean show_Res = false
           "= true, if Reynolds numbers are included for plotting" 
-               annotation (Evaluate=true, Dialog(group="Advanced"));
+               annotation (Evaluate=true, Dialog(group="Diagnostics"));
             SI.ReynoldsNumber[n] Res=Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber(
                 vs/nParallel,
                 ds,
@@ -1253,12 +1254,12 @@ This also allows for taking into account friction losses with respect to the act
               end for;
             end if;
 
-            if momentumDynamics == Types.Dynamics.SteadyState then
-              Is_flows = zeros(n-1);
+            if use_Is_flows then
+              Is_flows = {ds[i]*vs[i]*vs[i]*crossAreas[i] - ds[i+1]*vs[i+1]*vs[i+1]*crossAreas[i+1] for i in 1:n-1};
+              // alternatively use densities ds_act of actual streams, together with mass flow rates:
+              //Is_flows = {((ds[i]*vs[i])^2*crossAreas[i] - (ds[i+1]*vs[i+1])^2*crossAreas[i+1])/ds_act[i] for i in 1:n-1};
             else
-              Is_flows = {((ds[i]*vs[i])^2*crossAreas[i] - (ds[i+1]*vs[i+1])^2*crossAreas[i+1])/ds_act[i] for i in 1:n-1};
-              // alternatively use densities of device segments, instead of actual densities of flows ds_act
-              //Is_flows = {ds[i]*vs[i]*vs[i]*crossAreas[i] - ds[i+1]*vs[i+1]*vs[i+1]*crossAreas[i+1] for i in 1:n-1};
+              Is_flows = zeros(n-1);
             end if;
 
             Fs_p = {0.5*(crossAreas[i]+crossAreas[i+1])*(Medium.pressure(states[i+1])-Medium.pressure(states[i])) for i in 1:n-1};
@@ -1268,27 +1269,27 @@ This also allows for taking into account friction losses with respect to the act
 
             annotation (Documentation(info="<html>
 <p>
-This paratial model defines a common interface for <tt>n</tt> flow models between <tt>n+1</tt> device segments. 
+This paratial model defines a common interface for <tt>n-1</tt> flow models between <tt>n</tt> device segments. 
 The flow models provide a steady-state or dynamic momentum balance. Extending models must provide pressure loss terms 
 for friction and gravity.
 </p>
 <p>
-The geometry is specified in the interface with the <tt>distances[n]</tt> between flow device segments with 
-the <tt>crossAreas[n+1]</tt> and the <tt>roughnesses[n+1]</tt>. 
-Moreover the fluid flow is characterized for different types of devices by the characteristic <tt>dimensions[n+1]</tt> 
-and the average velocities <tt>vs[n+1]</tt> of fluid flow. 
+The geometry is specified in the interface with the <tt>distances[n-1]</tt> between flow device segments with 
+the <tt>crossAreas[n]</tt> and the <tt>roughnesses[n]</tt>. 
+Moreover the fluid flow is characterized for different types of devices by the characteristic <tt>dimensions[n]</tt> 
+and the average velocities <tt>vs[n]</tt> of fluid flow. 
 See <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber\">Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber</a>
 for examplary definitions.
 </p>
 <p> 
 The parameter <tt>Re_turbulent</tt> can be specified for the least mass flow rate of the turbulent regime. 
 It defaults to 4000, which is appropriate for pipe flow.
-The <tt>m_flows_turbulent[n]</tt> resulting from <tt>Re_turbulent</tt> can optionally be calculated together with the Reynolds numbers
+The <tt>m_flows_turbulent[n-1]</tt> resulting from <tt>Re_turbulent</tt> can optionally be calculated together with the Reynolds numbers
 of the actual flow (<tt>show_Res=true</tt>).
 </p>
 <p>
-Using the thermodynamic states[n+1] of the device segments, the densities ds[n+1] and the dynamic viscosities mus[n+1] 
-of the segments as well as the actual densities ds_act[n] and the actual viscosities mus_act[n] of the flows are predefined
+Using the thermodynamic states[n] of the device segments, the densities ds[n] and the dynamic viscosities mus[n] 
+of the segments as well as the actual densities ds_act[n-1] and the actual viscosities mus_act[n-1] of the flows are predefined
 in this base model. Note that no events are raised on flow reversal. This needs to be treated by an extending model, 
 e.g. with numerical smoothing or by raising events as appropriate.
 </p>
