@@ -428,7 +428,7 @@ of the modeller. Increase nPorts_b to add an additional port.
   model TeeJunctionVolume
     "Splitting/joining component with static balances for a dynamic control volume"
     extends Modelica_Fluid.Fittings.BaseClasses.PartialTeeJunction;
-    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume;
+    extends Modelica_Fluid.Interfaces.PartialLumpedVolume;
 
     parameter SI.Volume V "Mixing volume inside junction";
 
@@ -517,23 +517,20 @@ of the modeller.
 
     extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortPressureLoss(
       redeclare replaceable model PressureLoss = 
-      Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalLaminarFlow (
+      Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.NominalLaminarFlow (
         vs={port_a.m_flow/Medium.density(pressureLoss.states[1])/pressureLoss.crossAreas[1],
             -port_b.m_flow/Medium.density(pressureLoss.states[2])/pressureLoss.crossAreas[2]},
-        height_ab = height_ab,
-        g = system.g,
+        dheights = {height_ab},
         dp_nominal = 1,
         m_flow_nominal = 1,
         m_flow_start = m_flow_start,
         p_a_start = system.p_start + 0.5*dp_start,
         p_b_start = system.p_start - 0.5*dp_start,
         nParallel = 1,
-        lengths = {0},
+        distances = {0},
         crossAreas=fill(Modelica.Constants.pi/4*2.54e-2^2, 2),
         dimensions=fill(2.54e-2, 2),
-        roughnesses=fill(2.5e-5, 2),
-        allowFlowReversal=allowFlowReversal,
-        momentumDynamics=Types.Dynamics.SteadyState));
+        roughnesses=fill(2.5e-5, 2)));
 
     annotation (defaultComponentName="staticHead",
           Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
@@ -617,8 +614,10 @@ polynomials. The monotonicity is guaranteed using results from:
     model SimpleGenericPressureLoss
       "SimpleGenericPressureLoss: Simple pressure loss component defined by two constants (diameter, zeta) for the quadratic turbulent regime"
 
-      extends Modelica_Fluid.Interfaces.PartialPressureLoss(
-        final n = 1);
+      extends Modelica_Fluid.Interfaces.PartialStaggeredMomentum(
+        final n = 2,
+        final distances = {0},
+        final momentumDynamics = Types.Dynamics.SteadyState);
 
       input Real zeta "Loss factor for flow of state[1] -> state[2]";
       parameter SI.Diameter diameter
@@ -635,10 +634,14 @@ polynomials. The monotonicity is guaranteed using results from:
         annotation(Dialog(tab = "Advanced", enable=not from_dp));
 
       // Variables
-      Medium.AbsolutePressure[2] ps = Medium.pressure(states);
-      Modelica.SIunits.Pressure[1] dps = {ps[1] - ps[2]};
+      //Medium.AbsolutePressure[2] ps = Medium.pressure(states);
+      Modelica.SIunits.Pressure[1] dps_fg; // = {ps[1] - ps[2]};
+      Modelica.SIunits.Area A_mean = Modelica.Constants.pi/4*diameter^2;
 
     equation
+      Is_flows = {0};
+      Fs_p = A_mean*{Medium.pressure(states[2]) - Medium.pressure(states[1])};
+      Fs_fg = A_mean*dps_fg;
       /*
    dp = 0.5*zeta*d*v*|v|
       = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
@@ -650,12 +653,12 @@ polynomials. The monotonicity is guaranteed using results from:
   */
       if from_dp then
         m_flows[1] = Utilities.regRoot2(
-            dps[1],
+            dps_fg[1],
             dp_small,
             Medium.density(states[1])/lossConstant_D_zeta(diameter, zeta),
             Medium.density(states[2])/lossConstant_D_zeta(diameter, zeta));
       else
-        dps[1] = Utilities.regSquare2(
+        dps_fg[1] = Utilities.regSquare2(
             m_flows[1],
             m_flow_small,
             lossConstant_D_zeta(diameter, zeta)/Medium.density(states[1]),
@@ -1027,8 +1030,8 @@ As a short summary:
                                    Diagram(coordinateSystem(
                   preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
                 graphics={
-                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{
-                      100,-100},{100,100},{0,100},{0,40}}, color={0,0,0}),
+                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,
+                      -100},{100,100},{0,100},{0,40}}, color={0,0,0}),
                 Rectangle(
                   extent={{-100,40},{0,-40}},
                   lineColor={255,255,255},
@@ -1039,8 +1042,8 @@ As a short summary:
                   lineColor={255,255,255},
                   fillColor={255,255,255},
                   fillPattern=FillPattern.Solid),
-                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{
-                      100,-100},{100,100},{0,100},{0,40}}, color={0,0,0}),
+                Line(points={{0,40},{-100,40},{-100,-40},{0,-40},{0,-100},{100,
+                      -100},{100,100},{0,100},{0,40}}, color={0,0,0}),
                 Line(
                   points={{-60,-40},{-60,40}},
                   color={0,0,255},
@@ -1554,181 +1557,15 @@ Laminar region:
                                                  data.zetaLaminarKnown, yd0);
       end pressureLoss_m_flow_and_Re;
 
-      model DataBasedPressureLoss
-        "DataBasedPressureLoss: Generic pressure drop component with constant turbulent loss factor data"
-
-        extends Modelica_Fluid.Interfaces.PartialPressureLoss(
-          final n = 1);
-
-        input LossFactorData data "Loss factor data";
-
-        // Advanced
-        parameter Boolean from_dp = true
-          "= true, use m_flow = f(dp) else dp = f(m_flow)" 
-          annotation (Evaluate=true, Dialog(tab="Advanced"));
-        parameter Boolean use_Re = false
-          "= true, if turbulent region is defined by Re, otherwise by dp_small or m_flow_small"
-          annotation(Evaluate=true, Dialog(tab="Advanced"));
-        parameter Medium.AbsolutePressure dp_small = 1
-          "Turbulent flow if |dp| >= dp_small" 
-          annotation(Dialog(tab="Advanced", enable=not use_Re and from_dp));
-        parameter Medium.MassFlowRate m_flow_small = 0.01
-          "Turbulent flow if |m_flow| >= m_flow_small" 
-          annotation(Dialog(tab = "Advanced", enable=not from_dp));
-
-        // Variables
-        Medium.AbsolutePressure[2] ps = Medium.pressure(states);
-        Modelica.SIunits.Pressure[1] dps = {ps[1] - ps[2]};
-
-      equation
-        if from_dp then
-           m_flows[1] = if use_Re then 
-                       massFlowRate_dp_and_Re(
-                          dps[1], Medium.density(states[1]), Medium.density(states[2]),
-                          Medium.dynamicViscosity(states[1]),
-                          Medium.dynamicViscosity(states[2]),
-                          data) else 
-                       massFlowRate_dp(dps[1], Medium.density(states[1]), Medium.density(states[2]), data, dp_small);
-        else
-           dps[1] = if use_Re then 
-                   pressureLoss_m_flow_and_Re(
-                       m_flows[1], Medium.density(states[1]), Medium.density(states[2]),
-                       Medium.dynamicViscosity(states[1]),
-                       Medium.dynamicViscosity(states[2]),
-                       data) else 
-                   pressureLoss_m_flow(m_flows[1], Medium.density(states[1]), Medium.density(states[2]), data, m_flow_small);
-        end if;
-
-        annotation (Icon(coordinateSystem(
-                preserveAspectRatio=true,
-                extent={{-100,-100},{100,100}},
-                grid={1,1}), graphics={Rectangle(
-                extent={{-50,40},{50,-40}},
-                pattern=LinePattern.None,
-                lineColor={0,0,0},
-                fillColor={255,255,0},
-                fillPattern=FillPattern.Solid), Line(
-                points={{-60,-50},{-60,50},{60,-50},{60,50}},
-                color={0,0,0},
-                thickness=0.5)}),
-          Documentation(info="<html>
-<p>
-This model computes the pressure loss of a pipe
-segment (orifice, bending etc.) with a minimum amount of data
-provided via parameter <b>data</b>.
-If available, data should be provided for <b>both flow directions</b>,
-i.e., flow from port_a to port_b and from port_b to port_a, 
-as well as for the <b>laminar</b> and the <b>turbulent</b> region.
-It is also an option to provide the loss factor <b>only</b> for the
-<b>turbulent</b> region for a flow from port_a to port_b.
-</p>
-<p>
-The following equations are used:
-</p>
-<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
-      = 0.5*&zeta;/A^2 * (1/&rho;) * m_flow*|m_flow|
-        Re = |v|*D*&rho;/&mu;
-</pre>
-<table border=1 cellspacing=0 cellpadding=2>
-<tr><td><b>flow type</b></td>
-    <td><b>&zeta;</b> = </td>
-    <td><b>flow region</b></td></tr>
-<tr><td>turbulent</td>
-    <td><b>zeta1</b> = const.</td>
-    <td>Re &ge;  Re_turbulent, v &ge; 0</td></tr>
-<tr><td></td>
-    <td><b>zeta2</b> = const.</td>
-    <td>Re &ge; Re_turbulent, v &lt; 0</td></tr>
-<tr><td>laminar</td>
-    <td><b>c0</b>/Re</td>
-    <td>both flow directions, Re small; c0 = const.</td></tr>
-</table>
-<p>
-where
-</p>
-<ul>
-<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
-<li> v is the mean velocity.</li>
-<li> &rho; is the density.</li>
-<li> &zeta; is the loss factor that depends on the geometry of
-     the pipe. In the turbulent flow regime, it is assumed that
-     &zeta; is constant and is given by \"zeta1\" and
-     \"zeta2\" depending on the flow direction.<br>
-     When the Reynolds number Re is below \"Re_turbulent\", the
-     flow is laminar for small flow velocities. For higher 
-     velocities there is a transition region from 
-     laminar to turbulent flow. The loss factor for
-     laminar flow at small velocities is defined by the often occuring
-     approximation c0/Re. If c0 is different for the two
-     flow directions, the mean value has to be used 
-     (c0 = (c0_ab + c0_ba)/2).<li>
-<li> The equation \"&Delta;p = 0.5*&zeta;*&rho;*v*|v|\" is either with
-     respect to port_a or to port_b, depending on the definition
-     of the particular loss factor &zeta; (in some references loss
-     factors are defined with respect to port_a, in other references
-     with respect to port_b).</li>
- 
-<li> Re = |v|*D_Re*&rho;/&mu; = |m_flow|*D_Re/(A_Re*&mu;) 
-     is the Reynolds number at the smallest cross
-     section area. This is often at port_a or at port_b, but can
-     also be between the two ports. In the record, the diameter
-     D_Re of this smallest cross section area has to be provided, as
-     well, as Re_turbulent, the absolute value of the 
-     Reynolds number at which
-     the turbulent flow starts. If Re_turbulent is different for
-     the two flow directions, use the smaller value as Re_turbulent.</li>
-<li> D is the diameter of the pipe. If the pipe has not a 
-     circular cross section, D = 4*A/P, where A is the cross section
-     area and P is the wetted perimeter.</li>
-<li> A is the cross section area with A = &pi;(D/2)^2.
-<li> &mu; is the dynamic viscosity.</li>
-</ul>
-<p>
-The laminar and the transition region is usually of
-not much technical interest because the operating point is
-mostly in the turbulent regime. For simplification and for
-numercial reasons, this whole region is described by two
-polynomials of third order, one polynomial for m_flow &ge; 0 
-and one for m_flow &lt; 0. The polynomials start at 
-Re = |m_flow|*4/(&pi;*D_Re*&mu;), where D_Re is the
-smallest diameter between port_a and port_b.
-The common derivative
-of the two polynomials at Re = 0 is
-computed from the equation \"c0/Re\". Note, the pressure drop
-equation above in the laminar region is always defined
-with respect to the smallest diameter D_Re.
-</p>
-<p>
-If no data for c0 is available, the derivative at Re = 0 is computed in such
-a way, that the second derivatives of the two polynomials
-are identical at Re = 0. The polynomials are constructed, such that
-they smoothly touch the characteristic curves in the turbulent
-regions. The whole characteristic is therefore <b>continuous</b>
-and has a <b>finite</b>, <b>continuous first derivative everywhere</b>.
-In some cases, the constructed polynomials would \"vibrate\". This is 
-avoided by reducing the derivative at Re=0 in such a way that
-the polynomials are guaranteed to be monotonically increasing.
-The used sufficient criteria for monotonicity follows from:
-</p>
- 
-<dl>
-<dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
-<dd> <b>Monotone piecewise cubic interpolation</b>.
-     SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
-</dl>
-</html>"));
-      end DataBasedPressureLoss;
-
       partial model BaseModel
         "Generic pressure drop component with constant turbulent loss factor data and without an icon"
 
-        extends Modelica_Fluid.Fittings.BaseClasses.PartialTwoPortPressureLoss(
-          redeclare model PressureLoss = DataBasedPressureLoss (
-            data = data,
-            from_dp = from_dp,
-            use_Re = use_Re,
-            dp_small = dp_small,
-            m_flow_small = m_flow_small));
+        extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+        extends Modelica_Fluid.Interfaces.PartialStaggeredMomentum(
+          final n = 2,
+          final distances = {0},
+          final states = {state_a, state_b},
+          final momentumDynamics = Types.Dynamics.SteadyState);
 
         parameter LossFactorData data "Loss factor data";
 
@@ -1754,6 +1591,34 @@ The used sufficient criteria for monotonicity follows from:
               m_flow,
               0.5*(Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b)),
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
+
+        // Variables
+        Modelica.SIunits.Pressure[1] dps_fg
+          "pressure loss due to friction and gravity";
+        Modelica.SIunits.Area A_mean = Modelica.Constants.pi/4*(data.diameter_a^2+data.diameter_b^2)/2;
+
+      equation
+        m_flows = {m_flow};
+        Is_flows = {0};
+        Fs_p = A_mean*{Medium.pressure(states[2]) - Medium.pressure(states[1])};
+        Fs_fg = A_mean*dps_fg;
+        if from_dp then
+           m_flows[1] = if use_Re then 
+                       massFlowRate_dp_and_Re(
+                          dps_fg[1], Medium.density(states[1]), Medium.density(states[2]),
+                          Medium.dynamicViscosity(states[1]),
+                          Medium.dynamicViscosity(states[2]),
+                          data) else 
+                       massFlowRate_dp(dps_fg[1], Medium.density(states[1]), Medium.density(states[2]), data, dp_small);
+        else
+           dps_fg[1] = if use_Re then 
+                   pressureLoss_m_flow_and_Re(
+                       m_flows[1], Medium.density(states[1]), Medium.density(states[2]),
+                       Medium.dynamicViscosity(states[1]),
+                       Medium.dynamicViscosity(states[2]),
+                       data) else 
+                   pressureLoss_m_flow(m_flows[1], Medium.density(states[1]), Medium.density(states[2]), data, m_flow_small);
+        end if;
 
         annotation (
           Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -1920,7 +1785,7 @@ The used sufficient criteria for monotonicity follows from:
     // Pressure loss
     replaceable model PressureLoss = 
       Modelica_Fluid.Fittings.BaseClasses.SimpleGenericPressureLoss 
-      constrainedby Modelica_Fluid.Interfaces.PartialPressureLoss
+      constrainedby Modelica_Fluid.Interfaces.PartialStaggeredMomentum
         "Pressure loss model" 
         annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
 

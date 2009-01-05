@@ -130,11 +130,12 @@ Test of different distributed pipe models with trace substances. This model is t
     m_flow_start=0.1,
     length=2,
     use_HeatTransfer=true,
-    redeclare model HeatTransfer = 
-        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.LocalPipeFlowHeatTransfer,
     p_a_start=100000,
     p_b_start=100000,
-    T_start=280) 
+    T_start=280,
+    redeclare model HeatTransfer = 
+        Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.ConstantFlowHeatTransfer
+        (alpha0=500)) 
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
           rotation=0)));
 

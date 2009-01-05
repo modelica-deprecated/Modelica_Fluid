@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -894,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-03</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-05</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -906,36 +907,24 @@ Modelica_Fluid was refactored and finalized for the release:
      still reflected the long development history, while the basic concepts had been crystalized.
      Please consult the subversion control (SVN) logs for individual changes.</li>
   
-<li> The former sub-packages Junctions and PressureLosses have been combined into the new subpackage Fittings.
-     The former Pumps and Volumes.SweptVolume have become the initial version of fluid Machines.</li>
- 
-<li> Replaceable PressureLoss and HeatTransfer models<br>
-     The Vessels (former Volumes) and the Machines now have replaceable HeatTransfer models.
-     The Pipes now additionally have replaceable PressureLoss models.
-     The heat transfer and pressure loss models are parameterized with the Medium and the ThermodynamicState 
-     of involved flow segments. See
-     <ul>
-     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialHeatTransfer\">
-          Interfaces.PartialHeatTransfer</a>.</li> 
-     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialPressureLoss\">
-          Interfaces.PartialPressureLoss</a>.</li>
-     </ul>
+<li> Device oriented package names<br>
+     The former sub-packages Junctions and PressureLosses have been combined into the new subpackage Fittings.
+     The former Pumps and Volumes.SweptVolume have become the initial version of fluid Machines. 
+     The former Volumes package is now called Vessels.</li>
  
 <li> Complete implementation of one-dimenstional fluid flow<br>
      The balance equations as documented in 
      <a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>
-     are now completely implemented. The implementations find in the following base classes:
+     are now completely implemented. The implementations find in:
      <ul>
-     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">Pipes.BaseClasses.PartialTwoPortFlow</a>:
-         Staggered grid discretization of PDEs</li>
-     <li><a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume\">Vessels.BaseClasses.PartialDistributedVolume</a>:
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialFiniteVolumes\">Interfaces.PartialFiniteVolumes</a>:
          Energy, Mass and Substance balances</li>
-     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss\">Pipes.BaseClasses.PressureLoss.PartialFlowPressureLoss</a>:
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialStaggeredMomentum\">Interfaces.PartialStaggeredMomentum</a>:
          Momentum balance</li>
-     <li><a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.WallFriction\">Pipes.BaseClasses.PressureLoss.WallFriction</a>:
-         Wall friction and gravity</li>
-      </ul> 
-     The DistributedPipe model adds a wall HeatTransfer model and defines the source terms Qs_flows and Ws_flows for the energy balance.
+     </ul> 
+     <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">Pipes.BaseClasses.PartialTwoPortFlow</a>
+     combines the two base classes with configurable model structures. 
+     The DistributedPipe model adds a wall HeatTransfer model and defines the source terms Qs_flows and Ws_flows for the energy balance.<br>
      See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDistributedPipes\">Examples.BranchingDistributedPipes</a></li>
  
 <li> New approach for the connection of distributed flow models<br>
@@ -947,6 +936,13 @@ Modelica_Fluid was refactored and finalized for the release:
      High-index DAEs need to be treated instead in connection sets. 
      Alternatively a Fitting like SuddenExpansion can be introduced to account for different cross flow areas of connected flow models.</li>
  
+<li> Replaceable HeatTransfer models<br>
+     The Vessels and the Machines now have replaceable HeatTransfer models,
+     besides the Pipes. All HeatTransfer models are optional.
+     The heat transfer models are parameterized with the Medium and the ThermodynamicState 
+     of involved flow segments.<br>
+     See <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialHeatTransfer\">Interfaces.PartialHeatTransfer</a>.
+ 
 <li> Extension of pumps for better consideration of zero flow and heat transfer with environment<br>
      The simplified mass and energy balances have been replaced with a rigorous formulation. 
      Moreover an optional heat transfer model can be configured for heat exchanged with the environment or the housing.<br>
@@ -954,7 +950,7 @@ Modelica_Fluid was refactored and finalized for the release:
  
 <li> Inverse parameterization of flow models with nominal operational conditions<br> 
      Flow models have been added or extended to support the parameterization with nominal values
-     (Machines.ControlledPump, Orifices.SimpleGenericOrifice, Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow).
+     (Machines.ControlledPump, Orifices.SimpleGenericOrifice, Pipes.BaseClasses.FlowMomentum.NominalTurbulentFlow).
      They are intended for early phases of system modeling, if geometries and flow characteristics
      are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
      they can easily be replaced with more detailed models  
@@ -974,16 +970,13 @@ Modelica_Fluid was refactored and finalized for the release:
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
      <br>See <a href=\"Modelica:Modelica_Fluid.Examples.TraceSubstances.RoomCO2WithControls\">Examples.TraceSubstances.RoomCO2WithControls</a></li>.
  
-<li> Common base classes implementing mass and energy balances<br>
-     All non-trivial mass and energy balances are now defined in the common base classes
+<li> Common base class implementing lumped mass and energy balances<br>
+     All non-trivial lumped mass and energy balances are now defined in the common base class
      <ul>
-     <li><a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume\">
-          Vessels.BaseClasses.PartialLumpedVolume</a></li>
-     and
-     <li><a href=\"Modelica:Modelica_Fluid.Vessels.BaseClasses.PartialDistributedVolume\">
-          Vessels.BaseClasses.PartialDistributedVolume</a></li>.
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedVolume\">
+          Interfaces.PartialLumpedVolume</a></li>
      </ul>
-     These balances are used across the library for Vessels, Pipes, Machines and Fittings.
+     This balances are used across the library for Vessels, (lumped) Pipes, Machines and Fittings.
  
 <li> Vectorized ports for volumes<br>
      The ports of models that typically have large volumes, like Vessels and Sources, 
@@ -2121,6 +2114,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0 Release Candidate 1",

@@ -376,8 +376,8 @@ present that are regulated by a central control system.
     Pipes.StaticPipe pipeB1B3(
       redeclare package Medium = BatchMedium,
       length=1,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
+      redeclare model FlowMomentum = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
       diameter=pipeDiameter,
       height_ab=-0.1) 
       annotation (Placement(transformation(extent={{-70,134},{-50,154}},
@@ -385,8 +385,8 @@ present that are regulated by a central control system.
     Pipes.StaticPipe pipeB2B3(
       redeclare package Medium = BatchMedium,
       length=1,
-      redeclare model PressureLoss = 
-          Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
+      redeclare model FlowMomentum = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
       diameter=pipeDiameter,
       height_ab=-0.1) 
       annotation (Placement(transformation(extent={{50,134},{30,154}}, rotation=

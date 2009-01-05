@@ -74,8 +74,8 @@ model HeatingSystem "Simple model of a heating system"
     diameter=0.01,
     nNodes=1,
     modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
+    redeclare model FlowMomentum = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
     use_HeatTransfer=true) 
     annotation (Placement(transformation(extent={{30,10},{50,30}}, rotation=0)));
 
@@ -88,8 +88,8 @@ model HeatingSystem "Simple model of a heating system"
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer,
     diameter=0.01,
     nNodes=1,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
+    redeclare model FlowMomentum = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
     modelStructure=Modelica_Fluid.Types.ModelStructure.av_b,
     use_HeatTransfer=true) 
     annotation (Placement(transformation(extent={{20,-80},{0,-60}}, rotation=
@@ -124,8 +124,8 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer,
     diameter=0.01,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.DetailedWallFriction,
+    redeclare model FlowMomentum = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
     length=10) 
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
                                                                    rotation=-90,

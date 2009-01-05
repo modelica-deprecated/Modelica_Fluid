@@ -54,7 +54,7 @@ model TestSuddenExpansion
 equation
   connect(p_table.y, ambient_a.p_in) 
                                     annotation (Line(points={{-59,50},{-52,50},
-          {-52,56},{-42,56}}, color={0,0,127}));
+          {-52,58},{-42,58}}, color={0,0,127}));
   connect(ambient_a.ports[1], expansion1.port_a) 
                                            annotation (Line(points={{-20,52},{
           -10,52},{-10,50},{0,50}},
