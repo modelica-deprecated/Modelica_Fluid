@@ -1256,7 +1256,8 @@ This also allows for taking into account friction losses with respect to the act
 
             if use_Is_flows then
               Is_flows = {ds[i]*vs[i]*vs[i]*crossAreas[i] - ds[i+1]*vs[i+1]*vs[i+1]*crossAreas[i+1] for i in 1:n-1};
-              // alternatively use densities ds_act of actual streams, together with mass flow rates:
+              // alternatively use densities ds_act of actual streams, together with mass flow rates,
+              // not conserving momentum if fluid density changes between flow segments:
               //Is_flows = {((ds[i]*vs[i])^2*crossAreas[i] - (ds[i+1]*vs[i+1])^2*crossAreas[i+1])/ds_act[i] for i in 1:n-1};
             else
               Is_flows = zeros(n-1);
@@ -1285,7 +1286,7 @@ for examplary definitions.
 The parameter <tt>Re_turbulent</tt> can be specified for the least mass flow rate of the turbulent regime. 
 It defaults to 4000, which is appropriate for pipe flow.
 The <tt>m_flows_turbulent[n-1]</tt> resulting from <tt>Re_turbulent</tt> can optionally be calculated together with the Reynolds numbers
-of the actual flow (<tt>show_Res=true</tt>).
+<tt>Res[n]</tt> of the flow segments (<tt>show_Res=true</tt>).
 </p>
 <p>
 Using the thermodynamic states[n] of the device segments, the densities ds[n] and the dynamic viscosities mus[n] 
@@ -1335,18 +1336,6 @@ specified <tt>dp_nominal</tt> and <tt>m_flow_nominal</tt>.
 Select <tt>show_Res = true</tt> to analyze the actual flow and the lengths of a pipe that would fulfill the 
 specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>dimensions</tt> and <tt>roughnesses</tt>.
 </p>
-<p>
-<b>Optional Variables if show_lenghts_nominal</b>
-</p>
-<table border=1 cellspacing=0 cellpadding=2>
-<tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
-<tr><td>Length</td><td>lengths_nominal[n]</td>
-    <td>length of pipe segment that corresponds to this laminar flow</td></tr>
-<tr><td>ReynoldsNumber</td><td>Res[n]</td>
-    <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
-<tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
-    <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
-</table>
 </html>"));
 
       end NominalLaminarFlow;
@@ -1482,16 +1471,6 @@ to compute the correlations with constant media values
 at the desired operating point. This might speed-up the
 simulation and/or might give a more robust simulation.
 </p>
-<p>
-<b>Optional Variables if show_Res</b>
-</p>
-<table border=1 cellspacing=0 cellpadding=2>
-<tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
-<tr><td>ReynoldsNumber</td><td>Res[n]</td>
-    <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
-<tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
-    <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
-</table>
 </html>"),    Diagram(coordinateSystem(
                   preserveAspectRatio=false,
                   extent={{-100,-100},{100,100}},
@@ -1590,7 +1569,7 @@ and can be related to <tt>m_flow_small</tt> and <tt>dp_small</tt>.
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
-<tr><td>ReynoldsNumber</td><td>Res[n-1]</td>
+<tr><td>ReynoldsNumber</td><td>Res[n]</td>
     <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
 <tr><td>MassFlowRate</td><td>m_flows_turbulent[n-1]</td>
     <td>mass flow rates at start of turbulent region for Re_turbulent=4000</td></tr>
@@ -1678,17 +1657,6 @@ b has the same sign of the change of density.</p>
  
 <img src=\"../Images/Components/PipeFrictionStaticHead_case-b.PNG\">
  
- 
-<p>
-<b>Optional Variables if show_Res</b>
-</p>
-<table border=1 cellspacing=0 cellpadding=2>
-<tr><th><b>Type</b></th><th><b>Name</b></th><th><b>Description</b></th></tr>
-<tr><td>ReynoldsNumber</td><td>Re[n]</td>
-    <td>Reynolds numbers of pipe flow per flow segment</td></tr> 
-<tr><td>MassFlowRate</td><td>m_flows_turbulent[n]</td>
-    <td>mass flow rates at start of turbulent region (Re_turbulent=4000)</td></tr>
-</table>
 </html>"),    Diagram(coordinateSystem(
                   preserveAspectRatio=false,
                   extent={{-100,-100},{100,100}},
