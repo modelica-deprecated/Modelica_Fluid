@@ -259,142 +259,6 @@ package Interfaces
             fillPattern=FillPattern.Solid)}));
   end FluidPorts_b;
 
-  connector HeatPorts_a
-    "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)"
-    extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
-    annotation (defaultComponentName="heatPorts_a",
-         Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-200,-50},{200,50}},
-          grid={1,1},
-          initialScale=0.2), graphics={
-          Rectangle(
-            extent={{-201,50},{200,-50}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-171,45},{-83,-45}},
-            lineColor={127,0,0},
-            fillColor={127,0,0},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-45,45},{43,-45}},
-            lineColor={127,0,0},
-            fillColor={127,0,0},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{82,45},{170,-45}},
-            lineColor={127,0,0},
-            fillColor={127,0,0},
-            fillPattern=FillPattern.Solid)}));
-  end HeatPorts_a;
-
-  connector HeatPorts_b
-    "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)"
-    extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
-    annotation (defaultComponentName="heatPorts_b",
-         Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-200,-50},{200,50}},
-          grid={1,1},
-          initialScale=0.2), graphics={
-          Rectangle(
-            extent={{-200,50},{200,-51}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-170,44},{-82,-46}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{-44,46},{44,-44}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
-          Rectangle(
-            extent={{82,45},{170,-45}},
-            lineColor={127,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid)}));
-  end HeatPorts_b;
-
-  partial model PartialHeatTransfer "Common interface for heat transfer models"
-
-    // Parameters
-    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
-      "Medium in the component" 
-      annotation(Dialog(tab="Internal Interface",enable=false));
-
-    parameter Integer n=1 "Number of heat transfer segments" 
-      annotation(Dialog(tab="Internal Interface",enable=false), Evaluate=true);
-
-    // Inputs provided to heat transfer model
-    input Medium.ThermodynamicState[n] states
-      "Thermodynamic states of flow segments";
-
-    // Outputs defined by heat transfer model
-    output SI.HeatFlowRate[n] Q_flows "Heat flow rates";
-
-    // Heat ports
-    Modelica_Fluid.Interfaces.HeatPorts_a[n] heatPorts
-      "Heat port to component boundary" 
-      annotation (Placement(transformation(extent={{-10,60},{10,80}},
-              rotation=0), iconTransformation(extent={{-20,60},{20,80}})));
-
-    // Variables
-    SI.Temperature[n] Ts;
-
-  equation
-    Ts = Medium.temperature(states);
-    heatPorts.Q_flow = Q_flows;
-
-    annotation (Documentation(info="<html>
-<p>
-This component is a common interface for heat transfer models. The heat flow rates <tt>Q_flows[n]</tt> through the boundaries of n flow segments 
-are obtained as function of the thermodynamic <tt>states</tt> of the flow segments for a given fluid <tt>Medium</tt>
-and the boundary temperatures <tt>heatPorts[n].T</tt>.
-</p>
-<p>
-An extending model implementing this interface needs to define the relation between the predefined fluid temperatures <tt>Ts[n]</tt>,
-the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q_flows[n]</tt>.
-</p>
-</html>"));
-  end PartialHeatTransfer;
-
-      partial model PartialPressureLoss
-    "Common interface for pressure loss models"
-
-        // Medium
-        replaceable package Medium = 
-          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-            annotation(Dialog(tab="Internal Interface",enable=false));
-
-        // Discretization
-        parameter Integer n=1 "number of flow segments" 
-          annotation(Dialog(tab="Internal Interface",enable=false));
-
-        // Inputs provided to pressure loss model
-        input Medium.ThermodynamicState[n+1] states
-      "Thermodynamic states along design flow";
-
-        // Outputs defined by pressure loss model
-        output Medium.MassFlowRate[n] m_flows "mass flow rates between states";
-
-        annotation (
-           Documentation(info="<html>
-<p>
-This component is a common interface for pressure loss models. The mass flow rates <tt>m_flows[n]</tt> between n+1 flow segments 
-are obtained as function of the thermodynamic <tt>states[n+1]</tt> of the flow segments for a given fluid <tt>Medium</tt>.
-</p>
-<p>
-An extending model implementing this interface needs to define the mass flow rates <tt>m_flows[n]</tt>.
-</p>
-</html>"));
-      end PartialPressureLoss;
-
   partial model PartialTwoPort "Partial component with two ports"
     import Modelica.Constants;
     outer Modelica_Fluid.System system "System wide properties";
@@ -586,4 +450,586 @@ between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt> nee
           extent={{-100,-100},{100,100}},
           grid={1,1})));
 end PartialTwoPortTransport;
+
+  connector HeatPorts_a
+    "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)"
+    extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
+    annotation (defaultComponentName="heatPorts_a",
+         Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-200,-50},{200,50}},
+          grid={1,1},
+          initialScale=0.2), graphics={
+          Rectangle(
+            extent={{-201,50},{200,-50}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-171,45},{-83,-45}},
+            lineColor={127,0,0},
+            fillColor={127,0,0},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-45,45},{43,-45}},
+            lineColor={127,0,0},
+            fillColor={127,0,0},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{82,45},{170,-45}},
+            lineColor={127,0,0},
+            fillColor={127,0,0},
+            fillPattern=FillPattern.Solid)}));
+  end HeatPorts_a;
+
+  connector HeatPorts_b
+    "HeatPort connector with filled, large icon to be used for vectors of HeatPorts (vector dimensions must be added after dragging)"
+    extends Modelica.Thermal.HeatTransfer.Interfaces.HeatPort;
+    annotation (defaultComponentName="heatPorts_b",
+         Icon(coordinateSystem(
+          preserveAspectRatio=false,
+          extent={{-200,-50},{200,50}},
+          grid={1,1},
+          initialScale=0.2), graphics={
+          Rectangle(
+            extent={{-200,50},{200,-51}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-170,44},{-82,-46}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{-44,46},{44,-44}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Rectangle(
+            extent={{82,45},{170,-45}},
+            lineColor={127,0,0},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid)}));
+  end HeatPorts_b;
+
+  partial model PartialHeatTransfer "Common interface for heat transfer models"
+
+    // Parameters
+    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
+      "Medium in the component" 
+      annotation(Dialog(tab="Internal Interface",enable=false));
+
+    parameter Integer n=1 "Number of heat transfer segments" 
+      annotation(Dialog(tab="Internal Interface",enable=false), Evaluate=true);
+
+    // Inputs provided to heat transfer model
+    input Medium.ThermodynamicState[n] states
+      "Thermodynamic states of flow segments";
+
+    // Outputs defined by heat transfer model
+    output SI.HeatFlowRate[n] Q_flows "Heat flow rates";
+
+    // Heat ports
+    Modelica_Fluid.Interfaces.HeatPorts_a[n] heatPorts
+      "Heat port to component boundary" 
+      annotation (Placement(transformation(extent={{-10,60},{10,80}},
+              rotation=0), iconTransformation(extent={{-20,60},{20,80}})));
+
+    // Variables
+    SI.Temperature[n] Ts;
+
+  equation
+    Ts = Medium.temperature(states);
+    heatPorts.Q_flow = Q_flows;
+
+    annotation (Documentation(info="<html>
+<p>
+This component is a common interface for heat transfer models. The heat flow rates <tt>Q_flows[n]</tt> through the boundaries of n flow segments 
+are obtained as function of the thermodynamic <tt>states</tt> of the flow segments for a given fluid <tt>Medium</tt>
+and the boundary temperatures <tt>heatPorts[n].T</tt>.
+</p>
+<p>
+An extending model implementing this interface needs to define the relation between the predefined fluid temperatures <tt>Ts[n]</tt>,
+the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q_flows[n]</tt>.
+</p>
+</html>"));
+  end PartialHeatTransfer;
+
+    partial model PartialLumpedVolume
+    "Lumped volume with mass and energy balance"
+    import Modelica_Fluid.Types;
+    import Modelica_Fluid.Types.Dynamics;
+
+      outer Modelica_Fluid.System system "System properties";
+      replaceable package Medium = 
+        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+          annotation (choicesAllMatching = true);
+
+      // Assumptions
+      parameter Types.Dynamics energyDynamics=system.energyDynamics
+      "Formulation of energy balance" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+      parameter Types.Dynamics massDynamics=system.massDynamics
+      "Formulation of mass balance" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+      final parameter Types.Dynamics substanceDynamics=massDynamics
+      "Formulation of substance balance" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+      final parameter Types.Dynamics traceDynamics=massDynamics
+      "Formulation of trace substance balance" 
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+      parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
+      "= true if d_nominal is used for mass storage, else computed from medium"
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+      parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+         annotation(Dialog(tab="Assumptions", group="Dynamics", enable=use_d_nominal));
+
+      // Initialization
+      parameter Medium.AbsolutePressure p_start = system.p_start
+      "Start value of pressure" 
+        annotation(Dialog(tab = "Initialization"));
+      parameter Boolean use_T_start = true
+      "= true, use T_start, otherwise h_start" 
+        annotation(Dialog(tab = "Initialization"), Evaluate=true);
+      parameter Medium.Temperature T_start=
+        if use_T_start then system.T_start else Medium.temperature_phX(p_start,h_start,X_start)
+      "Start value of temperature" 
+        annotation(Dialog(tab = "Initialization", enable = use_T_start));
+      parameter Medium.SpecificEnthalpy h_start=
+        if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default
+      "Start value of specific enthalpy" 
+        annotation(Dialog(tab = "Initialization", enable = not use_T_start));
+      parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default
+      "Start value of mass fractions m_i/m" 
+        annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+      parameter Medium.ExtraProperty C_start[Medium.nC](
+           quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
+      "Start value of trace substances" 
+        annotation (Dialog(tab="Initialization", enable=Medium.nC > 0));
+
+      Medium.BaseProperties medium(
+        preferredMediumStates=true,
+        p(start=p_start),
+        h(start=h_start),
+        T(start=T_start),
+        Xi(start=X_start[1:Medium.nXi]));
+      SI.Energy U "Internal energy of fluid";
+      SI.Mass m "Mass of fluid";
+      SI.Mass[Medium.nXi] mXi "Masses of independent components in the fluid";
+      SI.Mass[Medium.nC] mC "Masses of trace substances in the fluid";
+      // C need to be added here because unlike for Xi, which has medium.Xi,
+      // there is no variable medium.C
+      Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
+
+      // variables that need to be defined by an extending class
+      SI.Volume fluidVolume "Volume";
+      SI.MassFlowRate ms_flow "Mass flows across boundaries";
+      SI.MassFlowRate[Medium.nXi] msXi_flow
+      "Substance mass flows across boundaries";
+      Medium.ExtraPropertyFlowRate[Medium.nC] msC_flow
+      "Trace substance mass flows across boundaries";
+      SI.EnthalpyFlowRate Hs_flow
+      "Enthalpy flow across boundaries or energy source/sink";
+      SI.HeatFlowRate Qs_flow
+      "Heat flow across boundaries or energy source/sink";
+      SI.Power Ws_flow "Work flow across boundaries or source term";
+  protected
+      parameter Boolean initialize_p = not Medium.singleState
+      "= true to set up initial equations for pressure";
+    equation
+
+      // Total quantities
+      if use_d_nominal then
+        m = fluidVolume*d_nominal;
+      else
+        m = fluidVolume*medium.d;
+      end if;
+      mXi = m*medium.Xi;
+      U = m*medium.u;
+      mC = m*C;
+
+      // Energy and mass balances
+      if energyDynamics == Dynamics.SteadyState then
+        0 = Hs_flow + Qs_flow + Ws_flow;
+      else
+        der(U) = Hs_flow + Qs_flow + Ws_flow;
+      end if;
+
+      if massDynamics == Dynamics.SteadyState then
+        0 = ms_flow;
+      else
+        der(m) = ms_flow;
+      end if;
+
+      if substanceDynamics == Dynamics.SteadyState then
+        zeros(Medium.nXi) = msXi_flow;
+      else
+        der(mXi) = msXi_flow;
+      end if;
+
+      if traceDynamics == Dynamics.SteadyState then
+        zeros(Medium.nC)  = msC_flow;
+      else
+        der(mC)  = msC_flow;
+      end if;
+
+    initial equation
+      // initialization of balances
+      if energyDynamics == Dynamics.FixedInitial then
+        if use_T_start then
+          medium.T = T_start;
+        else
+          medium.h = h_start;
+        end if;
+      elseif energyDynamics == Dynamics.SteadyStateInitial then
+        if use_T_start then
+          der(medium.T) = 0;
+        else
+          der(medium.h) = 0;
+        end if;
+      end if;
+
+      if massDynamics == Dynamics.FixedInitial then
+        if initialize_p then
+          medium.p = p_start;
+        end if;
+      elseif massDynamics == Dynamics.SteadyStateInitial then
+        if initialize_p then
+          der(medium.p) = 0;
+        end if;
+      end if;
+
+      if substanceDynamics == Dynamics.FixedInitial then
+        medium.Xi = X_start[1:Medium.nXi];
+      elseif substanceDynamics == Dynamics.SteadyStateInitial then
+        der(medium.Xi) = zeros(Medium.nXi);
+      end if;
+
+      if traceDynamics == Dynamics.FixedInitial then
+        C = C_start[1:Medium.nC];
+      elseif traceDynamics == Dynamics.SteadyStateInitial then
+        der(C) = zeros(Medium.nC);
+      end if;
+
+      annotation (
+        Documentation(info="<html>
+Interface and base class for an ideally mixed fluid volume with the ability to store mass and energy. 
+The following source terms are part of the energy balance and must be specified in an extending class:
+<ul>
+<li><tt><b>Qs_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
+<li><tt><b>Ws_flow</b></tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
+</ul>
+The component volume <tt><b>fluidVolume</b></tt> is a variable which needs to be set in the extending class to complete the model.
+<p>
+Further source terms must be defined by an extending class for fluid flow across the segment boundary:
+</p>
+<ul>
+<li><tt><b>Hs_flow</b></tt>, enthalpy flow,</li> 
+<li><tt><b>ms_flow</b></tt>, mass flow,</li> 
+<li><tt><b>msXi_flow</b></tt>, substance mass flow, and</li> 
+<li><tt><b>msC_flow</b></tt>, trace substance mass flow.</li> 
+</ul>
+</html>"),
+        Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+              {100,100}}),
+                graphics));
+    end PartialLumpedVolume;
+
+partial model PartialFiniteVolumes "Base class for finite volume models"
+    import Modelica_Fluid.Types;
+    import Modelica_Fluid.Types.Dynamics;
+  outer Modelica_Fluid.System system "System properties";
+
+  replaceable package Medium = 
+    Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+      annotation (choicesAllMatching = true);
+
+  // Discretization
+  parameter Integer n=2 "Number of discrete flow volumes";
+
+  // Assumptions
+  parameter Types.Dynamics energyDynamics=system.energyDynamics
+      "Formulation of energy balances" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+  parameter Types.Dynamics massDynamics=system.massDynamics
+      "Formulation of mass balances" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+  final parameter Types.Dynamics substanceDynamics=massDynamics
+      "Formulation of substance balances" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+  final parameter Types.Dynamics traceDynamics=massDynamics
+      "Formulation of trace substance balances" 
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+
+  parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
+      "= true if d_nominal is used for mass storage, else computed from medium"
+    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+
+  parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
+     annotation(Dialog(tab="Assumptions", group="Dynamics", enable=use_d_nominal));
+
+  //Initialization
+  parameter Medium.AbsolutePressure p_a_start=system.p_start
+      "Start value of pressure at port a" 
+    annotation(Dialog(tab = "Initialization"));
+  parameter Medium.AbsolutePressure p_b_start=p_a_start
+      "Start value of pressure at port b" 
+    annotation(Dialog(tab = "Initialization"));
+  final parameter Medium.AbsolutePressure[n] ps_start=if n > 1 then linspace(
+        p_a_start, p_b_start, n) else {(p_a_start + p_b_start)/2}
+      "Start value of pressure";
+
+  parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start" 
+     annotation(Evaluate=true, Dialog(tab = "Initialization"));
+  parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
+              Medium.temperature_phX(
+        (p_a_start + p_b_start)/2,
+        h_start,
+        X_start) "Start value of temperature" 
+    annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
+  parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
+        Medium.specificEnthalpy_pTX(
+        (p_a_start + p_b_start)/2,
+        T_start,
+        X_start) else Medium.h_default "Start value of specific enthalpy" 
+    annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
+  parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
+      "Start value of mass fractions m_i/m" 
+    annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+  parameter Medium.ExtraProperty C_start[Medium.nC](
+       quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
+      "Start value of trace substances" 
+    annotation (Dialog(tab="Initialization", enable=Medium.nC > 0));
+
+  // Total quantities
+  SI.Energy[n] Us "Internal energy of fluid";
+  SI.Mass[n] ms "Fluid mass";
+  SI.Mass[n,Medium.nXi] mXis "Substance mass";
+  SI.Mass[n,Medium.nC] mCs "Trace substance mass";
+  // C need to be added here because unlike for Xi, which has medium[:].Xi,
+  // there is no variable medium[:].C
+  Medium.ExtraProperty Cs[n, Medium.nC] "Trace substance mixture content";
+
+  Medium.BaseProperties[n] mediums(
+    each preferredMediumStates=true,
+    p(start=ps_start),
+    each h(start=h_start),
+    each T(start=T_start),
+    each Xi(start=X_start[1:Medium.nXi]));
+
+  //Source terms, have to be defined by an extending model (to zero if not used)
+  SI.Volume[n] fluidVolumes "Discretized volume, determine in inheriting class";
+  Medium.MassFlowRate[n] ms_flows "Mass flow rate, source or sink";
+  Medium.MassFlowRate[n,Medium.nXi] msXi_flows
+      "Independent mass flow rates, source or sink";
+  Medium.ExtraPropertyFlowRate[n,Medium.nC] msC_flows
+      "Trace substance mass flow rates, source or sink";
+  SI.EnthalpyFlowRate[n] Hs_flows "Enthalpy flow rate, source or sink";
+  SI.HeatFlowRate[n] Qs_flows "Heat flow rate, source or sink";
+  SI.Power[n] Ws_flows "Mechanical power, p*der(V) etc.";
+
+  protected
+  parameter Boolean initialize_p = not Medium.singleState
+      "= true to set up initial equations for pressure";
+
+equation
+  // Total quantities
+  for i in 1:n loop
+    if use_d_nominal then
+      ms[i] =fluidVolumes[i]*d_nominal;
+    else
+      ms[i] =fluidVolumes[i]*mediums[i].d;
+    end if;
+    mXis[i, :] = ms[i]*mediums[i].Xi;
+    mCs[i, :]  = ms[i]*Cs[i, :];
+    Us[i] = ms[i]*mediums[i].u;
+  end for;
+
+  // Energy and mass balances
+  if energyDynamics == Dynamics.SteadyState then
+    for i in 1:n loop
+      0 = Hs_flows[i] + Ws_flows[i] + Qs_flows[i];
+    end for;
+  else
+    for i in 1:n loop
+      der(Us[i]) = Hs_flows[i] + Ws_flows[i] + Qs_flows[i];
+    end for;
+  end if;
+  if massDynamics == Dynamics.SteadyState then
+    for i in 1:n loop
+      0 = ms_flows[i];
+    end for;
+  else
+    for i in 1:n loop
+      der(ms[i]) = ms_flows[i];
+    end for;
+  end if;
+  if substanceDynamics == Dynamics.SteadyState then
+    for i in 1:n loop
+      zeros(Medium.nXi) = msXi_flows[i, :];
+    end for;
+  else
+    for i in 1:n loop
+      der(mXis[i, :]) = msXi_flows[i, :];
+    end for;
+  end if;
+  if traceDynamics == Dynamics.SteadyState then
+    for i in 1:n loop
+      zeros(Medium.nC)  = msC_flows[i, :];
+    end for;
+  else
+    for i in 1:n loop
+      der(mCs[i, :])  = msC_flows[i, :];
+    end for;
+  end if;
+
+initial equation
+  // initialization of balances
+  if energyDynamics == Dynamics.FixedInitial then
+    if use_T_start then
+      mediums.T = fill(T_start, n);
+    else
+      mediums.h = fill(h_start, n);
+    end if;
+  elseif energyDynamics == Dynamics.SteadyStateInitial then
+    if use_T_start then
+      der(mediums.T) = zeros(n);
+    else
+      der(mediums.h) = zeros(n);
+    end if;
+  end if;
+
+  if massDynamics == Dynamics.FixedInitial then
+    if initialize_p then
+      mediums.p = ps_start;
+    end if;
+  elseif massDynamics == Dynamics.SteadyStateInitial then
+    if initialize_p then
+      der(mediums.p) = zeros(n);
+    end if;
+  end if;
+
+  if substanceDynamics == Dynamics.FixedInitial then
+    mediums.Xi = fill(X_start[1:Medium.nXi], n);
+  elseif substanceDynamics == Dynamics.SteadyStateInitial then
+    for i in 1:n loop
+      der(mediums[i].Xi) = zeros(Medium.nXi);
+    end for;
+  end if;
+
+  if traceDynamics == Dynamics.FixedInitial then
+    Cs = fill(C_start[1:Medium.nC], n);
+  elseif traceDynamics == Dynamics.SteadyStateInitial then
+    for i in 1:n loop
+      der(mCs[i,:])      = zeros(Medium.nC);
+    end for;
+  end if;
+
+   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+              -100},{100,100}}),
+                       graphics),
+                        Icon(coordinateSystem(preserveAspectRatio=true,
+            extent={{-100,-100},{100,100}}), graphics),
+      Documentation(info="<html>
+Interface and base class for <tt><b>n</b></tt> ideally mixed fluid volumes with the ability to store mass and energy.
+It is inteded to model a one-dimensional spatial discretization of fluid flow according to the finite volume method. 
+The following source terms are part of the energy balance and must be specified in an extending class:
+<ul>
+<li><tt><b>Qs_flows[n]</b></tt>, heat flow source term, e.g. conductive heat flows across segment boundaries, and</li> 
+<li><tt><b>Ws_flows[n]</b></tt>, work source term.</li>
+</ul>
+The component volumes <tt><b>fluidVolumes[n]</b></tt> are a variable which needs to be set in an extending class to complete the model.
+<p>
+Further source terms must be defined by an extending class for fluid flow across the segment boundary:
+</p>
+<ul>
+<li><tt><b>Hs_flows[n]</b></tt>, enthalpy flow,</li> 
+<li><tt><b>ms_flows[n]</b></tt>, mass flow,</li> 
+<li><tt><b>msXi_flows[n]</b></tt>, substance mass flow, and</li> 
+<li><tt><b>msC_flows[n]</b></tt>, trace substance mass flow.</li> 
+</ul>
+</html>"));
+end PartialFiniteVolumes;
+
+      partial model PartialStaggeredMomentum "Base class for momentum balances"
+
+        outer Modelica_Fluid.System system "System properties";
+        replaceable package Medium = 
+          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+            annotation(Dialog(tab="Internal Interface",enable=false));
+
+        // Discretization
+        parameter Integer n=2 "Number of discrete flow volumes" 
+          annotation(Dialog(tab="Internal Interface",enable=false));
+
+        // Inputs provided to momentum model
+        input Medium.ThermodynamicState[n] states
+      "Thermodynamic states along design flow";
+        input SI.Length[n-1] distances
+      "Distance between states along flow path";
+
+        // Outputs defined by momentum model
+        output Medium.MassFlowRate[n-1] m_flows(each start = m_flow_start)
+      "mass flow rates between states";
+
+        // Parameters
+        parameter Modelica_Fluid.Types.Dynamics momentumDynamics=system.momentumDynamics
+      "Formulation of momentum balance" 
+          annotation(Dialog(tab="Internal Interface",enable=false,group = "Assumptions"), Evaluate=true);
+
+        parameter Medium.MassFlowRate m_flow_start=system.m_flow_start
+      "Start value of mass flow rates" 
+          annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
+
+        // Total quantities
+        SI.Momentum[n-1] Is "Momentums of fluid flow";
+
+        // Source terms and forces to be defined by an extending model (zero if not used)
+        SI.Force[n-1] Is_flows "Convection of momentum";
+        SI.Force[n-1] Fs_p "Pressure forces";
+        SI.Force[n-1] Fs_fg "Friction and gravity forces";
+
+      equation
+        // Total quantities
+        Is = {m_flows[i]*distances[i] for i in 1:n-1};
+
+        // Momentum balances
+        if momentumDynamics == Types.Dynamics.SteadyState then
+          zeros(n-1) = Is_flows - Fs_p - Fs_fg;
+        else
+          //der(Is) = Is_flows - Fs_p - Fs_fg;
+          // Note: avoid the state Is as it has no start value for Dynamics.DynamicFreeInitial.
+          // Actually distances is normally constant as obtained from parameters, but this does not work with
+          // a variable vector dimension, depending on modelStructure, in Pipes.BaseClasses.PartialTwoPortFlow.
+          {der(m_flows[i])*distances[i] for i in 1:n-1} = Is_flows - Fs_p - Fs_fg;
+        end if;
+
+      initial equation
+        if momentumDynamics == Types.Dynamics.FixedInitial then
+          m_flows = fill(m_flow_start, n-1);
+        elseif momentumDynamics == Types.Dynamics.SteadyStateInitial then
+          der(m_flows) = zeros(n-1);
+        end if;
+
+        annotation (
+           Documentation(info="<html>
+<p>
+Interface and base class for <tt><b>n-1</b></tt> momentum balances between <tt>n</tt> flow segments.
+The mass flow rates <tt>m_flows[n-1]</tt> are obtained for given thermodynamic <tt>states[n]</tt> 
+of the flow segments and for a given fluid <tt>Medium</tt>.
+</p>
+<p>
+The following source terms are part of the momentum balances and must be specified in an extending model:
+<ul>
+<li><tt><b>Is_flows[n-1]</b></tt>, the convection of momentum,</li> 
+<li><tt><b>Fs_p[n-1]</b></tt>, pressure forces, and</li>
+<li><tt><b>Fs_fg[n-1]</b></tt>, friction and gravity forces.</li>
+</ul>
+The <tt><b>distances[n-1]</b></tt> need to be set in the extending class to complete the model.
+</p>
+</html>"));
+      end PartialStaggeredMomentum;
 end Interfaces;

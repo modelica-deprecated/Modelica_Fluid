@@ -5,7 +5,7 @@ package Machines
   model SweptVolume
     "varying cylindric volume depending on the postition of the piston"
     import Modelica.Constants.pi;
-    extends Vessels.BaseClasses.PartialLumpedVolumePorts(
+    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
       heatTransfer(surfaceAreas={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*flange.s}));
     parameter SI.Area pistonCrossArea "cross sectional area of pistion";
     parameter SI.Volume clearance "remaining volume at zero piston stroke";
@@ -356,7 +356,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       annotation(Dialog(tab="Assumptions",enable=use_V or use_HeatTransfer));
 
     // Energy and mass balance
-    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVolume(
+    extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
         energyDynamics = if use_V then system.energyDynamics else Types.Dynamics.SteadyState,
         massDynamics = if use_V then system.massDynamics else Types.Dynamics.SteadyState,
         final p_start = p_b_start);

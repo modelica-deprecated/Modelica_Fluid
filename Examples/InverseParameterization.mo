@@ -42,8 +42,9 @@ model InverseParameterization
     redeclare package Medium = Medium,
     diameter=2.54e-2,
     length=0,
-    redeclare model PressureLoss = 
-        Modelica_Fluid.Pipes.BaseClasses.PressureLoss.NominalTurbulentFlow (
+    redeclare model FlowMomentum = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.NominalTurbulentPipeFlow
+        (
         dp_nominal=100000,
         m_flow_nominal=1,
         show_Res=true)) 
@@ -105,14 +106,14 @@ The pump controls a pressure ramp from 1.9 bar to 2.1 bar.
 This causes an appropriate ramp on the mass flow rate for pipe1, which has a boundary pressure of 1 bar. 
 Flow reversal occurs in the pipe, which has a boundary pressure of 2 bar.
 The Command plotResults can be used to see the pump speed N, which is controlled ideally to obtain the pressure ramp.
-Moreover the Reynolds number as well as m_flow_turbulent and dp_turbulent are plotted for the pipe.
+Moreover the Reynolds number as well as m_flows_turbulent and dps_fg_turbulent are plotted for the pipe.
 </p>
 <p>
-Next the pressureLoss model of the pipe could be investigated for <tt>length_nominal</tt>, 
+Next the flowMomentum model of the pipe could be investigated for <tt>distances_nominal</tt>, 
 which is obtained internally to fulfill the nominal pressure loss for given pipe diameter and roughness. 
 Similarily the orifice could be investigated for <tt>zeta_nominal</tt>. 
-Once the geometry has been designed, the NominalTurbulentFlow correlations can easily be replaced with 
-WallFrictionPressureLoss correlations. Similarily the ControlledPump can be replaced with a PrescribedPump 
+Once the geometry has been designed, the NominalTurbulentPipeFlow correlations can easily be replaced with 
+TurbulentPipeFlow or DetailedPipeFlow correlations. Similarily the ControlledPump can be replaced with a PrescribedPump 
 to investigate a real controller or with a Pump with rotational shaft to investigate inertia effects. 
 </p>
 </html>"));
