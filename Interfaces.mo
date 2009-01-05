@@ -972,7 +972,9 @@ end PartialFiniteVolumes;
       "Distance between states along flow path";
 
         // Outputs defined by momentum model
-        output Medium.MassFlowRate[n-1] m_flows(each start = m_flow_start)
+        output Medium.MassFlowRate[n-1] m_flows(
+           each start = m_flow_start,
+           each stateSelect = StateSelect.prefer)
       "mass flow rates between states";
 
         // Parameters
@@ -1000,11 +1002,7 @@ end PartialFiniteVolumes;
         if momentumDynamics == Types.Dynamics.SteadyState then
           zeros(n-1) = Is_flows - Fs_p - Fs_fg;
         else
-          //der(Is) = Is_flows - Fs_p - Fs_fg;
-          // Note: avoid the state Is as it has no start value for Dynamics.DynamicFreeInitial.
-          // Actually distances is normally constant as obtained from parameters, but this does not work with
-          // a variable vector dimension, depending on modelStructure, in Pipes.BaseClasses.PartialTwoPortFlow.
-          {der(m_flows[i])*distances[i] for i in 1:n-1} = Is_flows - Fs_p - Fs_fg;
+          der(Is) = Is_flows - Fs_p - Fs_fg;
         end if;
 
       initial equation
