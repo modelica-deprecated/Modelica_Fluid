@@ -13,7 +13,7 @@ model SimpleGenericOrifice
   extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
 
   extends Modelica_Fluid.Interfaces.PartialLumpedFlow(
-    final distance = 0,
+    final pathLength = 0,
     final momentumDynamics = Types.Dynamics.SteadyState);
 
   parameter SI.Diameter diameter "Diameter of orifice";
@@ -561,7 +561,7 @@ of the modeller.
         p_a_start = system.p_start + 0.5*dp_start,
         p_b_start = system.p_start - 0.5*dp_start,
         nParallel = 1,
-        distances = {0},
+        pathLengths = {0},
         crossAreas=fill(Modelica.Constants.pi/4*2.54e-2^2, 2),
         dimensions=fill(2.54e-2, 2),
         roughnesses=fill(2.5e-5, 2));
@@ -1498,7 +1498,7 @@ Laminar region:
 
         extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
         extends Modelica_Fluid.Interfaces.PartialLumpedFlow(
-          final distance = 0,
+          final pathLength = 0,
           final momentumDynamics = Types.Dynamics.SteadyState);
 
         parameter LossFactorData data "Loss factor data";

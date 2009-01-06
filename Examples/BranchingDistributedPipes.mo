@@ -113,7 +113,8 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(pipe2.port_b,pipe4. port_a) annotation (Line(
-      points={{-20,0},{-20,0},{-20,10},{0,10},{0,16},{0,20},{-6.12323e-016,20}},
+      points={{-20,0},{-20,0},{-20,10},{0,10},{0,16},{0,20},{-6.12323e-016,
+          20}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe3.port_b,pipe4. port_a) annotation (Line(
