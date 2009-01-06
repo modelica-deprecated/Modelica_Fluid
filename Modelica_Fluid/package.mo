@@ -916,16 +916,28 @@ Modelica_Fluid was refactored and finalized for the release:
      <a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>
      are now completely implemented. The implementations with generic source terms find in:
      <ul>
-     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialFiniteVolumes\">Interfaces.PartialFiniteVolumes</a>:
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a>, 
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>:
          Energy, Mass and Substance balances</li>
-     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialFiniteFlows\">Interfaces.PartialFiniteFlows</a>:
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>, 
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>: 
          Momentum balance</li>
      </ul> 
-     Specific models combine the balances and define the source terms as appropriate. For instance 
-     <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">Pipes.BaseClasses.PartialTwoPortFlow</a>
-     extends PartialFiniteVolumes and treats a configurable staggered structure for replaceable flow models.
-     The DistributedPipe adds a wall HeatTransfer model and defines the source terms Qs_flows and Ws_flows for the energy balance.<br>
-     See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDistributedPipes\">Examples.BranchingDistributedPipes</a></li>
+     Specific models combine the balances and define the source terms as appropriate. 
+     For instance 
+     <ul>
+     <li><a href=\"Modelica:Modelica_Fluid.Vessels.Tank\">Vessels.Tank</a> extends from
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>,</li>
+     <li><a href=\"Modelica:Modelica_Fluid.Fittings.SimpleGenericOrifice\">Fittings.SimpleGenericOrifice</a> extends from
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>, besides
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialTwoPortTransport\">Interfaces.PartialTwoPortTransport</a>,</li>
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.DistributedPipe\">Pipes.DistributedPipe</a> is based on
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a> and 
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>, 
+         besides <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialTwoPort\">Interfaces.PartialTwoPort</a>.</li>
+     </ul>
+     See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDistributedPipes\">Examples.BranchingDistributedPipes</a>
+     for an example utilizing the complete balance equations.
  
 <li> New approach for the connection of distributed flow models<br>
      The staggered grid approach offers different choices for the connection approach. So far the preferred modeling was to put full mass balances 

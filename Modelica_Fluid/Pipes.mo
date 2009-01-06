@@ -454,7 +454,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
         final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.av_vb));
 
       // distributed volume model
-      extends Modelica_Fluid.Interfaces.PartialFiniteVolumes(
+      extends Modelica_Fluid.Interfaces.PartialDistributedVolume(
         final n = nNodes,
         final fluidVolumes = {crossAreas[i]*lengths[i] for i in 1:n});
 
@@ -765,7 +765,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 The default value is nNodes=2.
 </p>
 <p><b>Mass and Energy balances</b></p>
-The mass and energy balances are inherited from <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialFiniteVolumes\">Interfaces.PartialFiniteVolumes</a>. 
+The mass and energy balances are inherited from <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a>. 
 One total mass and one energy balance is formed across each segment according to the finite volume approach. 
 Substance mass balances are added if the medium contains more than one component.
 <p>
@@ -1162,7 +1162,8 @@ This also allows for taking into account friction losses with respect to the act
       "Flow models for pipes, including wall friction, static head and momentum flow"
           partial model PartialStaggeredFlowModel
         "Base class for momentum balances in flow models"
-            extends Modelica_Fluid.Interfaces.PartialFiniteFlows(final m = n-1);
+            extends Modelica_Fluid.Interfaces.PartialDistributedFlow(
+                                                                 final m = n-1);
 
             parameter Integer n=2 "Number of discrete flow volumes" 
               annotation(Dialog(tab="Internal Interface",enable=false));

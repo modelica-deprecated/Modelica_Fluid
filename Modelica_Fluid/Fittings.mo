@@ -12,9 +12,8 @@ model SimpleGenericOrifice
 
   extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
 
-  extends Modelica_Fluid.Interfaces.PartialFiniteFlows(
-    final m = 1,
-    final distances = {0},
+  extends Modelica_Fluid.Interfaces.PartialLumpedFlow(
+    final distance = 0,
     final momentumDynamics = Types.Dynamics.SteadyState);
 
   parameter SI.Diameter diameter "Diameter of orifice";
@@ -37,7 +36,7 @@ model SimpleGenericOrifice
   // Variables
   Real zeta_nominal(start = zeta);
   Medium.Density d = 0.5*(Medium.density(state_a) + Medium.density(state_b));
-  Modelica.SIunits.Pressure dp_fg "pressure loss";
+  Modelica.SIunits.Pressure dp_fg "pressure loss due to friction and gravity";
   Modelica.SIunits.Area A_mean = Modelica.Constants.pi/4*diameter^2
       "mean cross flow area";
 
@@ -48,10 +47,9 @@ equation
     dp_nominal = BaseClasses.lossConstant_D_zeta(diameter, zeta_nominal)/d*m_flow_nominal^2;
   end if;
 
-  m_flows = {m_flow};
-  Is_flows = {0};
-  Fs_p = A_mean*{Medium.pressure(state_b) - Medium.pressure(state_a)};
-  Fs_fg = {A_mean*dp_fg};
+  Is_flow = 0;
+  F_p = A_mean*(Medium.pressure(state_b) - Medium.pressure(state_a));
+  F_fg = A_mean*dp_fg;
 
   /*
    dp = 0.5*zeta*d*v*|v|
@@ -546,7 +544,7 @@ of the modeller.
     // Pressure loss
     replaceable model PressureLoss = 
       Modelica_Fluid.Pipes.BaseClasses.FlowModels.NominalLaminarFlow 
-      constrainedby Modelica_Fluid.Interfaces.PartialFiniteFlows
+      constrainedby Modelica_Fluid.Interfaces.PartialDistributedFlow
       "Pressure loss model" 
         annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
 
@@ -1499,9 +1497,8 @@ Laminar region:
         "Generic pressure drop component with constant turbulent loss factor data and without an icon"
 
         extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
-        extends Modelica_Fluid.Interfaces.PartialFiniteFlows(
-          final m = 1,
-          final distances = {0},
+        extends Modelica_Fluid.Interfaces.PartialLumpedFlow(
+          final distance = 0,
           final momentumDynamics = Types.Dynamics.SteadyState);
 
         parameter LossFactorData data "Loss factor data";
@@ -1536,10 +1533,9 @@ Laminar region:
           "mean cross flow area";
 
       equation
-        m_flows = {m_flow};
-        Is_flows = {0};
-        Fs_p = A_mean*{Medium.pressure(state_b) - Medium.pressure(state_a)};
-        Fs_fg = {A_mean*dp_fg};
+        Is_flow = 0;
+        F_p = A_mean*(Medium.pressure(state_b) - Medium.pressure(state_a));
+        F_fg = A_mean*dp_fg;
         if from_dp then
            m_flow = if use_Re then 
                        massFlowRate_dp_and_Re(
