@@ -261,26 +261,26 @@ pipe wall/environment).
         annotation (Placement(transformation(extent={{-36,19},{-14,41}}, rotation=0)));
     final parameter Real[n] dxs = lengths/sum(lengths);
   equation
-    Qs_flows = heatTransfer.Q_flows;
-    // Ws_flow = v*A*dpdx + v*F_fric
+    Qb_flows = heatTransfer.Q_flows;
+    // Wb_flow = v*A*dpdx + v*F_fric
     //         = v*A*dpdx + v*A*flowModel.dp_fg - v*A*dp_grav
     //         = -v*A*dp_grav if momentumDynamics == Dynamics.SteadyState
     if n == 1 or lumpedPressure then
-      Ws_flows = dxs * ((vs*dxs)*(crossAreas*dxs)*((port_b.p - port_a.p) + sum(flowModel.dps_fg) - system.g*(dheights*mediums.d)));
+      Wb_flows = dxs * ((vs*dxs)*(crossAreas*dxs)*((port_b.p - port_a.p) + sum(flowModel.dps_fg) - system.g*(dheights*mediums.d)));
     else
-      Ws_flows[2:n-1] = {vs[i]*crossAreas[i]*((mediums[i+1].p - mediums[i-1].p)/2 + (flowModel.dps_fg[i-1]+flowModel.dps_fg[i])/2 - system.g*dheights[i]*mediums[i].d) for i in 2:n-1};
+      Wb_flows[2:n-1] = {vs[i]*crossAreas[i]*((mediums[i+1].p - mediums[i-1].p)/2 + (flowModel.dps_fg[i-1]+flowModel.dps_fg[i])/2 - system.g*dheights[i]*mediums[i].d) for i in 2:n-1};
       if modelStructure == ModelStructure.av_vb then
-        Ws_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - mediums[1].p) + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
-        Ws_flows[n] = vs[n]*crossAreas[n]*((mediums[n].p - mediums[n-1].p) + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
+        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - mediums[1].p) + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
+        Wb_flows[n] = vs[n]*crossAreas[n]*((mediums[n].p - mediums[n-1].p) + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
       elseif modelStructure == ModelStructure.av_b then
-        Ws_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - mediums[1].p) + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
-        Ws_flows[n] = vs[n]*crossAreas[n]*((port_b.p - mediums[n-1].p)/1.5 + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
+        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - mediums[1].p) + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
+        Wb_flows[n] = vs[n]*crossAreas[n]*((port_b.p - mediums[n-1].p)/1.5 + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
       elseif modelStructure == ModelStructure.a_vb then
-        Ws_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - port_a.p)/1.5 + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
-        Ws_flows[n] = vs[n]*crossAreas[n]*((mediums[n].p - mediums[n-1].p) + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
+        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - port_a.p)/1.5 + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
+        Wb_flows[n] = vs[n]*crossAreas[n]*((mediums[n].p - mediums[n-1].p) + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
       elseif modelStructure == ModelStructure.a_v_b then
-        Ws_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - port_a.p)/1.5 + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
-        Ws_flows[n] = vs[n]*crossAreas[n]*((port_b.p - mediums[n-1].p)/1.5 + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
+        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - port_a.p)/1.5 + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
+        Wb_flows[n] = vs[n]*crossAreas[n]*((port_b.p - mediums[n-1].p)/1.5 + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
       else
         assert(true, "Unknown model structure");
       end if;
@@ -309,7 +309,7 @@ The first and the last pipe segment may be of half size, depending on the config
                     The last pipe segment is of half size and its thermodynamic state is exposed through <tt>port_b</tt>.</li>
 </ul></p>
 <p>
-The <b><tt>HeatTransfer</tt></b> component specifies the source term <tt>Qs_flows</tt> of the energy balance. 
+The <b><tt>HeatTransfer</tt></b> component specifies the source term <tt>Qb_flows</tt> of the energy balance. 
 The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
 The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.HeatTransfer.PartialFlowHeatTransfer</a>.
@@ -637,10 +637,10 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
       // Source/sink terms for mass and energy balances
       for i in 1:n loop
-        ms_flows[i] = m_flows[i] - m_flows[i + 1];
-        msXi_flows[i, :] = mXi_flows[i, :] - mXi_flows[i + 1, :];
-        msC_flows[i, :]  = mC_flows[i, :]  - mC_flows[i + 1, :];
-        Hs_flows[i] = H_flows[i] - H_flows[i + 1];
+        mb_flows[i] = m_flows[i] - m_flows[i + 1];
+        mbXi_flows[i, :] = mXi_flows[i, :] - mXi_flows[i + 1, :];
+        mbC_flows[i, :]  = mC_flows[i, :]  - mC_flows[i + 1, :];
+        Hb_flows[i] = H_flows[i] - H_flows[i + 1];
       end for;
 
       // Distributed flow quantities, upwind discretization
@@ -772,8 +772,8 @@ Substance mass balances are added if the medium contains more than one component
 An extending model needs to define the geometry and the difference in heights between the flow segments (static head).
 Moreover it needs to define two vectors of source terms for the distributed energy balance:  
 <ul>
-<li><tt><b>Qs_flows[nNodes]</b></tt>, the heat flow source terms, e.g. conductive heat flows across segment boundaries, and</li> 
-<li><tt><b>Ws_flows[nNodes]</b></tt>, the work source terms.</li>
+<li><tt><b>Qb_flows[nNodes]</b></tt>, the heat flow source terms, e.g. conductive heat flows across segment boundaries, and</li> 
+<li><tt><b>Wb_flows[nNodes]</b></tt>, the work source terms.</li>
 </ul>
 </p>
  
@@ -786,7 +786,7 @@ This considers
 <li>pressure drop due to friction and other dissipative losses, and</li>
 <li>gravity effects for non-horizontal devices.</li>
 <li>variation of flow velocity along the flow path, 
-which occur due to changes in the cross sectional area or the fluid density, provided that <tt>flowModel.use_Is_flows</tt> is true.
+which occur due to changes in the cross sectional area or the fluid density, provided that <tt>flowModel.use_Ib_flows</tt> is true.
 </ul>
  
 <p><b>Model Structure</b></p>
@@ -1224,7 +1224,7 @@ This also allows for taking into account friction losses with respect to the act
           "Nominal dynamic viscosity (e.g. mu_liquidWater = 1e-3, mu_air = 1.8e-5)"
               annotation(Dialog(group="Advanced", enable=use_mu_nominal));
 
-            parameter Boolean use_Is_flows = momentumDynamics <> Types.Dynamics.SteadyState
+            parameter Boolean use_Ib_flows = momentumDynamics <> Types.Dynamics.SteadyState
           "= true to consider differences in flow of momentum through boundaries"
                annotation(Dialog(group="Advanced"), Evaluate=true);
 
@@ -1268,13 +1268,13 @@ This also allows for taking into account friction losses with respect to the act
               end for;
             end if;
 
-            if use_Is_flows then
-              Is_flows = {ds[i]*vs[i]*vs[i]*crossAreas[i] - ds[i+1]*vs[i+1]*vs[i+1]*crossAreas[i+1] for i in 1:n-1};
+            if use_Ib_flows then
+              Ib_flows = {ds[i]*vs[i]*vs[i]*crossAreas[i] - ds[i+1]*vs[i+1]*vs[i+1]*crossAreas[i+1] for i in 1:n-1};
               // alternatively use densities ds_act of actual streams, together with mass flow rates,
               // not conserving momentum if fluid density changes between flow segments:
-              //Is_flows = {((ds[i]*vs[i])^2*crossAreas[i] - (ds[i+1]*vs[i+1])^2*crossAreas[i+1])/ds_act[i] for i in 1:n-1};
+              //Ib_flows = {((ds[i]*vs[i])^2*crossAreas[i] - (ds[i+1]*vs[i+1])^2*crossAreas[i+1])/ds_act[i] for i in 1:n-1};
             else
-              Is_flows = zeros(n-1);
+              Ib_flows = zeros(n-1);
             end if;
 
             Fs_p = {0.5*(crossAreas[i]+crossAreas[i+1])*(Medium.pressure(states[i+1])-Medium.pressure(states[i])) for i in 1:n-1};
