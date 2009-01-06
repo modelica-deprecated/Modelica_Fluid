@@ -5,12 +5,12 @@ package Vessels "Devices for storing fluid"
     model Volume "Fixed volume with ports, closed to the environment"
       import Modelica.Constants.pi;
       extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
+        final fluidVolume = V,
         heatTransfer(surfaceAreas={4*pi*(3/4*V/pi)^(2/3)}));
 
       parameter SI.Volume V "Volume";
 
     equation
-      fluidVolume = V;
       Ws_flow = 0;
       ports_p_static = medium.p;
 
@@ -39,6 +39,7 @@ Ideal heat transfer is assumed per default; the thermal port temperature is equa
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
   import Modelica.Constants.pi;
   extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
+    final fluidVolume = V,
     heatTransfer(surfaceAreas={crossArea+2*sqrt(crossArea*pi)*level}),
     final initialize_p = false,
     final p_start = p_ambient,
@@ -70,7 +71,6 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
 equation
   // Total quantities
   V = crossArea*level + V0 "Volume of fluid";
-  fluidVolume = V;
   medium.p = p_ambient;
 
   // Source termsEnergy balance
@@ -121,8 +121,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -176,13 +176,13 @@ Implemented trace substances.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-equation
 
 end OpenTank;
 
 model Tank
     "Open tank with top and bottom inlet/outlet ports at a defineable height"
   extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
+    final fluidVolume = V,
     final initialize_p = false,
     final p_start = p_ambient,
     final use_d_nominal = false,
@@ -325,7 +325,6 @@ end for;
   // Total quantities
   medium.p = p_ambient;
   V = crossArea*level + V0 "Volume of fluid";
-  fluidVolume = V;
 
   // Mass balances
   ms_flow = sum(topPorts.m_flow) + sum(ports.m_flow);
@@ -434,9 +433,9 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                  level,
-                  1,
-                  3))),
+                level, 
+                1, 
+                3))),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
@@ -457,8 +456,8 @@ initial equation
             extent={{-95,50},{95,30}},
             lineColor={0,0,0},
             textString="level ="),
-          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                0,0})}),
+          Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
+                0})}),
       Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the environment at the fixed pressure

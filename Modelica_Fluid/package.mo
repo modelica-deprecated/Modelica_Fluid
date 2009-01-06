@@ -895,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-05</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-06</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -915,16 +915,17 @@ Modelica_Fluid was refactored and finalized for the release:
 <li> Complete implementation of one-dimenstional fluid flow<br>
      The balance equations as documented in 
      <a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>
-     are now completely implemented. The implementations find in:
+     are now completely implemented. The implementations with generic source terms find in:
      <ul>
      <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialFiniteVolumes\">Interfaces.PartialFiniteVolumes</a>:
          Energy, Mass and Substance balances</li>
-     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialStaggeredMomentum\">Interfaces.PartialStaggeredMomentum</a>:
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialFiniteFlows\">Interfaces.PartialFiniteFlows</a>:
          Momentum balance</li>
      </ul> 
+     Specific models define the source terms. For instance 
      <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">Pipes.BaseClasses.PartialTwoPortFlow</a>
-     combines the two base classes with configurable model structures. 
-     The DistributedPipe model adds a wall HeatTransfer model and defines the source terms Qs_flows and Ws_flows for the energy balance.<br>
+     extends PartialFiniteVolumes with configurable staggered model structures.
+     The DistributedPipe adds a wall HeatTransfer model and defines the source terms Qs_flows and Ws_flows for the energy balance.<br>
      See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDistributedPipes\">Examples.BranchingDistributedPipes</a></li>
  
 <li> New approach for the connection of distributed flow models<br>
