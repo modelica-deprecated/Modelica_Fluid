@@ -545,7 +545,7 @@ of the modeller.
 
     // Pressure loss
     replaceable model PressureLoss = 
-      Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.NominalLaminarFlow 
+      Modelica_Fluid.Pipes.BaseClasses.FlowModels.NominalLaminarFlow 
       constrainedby Modelica_Fluid.Interfaces.PartialFiniteFlows
       "Pressure loss model" 
         annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
