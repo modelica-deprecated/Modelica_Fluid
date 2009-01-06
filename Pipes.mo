@@ -400,8 +400,8 @@ The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any mod
       parameter SI.Length perimeter=Modelica.Constants.pi*diameter
         "Inner perimeter" 
         annotation(Dialog(tab="General", group="Geometry", enable=not isCircular));
-      parameter SI.Height roughness(min=0)=2.5e-5
-        "Average height of surface asperities (default = smooth steel pipe)" 
+      parameter SI.Height roughness=2.5e-5
+        "Average height of surface asperities (default: smooth steel pipe)" 
           annotation(Dialog(group="Geometry"));
       final parameter SI.Volume V=crossArea*length*nParallel "volume size";
 
@@ -414,7 +414,7 @@ The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any mod
         Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow 
         constrainedby
         Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.PartialFlowMomentum
-        "Characteristics of wall friction and gravity" 
+        "Wall friction and Momentum flow" 
           annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
 
     equation
@@ -454,7 +454,8 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
       // distributed volume model
       extends Modelica_Fluid.Interfaces.PartialFiniteVolumes(
-        final n = nNodes);
+        final n = nNodes,
+        final fluidVolumes = {crossAreas[i]*lengths[i] for i in 1:n});
 
       // Geometry parameters
       parameter Real nParallel(min=1)=1
@@ -519,7 +520,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
         Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow 
         constrainedby
         Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.PartialFlowMomentum
-        "Characteristics of wall friction and gravity" 
+        "Wall friction and Momentum flow" 
           annotation(Dialog(group="Pressure loss"), choicesAllMatching=true);
       FlowMomentum flowMomentum(
               redeclare final package Medium = Medium,
@@ -623,9 +624,6 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           assert(true, "Unknown model structure");
         end if;
       end if;
-
-      // distributed volume
-      fluidVolumes = {crossAreas[i]*lengths[i] for i in 1:n};
 
       // Source/sink terms for mass and energy balances
       for i in 1:n loop
@@ -1154,9 +1152,14 @@ This also allows for taking into account friction losses with respect to the act
       "Pressure loss models for pipes, including wall friction and static head"
           partial model PartialFlowMomentum
         "Base class for pressure losses in flow models"
-            extends Modelica_Fluid.Interfaces.PartialStaggeredMomentum;
+            extends Modelica_Fluid.Interfaces.PartialFiniteFlows(final m = n-1);
+
+            parameter Integer n=2 "Number of discrete flow volumes" 
+              annotation(Dialog(tab="Internal Interface",enable=false));
 
             // Additional inputs
+            input Medium.ThermodynamicState[n] states
+          "Thermodynamic states along design flow";
             input Modelica.SIunits.Velocity[n] vs
           "Mean velocities of fluid flow";
 

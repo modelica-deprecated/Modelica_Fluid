@@ -566,6 +566,9 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
           annotation (choicesAllMatching = true);
 
+      // Inputs
+      input SI.Volume fluidVolume "Volume";
+
       // Assumptions
       parameter Types.Dynamics energyDynamics=system.energyDynamics
       "Formulation of energy balance" 
@@ -624,7 +627,6 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
 
       // variables that need to be defined by an extending class
-      SI.Volume fluidVolume "Volume";
       SI.MassFlowRate ms_flow "Mass flows across boundaries";
       SI.MassFlowRate[Medium.nXi] msXi_flow
       "Substance mass flows across boundaries";
@@ -721,7 +723,7 @@ The following source terms are part of the energy balance and must be specified 
 <li><tt><b>Qs_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
 <li><tt><b>Ws_flow</b></tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
 </ul>
-The component volume <tt><b>fluidVolume</b></tt> is a variable which needs to be set in the extending class to complete the model.
+The component volume <tt><b>fluidVolume</b></tt> is an input that needs to be set in the extending class to complete the model.
 <p>
 Further source terms must be defined by an extending class for fluid flow across the segment boundary:
 </p>
@@ -747,7 +749,11 @@ partial model PartialFiniteVolumes "Base class for finite volume models"
       annotation (choicesAllMatching = true);
 
   // Discretization
-  parameter Integer n=2 "Number of discrete flow volumes";
+  parameter Integer n=2 "Number of discrete volumes";
+
+  // Inputs
+  input SI.Volume[n] fluidVolumes
+      "Discretized volume, determine in inheriting class";
 
   // Assumptions
   parameter Types.Dynamics energyDynamics=system.energyDynamics
@@ -784,6 +790,7 @@ partial model PartialFiniteVolumes "Base class for finite volume models"
 
   parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start" 
      annotation(Evaluate=true, Dialog(tab = "Initialization"));
+
   parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
               Medium.temperature_phX(
         (p_a_start + p_b_start)/2,
@@ -821,7 +828,6 @@ partial model PartialFiniteVolumes "Base class for finite volume models"
     each Xi(start=X_start[1:Medium.nXi]));
 
   //Source terms, have to be defined by an extending model (to zero if not used)
-  SI.Volume[n] fluidVolumes "Discretized volume, determine in inheriting class";
   Medium.MassFlowRate[n] ms_flows "Mass flow rate, source or sink";
   Medium.MassFlowRate[n,Medium.nXi] msXi_flows
       "Independent mass flow rates, source or sink";
@@ -941,7 +947,7 @@ The following source terms are part of the energy balance and must be specified 
 <li><tt><b>Qs_flows[n]</b></tt>, heat flow source term, e.g. conductive heat flows across segment boundaries, and</li> 
 <li><tt><b>Ws_flows[n]</b></tt>, work source term.</li>
 </ul>
-The component volumes <tt><b>fluidVolumes[n]</b></tt> are a variable which needs to be set in an extending class to complete the model.
+The component volumes <tt><b>fluidVolumes[n]</b></tt> are an input that needs to be set in an extending class to complete the model.
 <p>
 Further source terms must be defined by an extending class for fluid flow across the segment boundary:
 </p>
@@ -954,25 +960,23 @@ Further source terms must be defined by an extending class for fluid flow across
 </html>"));
 end PartialFiniteVolumes;
 
-      partial model PartialStaggeredMomentum "Base class for momentum balances"
+      partial model PartialFiniteFlows "Base class for momentum balances"
 
         outer Modelica_Fluid.System system "System properties";
+
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation(Dialog(tab="Internal Interface",enable=false));
 
         // Discretization
-        parameter Integer n=2 "Number of discrete flow volumes" 
+        parameter Integer m=1 "Number of flow segments" 
           annotation(Dialog(tab="Internal Interface",enable=false));
 
         // Inputs provided to momentum model
-        input Medium.ThermodynamicState[n] states
-      "Thermodynamic states along design flow";
-        input SI.Length[n-1] distances
-      "Distance between states along flow path";
+        input SI.Length[m] distances "Distance along flow path";
 
         // Outputs defined by momentum model
-        output Medium.MassFlowRate[n-1] m_flows(
+        output Medium.MassFlowRate[m] m_flows(
            each start = m_flow_start,
            each stateSelect = if momentumDynamics == Types.Dynamics.SteadyState then StateSelect.default else 
                                      StateSelect.prefer)
@@ -988,47 +992,46 @@ end PartialFiniteVolumes;
           annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
 
         // Total quantities
-        SI.Momentum[n-1] Is "Momentums of fluid flow";
+        SI.Momentum[m] Is "Momentums of flow segments";
 
         // Source terms and forces to be defined by an extending model (zero if not used)
-        SI.Force[n-1] Is_flows "Flow of momentum across boudaries";
-        SI.Force[n-1] Fs_p "Pressure forces";
-        SI.Force[n-1] Fs_fg "Friction and gravity forces";
+        SI.Force[m] Is_flows "Flow of momentum across boudaries";
+        SI.Force[m] Fs_p "Pressure forces";
+        SI.Force[m] Fs_fg "Friction and gravity forces";
 
       equation
         // Total quantities
-        Is = {m_flows[i]*distances[i] for i in 1:n-1};
+        Is = {m_flows[i]*distances[i] for i in 1:m};
 
         // Momentum balances
         if momentumDynamics == Types.Dynamics.SteadyState then
-          zeros(n-1) = Is_flows - Fs_p - Fs_fg;
+          zeros(m) = Is_flows - Fs_p - Fs_fg;
         else
           der(Is) = Is_flows - Fs_p - Fs_fg;
         end if;
 
       initial equation
         if momentumDynamics == Types.Dynamics.FixedInitial then
-          m_flows = fill(m_flow_start, n-1);
+          m_flows = fill(m_flow_start, m);
         elseif momentumDynamics == Types.Dynamics.SteadyStateInitial then
-          der(m_flows) = zeros(n-1);
+          der(m_flows) = zeros(m);
         end if;
 
         annotation (
            Documentation(info="<html>
 <p>
-Interface and base class for <tt><b>n-1</b></tt> momentum balances between <tt>n</tt> flow segments.
-The mass flow rates <tt>m_flows[n-1]</tt> are obtained for given thermodynamic <tt>states[n]</tt> 
-of the flow segments and for a given fluid <tt>Medium</tt>.
+Interface and base class for <tt><b>m</b></tt> momentum balances, defining the mass flow rates <tt><b>m_flows[m]</b></tt>
+of a given <tt>Medium</tt> in <tt><b>m</b></tt> flow segments. 
 </p>
 <p>
-The following source terms are part of the momentum balances and must be specified in an extending model:
+The following source terms are part of the momentum balances and must be specified in an extending model (to zero if not considered):
 <ul>
-<li><tt><b>Is_flows[n-1]</b></tt>, the convection of momentum,</li> 
-<li><tt><b>Fs_p[n-1]</b></tt>, pressure forces, and</li>
-<li><tt><b>Fs_fg[n-1]</b></tt>, friction and gravity forces.</li>
+<li><tt><b>Is_flows[m]</b></tt>, the flow of momentum across segment boundaries,</li> 
+<li><tt><b>Fs_p[m]</b></tt>, pressure forces, and</li>
+<li><tt><b>Fs_fg[m]</b></tt>, friction and gravity forces.</li>
 </ul>
-The <tt><b>distances[n-1]</b></tt> need to be set in the extending class to complete the model.
+The lengths of the flow segments <tt><b>distances[m]</b></tt> are an input that needs to be set in an extending class to complete the model.
 </p>
 </html>"));
-      end PartialStaggeredMomentum;
+      end PartialFiniteFlows;
 end Interfaces;

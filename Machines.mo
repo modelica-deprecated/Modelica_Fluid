@@ -6,9 +6,12 @@ package Machines
     "varying cylindric volume depending on the postition of the piston"
     import Modelica.Constants.pi;
     extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
+      final fluidVolume = V,
       heatTransfer(surfaceAreas={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*flange.s}));
     parameter SI.Area pistonCrossArea "cross sectional area of pistion";
     parameter SI.Volume clearance "remaining volume at zero piston stroke";
+
+    SI.Volume V "fluid volume";
 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}}),
@@ -83,7 +86,7 @@ package Machines
     assert(flange.s >= 0, "Piston stroke (given by flange.s) must not be smaller than zero!");
 
     // volume size
-    fluidVolume = clearance + flange.s * pistonCrossArea;
+    V = clearance + flange.s * pistonCrossArea;
 
     flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
 
@@ -253,8 +256,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
           rotation=-90,
           origin={0,100})));
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
             visible=use_N_input,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
@@ -357,6 +360,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
     // Energy and mass balance
     extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
+        final fluidVolume = if use_V then V else 0,
         energyDynamics = if use_V then system.energyDynamics else Types.Dynamics.SteadyState,
         massDynamics = if use_V then system.massDynamics else Types.Dynamics.SteadyState,
         final p_start = p_b_start);
@@ -452,13 +456,6 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     Qs_flow = heatTransfer.Q_flows[1];
     Hs_flow = port_a.m_flow*actualStream(port_a.h_outflow) +
               port_b.m_flow*actualStream(port_b.h_outflow);
-    if use_V then
-      // Regular energy balance
-      fluidVolume = V;
-    else
-      // Neglect fluid volume
-      fluidVolume = 0;
-    end if;
 
     // Ports
     port_a.h_outflow = medium.h;
