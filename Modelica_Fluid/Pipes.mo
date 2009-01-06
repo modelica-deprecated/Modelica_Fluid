@@ -35,7 +35,7 @@ package Pipes "Devices for conveying fluid"
             final p_b_start=p_b_start,
             final m_flow_start=m_flow_start,
             final nParallel=nParallel,
-            final distances={length},
+            final pathLengths={length},
             final crossAreas={crossArea, crossArea},
             final dimensions={4*crossArea/perimeter, 4*crossArea/perimeter},
             final roughnesses={roughness, roughness},
@@ -533,7 +533,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
               final p_b_start=p_b_start,
               final m_flow_start=m_flow_start,
               final nParallel=nParallel,
-              final distances=distances,
+              final pathLengths=pathLengths,
               final crossAreas=crossAreasFM,
               final dimensions=dimensionsFM,
               final roughnesses=roughnessesFM,
@@ -557,7 +557,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 
       // Model structure dependent flow geometry
     protected
-      SI.Length[nFM] distances "Distances between flow segments";
+      SI.Length[nFM] pathLengths "Lengths along flow path";
       SI.Length[nFM] dheightsFM "Differences in heights between flow segments";
       SI.Area[nFM+1] crossAreasFM "Cross flow areas of flow segments";
       SI.Velocity[nFM+1] vsFM "Mean velocities in flow segments";
@@ -570,7 +570,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       // staggered grid discretization of geometry for flowModel, depending on modelStructure
       if lumpedPressure then
         if modelStructure <> ModelStructure.a_v_b then
-          distances[1] = sum(lengths);
+          pathLengths[1] = sum(lengths);
           dheightsFM[1] = sum(dheights);
           if n == 1 then
             crossAreasFM[1:2] = {crossAreas[1], crossAreas[1]};
@@ -583,13 +583,13 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           end if;
         else
           if n == 1 then
-            distances[1:2] = {lengths[1]/2, lengths[1]/2};
+            pathLengths[1:2] = {lengths[1]/2, lengths[1]/2};
             dheightsFM[1:2] = {dheights[1]/2, dheights[1]/2};
             crossAreasFM[1:3] = {crossAreas[1], crossAreas[1], crossAreas[1]};
             dimensionsFM[1:3] = {dimensions[1], dimensions[1], dimensions[1]};
             roughnessesFM[1:3] = {roughnesses[1], roughnesses[1], roughnesses[1]};
           else // n > 1
-            distances[1:2] = {sum(lengths[1:iLumped-1]), sum(lengths[iLumped:n])};
+            pathLengths[1:2] = {sum(lengths[1:iLumped-1]), sum(lengths[iLumped:n])};
             dheightsFM[1:2] = {sum(dheights[1:iLumped-1]), sum(dheights[iLumped:n])};
             crossAreasFM[1:3] = {sum(crossAreas[1:iLumped-1])/(iLumped-1), sum(crossAreas)/n, sum(crossAreas[iLumped:n])/(n-iLumped+1)};
             dimensionsFM[1:3] = {sum(dimensions[1:iLumped-1])/(iLumped-1), sum(dimensions)/n, sum(dimensions[iLumped:n])/(n-iLumped+1)};
@@ -600,10 +600,10 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
         if modelStructure == ModelStructure.av_vb then
           //nFM = n-1;
           if n == 2 then
-            distances[1] = lengths[1] + lengths[2];
+            pathLengths[1] = lengths[1] + lengths[2];
             dheightsFM[1] = dheights[1] + dheights[2];
           else
-            distances[1:n-1] = cat(1, {lengths[1] + 0.5*lengths[2]}, 0.5*(lengths[2:n-2] + lengths[3:n-1]), {0.5*lengths[n-1] + lengths[n]});
+            pathLengths[1:n-1] = cat(1, {lengths[1] + 0.5*lengths[2]}, 0.5*(lengths[2:n-2] + lengths[3:n-1]), {0.5*lengths[n-1] + lengths[n]});
             dheightsFM[1:n-1] = cat(1, {dheights[1] + 0.5*dheights[2]}, 0.5*(dheights[2:n-2] + dheights[3:n-1]), {0.5*dheights[n-1] + dheights[n]});
           end if;
           crossAreasFM[1:n] = crossAreas;
@@ -611,21 +611,21 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
           roughnessesFM[1:n] = roughnesses;
         elseif modelStructure == ModelStructure.av_b then
           //nFM = n
-          distances[1:n] = lengths;
+          pathLengths[1:n] = lengths;
           dheightsFM[1:n] = dheights;
           crossAreasFM[1:n+1] = cat(1, crossAreas[1:n], {crossAreas[n]});
           dimensionsFM[1:n+1] = cat(1, dimensions[1:n], {dimensions[n]});
           roughnessesFM[1:n+1] = cat(1, roughnesses[1:n], {roughnesses[n]});
         elseif modelStructure == ModelStructure.a_vb then
           //nFM = n
-          distances[1:n] = lengths;
+          pathLengths[1:n] = lengths;
           dheightsFM[1:n] = dheights;
           crossAreasFM[1:n+1] = cat(1, {crossAreas[1]}, crossAreas[1:n]);
           dimensionsFM[1:n+1] = cat(1, {dimensions[1]}, dimensions[1:n]);
           roughnessesFM[1:n+1] = cat(1, {roughnesses[1]}, roughnesses[1:n]);
         elseif modelStructure == ModelStructure.a_v_b then
           //nFM = n+1;
-          distances[1:n+1] = cat(1, {0.5*lengths[1]}, 0.5*(lengths[1:n-1] + lengths[2:n]), {0.5*lengths[n]});
+          pathLengths[1:n+1] = cat(1, {0.5*lengths[1]}, 0.5*(lengths[1:n-1] + lengths[2:n]), {0.5*lengths[n]});
           dheightsFM[1:n+1] = cat(1, {0.5*dheights[1]}, 0.5*(dheights[1:n-1] + dheights[2:n]), {0.5*dheights[n]});
           crossAreasFM[1:n+2] = cat(1, {crossAreas[1]}, crossAreas[1:n], {crossAreas[n]});
           dimensionsFM[1:n+2] = cat(1, {dimensions[1]}, dimensions[1:n], {dimensions[n]});
@@ -940,7 +940,7 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{-70.5,-61},{-28,-71}},
+              extent={{-70,-61},{-29,-71}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -950,7 +950,7 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{27,-61},{73,-71}},
+              extent={{25.5,-61},{75.5,-71}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -1136,11 +1136,11 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{-72,-73},{-26,-83}},
+              extent={{-75,-73},{-23,-83}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
-              textString="flowModel.distances[1]"),
+              textString="flowModel.pathLengths[1]"),
             Line(
               points={{-100,-82},{0,-82}},
               arrow={Arrow.Filled,Arrow.Filled},
@@ -1150,11 +1150,11 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.Filled,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{23.5,-73},{78,-83}},
+              extent={{20,-73},{80,-83}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
-              textString="flowModel.distances[2:n-1]")}));
+              textString="flowModel.pathLengths[2:n-1]")}));
 
     end PartialTwoPortFlow;
 
@@ -1290,7 +1290,7 @@ Extending models must add pressure loss terms for friction and gravity.
 </p>
 <p>
 The fluid is specified in the interface with the thermodynamic <tt>states[n]</tt> for a given <tt>Medium</tt> model. 
-The geometry is specified with the <tt>distances[n-1]</tt> between the device segments as well as 
+The geometry is specified with the <tt>pathLengths[n-1]</tt> between the device segments as well as 
 with the <tt>crossAreas[n]</tt> and the <tt>roughnesses[n]</tt> of the device segments. 
 Moreover the fluid flow is characterized for different types of devices by the characteristic <tt>dimensions[n]</tt> 
 and the average velocities <tt>vs[n]</tt> of fluid flow in the device segments. 
@@ -1337,7 +1337,7 @@ e.g. with numerical smoothing or by raising events as appropriate.
         // Inverse parameterization assuming pipe flow and WallFriction.Laminar
         // Laminar.massFlowRate_dp:
         //   m_flow = dp*pi*diameter^4*d/(128*length*mu);
-        SI.Length[n-1] distances_nominal=
+        SI.Length[n-1] pathLengths_nominal=
           {(dp_nominal-g*dheights[i])*Modelica.Constants.pi*((dimensions[i]+dimensions[i+1])/2)^4*ds_act[i]/(128*mus_act[i])/
            (m_flow_nominal/nParallel) for i in 1:n-1} if show_Res;
 
@@ -1375,8 +1375,8 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
           "Wall friction model" 
                 annotation(Dialog(group="Wall friction"), choicesAllMatching=true,editButton=false);
 
-            input SI.Length[n-1] distances_internal
-          "distances of flow path used internally; to be defined by extending class";
+            input SI.Length[n-1] pathLengths_internal
+          "pathLengths used internally; to be defined by extending class";
 
             // Parameters
             parameter SI.AbsolutePressure dp_nominal
@@ -1417,7 +1417,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
                   ds_act,
                   mus_act,
                   mus_act,
-                  distances_internal,
+                  pathLengths_internal,
                   diameters,
                   (roughnesses[1:n-1]+roughnesses[2:n])/2,
                   dp_small)*nParallel;
@@ -1428,7 +1428,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
                   ds_act,
                   mus_act,
                   mus_act,
-                  distances_internal,
+                  pathLengths_internal,
                   diameters,
                   (roughnesses[1:n-1]+roughnesses[2:n])/2,
                   m_flow_small/nParallel) + {g*dheights[i]*ds_act[i] for i in 1:n-1};
@@ -1442,7 +1442,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
                   ds[2:n],
                   mus[1:n-1],
                   mus[2:n],
-                  distances_internal,
+                  pathLengths_internal,
                   diameters,
                   g*dheights,
                   (roughnesses[1:n-1]+roughnesses[2:n])/2,
@@ -1454,7 +1454,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
                   ds[2:n],
                   mus[1:n-1],
                   mus[2:n],
-                  distances_internal,
+                  pathLengths_internal,
                   diameters,
                   g*dheights,
                   (roughnesses[1:n-1]+roughnesses[2:n])/2,
@@ -1522,11 +1522,11 @@ simulation and/or might give a more robust simulation.
                 color={0,0,255},
                 arrow={Arrow.Filled,Arrow.Filled}),
               Text(
-                extent={{-34,92},{34,74}},
+                extent={{-32,93},{32,74}},
                 lineColor={0,0,255},
                 fillColor={0,0,255},
                 fillPattern=FillPattern.Solid,
-                textString="distances")}));
+                textString="pathLengths")}));
           end PartialGenericPipeFlow;
 
           model NominalTurbulentPipeFlow
@@ -1536,14 +1536,14 @@ simulation and/or might give a more robust simulation.
           redeclare package WallFriction = 
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent,
           use_mu_nominal=not show_Res,
-          distances_internal=distances_nominal,
+          pathLengths_internal=pathLengths_nominal,
           upwindScheme=false);
 
         import Modelica.Constants.pi;
 
             // variables for nominal pressure loss
-            SI.Length[n-1] distances_nominal
-          "distances resulting from nominal pressure loss and geometry";
+            SI.Length[n-1] pathLengths_nominal
+          "pathLengths resulting from nominal pressure loss and geometry";
             Real[n-1] ks_inv "coefficient for quadratic flow";
             Real[n-1] zetas "coefficient for quadratic flow";
 
@@ -1562,7 +1562,7 @@ simulation and/or might give a more robust simulation.
             for i in 1:n-1 loop
               ks_inv[i] = (m_flow_nominal/nParallel)^2/((dp_nominal-g*dheights[i]*ds_act[i]))/ds_act[i];
               zetas[i] = (pi*diameters[i]*diameters[i])^2/(8*ks_inv[i]);
-              distances_nominal[i] =
+              pathLengths_nominal[i] =
                 zetas[i]*diameters[i]*(2*Modelica.Math.log10(3.7 /((roughnesses[i]+roughnesses[i+1])/2/diameters[i])))^2;
             end for;
 
@@ -1571,12 +1571,12 @@ simulation and/or might give a more robust simulation.
 This model defines the pressure loss assuming turbulent flow for 
 specified <tt>dp_nominal</tt> and <tt>m_flow_nominal</tt>. 
 It takes into account the fluid density of each flow segment and 
-obtaines appropriate <tt>distances_nominal</tt> values   
+obtaines appropriate <tt>pathLengths_nominal</tt> values   
 for an inverse parameterization of the 
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.FlowModel.TurbulentFlow\">
           TurbulentFlow</a>
 model. Per default the upstream and downstream densities are averaged with the setting <tt>upwindScheme = false</tt>,
-in order to avoid discontinuous <tt>distances_nominal</tt> values in the case of flow reversal.
+in order to avoid discontinuous <tt>pathLengths_nominal</tt> values in the case of flow reversal.
 </p>
 <p>
 The geometry parameters <tt>crossAreas</tt>, <tt>diameters</tt> and <tt>roughnesses</tt> do
@@ -1613,7 +1613,7 @@ and can be related to <tt>m_flow_small</tt> and <tt>dp_small</tt>.
           redeclare package WallFriction = 
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent,
           use_mu_nominal=not show_Res,
-          distances_internal=distances,
+          pathLengths_internal=pathLengths,
           dp_nominal=1e3,
           m_flow_nominal=1);
 
@@ -1644,7 +1644,7 @@ Reynolds numbers, i.e., the values at the right ordinate where
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.PartialGenericPipeFlow(
           redeclare package WallFriction = 
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
-          distances_internal=distances,
+          pathLengths_internal=pathLengths,
           dp_nominal=1e3,
           m_flow_nominal=1);
 
@@ -1705,13 +1705,7 @@ b has the same sign of the change of density.</p>
               Line(
                 points={{-100,74},{100,74}},
                 color={0,0,255},
-                arrow={Arrow.Filled,Arrow.Filled}),
-              Text(
-                extent={{-34,92},{34,74}},
-                lineColor={0,0,255},
-                fillColor={0,0,255},
-                fillPattern=FillPattern.Solid,
-                textString="distances")}));
+                arrow={Arrow.Filled,Arrow.Filled})}));
           end DetailedPipeFlow;
 
     end FlowModels;

@@ -749,7 +749,7 @@ Further source terms must be defined by an extending class for fluid flow across
             annotation(Dialog(tab="Internal Interface",enable=false));
 
         // Inputs provided to the flow model
-        input SI.Length distance "Distance along flow path";
+        input SI.Length pathLength "Length flow path";
 
         // Variables defined by the flow model
         Medium.MassFlowRate m_flow(
@@ -777,7 +777,7 @@ Further source terms must be defined by an extending class for fluid flow across
 
       equation
         // Total quantities
-        I = m_flow*distance;
+        I = m_flow*pathLength;
 
         // Momentum balances
         if momentumDynamics == Types.Dynamics.SteadyState then
@@ -806,7 +806,7 @@ The following source terms are part of the momentum balance and must be specifie
 <li><tt><b>F_p[m]</b></tt>, pressure force, and</li>
 <li><tt><b>F_fg[m]</b></tt>, friction and gravity force.</li>
 </ul>
-The length of the flow model <tt><b>distance</b></tt> is an input that needs to be set in an extending class to complete the model.
+The length of the flow path <tt><b>pathLength</b></tt> is an input that needs to be set in an extending class to complete the model.
 </p>
 </html>"));
       end PartialLumpedFlow;
@@ -1047,7 +1047,7 @@ end PartialDistributedVolume;
           annotation(Dialog(tab="Internal Interface",enable=false));
 
         // Inputs provided to the flow model
-        input SI.Length[m] distances "Distance along flow path";
+        input SI.Length[m] pathLengths "Lengths along flow path";
 
         // Variables defined by momentum model
         Medium.MassFlowRate[m] m_flows(
@@ -1075,7 +1075,7 @@ end PartialDistributedVolume;
 
       equation
         // Total quantities
-        Is = {m_flows[i]*distances[i] for i in 1:m};
+        Is = {m_flows[i]*pathLengths[i] for i in 1:m};
 
         // Momentum balances
         if momentumDynamics == Types.Dynamics.SteadyState then
@@ -1104,7 +1104,7 @@ The following source terms are part of the momentum balances and must be specifi
 <li><tt><b>Fs_p[m]</b></tt>, pressure forces, and</li>
 <li><tt><b>Fs_fg[m]</b></tt>, friction and gravity forces.</li>
 </ul>
-The lengths of the flow segments <tt><b>distances[m]</b></tt> are an input that needs to be set in an extending class to complete the model.
+The lengths along the flow path <tt><b>pathLengths[m]</b></tt> are an input that needs to be set in an extending class to complete the model.
 </p>
 </html>"));
       end PartialDistributedFlow;

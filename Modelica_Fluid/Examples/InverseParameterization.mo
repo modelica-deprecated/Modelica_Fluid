@@ -114,7 +114,7 @@ equation
 A pump, an orifice and two pipes are parameterized with simple nominal values. 
 Note that pipe1 and pipe2 use the flowModel NominalTurbulentFlow and NominalLaminarFlow, respectively, 
 which do not require the specification of geometry data. 
-Instead distances_nominal are obtained internally for given nominal pressure loss and nominal mass flow rate.
+Instead pathLengths_nominal are obtained internally for given nominal pressure loss and nominal mass flow rate.
 </p>
 <p>
 The pump controls a pressure ramp from 1.9 bar to 2.1 bar. 
@@ -125,7 +125,7 @@ Moreover the internally obtained nominal design values that fulfill the nominal 
 the Reynolds number, m_flows_turbulent, and dps_fg_turbulent are plotted.
 </p>
 <p>
-Note that the large value for pipe2.flowModel.distances_nominal[1] is only meaningful under the made assumption of laminar flow,
+Note that the large value for pipe2.flowModel.pathLengths_nominal[1] is only meaningful under the made assumption of laminar flow,
  which is hardly possible for a real pipe.
 </p>
 <p>

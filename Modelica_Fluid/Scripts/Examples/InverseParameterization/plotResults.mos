@@ -3,7 +3,7 @@ removePlots();
 plotSetFilesToKeep(5);
 createPlot(id = 6,
  position = {12, 9, 600, 600},
- y = {"pipe1.flowModel.distances_nominal[1]", "orifice.zeta_nominal", "pipe2.flowModel.distances_nominal[1]", "pump.N"},
+ y = {"pipe1.flowModel.pathLengths_nominal[1]", "orifice.zeta_nominal", "pipe2.flowModel.pathLengths_nominal[1]", "pump.N"},
  range = {0, 90000.0, 20.0, (-5.0)},
  erase = false,
  autoscale = true,
