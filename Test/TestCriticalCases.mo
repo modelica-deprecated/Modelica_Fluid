@@ -134,8 +134,8 @@ package TestCriticalCases
       length=10,
       diameter=2.54e-2,
       p_b_start=100000,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
       p_a_start=200000,
       T_start=300)      annotation (Placement(transformation(extent={{-72,-4},{
               -52,16}}, rotation=0)));
@@ -177,8 +177,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       length=10,
       diameter=2.54e-2,
       p_b_start=200000,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
       p_a_start=200000,
       T_start=300)      annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
@@ -189,8 +189,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       length=10,
       diameter=2.54e-2,
       p_b_start=200000,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
       p_a_start=200000,
       T_start=300)      annotation (Placement(transformation(extent={{-40,-50},
               {-20,-30}}, rotation=0)));
@@ -237,8 +237,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -277,8 +277,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -288,8 +288,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -339,8 +339,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       p_b_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-80,-4},{
               -60,16}}, rotation=0)));
@@ -379,8 +379,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       p_b_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
@@ -390,8 +390,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_a_start=5.0e5,
       p_b_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-40,-50},
               {-20,-30}}, rotation=0)));
@@ -446,8 +446,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -486,8 +486,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -497,8 +497,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=5.0e5,
@@ -675,8 +675,8 @@ fails for zero flow rate.
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow) 
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow) 
                         annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
@@ -716,8 +716,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       diameter=2.54e-2,
       p_a_start=4.95e5,
       p_b_start=4.90e5,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow) 
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow) 
                         annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
 
@@ -728,8 +728,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       diameter=2.54e-2,
       p_a_start=4.95e5,
       p_b_start=4.90e5,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow) 
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow) 
                         annotation (Placement(transformation(extent={{-40,-50},
               {-20,-30}}, rotation=0)));
 
@@ -777,8 +777,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -820,8 +820,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -831,8 +831,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -891,8 +891,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -930,8 +930,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -941,8 +941,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1008,8 +1008,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=500000,
@@ -1048,8 +1048,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1059,8 +1059,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1127,8 +1127,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
@@ -1166,8 +1166,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1177,8 +1177,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1243,8 +1243,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
@@ -1283,8 +1283,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1294,8 +1294,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1368,8 +1368,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5)      annotation (Placement(transformation(extent={{-78,-4},{
@@ -1406,8 +1406,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1417,8 +1417,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow (    dp_small=10),
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow (   dp_small=10),
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
@@ -1490,8 +1490,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
@@ -1525,8 +1525,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowMomentum = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.TurbulentPipeFlow,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,

@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -922,9 +921,9 @@ Modelica_Fluid was refactored and finalized for the release:
      <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialFiniteFlows\">Interfaces.PartialFiniteFlows</a>:
          Momentum balance</li>
      </ul> 
-     Specific models define the source terms. For instance 
+     Specific models combine the balances and define the source terms as appropriate. For instance 
      <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">Pipes.BaseClasses.PartialTwoPortFlow</a>
-     extends PartialFiniteVolumes with configurable staggered model structures.
+     extends PartialFiniteVolumes and treats a configurable staggered structure for replaceable flow models.
      The DistributedPipe adds a wall HeatTransfer model and defines the source terms Qs_flows and Ws_flows for the energy balance.<br>
      See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDistributedPipes\">Examples.BranchingDistributedPipes</a></li>
  
@@ -951,7 +950,7 @@ Modelica_Fluid was refactored and finalized for the release:
  
 <li> Inverse parameterization of flow models with nominal operational conditions<br> 
      Flow models have been added or extended to support the parameterization with nominal values
-     (Machines.ControlledPump, Orifices.SimpleGenericOrifice, Pipes.BaseClasses.FlowMomentum.NominalTurbulentFlow).
+     (Machines.ControlledPump, Orifices.SimpleGenericOrifice, Pipes.BaseClasses.FlowModels.NominalTurbulentFlow).
      They are intended for early phases of system modeling, if geometries and flow characteristics
      are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
      they can easily be replaced with more detailed models  
@@ -2115,7 +2114,6 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
 
 annotation (
   version="1.0 Release Candidate 1",

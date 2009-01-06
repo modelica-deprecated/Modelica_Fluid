@@ -13,13 +13,13 @@ package HeatExchanger "Demo of a heat exchanger model"
       length=2,
       m_flow_start_1=0.2,
       m_flow_start_2=0.2,
-      redeclare model FlowMomentum_1 = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow (
+      redeclare model FlowModel_1 = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow (
         redeclare package WallFriction = 
           Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
               use_d_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
-      redeclare model FlowMomentum_2 = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow (
+      redeclare model FlowModel_2 = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow (
         redeclare package WallFriction = 
           Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
               use_d_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
@@ -225,15 +225,15 @@ package HeatExchanger "Demo of a heat exchanger model"
         "Start value of mass flow rate"    annotation(Evaluate=true, Dialog(tab = "Initialization", group = "Fluid 2"));
 
       //Pressure drop and heat transfer
-      replaceable model FlowMomentum_1 = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow 
+      replaceable model FlowModel_1 = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.PartialFlowMomentum
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.PartialStaggeredFlowModel
         "Characteristic of wall friction"                                                                                                   annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 1"));
-      replaceable model FlowMomentum_2 = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow 
+      replaceable model FlowModel_2 = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow 
         constrainedby
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.PartialFlowMomentum
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.PartialStaggeredFlowModel
         "Characteristic of wall friction"                                                                                                   annotation(choicesAllMatching, Dialog(tab="General", group="Fluid 2"));
       parameter SI.Length roughness_1=2.5e-5
         "Absolute roughness of pipe (default = smooth steel pipe)" annotation(Dialog(tab="General", group="Fluid 1"));
@@ -276,7 +276,7 @@ package HeatExchanger "Demo of a heat exchanger model"
         perimeter=perimeter_1,
         crossArea=crossArea_1,
         roughness=roughness_1,
-        redeclare model FlowMomentum = FlowMomentum_1)   annotation (Placement(transformation(extent={{-40,-80},
+        redeclare model FlowModel = FlowModel_1)   annotation (Placement(transformation(extent={{-40,-80},
                 {20,-20}},        rotation=0)));
 
       Modelica_Fluid.Pipes.DistributedPipe pipe_2(
@@ -300,7 +300,7 @@ package HeatExchanger "Demo of a heat exchanger model"
         p_a_start=p_a_start1,
         p_b_start=p_b_start2,
         roughness=roughness_2,
-        redeclare model FlowMomentum = FlowMomentum_2) 
+        redeclare model FlowModel = FlowModel_2) 
                   annotation (Placement(transformation(extent={{20,88},{-40,28}},
               rotation=0)));
 

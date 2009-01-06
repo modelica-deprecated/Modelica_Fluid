@@ -74,8 +74,8 @@ model HeatingSystem "Simple model of a heating system"
     diameter=0.01,
     nNodes=1,
     modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb,
-    redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
+    redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
     use_HeatTransfer=true) 
     annotation (Placement(transformation(extent={{30,10},{50,30}}, rotation=0)));
 
@@ -88,8 +88,8 @@ model HeatingSystem "Simple model of a heating system"
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer,
     diameter=0.01,
     nNodes=1,
-    redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
+    redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
     modelStructure=Modelica_Fluid.Types.ModelStructure.av_b,
     use_HeatTransfer=true) 
     annotation (Placement(transformation(extent={{20,-80},{0,-60}}, rotation=
@@ -124,8 +124,8 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.IdealFlowHeatTransfer,
     diameter=0.01,
-    redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.DetailedPipeFlow,
+    redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
     length=10) 
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
                                                                    rotation=-90,
@@ -205,7 +205,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},

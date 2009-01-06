@@ -11,7 +11,7 @@ model InverseParameterization
     nPorts=1,
     use_p_in=false,
     p=100000) 
-    annotation (Placement(transformation(extent={{-76,-6},{-64,6}},  rotation=0)));
+    annotation (Placement(transformation(extent={{-76,14},{-64,26}}, rotation=0)));
   Modelica_Fluid.Machines.ControlledPump pump(
     m_flow_nominal=1,
     control_m_flow=false,
@@ -19,7 +19,7 @@ model InverseParameterization
     redeclare package Medium = Medium,
     p_a_nominal=100000,
     p_b_nominal=200000) 
-    annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
+    annotation (Placement(transformation(extent={{-40,10},{-20,30}})));
   Modelica_Fluid.Fittings.SimpleGenericOrifice orifice(
     redeclare package Medium = Medium,
     diameter=2.54e-2,
@@ -27,64 +27,78 @@ model InverseParameterization
     use_zeta=false,
     zeta=0,
     dp_nominal=100000) 
-                      annotation (Placement(transformation(extent={{20,-10},{40,
-            10}}, rotation=0)));
+                      annotation (Placement(transformation(extent={{20,10},{40,
+            30}}, rotation=0)));
 
-  Modelica_Fluid.Sources.Boundary_pT sink1(redeclare package Medium = Medium, p=
-       100000) 
-             annotation (Placement(transformation(extent={{76,-6},{64,6}},
+  Modelica_Fluid.Sources.Boundary_pT sink(redeclare package Medium = Medium, p=
+        100000) 
+             annotation (Placement(transformation(extent={{76,14},{64,26}},
           rotation=0)));
 
   inner Modelica_Fluid.System system 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},  rotation=0)));
-  Modelica_Fluid.Pipes.StaticPipe pipe(
+  Modelica_Fluid.Pipes.StaticPipe pipe1(
     redeclare package Medium = Medium,
     diameter=2.54e-2,
     length=0,
-    redeclare model FlowMomentum = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowMomentum.NominalTurbulentPipeFlow
-        (
-        dp_nominal=100000,
+    redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.NominalTurbulentPipeFlow (
         m_flow_nominal=1,
-        show_Res=true)) 
-                      annotation (Placement(transformation(extent={{20,-50},{40,
-            -30}},rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT sink2(
+        show_Res=true,
+        dp_nominal=100000)) 
+                      annotation (Placement(transformation(extent={{20,-30},{40,
+            -10}},rotation=0)));
+  Modelica_Fluid.Sources.Boundary_pT sink1(
     redeclare package Medium = Medium, p=200000) 
-             annotation (Placement(transformation(extent={{76,-46},{64,-34}},
+             annotation (Placement(transformation(extent={{76,-26},{64,-14}},
           rotation=0)));
   Modelica.Blocks.Sources.Ramp p_set(
     height=0.2e5,
     offset=1.9e5,
     duration=8,
     startTime=1) 
-    annotation (Placement(transformation(extent={{-60,30},{-40,50}})));
+    annotation (Placement(transformation(extent={{-50,40},{-30,60}})));
+  Modelica_Fluid.Pipes.StaticPipe pipe2(
+    redeclare package Medium = Medium,
+    diameter=2.54e-2,
+    length=1000,
+    redeclare model FlowModel = 
+        Modelica_Fluid.Pipes.BaseClasses.FlowModels.NominalLaminarFlow (
+        show_Res=true,
+        dp_nominal=100000,
+        m_flow_nominal=1)) 
+                      annotation (Placement(transformation(extent={{20,-70},{40,
+            -50}},rotation=0)));
+  Modelica_Fluid.Sources.Boundary_pT sink2(
+    redeclare package Medium = Medium, p=200000) 
+             annotation (Placement(transformation(extent={{76,-66},{64,-54}},
+          rotation=0)));
 equation
-  connect(orifice.port_b, sink1.ports[1]) 
+  connect(orifice.port_b, sink.ports[1]) 
                                        annotation (Line(
-      points={{40,0},{64,0}},
+      points={{40,20},{64,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(source.ports[1], pump.port_a) annotation (Line(
-      points={{-64,0},{-40,0}},
+      points={{-64,20},{-40,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pump.port_b, orifice.port_a) 
                                     annotation (Line(
-      points={{-20,0},{20,0}},
+      points={{-20,20},{20,20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(pipe.port_b, sink2.ports[1])  annotation (Line(
-      points={{40,-40},{64,-40}},
+  connect(pipe1.port_b, sink1.ports[1]) annotation (Line(
+      points={{40,-20},{64,-20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(pipe.port_a, pump.port_b)  annotation (Line(
-      points={{20,-40},{0,-40},{0,0},{-20,0}},
+  connect(pipe1.port_a, pump.port_b) annotation (Line(
+      points={{20,-20},{0,-20},{0,20},{-20,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(p_set.y, pump.p_set) annotation (Line(
-      points={{-39,40},{-25,40},{-25,8.2}},
+      points={{-29,50},{-25,50},{-25,28.2}},
       color={0,0,127},
       smooth=Smooth.None));
 
@@ -97,24 +111,35 @@ equation
     experiment(StopTime=10, NumberOfIntervals=10000),
     Documentation(info="<html>
 <p>
-A pump, an orifice and a pipe are parameterized with simple nominal values. 
-Note that the pipe uses the pressureLoss model NominalTurbulentFlow, which does not require the specification of geometry data. 
-Instead it internally parameterizes a QuadraticTurbulentFlow model for given nominal pressure loss and nominal mass flow rate.
+A pump, an orifice and two pipes are parameterized with simple nominal values. 
+Note that pipe1 and pipe2 use the flowModel NominalTurbulentFlow and NominalLaminarFlow, respectively, 
+which do not require the specification of geometry data. 
+Instead distances_nominal are obtained internally for given nominal pressure loss and nominal mass flow rate.
 </p>
 <p>
 The pump controls a pressure ramp from 1.9 bar to 2.1 bar. 
-This causes an appropriate ramp on the mass flow rate for pipe1, which has a boundary pressure of 1 bar. 
-Flow reversal occurs in the pipe, which has a boundary pressure of 2 bar.
+This causes an appropriate ramp on the mass flow rate of the orifice, which has a boundary pressure of 1 bar. 
+Flow reversal occurs in the pipes, which have a boundary pressure of 2 bar.
 The Command plotResults can be used to see the pump speed N, which is controlled ideally to obtain the pressure ramp.
-Moreover the Reynolds number as well as m_flows_turbulent and dps_fg_turbulent are plotted for the pipe.
+Moreover the internally obtained nominal design values that fulfill the nominal operating conditions as well as
+the Reynolds number, m_flows_turbulent, and dps_fg_turbulent are plotted.
 </p>
 <p>
-Next the flowMomentum model of the pipe could be investigated for <tt>distances_nominal</tt>, 
-which is obtained internally to fulfill the nominal pressure loss for given pipe diameter and roughness. 
-Similarily the orifice could be investigated for <tt>zeta_nominal</tt>. 
-Once the geometry has been designed, the NominalTurbulentPipeFlow correlations can easily be replaced with 
+Note that the large value for pipe2.flowModel.distances_nominal[1] is only meaningful under the made assumption of laminar flow,
+ which is hardly possible for a real pipe.
+</p>
+<p>
+Once the geometries have been designed, the NominalTurbulentPipeFlow correlations can easily be replaced with 
 TurbulentPipeFlow or DetailedPipeFlow correlations. Similarily the ControlledPump can be replaced with a PrescribedPump 
 to investigate a real controller or with a Pump with rotational shaft to investigate inertia effects. 
 </p>
 </html>"));
+  connect(pipe2.port_b, sink2.ports[1]) annotation (Line(
+      points={{40,-60},{64,-60}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(pump.port_b, pipe2.port_a) annotation (Line(
+      points={{-20,20},{0,20},{0,-60},{20,-60}},
+      color={0,127,255},
+      smooth=Smooth.None));
 end InverseParameterization;
