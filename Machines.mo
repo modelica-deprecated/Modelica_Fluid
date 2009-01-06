@@ -91,7 +91,7 @@ package Machines
     flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
 
     // energy balances
-    Ws_flow = medium.p * pistonCrossArea * (-der(flange.s));
+    Wb_flow = medium.p * pistonCrossArea * (-der(flange.s));
 
     // definition of ports pressure
     ports_p_static = medium.p;
@@ -452,26 +452,26 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     end if;
 
     // Energy balance
-    Ws_flow = W_total;
-    Qs_flow = heatTransfer.Q_flows[1];
-    Hs_flow = port_a.m_flow*actualStream(port_a.h_outflow) +
+    Wb_flow = W_total;
+    Qb_flow = heatTransfer.Q_flows[1];
+    Hb_flow = port_a.m_flow*actualStream(port_a.h_outflow) +
               port_b.m_flow*actualStream(port_b.h_outflow);
 
     // Ports
     port_a.h_outflow = medium.h;
     port_b.h_outflow = medium.h;
     port_b.p = medium.p
-        "outlet pressure is equal to medium pressure, which includes Ws_flow";
+        "outlet pressure is equal to medium pressure, which includes Wb_flow";
 
     // Mass balance
-    ms_flow = port_a.m_flow + port_b.m_flow;
+    mb_flow = port_a.m_flow + port_b.m_flow;
 
-    msXi_flow = port_a.m_flow*actualStream(port_a.Xi_outflow) +
+    mbXi_flow = port_a.m_flow*actualStream(port_a.Xi_outflow) +
                 port_b.m_flow*actualStream(port_b.Xi_outflow);
     port_a.Xi_outflow = medium.Xi;
     port_b.Xi_outflow = medium.Xi;
 
-    msC_flow = port_a.m_flow*actualStream(port_a.C_outflow) +
+    mbC_flow = port_a.m_flow*actualStream(port_a.C_outflow) +
                port_b.m_flow*actualStream(port_b.C_outflow);
     port_a.C_outflow = C;
     port_b.C_outflow = C;
@@ -559,7 +559,7 @@ provided a two-phase medium model is used.
     by R&uuml;diger Franke:<br>
     <ul>
     <li>Replaced simplified mass and energy balances with rigorous formulation (base class PartialLumpedVolume)</li>
-    <li>Introduced optional HeatTransfer model defining Qs_flow</li>
+    <li>Introduced optional HeatTransfer model defining Qb_flow</li>
     <li>Enabled events when the checkValve is operating to support the opening of a discrete valve before port_a</li>
     </ul></li>
 <li><i>31 Oct 2005</i>

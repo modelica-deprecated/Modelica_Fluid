@@ -47,7 +47,7 @@ equation
     dp_nominal = BaseClasses.lossConstant_D_zeta(diameter, zeta_nominal)/d*m_flow_nominal^2;
   end if;
 
-  Is_flow = 0;
+  Ib_flow = 0;
   F_p = A_mean*(Medium.pressure(state_b) - Medium.pressure(state_a));
   F_fg = A_mean*dp_fg;
 
@@ -493,13 +493,13 @@ of the modeller.
     port_3.C_outflow = C;
 
     // Mass balances
-    ms_flow = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-    msXi_flow = port_1.m_flow*actualStream(port_1.Xi_outflow)
+    mb_flow = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
+    mbXi_flow = port_1.m_flow*actualStream(port_1.Xi_outflow)
                 + port_2.m_flow*actualStream(port_2.Xi_outflow)
                 + port_3.m_flow*actualStream(port_3.Xi_outflow)
       "Component mass balances";
 
-    msC_flow  = port_1.m_flow*actualStream(port_1.C_outflow)
+    mbC_flow  = port_1.m_flow*actualStream(port_1.C_outflow)
               + port_2.m_flow*actualStream(port_2.C_outflow)
               + port_3.m_flow*actualStream(port_3.C_outflow)
       "Trace substance mass balances";
@@ -510,11 +510,11 @@ of the modeller.
     port_3.p = medium.p;
 
     // Energy balance
-    Hs_flow = port_1.m_flow*actualStream(port_1.h_outflow)
+    Hb_flow = port_1.m_flow*actualStream(port_1.h_outflow)
               + port_2.m_flow*actualStream(port_2.h_outflow)
               + port_3.m_flow*actualStream(port_3.h_outflow);
-    Qs_flow = 0;
-    Ws_flow = 0;
+    Qb_flow = 0;
+    Wb_flow = 0;
 
     annotation (Documentation(info="<html>
   This model introduces a mixing volume into a junction. 
@@ -1533,7 +1533,7 @@ Laminar region:
           "mean cross flow area";
 
       equation
-        Is_flow = 0;
+        Ib_flow = 0;
         F_p = A_mean*(Medium.pressure(state_b) - Medium.pressure(state_a));
         F_fg = A_mean*dp_fg;
         if from_dp then

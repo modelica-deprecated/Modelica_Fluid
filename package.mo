@@ -914,7 +914,7 @@ Modelica_Fluid was refactored and finalized for the release:
 <li> Complete implementation of one-dimenstional fluid flow<br>
      The balance equations as documented in 
      <a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>
-     are now completely implemented. The implementations with generic source terms find in:
+     are now completely implemented. The implementations with generic boundary flow and source terms find in:
      <ul>
      <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a>, 
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>:
@@ -923,7 +923,7 @@ Modelica_Fluid was refactored and finalized for the release:
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>: 
          Momentum balance</li>
      </ul> 
-     Specific models combine the balances and define the source terms as appropriate. 
+     Specific models combine the balances and define the boundary flow and source terms as appropriate. 
      For instance 
      <ul>
      <li><a href=\"Modelica:Modelica_Fluid.Vessels.Tank\">Vessels.Tank</a> extends from
@@ -1161,7 +1161,7 @@ library 3.0 (by automatic conversion). Further changes:
 <li> Fix density in static head models with the new RegFun3 functions
      (ticket 7)</li>
 <li> Minor bug in MixingVolume corrected:<br>
-     V_lumped and Ws_flow have been set as modifiers when extending from PartialLumpedVolume,
+     V_lumped and Wb_flow have been set as modifiers when extending from PartialLumpedVolume,
      although they are not declared as input. This is not allowed in Modelica 3.
      Fixed by replacing the modifiers by equations.</li>
 <li> Modelica_Fluid.Sources.FixedBoundary<br>

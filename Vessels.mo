@@ -11,7 +11,7 @@ package Vessels "Devices for storing fluid"
       parameter SI.Volume V "Volume";
 
     equation
-      Ws_flow = 0;
+      Wb_flow = 0;
       ports_p_static = medium.p;
 
       annotation (defaultComponentName="volume",
@@ -75,10 +75,10 @@ equation
 
   // Source termsEnergy balance
   if Medium.singleState or energyDynamics == Types.Dynamics.SteadyState then
-    Ws_flow = 0
+    Wb_flow = 0
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
   else
-    Ws_flow = -p_ambient*der(V);
+    Wb_flow = -p_ambient*der(V);
   end if;
 
   assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
@@ -327,22 +327,22 @@ end for;
   V = crossArea*level + V0 "Volume of fluid";
 
   // Mass balances
-  ms_flow = sum(topPorts.m_flow) + sum(ports.m_flow);
+  mb_flow = sum(topPorts.m_flow) + sum(ports.m_flow);
   for i in 1:Medium.nXi loop
-    msXi_flow[i] = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flow_bottom[:,i]);
+    mbXi_flow[i] = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flow_bottom[:,i]);
   end for;
   for i in 1:Medium.nC loop
-    msC_flow[i]  = sum(mC_flow_top[:,i])  + sum(port_b_mC_flow_bottom[:,i]);
+    mbC_flow[i]  = sum(mC_flow_top[:,i])  + sum(port_b_mC_flow_bottom[:,i]);
   end for;
 
   // Energy balance
-  Hs_flow = sum(H_flow_top) + sum(port_b_H_flow_bottom);
-  Qs_flow = heatTransfer.Q_flows[1];
+  Hb_flow = sum(H_flow_top) + sum(port_b_H_flow_bottom);
+  Qb_flow = heatTransfer.Q_flows[1];
   if Medium.singleState or energyDynamics == Types.Dynamics.SteadyState then
-    Ws_flow = 0
+    Wb_flow = 0
         "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
   else
-    Ws_flow = -p_ambient*der(V);
+    Wb_flow = -p_ambient*der(V);
   end if;
 
   // Properties at top ports
@@ -598,11 +598,11 @@ end Tank;
         parameter SI.Area[nPorts] portArea=Modelica.Constants.pi/4*{portDiameters[i]^2 for i in 1:nPorts};
 
       equation
-        ms_flow = sum(ports.m_flow);
-        msXi_flow = sum_ports_mXi_flow;
-        msC_flow  = sum_ports_mC_flow;
-        Hs_flow = sum(ports_H_flow);
-        Qs_flow = heatTransfer.Q_flows[1];
+        mb_flow = sum(ports.m_flow);
+        mbXi_flow = sum_ports_mXi_flow;
+        mbC_flow  = sum_ports_mC_flow;
+        Hb_flow = sum(ports_H_flow);
+        Qb_flow = heatTransfer.Q_flows[1];
 
         // Only one connection allowed to a port to avoid unwanted ideal mixing
         for i in 1:nPorts loop
@@ -652,15 +652,15 @@ of the modeller. Increase nPorts to add an additional port.
 This base class extends PartialLumpedVolume by adding a vector of fluid ports 
 and defining the respective source terms
 <ul>
-<li><tt>Hs_flow</tt>, enthalpy flow,</li> 
-<li><tt>ms_flow</tt>, mass flow,</li> 
-<li><tt>msXi_flow</tt>, substance mass flow, and</li> 
-<li><tt>msC_flow</tt>, trace substance mass flow.</li> 
+<li><tt>Hb_flow</tt>, enthalpy flow,</li> 
+<li><tt>mb_flow</tt>, mass flow,</li> 
+<li><tt>mbXi_flow</tt>, substance mass flow, and</li> 
+<li><tt>mbC_flow</tt>, trace substance mass flow.</li> 
 </ul>
 An extending class still needs to define:
 <ul>
-<li><tt>Qs_flow</tt>, e.g. convective or latent heat flow rate across segment boundary,</li> 
-<li><tt>Ws_flow</tt>, work term, e.g. p*der(V) if the volume is not constant, and</li>
+<li><tt>Qb_flow</tt>, e.g. convective or latent heat flow rate across segment boundary,</li> 
+<li><tt>Wb_flow</tt>, work term, e.g. p*der(V) if the volume is not constant, and</li>
 <li><tt>V_lumped</tt>, the volume of the segment.</li>
 </ul>
 </html>"),

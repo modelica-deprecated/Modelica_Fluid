@@ -627,16 +627,16 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       Medium.ExtraProperty C[Medium.nC] "Trace substance mixture content";
 
       // variables that need to be defined by an extending class
-      SI.MassFlowRate ms_flow "Mass flows across boundaries";
-      SI.MassFlowRate[Medium.nXi] msXi_flow
+      SI.MassFlowRate mb_flow "Mass flows across boundaries";
+      SI.MassFlowRate[Medium.nXi] mbXi_flow
       "Substance mass flows across boundaries";
-      Medium.ExtraPropertyFlowRate[Medium.nC] msC_flow
+      Medium.ExtraPropertyFlowRate[Medium.nC] mbC_flow
       "Trace substance mass flows across boundaries";
-      SI.EnthalpyFlowRate Hs_flow
+      SI.EnthalpyFlowRate Hb_flow
       "Enthalpy flow across boundaries or energy source/sink";
-      SI.HeatFlowRate Qs_flow
+      SI.HeatFlowRate Qb_flow
       "Heat flow across boundaries or energy source/sink";
-      SI.Power Ws_flow "Work flow across boundaries or source term";
+      SI.Power Wb_flow "Work flow across boundaries or source term";
   protected
       parameter Boolean initialize_p = not Medium.singleState
       "= true to set up initial equations for pressure";
@@ -654,27 +654,27 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
 
       // Energy and mass balances
       if energyDynamics == Dynamics.SteadyState then
-        0 = Hs_flow + Qs_flow + Ws_flow;
+        0 = Hb_flow + Qb_flow + Wb_flow;
       else
-        der(U) = Hs_flow + Qs_flow + Ws_flow;
+        der(U) = Hb_flow + Qb_flow + Wb_flow;
       end if;
 
       if massDynamics == Dynamics.SteadyState then
-        0 = ms_flow;
+        0 = mb_flow;
       else
-        der(m) = ms_flow;
+        der(m) = mb_flow;
       end if;
 
       if substanceDynamics == Dynamics.SteadyState then
-        zeros(Medium.nXi) = msXi_flow;
+        zeros(Medium.nXi) = mbXi_flow;
       else
-        der(mXi) = msXi_flow;
+        der(mXi) = mbXi_flow;
       end if;
 
       if traceDynamics == Dynamics.SteadyState then
-        zeros(Medium.nC)  = msC_flow;
+        zeros(Medium.nC)  = mbC_flow;
       else
-        der(mC)  = msC_flow;
+        der(mC)  = mbC_flow;
       end if;
 
     initial equation
@@ -718,20 +718,20 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       annotation (
         Documentation(info="<html>
 Interface and base class for an ideally mixed fluid volume with the ability to store mass and energy. 
-The following source terms are part of the energy balance and must be specified in an extending class:
+The following boundary flow and source terms are part of the energy balance and must be specified in an extending class:
 <ul>
-<li><tt><b>Qs_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
-<li><tt><b>Ws_flow</b></tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
+<li><tt><b>Qb_flow</b></tt>, e.g. convective or latent heat flow rate across segment boundary, and</li> 
+<li><tt><b>Wb_flow</b></tt>, work term, e.g. p*der(fluidVolume) if the volume is not constant.</li>
 </ul>
 The component volume <tt><b>fluidVolume</b></tt> is an input that needs to be set in the extending class to complete the model.
 <p>
 Further source terms must be defined by an extending class for fluid flow across the segment boundary:
 </p>
 <ul>
-<li><tt><b>Hs_flow</b></tt>, enthalpy flow,</li> 
-<li><tt><b>ms_flow</b></tt>, mass flow,</li> 
-<li><tt><b>msXi_flow</b></tt>, substance mass flow, and</li> 
-<li><tt><b>msC_flow</b></tt>, trace substance mass flow.</li> 
+<li><tt><b>Hb_flow</b></tt>, enthalpy flow,</li> 
+<li><tt><b>mb_flow</b></tt>, mass flow,</li> 
+<li><tt><b>mbXi_flow</b></tt>, substance mass flow, and</li> 
+<li><tt><b>mbC_flow</b></tt>, trace substance mass flow.</li> 
 </ul>
 </html>"),
         Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
@@ -771,7 +771,7 @@ Further source terms must be defined by an extending class for fluid flow across
         SI.Momentum I "Momentums of flow segments";
 
         // Source terms and forces to be defined by an extending model (zero if not used)
-        SI.Force Is_flow "Flow of momentum across boudaries";
+        SI.Force Ib_flow "Flow of momentum across boudaries";
         SI.Force F_p "Pressure force";
         SI.Force F_fg "Friction and gravity force";
 
@@ -781,9 +781,9 @@ Further source terms must be defined by an extending class for fluid flow across
 
         // Momentum balances
         if momentumDynamics == Types.Dynamics.SteadyState then
-          0 = Is_flow - F_p - F_fg;
+          0 = Ib_flow - F_p - F_fg;
         else
-          der(I) = Is_flow - F_p - F_fg;
+          der(I) = Ib_flow - F_p - F_fg;
         end if;
 
       initial equation
@@ -800,11 +800,11 @@ Interface and base class for a momentum balance, defining the mass flow rate <tt
 of a given <tt>Medium</tt> in a flow model. 
 </p>
 <p>
-The following source terms are part of the momentum balance and must be specified in an extending model (to zero if not considered):
+The following boundary flow and force terms are part of the momentum balance and must be specified in an extending model (to zero if not considered):
 <ul>
-<li><tt><b>Is_flow</b></tt>, the flow of momentum across model boundaries,</li> 
+<li><tt><b>Ib_flow</b></tt>, the flow of momentum across model boundaries,</li> 
 <li><tt><b>F_p[m]</b></tt>, pressure force, and</li>
-<li><tt><b>F_fg[m]</b></tt>, friction and gravity force.</li>
+<li><tt><b>F_fg[m]</b></tt>, friction and gravity forces.</li>
 </ul>
 The length of the flow path <tt><b>pathLength</b></tt> is an input that needs to be set in an extending class to complete the model.
 </p>
@@ -901,14 +901,14 @@ partial model PartialDistributedVolume
     each Xi(start=X_start[1:Medium.nXi]));
 
   //Source terms, have to be defined by an extending model (to zero if not used)
-  Medium.MassFlowRate[n] ms_flows "Mass flow rate, source or sink";
-  Medium.MassFlowRate[n,Medium.nXi] msXi_flows
+  Medium.MassFlowRate[n] mb_flows "Mass flow rate, source or sink";
+  Medium.MassFlowRate[n,Medium.nXi] mbXi_flows
       "Independent mass flow rates, source or sink";
-  Medium.ExtraPropertyFlowRate[n,Medium.nC] msC_flows
+  Medium.ExtraPropertyFlowRate[n,Medium.nC] mbC_flows
       "Trace substance mass flow rates, source or sink";
-  SI.EnthalpyFlowRate[n] Hs_flows "Enthalpy flow rate, source or sink";
-  SI.HeatFlowRate[n] Qs_flows "Heat flow rate, source or sink";
-  SI.Power[n] Ws_flows "Mechanical power, p*der(V) etc.";
+  SI.EnthalpyFlowRate[n] Hb_flows "Enthalpy flow rate, source or sink";
+  SI.HeatFlowRate[n] Qb_flows "Heat flow rate, source or sink";
+  SI.Power[n] Wb_flows "Mechanical power, p*der(V) etc.";
 
   protected
   parameter Boolean initialize_p = not Medium.singleState
@@ -930,38 +930,38 @@ equation
   // Energy and mass balances
   if energyDynamics == Dynamics.SteadyState then
     for i in 1:n loop
-      0 = Hs_flows[i] + Ws_flows[i] + Qs_flows[i];
+      0 = Hb_flows[i] + Wb_flows[i] + Qb_flows[i];
     end for;
   else
     for i in 1:n loop
-      der(Us[i]) = Hs_flows[i] + Ws_flows[i] + Qs_flows[i];
+      der(Us[i]) = Hb_flows[i] + Wb_flows[i] + Qb_flows[i];
     end for;
   end if;
   if massDynamics == Dynamics.SteadyState then
     for i in 1:n loop
-      0 = ms_flows[i];
+      0 = mb_flows[i];
     end for;
   else
     for i in 1:n loop
-      der(ms[i]) = ms_flows[i];
+      der(ms[i]) = mb_flows[i];
     end for;
   end if;
   if substanceDynamics == Dynamics.SteadyState then
     for i in 1:n loop
-      zeros(Medium.nXi) = msXi_flows[i, :];
+      zeros(Medium.nXi) = mbXi_flows[i, :];
     end for;
   else
     for i in 1:n loop
-      der(mXis[i, :]) = msXi_flows[i, :];
+      der(mXis[i, :]) = mbXi_flows[i, :];
     end for;
   end if;
   if traceDynamics == Dynamics.SteadyState then
     for i in 1:n loop
-      zeros(Medium.nC)  = msC_flows[i, :];
+      zeros(Medium.nC)  = mbC_flows[i, :];
     end for;
   else
     for i in 1:n loop
-      der(mCs[i, :])  = msC_flows[i, :];
+      der(mCs[i, :])  = mbC_flows[i, :];
     end for;
   end if;
 
@@ -1015,20 +1015,20 @@ initial equation
       Documentation(info="<html>
 Interface and base class for <tt><b>n</b></tt> ideally mixed fluid volumes with the ability to store mass and energy.
 It is inteded to model a one-dimensional spatial discretization of fluid flow according to the finite volume method. 
-The following source terms are part of the energy balance and must be specified in an extending class:
+The following boundary flow and source terms are part of the energy balance and must be specified in an extending class:
 <ul>
-<li><tt><b>Qs_flows[n]</b></tt>, heat flow source term, e.g. conductive heat flows across segment boundaries, and</li> 
-<li><tt><b>Ws_flows[n]</b></tt>, work source term.</li>
+<li><tt><b>Qb_flows[n]</b></tt>, heat flow term, e.g. conductive heat flows across segment boundaries, and</li> 
+<li><tt><b>Wb_flows[n]</b></tt>, work term.</li>
 </ul>
 The component volumes <tt><b>fluidVolumes[n]</b></tt> are an input that needs to be set in an extending class to complete the model.
 <p>
 Further source terms must be defined by an extending class for fluid flow across the segment boundary:
 </p>
 <ul>
-<li><tt><b>Hs_flows[n]</b></tt>, enthalpy flow,</li> 
-<li><tt><b>ms_flows[n]</b></tt>, mass flow,</li> 
-<li><tt><b>msXi_flows[n]</b></tt>, substance mass flow, and</li> 
-<li><tt><b>msC_flows[n]</b></tt>, trace substance mass flow.</li> 
+<li><tt><b>Hb_flows[n]</b></tt>, enthalpy flow,</li> 
+<li><tt><b>mb_flows[n]</b></tt>, mass flow,</li> 
+<li><tt><b>mbXi_flows[n]</b></tt>, substance mass flow, and</li> 
+<li><tt><b>mbC_flows[n]</b></tt>, trace substance mass flow.</li> 
 </ul>
 </html>"));
 end PartialDistributedVolume;
@@ -1069,7 +1069,7 @@ end PartialDistributedVolume;
         SI.Momentum[m] Is "Momentums of flow segments";
 
         // Source terms and forces to be defined by an extending model (zero if not used)
-        SI.Force[m] Is_flows "Flow of momentum across boudaries";
+        SI.Force[m] Ib_flows "Flow of momentum across boudaries";
         SI.Force[m] Fs_p "Pressure forces";
         SI.Force[m] Fs_fg "Friction and gravity forces";
 
@@ -1079,9 +1079,9 @@ end PartialDistributedVolume;
 
         // Momentum balances
         if momentumDynamics == Types.Dynamics.SteadyState then
-          zeros(m) = Is_flows - Fs_p - Fs_fg;
+          zeros(m) = Ib_flows - Fs_p - Fs_fg;
         else
-          der(Is) = Is_flows - Fs_p - Fs_fg;
+          der(Is) = Ib_flows - Fs_p - Fs_fg;
         end if;
 
       initial equation
@@ -1098,9 +1098,9 @@ Interface and base class for <tt><b>m</b></tt> momentum balances, defining the m
 of a given <tt>Medium</tt> in <tt><b>m</b></tt> flow segments. 
 </p>
 <p>
-The following source terms are part of the momentum balances and must be specified in an extending model (to zero if not considered):
+The following boundary flow and force terms are part of the momentum balances and must be specified in an extending model (to zero if not considered):
 <ul>
-<li><tt><b>Is_flows[m]</b></tt>, the flow of momentum across segment boundaries,</li> 
+<li><tt><b>Ib_flows[m]</b></tt>, the flows of momentum across segment boundaries,</li> 
 <li><tt><b>Fs_p[m]</b></tt>, pressure forces, and</li>
 <li><tt><b>Fs_fg[m]</b></tt>, friction and gravity forces.</li>
 </ul>
