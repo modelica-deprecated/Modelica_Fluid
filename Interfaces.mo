@@ -566,7 +566,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
           annotation (choicesAllMatching = true);
 
-      // Inputs
+      // Inputs provided to the volume model
       input SI.Volume fluidVolume "Volume";
 
       // Assumptions
@@ -739,7 +739,80 @@ Further source terms must be defined by an extending class for fluid flow across
                 graphics));
     end PartialLumpedVolume;
 
-partial model PartialFiniteVolumes "Base class for finite volume models"
+      partial model PartialLumpedFlow
+    "Base class for a lumped momentum balance"
+
+        outer Modelica_Fluid.System system "System properties";
+
+        replaceable package Medium = 
+          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+            annotation(Dialog(tab="Internal Interface",enable=false));
+
+        // Inputs provided to the flow model
+        input SI.Length distance "Distance along flow path";
+
+        // Variables defined by the flow model
+        Medium.MassFlowRate m_flow(
+           start = m_flow_start,
+           stateSelect = if momentumDynamics == Types.Dynamics.SteadyState then StateSelect.default else 
+                                     StateSelect.prefer)
+      "mass flow rates between states";
+
+        // Parameters
+        parameter Modelica_Fluid.Types.Dynamics momentumDynamics=system.momentumDynamics
+      "Formulation of momentum balance" 
+          annotation(Dialog(tab="Internal Interface",enable=false,group = "Assumptions"), Evaluate=true);
+
+        parameter Medium.MassFlowRate m_flow_start=system.m_flow_start
+      "Start value of mass flow rates" 
+          annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
+
+        // Total quantities
+        SI.Momentum I "Momentums of flow segments";
+
+        // Source terms and forces to be defined by an extending model (zero if not used)
+        SI.Force Is_flow "Flow of momentum across boudaries";
+        SI.Force F_p "Pressure force";
+        SI.Force F_fg "Friction and gravity force";
+
+      equation
+        // Total quantities
+        I = m_flow*distance;
+
+        // Momentum balances
+        if momentumDynamics == Types.Dynamics.SteadyState then
+          0 = Is_flow - F_p - F_fg;
+        else
+          der(I) = Is_flow - F_p - F_fg;
+        end if;
+
+      initial equation
+        if momentumDynamics == Types.Dynamics.FixedInitial then
+          m_flow = m_flow_start;
+        elseif momentumDynamics == Types.Dynamics.SteadyStateInitial then
+          der(m_flow) = 0;
+        end if;
+
+        annotation (
+           Documentation(info="<html>
+<p>
+Interface and base class for a momentum balance, defining the mass flow rate <tt><b>m_flow</b></tt>
+of a given <tt>Medium</tt> in a flow model. 
+</p>
+<p>
+The following source terms are part of the momentum balance and must be specified in an extending model (to zero if not considered):
+<ul>
+<li><tt><b>Is_flow</b></tt>, the flow of momentum across model boundaries,</li> 
+<li><tt><b>F_p[m]</b></tt>, pressure force, and</li>
+<li><tt><b>F_fg[m]</b></tt>, friction and gravity force.</li>
+</ul>
+The length of the flow model <tt><b>distance</b></tt> is an input that needs to be set in an extending class to complete the model.
+</p>
+</html>"));
+      end PartialLumpedFlow;
+
+partial model PartialDistributedVolume
+    "Base class for distributed volume models"
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.Dynamics;
   outer Modelica_Fluid.System system "System properties";
@@ -751,7 +824,7 @@ partial model PartialFiniteVolumes "Base class for finite volume models"
   // Discretization
   parameter Integer n=2 "Number of discrete volumes";
 
-  // Inputs
+  // Inputs provided to the volume model
   input SI.Volume[n] fluidVolumes
       "Discretized volume, determine in inheriting class";
 
@@ -958,9 +1031,10 @@ Further source terms must be defined by an extending class for fluid flow across
 <li><tt><b>msC_flows[n]</b></tt>, trace substance mass flow.</li> 
 </ul>
 </html>"));
-end PartialFiniteVolumes;
+end PartialDistributedVolume;
 
-      partial model PartialFiniteFlows "Base class for momentum balances"
+      partial model PartialDistributedFlow
+    "Base class for a distributed momentum balance"
 
         outer Modelica_Fluid.System system "System properties";
 
@@ -972,11 +1046,11 @@ end PartialFiniteVolumes;
         parameter Integer m=1 "Number of flow segments" 
           annotation(Dialog(tab="Internal Interface",enable=false));
 
-        // Inputs provided to momentum model
+        // Inputs provided to the flow model
         input SI.Length[m] distances "Distance along flow path";
 
-        // Outputs defined by momentum model
-        output Medium.MassFlowRate[m] m_flows(
+        // Variables defined by momentum model
+        Medium.MassFlowRate[m] m_flows(
            each start = m_flow_start,
            each stateSelect = if momentumDynamics == Types.Dynamics.SteadyState then StateSelect.default else 
                                      StateSelect.prefer)
@@ -1033,5 +1107,5 @@ The following source terms are part of the momentum balances and must be specifi
 The lengths of the flow segments <tt><b>distances[m]</b></tt> are an input that needs to be set in an extending class to complete the model.
 </p>
 </html>"));
-      end PartialFiniteFlows;
+      end PartialDistributedFlow;
 end Interfaces;
