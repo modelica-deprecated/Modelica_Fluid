@@ -1204,7 +1204,7 @@ This also allows for taking into account friction losses with respect to the act
               annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
 
             // Advanced
-            parameter Boolean upwindScheme = true
+            parameter Boolean upstreamScheme = true
           "= false to average upstream and downstream properties across flow segments"
                annotation(Dialog(group="Advanced"), Evaluate=true);
 
@@ -1258,7 +1258,7 @@ This also allows for taking into account friction losses with respect to the act
             if not allowFlowReversal then
               ds_act = ds[1:n-1];
               mus_act = mus[1:n-1];
-            elseif not upwindScheme then
+            elseif not upstreamScheme then
               ds_act = 0.5*(ds[1:n-1] + ds[2:n]);
               mus_act = 0.5*(mus[1:n-1] + mus[2:n]);
             else
@@ -1343,7 +1343,7 @@ e.g. with numerical smoothing or by raising events as appropriate.
 
       equation
         // linear pressure loss
-        if  not allowFlowReversal or use_d_nominal or not upwindScheme then
+        if  not allowFlowReversal or use_d_nominal or not upstreamScheme then
           dps_fg = {g*dheights[i]*ds_act[i] for i in 1:n-1} + dp_nominal/m_flow_nominal*m_flows*nParallel;
         else
           dps_fg = {g*dheights[i]*(if m_flows[i] > 0 then ds[i] else ds[i+1]) for i in 1:n-1} + dp_nominal/m_flow_nominal*m_flows*nParallel;
@@ -1398,7 +1398,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
           "= true if the pressure loss does not depend on fluid states" 
                annotation(Evaluate=true);
             final parameter Boolean continuousFlowReversal=
-               (not upwindScheme)
+               (not upstreamScheme)
                or constantPressureLossCoefficient
                or not allowFlowReversal
           "= true if the pressure loss is continuous around zero flow" 
@@ -1537,7 +1537,7 @@ simulation and/or might give a more robust simulation.
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent,
           use_mu_nominal=not show_Res,
           pathLengths_internal=pathLengths_nominal,
-          upwindScheme=false);
+          upstreamScheme=false);
 
         import Modelica.Constants.pi;
 
@@ -1575,7 +1575,7 @@ obtaines appropriate <tt>pathLengths_nominal</tt> values
 for an inverse parameterization of the 
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.FlowModel.TurbulentFlow\">
           TurbulentFlow</a>
-model. Per default the upstream and downstream densities are averaged with the setting <tt>upwindScheme = false</tt>,
+model. Per default the upstream and downstream densities are averaged with the setting <tt>upstreamScheme = false</tt>,
 in order to avoid discontinuous <tt>pathLengths_nominal</tt> values in the case of flow reversal.
 </p>
 <p>
