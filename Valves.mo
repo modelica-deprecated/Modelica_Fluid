@@ -188,8 +188,8 @@ explained in detail in the
       m_flow = valveCharacteristic(opening)*Av*Y*
         smooth(0, Utilities.regRoot(p*xs, dp_small)*(if xs>=0 then sqrt(Medium.density(state_a)) else sqrt(Medium.density(state_b))));
   /*
-    m_flow = valveCharacteristic(modifiedOpening)*Av*Y*
-                  Modelica_Fluid.Utilities.regRoot2(p*xs, delta*dp_nominal, Medium.density(state_a), Medium.density(state_b));
+    m_flow = valveCharacteristic(opening)*Av*Y*
+                  Modelica_Fluid.Utilities.regRoot2(p*xs, dp_small, Medium.density(state_a), Medium.density(state_b));
 */
     end if;
 
