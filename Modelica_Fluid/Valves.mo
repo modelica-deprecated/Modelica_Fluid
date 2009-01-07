@@ -241,9 +241,10 @@ explained in detail in the
           extent={{-20,-20},{20,20}},
           rotation=270,
           origin={0,80})));
+    parameter Real opening_nominal=1 "Nominal opening";
 
   equation
-    m_flow = k*opening*dp;
+    m_flow = k*opening*opening_nominal*dp;
 
   annotation (
     Icon(coordinateSystem(
@@ -295,10 +296,11 @@ explained in detail in the
           origin={0,80},
           extent={{-20,-20},{20,20}},
           rotation=270)));
+    parameter Real opening_nominal=1 "Nominal opening";
     parameter Real opening_min(min=0)=0
       "Remaining opening if closed, causing small leakage flow";
   equation
-    m_flow = if open then k*dp else opening_min*k*dp;
+    m_flow = if open then opening_nominal*k*dp else opening_min*k*dp;
 
   annotation (
     Icon(coordinateSystem(
