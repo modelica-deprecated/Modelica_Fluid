@@ -10,7 +10,8 @@ package Fittings
 model SimpleGenericOrifice
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
 
-  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
+    m_flow_small = 0.01*m_flow_nominal);
 
   extends Modelica_Fluid.Interfaces.PartialLumpedFlow(
     final pathLength = 0,
