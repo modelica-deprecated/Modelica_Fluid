@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -366,8 +367,8 @@ one point as shown in the next figure:
 </p>
 <p>
 In such a case the balance equations define <b>ideal mixing</b>,
-i.e., the connection point has the mixing temperature if the
-fluids from the three components would be ideally mixed in 
+i.e., the upstream discretization scheme of each component uses
+values that result from ideal mixing in 
 an infinitely small time period. If more realistic modelling
 is desired that takes into account mixing losses, an explicit
 model has to be used in the connection point.
@@ -824,8 +825,8 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
  
 <p>
 The control valves in 
-<a href=\"Modelica://Modelica_Fluid.Pumps\">Modelica_Fluid.ControlValves</a>
-have parameters <b>Kv</b> and <b>Cv</b>. They are defined
+<a href=\"Modelica://Modelica_Fluid.Valves\">Modelica_Fluid.Valves</a>
+have the parameters <b>Kv</b> and <b>Cv</b>. They are defined
 as unit-less variables, but in the description text a unit
 is given. The reason for this definition is the following:
 </p>
@@ -894,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-06</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-07</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -936,6 +937,7 @@ Modelica_Fluid was refactored and finalized for the release:
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>, 
          besides <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialTwoPort\">Interfaces.PartialTwoPort</a>.</li>
      </ul>
+     All non-trivial mass and energy balances of Vessels, Pipes, Machines and Fittings have been replaced with PartialLumpedVolume.<br>
      See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDistributedPipes\">Examples.BranchingDistributedPipes</a>
      for an example utilizing the complete balance equations.
  
@@ -948,27 +950,6 @@ Modelica_Fluid was refactored and finalized for the release:
      High-index DAEs need to be treated instead in connection sets. 
      Alternatively a Fitting like SuddenExpansion can be introduced to account for different cross flow areas of connected flow models.</li>
  
-<li> Replaceable HeatTransfer models<br>
-     The Vessels and the Machines now have replaceable HeatTransfer models,
-     besides the Pipes. All HeatTransfer models are optional.
-     The heat transfer models are parameterized with the Medium and the ThermodynamicState 
-     of involved flow segments.<br>
-     See <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialHeatTransfer\">Interfaces.PartialHeatTransfer</a>.
- 
-<li> Extension of pumps for better consideration of zero flow and heat transfer with environment<br>
-     The simplified mass and energy balances have been replaced with a rigorous formulation. 
-     Moreover an optional heat transfer model can be configured for heat exchanged with the environment or the housing.<br>
-     See <a href=\"Modelica:Modelica_Fluid.Machines.BaseClasses.PartialPump\">Machines.BaseClasses.PartialPump</a></li>
- 
-<li> Inverse parameterization of flow models with nominal operational conditions<br> 
-     Flow models have been added or extended to support the parameterization with nominal values
-     (Machines.ControlledPump, Orifices.SimpleGenericOrifice, Pipes.BaseClasses.FlowModels.NominalTurbulentFlow).
-     They are intended for early phases of system modeling, if geometries and flow characteristics
-     are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
-     they can easily be replaced with more detailed models  
-     as more information shall be taken into account later on.<br>
-     See <a href=\"Modelica:Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
- 
 <li> System (former Ambient)<br> 
      The use of the global System object has been extended towards common default values for
      modeling assumptions and initialization. In particular steady-state initialization and 
@@ -977,18 +958,18 @@ Modelica_Fluid was refactored and finalized for the release:
      The former Types.Init has become obsolete.
      <br>See <a href=\"Modelica:Modelica_Fluid.Examples.HeatingSystem\">Examples.HeatingSystem</a></li>.
  
+<li> Extension of pumps for better consideration of zero flow and heat transfer with environment<br>
+     The simplified mass and energy balances have been replaced with a rigorous formulation. 
+     Moreover an optional heat transfer model can be configured for heat exchanged with the environment or the housing.<br>
+     See <a href=\"Modelica:Modelica_Fluid.Machines.BaseClasses.PartialPump\">Machines.BaseClasses.PartialPump</a></li>
+ 
+<li> Refinement of valves for flow reversal<br>
+     All valves now use upstream discretization for reverting flow conditions.</li>
+
 <li> Finalization of trace substrances<br>
      Modelica_Fluid now provides a sound implementation for trace substances, 
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
      <br>See <a href=\"Modelica:Modelica_Fluid.Examples.TraceSubstances.RoomCO2WithControls\">Examples.TraceSubstances.RoomCO2WithControls</a></li>.
- 
-<li> Common base class implementing lumped mass and energy balances<br>
-     All non-trivial lumped mass and energy balances are now defined in the common base class
-     <ul>
-     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedVolume\">
-          Interfaces.PartialLumpedVolume</a></li>
-     </ul>
-     This balances are used across the library for Vessels, (lumped) Pipes, Machines and Fittings.
  
 <li> Vectorized ports for volumes<br>
      The ports of models that typically have large volumes, like Vessels and Sources, 
@@ -999,6 +980,22 @@ Modelica_Fluid was refactored and finalized for the release:
      <a href=\"Modelica:Modelica_Fluid.Fittings.MultiPort\">Fittings.MultiPort</a> 
      has been introduced. It can be attached to components like pipes, 
      which don't have vectorized ports on their own.</li>
+ 
+<li> Inverse parameterization of flow models with nominal operational conditions<br> 
+     Flow models have been added or extended to support the parameterization with nominal values
+     (Machines.ControlledPump, Orifices.SimpleGenericOrifice, Pipes.BaseClasses.FlowModels.NominalTurbulentFlow).
+     They are intended for early phases of system modeling, if geometries and flow characteristics
+     are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
+     they can easily be replaced with more detailed models  
+     as more information shall be taken into account later on.<br>
+     See <a href=\"Modelica:Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
+ 
+<li> Replaceable HeatTransfer models<br>
+     The Vessels and the Machines now have replaceable HeatTransfer models,
+     besides the Pipes. All HeatTransfer models are optional.
+     The heat transfer models are parameterized with the Medium and the ThermodynamicState 
+     of involved flow segments.<br>
+     See <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialHeatTransfer\">Interfaces.PartialHeatTransfer</a>.
  
 <li> All examples are working now (using Dymola 7.1).<br>
      The number of examples has been extended with the former critical test cases
@@ -2126,6 +2123,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0 Release Candidate 1",
