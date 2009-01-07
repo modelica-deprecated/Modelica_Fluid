@@ -69,8 +69,7 @@ model IncompressibleFluidNetwork
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
     d_nominal=1000,
-    dp_nominal=30000,
-    minOpening=0.01) 
+    dp_nominal=30000) 
                 annotation (Placement(transformation(extent={{-46,40},{-26,60}},
           rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible valve2(
@@ -78,8 +77,7 @@ model IncompressibleFluidNetwork
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
     d_nominal=1000,
-    dp_nominal=30000,
-    minOpening=0.01) 
+    dp_nominal=30000) 
                 annotation (Placement(transformation(extent={{-46,-20},{-26,
             -40}}, rotation=0)));
   Pipe pipe7(
@@ -96,8 +94,7 @@ model IncompressibleFluidNetwork
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
     d_nominal=1000,
-    dp_nominal=30000,
-    minOpening=0.01) 
+    dp_nominal=30000) 
                 annotation (Placement(transformation(extent={{60,0},{80,20}},
           rotation=0)));
   Sources.Boundary_pT sink(

@@ -163,22 +163,22 @@ The initial equations are consistent however and a tool shall reduce them approp
             extent={{-100,-20},{100,-40}},
             lineColor={0,0,255},
             textString=
-                "Problem: pipe.medium[1].p is equal to source.p and  has consistent initial value  of 100 bar;"),
+                "Problem: pipe.medium[1].p is equal to source.p and  has a consistent initial value  of 100 bar;"),
           Text(
             extent={{-76,-36},{76,-54}},
             lineColor={0,0,255},
             textString=
                 "A translator should remove consistently overdetermined initial equations."),
           Text(
-            extent={{-100,-60},{100,-80}},
+            extent={{-100,-64},{90,-84}},
             lineColor={0,0,255},
             textString=
-                "Work-around 1: change system.energyDynamics from FixedInitial to DynamicFreeInitial"),
+                "Work-around 2: change system.energyDynamics from FixedInitial to DynamicFreeInitial"),
           Text(
-            extent={{-80,-78},{60,-98}},
+            extent={{-100,-54},{42,-74}},
             lineColor={0,0,255},
             textString=
-                "Work-around 2: change pipe.modelStructure from av_vb to a_vb")}),
+                "Work-around 1: change pipe.modelStructure from av_vb to a_vb")}),
       experiment(StopTime=4),
       experimentSetupOutput);
 

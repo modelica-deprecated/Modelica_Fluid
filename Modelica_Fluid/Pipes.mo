@@ -214,6 +214,11 @@ pipe wall/environment).
 
     import Modelica_Fluid.Types.ModelStructure;
 
+    // extending PartialStraightPipe
+    extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe(
+      final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.av_vb),
+      final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.av_vb));
+
     // extending PartialTwoPortFlow
     extends BaseClasses.PartialTwoPortFlow(
       final lengths=if n == 1 then 
@@ -229,11 +234,6 @@ pipe wall/environment).
       final dimensions=fill(4*crossArea/perimeter, n),
       final roughnesses=fill(roughness, n),
       final dheights=height_ab*dxs);
-
-    // extending PartialStraightPipe
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe(
-      final port_a_exposesState = (modelStructure == ModelStructure.av_b) or (modelStructure == ModelStructure.av_vb),
-      final port_b_exposesState = (modelStructure == ModelStructure.a_vb) or (modelStructure == ModelStructure.av_vb));
 
     // Wall heat transfer
     parameter Boolean use_HeatTransfer = false
@@ -317,11 +317,18 @@ The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any mod
  
 </html>"),
   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={Ellipse(
+          grid={1,1}), graphics={
+          Rectangle(
+            extent={{-100,40},{100,-40}},
+            lineColor={0,0,0},
+            fillPattern=FillPattern.HorizontalCylinder,
+            fillColor={0,127,255}),
+          Ellipse(
             extent={{-72,10},{-52,-10}},
             lineColor={0,0,0},
             fillColor={0,0,0},
-            fillPattern=FillPattern.Solid), Ellipse(
+            fillPattern=FillPattern.Solid),
+          Ellipse(
             extent={{50,10},{70,-10}},
             lineColor={0,0,0},
             fillColor={0,0,0},

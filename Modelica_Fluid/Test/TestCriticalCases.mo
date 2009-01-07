@@ -176,10 +176,10 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       use_T_start=true,
       length=10,
       diameter=2.54e-2,
-      p_b_start=200000,
       redeclare model FlowModel = 
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
       p_a_start=200000,
+      p_b_start=100000,
       T_start=300)      annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
 
@@ -188,10 +188,10 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       use_T_start=true,
       length=10,
       diameter=2.54e-2,
-      p_b_start=200000,
       redeclare model FlowModel = 
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
       p_a_start=200000,
+      p_b_start=100000,
       T_start=300)      annotation (Placement(transformation(extent={{-40,-50},
               {-20,-30}}, rotation=0)));
 
@@ -571,12 +571,11 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       m_flow_nominal=1,
       d_nominal=1000,
       redeclare package Medium = Medium,
-      dp_nominal=400000,
-      minOpening=0.01)              annotation (Placement(transformation(
+      dp_nominal=400000)              annotation (Placement(transformation(
             extent={{52,-10},{72,10}}, rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
@@ -737,8 +736,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           1,0; 100,0]) annotation (Placement(transformation(extent={{-20,70},{0,
               90}}, rotation=0)));
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1;
-          2.01,1e-6; 100,0]) 
-                       annotation (Placement(transformation(extent={{-20,-10},{
+          2,0; 100,0]) annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
@@ -777,11 +775,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowModel = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
-      p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
+      p_b_start=4.95e5,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow) 
+                        annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
     Modelica_Fluid.Valves.ValveIncompressible valveIncompressible(
@@ -789,8 +788,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
       d_nominal=5,
-      dp_nominal=400000,
-      minOpening=0.001) 
+      dp_nominal=400000) 
                   annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
@@ -798,8 +796,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
       d_nominal=5,
-      dp_nominal=400000,
-      minOpening=0.001) 
+      dp_nominal=400000) 
                   annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
@@ -820,30 +817,32 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowModel = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5) annotation (Placement(transformation(extent={{-34,36},{
+      p_b_start=4.90e5,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow) 
+                        annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowModel = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5) annotation (Placement(transformation(extent={{-30,-50},
+      p_b_start=4.90e5,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow) 
+                        annotation (Placement(transformation(extent={{-30,-50},
               {-10,-30}}, rotation=0)));
 
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
           1,0; 100,0]) annotation (Placement(transformation(extent={{-20,70},{0,
               90}}, rotation=0)));
     Modelica.Blocks.Sources.TimeTable valveOpening2(offset=0, table=[0,1; 2,1;
-          2.01,1e-6; 100,0]) 
+          2,0.001; 100,0]) 
                        annotation (Placement(transformation(extent={{-20,-10},{
               0,10}}, rotation=0)));
     inner Modelica_Fluid.System system 
@@ -871,7 +870,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valveIncompressible1.opening) annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (Line(points={{-58,6},
-            {-53.5,6},{-53.5,6},{-48,6}}, color={0,127,255}));
+            {-53,6},{-53,6},{-48,6}},     color={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (Line(points={{-34,
             46},{-38,46},{-38,16}}, color={0,127,255}));
     connect(junctionIdeal.port_1, pipe3.port_a) annotation (Line(points={{-38,
@@ -1490,11 +1489,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
-      redeclare model FlowModel = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
-      p_b_start=4.95e5) annotation (Placement(transformation(extent={{-78,-4},{
+      p_b_start=4.95e5,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow) 
+                        annotation (Placement(transformation(extent={{-78,-4},{
               -58,16}}, rotation=0)));
 
     Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
@@ -1502,14 +1502,13 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
       d_nominal=5,
-      minOpening=0.001,
       dp(start=400000),
       dp_nominal=400000) 
                   annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
@@ -1525,12 +1524,13 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowModel = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
       p_a_start=4.95e5,
-      p_b_start=4.90e5) annotation (Placement(transformation(extent={{-30,-50},
+      p_b_start=4.90e5,
+      redeclare model FlowModel = 
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow) 
+                        annotation (Placement(transformation(extent={{-30,-50},
               {-10,-30}}, rotation=0)));
 
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,1; 1,1;
@@ -1612,31 +1612,6 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   model DistributedPipeInitialization
     "Steady-state initialization of a distributed pipe"
 
-    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,
-            extent={{-100,-100},{100,100}}), graphics={
-          Text(
-            extent={{-57,-52},{29,-60}},
-            lineColor={0,0,255},
-            textString="or b) Change to ValveIncompressible and it works!?"),
-          Text(
-            extent={{-54,-34},{48,-54}},
-            lineColor={0,0,255},
-            textString=
-                "a) Select WallFriction = \"No pipe wall friction\" and it works!?"),
-          Text(
-            extent={{-90,-20},{36,-38}},
-            lineColor={0,0,255},
-            textString=
-                "How to get correct result from steady-state initialization:"),
-          Text(
-            extent={{-57,-64},{92,-72}},
-            lineColor={0,0,255},
-            textString=
-                "or c) check the region and increase source.h and pipe.h_start into the superheated region!")}),
-      experiment(StopTime=4),
-      experimentSetupOutput,
-      uses(Modelica_Fluid(version="1.0 Streams Beta 3"), Modelica(version="3.0")));
-
     Modelica_Fluid.Sources.FixedBoundary source(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       use_T=false,
@@ -1698,6 +1673,20 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
         points={{25,40},{10,40},{10,8}},
         color={0,0,127},
         smooth=Smooth.None));
+
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true,
+            extent={{-100,-100},{100,100}}), graphics),
+      experiment(StopTime=4),
+      experimentSetupOutput,
+      Documentation(info="<html>
+The simulation shall start in steady-state (see system.energyDynamics on the Assumptions tab). 
+This requires the solution of an equation system with complex non-linear expressions for the 
+pipe wall friction and compressible valve characteristics. A ValveCompressible defined with Utilities.regRoot2 for the treatment of flow reversal
+(cf. Modelica_Fluid Stream beta3) leads to wrong initial values. It works with Utilities.regRoot and a smooth(0, ...) expression for flow reversal.
+<p>
+The steady-state initial values are observed by an assertion.
+</p>
+</html>"));
   end DistributedPipeInitialization;
 
   model LumpedPipeInitialization "Steady-state initialization of a lumped pipe"

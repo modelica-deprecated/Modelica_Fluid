@@ -106,9 +106,8 @@ This example is based on
           "plot level and ports.m_flow"));
     Modelica_Fluid.Valves.ValveDiscrete valve1(                     redeclare
         package Medium = Medium,
-      Kv_small_rel=0,
-      dp_nominal=100000,
-      m_flow_nominal=40) 
+      m_flow_nominal=40,
+      dp_nominal=100000) 
       annotation (Placement(transformation(
           origin={20,50},
           extent={{-10,-10},{10,10}},
@@ -127,7 +126,6 @@ This example is based on
             rotation=0)));
     Modelica_Fluid.Valves.ValveDiscrete valve2(        redeclare package Medium
         = Medium,
-      Kv_small_rel=0,
       dp_nominal(displayUnit="Pa") = 1,
       m_flow_nominal=100) 
       annotation (Placement(transformation(
@@ -136,7 +134,6 @@ This example is based on
           rotation=90)));
     Modelica_Fluid.Valves.ValveDiscrete valve3(        redeclare package Medium
         = Medium,
-      Kv_small_rel=0,
       dp_nominal(displayUnit="Pa") = 1,
       m_flow_nominal=10) 
       annotation (Placement(transformation(
