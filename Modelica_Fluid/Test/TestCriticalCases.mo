@@ -446,12 +446,12 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     Modelica_Fluid.Pipes.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowModel = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
-      p_a_start=5.0e5,
-      p_b_start=5.0e5)  annotation (Placement(transformation(extent={{-80,-4},{
+      redeclare model FlowModel =
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
+      p_a_start=500000,
+      p_b_start=500000) annotation (Placement(transformation(extent={{-80,-4},{
               -60,16}}, rotation=0)));
 
     Modelica_Fluid.Valves.ValveIncompressible valveIncompressible(
@@ -469,8 +469,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       d_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
@@ -486,23 +486,23 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     Modelica_Fluid.Pipes.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowModel = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
-      p_a_start=5.0e5,
-      p_b_start=5.0e5)  annotation (Placement(transformation(extent={{-40,36},{
+      redeclare model FlowModel =
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
+      p_a_start=500000,
+      p_b_start=500000) annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
 
     Modelica_Fluid.Pipes.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
-      redeclare model FlowModel = 
-        Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow,
       length=10,
       diameter=2.54e-2,
-      p_a_start=5.0e5,
-      p_b_start=5.0e5)  annotation (Placement(transformation(extent={{-40,-50},
+      redeclare model FlowModel =
+          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
+      p_a_start=500000,
+      p_b_start=500000) annotation (Placement(transformation(extent={{-40,-50},
               {-20,-30}}, rotation=0)));
 
     Modelica.Blocks.Sources.TimeTable valveOpening1(offset=0, table=[0,0; 1,0;
@@ -543,8 +543,8 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     connect(pipe1.port_b, splitter.port_3) annotation (Line(points={{-60,6},{
             -55,6},{-55,6},{-50,6}},
                      color={0,127,255}));
-    connect(pipe2.port_a, splitter.port_2) annotation (Line(points={{-40,46},
-            {-43,46},{-43,12}},color={0,127,255}));
+    connect(pipe2.port_a, splitter.port_2) annotation (Line(points={{-40,46},{
+            -43,46},{-43,12}}, color={0,127,255}));
     connect(splitter.port_1, pipe3.port_a) annotation (Line(points={{-43,0},{
             -43,-40.3},{-40,-40.3},{-40,-40}}, color={0,127,255}));
   end BranchingPipes4;

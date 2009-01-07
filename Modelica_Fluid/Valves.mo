@@ -241,10 +241,9 @@ explained in detail in the
           extent={{-20,-20},{20,20}},
           rotation=270,
           origin={0,80})));
-    parameter Real opening_nominal=1 "Nominal opening";
 
   equation
-    m_flow = k*opening*opening_nominal*dp;
+    m_flow = opening*k*dp;
 
   annotation (
     Icon(coordinateSystem(
@@ -286,21 +285,20 @@ explained in detail in the
 
   model ValveDiscrete "Valve for water/steam flows with linear pressure drop"
     extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
-    parameter SI.Pressure dp_nominal "Nominal pressure drop at full opening";
+    parameter SI.Pressure dp_nominal "Nominal pressure drop at full opening=1";
     parameter Medium.MassFlowRate m_flow_nominal
-      "Nominal mass flowrate at full opening";
+      "Nominal mass flowrate at full opening=1";
     final parameter Types.HydraulicConductance k = m_flow_nominal/dp_nominal
-      "Hydraulic conductance at full opening";
+      "Hydraulic conductance at full opening=1";
     Modelica.Blocks.Interfaces.BooleanInput open 
     annotation (Placement(transformation(
           origin={0,80},
           extent={{-20,-20},{20,20}},
           rotation=270)));
-    parameter Real opening_nominal=1 "Nominal opening";
     parameter Real opening_min(min=0)=0
       "Remaining opening if closed, causing small leakage flow";
   equation
-    m_flow = if open then opening_nominal*k*dp else opening_min*k*dp;
+    m_flow = if open then 1*k*dp else opening_min*k*dp;
 
   annotation (
     Icon(coordinateSystem(
@@ -339,7 +337,6 @@ it is open.
     by Katja Poschlad (based on ValveLinear).</li>
 </ul>
 </html>"));
-
   end ValveDiscrete;
 
   package BaseClasses
@@ -385,7 +382,7 @@ it is open.
         "Inherent flow characteristic" 
         annotation(choicesAllMatching=true);
 
-      parameter SI.Pressure dp_small=0.01*dp_nominal
+      parameter SI.Pressure dp_small=1e-3*dp_nominal
         "Regularisation of zero flow"                 annotation(Dialog(tab="Advanced"));
 
       constant SI.Area Kv2Av = 27.7e-6 "Conversion factor";
