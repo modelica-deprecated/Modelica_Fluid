@@ -965,7 +965,7 @@ Modelica_Fluid was refactored and finalized for the release:
  
 <li> Refinement of valves for flow reversal<br>
      All valves now use upstream discretization for reverting flow conditions.</li>
-
+ 
 <li> Finalization of trace substrances<br>
      Modelica_Fluid now provides a sound implementation for trace substances, 
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
@@ -1013,9 +1013,6 @@ with the exception:
 <ul>
 <li> Test.TestOverdeterminedInitialization.DistributedPipeInitialValues<br>
      The translation fails due to an initial value for pipe.medium[1].p, which is fixed by source.p.</li>
-<li> Test.TestCriticalCases.DistributedPipeInitialization<br>
-     The model does not initialize in steady-state with detailed pipe wall friction
-     and two phase flow conditions. Two phase flow is generally not supported yet.</li>
 </ul>
  
 <h3><font color=\"#008000\">Version 1.0 Streams Beta 3, 2008-10-12</font></h3>
