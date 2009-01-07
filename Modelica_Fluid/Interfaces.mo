@@ -261,7 +261,7 @@ package Interfaces
 
   partial model PartialTwoPort "Partial component with two ports"
     import Modelica.Constants;
-    inner outer Modelica_Fluid.System system "System wide properties";
+    outer Modelica_Fluid.System system "System wide properties";
 
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -563,7 +563,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.Dynamics;
 
-      inner outer Modelica_Fluid.System system "System properties";
+      outer Modelica_Fluid.System system "System properties";
       replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
           annotation (choicesAllMatching = true);
@@ -744,11 +744,10 @@ Further source terms must be defined by an extending class for fluid flow across
       partial model PartialLumpedFlow
     "Base class for a lumped momentum balance"
 
-        inner outer Modelica_Fluid.System system "System properties";
+        outer Modelica_Fluid.System system "System properties";
 
         replaceable package Medium = 
-          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-            annotation(Dialog(tab="Internal Interface",enable=false));
+          Modelica.Media.Interfaces.PartialMedium "Medium in the component";
 
         parameter Boolean allowFlowReversal = system.allowFlowReversal
       "= true to allow flow reversal, false restricts to design direction (m_flow >= 0)"
@@ -768,11 +767,11 @@ Further source terms must be defined by an extending class for fluid flow across
         // Parameters
         parameter Modelica_Fluid.Types.Dynamics momentumDynamics=system.momentumDynamics
       "Formulation of momentum balance" 
-          annotation(Dialog(tab="Internal Interface",enable=false,group = "Assumptions"), Evaluate=true);
+          annotation(Dialog(tab="Assumptions", group="Dynamics"), Evaluate=true);
 
         parameter Medium.MassFlowRate m_flow_start=system.m_flow_start
       "Start value of mass flow rates" 
-          annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
+          annotation(Dialog(tab="Initialization"));
 
         // Total quantities
         SI.Momentum I "Momentums of flow segments";
@@ -822,7 +821,7 @@ partial model PartialDistributedVolume
     "Base class for distributed volume models"
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.Dynamics;
-  inner outer Modelica_Fluid.System system "System properties";
+  outer Modelica_Fluid.System system "System properties";
 
   replaceable package Medium = 
     Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -1043,19 +1042,17 @@ end PartialDistributedVolume;
       partial model PartialDistributedFlow
     "Base class for a distributed momentum balance"
 
-        inner outer Modelica_Fluid.System system "System properties";
+        outer Modelica_Fluid.System system "System properties";
 
         replaceable package Medium = 
-          Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
-            annotation(Dialog(tab="Internal Interface",enable=false));
+          Modelica.Media.Interfaces.PartialMedium "Medium in the component";
 
         parameter Boolean allowFlowReversal = system.allowFlowReversal
       "= true to allow flow reversal, false restricts to design direction (m_flows >= zeros(m))"
           annotation(Dialog(tab="Assumptions"), Evaluate=true);
 
         // Discretization
-        parameter Integer m=1 "Number of flow segments" 
-          annotation(Dialog(tab="Internal Interface",enable=false));
+        parameter Integer m=1 "Number of flow segments";
 
         // Inputs provided to the flow model
         input SI.Length[m] pathLengths "Lengths along flow path";
@@ -1071,11 +1068,11 @@ end PartialDistributedVolume;
         // Parameters
         parameter Modelica_Fluid.Types.Dynamics momentumDynamics=system.momentumDynamics
       "Formulation of momentum balance" 
-          annotation(Dialog(tab="Internal Interface",enable=false,group = "Assumptions"), Evaluate=true);
+          annotation(Dialog(tab="Assumptions", group="Dynamics"), Evaluate=true);
 
         parameter Medium.MassFlowRate m_flow_start=system.m_flow_start
       "Start value of mass flow rates" 
-          annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
+          annotation(Dialog(tab="Initialization"));
 
         // Total quantities
         SI.Momentum[m] Is "Momentums of flow segments";

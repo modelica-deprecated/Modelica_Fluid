@@ -31,6 +31,8 @@ package Pipes "Devices for conveying fluid"
                    Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
             vs={port_a.m_flow/Medium.density(flowModel.states[1])/flowModel.crossAreas[1],
                 -port_b.m_flow/Medium.density(flowModel.states[2])/flowModel.crossAreas[2]},
+            final momentumDynamics=momentumDynamics,
+            final allowFlowReversal=allowFlowReversal,
             final p_a_start=p_a_start,
             final p_b_start=p_b_start,
             final m_flow_start=m_flow_start,
@@ -39,7 +41,8 @@ package Pipes "Devices for conveying fluid"
             final crossAreas={crossArea, crossArea},
             final dimensions={4*crossArea/perimeter, 4*crossArea/perimeter},
             final roughnesses={roughness, roughness},
-            final dheights={height_ab}) "Flow model" 
+            final dheights={height_ab},
+            final g=system.g) "Flow model" 
        annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
   equation
     port_a.m_flow = flowModel.m_flows[1];
@@ -534,8 +537,10 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       FlowModel flowModel(
               redeclare final package Medium = Medium,
               final n=nFM+1,
-              states=statesFM,
-              vs=vsFM,
+              final states=statesFM,
+              final vs=vsFM,
+              final momentumDynamics=momentumDynamics,
+              final allowFlowReversal=allowFlowReversal,
               final p_a_start=p_a_start,
               final p_b_start=p_b_start,
               final m_flow_start=m_flow_start,
@@ -544,7 +549,8 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
               final crossAreas=crossAreasFM,
               final dimensions=dimensionsFM,
               final roughnesses=roughnessesFM,
-              final dheights=dheightsFM) "Flow model" 
+              final dheights=dheightsFM,
+              final g=system.g) "Flow model" 
          annotation (Placement(transformation(extent={{-77,-38},{75,-20}},rotation=0)));
 
       // Flow quantities
@@ -1169,13 +1175,19 @@ This also allows for taking into account friction losses with respect to the act
       "Flow models for pipes, including wall friction, static head and momentum flow"
           partial model PartialStaggeredFlowModel
         "Base class for momentum balances in flow models"
-            extends Modelica_Fluid.Interfaces.PartialDistributedFlow(
-                                                                 final m = n-1);
+
+            //
+            // Internal interface
+            // (not exposed to GUI; needs to be hard coded when using this model
+            //
+            replaceable package Medium = 
+              Modelica.Media.Interfaces.PartialMedium "Medium in the component"
+                annotation(Dialog(tab="Internal Interface",enable=false));
 
             parameter Integer n=2 "Number of discrete flow volumes" 
               annotation(Dialog(tab="Internal Interface",enable=false));
 
-            // Additional inputs
+            // Inputs
             input Medium.ThermodynamicState[n] states
           "Thermodynamic states along design flow";
             input Modelica.SIunits.Velocity[n] vs
@@ -1185,6 +1197,7 @@ This also allows for taking into account friction losses with respect to the act
             parameter Real nParallel
           "number of identical parallel flow devices" 
                annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
+
             input SI.Area[n] crossAreas
           "Cross flow areas at segment boundaries";
             input SI.Length[n] dimensions
@@ -1196,13 +1209,22 @@ This also allows for taking into account friction losses with respect to the act
             input SI.Length[n-1] dheights
           "Height(states[2:n]) - Height(states[1:n-1])";
 
-            // Additional parameters
             parameter SI.Acceleration g=system.g
           "Constant gravity acceleration" 
               annotation(Dialog(tab="Internal Interface",enable=false,group="Static head"));
+
+            // Assumptions
             parameter Boolean allowFlowReversal=system.allowFlowReversal
           "= true to allow flow reversal, false restricts to design direction (states[1] -> states[n+1])"
               annotation(Dialog(tab="Internal Interface",enable=false,group="Assumptions"), Evaluate=true);
+            parameter Modelica_Fluid.Types.Dynamics momentumDynamics=system.momentumDynamics
+          "Formulation of momentum balance" 
+              annotation(Dialog(tab="Internal Interface",enable=false,group = "Assumptions"), Evaluate=true);
+
+            // Initialization
+            parameter Medium.MassFlowRate m_flow_start=system.m_flow_start
+          "Start value of mass flow rates" 
+              annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
             parameter Medium.AbsolutePressure p_a_start
           "Start value for p[1] at design inflow" 
               annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
@@ -1210,7 +1232,13 @@ This also allows for taking into account friction losses with respect to the act
           "Start value for p[n+1] at design outflow" 
               annotation(Dialog(tab="Internal Interface",enable=false,group = "Initialization"));
 
-            // Advanced
+            //
+            // Implementation of momentum balance
+            //
+            extends Modelica_Fluid.Interfaces.PartialDistributedFlow(
+                       final m = n-1);
+
+            // Advanced parameters
             parameter Boolean upstreamScheme = true
           "= false to average upstream and downstream properties across flow segments"
                annotation(Dialog(group="Advanced"), Evaluate=true);

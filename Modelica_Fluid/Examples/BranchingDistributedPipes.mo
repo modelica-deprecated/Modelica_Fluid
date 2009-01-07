@@ -42,10 +42,10 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     use_HeatTransfer=true,
     diameter=2.54e-2,
     m_flow_start=0.01,
-    height_ab=50,
+    length=50,
+    height_ab=25,
     p_a_start=130000,
-    p_b_start=120000,
-    length=50) 
+    p_b_start=120000) 
             annotation (Placement(transformation(extent={{-10,-10},{10,10}},
           rotation=90,
         origin={-20,-10})));
@@ -113,8 +113,7 @@ equation
       color={0,127,255},
       thickness=0.5));
   connect(pipe2.port_b,pipe4. port_a) annotation (Line(
-      points={{-20,0},{-20,0},{-20,10},{0,10},{0,16},{0,20},{-6.12323e-016,
-          20}},
+      points={{-20,0},{-20,0},{-20,10},{0,10},{0,16},{0,20},{-6.12323e-016,20}},
       color={0,127,255},
       thickness=0.5));
   connect(pipe3.port_b,pipe4. port_a) annotation (Line(
