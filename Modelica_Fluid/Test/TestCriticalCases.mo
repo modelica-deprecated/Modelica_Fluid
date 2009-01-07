@@ -448,7 +448,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       use_T_start=true,
       length=10,
       diameter=2.54e-2,
-      redeclare model FlowModel =
+      redeclare model FlowModel = 
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
       p_a_start=500000,
       p_b_start=500000) annotation (Placement(transformation(extent={{-80,-4},{
@@ -488,7 +488,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       use_T_start=true,
       length=10,
       diameter=2.54e-2,
-      redeclare model FlowModel =
+      redeclare model FlowModel = 
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
       p_a_start=500000,
       p_b_start=500000) annotation (Placement(transformation(extent={{-40,36},{
@@ -499,7 +499,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       use_T_start=true,
       length=10,
       diameter=2.54e-2,
-      redeclare model FlowModel =
+      redeclare model FlowModel = 
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow,
       p_a_start=500000,
       p_b_start=500000) annotation (Placement(transformation(extent={{-40,-50},

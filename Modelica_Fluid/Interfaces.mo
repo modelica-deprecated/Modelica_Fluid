@@ -380,8 +380,9 @@ partial model PartialTwoPortTransport
   // Variables
   Medium.ThermodynamicState state_a "state for medium inflowing through port_a";
   Medium.ThermodynamicState state_b "state for medium inflowing through port_b";
-  Medium.MassFlowRate m_flow(start = m_flow_start)
-      "Mass flow rate in design flow direction";
+  Medium.MassFlowRate m_flow(
+     min=if allowFlowReversal then -Modelica.Constants.inf else 0,
+     start = m_flow_start) "Mass flow rate in design flow direction";
   Modelica.SIunits.Pressure dp(start=dp_start)
       "Pressure difference between port_a and port_b (= port_a.p - port_b.p)";
 
@@ -749,11 +750,16 @@ Further source terms must be defined by an extending class for fluid flow across
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation(Dialog(tab="Internal Interface",enable=false));
 
+        parameter Boolean allowFlowReversal = system.allowFlowReversal
+      "= true to allow flow reversal, false restricts to design direction (m_flow >= 0)"
+          annotation(Dialog(tab="Assumptions"), Evaluate=true);
+
         // Inputs provided to the flow model
         input SI.Length pathLength "Length flow path";
 
         // Variables defined by the flow model
         Medium.MassFlowRate m_flow(
+           min=if allowFlowReversal then -Modelica.Constants.inf else 0,
            start = m_flow_start,
            stateSelect = if momentumDynamics == Types.Dynamics.SteadyState then StateSelect.default else 
                                      StateSelect.prefer)
@@ -1043,6 +1049,10 @@ end PartialDistributedVolume;
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
             annotation(Dialog(tab="Internal Interface",enable=false));
 
+        parameter Boolean allowFlowReversal = system.allowFlowReversal
+      "= true to allow flow reversal, false restricts to design direction (m_flows >= zeros(m))"
+          annotation(Dialog(tab="Assumptions"), Evaluate=true);
+
         // Discretization
         parameter Integer m=1 "Number of flow segments" 
           annotation(Dialog(tab="Internal Interface",enable=false));
@@ -1052,6 +1062,7 @@ end PartialDistributedVolume;
 
         // Variables defined by momentum model
         Medium.MassFlowRate[m] m_flows(
+           each min=if allowFlowReversal then -Modelica.Constants.inf else 0,
            each start = m_flow_start,
            each stateSelect = if momentumDynamics == Types.Dynamics.SteadyState then StateSelect.default else 
                                      StateSelect.prefer)
