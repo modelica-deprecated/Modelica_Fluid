@@ -3617,8 +3617,6 @@ b has the same sign of the change of density.</p>
                                                                m_flow, noEvent(if m_flow>0 then mu_a else mu_b), diameter) if 
              show_Re "Reynolds number of pipe flow";
 
-        outer Modelica_Fluid.System system "System properties";
-
       protected
         SI.DynamicViscosity mu_a = if not WallFriction.use_mu then 1.e-10 else 
                                     (if use_nominal then mu_nominal else Medium.dynamicViscosity(state_a));

@@ -26,6 +26,7 @@ model HeatingSystem "Simple model of a heating system"
     m_flow_start=0.01,
     m_flow_nominal=0.01,
     control_m_flow=false,
+    allowFlowReversal=false,
     p_a_start=110000,
     p_b_start=130000,
     p_a_nominal=110000,
@@ -37,7 +38,9 @@ model HeatingSystem "Simple model of a heating system"
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=0.01,
     show_T=true,
-    dp_nominal=10000) 
+    allowFlowReversal=false,
+    dp_nominal=10000,
+    checkValve=true) 
     annotation (Placement(transformation(extent={{60,-80},{40,-60}},
                                                                    rotation=0)));
   Modelica.Blocks.Interfaces.RealOutput flowRate 
@@ -60,8 +63,7 @@ model HeatingSystem "Simple model of a heating system"
     T_ref=343.15,
     alpha=-0.5) 
     annotation (Placement(transformation(extent={{16,30},{36,50}}, rotation=0)));
-  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
-      allowFlowReversal=false) 
+  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},   rotation=0)));
   Pipes.DistributedPipe heater(
@@ -205,7 +207,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
@@ -229,9 +231,10 @@ This is why the tank.massDynamics, i.e. the tank level determining the port pres
 </p>
 <p>
 Also note that the tank is thermally isolated againts its ambient. This way the temperature of the tank is also
-well defined for zero flow rate in the heating system. The pipe however is assumed to be perfectly isolated. 
-If a steady-state simultion shall be started with the valve fully closed, then a thermal 
-coupling between the pipe and its ambient should be established.
+well defined for zero flow rate in the heating system, e.g. for valveOpening.offset=0 at the beginning of a simulation. 
+The pipe however is assumed to be perfectly isolated. 
+If steady-state values shall be obtained with the valve fully closed, then a thermal 
+coupling between the pipe and its ambient should be defined as well.
 </p>
 <p>
 Moreover it is worth noting that the idialized direct connection between the heater and the pipe, resulting in equal port pressures,

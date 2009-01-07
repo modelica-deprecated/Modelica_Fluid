@@ -261,7 +261,7 @@ package Interfaces
 
   partial model PartialTwoPort "Partial component with two ports"
     import Modelica.Constants;
-    outer Modelica_Fluid.System system "System wide properties";
+    inner outer Modelica_Fluid.System system "System wide properties";
 
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -563,7 +563,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.Dynamics;
 
-      outer Modelica_Fluid.System system "System properties";
+      inner outer Modelica_Fluid.System system "System properties";
       replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
           annotation (choicesAllMatching = true);
@@ -744,7 +744,7 @@ Further source terms must be defined by an extending class for fluid flow across
       partial model PartialLumpedFlow
     "Base class for a lumped momentum balance"
 
-        outer Modelica_Fluid.System system "System properties";
+        inner outer Modelica_Fluid.System system "System properties";
 
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -822,7 +822,7 @@ partial model PartialDistributedVolume
     "Base class for distributed volume models"
     import Modelica_Fluid.Types;
     import Modelica_Fluid.Types.Dynamics;
-  outer Modelica_Fluid.System system "System properties";
+  inner outer Modelica_Fluid.System system "System properties";
 
   replaceable package Medium = 
     Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
@@ -1043,7 +1043,7 @@ end PartialDistributedVolume;
       partial model PartialDistributedFlow
     "Base class for a distributed momentum balance"
 
-        outer Modelica_Fluid.System system "System properties";
+        inner outer Modelica_Fluid.System system "System properties";
 
         replaceable package Medium = 
           Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
