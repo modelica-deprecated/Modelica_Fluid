@@ -37,7 +37,8 @@ model SimpleGenericOrifice
   // Variables
   Real zeta_nominal(start = zeta);
   Medium.Density d = 0.5*(Medium.density(state_a) + Medium.density(state_b));
-  Modelica.SIunits.Pressure dp_fg "pressure loss due to friction and gravity";
+  Modelica.SIunits.Pressure dp_fg(start=dp_start)
+      "pressure loss due to friction and gravity";
   Modelica.SIunits.Area A_mean = Modelica.Constants.pi/4*diameter^2
       "mean cross flow area";
 
