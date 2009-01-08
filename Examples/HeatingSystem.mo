@@ -39,8 +39,7 @@ model HeatingSystem "Simple model of a heating system"
     m_flow_nominal=0.01,
     show_T=true,
     allowFlowReversal=false,
-    dp_nominal=10000,
-    checkValve=true) 
+    dp_nominal=10000) 
     annotation (Placement(transformation(extent={{60,-80},{40,-60}},
                                                                    rotation=0)));
   Modelica.Blocks.Interfaces.RealOutput flowRate 
@@ -207,8 +206,8 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,
-              -100}}, lineColor={0,0,255}), Text(
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+            lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
           textString="H")}), Documentation(info="<html>
