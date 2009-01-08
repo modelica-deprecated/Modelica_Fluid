@@ -16,7 +16,7 @@ package TestOverdeterminedInitial
       diameter=0.05,
       length=200,
       use_T_start=false,
-      lumpedPressure=true,
+      useLumpedPressure=true,
       nNodes=5,
       p_a_start=10000000,
       p_b_start=9900000,

@@ -268,7 +268,7 @@ pipe wall/environment).
     // Wb_flow = v*A*dpdx + v*F_fric
     //         = v*A*dpdx + v*A*flowModel.dp_fg - v*A*dp_grav
     //         = -v*A*dp_grav if momentumDynamics == Dynamics.SteadyState
-    if n == 1 or lumpedPressure then
+    if n == 1 or useLumpedPressure then
       Wb_flows = dxs * ((vs*dxs)*(crossAreas*dxs)*((port_b.p - port_a.p) + sum(flowModel.dps_fg) - system.g*(dheights*mediums.d)));
     else
       Wb_flows[2:n-1] = {vs[i]*crossAreas[i]*((mediums[i+1].p - mediums[i-1].p)/2 + (flowModel.dps_fg[i-1]+flowModel.dps_fg[i])/2 - system.g*dheights[i]*mediums[i].d) for i in 2:n-1};
@@ -505,20 +505,20 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
         "Determines whether flow or volume models are present at the ports" 
         annotation(Dialog(tab="Advanced"), Evaluate=true);
 
-      parameter Boolean lumpedPressure=false
-        "=true to lump all pressure states into one" 
+      parameter Boolean useLumpedPressure=false
+        "=true to lump pressure states together" 
         annotation(Dialog(tab="Advanced"),Evaluate=true);
-      final parameter Integer nFM=if lumpedPressure then nFMLumped else nFMDistributed
+      final parameter Integer nFM=if useLumpedPressure then nFMLumped else nFMDistributed
         "number of flow models in flowModel";
       final parameter Integer nFMDistributed=if modelStructure==Types.ModelStructure.a_v_b then n+1 else if (modelStructure==Types.ModelStructure.a_vb or modelStructure==Types.ModelStructure.av_b) then n else n-1;
       final parameter Integer nFMLumped=if modelStructure==Types.ModelStructure.a_v_b then 2 else 1;
       final parameter Integer iLumped=integer(n/2)+1
-        "Index of control volume with representative state if lumpedPressure" 
+        "Index of control volume with representative state if useLumpedPressure"
         annotation(Evaluate=true);
 
       // Advanced model options
       parameter Boolean useInnerPortProperties=false
-        "=true to take port properties for pressure drops from internal control volumes"
+        "=true to take port properties for flow models from internal control volumes"
         annotation(Dialog(tab="Advanced"),Evaluate=true);
       Medium.ThermodynamicState state_a
         "state defined by volume outside port_a";
@@ -581,7 +581,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
          "nNodes needs to be at least 2 for modelStructure av_vb, as flow model disappears otherwise!");
 
       // staggered grid discretization of geometry for flowModel, depending on modelStructure
-      if lumpedPressure then
+      if useLumpedPressure then
         if modelStructure <> ModelStructure.a_v_b then
           pathLengths[1] = sum(lengths);
           dheightsFM[1] = sum(dheights);
@@ -692,7 +692,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       end if;
 
       // staggered grid discretization for flowModel, depending on modelStructure
-      if lumpedPressure then
+      if useLumpedPressure then
         if modelStructure <> ModelStructure.av_vb then
           // all pressures are equal
           fill(mediums[1].p, n-1) = mediums[2:n].p;
@@ -1239,7 +1239,7 @@ This also allows for taking into account friction losses with respect to the act
                        final m = n-1);
 
             // Advanced parameters
-            parameter Boolean upstreamScheme = true
+            parameter Boolean useUpstreamScheme = true
           "= false to average upstream and downstream properties across flow segments"
                annotation(Dialog(group="Advanced"), Evaluate=true);
 
@@ -1293,7 +1293,7 @@ This also allows for taking into account friction losses with respect to the act
             if not allowFlowReversal then
               ds_act = ds[1:n-1];
               mus_act = mus[1:n-1];
-            elseif not upstreamScheme then
+            elseif not useUpstreamScheme then
               ds_act = 0.5*(ds[1:n-1] + ds[2:n]);
               mus_act = 0.5*(mus[1:n-1] + mus[2:n]);
             else
@@ -1378,7 +1378,7 @@ e.g. with numerical smoothing or by raising events as appropriate.
 
       equation
         // linear pressure loss
-        if  not allowFlowReversal or use_d_nominal or not upstreamScheme then
+        if  not allowFlowReversal or use_d_nominal or not useUpstreamScheme then
           dps_fg = {g*dheights[i]*ds_act[i] for i in 1:n-1} + dp_nominal/m_flow_nominal*m_flows*nParallel;
         else
           dps_fg = {g*dheights[i]*(if m_flows[i] > 0 then ds[i] else ds[i+1]) for i in 1:n-1} + dp_nominal/m_flow_nominal*m_flows*nParallel;
@@ -1433,7 +1433,7 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
           "= true if the pressure loss does not depend on fluid states" 
                annotation(Evaluate=true);
             final parameter Boolean continuousFlowReversal=
-               (not upstreamScheme)
+               (not useUpstreamScheme)
                or constantPressureLossCoefficient
                or not allowFlowReversal
           "= true if the pressure loss is continuous around zero flow" 
@@ -1576,7 +1576,7 @@ simulation and/or might give a more robust simulation.
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent,
           use_mu_nominal=not show_Res,
           pathLengths_internal=pathLengths_nominal,
-          upstreamScheme=false);
+          useUpstreamScheme=false);
 
         import Modelica.Constants.pi;
 
@@ -1614,7 +1614,7 @@ obtaines appropriate <tt>pathLengths_nominal</tt> values
 for an inverse parameterization of the 
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.FlowModel.TurbulentFlow\">
           TurbulentFlow</a>
-model. Per default the upstream and downstream densities are averaged with the setting <tt>upstreamScheme = false</tt>,
+model. Per default the upstream and downstream densities are averaged with the setting <tt>useUpstreamScheme = false</tt>,
 in order to avoid discontinuous <tt>pathLengths_nominal</tt> values in the case of flow reversal.
 </p>
 <p>
