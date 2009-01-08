@@ -207,8 +207,8 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
-            lineColor={0,0,255}), Text(
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,
+              -100}}, lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
           textString="H")}), Documentation(info="<html>

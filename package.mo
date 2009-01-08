@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -895,7 +894,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-07</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-08</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -2120,7 +2119,6 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
 
 annotation (
   version="1.0 Release Candidate 1",
