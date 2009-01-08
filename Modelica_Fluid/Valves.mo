@@ -16,7 +16,7 @@ package Valves "Components for the regulation and control of fluid flow"
       // m_flow = valveCharacteristic(opening)*Av*sqrt(d)*sqrt(dp);
       if checkValve then
         m_flow = valveCharacteristic(opening)*Av*sqrt(Medium.density(state_a))*
-                      smooth(0, if dp>=0 then Utilities.regRoot(dp, dp_small) else 0);
+                      (if dp>=0 then Utilities.regRoot(dp, dp_small) else 0);
       elseif not allowFlowReversal then
         m_flow = valveCharacteristic(opening)*Av*sqrt(Medium.density(state_a))*
                       Utilities.regRoot(dp, dp_small);
@@ -91,7 +91,7 @@ explained in detail in the
     // m_flow = valveCharacteristic(opening)*Av*sqrt(d)*sqrt(dpEff);
     if checkValve then
       m_flow = valveCharacteristic(opening)*Av*sqrt(Medium.density(state_a))*
-                    smooth(0, if dpEff>=0 then Utilities.regRoot(dpEff, dp_small) else 0);
+                    (if dpEff>=0 then Utilities.regRoot(dpEff, dp_small) else 0);
     elseif not allowFlowReversal then
       m_flow = valveCharacteristic(opening)*Av*sqrt(Medium.density(state_a))*
                     Utilities.regRoot(dpEff, dp_small);
@@ -180,7 +180,7 @@ explained in detail in the
     // m_flow = valveCharacteristic(opening)*Av*Y*sqrt(d)*sqrt(p*xs);
     if checkValve then
       m_flow = valveCharacteristic(opening)*Av*Y*sqrt(Medium.density(state_a))*
-        smooth(0, if xs>=0 then Utilities.regRoot(p*xs, dp_small) else 0);
+        (if xs>=0 then Utilities.regRoot(p*xs, dp_small) else 0);
     elseif not allowFlowReversal then
       m_flow = valveCharacteristic(opening)*Av*sqrt(Medium.density(state_a))*
                     Utilities.regRoot(p*xs, dp_small);
