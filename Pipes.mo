@@ -52,8 +52,30 @@ package Pipes "Devices for conveying fluid"
     port_b.Xi_outflow = inStream(port_a.Xi_outflow);
     port_a.C_outflow = inStream(port_b.C_outflow);
     port_b.C_outflow = inStream(port_a.C_outflow);
-    annotation (defaultComponentName="pipe", Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
-              -100},{100,100}}),      graphics));
+    annotation (defaultComponentName="pipe",
+  Documentation(info="<html>
+<p>Model of a straight pipe with lumped momentum balance. The model does not store mass or energy. 
+Instead the momentum balance is formulated for the thermodynamic states obtained through the ports.
+With the stream connectors these states are defined by models with storage or by sources placed upstream and downstream of the static pipe. 
+</p>
+<p>
+Note that this generally leads to nonlinear equation systems if multiple static pipes, or other flow models without storage, are directly connected.
+</p>
+<p>
+Furthermore note that the missing energy balance means that boundary flow and source terms of the energy balance of the static pipe are neglected, 
+like the change of internal energy of the fluid due to an elevation of the pipe (height_ab &lt;&gt; 0). 
+No wall HeatTransfer model can be added either for the same reason.  
+</p>
+<p>
+The intended use is for simple connections of vessels or other devices with storage, see e.g. 
+<ul>
+<li><a href=\"Modelica:Modelica_Fluid.Examples.Tanks.TanksWithEmptyingPipe1\">Examples.Tanks.TanksWithEmptyingPipe1</a></li>, or
+<li><a href=\"Modelica:Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
+</ul>
+</p>
+</html>"),
+  Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
+              100}}),                 graphics));
   end StaticPipe;
 
   model DynamicPipe "Dynamic pipe model with storage of mass and energy"
@@ -114,19 +136,23 @@ package Pipes "Devices for conveying fluid"
     if n == 1 or useLumpedPressure then
       Wb_flows = dxs * ((vs*dxs)*(crossAreas*dxs)*((port_b.p - port_a.p) + sum(flowModel.dps_fg) - system.g*(dheights*mediums.d)));
     else
-      Wb_flows[2:n-1] = {vs[i]*crossAreas[i]*((mediums[i+1].p - mediums[i-1].p)/2 + (flowModel.dps_fg[i-1]+flowModel.dps_fg[i])/2 - system.g*dheights[i]*mediums[i].d) for i in 2:n-1};
+      if modelStructure == ModelStructure.av_vb or modelStructure == ModelStructure.av_b then
+        Wb_flows[2:n-1] = {vs[i]*crossAreas[i]*((mediums[i+1].p - mediums[i-1].p)/2 + (flowModel.dps_fg[i-1]+flowModel.dps_fg[i])/2 - system.g*dheights[i]*mediums[i].d) for i in 2:n-1};
+      else
+        Wb_flows[2:n-1] = {vs[i]*crossAreas[i]*((mediums[i+1].p - mediums[i-1].p)/2 + (flowModel.dps_fg[i]+flowModel.dps_fg[i+1])/2 - system.g*dheights[i]*mediums[i].d) for i in 2:n-1};
+      end if;
       if modelStructure == ModelStructure.av_vb then
-        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - mediums[1].p) + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
-        Wb_flows[n] = vs[n]*crossAreas[n]*((mediums[n].p - mediums[n-1].p) + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
+        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - mediums[1].p)/2 + flowModel.dps_fg[1]/2 - system.g*dheights[1]*mediums[1].d);
+        Wb_flows[n] = vs[n]*crossAreas[n]*((mediums[n].p - mediums[n-1].p)/2 + flowModel.dps_fg[n-1]/2 - system.g*dheights[n]*mediums[n].d);
       elseif modelStructure == ModelStructure.av_b then
-        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - mediums[1].p) + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
-        Wb_flows[n] = vs[n]*crossAreas[n]*((port_b.p - mediums[n-1].p)/1.5 + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
+        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - mediums[1].p)/2 + flowModel.dps_fg[1]/2 - system.g*dheights[1]*mediums[1].d);
+        Wb_flows[n] = vs[n]*crossAreas[n]*((port_b.p - mediums[n-1].p)/1.5 + flowModel.dps_fg[n-1]/2+flowModel.dps_fg[n] - system.g*dheights[n]*mediums[n].d);
       elseif modelStructure == ModelStructure.a_vb then
-        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - port_a.p)/1.5 + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
-        Wb_flows[n] = vs[n]*crossAreas[n]*((mediums[n].p - mediums[n-1].p) + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
+        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - port_a.p)/1.5 + flowModel.dps_fg[1]+flowModel.dps_fg[2]/2 - system.g*dheights[1]*mediums[1].d);
+        Wb_flows[n] = vs[n]*crossAreas[n]*((mediums[n].p - mediums[n-1].p)/2 + flowModel.dps_fg[n]/2 - system.g*dheights[n]*mediums[n].d);
       elseif modelStructure == ModelStructure.a_v_b then
-        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - port_a.p)/1.5 + flowModel.dps_fg[1] - system.g*dheights[1]*mediums[1].d);
-        Wb_flows[n] = vs[n]*crossAreas[n]*((port_b.p - mediums[n-1].p)/1.5 + flowModel.dps_fg[n-1] - system.g*dheights[n]*mediums[n].d);
+        Wb_flows[1] = vs[1]*crossAreas[1]*((mediums[2].p - port_a.p)/1.5 + flowModel.dps_fg[1]+flowModel.dps_fg[2]/2 - system.g*dheights[1]*mediums[1].d);
+        Wb_flows[n] = vs[n]*crossAreas[n]*((port_b.p - mediums[n-1].p)/1.5 + flowModel.dps_fg[n]/2+flowModel.dps_fg[n+1] - system.g*dheights[n]*mediums[n].d);
       else
         assert(true, "Unknown model structure");
       end if;
@@ -138,29 +164,43 @@ package Pipes "Devices for conveying fluid"
     annotation (defaultComponentName="pipe",
   Documentation(info="<html>
 <p>Model of a straight pipe with distributed mass, energy and momentum balances. 
-The pipe is split into nNodes equally spaced segments along the flow path. 
-The default value is nNodes=2. 
+It provides the complete balance equations for one-dimensional fluid flow as formulated in
+<a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>.
 </p>
 <p>
-The first and the last pipe segment may be of half size, depending on the configured <tt>modelStructure</tt>
-(default av_vb): 
-<ul>
-<li><tt>av_vb</tt>: The first and the last pipe segments are of half size. 
-                    The respective thermodynamic states are exposed through <tt>port_a</tt> and <tt>port_b</tt>.</li>
-<li><tt>a_v_b</tt>: Half momentum balances are placed between the first pipe segment and <tt>port_a</tt> 
-                    as well as between the last pipe segment and <tt>port_b</tt>.</li>
-<li><tt>av_b</tt>:  The first pipe segment is of half size and its thermodynamic state is exposed through <tt>port_a</tt>. 
-                    Half a momentum balances is placed between the last pipe segment and <tt>port_b</tt>.</li>
-<li><tt>a_vb</tt>:  Half a momentum balances is placed between <tt>port_a</tt> and the first pipe segment.
-                    The last pipe segment is of half size and its thermodynamic state is exposed through <tt>port_b</tt>.</li>
-</ul></p>
+The partial differential equations are treated with the finite volume method and a staggered grid scheme for momentum balances.
+The pipe is split into nNodes equally spaced segments along the flow path. The default value is nNodes=2. 
+This results in two lumped mass and energy balances and one lumped momentum balance across the dynamic pipe.
+</p>
+<p>
+Note that this generally leads to high-index DAEs for pressure states if dynamic pipes are directly connected to each other, 
+or generally to models with storage exposing a thermodynamic state through the port. This may not be valid 
+if the dynamic pipe is connected to a model with non-differentiable pressure, like a Sources.Boundary_pT with prescribed jumping pressure. 
+The <b><tt>modelStructure</tt></b> can be configured as appropriate in such situations, 
+in order to place a momentum balance between a pressure state of the pipe and a non-differentiable boundary condition.
+</p>
+<p>
+The default <b><tt>modelStructure</tt></b> is <tt>av_vb</tt> (see Advanced tab). 
+The simplest possible alternative symetric configuration, avoiding potential high-index DAEs at the cost of the potential introduction 
+of nonlinear equation systems, is obtained with the setting <tt>nNodes=1, modelStructure=a_v_b</tt>.
+Depending on the configured model structure, the first and the last pipe segment, 
+or the flow path length of the first and the last momentum balance, are of half size. 
+See the documentation of the base class 
+<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">Pipes.BaseClasses.PartialTwoPortFlow</a>,
+also covering asymmetric configurations.
+</p>
 <p>
 The <b><tt>HeatTransfer</tt></b> component specifies the source term <tt>Qb_flows</tt> of the energy balance. 
 The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
 The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
 <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.HeatTransfer.PartialFlowHeatTransfer</a>.
 </p>
- 
+<p>
+The intended use is for complex networks of pipes and other flow devices, like valves. See e.g. 
+<ul>
+<li><a href=\"Modelica:Modelica_Fluid.Examples.BranchingDynamicPipes\">Examples.BranchingDynamicPipes</a></li>, or
+<li><a href=\"Modelica:Modelica_Fluid.Examples.IncompressibleFluidNetwork\">Examples.IncompressibleFluidNetwork</a>.
+</p> 
 </html>"),
   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
@@ -667,7 +707,7 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 <p>
 This is only true if the flow velocity remains the same on each side of the connection. 
 Consider using a fitting, like <a href=\"Modelica:Modelica_Fluid.Fittings.SuddenExpansion\">SuddenExpansion</a>
-for any significant change in diameter, if the resulting effects, such as change in kinetic energy, cannot be neglected. 
+for any significant change in diameter or fluid density, if the resulting effects, such as change in kinetic energy, cannot be neglected. 
 This also allows for taking into account friction losses with respect to the actual geometry of the connection point.
 </p>
  
@@ -726,7 +766,7 @@ This also allows for taking into account friction losses with respect to the act
               color={0,0,0},
               pattern=LinePattern.Dot),
             Text(
-              extent={{-100,38},{-70,28}},
+              extent={{-99,36},{-69,30}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               textString="crossAreas[1]",
@@ -737,13 +777,7 @@ This also allows for taking into account friction losses with respect to the act
               color={0,0,0},
               pattern=LinePattern.Dot),
             Text(
-              extent={{-85,79},{-65,69}},
-              fillColor={0,0,255},
-              fillPattern=FillPattern.Solid,
-              textString="lengths[1]",
-              pattern=LinePattern.None),
-            Text(
-              extent={{0,38},{38,28}},
+              extent={{0,36},{40,30}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               textString="crossAreas[2:n-1]",
@@ -754,7 +788,7 @@ This also allows for taking into account friction losses with respect to the act
               color={0,0,0},
               pattern=LinePattern.Dot),
             Text(
-              extent={{100,39},{130,29}},
+              extent={{100.5,36},{130.5,30}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               textString="crossAreas[n]",
@@ -774,19 +808,13 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.Filled,Arrow.Filled},
               color={0,0,0},
               pattern=LinePattern.Dot),
-            Text(
-              extent={{65,79},{85,69}},
-              fillColor={0,0,255},
-              fillPattern=FillPattern.Solid,
-              textString="lengths[n]",
-              pattern=LinePattern.None),
             Line(
               points={{-50,70},{50,70}},
               arrow={Arrow.Filled,Arrow.Filled},
               color={0,0,0},
               pattern=LinePattern.Dot),
             Text(
-              extent={{-13,79},{13.5,69}},
+              extent={{-30,77},{30,71}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               textString="lengths[2:n-1]",
@@ -796,7 +824,7 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{-70,-61},{-29,-71}},
+              extent={{-80,-63},{-20,-69}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -806,7 +834,7 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{25.5,-61},{75.5,-71}},
+              extent={{20.5,-63},{80,-69}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -816,7 +844,7 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{-79,9},{-58,-1}},
+              extent={{-49,7},{-19,1}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -826,7 +854,7 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{15,9},{40,-1}},
+              extent={{17,7},{47,1}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -840,19 +868,19 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{-139,9},{-118,-1}},
+              extent={{-140,7},{-110,1}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               textString="m_flows[1]",
               pattern=LinePattern.None),
             Text(
-              extent={{112,9},{139,-1}},
+              extent={{111,7},{141,1}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               textString="m_flows[n+1]",
               pattern=LinePattern.None),
             Text(
-              extent={{40,-90},{100,-100}},
+              extent={{35,-92},{100,-98}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -879,7 +907,7 @@ This also allows for taking into account friction losses with respect to the act
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{3,-2},{28,-12}},
+              extent={{3,-4},{33,-10}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -891,7 +919,7 @@ This also allows for taking into account friction losses with respect to the act
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{103,-2},{121,-12}},
+              extent={{104,-4},{124,-10}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -903,25 +931,25 @@ This also allows for taking into account friction losses with respect to the act
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{-97,-2},{-79,-12}},
+              extent={{-96,-4},{-76,-10}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
               textString="states[1]"),
             Text(
-              extent={{-99.5,31},{-70,23}},
+              extent={{-99.5,30},{-69.5,24}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
               textString="dimensions[1]"),
             Text(
-              extent={{0,30},{38.5,24}},
+              extent={{-0.5,30},{40,24}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
               textString="dimensions[2:n-1]"),
             Text(
-              extent={{100.5,33},{130,23}},
+              extent={{100.5,30},{130.5,24}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -966,13 +994,13 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{15,20},{33,10}},
+              extent={{5,18},{25,12}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
               textString="vs[2:n-1]"),
             Text(
-              extent={{-79,19},{-69,10}},
+              extent={{-80,18},{-70,12}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -982,7 +1010,7 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{70,19},{80,10}},
+              extent={{70,18},{80,12}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -992,7 +1020,7 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.None,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{-75,-73},{-23,-83}},
+              extent={{-80,-75},{-20,-81}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
@@ -1006,11 +1034,23 @@ This also allows for taking into account friction losses with respect to the act
               arrow={Arrow.Filled,Arrow.Filled},
               color={0,0,0}),
             Text(
-              extent={{20,-73},{80,-83}},
+              extent={{15,-75},{85,-81}},
               fillColor={0,0,255},
               fillPattern=FillPattern.Solid,
               pattern=LinePattern.None,
-              textString="flowModel.pathLengths[2:n-1]")}));
+              textString="flowModel.pathLengths[2:n-1]"),
+            Text(
+              extent={{-100,77},{-50,71}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="lengths[1]"),
+            Text(
+              extent={{50,77},{100,71}},
+              fillColor={0,0,255},
+              fillPattern=FillPattern.Solid,
+              pattern=LinePattern.None,
+              textString="lengths[n]")}));
 
     end PartialTwoPortFlow;
 
