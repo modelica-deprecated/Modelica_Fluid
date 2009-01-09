@@ -5,8 +5,8 @@ model IncompressibleFluidNetwork
       Modelica.Media.Incompressible.Examples.Essotherm650 
     constrainedby Modelica.Media.Interfaces.PartialMedium;
 
-  //model Pipe = Modelica_Fluid.Pipes.LumpedPipe;
-  model Pipe = Modelica_Fluid.Pipes.DistributedPipe(nNodes=2,modelStructure=Types.ModelStructure.av_vb);
+  model Pipe = Modelica_Fluid.Pipes.DynamicPipe;
+  //model Pipe = Modelica_Fluid.Pipes.DynamicPipe(nNodes=1,modelStructure=Types.ModelStructure.a_v_b);
 
   Sources.Boundary_pT source(
     redeclare package Medium = Medium,
@@ -219,8 +219,8 @@ equation
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,
-              -100}}, lineColor={0,0,255}), Text(
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+            lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
           textString="N")}),
@@ -231,7 +231,7 @@ and the usage of an incompressible medium model.
 Normally one would expect bad equation systems in multi-way connections 
 and possibly introduce mixing volumes to work around this. 
 Here the problem is treated with the the modelStructure=av_vb in the
-<a href=\"Modelica:Modelica_Fluid.Pipes.DistributedPipe\">DistributedPipe</a> model. 
+<a href=\"Modelica:Modelica_Fluid.Pipes.DynamicPipe\">DynamicPipe</a> model. 
 Each pipe exposes the states of the outer fluid segments to the respective fluid ports. 
 Consequently the pressures of all connected pipe segments get lumped together into one mass balance 
 spanning the whole connection set. With the stream concept in the fluid ports, the energy and substance 

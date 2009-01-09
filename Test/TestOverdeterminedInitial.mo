@@ -1,8 +1,8 @@
 within Modelica_Fluid.Test;
 package TestOverdeterminedInitial
   "Contains test cases to test overdetermined systems of initial equations"
-  model DistributedPipeLumpedPressureInitialization
-    "Steady-state initialization of a distributed pipe"
+  model DynamicPipeLumpedPressureInitialization
+    "Steady-state initialization of a dynamic pipe using lumped pressure states"
 
     Modelica_Fluid.Sources.FixedBoundary source(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -10,7 +10,7 @@ package TestOverdeterminedInitial
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Pipes.DistributedPipe pipe(
+    Pipes.DynamicPipe pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       h_start=2e6,
       diameter=0.05,
@@ -85,10 +85,10 @@ The initial equations are consistent however and a tool shall reduce them approp
                 "A translator should remove consistently overdetermined initial equations.")}),
       experiment(StopTime=4),
       experimentSetupOutput);
-  end DistributedPipeLumpedPressureInitialization;
+  end DynamicPipeLumpedPressureInitialization;
 
-  model DistributedPipeInitialValues
-    "Initialization of a distributed pipe with values"
+  model DynamicPipeInitialValues
+    "Initialization of a dynamic pipe with fixed initial values and without adaptation of modelStructure to boundaries"
 
     Modelica_Fluid.Sources.FixedBoundary source(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -96,7 +96,7 @@ The initial equations are consistent however and a tool shall reduce them approp
       h=2e6,
       p=10000000) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Pipes.DistributedPipe pipe(
+    Pipes.DynamicPipe pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       h_start=2e6,
       diameter=0.05,
@@ -151,10 +151,8 @@ The initial equations are consistent however and a tool shall reduce them approp
         points={{25,40},{10,40},{10,8}},
         color={0,0,127},
         smooth=Smooth.None));
-
     annotation (Documentation(info="<html>
-All pressure states of the pipe are lumped into one. 
-The steady-state initial conditions become overdetermined as they are now specified nNodes times for the same pressure state.
+The initial values are overdetermined as the first pipe segment is directly connected to a source with fixed pressure.
 The initial equations are consistent however and a tool shall reduce them appropriately.
 </html>"),
     Diagram(coordinateSystem(preserveAspectRatio=true,
@@ -182,5 +180,5 @@ The initial equations are consistent however and a tool shall reduce them approp
       experiment(StopTime=4),
       experimentSetupOutput);
 
-  end DistributedPipeInitialValues;
+  end DynamicPipeInitialValues;
 end TestOverdeterminedInitial;

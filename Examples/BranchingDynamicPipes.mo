@@ -1,5 +1,5 @@
 within Modelica_Fluid.Examples;
-model BranchingDistributedPipes
+model BranchingDynamicPipes
   "Multi-way connections of pipes with dynamic momentum balance, pressure wave and flow reversal"
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
@@ -19,7 +19,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
     redeclare package Medium = Medium, p=150000)                    annotation (Placement(
         transformation(extent={{-10,-10},{10,10}},    rotation=90,
         origin={0,-80})));
-  Modelica_Fluid.Pipes.DistributedPipe pipe1(
+  Modelica_Fluid.Pipes.DynamicPipe pipe1(
     redeclare package Medium=Medium,
     use_T_start=true,
     nNodes=5,
@@ -32,7 +32,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
             annotation (Placement(transformation(extent={{-10,-10},{10,10}},
           rotation=90,
         origin={0,-50})));
- Modelica_Fluid.Pipes.DistributedPipe pipe2(
+ Modelica_Fluid.Pipes.DynamicPipe pipe2(
     redeclare package Medium = Medium,
     use_T_start=true,
     nNodes=5,
@@ -49,7 +49,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
           rotation=90,
         origin={-20,-10})));
 
-  Modelica_Fluid.Pipes.DistributedPipe pipe3(
+  Modelica_Fluid.Pipes.DynamicPipe pipe3(
     redeclare package Medium=Medium,
     use_T_start=true,
     nNodes=5,
@@ -62,7 +62,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
             annotation (Placement(transformation(extent={{-10,-10},{10,10}},
           rotation=90,
         origin={20,-10})));
-  Modelica_Fluid.Pipes.DistributedPipe pipe4(
+  Modelica_Fluid.Pipes.DynamicPipe pipe4(
     redeclare package Medium=Medium,
     use_T_start=true,
     nNodes=5,
@@ -133,8 +133,7 @@ equation
                       graphics),
                        experiment(StopTime=10),
     Commands(file(ensureSimulated=true)=
-        "Scripts/Examples/BranchingDistributedPipes/plotResults.mos"
-        "plotResults"),
+        "Scripts/Examples/BranchingDynamicPipes/plotResults.mos" "plotResults"),
     experimentSetupOutput,
     Documentation(info="<html>
 <p>
@@ -151,4 +150,4 @@ Note the static head caused by the elevation of the pipes.
 </p>
 </html>"));
 
-end BranchingDistributedPipes;
+end BranchingDynamicPipes;

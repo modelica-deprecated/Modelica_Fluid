@@ -20,7 +20,7 @@ model StaticPipe
             graphics),
     experiment(StopTime=10, NumberOfIntervals=10000),
     Documentation(info="<html>
-Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
+Test of the StaticPipe model.
 </html>"));
   Modelica_Fluid.Sources.Boundary_pT sink(
     redeclare package Medium = Medium,

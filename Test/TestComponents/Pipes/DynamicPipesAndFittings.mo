@@ -1,11 +1,11 @@
 within Modelica_Fluid.Test.TestComponents.Pipes;
-model TestDistributedPipe01
+model DynamicPipesAndFittings
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
 replaceable package Medium=Modelica.Media.Water.StandardWater;
 //replaceable package Medium=Modelica.Media.Air.DryAirNasa;  //
 
- Modelica_Fluid.Pipes.DistributedPipe pipe2(
+ Modelica_Fluid.Pipes.DynamicPipe pipe2(
     redeclare package Medium = Medium,
     use_T_start=true,
     diameter=0.01,
@@ -30,7 +30,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
                        experiment(StopTime=20, Tolerance=1e-005),
     experimentSetupOutput,
     Documentation(info="<html>
-Test of different distributed pipe models. The first system uses explicit junctions, in the third system some of the pipe models are replaced by non-symmetric components.
+Test of different dynamic pipe models. The first system uses explicit junctions, in the third system some of the pipe models are replaced by non-symmetric components.
 </html>"));
   Modelica_Fluid.Sources.Boundary_pT boundary2(
     redeclare package Medium = Medium,
@@ -39,7 +39,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_p_in=true,
     use_T_in=false)                                      annotation (Placement(
         transformation(extent={{70,54},{50,74}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe3(
+  Modelica_Fluid.Pipes.DynamicPipe pipe3(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -53,7 +53,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
             annotation (Placement(transformation(extent={{20,54},{40,74}},
           rotation=0)));
 
-  Modelica_Fluid.Pipes.DistributedPipe pipe1(
+  Modelica_Fluid.Pipes.DynamicPipe pipe1(
     redeclare package Medium=Medium,
     use_T_start=true,
     T_start=300,
@@ -85,7 +85,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
                 annotation (Placement(transformation(extent={{90,64},{78,76}},
           rotation=0)));
 
-  Modelica_Fluid.Pipes.DistributedPipe pipe4(
+  Modelica_Fluid.Pipes.DynamicPipe pipe4(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -122,7 +122,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
       each T_ref=350) 
     annotation (Placement(transformation(extent={{-54,80},{-34,100}}, rotation=
             0)));
- Modelica_Fluid.Pipes.DistributedPipe pipe5(
+ Modelica_Fluid.Pipes.DynamicPipe pipe5(
     redeclare package Medium = Medium,
     use_T_start=true,
     diameter=0.01,
@@ -145,7 +145,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_p_in=true,
     use_T_in=false)                                      annotation (Placement(
         transformation(extent={{68,-2},{48,18}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe6(
+  Modelica_Fluid.Pipes.DynamicPipe pipe6(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -158,7 +158,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{14,-2},{34,18}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe7(
+  Modelica_Fluid.Pipes.DynamicPipe pipe7(
     redeclare package Medium=Medium,
     use_T_start=true,
     T_start=300,
@@ -182,7 +182,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     height=1.0e5) 
                 annotation (Placement(transformation(extent={{96,8},{84,20}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe8(
+  Modelica_Fluid.Pipes.DynamicPipe pipe8(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -199,7 +199,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
       each alpha=10000,
       each T_ref=350) 
     annotation (Placement(transformation(extent={{-72,22},{-52,42}}, rotation=0)));
- Modelica_Fluid.Pipes.DistributedPipe pipe9(
+ Modelica_Fluid.Pipes.DynamicPipe pipe9(
     redeclare package Medium = Medium,
     use_T_start=true,
     diameter=0.01,
@@ -223,7 +223,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     use_p_in=true,
     use_T_in=false)                                      annotation (Placement(
         transformation(extent={{70,-62},{50,-42}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe10(
+  Modelica_Fluid.Pipes.DynamicPipe pipe10(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -236,7 +236,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{14,-62},{34,-42}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe11(
+  Modelica_Fluid.Pipes.DynamicPipe pipe11(
     redeclare package Medium=Medium,
     use_T_start=true,
     diameter=0.01,
@@ -261,7 +261,7 @@ Test of different distributed pipe models. The first system uses explicit juncti
     height=1.0e5) 
                 annotation (Placement(transformation(extent={{96,-52},{84,-40}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe12(
+  Modelica_Fluid.Pipes.DynamicPipe pipe12(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -419,4 +419,4 @@ equation
       color={0,127,255},
       thickness=0.5,
       smooth=Smooth.None));
-end TestDistributedPipe01;
+end DynamicPipesAndFittings;

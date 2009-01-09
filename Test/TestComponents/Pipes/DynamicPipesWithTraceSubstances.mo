@@ -1,11 +1,11 @@
 within Modelica_Fluid.Test.TestComponents.Pipes;
-model TestDistributedPipe02
+model DynamicPipesWithTraceSubstances
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
 //replaceable package Medium=Modelica.Media.Water.StandardWater;
  replaceable package Medium=Modelica.Media.Air.DryAirNasa(extraPropertiesNames={"CO2", "VOC"});
 
- Modelica_Fluid.Pipes.DistributedPipe pipe2(
+ Modelica_Fluid.Pipes.DynamicPipe pipe2(
     redeclare package Medium = Medium,
     use_T_start=true,
     diameter=0.01,
@@ -28,8 +28,7 @@ extends Modelica.Icons.Example;
                        experiment(StopTime=20, Tolerance=1e-005),
     experimentSetupOutput,
     Documentation(info="<html>
-Test of different distributed pipe models with trace substances. This model is the same as
-<tt>TestDistributedPipe01</tt>, except that trace substances are modeled and another medium has been used.
+Test of different dynamic pipe models with trace substances.
 </html>"));
   Modelica_Fluid.Sources.Boundary_pT boundary2(
     redeclare package Medium = Medium,
@@ -39,7 +38,7 @@ Test of different distributed pipe models with trace substances. This model is t
     T=300,
     C={1.5E-3,0.05E-3})                                             annotation (Placement(
         transformation(extent={{70,54},{50,74}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe3(
+  Modelica_Fluid.Pipes.DynamicPipe pipe3(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -53,7 +52,7 @@ Test of different distributed pipe models with trace substances. This model is t
             annotation (Placement(transformation(extent={{20,54},{40,74}},
           rotation=0)));
 
-  Modelica_Fluid.Pipes.DistributedPipe pipe1(
+  Modelica_Fluid.Pipes.DynamicPipe pipe1(
     redeclare package Medium=Medium,
     use_T_start=true,
     T_start=300,
@@ -85,7 +84,7 @@ Test of different distributed pipe models with trace substances. This model is t
                 annotation (Placement(transformation(extent={{90,64},{78,76}},
           rotation=0)));
 
-  Modelica_Fluid.Pipes.DistributedPipe pipe4(
+  Modelica_Fluid.Pipes.DynamicPipe pipe4(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -122,7 +121,7 @@ Test of different distributed pipe models with trace substances. This model is t
       each T_ref=350) 
     annotation (Placement(transformation(extent={{-54,80},{-34,100}}, rotation=
             0)));
- Modelica_Fluid.Pipes.DistributedPipe pipe5(
+ Modelica_Fluid.Pipes.DynamicPipe pipe5(
     redeclare package Medium = Medium,
     use_T_start=true,
     diameter=0.01,
@@ -147,7 +146,7 @@ Test of different distributed pipe models with trace substances. This model is t
     T=300,
     C={1.5E-3,0.05E-3})                                             annotation (Placement(
         transformation(extent={{68,-2},{48,18}}, rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe6(
+  Modelica_Fluid.Pipes.DynamicPipe pipe6(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -160,7 +159,7 @@ Test of different distributed pipe models with trace substances. This model is t
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{14,-2},{34,18}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe7(
+  Modelica_Fluid.Pipes.DynamicPipe pipe7(
     redeclare package Medium=Medium,
     use_T_start=true,
     T_start=300,
@@ -184,7 +183,7 @@ Test of different distributed pipe models with trace substances. This model is t
     height=1.0e5) 
                 annotation (Placement(transformation(extent={{96,8},{84,20}},
           rotation=0)));
-  Modelica_Fluid.Pipes.DistributedPipe pipe8(
+  Modelica_Fluid.Pipes.DynamicPipe pipe8(
     redeclare package Medium=Medium,
     length=1,
     use_T_start=true,
@@ -321,4 +320,4 @@ equation
       points={{-38,6},{-38,8},{-32,8},{-32,-2},{-30,-2}},
       color={0,127,255},
       smooth=Smooth.None));
-end TestDistributedPipe02;
+end DynamicPipesWithTraceSubstances;
