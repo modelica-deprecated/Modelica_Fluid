@@ -65,7 +65,7 @@ model HeatingSystem "Simple model of a heating system"
   inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},   rotation=0)));
-  Pipes.DistributedPipe heater(
+  Pipes.DynamicPipe heater(
     redeclare package Medium = Medium,
     use_T_start=true,
     T_start=Modelica.SIunits.Conversions.from_degC(80),
@@ -80,7 +80,7 @@ model HeatingSystem "Simple model of a heating system"
     use_HeatTransfer=true) 
     annotation (Placement(transformation(extent={{30,10},{50,30}}, rotation=0)));
 
-  Pipes.DistributedPipe radiator(
+  Pipes.DynamicPipe radiator(
     use_T_start=true,
     redeclare package Medium = Medium,
     length=10,
@@ -118,7 +118,7 @@ model HeatingSystem "Simple model of a heating system"
     height=0.9,
     offset=0.1)   annotation (Placement(transformation(extent={{26,-27},{40,-13}},
                   rotation=0)));
-  Pipes.DistributedPipe pipe(
+  Pipes.DynamicPipe pipe(
     redeclare package Medium = Medium,
     use_T_start=true,
     T_start=Modelica.SIunits.Conversions.from_degC(80),

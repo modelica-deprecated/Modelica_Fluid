@@ -2,8 +2,7 @@ within Modelica_Fluid;
 package Pipes "Devices for conveying fluid"
     extends Modelica_Fluid.Icons.VariantLibrary;
 
-  model StaticPipe
-    "Basic pipe flow model without storage of momentum, mass or energy"
+  model StaticPipe "Basic pipe flow model without storage of mass or energy"
 
     // extending PartialStraightPipe
     extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe;
@@ -57,163 +56,7 @@ package Pipes "Devices for conveying fluid"
               -100},{100,100}}),      graphics));
   end StaticPipe;
 
-  model LumpedPipe "Example for a composite pipe model"
-
-    // extending PartialStraightPipe
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe;
-
-    // Assumptions
-    parameter Types.Dynamics energyDynamics=system.energyDynamics
-      "Formulation of energy balance" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-    parameter Types.Dynamics massDynamics=system.massDynamics
-      "Formulation of mass balance" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-    parameter Types.Dynamics momentumDynamics=system.momentumDynamics
-      "Formulation of momentum balance" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-
-    // Initialization
-    parameter Medium.AbsolutePressure p_a_start=system.p_start
-      "Start value of pressure at port a" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Medium.AbsolutePressure p_b_start=p_a_start
-      "Start value of pressure at port b" 
-      annotation(Dialog(tab = "Initialization"));
-
-    parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
-       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-    parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
-                Medium.temperature_phX(
-          (p_a_start + p_b_start)/2,
-          h_start,
-          X_start) "Start value of temperature" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
-          Medium.specificEnthalpy_pTX(
-          (p_a_start + p_b_start)/2,
-          T_start,
-          X_start) else Medium.h_default "Start value of specific enthalpy" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-      "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-    parameter Medium.ExtraProperty C_start[Medium.nC](
-         quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Start value of trace substances" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nC > 0));
-
-    parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
-      "Start value for mass flow rate" 
-       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-
-    // Wall heat transfer
-    parameter Boolean use_HeatTransfer = false
-      "= true to use the HeatTransfer model" 
-        annotation (Dialog(tab="Assumptions", group="Heat transfer"));
-    replaceable model HeatTransfer = 
-        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer 
-      constrainedby
-      Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.PartialVesselHeatTransfer
-      "Wall heat transfer" 
-        annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort if use_HeatTransfer 
-      annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=
-              0)));
-
-    StaticPipe staticPipe1(
-      redeclare package Medium = Medium,
-      allowFlowReversal=allowFlowReversal,
-      momentumDynamics=momentumDynamics,
-      nParallel=nParallel,
-      length=length/2,
-      roughness=roughness,
-      diameter=diameter,
-      perimeter=perimeter,
-      crossArea=crossArea,
-      height_ab=height_ab/2,
-      m_flow_start=m_flow_start,
-      redeclare final model FlowModel = FlowModel) 
-      annotation (Placement(transformation(extent={{-60,-10},{-40,10}},
-            rotation=0)));
-    Modelica_Fluid.Vessels.Volume volume(
-      redeclare package Medium = Medium,
-      redeclare model HeatTransfer = HeatTransfer,
-      heatTransfer(surfaceAreas={perimeter*length}),
-      energyDynamics=energyDynamics,
-      massDynamics=massDynamics,
-      p_start=(p_a_start+p_b_start)/2,
-      use_T_start=use_T_start,
-      T_start=T_start,
-      h_start=h_start,
-      X_start=X_start,
-      C_start=C_start,
-      V=V,
-      nPorts=2,
-      portDiameters={0,0},
-      use_portDiameters=false,
-      use_HeatTransfer=true) 
-      annotation (Placement(transformation(extent={{-10,10},{10,30}},  rotation=
-             0)));
-    StaticPipe staticPipe2(
-      redeclare package Medium = Medium,
-      allowFlowReversal=allowFlowReversal,
-      momentumDynamics=momentumDynamics,
-      nParallel=nParallel,
-      length=length/2,
-      roughness=roughness,
-      diameter=diameter,
-      perimeter=perimeter,
-      crossArea=crossArea,
-      height_ab=height_ab/2,
-      m_flow_start=m_flow_start,
-      redeclare final model FlowModel = FlowModel)   annotation (Placement(transformation(extent={{40,-10},
-              {60,10}},          rotation=0)));
-
-  equation
-    connect(staticPipe1.port_a, port_a) 
-      annotation (Line(points={{-60,0},{-80,0},{-100,0}},
-                                                  color={0,127,255}));
-    connect(staticPipe2.port_b, port_b) 
-      annotation (Line(points={{60,0},{80,0},{100,0}},
-                                                color={0,127,255}));
-    annotation (defaultComponentName="pipe",Icon(coordinateSystem(
-          preserveAspectRatio=false,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={Ellipse(
-            extent={{-10,10},{10,-10}},
-            lineColor={0,0,0},
-            fillColor={0,0,0},
-            fillPattern=FillPattern.Solid)}),Documentation(info="<html>
-<p>
-Simple pipe model consisting of one volume, 
-wall friction (with different friction correlations)
-and gravity effect. This model is mostly used to demonstrate how
-to build up more detailed models from the basic components.
-Note, if the \"heatPort\" is not connected, then the pipe
-is totally insulated (= no thermal flow from the fluid to the
-pipe wall/environment).
-</p>
-</html>"),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=true,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics));
-    connect(staticPipe1.port_b, volume.ports[1])   annotation (Line(
-        points={{-40,0},{0,0},{0,12}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(staticPipe2.port_a, volume.ports[2])   annotation (Line(
-        points={{40,0},{0,0},{0,8}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(heatPort, volume.heatPort) annotation (Line(
-        points={{0,54},{0,40},{-20,40},{-20,20},{-10,20}},
-        color={191,0,0},
-        smooth=Smooth.None));
-  end LumpedPipe;
-
-  model DistributedPipe "Distributed pipe model"
+  model DynamicPipe "Dynamic pipe model with storage of mass and energy"
 
     import Modelica_Fluid.Types.ModelStructure;
 
@@ -385,7 +228,7 @@ The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any mod
             color={0,0,0},
             pattern=LinePattern.Dot)}));
 
-  end DistributedPipe;
+  end DynamicPipe;
 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;

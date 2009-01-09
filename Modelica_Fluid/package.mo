@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -894,7 +895,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-08</font></h3>
+<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-09</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -931,13 +932,14 @@ Modelica_Fluid was refactored and finalized for the release:
      <li><a href=\"Modelica:Modelica_Fluid.Fittings.SimpleGenericOrifice\">Fittings.SimpleGenericOrifice</a> extends from
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>, besides
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialTwoPortTransport\">Interfaces.PartialTwoPortTransport</a>,</li>
-     <li><a href=\"Modelica:Modelica_Fluid.Pipes.DistributedPipe\">Pipes.DistributedPipe</a> is based on
+     <li><a href=\"Modelica:Modelica_Fluid.Pipes.DynamicPipe\">Pipes.DynamicPipe</a> is based on
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a> and 
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>, 
          besides <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialTwoPort\">Interfaces.PartialTwoPort</a>.</li>
      </ul>
-     All non-trivial mass and energy balances of Vessels, Pipes, Machines and Fittings have been replaced with PartialLumpedVolume.<br>
-     See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDistributedPipes\">Examples.BranchingDistributedPipes</a>
+     All non-trivial mass and energy balances of Vessels, Machines and Fittings have been replaced with PartialLumpedVolume.
+     The mass and energy balances of Pipes are based on PartialDistributedVolume.<br>
+     See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDynamicPipes\">Examples.BranchingDynamicPipes</a>
      for an example utilizing the complete balance equations.
  
 <li> New approach for the connection of distributed flow models<br>
@@ -1010,7 +1012,7 @@ with the exception:
 </p>
  
 <ul>
-<li> Test.TestOverdeterminedInitialization.DistributedPipeInitialValues<br>
+<li> Test.TestOverdeterminedInitialization.DynamicPipeInitialValues<br>
      The translation fails due to an initial value for pipe.medium[1].p, which is fixed by source.p.</li>
 </ul>
  
@@ -2119,6 +2121,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0 Release Candidate 1",

@@ -367,7 +367,7 @@ present that are regulated by a central control system.
           (alpha0=4.9e3)) 
                          annotation (Placement(transformation(extent={{-110,
               -140},{-70,-100}}, rotation=0)));
-    Pipes.DistributedPipe pipeB1B2(
+    Pipes.DynamicPipe pipeB1B2(
       redeclare package Medium = BatchMedium,
       length=1,
       diameter=pipeDiameter,
@@ -418,7 +418,7 @@ present that are regulated by a central control system.
           origin={-90,-170},
           extent={{10,10},{-10,-10}},
           rotation=90)));
-    Pipes.DistributedPipe pipePump1B1(
+    Pipes.DynamicPipe pipePump1B1(
       redeclare package Medium = BatchMedium,
       diameter=pipeDiameter,
       height_ab=3,
@@ -426,7 +426,7 @@ present that are regulated by a central control system.
           origin={-180,10},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Pipes.DistributedPipe pipePump2B2(
+    Pipes.DynamicPipe pipePump2B2(
       redeclare package Medium = BatchMedium,
       diameter=pipeDiameter,
       height_ab=3,
