@@ -7,11 +7,6 @@ package Pipes "Devices for conveying fluid"
     // extending PartialStraightPipe
     extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe;
 
-    // Assumptions
-    parameter Types.Dynamics momentumDynamics=
-      system.momentumDynamics "Formulation of momentum balance" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-
     // Initialization
     parameter Medium.AbsolutePressure p_a_start=system.p_start
       "Start value of pressure at port a" 
@@ -30,7 +25,7 @@ package Pipes "Devices for conveying fluid"
                    Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
             vs={port_a.m_flow/Medium.density(flowModel.states[1])/flowModel.crossAreas[1],
                 -port_b.m_flow/Medium.density(flowModel.states[2])/flowModel.crossAreas[2]},
-            final momentumDynamics=momentumDynamics,
+            final momentumDynamics=Types.Dynamics.SteadyState,
             final allowFlowReversal=allowFlowReversal,
             final p_a_start=p_a_start,
             final p_b_start=p_b_start,
@@ -44,27 +39,31 @@ package Pipes "Devices for conveying fluid"
             final g=system.g) "Flow model" 
        annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
   equation
+    // Momentum and Mass balance
     port_a.m_flow = flowModel.m_flows[1];
     0 = port_a.m_flow + port_b.m_flow;
-    port_a.h_outflow = inStream(port_b.h_outflow);
-    port_b.h_outflow = inStream(port_a.h_outflow);
     port_a.Xi_outflow = inStream(port_b.Xi_outflow);
     port_b.Xi_outflow = inStream(port_a.Xi_outflow);
     port_a.C_outflow = inStream(port_b.C_outflow);
     port_b.C_outflow = inStream(port_a.C_outflow);
+
+    // Energy balance, considering change of potential energy
+    // Wb_flow = v*A*dpdx + v*F_fric
+    //         = m_flow/d/A * (A*dpdx + A*pressureLoss.dp_fg - F_grav)
+    //         = m_flow/d/A * (-A*g*height_ab*d)
+    //         = -m_flow*g*height_ab
+    port_b.h_outflow = inStream(port_a.h_outflow) - system.g*height_ab;
+    port_a.h_outflow = inStream(port_b.h_outflow) + system.g*height_ab;
+
     annotation (defaultComponentName="pipe",
   Documentation(info="<html>
-<p>Model of a straight pipe with lumped momentum balance. The model does not store mass or energy. 
+<p>Model of a straight pipe with steady-state mass, momentum and energy balances. The model does not store mass or energy. 
 Instead the momentum balance is formulated for the thermodynamic states obtained through the ports.
-With the stream connectors these states are defined by models with storage or by sources placed upstream and downstream of the static pipe. 
+With the stream connectors these states are defined by models with storage or by sources placed upstream and downstream of the static pipe
+and possible state transformations defined by other components in the flow path. 
 </p>
 <p>
 Note that this generally leads to nonlinear equation systems if multiple static pipes, or other flow models without storage, are directly connected.
-</p>
-<p>
-Furthermore note that the missing energy balance means that boundary flow and source terms of the energy balance of the static pipe are neglected, 
-like the change of internal energy of the fluid due to an elevation of the pipe (height_ab &lt;&gt; 0). 
-No wall HeatTransfer model can be added either for the same reason.  
 </p>
 <p>
 The intended use is for simple connections of vessels or other devices with storage, see e.g. 
@@ -132,7 +131,6 @@ The intended use is for simple connections of vessels or other devices with stor
     Qb_flows = heatTransfer.Q_flows;
     // Wb_flow = v*A*dpdx + v*F_fric
     //         = v*A*dpdx + v*A*flowModel.dp_fg - v*A*dp_grav
-    //         = -v*A*dp_grav if momentumDynamics == Dynamics.SteadyState
     if n == 1 or useLumpedPressure then
       Wb_flows = dxs * ((vs*dxs)*(crossAreas*dxs)*((port_b.p - port_a.p) + sum(flowModel.dps_fg) - system.g*(dheights*mediums.d)));
     else
@@ -3557,6 +3555,10 @@ b has the same sign of the change of density.</p>
           dp = WallFriction.pressureLoss_m_flow_staticHead(m_flow, d_a, d_b, mu_a, mu_b, length, diameter,
             g_times_height_ab, roughness, if use_x_small_staticHead then m_flow_small_staticHead else m_flow_small);
         end if;
+
+        // Energy balance, considering change of potential energy
+        port_a.h_outflow = inStream(port_b.h_outflow) + system.g*height_ab;
+        port_b.h_outflow = inStream(port_a.h_outflow) - system.g*height_ab;
 
           annotation (defaultComponentName="pipeFriction",Icon(coordinateSystem(
               preserveAspectRatio=false,

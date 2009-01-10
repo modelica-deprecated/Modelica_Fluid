@@ -245,6 +245,10 @@ explained in detail in the
   equation
     m_flow = opening*k*dp;
 
+    // Isenthalpic state transformation (no storage and no loss of energy)
+    port_a.h_outflow = inStream(port_b.h_outflow);
+    port_b.h_outflow = inStream(port_a.h_outflow);
+
   annotation (
     Icon(coordinateSystem(
           preserveAspectRatio=true,
@@ -299,6 +303,10 @@ explained in detail in the
       "Remaining opening if closed, causing small leakage flow";
   equation
     m_flow = if open then 1*k*dp else opening_min*k*dp;
+
+    // Isenthalpic state transformation (no storage and no loss of energy)
+    port_a.h_outflow = inStream(port_b.h_outflow);
+    port_b.h_outflow = inStream(port_a.h_outflow);
 
   annotation (
     Icon(coordinateSystem(
@@ -404,6 +412,11 @@ it is open.
       elseif CvData == CvTypes.Cv then
         Av = Cv*Cv2Av "Unit conversion";
       end if;
+
+    equation
+      // Isenthalpic state transformation (no storage and no loss of energy)
+      port_a.h_outflow = inStream(port_b.h_outflow);
+      port_b.h_outflow = inStream(port_a.h_outflow);
 
       annotation (
         Icon(coordinateSystem(

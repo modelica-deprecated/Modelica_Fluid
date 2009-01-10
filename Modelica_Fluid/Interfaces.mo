@@ -428,10 +428,6 @@ equation
   port_a.C_outflow = inStream(port_b.C_outflow);
   port_b.C_outflow = inStream(port_a.C_outflow);
 
-  // Isenthalpic state transformation (no storage and no loss of energy)
-  port_a.h_outflow = inStream(port_b.h_outflow);
-  port_b.h_outflow = inStream(port_a.h_outflow);
-
   annotation (
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
@@ -440,10 +436,14 @@ equation
     Documentation(info="<html>
 <p>
 This component transports fluid between its two ports, without storing mass or energy.
-<tt>PartialTwoPortTransport</tt> is intended as base class for devices like orifices and valves.
+Energy may be exchanged with the environment though, e.g. in the form of work.
+<tt>PartialTwoPortTransport</tt> is intended as base class for devices like orifices, valves and simple fluid machines.
 <p>
-When using this partial component, the momentum balance specifying the relationship 
-between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt> needs to be added.
+Three equations need to be added by an extending class using this component:
+<ul>
+<li>the momentum balance specifying the relationship between the pressure drop <tt>dp</tt> and the mass flow rate <tt>m_flow</tt></li>,
+<li><tt>port_b.h_outflow</tt> for flow in design direction, and</li>
+<li><tt>port_a.h_outflow</tt> for flow in reverse direction.</li>
 </ul>
 </p>
 </html>"),

@@ -76,6 +76,10 @@ equation
         BaseClasses.lossConstant_D_zeta(diameter, zeta_nominal)/Medium.density(state_b));
   end if;
 
+  // Isenthalpic state transformation (no storage and no loss of energy)
+  port_a.h_outflow = inStream(port_b.h_outflow);
+  port_b.h_outflow = inStream(port_a.h_outflow);
+
   annotation (defaultComponentName="orifice",
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
@@ -556,6 +560,8 @@ of the modeller.
         states = {state_a, state_b},
         vs={port_a.m_flow/Medium.density(pressureLoss.states[1])/pressureLoss.crossAreas[1],
             -port_b.m_flow/Medium.density(pressureLoss.states[2])/pressureLoss.crossAreas[2]},
+        final momentumDynamics=Types.Dynamics.SteadyState,
+        final allowFlowReversal=allowFlowReversal,
         dheights = {height_ab},
         dp_nominal = 1,
         m_flow_nominal = 1,
@@ -570,6 +576,10 @@ of the modeller.
 
   equation
     m_flow = pressureLoss.m_flows[1];
+
+    // Energy balance, considering change of potential energy
+    port_a.h_outflow = inStream(port_b.h_outflow) + system.g*height_ab;
+    port_b.h_outflow = inStream(port_a.h_outflow) - system.g*height_ab;
 
     annotation (defaultComponentName="staticHead",
           Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
@@ -1555,6 +1565,10 @@ Laminar region:
                        data) else 
                    pressureLoss_m_flow(m_flow, Medium.density(state_a), Medium.density(state_b), data, m_flow_small);
         end if;
+
+        // Isenthalpic state transformation (no storage and no loss of energy)
+        port_a.h_outflow = inStream(port_b.h_outflow);
+        port_b.h_outflow = inStream(port_a.h_outflow);
 
         annotation (
           Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,

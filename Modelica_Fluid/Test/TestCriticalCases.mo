@@ -263,9 +263,6 @@ The steady-state initial values are observed by an assertion.
     parameter Types.Dynamics massDynamics=system.massDynamics
       "Formulation of mass balance" 
       annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-    parameter Types.Dynamics momentumDynamics=system.momentumDynamics
-      "Formulation of momentum balance" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 
     // Initialization
     parameter Medium.AbsolutePressure p_a_start=system.p_start
@@ -318,7 +315,6 @@ The steady-state initial values are observed by an assertion.
     Pipes.StaticPipe staticPipe1(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
-      momentumDynamics=momentumDynamics,
       nParallel=nParallel,
       length=length/2,
       roughness=roughness,
@@ -352,7 +348,6 @@ The steady-state initial values are observed by an assertion.
     Pipes.StaticPipe staticPipe2(
       redeclare package Medium = Medium,
       allowFlowReversal=allowFlowReversal,
-      momentumDynamics=momentumDynamics,
       nParallel=nParallel,
       length=length/2,
       roughness=roughness,
