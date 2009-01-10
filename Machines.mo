@@ -5,13 +5,34 @@ package Machines
   model SweptVolume
     "varying cylindric volume depending on the postition of the piston"
     import Modelica.Constants.pi;
-    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
-      final fluidVolume = V,
-      heatTransfer(surfaceAreas={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*flange.s}));
+
     parameter SI.Area pistonCrossArea "cross sectional area of pistion";
     parameter SI.Volume clearance "remaining volume at zero piston stroke";
 
     SI.Volume V "fluid volume";
+
+    // Mass and energy balance, ports
+    extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
+      final fluidVolume = V,
+      heatTransfer(surfaceAreas={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*flange.s}));
+
+    Modelica.Mechanics.Translational.Interfaces.Flange_b flange
+      "translation flange for piston" annotation (Placement(transformation(
+            extent={{-10,90},{10,110}},   rotation=0)));
+
+  equation
+    assert(flange.s >= 0, "Piston stroke (given by flange.s) must not be smaller than zero!");
+
+    // volume size
+    V = clearance + flange.s * pistonCrossArea;
+
+    flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
+
+    // energy balances
+    Wb_flow = medium.p * pistonCrossArea * (-der(flange.s));
+
+    // definition of ports pressure
+    ports_p_static = medium.p;
 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}}),
@@ -78,23 +99,6 @@ package Machines
        Model added to the Fluid library</li>
 </ul>
 </html>"));
-    Modelica.Mechanics.Translational.Interfaces.Flange_b flange
-      "translation flange for piston" annotation (Placement(transformation(
-            extent={{-10,90},{10,110}},   rotation=0)));
-
-  equation
-    assert(flange.s >= 0, "Piston stroke (given by flange.s) must not be smaller than zero!");
-
-    // volume size
-    V = clearance + flange.s * pistonCrossArea;
-
-    flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
-
-    // energy balances
-    Wb_flow = medium.p * pistonCrossArea * (-der(flange.s));
-
-    // definition of ports pressure
-    ports_p_static = medium.p;
   end SweptVolume;
 
   model Pump "Centrifugal pump with mechanical connector for the shaft"

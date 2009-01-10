@@ -4,11 +4,13 @@ package Vessels "Devices for storing fluid"
 
     model Volume "Fixed volume with ports, closed to the environment"
       import Modelica.Constants.pi;
+
+      parameter SI.Volume V "Volume";
+
+      // Mass and energy balance, ports
       extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
         final fluidVolume = V,
         heatTransfer(surfaceAreas={4*pi*(3/4*V/pi)^(2/3)}));
-
-      parameter SI.Volume V "Volume";
 
     equation
       Wb_flow = 0;
@@ -38,13 +40,6 @@ Ideal heat transfer is assumed per default; the thermal port temperature is equa
 
 model OpenTank "Open tank with inlet/outlet ports at the bottom"
   import Modelica.Constants.pi;
-  extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
-    final fluidVolume = V,
-    heatTransfer(surfaceAreas={crossArea+2*sqrt(crossArea*pi)*level}),
-    final initialize_p = false,
-    final p_start = p_ambient,
-    final use_d_nominal = false,
-    final d_nominal = 0);
 
   // Tank geometry
   parameter SI.Height height "Height of tank";
@@ -67,6 +62,15 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
   SI.Height level(stateSelect=StateSelect.default, start=level_start)
       "Level height of tank";
   SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
+
+  // Mass and energy balance, ports
+  extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
+    final fluidVolume = V,
+    heatTransfer(surfaceAreas={crossArea+2*sqrt(crossArea*pi)*level}),
+    final initialize_p = false,
+    final p_start = p_ambient,
+    final use_d_nominal = false,
+    final d_nominal = 0);
 
 equation
   // Total quantities
@@ -121,8 +125,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -181,12 +185,6 @@ end OpenTank;
 
 model Tank
     "Open tank with top and bottom inlet/outlet ports at a defineable height"
-  extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
-    final fluidVolume = V,
-    final initialize_p = false,
-    final p_start = p_ambient,
-    final use_d_nominal = false,
-    final d_nominal = 0);
 
     import Modelica.Constants;
     import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
@@ -200,6 +198,14 @@ model Tank
   parameter SI.Height levelMax "Maximum level of tank before it overflows";
   parameter SI.Area crossArea "Area of tank";
   parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
+
+  //Mass and energy balance
+  extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
+    final fluidVolume = V,
+    final initialize_p = false,
+    final p_start = p_ambient,
+    final use_d_nominal = false,
+    final d_nominal = 0);
 
   //Port definitions
   parameter Integer nTopPorts(min=1) = 1
@@ -433,8 +439,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 3))),
           Line(
             points={{-100,100},{100,100}},
