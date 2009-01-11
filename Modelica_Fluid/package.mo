@@ -2095,14 +2095,29 @@ The development of this library has been a collaborative effort
 and many have contributed.
 </p>
 <ul>
-<li> The essential design of the Fluid library is based on the paper
-     Elmqvist H., Tummescheit H., and Otter M.: Object-Oriented Modeling of Thermo-Fluid Systems.
-     Modelica 2003 Conference, Linköping, Sweden, pp. 269-286, Nov. 3-4, 2003.</li>  
+<li> The previous design of this library (from beginning of 2008) is based on the paper
+     Elmqvist H., Tummescheit H., and Otter M.: 
+     <a href=\"http://www.modelica.org/events/Conference2003/papers/h40_Elmqvist_fluid.pdf\">
+     Object-Oriented Modeling of Thermo-Fluid Systems</a>.
+     Modelica 2003 Conference, Linköping, Sweden, pp. 269-286, Nov. 3-4, 2003.<br>
+     This design has been partly changed, especially by the introduction of the streams
+     concept.</li>  
+
 <li> The Fluid library development was organized in 2002-2004 by Martin 
      Otter, since 2004 it is organized by Francesco Casella, and
      since 2008 it is organized jointly by Francesco Casella and R&uuml;diger Franke.</li>
+
 <li> Francesco Casella included several components of his ThermoPower
-     library with some rewriting.</li>
+     library with some rewriting. The stream connector concept used in Modelica_Fluid is
+     based on a similar concept developed by him for the ThermoPower library.</li>
+
+<li> R&uuml;diger Franke initiated the stream connector concept as an extension
+     and improved version of the ThermoPower concept. In Nov. 2008 - Jan. 2009 he 
+     greatly restructured and improved the library.<li>
+
+<li> Michael Wetter introduced trace constituents in Modelica_Fluid consistently and
+     provided corresponding examples under Examples.TraceSubstances.</li>
+
 <li> The following people contributed to the fluid component models, 
      examples, and the further design of the library
      (alphabetical list):<br>
@@ -2113,6 +2128,7 @@ and many have contributed.
      Martin Otter, Katrin Pr&ouml;l&szlig;,
      Christoph Richter, Michael Sielemann, Mike Tiller, Hubertus Tummescheit,
      Allan Watson, Michael Wetter.<br><br></li>
+
 <li> Partial financial support by ABB and by DLR for the further development
      of this library within the <a href=\"http://www.itea2.org\">ITEA</a> project 
      <a href=\"http://www.itea2.org/public/project_leaflets/EUROSYSLIB_profile_oct-07.pdf\">EUROSYSLIB</a>
