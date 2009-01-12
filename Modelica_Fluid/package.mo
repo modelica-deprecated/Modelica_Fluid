@@ -236,16 +236,20 @@ the \"energy balance 2\":
  
 <p>
 This formulation separates the internal energy of the fluid from the kinetic energy of fluid flow.
-The internal energy is treated by the energy balance 2, the kinetic energy is treated by the momentum balance.
-This generally simplifies the evaluation of medium properties and the formulation of fluid models.
+The internal energy is treated by the energy balance 2, the kinetic energy is treated by the momentum balance equally well.
+The evaluation of medium properties, which are independent of the kinetic energy, and the formulation of many fluid models
+is simplified with the energy balance 2. 
+The overall conservation of energy is achieved by considering the mutual dependencies of energy and momentum balance.
 </p>
 <p>
 <b>All components</b> of the Fluid library use the <b>energy balance 2</b> equation.
-Many components, like StaticPipe, Valves and Fittings, assume an isenthalpic state transformation,
-neglecting changes of kinetic energy due to changes in the cross flow area or fluid density though.
+Many components, like StaticPipe, Valves and Fittings assume an isenthalpic state transformation,
+neglecting the impact of changes of the kinetic energy on the energy balance though. 
+Some components, like DynamicPipe, provide for a rigorous implementation of mass, momentum and energy balance.
 </p>
 <p>
-Fluid ports represent the internal energy by enthalpies; the kinetic energy by mass flow rates.
+Fluid ports represent the internal energy by enthalpies and pressures. The kinetic energy is represented by mass flow rates, 
+besides cross flow areas and fluid densities that are a function of enthalpy and pressure again.
 Connections between fluid ports generally conserve mass and internal energy.
 Kinetic energy is only conserved if the cross flow areas and the fluid densities of all connected components are equal
 at the boundaries represented by the ports. Explicit fitting models need to be introduced otherwise.
