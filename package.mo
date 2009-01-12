@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -2129,7 +2130,7 @@ and many have contributed.
      (alphabetical list):<br>
      John Batteh,
      Francesco Casella, Jonas Eborn, Hilding Elmqvist,
-     R&uuml;diger Franke, Henning Knigge,
+     R&uuml;diger Franke, Manuel Gr&auml;ber, Henning Knigge,
      Sven Erik Mattsson, Chuck Newman, Hans Olsson,
      Martin Otter, Katrin Pr&ouml;l&szlig;,
      Christoph Richter, Michael Sielemann, Mike Tiller, Hubertus Tummescheit,
@@ -2143,6 +2144,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0 Release Candidate 1",
