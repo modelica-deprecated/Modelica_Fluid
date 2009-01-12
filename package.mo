@@ -217,8 +217,8 @@ equations hold
           u(x,t): specific internal energy<br>
           z(x): height over ground<br>
           A(x): area perpendicular to direction x<br>
-          g: gravity constant
-          f: Fanning friction factor
+          g: gravity constant<br>
+          f: Fanning friction factor<br>
           S: circumference
   </tr>
 </table>
@@ -235,13 +235,20 @@ the \"energy balance 2\":
 </table>
  
 <p>
-This equation is much simpler because all terms depending
-on the velocity v are removed, especially the kinetic
-energy term. This means that the pure \"mechanical\" part of
-the energy balance was removed since fulfilled identically
-via the (mechanical) momentum equation and that the \"thermal\" part
-of the energy balance remains. <b>All components</b> of the
-Fluid library use the <b>energy balance 2</b> equation.
+This formulation separates the internal energy of the fluid from the kinetic energy of fluid flow. 
+The internal energy is treated by the energy balance 2, the kinetic energy is treated by the momentum balance.
+This generally simplifies the evaluation of medium properties and the formulation of fluid models.
+</p>
+<p>
+<b>All components</b> of the Fluid library use the <b>energy balance 2</b> equation.
+Many components, like StaticPipe, Valves and Fittings, assume an isenthalpic state transformation, 
+neglecting changes of kinetic energy due to changes in the cross flow area or fluid density though.
+</p>
+<p>
+Fluid ports represent the internal energy by enthalpies; the kinetic energy by mass flow rates. 
+Connections between fluid ports generally conserve mass and internal energy. 
+Kinetic energy is only conserved if the cross flow areas and the fluid densities of all connected components are equal
+at the boundaries represented by the ports. Explicit fitting models need to be introduced otherwise.
 </p>
 </html>
 "));

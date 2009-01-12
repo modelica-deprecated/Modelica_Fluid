@@ -704,8 +704,8 @@ When connecting two components, e.g. two pipes, the momentum balance across the 
 <pre>pipe1.port_b.p = pipe2.port_a.p</pre>
 <p>
 This is only true if the flow velocity remains the same on each side of the connection. 
-Consider using a fitting, like <a href=\"Modelica:Modelica_Fluid.Fittings.SuddenExpansion\">SuddenExpansion</a>
-for any significant change in diameter or fluid density, if the resulting effects, such as change in kinetic energy, cannot be neglected. 
+Consider using a fitting for any significant change in diameter or fluid density, if the resulting effects, 
+such as change in kinetic energy, cannot be neglected. 
 This also allows for taking into account friction losses with respect to the actual geometry of the connection point.
 </p>
  

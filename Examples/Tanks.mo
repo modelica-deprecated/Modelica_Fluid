@@ -518,7 +518,6 @@ package Tanks "Library demonstrating the usage of the tank model"
       use_portDiameters=true,
       height=12,
       level_start=8,
-      zeta_in={1.05},
       nPorts=1,
       portDiameters={0.1}) 
                      annotation (Placement(transformation(extent={{-80,20},{-40,
@@ -529,7 +528,6 @@ package Tanks "Library demonstrating the usage of the tank model"
       use_portDiameters=true,
       height=12,
       level_start=3,
-      zeta_in={1.05},
       nPorts=1,
       portDiameters={0.1}) 
                      annotation (Placement(transformation(extent={{-20,20},{20,
@@ -552,7 +550,6 @@ package Tanks "Library demonstrating the usage of the tank model"
       use_portDiameters=true,
       height=12,
       level_start=3,
-      zeta_in={1.05},
       nPorts=1,
       portDiameters={0.1}) 
                      annotation (Placement(transformation(extent={{40,10},{80,50}},
@@ -604,8 +601,8 @@ package Tanks "Library demonstrating the usage of the tank model"
       level_start=1,
       levelMax=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
-          diameter=0.1, portLevel=0)}) 
-                              annotation (Placement(transformation(extent={{-20,
+          diameter=0.1, portLevel=0)},
+      V0=0.1)                 annotation (Placement(transformation(extent={{-20,
               20},{20,60}}, rotation=0)));
 
     Modelica_Fluid.Pipes.StaticPipe pipe(
@@ -622,16 +619,17 @@ package Tanks "Library demonstrating the usage of the tank model"
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
               100,100}}),
               graphics),
-      experiment(StopTime=25),
+      experiment(StopTime=50),
       experimentSetupOutput);
     Modelica_Fluid.Vessels.Tank tank2(
       crossArea=1,
       level_start=0,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      levelMax=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
-          diameter=0.1, portLevel=0)}) 
+          diameter=0.1, portLevel=0)},
+      V0=0.1,
+      levelMax=1.1) 
       annotation (Placement(transformation(extent={{-20,-80},{20,-40}},
             rotation=0)));
     inner Modelica_Fluid.System system 
