@@ -46,18 +46,6 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
   parameter SI.Area crossArea "Area of tank";
   parameter SI.Volume V0=0 "Volume of the liquid when the level is zero";
 
-  // Ambient
-  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
-      "Tank surface pressure" 
-    annotation(Dialog(tab = "Advanced", group = "Ambient"));
-  parameter Medium.Temperature T_ambient=system.T_ambient
-      "Tank surface Temperature" 
-    annotation(Dialog(tab = "Advanced", group = "Ambient"));
-
-  // Initialization
-  parameter SI.Height level_start "Start value of tank level" 
-    annotation(Dialog(tab="Initialization"));
-
   // Tank properties
   SI.Height level(stateSelect=StateSelect.default, start=level_start)
       "Level height of tank";
@@ -71,6 +59,18 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     final p_start = p_ambient,
     final use_d_nominal = false,
     final d_nominal = 0);
+
+  // Initialization
+  parameter SI.Height level_start "Start value of tank level" 
+    annotation(Dialog(tab="Initialization"));
+
+  // Ambient
+  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
+      "Tank surface pressure" 
+    annotation(Dialog(tab = "Advanced", group = "Ambient"));
+  parameter Medium.Temperature T_ambient=system.T_ambient
+      "Tank surface Temperature" 
+    annotation(Dialog(tab = "Advanced", group = "Ambient"));
 
 equation
   // Total quantities
@@ -140,27 +140,32 @@ initial equation
 <p>
 This is a simplified model of a tank. 
 The top part is open to the environment at the fixed pressure 
-<tt>p_ambient</tt>. Heat transfer to the environment and to 
-the tank walls is neglected.
+<tt>p_ambient</tt>. 
 The tank is filled with a single or multiple-substance liquid, 
 assumed to have uniform temperature and mass fractions.</p> 
 <p>
 Inlet and outlet connections are situated at the bottom of the tank. The following assumptions are made:
 </p>
 <ul>
-<li>Incompressible medium, liquid fluid is of uniform density and uniform temperature</li>
-<li>Heat transfer to the environment is neglected</li>
-<li>Kinetic energy of the fluid in the tank is neglected, the cross sectional area of the tank is larger than the cross sectional area of the inlet/outlet by several orders of magnitude</li>
+<li>The fluid is of uniform density and uniform temperature</li>
 <li>No air is leaving the tank through the ports, if the liquid level drops below zero the simulation stops.</li>
 <li>No liquid is leaving the tank through the open top, if the liquid level growth over the height the simulation stops.</li>
 </ul>
-<p>By default the port pressure is the pressure just after the outlet (or just before the inlet) in the attached pipe. The hydraulic resistances <tt>zeta_in</tt> and <tt>zeta_out</tt> determine the dissipative pressure drop between tank and port depending on the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume no dissipation at the tank outlet (ideal smooth opening) and total dissipation of kinetic energy at the tank inlet. Larger values are found for sharp edged openings and non-uniform velocity distributions in the pipe. A large selection of possible cases are listed in <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. If the flag <tt>static_pressure_at_port</tt> in the <tt>Advanced</tt> menu is set to true, the port pressure represents the static head at the bottom of the tank. The relationship between pressure drop and mass flow rate must then be provided by the connected component. </p>  
- 
- 
+<p>With the setting <tt>use_portDiameters=true</tt> in the <tt>Advanced</tt> menu, 
+the port pressures represent the pressures just after the outlet (or just before the inlet) in the attached pipe. 
+The hydraulic resistances <tt>zeta_in</tt> and <tt>zeta_out</tt> determine the dissipative pressure drop between tank and port depending on 
+the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume no dissipation at the tank outlet (ideal smooth opening) and 
+total dissipation of kinetic energy at the tank inlet. Larger values are found for sharp edged openings and non-uniform velocity distributions 
+in the pipe. A large selection of possible cases are listed in <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
+</p>
+<p>
+With the default setting <tt>use_portDiameters=false</tt>, the port pressure represents the static head 
+at the bottom of the tank. The relationship between pressure drop and mass flow rate must then be provided by connected components. 
+</p>   
 </HTML>", revisions="<html>
 <ul>
-<li><i>Dec. 12, 2008</i> by Ruediger Franke: replace energy and mass balance as well as port definitions 
-   with common definition in BaseClasses.PartialLumpedVolumePorts</li>
+<li><i>Dec. 12, 2008</i> by Ruediger Franke: move port definitions 
+   to BaseClasses.PartialLumpedVessel; also use energy and mass balance from common base class</li>
 <li><i>Jan. 6, 2006</i> by Katja Poschlad, Manuel Remelhe (AST Uni Dortmund), 
    Martin Otter (DLR):<br> 
    Implementation based on former tank model.</li>
@@ -557,7 +562,7 @@ end Tank;
         Medium.AbsolutePressure ports_p_static
         "static pressure at the ports, inside the volume";
 
-      //Transformation of kinetic energy
+        //Transformation of kinetic energy
         parameter Boolean use_portDiameters=false
         "=true, kinetic energy and dissipation is accounted for in port pressure"
           annotation(Evaluate=true, Dialog(tab="Advanced",group="Ports"));
@@ -600,14 +605,22 @@ end Tank;
         Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort if use_HeatTransfer 
           annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
 
+        // Conservation of kinetic energy
+        Medium.Density[nPorts] portDensities
+        "densites of the fluid at the device boudary";
+        SI.Velocity[nPorts] portVelocities
+        "velocities of fluid flow at device boundary";
+        SI.EnergyFlowRate[nPorts] ports_E_flow
+        "flow of kinetic energy at device boundary";
+
     protected
-        parameter SI.Area[nPorts] portArea=Modelica.Constants.pi/4*{portDiameters[i]^2 for i in 1:nPorts};
+        parameter SI.Area[nPorts] portAreas=Modelica.Constants.pi/4*{portDiameters[i]^2 for i in 1:nPorts};
 
       equation
         mb_flow = sum(ports.m_flow);
         mbXi_flow = sum_ports_mXi_flow;
         mbC_flow  = sum_ports_mC_flow;
-        Hb_flow = sum(ports_H_flow);
+        Hb_flow = sum(ports_H_flow) + sum(ports_E_flow);
         Qb_flow = heatTransfer.Q_flows[1];
 
         // Only one connection allowed to a port to avoid unwanted ideal mixing
@@ -623,11 +636,16 @@ of the modeller. Increase nPorts to add an additional port.
         // Boundary conditions
         for i in 1:nPorts loop
           if not use_portDiameters then
+            portDensities[i] = medium.d;
+            portVelocities[i] = 0;
             ports[i].p = ports_p_static;
           else
-            ports[i].p = ports_p_static - smooth(2, noEvent(ports[i].m_flow^2/(2*medium.d*
-                  portArea[i]^2)*(if ports[i].m_flow < 0 then (1 + zeta_out[i]) else (1
-                   - zeta_in[i]))));
+            // dp = 0.5*zeta*d*v*|v|
+            // Note: assume medium.p for portDensities to avoid algebraic loops for ports.p
+            portDensities[i] = Medium.density(Medium.setState_phX(medium.p, actualStream(ports[i].h_outflow), actualStream(ports[i].Xi_outflow)));
+            portVelocities[i] = ports[i].m_flow/portAreas[i]/portDensities[i];
+            ports[i].p = ports_p_static - smooth(2, noEvent(0.5*portVelocities[i]^2*portDensities[i]*
+                  (if ports[i].m_flow < 0 then (1 + zeta_out[i]) else -(1 - zeta_in[i]))));
           end if;
         end for;
         ports.h_outflow = fill(medium.h, nPorts);
@@ -637,6 +655,8 @@ of the modeller. Increase nPorts to add an additional port.
         for i in 1:nPorts loop
           ports_H_flow[i] = ports[i].m_flow * actualStream(ports[i].h_outflow)
           "Enthalpy flow";
+          ports_E_flow[i] = ports[i].m_flow/2*portVelocities[i]*portVelocities[i]
+          "Kinetic energy flow";
           ports_mXi_flow[i,:] = ports[i].m_flow * actualStream(ports[i].Xi_outflow)
           "Component mass flow";
           ports_mC_flow[i,:]  = ports[i].m_flow * actualStream(ports[i].C_outflow)
@@ -655,19 +675,20 @@ of the modeller. Increase nPorts to add an additional port.
             smooth=Smooth.None));
        annotation (
         Documentation(info="<html>
-This base class extends PartialLumpedVolume by adding a vector of fluid ports 
-and defining the respective source terms
+<p>
+This base class extends PartialLumpedVolume with a vector of fluid ports and a replaceable wall HeatTransfer model.
+It assumes a perfectly mixed volume without kinetic energy in the fluid, i.e. kinetic energy dissipates into the internal energy.
+</p>
+<p>
+An extending class needs to define:
 <ul>
-<li><tt>Hb_flow</tt>, enthalpy flow,</li> 
-<li><tt>mb_flow</tt>, mass flow,</li> 
-<li><tt>mbXi_flow</tt>, substance mass flow, and</li> 
-<li><tt>mbC_flow</tt>, trace substance mass flow.</li> 
+<li><tt>input fluidVolume</tt>, the volume of the fluid in the vessel, and</li>
+<li><tt>Wb_flow</tt>, work term of the energy balance, e.g. p*der(V) if the volume is not constant or stirrer power.</li>
 </ul>
-An extending class still needs to define:
+</html>",       revisions="<html>
 <ul>
-<li><tt>Qb_flow</tt>, e.g. convective or latent heat flow rate across segment boundary,</li> 
-<li><tt>Wb_flow</tt>, work term, e.g. p*der(V) if the volume is not constant, and</li>
-<li><tt>V_lumped</tt>, the volume of the segment.</li>
+<li><i>Dec., 2008</i> by Ruediger Franke: derived from OpenTank, to make general use of port diameters; 
+         consider kinetic of fluid entering or leaving in energy balance</li>
 </ul>
 </html>"),
         Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
