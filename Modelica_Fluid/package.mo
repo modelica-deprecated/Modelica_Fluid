@@ -8,18 +8,18 @@ package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Users guide of package Modelica_Fluid</font></h3>
-<p> 
-The library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the 
+<p>
+The library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
 The library contains components describing
 <b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models 
+component equations and the media models
 as well as pressure loss and heat transfer correlations are decoupled from each other.
 All components are implemented such that they can be used for
 media from the Modelica.Media library. This means especially that an
 incompressible or compressible medium, a single or a multiple
 substance medium with one or more phases might be used.
-The goal is to include 
+The goal is to include
 the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
 </HTML>"));
@@ -28,7 +28,7 @@ class KnownLimitations "Known limitations"
 
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Known limitations</font></h3>
- 
+
 <p>
 The Modelica_Fluid library has quite ambitious goals, especially,
 that every component can be connected in an arbitrary way,
@@ -40,7 +40,7 @@ every new approach, it takes some time that everything works
 as expected. We are aware of the following limitations of the current
 version:
 </p>
- 
+
 <ul>
 <li> The medium has to be defined in <b>every</b> component
      separately. The user would like to define the medium
@@ -55,13 +55,13 @@ version:
      mouse and select \"parameters\". Then select the desired medium
      and this medium will be used in all selected components.<br><br>
     </li>
- 
+
 <li> When clicking on the <b>Medium</b> parameter, a very long list
      of media is displayed. We would like to have better control for
      the end user what is shown or at least display it hierarchically.
      It is not yet clear how this should be improved, but we work on it.
      </li>
- 
+
 </ul>
 </html>"));
 end KnownLimitations;
@@ -71,7 +71,7 @@ end KnownLimitations;
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Overview</font></h3>
 <p>
-The Modelica_Fluid library provides basic interfaces and 
+The Modelica_Fluid library provides basic interfaces and
 components to model 1-dim. thermo-fluid flow in networks of pipes.
 It is not the intention that this library covers all
 application cases because the fluid flow area is too large and
@@ -93,7 +93,7 @@ This library has the following main features:
      for one-dimensional flow of a <b>single substance</b>
      or of a <b>mixture of substances</b> with optional <b>multiple phases</b>.
      All media models from Modelica.Media can be utilized when
-     connecting components. For one substance media, the additional arrays for 
+     connecting components. For one substance media, the additional arrays for
      multiple
      substance media have zero dimension and are therefore removed
      from the code during translation. The general connector definition
@@ -103,7 +103,7 @@ This library has the following main features:
      Modelica.Media if this is posssible. For example, all media can
      be utilized for the Modelica_Fluid.Sensors/Sources components.
      For some components only special media are possible, since additional
-     functionality is required. For example, 
+     functionality is required. For example,
      Modelica_Fluid.Components.Evaporator requires a two phase medium
      (extending from Modelica.Media.Interfaces.PartialTwoPhaseMedium).
      <br>&nbsp;</li>
@@ -116,27 +116,27 @@ This library has the following main features:
      (Note, T is temperature, p is pressure, d is density,
      h is specific enthalpy, and X is a mass fraction vector).
      <br>&nbsp;</li>
-<li> All components work for <b>incompressible</b> and <b>compressible</b> media. 
-     This is implemented by a small change in the initialization of a 
+<li> All components work for <b>incompressible</b> and <b>compressible</b> media.
+     This is implemented by a small change in the initialization of a
      component, if the medium is incrompressible. Otherwise, the equations
      of the components are not influenced by this property.<br>&nbsp;</li>
-<li> All components allow fluid flow in both directions, i.e., 
-     <b>reversing flow</b> is supported.<br>&nbsp;</li> 
-<li> Two or more components can be connected together. This means that 
-     the pressures of all connected ports are equal and the mass flow rates 
-     sum up to zero. Specific enthalpy, mass fractions and trace substances are 
+<li> All components allow fluid flow in both directions, i.e.,
+     <b>reversing flow</b> is supported.<br>&nbsp;</li>
+<li> Two or more components can be connected together. This means that
+     the pressures of all connected ports are equal and the mass flow rates
+     sum up to zero. Specific enthalpy, mass fractions and trace substances are
      mixed according to the mass flow rates.
      The momentum balance is only fulfilled if the assumption of equal port pressures holds,
      i.e. if two components are connected in a straight line with the same pipe diameter.
      If more detailed models are needed for a connection, e.g., if a changing pipe diameter
-     shall be taken into account, an appropriate fitting has to be 
+     shall be taken into account, an appropriate fitting has to be
      explicitly introduced into the connection point.<br>&nbsp;</li>
 <li> There is no restriction how components can be connected
      together. The resulting simulation performance however often strongly depends on the
      model structure and modeling assumptions made. In particular the direct connection of
-     fluid volumes generally results in high-index DAEs for the pressures. The direct 
+     fluid volumes generally results in high-index DAEs for the pressures. The direct
      connection of flow models generally results in algebraic equation systems.<br>&nbsp;</li>
-     
+
 </ul>
 </HTML>
 "));
@@ -149,7 +149,7 @@ This library has the following main features:
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Getting started</font></h3>
 <p>
-Please explore the 
+Please explore the
 <a href=\"Modelica://Modelica_Fluid.Examples\">Examples</a>,
 which provide simple models for a broad variety of applications.
 </p>
@@ -176,7 +176,7 @@ This section is partly based on the following paper:
 <dl>
 <dt> Elmqvist H., Tummescheit H., and Otter M.:</dt>
 <dd> <b>Object-Oriented Modeling of Thermo-Fluid Systems</b>.
-     Modelica 2003 Conference, Link&ouml;ping, Sweden, 
+     Modelica 2003 Conference, Link&ouml;ping, Sweden,
      pp. 269-286, Nov. 3-4, 2003.
      Download from:
      <a href=\"http://www.modelica.org/Conference2003/papers/h40_Elmqvist_fluid.pdf\">http://www.modelica.org/Conference2003/papers/h40_Elmqvist_fluid.pdf</a>
@@ -192,7 +192,7 @@ This section is partly based on the following paper:
 <p>
 For one-dimensional flow
 along the coordinate \"x\", the following partial differential
-equations hold 
+equations hold
 </p>
 <table border=1 cellspacing=0 cellpadding=2>
   <tr><td> Mass balance</td>
@@ -213,7 +213,7 @@ equations hold
           v(x,t): mean velocity<br>
           p(x,t): mean pressure<br>
           T(x,t): mean temperature<br>
-          &rho;(x,t): mean density<br> 
+          &rho;(x,t): mean density<br>
           u(x,t): specific internal energy<br>
           z(x): height over ground<br>
           A(x): area perpendicular to direction x<br>
@@ -233,20 +233,20 @@ the \"energy balance 2\":
       <td> <img src=\"../Images/UsersGuide/energyBalance2.png\"></td>
   </tr>
 </table>
- 
+
 <p>
-This formulation separates the internal energy of the fluid from the kinetic energy of fluid flow. 
+This formulation separates the internal energy of the fluid from the kinetic energy of fluid flow.
 The internal energy is treated by the energy balance 2, the kinetic energy is treated by the momentum balance.
 This generally simplifies the evaluation of medium properties and the formulation of fluid models.
 </p>
 <p>
 <b>All components</b> of the Fluid library use the <b>energy balance 2</b> equation.
-Many components, like StaticPipe, Valves and Fittings, assume an isenthalpic state transformation, 
+Many components, like StaticPipe, Valves and Fittings, assume an isenthalpic state transformation,
 neglecting changes of kinetic energy due to changes in the cross flow area or fluid density though.
 </p>
 <p>
-Fluid ports represent the internal energy by enthalpies; the kinetic energy by mass flow rates. 
-Connections between fluid ports generally conserve mass and internal energy. 
+Fluid ports represent the internal energy by enthalpies; the kinetic energy by mass flow rates.
+Connections between fluid ports generally conserve mass and internal energy.
 Kinetic energy is only conserved if the cross flow areas and the fluid densities of all connected components are equal
 at the boundaries represented by the ports. Explicit fitting models need to be introduced otherwise.
 </p>
@@ -260,7 +260,7 @@ at the boundaries represented by the ports. Explicit fitting models need to be i
 <h3><font color=\"#008000\" size=5>Upstream discretization</font></h3>
 <p>
 When implementing a Fluid component, the difficult arises that
-the value of intensive quantities (such as p, T, &rho;) 
+the value of intensive quantities (such as p, T, &rho;)
 shall be accessed from the
 <b>upstream</b> volume. For example, if the fluid flows
 from volume A to volume B, then the intensive quantities of
@@ -271,57 +271,57 @@ on the fluid between the two volumes.
 </p>
 <p>
 In the Modelica_Fluid library, such a situation is handeled
-with the following code fragment 
+with the following code fragment
 (from Interfaces.PartialTwoPortTransport):
 </p>
-<pre>    <b>replaceable package</b> Medium =  
-                   Modelica.Media.Interfaces.PartialMedium 
+<pre>    <b>replaceable package</b> Medium =
+                   Modelica.Media.Interfaces.PartialMedium
                    <b>annotation</b>(choicesAllMatching = <b>true</b>);
-  
-    Interfaces.FluidPort_a port_a(<b>redeclare package</b> Medium = Medium); 
-    Interfaces.FluidPort_b port_b(<b>redeclare package</b> Medium = Medium); 
- 
-    Medium.ThermodynamicState port_a_state_inflow 
+
+    Interfaces.FluidPort_a port_a(<b>redeclare package</b> Medium = Medium);
+    Interfaces.FluidPort_b port_b(<b>redeclare package</b> Medium = Medium);
+
+    Medium.ThermodynamicState port_a_state_inflow
                     \"Medium state close to port_a for inflowing mass flow\";
-    Medium.ThermodynamicState port_b_state_inflow 
+    Medium.ThermodynamicState port_b_state_inflow
                     \"Medium state close to port_b for inflowing mass flow\";
- 
-  <b>equation</b> 
+
+  <b>equation</b>
     // Isenthalpic state transformation (no storage and no loss of energy)
     port_a.h_outflow  = <b>inStream</b>(port_b.h_outflow);
     port_b.h_outflow  = <b>inStream</b>(port_a.h_outflow);
- 
+
     port_a.Xi_outflow = <b>inStream</b>(port_b.Xi_outflow);
     port_b.Xi_outflow = <b>inStream</b>(port_a.Xi_outflow);
- 
+
     // Mass balance
     port_a.m_flow + port_b.m_flow = 0;
- 
+
     // Medium states for inflowing medium
     port_a_state_inflow = Medium.setState_phX(port_a.p, port_b.h_outflow, port_b.Xi_outflow);
     port_b_state_inflow = Medium.setState_phX(port_b.p, port_a.h_outflow, port_a.Xi_outflow);
- 
+
     // Densities close to the parts when mass flows in to the respective port
     port_a_d_inflow = Medium.density(port_a_state_inflow);
     port_b_d_inflow = Medium.density(port_b_state_inflow);
- 
+
     // Pressure drop correlation (k_ab, k_ba are the loss factors for the two flow
     // directions; e.g. for a circular device: k = 8*zeta/(pi*diameter)^2)^2)
-    m_flow = Utilities.regRoot2(port_a.p - port_b.p, dp_small, 
+    m_flow = Utilities.regRoot2(port_a.p - port_b.p, dp_small,
                                 port_a_d_inflow/k1, port_b_d_inflow/k2);
 </pre>
 <p>
 The medium states for inflowing media can be used to compute density and dynamic
 viscosity which in turn can be use to formulate the pressure drop equation.
-The standard pressure drop equation 
+The standard pressure drop equation
 </p>
- 
+
 <pre>
    dp = port_a - port_b;
    m_flow = sqrt(2/(zeta*diameter))*if dp >= 0 then  sqrt(dp)
                                                else -sqrt(-dp)
 </pre>
- 
+
 <p>
 cannot be used, since the function has an infinite derivative at dp=0.
 Instead the region around zero mass flow rate must be regularized using
@@ -330,24 +330,24 @@ This requires to have density and/or other medium properties for both
 flow directions at the same time. These media properties can be computed
 from the medium states of the inflowing fluid at the two ports.
 </p>
- 
+
 <p>
 If the above component is connected between two volumes, i.e.,
 the independent medium variables in port_a and port_b are
 usually states, then port_a.h and port_b.h are either states
 (i.e., known quantities in the model) or are computed from
-states. In either case they are \"known\". In such a situation, 
+states. In either case they are \"known\". In such a situation,
 all equations can be directly evaluated without any problems.
 Zero or reversed mass flow rate does not pose any problems because
 the medium properties are always computed for both flow directions
 and are then used in the regularization function.
 </p>
- 
+
 <p>
 If 3 or more components are connected together, it can be shown
 that a system of non-linear algebraic equations appear.
 The equations are written by purpose in such a form, that
-a tool can select mass flow rates and pressures as iteration 
+a tool can select mass flow rates and pressures as iteration
 variables of this system. The advantage is that these iteration
 variables are continuous and even often differentiable. The
 alternative to use the medium states as iteration variables
@@ -375,7 +375,7 @@ one point as shown in the next figure:
 <p>
 In such a case the balance equations define <b>ideal mixing</b>,
 i.e., the upstream discretization scheme of each component uses
-values that result from ideal mixing in 
+values that result from ideal mixing in
 an infinitely small time period. If more realistic modelling
 is desired that takes into account mixing losses, an explicit
 model has to be used in the connection point.
@@ -385,14 +385,14 @@ model has to be used in the connection point.
 For a single substance medium, the connector definition in
 Modelica_Fluid.Interfaces.FluidPort reduces to
 </p>
- 
+
 <pre>
-  <b>connector</b> FluidPort 
+  <b>connector</b> FluidPort
      <b>replaceable package</b> Medium = Modelica.Media.Interfaces.PartialMedium;
-  
+
      <b>flow</b> Medium.MassFlowRate m_flow;
               \"Mass flow rate from the connection point into the component\"
-  
+
      Medium.AbsolutePressure        p \"Pressure in the connection point\";
      <b>stream</b> Medium.SpecificEnthalpy h_outflow
                \"Specific enthalpy close to the connection point if m_flow &lt; 0\"
@@ -400,7 +400,7 @@ Modelica_Fluid.Interfaces.FluidPort reduces to
 </pre>
 <p>
 The first statement defines the Medium flowing through the connector.
-In a medium, medium specific types such as \"Medium.AbsolutePressure\" 
+In a medium, medium specific types such as \"Medium.AbsolutePressure\"
 are defined that contain medium specific values for the min, max and
 nominal attributes. Furthermore, Medium.MassFlowRate is defined as:
 </p>
@@ -409,35 +409,35 @@ nominal attributes. Furthermore, Medium.MassFlowRate is defined as:
                                     quantity=\"MassFlowRate.\" + mediumName, ...);
 </pre>
 <p>
-A Modelica translator will check that the quantity and unit attributes 
+A Modelica translator will check that the quantity and unit attributes
 of connected interfaces are identical. Therefore, an error occurs,
 if connected FluidPorts do not have a medium with the same medium name.
 </p>
- 
-<p> 
-A connector should have only the minimal number of variables to 
+
+<p>
+A connector should have only the minimal number of variables to
 describe the interface, otherwise there will be connection
 restrictions in certain cases. Therefore, in the connector
-no redundant variables are present, e.g., the temperature T 
+no redundant variables are present, e.g., the temperature T
 is not present because it can be computed from the connector
 variables pressure p and specific enthalpy h.
 </p>
 <h4><font color=\"#008000\">Stream connector</font></h4>
 <p>
-FluidPort is a stream connector, because some connector variables 
-have the stream prefix. The Medium definition and the stream variables 
-are associated with the only flow variable (m_flow) that defines a fluid 
-stream. The Medium and the stream variables are transported with this flow 
-variable. The stream variables h_outflow and Xi_outflow are the stream properties 
-inside the component close to the boundary, when fluid flows out of the component 
-into the connection point. The stream properties for the other flow direction 
-can be inquired with the built-in operator inStream(..). The value of the stream 
-variable corresponding to the actual flow direction can be inquired through the 
+FluidPort is a stream connector, because some connector variables
+have the stream prefix. The Medium definition and the stream variables
+are associated with the only flow variable (m_flow) that defines a fluid
+stream. The Medium and the stream variables are transported with this flow
+variable. The stream variables h_outflow and Xi_outflow are the stream properties
+inside the component close to the boundary, when fluid flows out of the component
+into the connection point. The stream properties for the other flow direction
+can be inquired with the built-in operator inStream(..). The value of the stream
+variable corresponding to the actual flow direction can be inquired through the
 built-in operator actualStream(..).
 </p><p>
 Here is an example to illustrate modeling with stream connectors:
 </p>
- 
+
 <pre>
 model MixingVolume \"Volume that mixes two flows\"
   replaceable package Medium = Modelica.Media.Interfaces.PartialPureSubstance;
@@ -452,22 +452,22 @@ equation
   port_b.p         = medium.p;
   port_a.h_outflow = medium.h;  // The stream variable always corresponds to
   port_b.h_outflow = medium.h;  // the properties of the fluid holdup
- 
+
   // Total quantities
   m = V*medium.d;
   U = m*medium.u;
    // Mass and energy balance (actualStream(..) is a built-in operator for streams to
   // compute the right h, depending on the flow direction)
   der(m) = port_a.m_flow + port_b.m_flow;
-  der(U) = port_a.m_flow*actualStream(port_a.h_outflow) + 
+  der(U) = port_a.m_flow*actualStream(port_a.h_outflow) +
            port_b.m_flow*actualStream(port_b.h_outflow);
 end MixingVolume;
 </pre>
- 
+
 <h4><font color=\"#008000\">Balance equations of connection point</font></h4>
 <p>
-When connecting two or more ports of the type FluidPort it is important 
-to know that the momentum balance is not fulfilled in general, since 
+When connecting two or more ports of the type FluidPort it is important
+to know that the momentum balance is not fulfilled in general, since
 the pressures are set equal.
 </p>
 <p>
@@ -493,7 +493,7 @@ equation might be used in a simulation program. As a consequence, these
 semi-empirical equations can nearly never be used blindly but must
 be slightly modified or adapted in order that obvious
 simulation problems are avoided. Below, examples are given to
-demonstrate what problems occur and how to regularize the characteristics:  
+demonstrate what problems occur and how to regularize the characteristics:
 </p>
 <h4><font color=\"#008000\">Square root function</font></h4>
 <p>
@@ -549,8 +549,8 @@ where \"delta\" is the size of the small region around zero where the
 sqrt() function is approximated by another function. The plot of the
 function above is practically identical to the one of the original function.
 However, it has a finite derivative at x=0 and is differentiable upto
-any order. With the default value of delta=0.01, the difference between 
-the function above and regRoot(x) is 16% around x=0.01, 0.25% around x=0.1 
+any order. With the default value of delta=0.01, the difference between
+the function above and regRoot(x) is 16% around x=0.01, 0.25% around x=0.1
 and 0.0025% around x=1.
 </p>
 </html>
@@ -561,43 +561,43 @@ and 0.0025% around x=1.
 
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Wall friction</font></h3>
- 
+
 <p>
 One important special case for a pressure loss is the friction at the
 wall of a pipe under the assumption of quasi steady state flow (i.e., the
 mass flow rate varies only slowly). In this section it is explained how this case is
 handeled in the Modelica_Fluid library for pipes with
 <b>nonuniform roughness</b>, including the smooth pipe
-as a special case (see 
+as a special case (see
 <a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.WallFriction\">Pipes.BaseClasses.WallFriction</a>.
-The treatment is non-standard in order to get a 
+The treatment is non-standard in order to get a
 numerically well-posed description.
 </p>
- 
+
 <p>
 For pipes with circular cross section the pressure drop is computed as:
 </p>
- 
+
 <pre>
    dp = &lambda;(Re,<font face=\"Symbol\">D</font>)*(L/D)*&rho;*v*|v|/2
       = &lambda;(Re,<font face=\"Symbol\">D</font>)*8*L/(&pi;^2*D^5*&rho;)*m_flow*|m_flow|
       = &lambda;2(Re,<font face=\"Symbol\">D</font>)*k2*sign(m_flow);
- 
+
 with
    Re     = |v|*D*&rho;/&mu;
-          = |m_flow|*4/(&pi;*D*&mu;)     
+          = |m_flow|*4/(&pi;*D*&mu;)
    m_flow = A*v*&rho;
    A      = &pi;*(D/2)^2
    &lambda;2     = &lambda;*Re^2
    k2     = L*&mu;^2/(2*D^3*&rho;)
 </pre>
- 
+
 <p>
 where
 </p>
 <ul>
 <li> L is the length of the pipe.</li>
-<li> D is the diameter of the pipe. If the pipe has not a 
+<li> D is the diameter of the pipe. If the pipe has not a
      circular cross section, D = 4*A/P, where A is the cross section
      area and P is the wetted perimeter.</li>
 <li> &lambda; = &lambda;(Re,<font face=\"Symbol\">D</font>) is the \"usual\" wall friction coefficient.</li>
@@ -617,71 +617,71 @@ where
 The first form with &lambda; is used and presented in textbooks,
 see \"blue\" curve in the next figure:
 </p>
- 
+
 <IMG SRC=\"../Images/Components/PipeFriction1.png\" ALT=\"PipeFriction1\">
- 
+
 <p>
-This form is not suited for a simulation program since 
-&lambda; = 64/Re if Re &lt; 2000, i.e., a division by zero occurs for 
-zero mass flow rate because Re = 0 in this case. 
-More useful for a simulation model is the friction coefficient 
-&lambda;2 = &lambda;*Re^2, because &lambda;2 = 64*Re if Re &lt; 2000 and 
-therefore no problems for zero mass flow rate occur. 
+This form is not suited for a simulation program since
+&lambda; = 64/Re if Re &lt; 2000, i.e., a division by zero occurs for
+zero mass flow rate because Re = 0 in this case.
+More useful for a simulation model is the friction coefficient
+&lambda;2 = &lambda;*Re^2, because &lambda;2 = 64*Re if Re &lt; 2000 and
+therefore no problems for zero mass flow rate occur.
 The characteristic of &lambda;2 is shown in the next figure and is
 used in Modelica_Fluid:
 </p>
- 
+
 <IMG SRC=\"../Images/Components/PipeFriction2.png\" ALT=\"PipeFriction2\">
- 
+
 <p>
 The pressure loss characteristic is divided into three regions:
 </p>
- 
+
 <ul>
-<li> <b>Region 1</b>: 
+<li> <b>Region 1</b>:
      For <b>Re &le; 2000</b>, the flow is <b>laminar</b> and the exact solution of the
      3-dim. Navier-Stokes equations (momentum and mass balance) is used under the
      assumptions of steady flow, constant pressure gradient and constant
      density and viscosity (= Hagen-Poiseuille flow) leading to &lambda;2 = 64*Re.
      Therefore:
-     <pre> 
+     <pre>
         dp = 128*&mu;*L/(&pi;*D^4*&rho;)*m_flow
      </pre>
-</li> 
- 
+</li>
+
 <li> <b>Region 3</b>:
      For <b>Re &ge; 4000</b>, the flow is <b>turbulent</b>.
      Depending on the calculation direction (see \"inverse formulation\"
-     below) either of two explicite equations are used. If the pressure drop dp 
+     below) either of two explicite equations are used. If the pressure drop dp
      is assumed to be known, &lambda;2 = |dp|/k2. The
      Colebrook-White equation
      <i>[Colebrook 1939; Idelchik 1994, p. 83, eq. (2-9)]</i>:
      <pre>
- 
+
         1/sqrt(&lambda;) = -2*lg( 2.51/(Re*sqrt(&lambda;)) + 0.27*<font face=\"Symbol\">D</font>)
      </pre>
-     gives an implicit relationship between Re and &lambda;. 
-     Inserting &lambda;2 = &lambda;*Re^2 allows to solve this equation analytically 
+     gives an implicit relationship between Re and &lambda;.
+     Inserting &lambda;2 = &lambda;*Re^2 allows to solve this equation analytically
      for Re:
      <pre>
- 
+
          Re = -2*sqrt(&lambda;2)*lg(2.51/sqrt(&lambda;2) + 0.27*<font face=\"Symbol\">D</font>)
      </pre>
      Finally, the mass flow rate m_flow is computed from Re via
      m_flow = Re*&pi;*D*&mu;/4*sign(dp).
      These are the <b>red</b> curves in the diagrams above.<br>
      If the mass flow rate is assumed known (and therefore implicitly
-     also the Reynolds number), then &lambda;2 is computed by an 
-     approximation of the inverse of the Colebrook-White equation 
+     also the Reynolds number), then &lambda;2 is computed by an
+     approximation of the inverse of the Colebrook-White equation
      <i>[Swamee and Jain 1976;
      Miller 1990, p. 191, eq.(8.4)]</i> adapted to &lambda;2:
      <pre>
- 
+
         &lambda;2 = 0.25*(Re/lg(<font face=\"Symbol\">D</font>/3.7 + 5.74/Re^0.9))^2
      </pre>
      The pressure drop is then computed as dp = k2*&lambda;2*sign(m_flow).
      These are the <b>blue</b> curves in the diagrams above.<br>&nbsp;</li>
- 
+
 <li> <b>Region 2</b>:
      For <b>2000 &le; Re &le; 4000</b> there is a transition region between laminar
      and turbulent flow. The value of &lambda;2 depends on more factors as just
@@ -690,13 +690,13 @@ The pressure loss characteristic is divided into three regions:
      The deviation from the laminar region depends on the
      relative roughness. A laminar flow at Re=2000 is only reached for smooth pipes.
      The deviation Reynolds number Re1 is computed according to
-     <i>[Samoilenko 1968; Idelchik 1994, p. 81, sect. 2.1.21]</i> as: 
+     <i>[Samoilenko 1968; Idelchik 1994, p. 81, sect. 2.1.21]</i> as:
      <pre>
- 
+
         Re1 = 745*e^(if <font face=\"Symbol\">D</font> &le; 0.0065 then 1 else 0.0065/<font face=\"Symbol\">D</font>)
      </pre>
      These are the <b>blue</b> curves in the diagrams above.<br>
-     Between Re1=Re1(<font face=\"Symbol\">d</font>/D) and Re2=4000, 
+     Between Re1=Re1(<font face=\"Symbol\">d</font>/D) and Re2=4000,
      &lambda;2 is approximated by a cubic
      polynomial in the \"lg(&lambda;2) - lg(Re)\" chart (see figures above) such that the
      first derivative is continuous at these two points. In order to avoid
@@ -753,19 +753,19 @@ account by the following formula derived by Voronin
 </pre>
 <p>
 where &kappa; is the isentropic coefficient
-(for ideal gases, &kappa; is the ratio of specific heat capacities cp/cv). 
+(for ideal gases, &kappa; is the ratio of specific heat capacities cp/cv).
 An appreciable decrease in the coefficent \"&lambda;_comp\" is observed
 only in a narrow transonic region and also at supersonic flow velocities
 by about 15% <i>[Idelchick 1994, p. 97, sect. 2.1.81]</i>.
-This effect is not yet included in Modelica_Fluid. 
-Another restriction is that the pressure drop model is valid 
-only for steady state or slowly changing mass flow rate. 
-For large fluid acceleration, the pressure drop depends additionally 
+This effect is not yet included in Modelica_Fluid.
+Another restriction is that the pressure drop model is valid
+only for steady state or slowly changing mass flow rate.
+For large fluid acceleration, the pressure drop depends additionally
 on the frequency of the changing mass flow rate.
 </p>
- 
+
 <h4><font color=\"#008000\">Inverse formulation</font></h4>
- 
+
 <p>
 In the \"Advanced menu\" it is possible via parameter
 \"from_dp\" to define in which form the
@@ -779,24 +779,24 @@ pressure drop equation is actually evaluated (<b>default</b> is from_dp = <b>tru
 \"from_dp\" can be useful to avoid nonlinear systems of equations
 in cases where the inverse pressure loss function is needed.
 </p>
- 
- 
+
+
 <h4><font color=\"#008000\">Summary</font></h4>
- 
+
 <p>
 A detailed pressure drop model for pipe wall friction is
 provided in the form m_flow = f1(dp, <font face=\"Symbol\">D</font>) or
 dp = f2(m_flow, <font face=\"Symbol\">D</font>).
-These functions are continuous and differentiable, 
-are provided in an explicit form without solving non-linear equations, 
+These functions are continuous and differentiable,
+are provided in an explicit form without solving non-linear equations,
 and do behave well also at small mass flow rates. This pressure drop
-model can be used stand-alone in a static momentum balance and in 
-a dynamic momentum balance as the friction pressure drop term. 
+model can be used stand-alone in a static momentum balance and in
+a dynamic momentum balance as the friction pressure drop term.
 It is valid for incompressible and compressible flow up to a Mach number of 0.6.
 </p>
- 
+
 <h4><font color=\"#008000\">References</font></h4>
- 
+
 <dl><dt>Colebrook F. (1939):</dt>
     <dd><b>Turbulent flow in pipes with particular reference to the transition
          region between the smooth and rough pipe laws</b>.
@@ -820,7 +820,7 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
            turbulent gas flow</b>.
            Inzh. Fiz. Zh., vol. 2, no. 11, pp. 81-85.</dd>
 </dl>
- 
+
 </html>
 "));
   end WallFriction;
@@ -829,68 +829,68 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
 
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Pump characteristics</font></h3>
- 
+
 <p>
-The control valves in 
+The control valves in
 <a href=\"Modelica://Modelica_Fluid.Valves\">Modelica_Fluid.Valves</a>
 have the parameters <b>Kv</b> and <b>Cv</b>. They are defined
 as unit-less variables, but in the description text a unit
 is given. The reason for this definition is the following:
 </p>
- 
+
 <p>
 The basic equation for valves is:
 </p>
- 
+
 <pre>
   q = Av*sqrt(dp/rho)
 </pre>
- 
+
 <p>
 In SI units, [q] is m3/s, [dp] is Pascal, [rho] is [kg/m3], and Av is an area, thus [Av] = m2. Basically, the equation stems from Bernoulli's law. Av is roughly 1.4 times the area of the valve throat. Now, usually valves aren't so big that their throat area is of the order of magnitude of square meters - depending on the applications it is from a few square millimeters to a few square centimeters. Therefore, in the common engineering practice, the following equations are used:
 </p>
- 
+
 <p>
 Europe:
 </p>
- 
+
 <pre>
   q = Kv sqrt(dp/(rho/rho0)) , with [q] = m3/h, [dp] = bar
 </p>
- 
+
 <p>
 US:
 </p>
- 
+
 <pre>
   q = Cv sqrt(dp/(rho/rho0)) , with [q] = USG/min, [dp] = psi
 </p>
- 
+
 <p>
 In both cases rho0 is the density of cold water at 4 °C, 999 kg/m3. Note that these equations use relative, not absolute densities.
 </p>
- 
+
 <p>
 It turns out that Kv = 1e6/27.7*Av and Cv = 1e6/24*Av, so both US and EU engineers get more or less the same numbers (just by sheer luck), with a range between a few units and a few hundred units for typical industrial applications, and everybody is happy.
 </p>
- 
+
 <p>
 Now, we've got two problems here. First, depending on the unit, we change the equation: with SI units, we use the density, with non-SI units, we use the relative density. So the quantities (not only the units!) of Av and Cv/Kv are different.
 </p>
- 
+
 <p>
 Second, the units of Kv and Cv are usually labelled \"m3/h\" and \"USG/min\", but as a matter of fact they are different, as can be seen from the equations above: they are actually
 m3/(h*sqrt(bar)) and USG/(min*sqrt(psi)). If I have a valve with Kv = 10 m3/h, it means I get 10 m3/h \"for a pressure drop of 1 bar\". Unfortunately, this is not correct from the point of view of strict dimensional analysis, but nobody uses sqrt(Pa) or sqrt(bar).
 </p>
- 
+
 <p>
 You might think this is crazy (it is, expecially when you try to explain it), but as a matter of fact the valve coefficient is <b>never</b> given in square meters in any catalog or datasheet; Cv is still the most used (even in Europe), followed by Kv. So, it will be very inconvenient for users to type in Av in square meters.
 </p>
- 
+
 <p>
 The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fact that m3/h and USG/min are not the real units of Cv and Kv, so we can't use the general unit conversion mechanism, put them just as mnemonic labels in the comment, use non-dimensional coefficients in the interface, and then define properly dimensioned unit conversion within the model
 </p>
- 
+
 </html>
 "));
   end ValveCharacteristics;
@@ -901,38 +901,38 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
 
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
- 
+
 <h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-09</font></h3>
- 
+
 <p>
 Modelica_Fluid was refactored and finalized for the release:
 </p>
- 
+
 <ul>
 <li> Refactoring of the code<br>
-     This became necessary as the previous release Modelica_Fluid Streams Beta3 
+     This became necessary as the previous release Modelica_Fluid Streams Beta3
      still reflected the long development history, while the basic concepts had been crystalized.
      Please consult the subversion control (SVN) logs for individual changes.</li>
-  
+
 <li> Device oriented package names<br>
      The former sub-packages Junctions and PressureLosses have been combined into the new subpackage Fittings.
-     The former Pumps and Volumes.SweptVolume have become the initial version of fluid Machines. 
+     The former Pumps and Volumes.SweptVolume have become the initial version of fluid Machines.
      The former Volumes package is now called Vessels.</li>
- 
+
 <li> Complete implementation of one-dimenstional fluid flow<br>
-     The balance equations as documented in 
+     The balance equations as documented in
      <a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>
      are now completely implemented. The implementations with generic boundary flow and source terms find in:
      <ul>
-     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a>, 
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a>,
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>:
          Energy, Mass and Substance balances</li>
-     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>, 
-         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>: 
+     <li><a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>,
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>:
          Momentum balance</li>
-     </ul> 
-     Specific models combine the balances and define the boundary flow and source terms as appropriate. 
-     For instance 
+     </ul>
+     Specific models combine the balances and define the boundary flow and source terms as appropriate.
+     For instance
      <ul>
      <li><a href=\"Modelica:Modelica_Fluid.Vessels.Tank\">Vessels.Tank</a> extends from
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>,</li>
@@ -940,124 +940,124 @@ Modelica_Fluid was refactored and finalized for the release:
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>, besides
          <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialTwoPortTransport\">Interfaces.PartialTwoPortTransport</a>,</li>
      <li><a href=\"Modelica:Modelica_Fluid.Pipes.DynamicPipe\">Pipes.DynamicPipe</a> is based on
-         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a> and 
-         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>, 
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a> and
+         <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>,
          besides <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialTwoPort\">Interfaces.PartialTwoPort</a>.</li>
      </ul>
      All non-trivial mass and energy balances of Vessels, Machines and Fittings have been replaced with PartialLumpedVolume.
      The mass and energy balances of Pipes are based on PartialDistributedVolume.<br>
      See <a href=\"Modelica:Modelica_Fluid.Examples.BranchingDynamicPipes\">Examples.BranchingDynamicPipes</a>
      for an example utilizing the complete balance equations.
- 
+
 <li> New approach for the connection of distributed flow models<br>
-     The staggered grid approach offers different choices for the connection approach. So far the preferred modeling was to put full mass balances 
-     into the pipes and expose half momentum balances through the ports (ModelStructure a_v_b). 
-     This resulted in nonlinear equation systems for pressure/flow correlations in connection sets. 
-     A new default ModelStructure av_vb has been introduced putting full momentum balances into the models and 
-     exposing half mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided. 
-     High-index DAEs need to be treated instead in connection sets. 
+     The staggered grid approach offers different choices for the connection approach. So far the preferred modeling was to put full mass balances
+     into the pipes and expose half momentum balances through the ports (ModelStructure a_v_b).
+     This resulted in nonlinear equation systems for pressure/flow correlations in connection sets.
+     A new default ModelStructure av_vb has been introduced putting full momentum balances into the models and
+     exposing half mass balances through the ports (av_vb replaces the former avb). This way the nonlinear equation systems are avoided.
+     High-index DAEs need to be treated instead in connection sets.
      Alternatively a Fitting like SuddenExpansion can be introduced to account for different cross flow areas of connected flow models.</li>
- 
-<li> System (former Ambient)<br> 
+
+<li> System (former Ambient)<br>
      The use of the global System object has been extended towards common default values for
-     modeling assumptions and initialization. In particular steady-state initialization and 
-     complete steady-state simulation can now be specified system-wide. A new 
+     modeling assumptions and initialization. In particular steady-state initialization and
+     complete steady-state simulation can now be specified system-wide. A new
      Types.Init.Dynamics has been introduced, combining steady-state and initial conditions.
      The former Types.Init has become obsolete.
      <br>See <a href=\"Modelica:Modelica_Fluid.Examples.HeatingSystem\">Examples.HeatingSystem</a></li>.
- 
+
 <li> Extension of pumps for better consideration of zero flow and heat transfer with environment<br>
-     The simplified mass and energy balances have been replaced with a rigorous formulation. 
+     The simplified mass and energy balances have been replaced with a rigorous formulation.
      Moreover an optional heat transfer model can be configured for heat exchanged with the environment or the housing.<br>
      See <a href=\"Modelica:Modelica_Fluid.Machines.BaseClasses.PartialPump\">Machines.BaseClasses.PartialPump</a></li>
- 
+
 <li> Refinement of valves for flow reversal<br>
      All valves now use upstream discretization for reverting flow conditions.</li>
- 
+
 <li> Finalization of trace substrances<br>
-     Modelica_Fluid now provides a sound implementation for trace substances, 
+     Modelica_Fluid now provides a sound implementation for trace substances,
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
      <br>See <a href=\"Modelica:Modelica_Fluid.Examples.TraceSubstances.RoomCO2WithControls\">Examples.TraceSubstances.RoomCO2WithControls</a></li>.
- 
+
 <li> Vectorized ports for volumes<br>
-     The ports of models that typically have large volumes, like Vessels and Sources, 
-     have been vectorized. Formerly the connection of multiple flow models to the same port 
+     The ports of models that typically have large volumes, like Vessels and Sources,
+     have been vectorized. Formerly the connection of multiple flow models to the same port
      of such volume models resulted in unintended mixing equations for stream variables
-     in connection sets outside the volumes. The mixing takes place inside the volumes 
-     when using multiple ports. Moreover a 
-     <a href=\"Modelica:Modelica_Fluid.Fittings.MultiPort\">Fittings.MultiPort</a> 
-     has been introduced. It can be attached to components like pipes, 
+     in connection sets outside the volumes. The mixing takes place inside the volumes
+     when using multiple ports. Moreover a
+     <a href=\"Modelica:Modelica_Fluid.Fittings.MultiPort\">Fittings.MultiPort</a>
+     has been introduced. It can be attached to components like pipes,
      which don't have vectorized ports on their own.</li>
- 
-<li> Inverse parameterization of flow models with nominal operational conditions<br> 
+
+<li> Inverse parameterization of flow models with nominal operational conditions<br>
      Flow models have been added or extended to support the parameterization with nominal values
      (Machines.ControlledPump, Orifices.SimpleGenericOrifice, Pipes.BaseClasses.FlowModels.NominalTurbulentFlow).
      They are intended for early phases of system modeling, if geometries and flow characteristics
      are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
-     they can easily be replaced with more detailed models  
+     they can easily be replaced with more detailed models
      as more information shall be taken into account later on.<br>
      See <a href=\"Modelica:Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
- 
+
 <li> Replaceable HeatTransfer models<br>
      The Vessels and the Machines now have replaceable HeatTransfer models,
      besides the Pipes. All HeatTransfer models are optional.
-     The heat transfer models are parameterized with the Medium and the ThermodynamicState 
+     The heat transfer models are parameterized with the Medium and the ThermodynamicState
      of involved flow segments.<br>
      See <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialHeatTransfer\">Interfaces.PartialHeatTransfer</a>.
- 
+
 <li> All examples are working now (using Dymola 7.1).<br>
      The number of examples has been extended with the former critical test cases
      HeatingSystem and IncompressibleFluidNetwork. Moreover the HeatExchangers have been
      moved into Examples.</li>
- 
-</ul> 
- 
+
+</ul>
+
 <p>
-\"Check\" for the library is successful. \"Check with Simulation\" 
+\"Check\" for the library is successful. \"Check with Simulation\"
 (i.e., simulating all test models in the library) is successful
 with the exception:
 </p>
- 
+
 <ul>
 <li> Test.TestOverdeterminedInitialization.DynamicPipeInitialValues<br>
      The translation fails due to an initial value for pipe.medium[1].p, which is fixed by source.p.</li>
 </ul>
- 
+
 <h3><font color=\"#008000\">Version 1.0 Streams Beta 3, 2008-10-12</font></h3>
- 
+
 <p>
 Modelica_Fluid was further improved:
 </p>
- 
+
 <ul>
 <li> Volumes, tanks, junctions<br>
      Added asserts to require that ports are connected at most once.
-     If a user would perform more than one connection, ideal mixing 
+     If a user would perform more than one connection, ideal mixing
      takes place for the connected components and this is nearly never
      what the user would like to have </li>
- 
-<li> Ambient<br> 
+
+<li> Ambient<br>
      Renamed Ambient to System, including adaptation of models.<br>
-     Introduced default values system.flowDirection and 
-     as a comment system.initType. system.flowDirection is used in 
+     Introduced default values system.flowDirection and
+     as a comment system.initType. system.flowDirection is used in
      two port components as default.</li>
- 
+
 <li> GenericJunction<br>
      Corrected specification of flowDirection.<br>
      Added a HeatPort.</li>
- 
+
 <li> PartialDistributedFlow models<br>
-     Adapted determination of velocities to usage of 
+     Adapted determination of velocities to usage of
      upstream properties at ports.<br>
      Corrected and unified initialization of p_start[*] values.<li>
- 
+
 <li> DistributedPipe models<br>
      Changed treatment of port densities and viscosities
      to the treatment of the lumped pipe model. This way events are
      avoided if the mass flow rate crosses or approaches zero.<br>
      Correct determination of Reynolds numbers.<br>
      Added test model DistributedPipeClosingValve.</li>
- 
+
 <li> ControlValves<br>
      Changed flowCharacteristic into valveCharacteristic<br>
      Removed parameter Kv and added dp_nom, m_flow_nom from linear
@@ -1065,71 +1065,71 @@ Modelica_Fluid was further improved:
      Adapted Examples to new LinearValve and DiscreteValve,
      using nominal values instead of Kv. <br>
      Changed default flow coefficient selection to OpPoint<li>
- 
+
 <li> Fixed units for Kv and Cv in control valve models.</li>
- 
+
 <li> Updated tests for valves.</li>
- 
+
 <li> Bug in Modelica_Fluid.Test.TestComponents.Pumps.TestWaterPump2 corrected
      (complicated redeclaration issue).</li>
- 
+
 <li> Adapted AST_BatchPlant so that \"Check\" is sucessful.
      Simulation fails after 600 s.</li>
- 
+
 <li> Introduced
      density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
      as default value for nominal densities (previously it was a literal
      such as 1000).</li>
- 
+
 <li> Pumps<br>
      Updated energy balance equations for pumps (no division by zero anymore,
      fixed several bugs related to Np).<br>
      Added two more test cases for pumps.<br>
      Fixed pump initialization options.</li>
- 
+
 <li> PartialPump<br>
      Explanation for the energy balanced added as comment<br>
-     \"h=0\" replaced by \"h=Medium.h_default\" since otherwise an assert is triggered 
+     \"h=0\" replaced by \"h=Medium.h_default\" since otherwise an assert is triggered
      if \"h=0\" is not in the medium range.<br>
-     Fluid ports positioned in the middle line 
+     Fluid ports positioned in the middle line
      and using the same size as for all other components.</li>
- 
+
 <li> Pumps.Pump <br>
-     Resized input connector, so that it has the same size as the 
+     Resized input connector, so that it has the same size as the
      standard input connectors.<br>
      Changed icon text to input connector to \"N_in [rpm]\".<br>
      Added unit 1/min to the external and internal input connector.</li>
- 
+
 <li> PartialValve<br>
      fillcolor=white added to icon<br>
-     made line Thickness = Single, 
+     made line Thickness = Single,
      since icon does not look nice sometimes</li>
- 
+
 <li> All components<br>
      Changed %name color from black to blue
      (is a conversion bug, since Modelica 2 has blue as default
-     color whereas Modelica 3 has black and Dymola is not 
+     color whereas Modelica 3 has black and Dymola is not
      taking care off this).</li>
- 
+
 <li> Sources<br>
      Made icon elements unvisible, if corresponding input is disabled.</li>
- 
+
 <li> Valves, Pipes, PressureLosses, HeatExchangers, two port senors<br>
-     Added an arrow in the icon for the \"design flow direction\" from 
+     Added an arrow in the icon for the \"design flow direction\" from
      port_a to port_b.</li>
- 
+
 <li> Moved default initialization in \"System\" in to a comment, since no effect yet</li>
- 
-<li> Added the explanation from Francesco for Kv, Cv for valves in the 
+
+<li> Added the explanation from Francesco for Kv, Cv for valves in the
      users guide and added links in the corresponding valves to this description</li>
 </ul>
- 
+
 <p>
-\"Check\" for the library is successful. \"Check with Simulation\" 
+\"Check\" for the library is successful. \"Check with Simulation\"
 (i.e., simulating all test models in the library) is successful
 with the exceptions:
 </p>
- 
+
 <ul>
 <li> Examples.AST_BatchPlant.BatchPlant_StandardWater<br>
      Need to be fixed in a later release (requires quite a lot of work).</li>
@@ -1139,16 +1139,16 @@ with the exceptions:
      The goal is to work on methods how this can be handled.
      So, this is a principal problem that these models do not simulate.</li>
 </ul>
- 
- 
- 
+
+
+
 <h3><font color=\"#008000\">Version 1.0 Streams Beta 2, 2008-10-08</font></h3>
- 
+
 <p>
 Modelica_Fluid was transformed to Modelica 3 and to Modelica Standard
 library 3.0 (by automatic conversion). Further changes:
 </p>
- 
+
 <ul>
 <li> Emulated enumerations changed to real enumerations.</li>
 <li> Improved ControlValves code</li>
@@ -1172,7 +1172,7 @@ library 3.0 (by automatic conversion). Further changes:
 <li> Modelica_Fluid.Sources.Boundary_pT<br>
      Modelica_Fluid.Sources.Boundary_ph<br>
      Modelica_Fluid.Sources.MassFlowSource_T<br>
-     Changed default values of parameters reference_p, reference_T to 
+     Changed default values of parameters reference_p, reference_T to
      p_default, T_default (some have been xx_default, some reference_xx,
      it seems best to always use the same approach)</li>
 <li> Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow<br>
@@ -1201,14 +1201,14 @@ library 3.0 (by automatic conversion). Further changes:
      No default or start values for \"parameter LossFactorData data\"
      Changed the model to \"partial model\" to avoid warning messages</li>
 </ul>
- 
- 
+
+
 <h3><font color=\"#008000\">Version 1.0 Streams Beta 1, 2008-05-02</font></h3>
- 
+
 <p>
 Changed connectors to stream connectors and adapted the following sublibraries:
 </p>
- 
+
 <ul>
 <li> Volumes</li>
 <li> PressureLosses </li>
@@ -1221,11 +1221,11 @@ Changed connectors to stream connectors and adapted the following sublibraries:
 <li> Pumps </li>
 <li> Test and Exampleas (most of the examples and tests are simulating)</li>
 </ul>
- 
+
 <p>
 Other changes:
 </p>
- 
+
 <ul>
 <li> Introduced HeatPorts with vectorized icon in Modelica_Fluid.Interfaces</li>
 <li> Deleted Modelica_Fluid.WorkInProgress since it seems to be too much work
@@ -1276,21 +1276,21 @@ Other changes:
 <li> VersionBuild introduced, as well as automatic update of
      VersionBuild/VersionDate</li>
 </ul>
- 
- 
- 
+
+
+
 <h3><font color=\"#008000\">Version 1.0 Beta 4, 2008-04-26</font></h3>
- 
+
 <p>
 Changes according to the Modelica Design Meetings since the
 last beta version. This version is used to \"freeze\" the current
 development, in order to change to a version with a new
 connector design using stream variables.
 </p>
- 
- 
+
+
 <h3><font color=\"#008000\">Version 1.0 Beta 3, 2007-06-05</font></h3>
- 
+
 <p>
 Changes according to the Modelica Design Meetings since the
 Modelica'2006 conference, especially, improved initialization,
@@ -1299,18 +1299,18 @@ improved tank component, moved test models from Examples to
 new package Test, many more test models, etc.
 This version is slightly non-backward compatible to version 1.0 Beta 2.
 </p>
- 
- 
+
+
 <h3><font color=\"#008000\">Version 1.0 Beta 2, 2006-08-28</font></h3>
- 
+
 <p>
 Package considerably restructured and some new components added.
 New examples (ControlledTankSystem, AST_BatchPlant).
 </p>
- 
- 
+
+
 <h3><font color=\"#008000\">Version 0.96, 2006-01-08</font></h3>
- 
+
 <ul>
 <li> New package Modelica_Fluid.PressureLosses.</li>
 <li> New package Modelica_Fluid.WorkInProgress.</li>
@@ -1319,7 +1319,7 @@ New examples (ControlledTankSystem, AST_BatchPlant).
 <li> New components in Modelica_Fluid.Examples.</li>
 <li> Improved users guide.</li>
 </ul>
- 
+
 <h3><font color=\"#008000\">Version 0.910, 2005-10-25</font></h3>
 <ul>
 <li> Changes as decided on 41th-45th Modelica Design Meetings
@@ -1327,20 +1327,20 @@ New examples (ControlledTankSystem, AST_BatchPlant).
 </ul>
 <h3><font color=\"#008000\">Version 0.900, 2004-10-18</font></h3>
 <ul>
-<li> Changes as decided on 40th Modelica Design Meeting in Dresden 
+<li> Changes as decided on 40th Modelica Design Meeting in Dresden
      (see also minutes)
 </ul>
 <h3><font color=\"#008000\">Version 0.794, 2004-05-31</font></h3>
 <ul>
 <li> Sensors.mo, Examples/DrumBoiler.mo: extend sensors with user choice
      for measurement unit.</li>
-<li> Components.mo, Types.mo: moved components and types to 
+<li> Components.mo, Types.mo: moved components and types to
      package Examples.</li>
-<li> Moved Examples from <b>file</b> Modelica_Fluid/package.mo to 
-     Modelica.Media/Examples <b>subdirectory</b> and created separate 
+<li> Moved Examples from <b>file</b> Modelica_Fluid/package.mo to
+     Modelica.Media/Examples <b>subdirectory</b> and created separate
      file per sub-package. This shall simplify the maintenance of
      examples by different authors</li>
-<li> Moved Interfaces from file Modelica_Fluid/package.mo to 
+<li> Moved Interfaces from file Modelica_Fluid/package.mo to
      Modelica_Fluid/Interfaces.mo</li>
 </ul>
 <h3><font color=\"#008000\">Version 0.793, 2004-05-18</font></h3>
@@ -1356,7 +1356,7 @@ New examples (ControlledTankSystem, AST_BatchPlant).
 <h3><font color=\"#008000\">Version 0.792, 2003-11-07</font></h3>
 <p>
 This is the first consolidated version made up from
-several changes for Modelica'2003. 
+several changes for Modelica'2003.
 Modelica_Fluid is still quite far away
 from a library that could be included in the Modelica
 standard library.
@@ -1366,7 +1366,7 @@ standard library.
 <li><i>Oct., 2003</i><br>
        by Martin Otter: Adapted to latest design of the Modelica.Media
        library.<br>
-       by Ruediger Franke: Included sensor components and 
+       by Ruediger Franke: Included sensor components and
        Modelica_Fluid.Examples.DrumBoiler example.</li>
 <li><i>Sept., 2003</i><br>
        by Martin Otter: Changes according to the decisions of the
@@ -1428,7 +1428,7 @@ standard library.
   class ModelicaLicense2 "Modelica License 2"
 
       annotation (Documentation(info="<html>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">
 This page contains the &ldquo;Modelica License 2&rdquo; which was
 released by the Modelica Association on Nov. 19, 2008. It is used for
@@ -1438,21 +1438,21 @@ Modelica packages license their library also under &ldquo;Modelica
 License 2&rdquo;. Additionally, this document contains a description
 how to apply the license and has a &ldquo;Frequently Asked Questions&rdquo;
 section.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; line-height: 150%\">
 <A HREF=\"#1. The Modelica License 2|outline\">             The Modelica License 2</A>
-   (in other formats: 
+   (in other formats:
    <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2.html\">standalone html</A>,
    <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2.pdf\">pdf</A>,
    <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2.odt\">odt</A>,
    <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2.doc\">doc</A>)<br>
    <A HREF=\"#2. How to Apply the Modelica License 2|outline\">How to Apply the Modelica License 2</A><br>
    <A HREF=\"#3. Frequently Asked Questions|outline\">         Frequently Asked Questions</A><br>&nbsp;</P>
- 
+
 <hr>
 <H4><A NAME=\"_Ref208223390\"></A><A NAME=\"1. The Modelica License 2|outline\"></A>
 The Modelica License 2</H4>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>Preamble. </B>The goal of this license is that Modelica related
 model libraries, software, images, documents, data files etc. can be
@@ -1486,7 +1486,7 @@ Definitions.</B></P>
         <LI><P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
         &ldquo;Derivative Work&rdquo; is any modification of the Original
         Work which represents, as a whole, an original work of authorship.
-        For the matter of clarity and as examples: 
+        For the matter of clarity and as examples:
         </P>
         <OL style=\"list-style-type:upper-latin\">
                 <LI><P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
@@ -1501,7 +1501,7 @@ Definitions.</B></P>
                 <LI><P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
                 Derivative Work shall include classes that are copied from the
                 Original Work where declarations, equations or the documentation
-                are modified. 
+                are modified.
                 </P>
                 <LI><P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
                 Derivative Work shall include executables to simulate the models
@@ -1520,7 +1520,7 @@ Definitions.</B></P>
         describing how to modify the Original Work.</P>
         <LI><P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
         &ldquo;You&rdquo; means an individual or a legal entity exercising
-        rights under, and complying with all of the terms of, this License. 
+        rights under, and complying with all of the terms of, this License.
         </P>
         <LI><P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
         &ldquo;Modelica package&rdquo; means any Modelica library that is
@@ -1528,7 +1528,7 @@ Definitions.</B></P>
         &lt;Name&gt; ... </FONT></FONT><FONT FACE=\"Courier New, monospace\"><FONT SIZE=2 STYLE=\"font-size: 9pt\"><B>end</B></FONT></FONT><FONT FACE=\"Courier New, monospace\"><FONT SIZE=2 STYLE=\"font-size: 9pt\">
         &lt;Name&gt;;</FONT></FONT>&ldquo; Modelica language element.</P>
 </OL>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>2. </B><B>Grant of Copyright License. </B>Licensor grants You a
 worldwide, royalty-free, non-exclusive, sublicensable license, for
@@ -1564,12 +1564,12 @@ the duration of the copyright, to do the following:</P>
         <LI><P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
         To display the Original Work publicly.</P>
 </OL>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>3. </B><B>Acceptance. </B>Any use of the Original Work or a
 Derivative Work, or any action according to either Section 2a) to 2f)
 above constitutes Your acceptance of this License.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>4. </B><B>Designation of Derivative Works and of Modified Works.
 </B>The identifying designation of Derivative Work and of Modified
@@ -1580,18 +1580,18 @@ package is modified (besides fixing of errors, adding vendor specific
 Modelica annotations, using a subset of the classes of a Modelica
 package, or using another representation, e.g. a binary
 representation).</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>5. </B><B>Grant of Patent License.</B>
-Licensor grants You a worldwide, royalty-free, non-exclusive, sublicensable license, 
+Licensor grants You a worldwide, royalty-free, non-exclusive, sublicensable license,
 under patent claims owned by the Licensor or licensed to the Licensor by
 the owners of the Original Work that are embodied in the Original Work
-as furnished by the Licensor, for the duration of the patents, 
+as furnished by the Licensor, for the duration of the patents,
 to make, use, sell, offer for sale, have made, and import the Original Work
-and Derivative Works under the conditions as given in Section 2. 
-For the matter of clarity, the license regarding Derivative Works covers 
+and Derivative Works under the conditions as given in Section 2.
+For the matter of clarity, the license regarding Derivative Works covers
 patent claims to the extent as they are embodied in the Original Work only.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>6. Provision of </B><B>Source Code. </B>Licensor agrees to provide
 You with a copy of the Source Code of the Original Work but reserves
@@ -1603,7 +1603,7 @@ reproduce the Source Code from the binary representation if this is
 possible (e.g., by performing a copy of an encrypted Modelica
 package, if encryption allows the copy operation) or (b) request the
 Source Code from the Licensor who will provide it to You.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>7. </B><B>Exclusions from License Grant. </B>Neither the names of
 Licensor, nor the names of any contributors to the Original Work, nor
@@ -1621,7 +1621,7 @@ except as expressly stated in this License. Nothing in this License
 shall be interpreted to prohibit Licensor from licensing under terms
 different from this License any Original Work that Licensor otherwise
 would have a right to license.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>8. </B><B>Attribution Rights. </B>You must retain in the Source
 Code of the Original Work and of any Derivative Works that You
@@ -1638,7 +1638,7 @@ Original Work. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In case the Original Work or Derivative Work is not provided in
 Source Code, the Attribution Notices shall be appropriately
 displayed, e.g., in the documentation of the Derivative Work.</P>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>9. </B><B>Disclaimer
 of Warranty. <BR></B><U><B>The Original Work is provided under this
 License on an &quot;as is&quot; basis and without warranty, either
@@ -1648,7 +1648,7 @@ purpose. The entire risk as to the quality of the Original Work is
 with You.</B></U><B> </B>This disclaimer of warranty constitutes an
 essential part of this License. No license to the Original Work is
 granted by this License except under this disclaimer.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>10. </B><B>Limitation of Liability. </B>Under no circumstances and
 under no legal theory, whether in tort (including negligence),
@@ -1661,7 +1661,7 @@ goodwill, work stoppage, computer failure or malfunction, or any and
 all other commercial damages or losses. This limitation of liability
 shall not apply to the extent applicable law prohibits such
 limitation.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>11. </B><B>Termination. </B>This License conditions your rights to
 undertake the activities listed in Section 2 and 5, including your
@@ -1672,7 +1672,7 @@ intended to affect copyright exceptions and limitations. This License
 shall terminate immediately and You may no longer exercise any of the
 rights granted to You by this License upon your failure to observe
 the conditions of this license.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>12. </B><B>Termination for Patent Action. </B>This License shall
 terminate automatically and You may no longer exercise any of the
@@ -1683,7 +1683,7 @@ Original Work infringes a patent. This termination provision shall
 not apply for an action alleging patent infringement through
 combinations of the Original Work under combination with other
 software or hardware.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>13. </B><B>Jurisdiction. </B>Any action or suit relating to this
 License may be brought only in the courts of a jurisdiction wherein
@@ -1695,7 +1695,7 @@ scope of this License or after its termination shall be subject to
 the requirements and penalties of copyright or patent law in the
 appropriate jurisdiction. This section shall survive the termination
 of this License.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>14. </B><B>Attorneys&rsquo; Fees. </B>In any action to enforce the
 terms of this License or seeking damages relating thereto, the
@@ -1703,7 +1703,7 @@ prevailing party shall be entitled to recover its costs and expenses,
 including, without limitation, reasonable attorneys' fees and costs
 incurred in connection with such action, including any appeal of such
 action. This section shall survive the termination of this License.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; widows: 2; orphans: 2\">
 <B>15. </B><B>Miscellaneous. </B>
 </P>
@@ -1721,23 +1721,23 @@ action. This section shall survive the termination of this License.</P>
         this License or by law, and Licensor promises not to interfere with
         or be responsible for such uses by You.</P>
 </OL>
- 
+
 <hr>
- 
+
 <H4><A NAME=\"2. How to Apply the Modelica License 2|outline\"></A>
 How to Apply the Modelica License 2</H4>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">
 At the top level of your Modelica package and at every important
 subpackage, add the following notices in the info layer of the
 package:</P>
- 
+
 <table border=\"0\"><tr><td>&nbsp;&nbsp;&nbsp;</td><td>
 Licensed by &lt;Licensor&gt; under the Modelica License 2<br>
 Copyright &copy; &lt;year1&gt;-&lt;year2&gt;, &lt;name of copyright
-holder(s)&gt;. 
+holder(s)&gt;.
 </td></tr></table>
- 
+
 <table border=\"0\"><tr><td>&nbsp;&nbsp;&nbsp;</td><td>
 <I>This Modelica package is <U>free</U> software and
 the use is completely at <U>your own risk</U>;
@@ -1749,25 +1749,25 @@ or at
 <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2\">
 http://www.modelica.org/licenses/ModelicaLicense2</A>.
 </td></tr></table>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">Include
 a copy of the Modelica License 2 under
-<B>&lt;library&gt;.UsersGuide.ModelicaLicense2</B> 
+<B>&lt;library&gt;.UsersGuide.ModelicaLicense2</B>
 (use <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2.mo\">
 http://www.modelica.org/licenses/ModelicaLicense2.mo</A>). Furthermore, add
 the list of authors and contributors under
-<B>&lt;library&gt;.UsersGuide.Contributors</B> or 
+<B>&lt;library&gt;.UsersGuide.Contributors</B> or
 <B>&lt;library&gt;.UsersGuide.Contact</B>.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">For
 example, sublibrary Modelica.Blocks of the Modelica Standard Library
 may have the following notices:</P>
- 
+
 <table border=\"0\"><tr><td>&nbsp;&nbsp;&nbsp;</td><td>
 Licensed by Modelica Association under the Modelica License 2<br>
-Copyright &copy; 1998-2008, Modelica Association. 
+Copyright &copy; 1998-2008, Modelica Association.
 </td></tr></table>
- 
+
 <table border=\"0\"><tr><td>&nbsp;&nbsp;&nbsp;</td><td>
 <I>This Modelica package is <U>free</U> software and
 the use is completely at <U>your own risk</U>;
@@ -1779,25 +1779,25 @@ or at
 <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2\">
 http://www.modelica.org/licenses/ModelicaLicense2</A>.</I>
 </td></tr></table>
- 
- 
+
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">For
 C-source code and documents, add similar notices in the corresponding
 file.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">For
 images, add a &ldquo;readme.txt&rdquo; file to the directories where
 the images are stored and include a similar notice in this file.</P>
- 
- 
+
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">In
 these cases, save a copy of the Modelica License 2 in one directory
-of the distribution, e.g., 
+of the distribution, e.g.,
 <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2.html\">
 http://www.modelica.org/licenses/ModelicaLicense2.html</A>
 in directory <B>&lt;library&gt;/help/documentation/ModelicaLicense2.html</B>.</P>
- 
- 
+
+
 <hr>
 <H4><A NAME=\"_Ref202857474\"></A><A NAME=\"3. Frequently Asked Questions|outline\"></A>
 Frequently Asked Questions</H4>
@@ -1807,13 +1807,13 @@ Modelica packages and/or documents under Modelica License 2. Note,
 the answers to the questions below are not a legal interpretation of
 the Modelica License 2. In case of a conflict, the language of the
 license shall prevail.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\"><BR>
 </P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; color: green; font-size:140%\">
 <b>Using or Distributing a Modelica <U>Package</U> under the Modelica License 2</b></P>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>What are the main
 differences to the previous version of the Modelica License?</B></P>
 <OL>
@@ -1854,16 +1854,16 @@ differences to the previous version of the Modelica License?</B></P>
         documents, images and data files, contrary to version 1 that was
         dedicated for software only (so, version 2 is more general).</P>
 </OL>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>Can I distribute a
 Modelica package (under Modelica License 2) as part of my commercial
 Modelica modeling and simulation environment?</B></P>
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">Yes,
 according to Section 2c). However, you are not allowed to charge a
 fee for this part of your environment. Of course, you can charge for
-your part of the environment. 
+your part of the environment.
 </P>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>Can I distribute a
 Modelica package (under Modelica License 2) under a different
 license?</B></P>
@@ -1871,15 +1871,15 @@ license?</B></P>
 The license of an unmodified Modelica package cannot be changed
 according to Sections 2c) and 2d). This means that you cannot <U>sell</U>
 copies of it, any distribution has to be free of charge.</P>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>Can I distribute a
 Modelica package (under Modelica License 2) under a different license
 when I first encrypt the package?</B></P>
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">No.
 Merely encrypting a package does not qualify for Derivative Work and
 therefore the encrypted package has to stay under Modelica License 2.</P>
- 
- 
+
+
 <P STYLE=\"text-indent: 0pt\"><B>Can I distribute a
 Modelica package (under Modelica License 2) under a different license
 when I first add classes to the package?</B></P>
@@ -1887,9 +1887,9 @@ when I first add classes to the package?</B></P>
 The package itself remains unmodified, i.e., it is Original Work, and
 therefore the license for this part must remain under Modelica
 License 2. The newly added classes can be, however, under a different
-license. 
+license.
 </P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\"><B>Can
 I copy a class out of a Modelica package (under Modelica License 2)
 and include it </B><U><B>unmodified</B></U><B> in a Modelica package
@@ -1903,7 +1903,7 @@ one or more classes of it are under Modelica License 2.<BR>Note, a
 &ldquo;type&rdquo; class (e.g., type Angle = Real(unit=&rdquo;rad&rdquo;))
 can be copied and included unmodified under a commercial/proprietary
 license (for details, see the next question).</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\"><B>Can
 I copy a type class or </B><U><B>part</B></U><B> of a model, block,
 function, record, connector class, out of a Modelica package (under
@@ -1923,7 +1923,7 @@ introduced is sufficient to qualify for Derivative Work. Merely, just
 copying a class and changing, say, one character in the documentation
 of this class would be no Derivative Work and therefore the copied
 code would have to stay under Modelica License 2.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\"><B>Can
 I copy a class out of a Modelica package (under Modelica License 2)
 and include it in </B><U><B>modified </B></U><B>form in a
@@ -1936,7 +1936,7 @@ bug fixes, vendor specific annotations), it must remain under
 Modelica License 2. This means that your Modelica package could be
 under a commercial/proprietary license, but one or more parts of it
 are under Modelica License 2.</P>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>Can I distribute a
 &ldquo;save total model&rdquo; under my commercial/proprietary
 license, even if classes under Modelica License 2 are included?</B></P>
@@ -1946,7 +1946,7 @@ under your commercial/proprietary license, but the classes under
 Modelica License 2 must remain under Modelica License 2. This means
 you can distribute a &ldquo;save total model&rdquo;, but some parts
 might be under Modelica License 2.</P>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>Can I distribute a
 Modelica package (under Modelica License 2) in encrypted form?</B></P>
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">Yes.
@@ -1954,7 +1954,7 @@ Note, if the encryption does not allow &ldquo;copying&rdquo; of
 classes (in to unencrypted Modelica source code), you have to send
 the Modelica source code of this package to your customer, if he/she
 wishes it, according to article&nbsp;6.</P>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>Can I distribute an
 executable under my commercial/proprietary license, if the model from
 which the executable is generated uses models from a Modelica package
@@ -1970,7 +1970,7 @@ model can be simulated whereas previously it could not be simulated)
 and functionality available in the package is removed (e.g., to build
 up a new model by dragging components of the package is no longer
 poss"     + "ible with the executable).</P>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>Is my modification to
 a Modelica package (under Modelica License 2) a Derivative Work?</B></P>
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">It
@@ -1979,15 +1979,15 @@ original work of authorship&quot;, a derivative work must be
 different enough from the original or must contain a substantial
 amount of new material. Making minor changes or additions of little
 substance to a preexisting work will not qualify the work as a new
-version for such purposes. 
+version for such purposes.
 </P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\"><BR>
 </P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium; color: green; font-size:140%\">
 <b>Using or Distributing a Modelica <U>Document</U> under the Modelica License 2</b></P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\">This
 section is devoted especially for the following applications:</P>
 <OL>
@@ -2003,7 +2003,7 @@ section is devoted especially for the following applications:</P>
         packages and uses information which is available in the Modelica
         language specification and/or the corresponding Modelica package.</P>
 </OL>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>Can I sell a manual
 that was basically derived by extracting information automatically
 from a Modelica package under Modelica License 2 (e.g., a &ldquo;reference
@@ -2015,7 +2015,7 @@ the content is significantly modified (e.g. tables with interface
 information are constructed from the declarations of the public
 variables) qualifies as Derivative Work and there are no restrictions
 to charge a fee for Derivative Work under alternative 2d).</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\"><B>Can
 I copy a text passage out of a Modelica document (under Modelica
 License 2) and use it </B><U><B>unmodified</B></U><B> in my document
@@ -2025,7 +2025,7 @@ In case you distribute your document, the copied parts are still
 under Modelica License 2 and you are not allowed to charge a license
 fee for this part. You can, of course, charge a fee for the rest of
 your document.</P>
- 
+
 <P STYLE=\"text-indent: 0pt; font-weight: medium\"><B>Can
 I copy a text passage out of a Modelica document (under Modelica
 License 2) and use it in </B><U><B>modified</B></U><B> form in my
@@ -2035,7 +2035,7 @@ the creation of Derivative Works is allowed. In case the content is
 significantly modified this qualifies as Derivative Work and there
 are no restrictions to charge a fee for Derivative Work under
 alternative 2d).</P>
- 
+
 <P STYLE=\"text-indent: 0pt\"><B>Can I sell a printed
 version of a Modelica document (under Modelica License 2), e.g., the
 Modelica Language Specification?</B></P>
@@ -2052,22 +2052,22 @@ class Contact "Contact"
 
     annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Contact</font></h3>
- 
+
 <dl>
-<dt>The Modelica_Fluid library (this Modelica package) 
-    is developed by many people from different organizations (see list below). 
-    It is licensed under the 
+<dt>The Modelica_Fluid library (this Modelica package)
+    is developed by many people from different organizations (see list below).
+    It is licensed under the
     <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>
     by:<br>&nbsp;</dt>
 <dd>Modelica Association<br>
-    (Ideella Föreningar 822003-8858 in Linköping) <br>
-    c/o PELAB, IDA, Linköpings Universitet<br> 
-    S-58183 Linköping<br> 
+    (Ideella F&ouml;reningar 822003-8858 in Link&ouml;ping) <br>
+    c/o PELAB, IDA, Link&ouml;pings Universitet<br>
+    S-58183 Link&ouml;ping<br>
     Sweden<br>
     email: <a href=\"mailto:Board@Modelica.org\">Board@Modelica.org</a><br>
     web: <a href=\"http://www.Modelica.org\">http://www.Modelica.org</a><br>&nbsp;<br>&nbsp;</dd>
 </dl>
- 
+
 <dl>
 <dt>The development of the Modelica_Fluid package is organized by<br>&nbsp;</dt>
 <dd>
@@ -2098,19 +2098,19 @@ class Contact "Contact"
 </dl>
 <p><b>Acknowledgements:</b></p>
 <p>
-The development of this library has been a collaborative effort 
+The development of this library has been a collaborative effort
 and many have contributed.
 </p>
 <ul>
 <li> The previous design of this library (from beginning of 2008) is based on the paper
-     Elmqvist H., Tummescheit H., and Otter M.: 
+     Elmqvist H., Tummescheit H., and Otter M.:
      <a href=\"http://www.modelica.org/events/Conference2003/papers/h40_Elmqvist_fluid.pdf\">
      Object-Oriented Modeling of Thermo-Fluid Systems</a>.
-     Modelica 2003 Conference, Linköping, Sweden, pp. 269-286, Nov. 3-4, 2003.<br>
+     Modelica 2003 Conference, Link&ouml;ping, Sweden, pp. 269-286, Nov. 3-4, 2003.<br>
      This design has been partly changed, especially by the introduction of the streams
-     concept.</li>  
+     concept.</li>
 
-<li> The Fluid library development was organized in 2002-2004 by Martin 
+<li> The Fluid library development was organized in 2002-2004 by Martin
      Otter, since 2004 it is organized by Francesco Casella, and
      since 2008 it is organized jointly by Francesco Casella and R&uuml;diger Franke.</li>
 
@@ -2119,17 +2119,17 @@ and many have contributed.
      based on a similar concept developed by him for the ThermoPower library.</li>
 
 <li> R&uuml;diger Franke initiated the stream connector concept as an extension
-     and improved version of the ThermoPower concept. In Nov. 2008 - Jan. 2009 he 
+     and improved version of the ThermoPower concept. In Nov. 2008 - Jan. 2009 he
      greatly restructured and improved the library.<li>
 
 <li> Michael Wetter introduced trace constituents in Modelica_Fluid consistently and
      provided corresponding examples under Examples.TraceSubstances.</li>
 
-<li> The following people contributed to the fluid component models, 
+<li> The following people contributed to the fluid component models,
      examples, and the further design of the library
      (alphabetical list):<br>
      John Batteh,
-     Francesco Casella, Jonas Eborn, Hilding Elmqvist, 
+     Francesco Casella, Jonas Eborn, Hilding Elmqvist,
      R&uuml;diger Franke, Henning Knigge,
      Sven Erik Mattsson, Chuck Newman, Hans Olsson,
      Martin Otter, Katrin Pr&ouml;l&szlig;,
@@ -2137,9 +2137,9 @@ and many have contributed.
      Allan Watson, Michael Wetter.<br><br></li>
 
 <li> Partial financial support by ABB and by DLR for the further development
-     of this library within the <a href=\"http://www.itea2.org\">ITEA</a> project 
+     of this library within the <a href=\"http://www.itea2.org\">ITEA</a> project
      <a href=\"http://www.itea2.org/public/project_leaflets/EUROSYSLIB_profile_oct-07.pdf\">EUROSYSLIB</a>
-     is highly appreciated (BMBF Föderkennzeichen: 01IS07022F).</li>
+     is highly appreciated (BMBF F&ouml;derkennzeichen: 01IS07022F).</li>
 </ul>
 </html>"));
 end Contact;
@@ -2161,21 +2161,21 @@ Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under t
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
 The library contains components describing
 <b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models 
+component equations and the media models
 as well as pressure loss and heat transfer correlations are decoupled from each other.
 All components are implemented such that they can be used for
 media from the Modelica.Media library. This means especially that an
 incompressible or compressible medium, a single or a multiple
 substance medium with one or more phases might be used.
-The goal is to include 
+The goal is to include
 the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
- 
+
 <p>
 This is version <b>1.0 Release Candidate 1</b> of the Modelica_Fluid library.
 With respect to previous versions of the Modelica_Fluid library, the design
 of the connectors has been changed, using the recently developed concept
-with streams connectors (see an overview and a rational 
+with streams connectors (see an overview and a rational
 <a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rational.pdf\">here</a>).
 This requires an extension to the Modelica specification which will
 be included in Modelica 3.1.
@@ -2187,7 +2187,7 @@ Please, read the section
 <a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
 in the Users Guide before using this library.
 </p>
- 
+
 <p>
 A typical example model of the Modelica_Fluid library
 is shown in the next figure (drum boiler):
@@ -2213,13 +2213,13 @@ The following parts are useful, when newly starting with this library:
 <li> <a href=\"Modelica:Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
      contains examples that demonstrate the usage of this library.</li>
 </ul>
- 
- 
+
+
 <p>
 <b>Licensed by the Modelica Association under the Modelica License 2</b><br>
 Copyright &copy; 2002-2008, ABB, DLR, Dynasim, Modelon, TU Braunschweig, TU Hamburg-Harburg, Politecnico di Milano.
 </p>
- 
+
 <p>
 <i>This Modelica package is <u>free</u> software and
 the use is completely at <u>your own risk</u>;
@@ -2231,7 +2231,7 @@ or at
 <a href=\"http://www.Modelica.org/licenses/ModelicaLicense2\">
 http://www.Modelica.org/licenses/ModelicaLicense2</a>.
 </p>
- 
+
 </html>"),
     conversion(from(version="0.795", script=
             "../ConvertFromModelica_Fluid_0.795.mos")));
