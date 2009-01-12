@@ -125,8 +125,8 @@ initial equation
             extent={{-95,30},{95,5}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 integer(precision)))),
           Line(
             points={{-100,100},{100,100}},
@@ -274,7 +274,7 @@ model Tank
   parameter Real zetaLarge(min=0) = 1e5
       "Large pressure loss factor if mass flows out of empty pipe port" 
     annotation(Dialog(tab="Advanced", group="Port properties", enable=stiffCharacteristicForEmptyPort));
-  parameter SI.MassFlowRate m_flow_small(min=0) = 1e-5
+  parameter SI.MassFlowRate m_flow_small(min=0) = 0.01
       "Regularization range at zero mass flow rate" 
     annotation(Dialog(tab="Advanced", group="Port properties", enable=stiffCharacteristicForEmptyPort));
 
@@ -444,8 +444,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level,
-                1,
+                level, 
+                1, 
                 3))),
           Line(
             points={{-100,100},{100,100}},
@@ -575,6 +575,9 @@ end Tank;
         parameter Real[nPorts] zeta_out=fill(1, nPorts)
         "Hydraulic resistance out of volume, 0 for ideal smooth outlet" 
           annotation(Dialog(tab="Advanced",group="Ports",enable= use_portDiameters));
+        parameter Medium.MassFlowRate m_flow_small = 0.01
+        "Small mass flow rate for regularization of zero flow" 
+          annotation(Dialog(tab = "Advanced",group="Ports"));
 
         Medium.EnthalpyFlowRate ports_H_flow[nPorts];
         Medium.MassFlowRate ports_mXi_flow[nPorts,Medium.nXi];
@@ -641,11 +644,17 @@ of the modeller. Increase nPorts to add an additional port.
             ports[i].p = ports_p_static;
           else
             // dp = 0.5*zeta*d*v*|v|
-            // Note: assume medium.p for portDensities to avoid algebraic loops for ports.p
-            portDensities[i] = Medium.density(Medium.setState_phX(medium.p, actualStream(ports[i].h_outflow), actualStream(ports[i].Xi_outflow)));
-            portVelocities[i] = ports[i].m_flow/portAreas[i]/portDensities[i];
-            ports[i].p = ports_p_static - smooth(2, noEvent(0.5*portVelocities[i]^2*portDensities[i]*
-                  (if ports[i].m_flow < 0 then (1 + zeta_out[i]) else -(1 - zeta_in[i]))));
+            // Note: assume ports_p_static for portDensities to avoid algebraic loops for ports.p
+            portDensities[i] = noEvent(Medium.density(Medium.setState_phX(ports_p_static, actualStream(ports[i].h_outflow), actualStream(ports[i].Xi_outflow))));
+            portVelocities[i] = smooth(0, ports[i].m_flow/portAreas[i]/portDensities[i]);
+      /* 
+      ports[i].p = ports_p_static - smooth(2, noEvent(0.5*portVelocities[i]^2*portDensities[i]*
+            (if ports[i].m_flow < 0 then (1 + zeta_out[i]) else -(1 - zeta_in[i]))));
+*/
+            ports[i].p = ports_p_static + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
+                                           (1 - zeta_in[i])/portDensities[i],
+                                           (1 + zeta_out[i])/medium.d));
+
           end if;
         end for;
         ports.h_outflow = fill(medium.h, nPorts);
