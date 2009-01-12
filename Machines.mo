@@ -245,12 +245,12 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
   model PrescribedPump "Centrifugal pump with ideally controlled speed"
     extends Modelica_Fluid.Machines.BaseClasses.PartialPump;
-    parameter Boolean use_N_input = false
+    parameter Boolean use_N_in = false
       "Get the rotational speed from the input connector";
     parameter Modelica.SIunits.Conversions.NonSIunits.AngularVelocity_rpm
       N_const =                                                                     N_nominal
-      "Constant rotational speed" annotation(Dialog(enable = not use_N_input));
-    Modelica.Blocks.Interfaces.RealInput N_in(unit="1/min") if use_N_input
+      "Constant rotational speed" annotation(Dialog(enable = not use_N_in));
+    Modelica.Blocks.Interfaces.RealInput N_in(unit="1/min") if use_N_in
       "Prescribed rotational speed" 
       annotation (Placement(transformation(
           extent={{-20,-20},{20,20}},
@@ -262,7 +262,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     annotation (defaultComponentName="pump",
       Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
               100}}), graphics={Text(
-            visible=use_N_input,
+            visible=use_N_in,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
       Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
@@ -287,7 +287,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     // Connect statement active only if use_p_in = true
     connect(N_in, N_in_internal);
     // Internal connector value when use_p_in = false
-    if not use_N_input then
+    if not use_N_in then
       N_in_internal = N_const;
     end if;
     // Set N with a lower limit to avoid singularities at zero speed

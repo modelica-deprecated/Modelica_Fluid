@@ -38,7 +38,7 @@ annotation (
     checkValve=true,
     use_V=true,
     V=0.1/1000,
-    use_N_input=true,
+    use_N_in=true,
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
     p_a_start=100000,
