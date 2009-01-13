@@ -1641,7 +1641,6 @@ b has the same sign of the change of density.</p>
       // Geometry parameters and inputs for flow heat transfer
       parameter Real nParallel "number of identical parallel flow devices" 
          annotation(Dialog(tab="Internal Interface",enable=false,group="Geometry"));
-      input SI.Area[n] surfaceAreas "Heat transfer areas";
       input SI.Length[n] lengths "Lengths along flow path";
       input SI.Length[n] dimensions
           "Characteristic dimensions for fluid flow (diameter for pipe flow)";

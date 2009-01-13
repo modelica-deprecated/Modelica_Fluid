@@ -724,8 +724,6 @@ An extending class needs to define:
         "Base class for vessel heat transfer models"
       extends Modelica_Fluid.Interfaces.PartialHeatTransfer;
 
-      input SI.Area[n] surfaceAreas "Heat transfer area";
-
       annotation(Documentation(info="<html>
 Base class for vessel heat transfer models.
 </html>"),Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
@@ -744,8 +742,10 @@ Base class for vessel heat transfer models.
     model IdealHeatTransfer
         "IdealHeatTransfer: Ideal heat transfer without thermal resistance"
       extends PartialVesselHeatTransfer;
+
     equation
       Ts = heatPorts.T;
+
       annotation(Documentation(info="<html>
 Ideal heat transfer without thermal resistance.
 </html>"));
@@ -756,11 +756,13 @@ Ideal heat transfer without thermal resistance.
       extends PartialVesselHeatTransfer;
       parameter SI.CoefficientOfHeatTransfer alpha0
           "constant heat transfer coefficient";
+
+    equation
+      Q_flows = {(alpha0+k)*surfaceAreas[i]*(heatPorts[i].T - Ts[i]) for i in 1:n};
+
       annotation(Documentation(info="<html>
 Simple heat transfer correlation with constant heat transfer coefficient.
 </html>"));
-    equation
-      Q_flows = {alpha0*surfaceAreas[i]*(heatPorts[i].T - Ts[i]) for i in 1:n};
     end ConstantHeatTransfer;
     annotation (Documentation(info="<html>
 Heat transfer correlations for pipe models
