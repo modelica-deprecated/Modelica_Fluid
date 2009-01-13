@@ -7,10 +7,10 @@ model TestOpenTank
     nPorts=2,
     height=20,
     portDiameters={0.1,0.1},
-    use_portDiameters=false,
     level_start=2,
     crossArea=0.2,
-    V0=0.1) 
+    V0=0.1,
+    use_portDiameters=true) 
     annotation (Placement(transformation(extent={{-40,20},{0,60}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -48,10 +48,10 @@ model TestOpenTank
     height=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     portDiameters={0.1},
-    use_portDiameters=false,
     level_start=2,
     crossArea=1,
-    V0=0.1) 
+    V0=0.1,
+    use_portDiameters=true) 
     annotation (Placement(transformation(extent={{40,-60},{80,-20}}, rotation=0)));
   Modelica.Blocks.Logical.Hysteresis hysteresis(
     uLow=1.1e5,

@@ -137,30 +137,32 @@ initial equation
             lineColor={0,0,0},
             textString="level_start =")}),
       Documentation(info="<HTML>
-<p>
-This is a simplified model of a tank. 
-The top part is open to the environment at the fixed pressure 
-<tt>p_ambient</tt>. 
+<p> 
+Model of a tank that is open to the environment at the fixed pressure
+<tt>p_ambient</tt>.
 The tank is filled with a single or multiple-substance liquid, 
-assumed to have uniform temperature and mass fractions.</p> 
+assumed to have uniform temperature and mass fractions.
+</p> 
 <p>
-Inlet and outlet connections are situated at the bottom of the tank. The following assumptions are made:
+Inlet and outlet connections are placed at the bottom of the tank. The following assumptions are made:
 </p>
 <ul>
 <li>The fluid is of uniform density and uniform temperature</li>
-<li>No air is leaving the tank through the ports, if the liquid level drops below zero the simulation stops.</li>
-<li>No liquid is leaving the tank through the open top, if the liquid level growth over the height the simulation stops.</li>
+<li>No air is leaving the tank through the ports; the simulation stops if the liquid level drops below zero -- consider using the parameter V0 to model an empty tank.</li>
+<li>No liquid is leaving the tank through the open top; the simulation stops if the liquid level growths over the height.</li>
 </ul>
-<p>With the setting <tt>use_portDiameters=true</tt> in the <tt>Advanced</tt> menu, 
-the port pressures represent the pressures just after the outlet (or just before the inlet) in the attached pipe. 
+<p>
+The port pressures represent the pressures just after the outlet (or just before the inlet) in the attached pipe. 
 The hydraulic resistances <tt>zeta_in</tt> and <tt>zeta_out</tt> determine the dissipative pressure drop between tank and port depending on 
 the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume no dissipation at the tank outlet (ideal smooth opening) and 
 total dissipation of kinetic energy at the tank inlet. Larger values are found for sharp edged openings and non-uniform velocity distributions 
 in the pipe. A large selection of possible cases are listed in <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
 </p>
 <p>
-With the default setting <tt>use_portDiameters=false</tt>, the port pressure represents the static head 
-at the bottom of the tank. The relationship between pressure drop and mass flow rate must then be provided by connected components. 
+With the setting <tt>use_portDiameters=false</tt>, the port pressure represents the static head 
+at the bottom of the tank. 
+The relationship between pressure drop and mass flow rate must then be provided by connected components; 
+kinetic energy of fluid enering or leaving is not taken into account anymore. 
 </p>   
 </HTML>", revisions="<html>
 <ul>
@@ -472,8 +474,7 @@ initial equation
       Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the environment at the fixed pressure
-<tt>p_ambient</tt>. Heat transfer to the environment and to 
-the tank walls is neglected.
+<tt>p_ambient</tt>. 
 The tank is filled with a single or multiple-substance liquid, 
 assumed to have uniform temperature and mass fractions.
 </p> 
@@ -548,8 +549,10 @@ end Tank;
       "Lumped volume with a vector of fluid ports and replaceable heat transfer model"
         extends Modelica_Fluid.Interfaces.PartialLumpedVolume;
 
-      //Port definitions
-        parameter Integer nPorts(min=1)=1 "Number of ports";
+        // Port definitions
+        parameter Integer nPorts(min=1)=1 "Number of ports" 
+          annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
+
         Interfaces.FluidPorts_b[nPorts] ports(
                                       redeclare each package Medium = Medium)
         "Fluid outlets" 
@@ -559,22 +562,24 @@ end Tank;
             iconTransformation(extent={{-10,40},{10,-40}},
             rotation=-90,
             origin={0,-100})));
+
         Medium.AbsolutePressure ports_p_static
         "static pressure at the ports, inside the volume";
 
-        //Transformation of kinetic energy
-        parameter Boolean use_portDiameters=false
-        "=true, kinetic energy and dissipation is accounted for in port pressure"
-          annotation(Evaluate=true, Dialog(tab="Advanced",group="Ports"));
+        // Port properties
+        parameter Boolean use_portDiameters=true
+        "= false to neglect pressure loss and kinetic energy" 
+          annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
         parameter SI.Diameter portDiameters[nPorts] = fill(2.54e-2, nPorts)
         "Inner (hydraulic) diameters of ports (array)" 
-          annotation(Dialog(tab="Advanced",group="Ports",enable= use_portDiameters));
+          annotation(Dialog(tab="General",group="Ports",enable= use_portDiameters));
         parameter Real[nPorts] zeta_in=fill(0, nPorts)
         "Hydraulic resistance into volume, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-          annotation(Dialog(tab="Advanced",group="Ports",enable= use_portDiameters));
+          annotation(Dialog(tab="General",group="Ports",enable= use_portDiameters));
         parameter Real[nPorts] zeta_out=fill(1, nPorts)
         "Hydraulic resistance out of volume, 0 for ideal smooth outlet" 
-          annotation(Dialog(tab="Advanced",group="Ports",enable= use_portDiameters));
+          annotation(Dialog(tab="General",group="Ports",enable= use_portDiameters));
+
         parameter Medium.MassFlowRate m_flow_small = 0.01
         "Small mass flow rate for regularization of zero flow" 
           annotation(Dialog(tab = "Advanced",group="Ports"));
