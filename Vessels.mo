@@ -148,7 +148,9 @@ Inlet and outlet connections are placed at the bottom of the tank. The following
 </p>
 <ul>
 <li>The fluid is of uniform density and uniform temperature</li>
-<li>No air is leaving the tank through the ports; the simulation stops if the liquid level drops below zero -- consider using the parameter V0 to model an empty tank.</li>
+<li>No air is leaving the tank through the ports; the simulation stops if the liquid level drops below zero.
+<a href=\"Modelica:Modelica_Fluid.Vessels.Tank\">Vessels.Tank</a> can be used to simulate an empty tank.
+</li>
 <li>No liquid is leaving the tank through the open top; the simulation stops if the liquid level growths over the height.</li>
 </ul>
 <p>
