@@ -12,7 +12,9 @@ model TestOnePortSensors2
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1e5,
-    nPorts=2)    annotation (Placement(transformation(extent={{-34,30},{-14,50}},
+    nPorts=2,
+    use_portDiameters=false) 
+                 annotation (Placement(transformation(extent={{-34,30},{-14,50}},
           rotation=0)));
 
   Modelica_Fluid.Sources.MassFlowSource_h FlowSource2(
@@ -27,7 +29,9 @@ model TestOnePortSensors2
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1.5e5,
-    nPorts=2)    annotation (Placement(transformation(extent={{32,30},{52,50}},
+    nPorts=2,
+    use_portDiameters=false) 
+                 annotation (Placement(transformation(extent={{32,30},{52,50}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_ph Sink2(             redeclare package
       Medium = Medium,
@@ -48,7 +52,9 @@ model TestOnePortSensors2
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1e5,
-    nPorts=2)    annotation (Placement(transformation(extent={{-34,-30},{-14,
+    nPorts=2,
+    use_portDiameters=false) 
+                 annotation (Placement(transformation(extent={{-34,-30},{-14,
             -10}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_h FlowSource1(
     m_flow=1,
@@ -62,7 +68,9 @@ model TestOnePortSensors2
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1.5e5,
-    nPorts=2)    annotation (Placement(transformation(extent={{32,-30},{52,-10}},
+    nPorts=2,
+    use_portDiameters=false) 
+                 annotation (Placement(transformation(extent={{32,-30},{52,-10}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_ph Sink1(             redeclare package
       Medium = Medium,
