@@ -65,7 +65,10 @@ present that are regulated by a central control system.
       level_start=0.0009,
       crossArea=0.05,
       initType=BaseClasses.Init.InitialValues,
-      side_pipeArea={0.0001}) 
+      side_pipeArea={0.0001},
+      redeclare model HeatTransfer =
+          Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer (k=
+              4.9)) 
       annotation (Placement(transformation(extent={{-110,-60},{-30,-20}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveDiscrete V12(
@@ -360,12 +363,11 @@ present that are regulated by a central control system.
       levelMax=0.5,
       crossArea=0.05,
       stiffCharacteristicForEmptyPort=false,
-      T_start=298,
       use_HeatTransfer=true,
+      T_start=298,
       redeclare model HeatTransfer = 
-          Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer
-          (alpha0=4.9e3)) 
-                         annotation (Placement(transformation(extent={{-110,
+          Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer (k=
+              4.9))      annotation (Placement(transformation(extent={{-110,
               -140},{-70,-100}}, rotation=0)));
     Pipes.DynamicPipe pipeB1B2(
       redeclare package Medium = BatchMedium,
@@ -444,12 +446,11 @@ present that are regulated by a central control system.
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       stiffCharacteristicForEmptyPort=false,
-      T_start=298,
       use_HeatTransfer=true,
+      T_start=298,
       redeclare model HeatTransfer = 
-          Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer
-          (alpha0=4.9e3)) 
-                         annotation (Placement(transformation(extent={{80,-80},
+          Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer (k=
+              4.9))      annotation (Placement(transformation(extent={{80,-80},
               {40,-40}}, rotation=0)));
     Fittings.MultiPort multiPort(redeclare package Medium = BatchMedium,
         nPorts_b=3) annotation (Placement(transformation(
@@ -526,7 +527,7 @@ present that are regulated by a central control system.
             -28},{-29.6,-28}}, color={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{100,-60},{80,
             -60}}, color={191,0,0}));
-    connect(HeatB5.port, B5.HeatPort) annotation (Line(points={{-130,-40},{-112,
+    connect(HeatB5.port, B5.heatPort) annotation (Line(points={{-130,-40},{-110,
             -40}}, color={191,0,0}));
     connect(V1.port_b, volume2.port_1)     annotation (Line(
         points={{-180,120},{-180,210}},
@@ -704,7 +705,8 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
+
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -717,7 +719,7 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
@@ -998,7 +1000,7 @@ handled properly.</p>
       Real m(quantity=Medium.mediumName, unit="kg") "Mass of tank volume";
       Real mXi[Medium.nXi](quantity=Medium.substanceNames, each unit="kg")
         "Component masses of the independent substances";
-    // Hilfsvariablen
+    // additional variables
       Real H_flow_BottomPorts[n_BottomPorts];
       Real H_flow_SidePorts[n_SidePorts];
       Real H_flow_TopPorts[n_TopPorts];
@@ -1064,17 +1066,32 @@ handled properly.</p>
         redeclare package Medium = Medium) 
           annotation (Placement(transformation(extent={{-80,-80},{-60,-60}},
               rotation=0)));
-      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a HeatPort 
-        annotation (Placement(transformation(extent={{-220,-10},{-200,10}},
-              rotation=0)));
       Modelica_Fluid.Interfaces.FluidPort_b Condensed(redeclare package Medium
           =        Medium) 
         annotation (Placement(transformation(extent={{192,50},{212,70}},
               rotation=0)));
+
+      // Heat transfer through boundary
+      replaceable model HeatTransfer = 
+          Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer 
+        constrainedby
+        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.PartialVesselHeatTransfer
+        "Wall heat transfer" 
+          annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
+      HeatTransfer heatTransfer(
+        redeclare final package Medium = Medium,
+        n=1,
+        states = {medium.state},
+        surfaceAreas={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level}) 
+          annotation (Placement(transformation(
+            extent={{-10,-10},{30,30}},
+            rotation=90,
+            origin={-50,-10})));
+      Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort 
+        annotation (Placement(transformation(extent={{-210,-10},{-190,10}})));
+
     // parameter for Evaporator
       parameter Real min_level_for_heating;
-      parameter Real k=4.9 "Wärmedurchgangskoeffizient";
-      Real Q_lost "Wärmeverlust";
 
       Medium.SaturationProperties sat
         "State vector to compute saturation properties";
@@ -1126,15 +1143,12 @@ handled properly.</p>
       end for;
 
       medium.p = p_ambient;
-      medium.T = HeatPort.T;
     // Mass balance
       der(m) = sum(m_flow_BottomPorts) + sum(m_flow_SidePorts) + sum(
         m_flow_TopPorts) + Condensed.m_flow;
     // Energy balance
 
       U = m*medium.h - p_ambient*V "Internal energy of fluid";
-      Q_lost = -k*(2*crossArea + 2*sqrt(Modelica.Constants.pi*crossArea))*level*(medium.T -
-        T_ambient);
       m = V*medium.d "Mass of fluid";
       V = crossArea*level + V0 "Volume of fluid";
       mXi = m*medium.Xi "Mass of fluid components";
@@ -1144,12 +1158,12 @@ handled properly.</p>
       if noEvent(medium.T < sat.Tsat) then
         if Medium.singleState then
           der(U) = sum(H_flow_BottomPorts) + sum(H_flow_SidePorts) + sum(
-            H_flow_TopPorts) + Condensed.m_flow*actualStream(Condensed.h_outflow) + HeatPort.Q_flow + Q_lost
+            H_flow_TopPorts) + Condensed.m_flow*actualStream(Condensed.h_outflow) + heatTransfer.Q_flows[1]
             "Mechanical work is neglected";
         else
           der(U) = sum(H_flow_BottomPorts) + sum(H_flow_SidePorts) + sum(
-            H_flow_TopPorts) + Condensed.m_flow*actualStream(Condensed.h_outflow) - p_ambient*der(V) + Q_lost +
-            HeatPort.Q_flow;
+            H_flow_TopPorts) + Condensed.m_flow*actualStream(Condensed.h_outflow) - p_ambient*der(V) +
+            heatTransfer.Q_flows[1];
         end if;
         Condensed.h_outflow = h;
         Condensed.m_flow = 0;
@@ -1157,7 +1171,6 @@ handled properly.</p>
         h = medium.h;
       else
         if Medium.singleState then
-                                 //Q_flow cooling = - (HeatPort.Q_flow-Q_lost)
           der(U) = sum(H_flow_BottomPorts) + sum(H_flow_SidePorts) + sum(H_flow_TopPorts)
              + Condensed.m_flow*actualStream(Condensed.h_outflow)
             "Mechanical work is neglected";
@@ -1166,11 +1179,11 @@ handled properly.</p>
             H_flow_TopPorts) + Condensed.m_flow*actualStream(Condensed.h_outflow) - p_ambient*der(V);
         end if;
         Condensed.h_outflow = h;
-        Condensed.m_flow = -(HeatPort.Q_flow - Q_lost)/(h_v - h_l);
+        Condensed.m_flow = -heatTransfer.Q_flows[1]/(h_v - h_l);
         rho = rho_l;//Density = liquid Densety
         h = h_l;    //Enthalpy = liquid Enthalpy
-        if noEvent(HeatPort.Q_flow > 0.0) then
-          assert(noEvent(abs(m_flow_pos) <= 0.01), "Es wird beim verdampfen befüllt.");
+        if noEvent(heatPort.Q_flow > 0.0) then
+          assert(noEvent(abs(m_flow_pos) <= 0.01), "Attempt to fill tank while evaporating.");
         end if;
 
       end if;
@@ -1185,11 +1198,11 @@ handled properly.</p>
       end for;
 
       assert(level < height, " 
-    Tank ist überfüllt.
+    Tank is overflowing.
     ");
 
-      assert(not (HeatPort.Q_flow > 0.0 and level <= min_level_for_heating), "
-    Es wird leerer Tank bezeizt
+      assert(not (heatPort.Q_flow > 0.0 and level <= min_level_for_heating), "
+    Attempting to heat an empty tank
   ");
 
     initial equation
@@ -1228,7 +1241,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1273,10 +1287,14 @@ handled properly.</p>
 Full steady state initialization is not supported, because the corresponding intial equations for temperature/enthalpy are undetermined (the flow rate through the port at steady state is zero). 
 </p>
 </HTML>"),
-        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
+        Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-200,-100},
                 {200,100}}), graphics));
     equation
 
+      connect(heatPort, heatTransfer.heatPorts[1]) annotation (Line(
+          points={{-200,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
+          color={191,0,0},
+          smooth=Smooth.None));
     end TankWith3InletOutletArraysWithEvaporatorCondensor;
 
     model InnerTank

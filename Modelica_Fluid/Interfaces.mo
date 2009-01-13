@@ -529,8 +529,17 @@ end PartialTwoPortTransport;
     input Medium.ThermodynamicState[n] states
       "Thermodynamic states of flow segments";
 
+    input SI.Area[n] surfaceAreas "Heat transfer areas";
+
     // Outputs defined by heat transfer model
     output SI.HeatFlowRate[n] Q_flows "Heat flow rates";
+
+    parameter SI.CoefficientOfHeatTransfer k = 0
+      "heat transfer coefficient for losses to ambient" 
+      annotation(Dialog(group="Ambient"),Evaluate=true);
+    parameter SI.Temperature T_ambient = system.T_ambient 
+      annotation(Dialog(group="Ambient"));
+    outer System system;
 
     // Heat ports
     Modelica_Fluid.Interfaces.HeatPorts_a[n] heatPorts
@@ -543,16 +552,18 @@ end PartialTwoPortTransport;
 
   equation
     Ts = Medium.temperature(states);
-    heatPorts.Q_flow = Q_flows;
+    heatPorts.Q_flow = Q_flows - {k*surfaceAreas[i]*(T_ambient - heatPorts[i].T) for i in 1:n};
 
     annotation (Documentation(info="<html>
 <p>
 This component is a common interface for heat transfer models. The heat flow rates <tt>Q_flows[n]</tt> through the boundaries of n flow segments 
-are obtained as function of the thermodynamic <tt>states</tt> of the flow segments for a given fluid <tt>Medium</tt>
-and the boundary temperatures <tt>heatPorts[n].T</tt>.
+are obtained as function of the thermodynamic <tt>states</tt> of the flow segments for a given fluid <tt>Medium</tt>,
+the <tt>surfaceAreas[n]</tt> and the boundary temperatures <tt>heatPorts[n].T</tt>.
 </p>
 <p>
-An extending model implementing this interface needs to define the relation between the predefined fluid temperatures <tt>Ts[n]</tt>,
+The heat loss coefficient <tt>k</tt> can be used to model a thermal isolation between <tt>heatPorts.T</tt> and <tt>T_ambient</tt>.
+<p>
+An extending model implementing this interface needs to define one equation: the relation between the predefined fluid temperatures <tt>Ts[n]</tt>,
 the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q_flows[n]</tt>.
 </p>
 </html>"));
