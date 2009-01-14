@@ -32,7 +32,8 @@ model TestInitialization
   Modelica_Fluid.Vessels.Volume vol1(
     redeclare package Medium = Medium,
     V=0.1,
-    nPorts=2) 
+    nPorts=2,
+    portDiameters={0.0254,0.0254}) 
     annotation (Placement(transformation(extent={{-10,20},{10,40}},rotation=0)));
   inner Modelica_Fluid.System system(redeclare package Medium = Medium) 
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
@@ -42,11 +43,11 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe1.port_b, vol1.ports[1]) annotation (Line(
-      points={{-30,20},{-14,20},{-14,22},{0,22}},
+      points={{-30,20},{-2,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(vol1.ports[2], pipe2.port_a) annotation (Line(
-      points={{0,18},{14,18},{14,20},{30,20}},
+      points={{2,20},{30,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe2.port_b, sin1.ports[1]) annotation (Line(

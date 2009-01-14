@@ -27,7 +27,8 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       redeclare package Medium = Medium,
       nPorts=2,
       X_start={0.015,0.085},
-      massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial) 
+      massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
+      portDiameters={0.0254,0.0254}) 
                 annotation (Placement(transformation(extent={{-20,0},{0,20}})));
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = Medium,
@@ -50,7 +51,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume.ports[2], pipe.port_a)         annotation (Line(
-        points={{-10,-2},{-10,0},{-6,0},{-6,-10},{20,-10}},
+        points={{-8,0},{-6,0},{-6,-10},{20,-10}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(traceSubstanceVolume.port, pipe.port_a)         annotation (Line(
@@ -58,7 +59,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
         color={0,127,255},
         smooth=Smooth.None));
     connect(boundary1.ports[1], volume.ports[1]) annotation (Line(
-        points={{-40,-8},{-10,-8},{-10,2}},
+        points={{-40,-8},{-12,-8},{-12,0}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(boundary1.ports[2], traceSubstanceSource.port) annotation (Line(
@@ -105,7 +106,8 @@ concentration of the fresh air.
       V=100,
       redeclare package Medium = Medium,
       nPorts=3,
-      massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial) 
+      massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
+      portDiameters={0.0254,0.0254,0.0254}) 
                 annotation (Placement(transformation(extent={{-20,-22},{0,-2}})));
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = Medium,
@@ -167,7 +169,7 @@ concentration of the fresh air.
         color={0,127,255},
         smooth=Smooth.None));
     connect(freshAir.ports[1], volume.ports[1])  annotation (Line(
-        points={{-40,-30},{-10,-30},{-10,-19.3333}},
+        points={{-40,-30},{-12.6667,-30},{-12.6667,-22}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(freshAir.ports[2], traceSubstanceSource.port)  annotation (Line(
@@ -212,7 +214,7 @@ and hence its contribution to the volume's energy balance is negligible.
         color={0,0,127},
         smooth=Smooth.None));
     connect(peopleSource.ports[1], volume.ports[3]) annotation (Line(
-        points={{-18,-88},{-8,-88},{-8,-24.6667},{-10,-24.6667}},
+        points={{-18,-88},{-8,-88},{-8,-22},{-7.33333,-22}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(traceSubstanceVolume.C, gainSensor.u) 

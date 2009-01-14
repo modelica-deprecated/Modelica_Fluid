@@ -20,7 +20,8 @@ model TestOnePortSensors1
     nPorts=2,
     energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-    p_start=101325) 
+    p_start=101325,
+    portDiameters={0.0254,0.0254}) 
                  annotation (Placement(transformation(extent={{-30,30},{-10,50}},
           rotation=0)));
 
@@ -56,7 +57,8 @@ model TestOnePortSensors1
     nPorts=2,
     energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-    p_start=101325) 
+    p_start=101325,
+    portDiameters={0.0254,0.0254}) 
                  annotation (Placement(transformation(extent={{-32,-30},{-12,
             -10}}, rotation=0)));
 
@@ -115,19 +117,19 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(FlowSource2.ports[1], volume1.ports[1]) annotation (Line(
-      points={{-48,40},{-34,40},{-34,32},{-20,32}},
+      points={{-48,40},{-34,40},{-34,30},{-22,30}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(volume1.ports[2], orifice1.port_a) annotation (Line(
-      points={{-20,28},{10,28},{10,40},{40,40}},
+      points={{-18,30},{10,30},{10,40},{40,40}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(FlowSource1.ports[1], volume2.ports[1]) annotation (Line(
-      points={{-48,-20},{-35,-20},{-35,-28},{-22,-28}},
+      points={{-48,-20},{-35,-20},{-35,-30},{-24,-30}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(volume2.ports[2], Tmix2.port_a) annotation (Line(
-      points={{-22,-32},{-11,-32},{-11,-20},{0,-20}},
+      points={{-20,-30},{-11,-30},{-11,-20},{0,-20}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestOnePortSensors1;
