@@ -123,8 +123,9 @@ The intended use is for simple connections of vessels or other devices with stor
       final lengths=lengths,
       final dimensions=dimensions,
       final roughnesses=roughnesses,
-      states=mediums.state,
-      vs = vs) "Heat transfer model" 
+      final states=mediums.state,
+      final vs = vs,
+      final use_k = use_HeatTransfer) "Heat transfer model" 
         annotation (Placement(transformation(extent={{-36,19},{-14,41}}, rotation=0)));
     final parameter Real[n] dxs = lengths/sum(lengths);
   equation

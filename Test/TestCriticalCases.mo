@@ -342,7 +342,7 @@ The steady-state initial values are observed by an assertion.
       nPorts=2,
       portDiameters={0,0},
       use_portDiameters=false,
-      use_HeatTransfer=true) 
+      use_HeatTransfer=use_HeatTransfer) 
       annotation (Placement(transformation(extent={{-10,10},{10,30}},  rotation=
              0)));
     Pipes.StaticPipe staticPipe2(
