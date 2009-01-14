@@ -1,7 +1,7 @@
 within ; 
 package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional thermo-fluid flow models using the Modelica.Media media description (requires package Modelica 3.0 and Dymola 7.1)"
   extends Modelica.Icons.Library;
-  import SI = Modelica.SIunits;
+  import SI = Modelica.SIunits; 
 
 package UsersGuide "Users Guide"
 
