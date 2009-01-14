@@ -575,7 +575,7 @@ end Tank;
         parameter Boolean use_portDiameters=true
         "= false to neglect pressure loss and kinetic energy" 
           annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
-        parameter SI.Diameter portDiameters[nPorts] = fill(2.54e-2, nPorts)
+        parameter SI.Diameter portDiameters[nPorts]
         "Inner (hydraulic) diameters of ports (array)" 
           annotation(Dialog(tab="General",group="Ports",enable= use_portDiameters));
         parameter Real[nPorts] zeta_in=fill(0, nPorts)
