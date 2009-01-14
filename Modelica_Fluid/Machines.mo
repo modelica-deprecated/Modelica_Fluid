@@ -383,7 +383,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       redeclare final package Medium = Medium,
       final n=1,
       surfaceAreas={4*Modelica.Constants.pi*(3/4*V/Modelica.Constants.pi)^(2/3)},
-      states = {medium.state}) 
+      final states = {medium.state},
+      final use_k = use_HeatTransfer) 
         annotation (Placement(transformation(
           extent={{-10,-10},{30,30}},
           rotation=180,

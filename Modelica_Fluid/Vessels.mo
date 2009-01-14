@@ -258,9 +258,10 @@ model Tank
       annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
   HeatTransfer heatTransfer(
     redeclare final package Medium = Medium,
-    n=1,
-    states = {medium.state},
-    surfaceAreas={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level}) 
+    final n=1,
+    final states = {medium.state},
+    surfaceAreas={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level},
+    final use_k = use_HeatTransfer) 
       annotation (Placement(transformation(
         extent={{-10,-10},{30,30}},
         rotation=90,
@@ -606,8 +607,9 @@ end Tank;
             annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
         HeatTransfer heatTransfer(
           redeclare final package Medium = Medium,
-          n=1,
-          states = {medium.state}) 
+          final n=1,
+          final states = {medium.state},
+          final use_k = use_HeatTransfer) 
             annotation (Placement(transformation(
               extent={{-10,-10},{30,30}},
               rotation=90,

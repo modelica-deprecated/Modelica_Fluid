@@ -66,7 +66,7 @@ present that are regulated by a central control system.
       crossArea=0.05,
       initType=BaseClasses.Init.InitialValues,
       side_pipeArea={0.0001},
-      redeclare model HeatTransfer =
+      redeclare model HeatTransfer = 
           Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer (k=
               4.9)) 
       annotation (Placement(transformation(extent={{-110,-60},{-30,-20}},
@@ -1080,9 +1080,10 @@ handled properly.</p>
           annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
       HeatTransfer heatTransfer(
         redeclare final package Medium = Medium,
-        n=1,
-        states = {medium.state},
-        surfaceAreas={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level}) 
+        final n=1,
+        final states = {medium.state},
+        surfaceAreas={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level},
+        final use_k = true) 
           annotation (Placement(transformation(
             extent={{-10,-10},{30,30}},
             rotation=90,

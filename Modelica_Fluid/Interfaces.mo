@@ -534,12 +534,16 @@ end PartialTwoPortTransport;
     // Outputs defined by heat transfer model
     output SI.HeatFlowRate[n] Q_flows "Heat flow rates";
 
+    // Parameters
+    parameter Boolean use_k = false
+      "= true to use k value for thermal isolation" 
+      annotation(Dialog(tab="Internal Interface",enable=false));
     parameter SI.CoefficientOfHeatTransfer k = 0
-      "heat transfer coefficient for losses to ambient" 
+      "Heat transfer coefficient to ambient" 
       annotation(Dialog(group="Ambient"),Evaluate=true);
-    parameter SI.Temperature T_ambient = system.T_ambient 
+    parameter SI.Temperature T_ambient = system.T_ambient "Ambient temperature"
       annotation(Dialog(group="Ambient"));
-    outer System system;
+    outer Modelica_Fluid.System system "System wide properties";
 
     // Heat ports
     Modelica_Fluid.Interfaces.HeatPorts_a[n] heatPorts
@@ -548,11 +552,15 @@ end PartialTwoPortTransport;
               rotation=0), iconTransformation(extent={{-20,60},{20,80}})));
 
     // Variables
-    SI.Temperature[n] Ts;
+    SI.Temperature[n] Ts = Medium.temperature(states)
+      "Temperatures defined by fluid states";
 
   equation
-    Ts = Medium.temperature(states);
-    heatPorts.Q_flow = Q_flows - {k*surfaceAreas[i]*(T_ambient - heatPorts[i].T) for i in 1:n};
+    if use_k then
+      Q_flows = heatPorts.Q_flow + {k*surfaceAreas[i]*(T_ambient - heatPorts[i].T) for i in 1:n};
+    else
+      Q_flows = heatPorts.Q_flow;
+    end if;
 
     annotation (Documentation(info="<html>
 <p>
