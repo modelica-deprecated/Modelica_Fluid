@@ -4,7 +4,7 @@ model TestTank
   import Modelica_Fluid;
   Modelica_Fluid.Vessels.Tank tank(
     nTopPorts=2,
-    levelMax=10,
+    height=10,
     V0=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     level_start=1,

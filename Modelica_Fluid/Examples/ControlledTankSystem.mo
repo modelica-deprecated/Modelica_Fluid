@@ -10,7 +10,7 @@ package ControlledTankSystem
       tankController(
       waitTime=50,
       minLevel=0.001,
-      maxLevel=0.9*tank1.levelMax) 
+      maxLevel=0.9*tank1.height) 
       annotation (Placement(transformation(extent={{-60,-20},{-20,20}},
             rotation=0)));
     Modelica_Fluid.Examples.ControlledTankSystem.Utilities.RadioButton start(
@@ -119,7 +119,7 @@ This example is based on
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.2,
           portLevel=0)},
       crossArea=6,
-      levelMax=4)             annotation (Placement(transformation(extent={{0,
+      height=4)             annotation (Placement(transformation(extent={{0,
               -10},{40,30}}, rotation=0)));
     Modelica.Blocks.Sources.RealExpression level1(y=tank1.level) 
       annotation (Placement(transformation(extent={{-90,-60},{-55,-40}},
@@ -143,7 +143,7 @@ This example is based on
     Modelica_Fluid.Vessels.Tank tank2(
       level_start=0.05,
       redeclare package Medium = Medium,
-      levelMax=5,
+      height=5,
       crossArea=6,
       nTopPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.2,

@@ -14,9 +14,9 @@ model PumpingSystem "Model of a pumping system for drinking water"
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     allowFlowReversal=true,
-    diameter=1,
     length=100,
-    height_ab=50) 
+    height_ab=50,
+    diameter=0.3) 
     annotation (Placement(transformation(
         origin={-30,-51},
         extent={{-9,-10},{11,10}},
@@ -44,10 +44,11 @@ model PumpingSystem "Model of a pumping system for drinking water"
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_portDiameters=true,
-    portDiameters={1},
     crossArea=50,
     level_start=2.2,
-    height=3) 
+    height=3,
+    nPorts=2,
+    portDiameters={0.3,0.3}) 
     annotation (Placement(transformation(extent={{-20,-16},{0,4}}, rotation=0)));
 
   Modelica_Fluid.Valves.ValveLinear userValve(   redeclare package Medium = 
@@ -91,8 +92,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-            {100,100}},
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+            100,100}},
         grid={1,1}),
             graphics),
     Documentation(info="<html>
@@ -105,13 +106,15 @@ Simulate for 2000 s. When the valve is opened at time t=200, the pump starts tur
 If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
 </html>", revisions="<html>
 <ul>
-<li><i>2 Nov 2005</i>
-    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
-       Created.</li>
+<li><i>Jan 2009</i>
+    by R&uuml;diger Franke:<br>
+       Reduce diameters of pipe and reservoir ports; use separate port for measurement of reservoirPressure, avoiding disturbances due to pressure losses.</li>
 <li><i>1 Oct 2007</i>
     by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
        Parameters updated.</li>
- 
+<li><i>2 Nov 2005</i>
+    by <a href=\"mailto:francesco.casella@polimi.it\">Francesco Casella</a>:<br>
+       Created.</li> 
 </ul>
 </html>"),
     experiment(
@@ -155,13 +158,13 @@ equation
       points={{-30,-40},{-30,-30},{58,-30}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(reservoirPressure.port_a, pipe.port_b) annotation (Line(
-      points={{10,-22},{-10,-22},{-10,-30},{-30,-30},{-30,-40}},
+  connect(reservoir.ports[1], pipe.port_b) annotation (Line(
+      points={{-10,-14},{-10,-30},{-30,-30},{-30,-40}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(reservoir.ports[2], reservoirPressure.port_a) annotation (Line(
+      points={{-10,-18},{-10,-16},{-7,-16},{-7,-22},{10,-22}},
       color={0,127,255},
       smooth=Smooth.None,
       pattern=LinePattern.Dot));
-  connect(reservoir.ports[1], pipe.port_b) annotation (Line(
-      points={{-10,-16},{-10,-30},{-30,-30},{-30,-40}},
-      color={0,127,255},
-      smooth=Smooth.None));
 end PumpingSystem;

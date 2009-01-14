@@ -47,7 +47,7 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
   parameter SI.Volume V0=0 "Volume of the liquid when the level is zero";
 
   // Tank properties
-  SI.Height level(stateSelect=StateSelect.default, start=level_start)
+  SI.Height level(stateSelect=StateSelect.prefer, start=level_start)
       "Level height of tank";
   SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
 
@@ -58,7 +58,8 @@ model OpenTank "Open tank with inlet/outlet ports at the bottom"
     final initialize_p = false,
     final p_start = p_ambient,
     final use_d_nominal = false,
-    final d_nominal = 0);
+    final d_nominal = 0,
+    final fluidVolume_min = V0);
 
   // Initialization
   parameter SI.Height level_start "Start value of tank level" 
@@ -86,7 +87,7 @@ equation
   end if;
 
   assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
-  assert(level > 0, "Tank is empty (level = 0), tank model is not designed to allow air flow through ports");
+  assert(level > -V0/crossArea, "Tank is empty (level <= 0), consider using the parameter V0");
 
   //Determine port properties
   ports_p_static = level*system.g*medium.d + p_ambient;
@@ -140,16 +141,15 @@ initial equation
 <p> 
 Model of a tank that is open to the environment at the fixed pressure
 <tt>p_ambient</tt>.
-The tank is filled with a single or multiple-substance liquid, 
-assumed to have uniform temperature and mass fractions.
-</p> 
-<p>
-Inlet and outlet connections are placed at the bottom of the tank. The following assumptions are made:
+The tank is filled with a single or multiple-substance medium having a density higher than the density of the ambient medium.
+Inlet and outlet connections are placed at the bottom of the tank. 
 </p>
+The following assumptions are made:
 <ul>
-<li>The fluid is of uniform density and uniform temperature</li>
-<li>No air is leaving the tank through the ports; the simulation stops if the liquid level drops below zero.
-<a href=\"Modelica:Modelica_Fluid.Vessels.Tank\">Vessels.Tank</a> can be used to simulate an empty tank.
+<li>The fluid has uniform density, temperature and mass fractions</li>
+<li>The simulation stops if the liquid level drops below zero (no ambient medium is leaving the open tank through the ports).
+The parameter <tt>V0</tt> can be used to assume a small remaining fluid volume for the 
+simulation of an empty tank, provided that <tt>use_portDiameters=true</tt>.
 </li>
 <li>No liquid is leaving the tank through the open top; the simulation stops if the liquid level growths over the height.</li>
 </ul>
@@ -163,24 +163,24 @@ in the pipe. A large selection of possible cases are listed in <i>[Idelchik, Han
 <p>
 With the setting <tt>use_portDiameters=false</tt>, the port pressure represents the static head 
 at the bottom of the tank. 
-The relationship between pressure drop and mass flow rate must then be provided by connected components; 
-kinetic energy of fluid enering or leaving is not taken into account anymore. 
+The relationship between pressure drop and mass flow rate at the ports must then be provided by connected components; 
+kinetic energy of fluid enering or leaving is not taken into account anymore; the tank cannot run empty during a simulation anymore. 
 </p>   
 </HTML>", revisions="<html>
 <ul>
 <li><i>Dec. 12, 2008</i> by Ruediger Franke: move port definitions 
    to BaseClasses.PartialLumpedVessel; also use energy and mass balance from common base class</li>
+<li><i>Dec. 8, 2008</i> by Michael Wetter (LBNL):<br>
+Implemented trace substances.</li>
 <li><i>Jan. 6, 2006</i> by Katja Poschlad, Manuel Remelhe (AST Uni Dortmund), 
    Martin Otter (DLR):<br> 
    Implementation based on former tank model.</li>
-<li><i>Apr. 25, 2006</i> by Katrin Pr&ouml;l&szlig; (TUHH):<br>
-Limitation to bottom ports only, added inlet and outlet loss factors.</li>
 <li><i>Oct. 29, 2007</i> by Carsten Heinrich (ILK Dresden):<br>
 Adapted to the new fluid library interfaces: 
 <ul> <li>FluidPorts_b is used instead of FluidPort_b (due to it is defined as an array of ports)</li>
     <li>Port name changed from port to ports</li></ul>Updated documentation.</li>
-<li><i>Dec. 8, 2008</i> by Michael Wetter (LBNL):<br>
-Implemented trace substances.</li>
+<li><i>Apr. 25, 2006</i> by Katrin Pr&ouml;l&szlig; (TUHH):<br>
+Limitation to bottom ports only, added inlet and outlet loss factors.</li>
 </ul>
 </html>"),
       Diagram(coordinateSystem(
@@ -204,7 +204,7 @@ model Tank
       "Fluid level in the tank";
 
   //Tank geometry
-  parameter SI.Height levelMax "Maximum level of tank before it overflows";
+  parameter SI.Height height "Maximum level of tank before it overflows";
   parameter SI.Area crossArea "Area of tank";
   parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
 
@@ -218,12 +218,12 @@ model Tank
 
   //Port definitions
   parameter Integer nTopPorts(min=1) = 1
-      "Number of inlet ports above levelMax (>= 1)";
+      "Number of inlet ports above height (>= 1)";
 
   Modelica_Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0, each min=0))
-      "Inlet ports over levelMax at top of tank (fluid flows only from the port in to the tank)"
+      "Inlet ports over height at top of tank (fluid flows only from the port in to the tank)"
     annotation (Placement(transformation(
         extent={{0,-20},{10,20}},
         rotation=90,
@@ -314,7 +314,7 @@ model Tank
     Boolean aboveLevel[nPorts] "= true, if level >= ports[i].portLevel";
     Real zeta_out[nPorts];
 equation
-  assert(level <= levelMax, "Tank starts to overflow (level = levelMax = " + String(level) + ")");
+  assert(level <= height, "Tank starts to overflow (level = height = " + String(level) + ")");
   assert(m>=0, "Mass in tank is zero");
 
   // Only one connection allowed to a port to avoid unwanted ideal mixing
@@ -441,7 +441,7 @@ initial equation
             fillPattern=FillPattern.Solid),
           Rectangle(
             extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
-                 + 200*level/levelMax)}}),
+                 + 200*level/height)}}),
             lineColor={0,127,255},
             fillColor={85,170,255},
             fillPattern=FillPattern.Solid),
@@ -483,7 +483,7 @@ assumed to have uniform temperature and mass fractions.
 </p> 
  
 <p>
-At the top of the tank over the maximal fill level <b>levelMax</b> 
+At the top of the tank over the maximal fill level <b>height</b> 
 a vector of FluidPorts, called <b>topPorts</b>, is present.
 The assumption is made that fluid flows always in to the tank via these
 ports (and never back in to the connector).
@@ -504,7 +504,7 @@ through this port is very small in this case.
 </p>
  
 <p>
-If the tank starts to over flow (i.e., level > levelMax), an
+If the tank starts to over flow (i.e., level > height), an
 assertion is triggered.
 </p>
  
@@ -555,6 +555,8 @@ end Tank;
         // Port definitions
         parameter Integer nPorts(min=1)=1 "Number of ports" 
           annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
+        parameter SI.Volume fluidVolume_min = 0
+        "least fluid volume for flow out of ports";
 
         Interfaces.FluidPorts_b[nPorts] ports(
                                       redeclare each package Medium = Medium)
@@ -583,9 +585,9 @@ end Tank;
         "Hydraulic resistance out of volume, 0 for ideal smooth outlet" 
           annotation(Dialog(tab="General",group="Ports",enable= use_portDiameters));
 
-        parameter Medium.MassFlowRate m_flow_small = 0.01
-        "Small mass flow rate for regularization of zero flow" 
-          annotation(Dialog(tab = "Advanced",group="Ports"));
+        parameter Medium.AbsolutePressure dp_small = 1
+        "Turbulent flow if |dp| >= dp_small (regularization of zero flow)" 
+          annotation(Dialog(tab="Advanced",group="Ports"));
 
         Medium.EnthalpyFlowRate ports_H_flow[nPorts];
         Medium.MassFlowRate ports_mXi_flow[nPorts,Medium.nXi];
@@ -660,10 +662,14 @@ of the modeller. Increase nPorts to add an additional port.
       ports[i].p = ports_p_static - smooth(2, noEvent(0.5*portVelocities[i]^2*portDensities[i]*
             (if ports[i].m_flow < 0 then (1 + zeta_out[i]) else -(1 - zeta_in[i]))));
 */
-            ports[i].p = ports_p_static + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
-                                           (1 - zeta_in[i])/portDensities[i],
-                                           (1 + zeta_out[i])/medium.d));
-
+      /*
+      ports[i].p = ports_p_static + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
+                                     (1 - zeta_in[i])/portDensities[i],
+                                     (1 + zeta_out[i])/medium.d));
+*/
+            ports[i].m_flow = smooth(0, if fluidVolume <= fluidVolume_min and ports[i].p <= ports_p_static then 0 else 
+                                          portAreas[i]*Utilities.regRoot2(ports[i].p - ports_p_static, dp_small,
+                                             2*portDensities[i]/(1 - zeta_in[i]), 2*medium.d/(1 + zeta_out[i])));
           end if;
         end for;
         ports.h_outflow = fill(medium.h, nPorts);

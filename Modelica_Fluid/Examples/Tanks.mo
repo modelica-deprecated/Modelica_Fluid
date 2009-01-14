@@ -10,7 +10,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       crossArea=1,
-      levelMax=1,
+      height=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.1, portLevel=0)},
       level_start=0.9,
@@ -84,7 +84,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort,
       crossArea=1,
-      levelMax=4,
+      height=4,
       level_start=3,
       T_start=Modelica.SIunits.Conversions.from_degC(50),
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
@@ -96,7 +96,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort,
       crossArea=1,
-      levelMax=4,
+      height=4,
       level_start=1,
       T_start=Modelica.SIunits.Conversions.from_degC(100),
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
@@ -163,7 +163,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       crossArea=1,
       V0=0.1,
-      levelMax=2,
+      height=2,
       level_start=0.1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
@@ -224,7 +224,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       crossArea=1,
       V0=0.1,
-      levelMax=2,
+      height=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.1,
@@ -300,7 +300,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       crossArea=1,
       V0=0.1,
-      levelMax=2,
+      height=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.1,
@@ -340,7 +340,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       crossArea=1,
       V0=0.1,
-      levelMax=2,
+      height=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.1,
@@ -419,7 +419,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = Medium,
       crossArea=1,
       V0=0.1,
-      levelMax=20,
+      height=20,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.05,
@@ -433,7 +433,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = Medium,
       crossArea=1,
       V0=0.1,
-      levelMax=10,
+      height=10,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.1, portLevel=0)},
       level_start=9,
@@ -443,7 +443,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       redeclare package Medium = Medium,
       crossArea=1,
       V0=0.1,
-      levelMax=10,
+      height=10,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.05,
@@ -594,15 +594,14 @@ package Tanks "Library demonstrating the usage of the tank model"
 
   model TestEmptyOpenTank "Test whether an empty tank is properly handeled"
     extends Modelica.Icons.Example;
-    Modelica_Fluid.Vessels.Tank tank1(
+    Vessels.OpenTank tank1(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       crossArea=1,
       level_start=1,
-      levelMax=1,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
-          diameter=0.1, portLevel=0)},
-      V0=0.1)                 annotation (Placement(transformation(extent={{-20,
+      height=1.1,
+      portDiameters={0.1},
+      V0=1e-3)                annotation (Placement(transformation(extent={{-20,
               20},{20,60}}, rotation=0)));
 
     Modelica_Fluid.Pipes.StaticPipe pipe(
@@ -628,8 +627,8 @@ package Tanks "Library demonstrating the usage of the tank model"
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.1, portLevel=0)},
-      V0=0.1,
-      levelMax=1.1) 
+      height=1.1,
+      V0=1e-3) 
       annotation (Placement(transformation(extent={{-20,-80},{20,-40}},
             rotation=0)));
     inner Modelica_Fluid.System system 
@@ -637,8 +636,7 @@ package Tanks "Library demonstrating the usage of the tank model"
             extent={{56,58},{76,78}}, rotation=0)));
   equation
     connect(pipe.port_b, tank1.ports[1]) annotation (Line(points={{1.83697e-015,
-            0},{-1,0},{-1,20}},
-                              color={0,127,255}));
+            0},{0,0},{0,20}}, color={0,127,255}));
     connect(pipe.port_a, tank2.topPorts[1]) annotation (Line(points={{
             -1.83697e-015,-20},{1,-20},{1,-40}}, color={0,127,255}));
   end TestEmptyOpenTank;

@@ -201,7 +201,8 @@ The intended use is for complex networks of pipes and other flow devices, like v
 <li><a href=\"Modelica:Modelica_Fluid.Examples.IncompressibleFluidNetwork\">Examples.IncompressibleFluidNetwork</a>.
 </p> 
 </html>"),
-  Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
+  Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}},
           grid={1,1}), graphics={
           Rectangle(
             extent={{-100,40},{100,-40}},
