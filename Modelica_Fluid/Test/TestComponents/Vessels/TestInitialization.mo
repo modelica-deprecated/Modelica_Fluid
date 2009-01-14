@@ -8,12 +8,12 @@ model TestInitialization
                       graphics),
                        experiment(StopTime=1));
 
-  Modelica_Fluid.Sources.Boundary_pT sou1(redeclare package Medium = 
+  Modelica_Fluid.Sources.Boundary_pT sou1(nPorts=1,redeclare package Medium = 
         Medium,
     p=101330,
     T=293.15)                                       annotation (Placement(
         transformation(extent={{-90,10},{-70,30}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT sin1(redeclare package Medium = 
+  Modelica_Fluid.Sources.Boundary_pT sin1(nPorts=1,redeclare package Medium = 
         Medium,
     p=101320,
     T=293.15)                                       annotation (Placement(

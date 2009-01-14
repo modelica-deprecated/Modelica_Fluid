@@ -14,12 +14,12 @@ annotation (
     offset=1,
     freqHz=1/7) annotation (Placement(transformation(extent={{-70,60},{-50,80}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT source( redeclare package Medium = 
-        Modelica.Media.Water.StandardWater,
+  Modelica_Fluid.Sources.Boundary_pT source(nPorts=1, redeclare package Medium
+      = Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{-90,20},{-70,40}},  rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT sink(
+  Modelica_Fluid.Sources.Boundary_pT sink(nPorts=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
     use_p_in=true,
@@ -53,12 +53,12 @@ annotation (
     offset=10e5) 
                 annotation (Placement(transformation(extent={{-70,-40},{-50,-20}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT source1(redeclare package Medium = 
-        Modelica.Media.Water.StandardWater,
+  Modelica_Fluid.Sources.Boundary_pT source1(nPorts=1,redeclare package Medium
+      = Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{-90,-80},{-70,-60}},rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT sink1(
+  Modelica_Fluid.Sources.Boundary_pT sink1(nPorts=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
     use_p_in=true,

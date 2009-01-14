@@ -2,6 +2,7 @@ within Modelica_Fluid.Examples;
 model PumpingSystem "Model of a pumping system for drinking water"
   extends Modelica.Icons.Example;
   Modelica_Fluid.Sources.FixedBoundary source(
+    nPorts = 1,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     use_T=true,

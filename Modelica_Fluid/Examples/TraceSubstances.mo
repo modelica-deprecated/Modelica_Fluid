@@ -7,7 +7,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
     Modelica.Blocks.Sources.Constant C(k=0.3*1.519E-3)
       "substance concentration, raising to 1000 PPM CO2" 
       annotation (Placement(transformation(extent={{-100,-28},{-80,-8}})));
-    Sources.FixedBoundary boundary4(redeclare package Medium = Medium) 
+    Sources.FixedBoundary boundary4(nPorts=1,redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{80,-20},{60,0}})));
     Sensors.TraceSubstances traceSubstanceVolume(redeclare package Medium = 
                  Medium) 
@@ -87,7 +87,7 @@ concentration of the fresh air.
     Modelica.Blocks.Sources.Constant CAtm(k=0.3*1.519E-3)
       "Atmospheric trace substance concentration, corresponding to 300 PPM CO2"
       annotation (Placement(transformation(extent={{-100,-50},{-80,-30}})));
-    Sources.FixedBoundary boundary4(redeclare package Medium = Medium) 
+    Sources.FixedBoundary boundary4(nPorts=1,redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{92,-40},{72,-20}})));
     Sensors.TraceSubstances traceSubstanceVolume(redeclare package Medium = 
                  Medium) 

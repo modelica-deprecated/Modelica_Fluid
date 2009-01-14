@@ -217,8 +217,8 @@ model Tank
     final d_nominal = 0);
 
   //Port definitions
-  parameter Integer nTopPorts(min=1) = 1
-      "Number of inlet ports above height (>= 1)";
+  parameter Integer nTopPorts = 0 "Number of inlet ports above height (>= 1)" 
+                                                annotation(Dialog(__Dymola_connectorSizing=true));
 
   Modelica_Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
     redeclare package Medium = Medium,
@@ -229,11 +229,13 @@ model Tank
         rotation=90,
         origin={0,100})));
 
-  parameter Modelica_Fluid.Vessels.BaseClasses.TankPortData portsData[:]={
-        TankPortData(diameter=0.0001)}
+  parameter Integer nPorts = 0
+      "Number of inlet/outlet ports (on bottom and on the side)" 
+     annotation(Dialog(__Dymola_connectorSizing=true));
+  parameter Modelica_Fluid.Vessels.BaseClasses.TankPortData portsData[nPorts]
       "Data of inlet/outlet ports at side and bottom of tank";
 
-  Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
+  Modelica_Fluid.Interfaces.FluidPorts_b ports[nPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0))
       "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
@@ -292,7 +294,6 @@ model Tank
     annotation(Dialog(tab = "Advanced", group = "Ambient"));
 
   // Tank properties
-  final parameter Integer nPorts = size(ports,1) "Number of inlet/outlet ports";
   SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
   Medium.EnthalpyFlowRate H_flow_top[nTopPorts]
       "Enthalpy flow rates from the top ports in to the tank";
@@ -553,13 +554,12 @@ end Tank;
         extends Modelica_Fluid.Interfaces.PartialLumpedVolume;
 
         // Port definitions
-        parameter Integer nPorts(min=1)=1 "Number of ports" 
-          annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
+        parameter Integer nPorts=0 "Number of ports" 
+          annotation(Evaluate=true, Dialog(__Dymola_connectorSizing=true, tab="General",group="Ports"));
         parameter SI.Volume fluidVolume_min = 0
         "least fluid volume for flow out of ports";
 
-        Interfaces.FluidPorts_b[nPorts] ports(
-                                      redeclare each package Medium = Medium)
+        Interfaces.FluidPorts_b ports[nPorts](redeclare each package Medium = Medium)
         "Fluid outlets" 
           annotation (Placement(transformation(extent={{-10,-40},{10,40}},
             rotation=-90,
@@ -697,6 +697,7 @@ of the modeller. Increase nPorts to add an additional port.
             points={{-100,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
             color={191,0,0},
             smooth=Smooth.None));
+
        annotation (
         Documentation(info="<html>
 <p>

@@ -336,20 +336,22 @@ end SuddenExpansion;
     replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(choicesAllMatching);
 
     // Ports
-    parameter Integer nPorts_b=1
-      "Number of outlet ports (mass is distributed evenly between the outlet ports";
+    parameter Integer nPorts_b=0
+      "Number of outlet ports (mass is distributed evenly between the outlet ports"
+      annotation(Dialog(__Dymola_connectorSizing=true));
+
     Modelica_Fluid.Interfaces.FluidPort_a port_a(
       redeclare package Medium=Medium) 
       annotation (Placement(transformation(extent={{-50,-10},{-30,10}},
             rotation=0)));
-    Modelica_Fluid.Interfaces.FluidPorts_b[nPorts_b] ports_b(
+    Modelica_Fluid.Interfaces.FluidPorts_b ports_b[nPorts_b](
       redeclare each package Medium=Medium) 
       annotation (Placement(transformation(extent={{30,40},{50,-40}},
                                   rotation=0)));
 
-    Medium.MassFraction[nPorts_b,Medium.nXi] ports_b_Xi_inStream
+    Medium.MassFraction ports_b_Xi_inStream[nPorts_b,Medium.nXi]
       "inStream mass fractions at ports_b";
-    Medium.ExtraProperty[nPorts_b,Medium.nC] ports_b_C_inStream
+    Medium.ExtraProperty ports_b_C_inStream[nPorts_b,Medium.nC]
       "inStream extra properties at ports_b";
 
     annotation (Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-40,

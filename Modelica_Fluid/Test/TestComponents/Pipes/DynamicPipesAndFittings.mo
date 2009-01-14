@@ -32,7 +32,7 @@ replaceable package Medium=Modelica.Media.Water.StandardWater;
     Documentation(info="<html>
 Test of different dynamic pipe models. The first system uses explicit junctions, in the third system some of the pipe models are replaced by non-symmetric components.
 </html>"));
-  Modelica_Fluid.Sources.Boundary_pT boundary2(
+  Modelica_Fluid.Sources.Boundary_pT boundary2(nPorts=1,
     redeclare package Medium = Medium,
     p=1e5,
     T=300,
@@ -67,7 +67,7 @@ Test of different dynamic pipe models. The first system uses explicit junctions,
             annotation (Placement(transformation(extent={{-82,54},{-62,74}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.Boundary_pT boundary1(
+  Modelica_Fluid.Sources.Boundary_pT boundary1(nPorts=1,
     T=280,
     redeclare package Medium = Medium,
     p=1.5e5)                                                        annotation (Placement(
@@ -138,7 +138,7 @@ Test of different dynamic pipe models. The first system uses explicit junctions,
             annotation (Placement(transformation(extent={{-30,10},{-10,30}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.Boundary_pT boundary4(
+  Modelica_Fluid.Sources.Boundary_pT boundary4(nPorts=1,
     redeclare package Medium = Medium,
     p=1e5,
     T=300,
@@ -170,7 +170,7 @@ Test of different dynamic pipe models. The first system uses explicit junctions,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-74,-2},{-54,18}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT boundary3(
+  Modelica_Fluid.Sources.Boundary_pT boundary3(nPorts=1,
     redeclare package Medium = Medium,
     p=150000,
     T=280)                                                          annotation (Placement(
@@ -216,7 +216,7 @@ Test of different dynamic pipe models. The first system uses explicit junctions,
     T_start=280) 
             annotation (Placement(transformation(extent={{-29,-50},{-9,-30}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT boundary5(
+  Modelica_Fluid.Sources.Boundary_pT boundary5(nPorts=1,
     redeclare package Medium = Medium,
     p=1e5,
     T=300,
@@ -249,7 +249,7 @@ Test of different dynamic pipe models. The first system uses explicit junctions,
     p_a_start=100000) 
             annotation (Placement(transformation(extent={{-74,-62},{-54,-42}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT boundary6(
+  Modelica_Fluid.Sources.Boundary_pT boundary6(nPorts=1,
     redeclare package Medium = Medium,
     p=150000,
     T=280)                                                          annotation (Placement(

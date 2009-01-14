@@ -17,7 +17,7 @@ model TestMixingVolumes
                annotation (Placement(transformation(extent={{-30,40},{-10,60}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.MassFlowSource_h flowSource2(
+  Modelica_Fluid.Sources.MassFlowSource_h flowSource2(nPorts=1,
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium) 
@@ -38,8 +38,9 @@ model TestMixingVolumes
   Modelica_Fluid.Sensors.Temperature Tmix_out(
                                           redeclare package Medium = Medium) 
     annotation (Placement(transformation(extent={{40,50},{60,70}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_ph sink2(             redeclare package
-      Medium = Medium,
+  Modelica_Fluid.Sources.Boundary_ph sink2(nPorts=1,             redeclare
+      package Medium = 
+               Medium,
     h=Medium.h_default,
     p=101325) 
     annotation (Placement(transformation(extent={{100,30},{80,50}}, rotation=0)));

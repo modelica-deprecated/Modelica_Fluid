@@ -8,7 +8,7 @@ model IncompressibleFluidNetwork
   model Pipe = Modelica_Fluid.Pipes.DynamicPipe;
   //model Pipe = Modelica_Fluid.Pipes.DynamicPipe(nNodes=1,modelStructure=Types.ModelStructure.a_v_b);
 
-  Sources.Boundary_pT source(
+  Sources.Boundary_pT source(nPorts=1,
     redeclare package Medium = Medium,
     p=5.0e5,
     T=300) annotation (Placement(transformation(extent={{-98,4},{-86,16}},
@@ -97,7 +97,7 @@ model IncompressibleFluidNetwork
     dp_nominal=30000) 
                 annotation (Placement(transformation(extent={{60,0},{80,20}},
           rotation=0)));
-  Sources.Boundary_pT sink(
+  Sources.Boundary_pT sink(nPorts=1,
     redeclare package Medium = Medium,
     T=300,
     p=1.0e5) 

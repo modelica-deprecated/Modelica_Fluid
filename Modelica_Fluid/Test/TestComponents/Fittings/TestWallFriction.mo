@@ -29,7 +29,7 @@ pipe1 and pipe2 should be identical to pressureLossPipe for
 pipe1.WallFriction = WallFriction.Detailed (since the same equations).
 </p>
 </html>"));
-  Modelica_Fluid.Sources.Boundary_pT ambient_a(     redeclare package Medium = 
+  Modelica_Fluid.Sources.Boundary_pT ambient_a(redeclare package Medium = 
         Medium,
     p=system.p_ambient,
     T=system.T_ambient,
@@ -39,12 +39,12 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
   Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.99999e5; 10,1.00001e5]) 
     annotation (Placement(transformation(extent={{-80,40},{-60,60}}, rotation=0)));
 
-  Modelica_Fluid.Sources.Boundary_pT ambient_p1(
+  Modelica_Fluid.Sources.Boundary_pT ambient_p1(nPorts=1,
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (Placement(transformation(extent={{62,40},{42,60}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT ambient_p2(
+  Modelica_Fluid.Sources.Boundary_pT ambient_p2(nPorts=1,
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
@@ -73,12 +73,12 @@ pipe1.WallFriction = WallFriction.Detailed (since the same equations).
            show_Re=true),
     port_a(m_flow(start=-0.6)))     annotation (Placement(transformation(extent={{0,10},{20,
             30}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT ambient_p3(
+  Modelica_Fluid.Sources.Boundary_pT ambient_p3(nPorts=1,
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 
     annotation (Placement(transformation(extent={{60,-20},{40,0}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT ambient_p4(
+  Modelica_Fluid.Sources.Boundary_pT ambient_p4(nPorts=1,
     redeclare package Medium = Medium,
     p=1.0e5,
     T=Modelica.SIunits.Conversions.from_degC(80)) 

@@ -22,7 +22,7 @@ model StaticPipe
     Documentation(info="<html>
 Test of the StaticPipe model.
 </html>"));
-  Modelica_Fluid.Sources.Boundary_pT sink(
+  Modelica_Fluid.Sources.Boundary_pT sink(nPorts=1,
     redeclare package Medium = Medium,
     p=200000,
     T=300)   annotation (Placement(transformation(extent={{56,4},{44,16}},

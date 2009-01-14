@@ -9,7 +9,7 @@ model TestSpecificEntropy
     experimentSetupOutput);
   inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_1(
+  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_1(nPorts=1,
     use_h_in=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=system.p_ambient) annotation (Placement(transformation(extent={{
@@ -17,7 +17,7 @@ model TestSpecificEntropy
   Modelica_Fluid.Sensors.SpecificEntropy specificEntropy(redeclare package
       Medium =         Modelica.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{-10,20},{10,40}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_2(
+  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_2(nPorts=1,
     use_h_in=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=system.p_ambient) annotation (Placement(transformation(extent={{
