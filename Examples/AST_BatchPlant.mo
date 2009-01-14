@@ -300,7 +300,7 @@ present that are regulated by a central control system.
     Modelica_Fluid.Vessels.Tank B1(
       level_start=0.2,
       redeclare package Medium = BatchMedium,
-      levelMax=0.5,
+      height=0.5,
       crossArea=0.05,
       V0=0.0001,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
@@ -320,7 +320,7 @@ present that are regulated by a central control system.
     Modelica_Fluid.Vessels.Tank B2(
       level_start=0.2,
       redeclare package Medium = BatchMedium,
-      levelMax=0.5,
+      height=0.5,
       crossArea=0.05,
       V0=0.0001,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
@@ -330,7 +330,7 @@ present that are regulated by a central control system.
               {90,220}},  rotation=0)));
     Modelica_Fluid.Vessels.Tank B3(
       redeclare package Medium = BatchMedium,
-      levelMax=0.5,
+      height=0.5,
       crossArea=0.05,
       V0=0.0001,
       nTopPorts=2,
@@ -343,7 +343,7 @@ present that are regulated by a central control system.
               {10,140}}, rotation=0)));
     Vessels.Tank B4(
       redeclare package Medium = BatchMedium,
-      levelMax=0.5,
+      height=0.5,
       crossArea=0.05,
       V0=0.0001,
       level_start=0.015,
@@ -360,7 +360,7 @@ present that are regulated by a central control system.
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       level_start=0.009,
-      levelMax=0.5,
+      height=0.5,
       crossArea=0.05,
       stiffCharacteristicForEmptyPort=false,
       use_HeatTransfer=true,
@@ -440,7 +440,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       V0=0.0001,
       nTopPorts=1,
-      levelMax=0.5,
+      height=0.5,
       crossArea=0.05,
       level_start=0.02,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
@@ -705,8 +705,7 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
-
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -719,7 +718,7 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
@@ -1238,12 +1237,11 @@ handled properly.</p>
               fillPattern=FillPattern.Solid),
             Rectangle(
               extent=DynamicSelect({{-200,-100},{0,0}}, {{-200,-100},{0,(-100
-                   + 200*level/levelMax)}}),
+                   + 200*level/height)}}),
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1290,8 +1288,8 @@ Full steady state initialization is not supported, because the corresponding int
 </HTML>"),
         Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-200,-100},
                 {200,100}}), graphics));
-    equation
 
+    equation
       connect(heatPort, heatTransfer.heatPorts[1]) annotation (Line(
           points={{-200,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
           color={191,0,0},

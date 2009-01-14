@@ -15,7 +15,8 @@ model HeatingSystem "Simple model of a heating system"
     use_HeatTransfer=true,
     redeclare model HeatTransfer = 
         Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer (
-          alpha0=10)) 
+          alpha0=10),
+    use_portDiameters=false) 
               annotation (Placement(transformation(extent={{-80,30},{-60,50}},
           rotation=0)));
   Machines.ControlledPump pump(
