@@ -800,8 +800,7 @@ with exception of boundary flow rate, do not have an effect.
                                        +Constants.inf,
                               each min=if flowDirection==Types.PortFlowDirection.Entering then 0 else 
                                        -Constants.inf)) 
-      annotation (Placement(transformation(extent={{95,40},{115,-40}}),
-          iconTransformation(extent={{90,40},{110,-40}})));
+      annotation (Placement(transformation(extent={{90,40},{110,-40}})));
     protected
     parameter Types.PortFlowDirection flowDirection=
                      Types.PortFlowDirection.Bidirectional

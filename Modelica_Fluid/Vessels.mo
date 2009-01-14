@@ -225,9 +225,14 @@ model Tank
     m_flow(each start=0, each min=0))
       "Inlet ports over height at top of tank (fluid flows only from the port in to the tank)"
     annotation (Placement(transformation(
+        extent={{-20,0},{20,10}},
+        origin={0,100})));
+/*
+    annotation (Placement(transformation(
         extent={{0,-20},{10,20}},
         rotation=90,
         origin={0,100})));
+*/
 
   parameter Integer nPorts = 0
       "Number of inlet/outlet ports (on bottom and on the side)" 
@@ -240,9 +245,14 @@ model Tank
     m_flow(each start=0))
       "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
     annotation (Placement(transformation(
+        extent={{-20,0},{20,-10}},
+        origin={0,-100})));
+/*
+    annotation (Placement(transformation(
         extent={{0,-20},{-10,20}},
         rotation=90,
         origin={0,-100})));
+*/
 
   //Initialization
   parameter SI.Height level_start(min=0) "Start value of tank level" 
@@ -561,12 +571,13 @@ end Tank;
 
         Interfaces.FluidPorts_b ports[nPorts](redeclare each package Medium = Medium)
         "Fluid outlets" 
-          annotation (Placement(transformation(extent={{-10,-40},{10,40}},
-            rotation=-90,
-            origin={0,-100}),
-            iconTransformation(extent={{-10,40},{10,-40}},
-            rotation=-90,
+          annotation (Placement(transformation(extent={{-40,-10},{40,10}},
             origin={0,-100})));
+      /*
+    annotation (Placement(transformation(extent={{-10,-40},{10,40}},
+      rotation=-90,
+      origin={0,-100})));
+*/
 
         Medium.AbsolutePressure ports_p_static
         "static pressure at the ports, inside the volume";
