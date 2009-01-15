@@ -336,7 +336,7 @@ end SuddenExpansion;
     replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(choicesAllMatching);
 
     // Ports
-    parameter Integer nPorts_b=1
+    parameter Integer nPorts_b=0
       "Number of outlet ports (mass is distributed evenly between the outlet ports";
     Modelica_Fluid.Interfaces.FluidPort_a port_a(
       redeclare package Medium=Medium) 
@@ -398,12 +398,15 @@ of the modeller. Increase nPorts_b to add an additional port.
 
     // mass and momentum balance
     0 = port_a.m_flow + sum(ports_b.m_flow);
-    ports_b.p = fill(port_a.p, nPorts_b);
 
-    // expose stream values from port_a to ports_b
-    ports_b.h_outflow = fill(inStream(port_a.h_outflow), nPorts_b);
-    ports_b.Xi_outflow = fill(inStream(port_a.Xi_outflow), nPorts_b);
-    ports_b.C_outflow = fill(inStream(port_a.C_outflow), nPorts_b);
+    for i in 1:nPorts_b loop
+      ports_b[i].p = port_a.p;
+
+      // expose stream values from port_a to ports_b
+      ports_b[i].h_outflow = inStream(port_a.h_outflow);
+      ports_b[i].Xi_outflow = inStream(port_a.Xi_outflow);
+      ports_b[i].C_outflow = inStream(port_a.C_outflow);
+    end for;
 
     // mixing at port_a
     port_a.h_outflow = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].h_outflow) for j in 1:nPorts_b})
