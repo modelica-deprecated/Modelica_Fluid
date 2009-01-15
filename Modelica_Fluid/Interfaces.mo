@@ -298,15 +298,12 @@ package Interfaces
       Documentation(info="<html>
 <p>
 This partial model defines an interface for components with two ports. 
-The components may transport fluid and have internal storage. 
-The treatment of design flow direction and flow reversal are predefined. The variable
+The treatment of the design flow direction and of flow reversal are predefined based on the parameter <tt><b>allowFlowReversal</b></tt>.
+The component may transport fluid and may have internal storage for a given fluid <tt><b>Medium</b></tt>. 
 </p>
-<ul>
-<li><tt>m_flow</tt> defines the mass flow rate in design direction, which is port_a.m_flow.</li> 
-</ul>
 <p>
-A derived component providing direct access to internal storage of mass or energy through port_a or port_b 
-should redefine the protected parameters port_a_exposesState and port_b_exposesState appropriately. 
+An extending model providing direct access to internal storage of mass or energy through port_a or port_b 
+should redefine the protected parameters <tt><b>port_a_exposesState</b></tt> and <tt><b>port_b_exposesState</b></tt> appropriately. 
 This will be visualized at the port icons, in order to improve the understanding of fluid model diagrams.
 </p>
 </html>"),

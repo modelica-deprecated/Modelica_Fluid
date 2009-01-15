@@ -209,8 +209,8 @@ package Machines
     connect(p_set, p_set_internal);
 
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
             visible=use_p_set,
             extent={{82,108},{176,92}},
             textString="p_set"), Text(
@@ -260,8 +260,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
           rotation=-90,
           origin={0,100})));
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
             visible=use_N_in,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
@@ -403,7 +403,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     SI.VolumeFlowRate V_flow = m_flow/d "Volume flow rate (total)";
     SI.VolumeFlowRate V_flow_single(start = m_flow_start/d_nominal/nParallel) = V_flow/nParallel
         "Volume flow rate (single pump)";
-    AngularVelocity_rpm N "Shaft rotational speed";
+    AngularVelocity_rpm N(start = N_nominal) "Shaft rotational speed";
     SI.Power W_single "Power Consumption (single pump)";
     SI.Power W_total = W_single*nParallel "Power Consumption (total)";
     Real eta "Global Efficiency";
@@ -486,8 +486,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         color={127,0,0},
         smooth=Smooth.None));
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-                100,100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+                100}}), graphics={
             Polygon(
               points={{-48,-60},{-72,-100},{72,-100},{48,-60},{-48,-60}},
               lineColor={0,0,255},

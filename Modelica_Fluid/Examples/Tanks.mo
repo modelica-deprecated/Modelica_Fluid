@@ -650,7 +650,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     connect(pipe.port_b, tank1.ports[1]) annotation (Line(points={{1.83697e-015,
             0},{0,0},{0,20}}, color={0,127,255}));
     connect(pipe.port_a, tank2.topPorts[1]) annotation (Line(points={{
-            -1.83697e-015,-20},{1,-20},{1,-40}}, color={0,127,255}));
+            -1.83697e-015,-20},{0,-20},{0,-39}}, color={0,127,255}));
   end TestEmptyOpenTank;
 
 end Tanks;
