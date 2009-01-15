@@ -160,11 +160,11 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(reservoir.ports[1], pipe.port_b) annotation (Line(
-      points={{-10,-14},{-10,-30},{-30,-30},{-30,-40}},
+      points={{-12,-16},{-12,-30},{-30,-30},{-30,-40}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(reservoir.ports[2], reservoirPressure.port_a) annotation (Line(
-      points={{-10,-18},{-10,-16},{-7,-16},{-7,-22},{10,-22}},
+      points={{-8,-16},{-8,-16},{-7,-16},{-7,-22},{10,-22}},
       color={0,127,255},
       smooth=Smooth.None,
       pattern=LinePattern.Dot));
