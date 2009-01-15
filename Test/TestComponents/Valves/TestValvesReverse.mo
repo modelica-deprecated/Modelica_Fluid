@@ -18,7 +18,7 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
     p=800000) 
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
             0)));
-  Modelica_Fluid.Sources.Boundary_pT SinkP1(
+  Modelica_Fluid.Sources.Boundary_pT SinkP1(nPorts=1,
     T=system.T_ambient,
     redeclare package Medium = 
         Modelica.Media.Water.StandardWaterOnePhase,
@@ -66,13 +66,13 @@ annotation (
           graphics),
   experiment(StopTime=4, Tolerance=1e-006),
   Documentation(info=""));
-  Modelica_Fluid.Sources.Boundary_pT SinkP2(
+  Modelica_Fluid.Sources.Boundary_pT SinkP2(nPorts=1,
     T=system.T_ambient,
     redeclare package Medium = 
         Modelica.Media.Water.StandardWaterOnePhase,
     p=100000) 
   annotation (Placement(transformation(extent={{4,58},{-16,78}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT SinkP3(
+  Modelica_Fluid.Sources.Boundary_pT SinkP3(nPorts=1,
     T=system.T_ambient,
     redeclare package Medium = 
         Modelica.Media.Water.StandardWaterOnePhase,

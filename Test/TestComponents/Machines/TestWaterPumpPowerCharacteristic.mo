@@ -3,11 +3,11 @@ model TestWaterPumpPowerCharacteristic
   "Test pump with power consumption characteristic"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  Modelica_Fluid.Sources.Boundary_pT Source( redeclare package Medium = 
-        Modelica.Media.Water.StandardWater, p=1e5,
+  Modelica_Fluid.Sources.Boundary_pT Source(nPorts=1, redeclare package Medium
+      = Modelica.Media.Water.StandardWater, p=1e5,
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,20},{-80,40}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT Sink(
+  Modelica_Fluid.Sources.Boundary_pT Sink(nPorts=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=5e5,
     T=system.T_ambient,

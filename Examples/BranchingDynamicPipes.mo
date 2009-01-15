@@ -15,7 +15,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
   inner Modelica_Fluid.System system(momentumDynamics=Modelica_Fluid.Types.Dynamics.DynamicFreeInitial) 
     annotation (Placement(transformation(extent={{-90,70},{-70,90}},  rotation=
             0)));
-  Modelica_Fluid.Sources.Boundary_pT boundary1(
+  Modelica_Fluid.Sources.Boundary_pT boundary1(nPorts=1,
     redeclare package Medium = Medium, p=150000)                    annotation (Placement(
         transformation(extent={{-10,-10},{10,10}},    rotation=90,
         origin={0,-80})));
@@ -76,7 +76,7 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
             annotation (Placement(transformation(extent={{-10,-10},{10,10}},
           rotation=90,
         origin={0,30})));
-  Modelica_Fluid.Sources.Boundary_pT boundary4(
+  Modelica_Fluid.Sources.Boundary_pT boundary4(nPorts=1,
     redeclare package Medium = Medium,
     use_p_in=true,
     use_T_in=false,
@@ -151,3 +151,4 @@ Note the static head caused by the elevation of the pipes.
 </html>"));
 
 end BranchingDynamicPipes;
+

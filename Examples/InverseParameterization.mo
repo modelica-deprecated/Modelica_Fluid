@@ -30,7 +30,7 @@ model InverseParameterization
                       annotation (Placement(transformation(extent={{20,10},{40,
             30}}, rotation=0)));
 
-  Modelica_Fluid.Sources.Boundary_pT sink(redeclare package Medium = Medium, p=
+  Modelica_Fluid.Sources.Boundary_pT sink(nPorts=1,redeclare package Medium = Medium, p=
         100000) 
              annotation (Placement(transformation(extent={{76,14},{64,26}},
           rotation=0)));
@@ -49,7 +49,7 @@ model InverseParameterization
         dp_nominal=100000)) 
                       annotation (Placement(transformation(extent={{20,-30},{40,
             -10}},rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT sink1(
+  Modelica_Fluid.Sources.Boundary_pT sink1(nPorts=1,
     redeclare package Medium = Medium, p=200000) 
              annotation (Placement(transformation(extent={{76,-26},{64,-14}},
           rotation=0)));
@@ -70,7 +70,7 @@ model InverseParameterization
         m_flow_nominal=1)) 
                       annotation (Placement(transformation(extent={{20,-70},{40,
             -50}},rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT sink2(
+  Modelica_Fluid.Sources.Boundary_pT sink2(nPorts=1,
     redeclare package Medium = Medium, p=200000) 
              annotation (Placement(transformation(extent={{76,-66},{64,-54}},
           rotation=0)));

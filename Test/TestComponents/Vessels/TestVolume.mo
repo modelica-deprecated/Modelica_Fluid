@@ -8,15 +8,16 @@ model TestVolume
     h_start=3e6,
     nPorts=2,
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyState,
-    massDynamics=Modelica_Fluid.Types.Dynamics.SteadyState) 
+    massDynamics=Modelica_Fluid.Types.Dynamics.SteadyState,
+    portDiameters={0.0254,0.0254}) 
          annotation (Placement(transformation(extent={{-40,14},{-20,34}},
           rotation=0)));
-  Modelica_Fluid.Sources.MassFlowSource_h FlowSource(
+  Modelica_Fluid.Sources.MassFlowSource_h FlowSource(nPorts=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow=1,
     h=3e6) annotation (Placement(transformation(extent={{-82,0},{-62,20}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT Sink( redeclare package Medium = 
+  Modelica_Fluid.Sources.Boundary_pT Sink(nPorts=1, redeclare package Medium = 
         Modelica.Media.Water.StandardWater, p=101325,
     T=system.T_ambient) 
     annotation (Placement(transformation(extent={{60,0},{40,20}}, rotation=0)));
@@ -44,11 +45,12 @@ equation
           12,18}},
                 color={0,0,127}));
   connect(FlowSource.ports[1], Volume.ports[1]) annotation (Line(
-      points={{-62,10},{-30,10},{-30,16}},
+      points={{-62,10},{-32,10},{-32,14}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(Volume.ports[2], Valve.port_a) annotation (Line(
-      points={{-30,12},{-30,10},{2,10}},
+      points={{-28,14},{-28,10},{2,10}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestVolume;
+
