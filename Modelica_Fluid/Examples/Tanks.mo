@@ -16,10 +16,11 @@ package Tanks "Library demonstrating the usage of the tank model"
       level_start=0.9,
       V0=0.1,
       nTopPorts=1,
+      nPorts=1,
       stiffCharacteristicForEmptyPort=true) 
       annotation (Placement(transformation(extent={{-40,28},{0,68}}, rotation=0)));
 
-    Sources.MassFlowSource_T flowSource(
+    Sources.MassFlowSource_T flowSource(nPorts=1,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       m_flow=20,
@@ -38,7 +39,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-10,72},
               {10,92}}, rotation=0)));
-    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -87,6 +88,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       height=4,
       level_start=3,
       T_start=Modelica.SIunits.Conversions.from_degC(50),
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.1, portLevel=0)}) 
       annotation (Placement(transformation(extent={{-80,0},{-40,40}}, rotation=
@@ -99,6 +101,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       height=4,
       level_start=1,
       T_start=Modelica.SIunits.Conversions.from_degC(100),
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.1, portLevel=0)}) 
       annotation (Placement(transformation(extent={{0,0},{40,40}}, rotation=0)));
@@ -121,6 +124,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     extends Modelica.Icons.Example;
 
     Sources.MassFlowSource_T flowSource(
+      nPorts=1,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       m_flow=50,
@@ -139,7 +143,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -165,6 +169,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       V0=0.1,
       height=2,
       level_start=0.1,
+      nPorts=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.1,
@@ -190,10 +195,10 @@ package Tanks "Library demonstrating the usage of the tank model"
     connect(flowSource.ports[1], pipe.port_b) annotation (Line(points={{0,50},{40,
             50},{40,20}}, color={0,127,255}));
     connect(valveDiscrete.port_b, tank1.ports[1]) annotation (Line(points={{-20,-40},
-            {-20,-30},{-20,-20},{-21,-20}},
+            {-20,-30},{-20,-22},{-21,-22}},
                              color={0,127,255}));
     connect(pipe.port_a, tank1.ports[2]) annotation (Line(points={{40,0},{40,
-            -28},{-18,-28},{-18,-20},{-21,-20},{-21,-20}}, color={0,127,255}));
+            -28},{-18,-28},{-18,-20},{-21,-20},{-21,-18}}, color={0,127,255}));
   end TankWithEmptyingPipe1;
 
   model TankWithEmptyingPipe2
@@ -212,7 +217,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -225,6 +230,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       crossArea=1,
       V0=0.1,
       height=2,
+      nPorts=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.1,
@@ -252,7 +258,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           origin={30,-60},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(nPorts=1,
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -260,13 +266,13 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (Placement(transformation(extent={{0,-100},{20,-80}}, rotation=
              0)));
   equation
-    connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-21,-20},{
+    connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-21,-22},{
             -21,-35},{-20,-35},{-20,-50}},
                        color={0,127,255}));
     connect(ambient_fixed.ports[1], pipe1.port_a) annotation (Line(points={{-40,-90},
             {-20,-90},{-20,-70}}, color={0,127,255}));
-    connect(tank1.ports[2], pipe2.port_b) annotation (Line(points={{-21,-20},{
-            -18,-20},{-18,-40},{30,-40},{30,-50}}, color={0,127,255}));
+    connect(tank1.ports[2], pipe2.port_b) annotation (Line(points={{-21,-18},{
+            -18,-18},{-18,-40},{30,-40},{30,-50}}, color={0,127,255}));
     connect(ambient_fixed1.ports[1], pipe2.port_a) annotation (Line(points={{20,-90},
             {30,-90},{30,-70}}, color={0,127,255}));
   end TankWithEmptyingPipe2;
@@ -288,7 +294,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(nPorts=1,
                                             redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -301,6 +307,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       crossArea=1,
       V0=0.1,
       height=2,
+      nPorts=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.1,
@@ -328,7 +335,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           origin={40,-40},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Sources.Boundary_pT ambient_fixed2(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed2(nPorts=1,
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -341,6 +348,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       crossArea=1,
       V0=0.1,
       height=2,
+      nPorts=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.1,
@@ -357,8 +365,8 @@ package Tanks "Library demonstrating the usage of the tank model"
                    annotation (Placement(transformation(extent={{-20,10},{0,30}},
             rotation=0)));
   equation
-    connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-61,0},{-61,
-            -15},{-60,-15},{-60,-30}},
+    connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-61,-2},{
+            -61,-15},{-60,-15},{-60,-30}},
                        color={0,127,255}));
     connect(ambient_fixed1.ports[1], pipe1.port_a) 
                                               annotation (Line(points={{-80,-70},
@@ -366,13 +374,13 @@ package Tanks "Library demonstrating the usage of the tank model"
     connect(ambient_fixed2.ports[1], pipe2.port_a) annotation (Line(points={{20,-70},
             {40,-70},{40,-50}}, color={0,127,255}));
     connect(tank2.ports[1], pipe2.port_b) 
-      annotation (Line(points={{39,0},{39,-15},{40,-15},{40,-30}},
+      annotation (Line(points={{39,-2},{39,-15},{40,-15},{40,-30}},
                                                   color={0,127,255}));
     connect(pipe3.port_a, tank1.ports[2]) annotation (Line(points={{-20,20},{
-            -30,20},{-30,-10},{-58,-10},{-58,0},{-61,0},{-61,0}},  color={0,127,
+            -30,20},{-30,-10},{-58,-10},{-58,0},{-61,0},{-61,2}},  color={0,127,
             255}));
     connect(pipe3.port_b, tank2.ports[2]) annotation (Line(points={{0,20},{10,
-            20},{10,-8},{38,-8},{38,0},{39,0},{39,0}},  color={0,127,255}));
+            20},{10,-8},{38,-8},{38,0},{39,0},{39,2}},  color={0,127,255}));
   end TanksWithEmptyingPipe1;
 
   model TanksWithEmptyingPipe2
@@ -396,7 +404,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-100,60},
               {-80,80}}, rotation=0)));
-    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(
+    Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
                                            redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       p=system.p_ambient,
@@ -420,6 +428,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       crossArea=1,
       V0=0.1,
       height=20,
+      nPorts=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.05,
@@ -434,6 +443,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       crossArea=1,
       V0=0.1,
       height=10,
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.1, portLevel=0)},
       level_start=9,
@@ -444,6 +454,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       crossArea=1,
       V0=0.1,
       height=10,
+      nPorts=3,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
           diameter=0.05, portLevel=0),
           Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.05,
@@ -477,23 +488,23 @@ package Tanks "Library demonstrating the usage of the tank model"
     connect(open.y, valveDiscrete.open) annotation (Line(points={{-77,-78},{-68,
             -78}}, color={255,0,255}));
     connect(valveDiscrete.port_b,tank3. ports[1]) annotation (Line(points={{-60,-68},
-            {-60,-59},{-60,-50},{-61,-50}},
+            {-60,-59},{-60,-52},{-61,-52}},
                              color={0,127,255}));
     connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{70,40},{70,
             45},{70,50},{69,50}},
                   color={0,127,255}));
     connect(pipe2.port_a, tank3.ports[2]) annotation (Line(points={{
-            -6.12323e-016,-32},{-6.12323e-016,-48},{0,-60},{-58,-60},{-58,-50},
-            {-61,-50}}, color={0,127,255}));
+            -6.12323e-016,-32},{-6.12323e-016,-48},{0,-60},{-58,-60},{-58,-48},
+            {-61,-48}}, color={0,127,255}));
     connect(pipe3.port_a, tank3.topPorts[1]) 
                                             annotation (Line(points={{-60,0},{
             -60,-5},{-60,-10},{-59,-10}},
                       color={0,127,255}));
     connect(pipe3.port_b, tank2.ports[1]) annotation (Line(points={{-60,20},{
-            -60,26},{-30,26},{-30,0},{-2,0},{-2,10},{-1,10}},
+            -60,26},{-30,26},{-30,0},{-2,0},{-2,7.33333},{-1,7.33333}},
                                                            color={0,127,255}));
     connect(pipe1.port_a, tank2.ports[3]) annotation (Line(points={{70,20},{70,
-            0},{2,0},{2,10},{-1,10}},
+            0},{2,0},{2,12.6667},{-1,12.6667}},
                                    color={0,127,255}));
     connect(pipe2.port_b, tank2.ports[2]) annotation (Line(
         points={{6.12323e-016,-12},{0,-12},{0,10},{-1,10}},
@@ -597,6 +608,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     Vessels.OpenTank tank1(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
+      nPorts=1,
       crossArea=1,
       level_start=1,
       height=1.1,
@@ -621,12 +633,12 @@ package Tanks "Library demonstrating the usage of the tank model"
       experiment(StopTime=50),
       experimentSetupOutput);
     Modelica_Fluid.Vessels.Tank tank2(
+      nTopPorts=1,
+      nPorts=0,
       crossArea=1,
       level_start=0,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(
-          diameter=0.1, portLevel=0)},
       height=1.1,
       V0=1e-3) 
       annotation (Placement(transformation(extent={{-20,-80},{20,-40}},

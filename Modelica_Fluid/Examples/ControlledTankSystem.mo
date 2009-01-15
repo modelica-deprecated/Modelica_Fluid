@@ -116,6 +116,7 @@ This example is based on
       level_start=0.05,
       redeclare package Medium = Medium,
       nTopPorts=1,
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.2,
           portLevel=0)},
       crossArea=6,
@@ -146,11 +147,12 @@ This example is based on
       height=5,
       crossArea=6,
       nTopPorts=1,
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.2,
           portLevel=0)})      annotation (Placement(transformation(extent={{60,
               -50},{100,-10}}, rotation=0)));
     Modelica_Fluid.Sources.Boundary_pT ambient1(redeclare package Medium = 
-          Medium,
+          Medium,nPorts=1,
       p=system.p_ambient,
       T=system.T_ambient) 
       annotation (Placement(transformation(extent={{10,-100},{30,-80}},
@@ -159,7 +161,7 @@ This example is based on
       annotation (Placement(transformation(extent={{-70,-80},{-33,-60}},
             rotation=0)));
     Modelica_Fluid.Sources.Boundary_pT source(redeclare package Medium = 
-          Medium, p=2.5e6,
+          Medium, p=2.5e6,nPorts=1,
       T=system.T_ambient) 
       annotation (Placement(transformation(
           origin={20,80},
@@ -478,9 +480,9 @@ This example is based on
                 100}}),
           graphics={Rectangle(
               extent={{-100,-100},{100,100}},
-              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0} else 
-                        {192,192,192}),
-              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then 
+              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0}
+                   else {192,192,192}),
+              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then
                   FillPattern.Solid else FillPattern.Solid),
               lineColor={128,128,128},
               lineThickness=0.5), Text(

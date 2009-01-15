@@ -9,7 +9,7 @@ model TestJunctionIdeal
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}),
                       graphics));
-  Modelica_Fluid.Sources.Boundary_pT source2(
+  Modelica_Fluid.Sources.Boundary_pT source2(nPorts=1,
     T=278.15,
     p=5e5,
     redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
@@ -17,7 +17,7 @@ model TestJunctionIdeal
         origin={90,-20},
         extent={{-10,-10},{10,10}},
         rotation=180)));
-  Modelica_Fluid.Sources.Boundary_pT source3(
+  Modelica_Fluid.Sources.Boundary_pT source3(nPorts=1,
     T=283.15,
     p=2e5,
     redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
@@ -28,7 +28,7 @@ model TestJunctionIdeal
   inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,80},{-80,100}}, rotation=
            0)));
-  Modelica_Fluid.Sources.Boundary_pT source1(          p=5e5,
+  Modelica_Fluid.Sources.Boundary_pT source1(nPorts=1,          p=5e5,
       redeclare package Medium = Modelica.Media.Air.DryAirNasa,
     T=system.T_ambient,
     use_p_in=true) 

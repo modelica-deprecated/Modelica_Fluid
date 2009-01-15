@@ -9,7 +9,7 @@ model TestJunctionTraceSubstances
         transformation(extent={{0,-30},{20,-10}},  rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}), graphics));
-  Modelica_Fluid.Sources.Boundary_pT source2(
+  Modelica_Fluid.Sources.Boundary_pT source2(nPorts=1,
     T=278.15,
     redeclare package Medium = Medium,
     p=100000,
@@ -18,7 +18,7 @@ model TestJunctionTraceSubstances
         origin={90,-20},
         extent={{-10,-10},{10,10}},
         rotation=180)));
-  Modelica_Fluid.Sources.Boundary_pT source3(
+  Modelica_Fluid.Sources.Boundary_pT source3(nPorts=1,
     T=283.15,
     redeclare package Medium = Medium,
     p=100000,
@@ -71,7 +71,7 @@ model TestJunctionTraceSubstances
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     X_start=Medium.X_default)               annotation (Placement(
         transformation(extent={{30,-30},{50,-10}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT source4(
+  Modelica_Fluid.Sources.Boundary_pT source4(nPorts=1,
     T=283.15,
     redeclare package Medium = Medium,
     p=100000,
@@ -88,7 +88,7 @@ model TestJunctionTraceSubstances
         origin={10,30},
         extent={{-10,-10},{10,10}},
         rotation=90)));
-  Modelica_Fluid.Sources.Boundary_pT source5(
+  Modelica_Fluid.Sources.Boundary_pT source5(nPorts=1,
     T=283.15,
     redeclare package Medium = Medium,
     p=100000,

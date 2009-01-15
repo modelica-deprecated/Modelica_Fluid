@@ -9,7 +9,7 @@ model TestTraceSubstances
     experiment(StopTime=2, Tolerance=1e-006));
   inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_1(
+  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_1(nPorts=1,
     p=system.p_ambient,
     use_p_in=false,
     use_h_in=false,
@@ -20,7 +20,7 @@ model TestTraceSubstances
   Modelica_Fluid.Sensors.TraceSubstances traceSubstance(redeclare package
       Medium =         Medium) 
     annotation (Placement(transformation(extent={{-10,20},{10,40}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_2(
+  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_2(nPorts=1,
     p=system.p_ambient,
     use_h_in=false,
     use_C_in=true,

@@ -217,30 +217,42 @@ model Tank
     final d_nominal = 0);
 
   //Port definitions
-  parameter Integer nTopPorts(min=1) = 1
-      "Number of inlet ports above height (>= 1)";
+  parameter Integer nTopPorts = 0 "Number of inlet ports above height (>= 1)" 
+                                                annotation(Dialog(__Dymola_connectorSizing=true));
 
   Modelica_Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0, each min=0))
       "Inlet ports over height at top of tank (fluid flows only from the port in to the tank)"
     annotation (Placement(transformation(
+        extent={{-20,0},{20,10}},
+        origin={0,100})));
+/*
+    annotation (Placement(transformation(
         extent={{0,-20},{10,20}},
         rotation=90,
         origin={0,100})));
+*/
 
-  parameter Modelica_Fluid.Vessels.BaseClasses.TankPortData portsData[:]={
-        TankPortData(diameter=0.0001)}
+  parameter Integer nPorts = 0
+      "Number of inlet/outlet ports (on bottom and on the side)" 
+     annotation(Dialog(__Dymola_connectorSizing=true));
+  parameter Modelica_Fluid.Vessels.BaseClasses.TankPortData portsData[nPorts]
       "Data of inlet/outlet ports at side and bottom of tank";
 
-  Modelica_Fluid.Interfaces.FluidPorts_b ports[size(portsData,1)](
+  Modelica_Fluid.Interfaces.FluidPorts_b ports[nPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0))
       "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
     annotation (Placement(transformation(
+        extent={{-20,0},{20,-10}},
+        origin={0,-100})));
+/*
+    annotation (Placement(transformation(
         extent={{0,-20},{-10,20}},
         rotation=90,
         origin={0,-100})));
+*/
 
   //Initialization
   parameter SI.Height level_start(min=0) "Start value of tank level" 
@@ -292,7 +304,6 @@ model Tank
     annotation(Dialog(tab = "Advanced", group = "Ambient"));
 
   // Tank properties
-  final parameter Integer nPorts = size(ports,1) "Number of inlet/outlet ports";
   SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
   Medium.EnthalpyFlowRate H_flow_top[nTopPorts]
       "Enthalpy flow rates from the top ports in to the tank";
@@ -307,15 +318,28 @@ model Tank
   Medium.MassFlowRate port_b_mC_flow_bottom[nPorts, Medium.nC]
       "Trace substance mass flow rates from the bottom ports into the tank";
   protected
-    parameter SI.Area bottomArea[nPorts]=Constants.pi*{(portsData[i].diameter/2)^2 for i in 1:nPorts};
-    parameter SI.Diameter ports_emptyPipeHysteresis[nPorts] = portsData.diameter*hysteresisFactor;
+    SI.Area bottomArea[nPorts];
+    SI.Diameter ports_emptyPipeHysteresis[nPorts];
     SI.Length levelAbovePort[nPorts] "Height of fluid over bottom ports";
     Boolean ports_m_flow_out[nPorts](each start = true, each fixed=true);
     Boolean aboveLevel[nPorts] "= true, if level >= ports[i].portLevel";
     Real zeta_out[nPorts];
+    Modelica.Blocks.Interfaces.RealInput portsData_diameter[nPorts] = portsData.diameter if nPorts > 0;
+    Modelica.Blocks.Interfaces.RealInput portsData_diameter2[nPorts];
+    Modelica.Blocks.Interfaces.RealInput portsData_portLevel[nPorts] = portsData.portLevel if nPorts > 0;
+    Modelica.Blocks.Interfaces.RealInput portsData_portLevel2[nPorts];
 equation
   assert(level <= height, "Tank starts to overflow (level = height = " + String(level) + ")");
   assert(m>=0, "Mass in tank is zero");
+
+  // Compute constant data
+  connect(portsData_diameter, portsData_diameter2);
+  connect(portsData_portLevel,portsData_portLevel2);
+
+  for i in 1:nPorts loop
+      bottomArea[i]=Constants.pi*(portsData_diameter2[i]/2)^2;
+      ports_emptyPipeHysteresis[i] = portsData_diameter2[i]*hysteresisFactor;
+  end for;
 
   // Only one connection allowed to a port to avoid unwanted ideal mixing
 /*
@@ -382,9 +406,9 @@ end for;
        port_b_H_flow_bottom[i]   = ports[i].m_flow*actualStream(ports[i].h_outflow);
        port_b_mXi_flow_bottom[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
        port_b_mC_flow_bottom[i,:]  = ports[i].m_flow*actualStream(ports[i].C_outflow);
-       aboveLevel[i] = level >= (portsData[i].portLevel + ports_emptyPipeHysteresis[i])
-                       or pre(aboveLevel[i]) and level >= (portsData[i].portLevel - ports_emptyPipeHysteresis[i]);
-       levelAbovePort[i] = if aboveLevel[i] then level - portsData[i].portLevel else 0;
+       aboveLevel[i] = level >= (portsData_portLevel2[i] + ports_emptyPipeHysteresis[i])
+                       or pre(aboveLevel[i]) and level >= (portsData_portLevel2[i] - ports_emptyPipeHysteresis[i]);
+       levelAbovePort[i] = if aboveLevel[i] then level - portsData_portLevel2[i] else 0;
        ports[i].h_outflow = medium.h;
        ports[i].Xi_outflow = medium.Xi;
        ports[i].C_outflow  = C;
@@ -394,8 +418,8 @@ end for;
           zeta_out[i] = 1 + (if aboveLevel[i] then 0 else zetaLarge);
           ports[i].p = p_ambient + levelAbovePort[i]*system.g*medium.d
                                + Modelica_Fluid.Utilities.regSquare2(ports[i].m_flow, m_flow_small,
-                                     lossConstant_D_zeta(portsData[i].diameter, 0.01)/medium.d,
-                                     lossConstant_D_zeta(portsData[i].diameter, zeta_out[i])/medium.d);
+                                     lossConstant_D_zeta(portsData_diameter2[i], 0.01)/medium.d,
+                                     lossConstant_D_zeta(portsData_diameter2[i], zeta_out[i])/medium.d);
           ports_m_flow_out[i] = false;
 
        else
@@ -419,7 +443,7 @@ end for;
 
 initial equation
     for i in 1:nPorts loop
-       pre(aboveLevel[i]) = level_start >= portsData[i].portLevel;
+       pre(aboveLevel[i]) = level_start >= portsData_portLevel2[i];
     end for;
 
     if massDynamics == Types.Dynamics.FixedInitial then
@@ -553,20 +577,20 @@ end Tank;
         extends Modelica_Fluid.Interfaces.PartialLumpedVolume;
 
         // Port definitions
-        parameter Integer nPorts(min=1)=1 "Number of ports" 
-          annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
+        parameter Integer nPorts=0 "Number of ports" 
+          annotation(Evaluate=true, Dialog(__Dymola_connectorSizing=true, tab="General",group="Ports"));
         parameter SI.Volume fluidVolume_min = 0
         "least fluid volume for flow out of ports";
 
-        Interfaces.FluidPorts_b[nPorts] ports(
-                                      redeclare each package Medium = Medium)
+        Interfaces.FluidPorts_b ports[nPorts](redeclare each package Medium = Medium)
         "Fluid outlets" 
-          annotation (Placement(transformation(extent={{-10,-40},{10,40}},
-            rotation=-90,
-            origin={0,-100}),
-            iconTransformation(extent={{-10,40},{10,-40}},
-            rotation=-90,
+          annotation (Placement(transformation(extent={{-40,-10},{40,10}},
             origin={0,-100})));
+      /*
+    annotation (Placement(transformation(extent={{-10,-40},{10,40}},
+      rotation=-90,
+      origin={0,-100})));
+*/
 
         Medium.AbsolutePressure ports_p_static
         "static pressure at the ports, inside the volume";
@@ -575,7 +599,7 @@ end Tank;
         parameter Boolean use_portDiameters=true
         "= false to neglect pressure loss and kinetic energy" 
           annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
-        parameter SI.Diameter portDiameters[nPorts] = fill(2.54e-2, nPorts)
+        parameter SI.Diameter portDiameters[nPorts]
         "Inner (hydraulic) diameters of ports (array)" 
           annotation(Dialog(tab="General",group="Ports",enable= use_portDiameters));
         parameter Real[nPorts] zeta_in=fill(0, nPorts)
@@ -671,12 +695,11 @@ of the modeller. Increase nPorts to add an additional port.
                                           portAreas[i]*Utilities.regRoot2(ports[i].p - ports_p_static, dp_small,
                                              2*portDensities[i]/(1 - zeta_in[i]), 2*medium.d/(1 + zeta_out[i])));
           end if;
-        end for;
-        ports.h_outflow = fill(medium.h, nPorts);
-        ports.Xi_outflow = fill(medium.Xi, nPorts);
-        ports.C_outflow  = fill(C,         nPorts);
 
-        for i in 1:nPorts loop
+          ports[i].h_outflow  = medium.h;
+          ports[i].Xi_outflow = medium.Xi;
+          ports[i].C_outflow  = C;
+
           ports_H_flow[i] = ports[i].m_flow * actualStream(ports[i].h_outflow)
           "Enthalpy flow";
           ports_E_flow[i] = ports[i].m_flow/2*portVelocities[i]*portVelocities[i]
@@ -686,9 +709,11 @@ of the modeller. Increase nPorts to add an additional port.
           ports_mC_flow[i,:]  = ports[i].m_flow * actualStream(ports[i].C_outflow)
           "Trace substance mass flow";
         end for;
+
         for i in 1:Medium.nXi loop
           sum_ports_mXi_flow[i] = sum(ports_mXi_flow[:,i]);
         end for;
+
         for i in 1:Medium.nC loop
           sum_ports_mC_flow[i]  = sum(ports_mC_flow[:,i]);
         end for;
@@ -697,6 +722,7 @@ of the modeller. Increase nPorts to add an additional port.
             points={{-100,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
             color={191,0,0},
             smooth=Smooth.None));
+
        annotation (
         Documentation(info="<html>
 <p>

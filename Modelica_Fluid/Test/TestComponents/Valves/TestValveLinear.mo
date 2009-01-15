@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.Valves;
 model TestValveLinear "Test case for linear valve"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  Modelica_Fluid.Sources.Boundary_pT SourceP1(
+  Modelica_Fluid.Sources.Boundary_pT SourceP1(nPorts=1,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=200000,
     T(displayUnit="degC") = 298.15) 
@@ -14,7 +14,7 @@ model TestValveLinear "Test case for linear valve"
             annotation (Placement(transformation(extent={{-26,-22},{-6,
             -2}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT SinkP1(
+  Modelica_Fluid.Sources.Boundary_pT SinkP1(nPorts=1,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
     use_p_in=true,
     p=100000,

@@ -4,7 +4,7 @@ package TestOverdeterminedInitial
   model DynamicPipeLumpedPressureInitialization
     "Steady-state initialization of a dynamic pipe using lumped pressure states"
 
-    Modelica_Fluid.Sources.FixedBoundary source(
+    Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       use_T=false,
       p=10000000,
@@ -28,8 +28,8 @@ package TestOverdeterminedInitial
       dp_nominal=10000000,
       m_flow_nominal=10) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
-    Modelica_Fluid.Sources.FixedBoundary sink(redeclare package Medium = 
-          Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
+    Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
+        = Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       offset=1,
@@ -90,7 +90,7 @@ The initial equations are consistent however and a tool shall reduce them approp
   model DynamicPipeInitialValues
     "Initialization of a dynamic pipe with fixed initial values and without adaptation of modelStructure to boundaries"
 
-    Modelica_Fluid.Sources.FixedBoundary source(
+    Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       use_T=false,
       h=2e6,
@@ -113,8 +113,8 @@ The initial equations are consistent however and a tool shall reduce them approp
       dp_nominal=10000000,
       m_flow_nominal=10) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
-    Modelica_Fluid.Sources.FixedBoundary sink(redeclare package Medium = 
-          Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
+    Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
+        = Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       offset=1,

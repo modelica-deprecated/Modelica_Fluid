@@ -4,11 +4,13 @@ model TestSources "Test model for models in source package"
   package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
   Modelica_Fluid.Sources.Boundary_pT boundary(redeclare package Medium = 
                Medium,
+    nPorts=1,
     use_C_in=true,
     use_p_in=true) 
     annotation (Placement(transformation(extent={{-50,40},{-30,60}})));
   Modelica_Fluid.Sources.Boundary_ph boundary1(redeclare package Medium = 
                Medium,
+    nPorts=1,
     use_p_in=true,
     use_X_in=false,
     use_C_in=true) 
@@ -16,18 +18,21 @@ model TestSources "Test model for models in source package"
   Modelica_Fluid.Sources.MassFlowSource_T boundary2(redeclare package Medium = 
                Medium,
     use_C_in=true,
+    nPorts=1,
     m_flow=0.1) 
     annotation (Placement(transformation(extent={{-50,-50},{-30,-30}})));
   Modelica_Fluid.Sources.MassFlowSource_h boundary3(redeclare package Medium = 
                Medium,
     use_C_in=true,
+    nPorts=1,
     m_flow=0.1) 
     annotation (Placement(transformation(extent={{-50,-90},{-30,-70}})));
   Modelica_Fluid.Sources.FixedBoundary boundary4(redeclare package Medium = 
-        Medium) 
+        Medium, nPorts=1) 
     annotation (Placement(transformation(extent={{80,40},{60,60}})));
   Modelica_Fluid.Sources.Boundary_pT boundary5(redeclare package Medium = 
-        Medium) annotation (Placement(transformation(extent={{80,0},{60,20}})));
+        Medium,     nPorts=1) 
+                annotation (Placement(transformation(extent={{80,0},{60,20}})));
   Modelica_Fluid.Sources.Boundary_ph boundary6(nPorts=2, redeclare package
       Medium =         Medium) 
     annotation (Placement(transformation(extent={{96,-70},{76,-50}})));

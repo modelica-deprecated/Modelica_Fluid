@@ -17,7 +17,7 @@ model TestOnePortSensors2
                  annotation (Placement(transformation(extent={{-34,30},{-14,50}},
           rotation=0)));
 
-  Modelica_Fluid.Sources.MassFlowSource_h FlowSource2(
+  Modelica_Fluid.Sources.MassFlowSource_h FlowSource2(nPorts=1,
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium,
@@ -33,8 +33,9 @@ model TestOnePortSensors2
     use_portDiameters=false) 
                  annotation (Placement(transformation(extent={{32,30},{52,50}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_ph Sink2(             redeclare package
-      Medium = Medium,
+  Modelica_Fluid.Sources.Boundary_ph Sink2(nPorts=1,             redeclare
+      package Medium = 
+               Medium,
     p=101325,
     h=5e4) 
     annotation (Placement(transformation(extent={{100,30},{80,50}}, rotation=0)));
@@ -56,7 +57,7 @@ model TestOnePortSensors2
     use_portDiameters=false) 
                  annotation (Placement(transformation(extent={{-34,-30},{-14,
             -10}}, rotation=0)));
-  Modelica_Fluid.Sources.MassFlowSource_h FlowSource1(
+  Modelica_Fluid.Sources.MassFlowSource_h FlowSource1(nPorts=1,
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium,
@@ -72,8 +73,9 @@ model TestOnePortSensors2
     use_portDiameters=false) 
                  annotation (Placement(transformation(extent={{32,-30},{52,-10}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_ph Sink1(             redeclare package
-      Medium = Medium,
+  Modelica_Fluid.Sources.Boundary_ph Sink1(nPorts=1,             redeclare
+      package Medium = 
+               Medium,
     p=101325,
     h=5e4) 
     annotation (Placement(transformation(extent={{100,-30},{80,-10}}, rotation=
@@ -91,31 +93,31 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(FlowSource2.ports[1], MixingVolume1.ports[1]) annotation (Line(
-      points={{-48,40},{-36,40},{-36,32},{-24,32}},
+      points={{-48,40},{-36,40},{-36,30},{-26,30}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(MixingVolume1.ports[2], MixingVolume2.ports[2]) annotation (Line(
-      points={{-24,28},{42,28}},
+      points={{-22,30},{-5,30},{-5,32},{12,32},{12,30},{44,30}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(MixingVolume2.ports[1], Sink2.ports[1]) annotation (Line(
-      points={{42,32},{61,32},{61,40},{80,40}},
+      points={{40,30},{61,30},{61,40},{80,40}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(FlowSource1.ports[1], MixingVolume3.ports[1]) annotation (Line(
-      points={{-48,-20},{-36,-20},{-36,-28},{-24,-28}},
+      points={{-48,-20},{-36,-20},{-36,-30},{-26,-30}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(MixingVolume3.ports[2], Tmix2.port_a) annotation (Line(
-      points={{-24,-32},{-12,-32},{-12,-20},{0,-20}},
+      points={{-22,-30},{-12,-30},{-12,-20},{0,-20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(Tmix2.port_b, MixingVolume4.ports[2]) annotation (Line(
-      points={{20,-20},{32,-20},{32,-32},{42,-32}},
+      points={{20,-20},{32,-20},{32,-30},{44,-30}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(MixingVolume4.ports[1], Sink1.ports[1]) annotation (Line(
-      points={{42,-28},{61,-28},{61,-20},{80,-20}},
+      points={{40,-30},{61,-30},{61,-20},{80,-20}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestOnePortSensors2;

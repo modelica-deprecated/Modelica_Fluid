@@ -48,21 +48,26 @@ model TestMultiPortTraceSubstances
     C_start={1E-4},
     use_portDiameters=true,
     zeta_out={0,0,0},
-    V=1) annotation (Placement(transformation(extent={{12,20},{32,40}})));
+    V=1,
+    portDiameters=fill(0.0254, 3)) 
+         annotation (Placement(transformation(extent={{12,20},{32,40}})));
   Modelica_Fluid.Vessels.Volume volume2(
     redeclare package Medium = Medium,
     nPorts=3,
     C_start={1E-4},
     use_portDiameters=true,
     zeta_out={0,0,0},
-    V=1) annotation (Placement(transformation(extent={{12,-20},{32,0}})));
+    V=1,
+    portDiameters=fill(0.0254, 3)) 
+         annotation (Placement(transformation(extent={{12,-20},{32,0}})));
   Modelica_Fluid.Vessels.Volume volume3(
     redeclare package Medium = Medium,
     V=1,
     nPorts=3,
     C_start={1E-4},
     use_portDiameters=true,
-    zeta_out={0,0,0}) 
+    zeta_out={0,0,0},
+    portDiameters=fill(0.0254, 3)) 
     annotation (Placement(transformation(extent={{12,-80},{32,-60}})));
   Modelica_Fluid.Sensors.TraceSubstances traceSubstance1(      redeclare
       package Medium = Medium) 
@@ -123,15 +128,15 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(volume1.ports[3], traceSubstance1.port) annotation (Line(
-      points={{22,17.3333},{34,17.3333},{34,24},{46,24}},
+      points={{24.6667,20},{34,20},{34,24},{46,24}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(volume2.ports[3], traceSubstance2.port) annotation (Line(
-      points={{22,-22.6667},{34,-22.6667},{34,-16},{44,-16}},
+      points={{24.6667,-20},{34,-20},{34,-16},{44,-16}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(volume3.ports[3], traceSubstance3.port) annotation (Line(
-      points={{22,-82.6667},{25,-82.6667},{25,-76},{46,-76}},
+      points={{24.6667,-80},{25,-80},{25,-76},{46,-76}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(volume1.ports[2], pipe1.port_a) annotation (Line(
@@ -179,15 +184,15 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe4.port_b, volume1.ports[1]) annotation (Line(
-      points={{4,20},{13,20},{13,22.6667},{22,22.6667}},
+      points={{4,20},{19.3333,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe5.port_b, volume2.ports[1]) annotation (Line(
-      points={{4,-20},{13,-20},{13,-17.3333},{22,-17.3333}},
+      points={{4,-20},{19.3333,-20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe6.port_b, volume3.ports[1]) annotation (Line(
-      points={{4,-80},{12,-80},{12,-77.3333},{22,-77.3333}},
+      points={{4,-80},{19.3333,-80}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestMultiPortTraceSubstances;

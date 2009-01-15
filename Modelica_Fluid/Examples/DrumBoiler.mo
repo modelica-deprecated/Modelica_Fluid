@@ -90,7 +90,7 @@ Simulate for 7200 seconds.
     Modelica.Blocks.Interfaces.RealInput Y_Valve 
       annotation (Placement(transformation(extent={{-109,-95},{-100,-85}},
             rotation=0)));
-    Modelica_Fluid.Sources.FixedBoundary sink(          p=from_bar(0.5),
+    Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1, p=from_bar(0.5),
       redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
       T=500) 
       annotation (Placement(transformation(
@@ -117,7 +117,7 @@ Simulate for 7200 seconds.
     Modelica.Blocks.Continuous.PI controller(T=120, k=10) 
       annotation (Placement(transformation(extent={{-51,23},{-65,37}}, rotation=
              0)));
-    Modelica_Fluid.Sources.MassFlowSource_h pump(
+    Modelica_Fluid.Sources.MassFlowSource_h pump(nPorts=1,
                                              h=5e5, redeclare package Medium = 
           Modelica.Media.Water.StandardWater,
       useFlowRateInput=true) 

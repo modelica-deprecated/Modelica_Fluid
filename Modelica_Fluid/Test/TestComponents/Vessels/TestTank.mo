@@ -8,6 +8,7 @@ model TestTank
     V0=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     level_start=1,
+    nPorts=4,
     portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.01,
         portLevel=9),Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=
         0.01, portLevel=6),Modelica_Fluid.Vessels.BaseClasses.TankPortData(
@@ -16,8 +17,8 @@ model TestTank
         portLevel=2)},
     crossArea=0.2) 
     annotation (Placement(transformation(extent={{-40,40},{0,80}}, rotation=0)));
-  Modelica_Fluid.Sources.MassFlowSource_T massFlowRate[2](redeclare package
-      Medium =         Modelica.Media.Water.StandardWater, each m_flow=0.75) 
+  Modelica_Fluid.Sources.MassFlowSource_T massFlowRate[2](each nPorts=1,redeclare
+      package Medium = Modelica.Media.Water.StandardWater, each m_flow=0.75) 
     annotation (Placement(transformation(extent={{-82,70},{-62,90}}, rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
             -100},{100,100}}),
@@ -56,7 +57,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[1], mFlow_9m.port_a) annotation (Line(
-      points={{-21,40},{20,40}},
+      points={{-21,37},{-0.5,37},{-0.5,40},{20,40}},
       color={0,0,255},
       smooth=Smooth.None));
   connect(mFlow_9m.port_b, Boundary_fixed.ports[1]) 
@@ -65,7 +66,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[2], mFlow_6m.port_a) annotation (Line(
-      points={{-21,40},{0,40},{0,0},{20,0}},
+      points={{-21,39},{0,39},{0,0},{20,0}},
       color={0,0,255},
       smooth=Smooth.None));
   connect(mFlow_6m.port_b, Boundary_fixed.ports[2]) 
@@ -74,7 +75,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[3], mFlow_4m.port_a) annotation (Line(
-      points={{-21,40},{0,40},{0,-40},{20,-40}},
+      points={{-21,41},{0,41},{0,-40},{20,-40}},
       color={0,0,255},
       smooth=Smooth.None));
   connect(mFlow_4m.port_b, Boundary_fixed.ports[3]) 
@@ -83,7 +84,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(tank.ports[4], mFlow_2m.port_a) annotation (Line(
-      points={{-21,40},{0,40},{0,-80},{20,-80}},
+      points={{-21,43},{0,43},{0,-80},{20,-80}},
       color={0,0,255},
       smooth=Smooth.None));
   connect(mFlow_2m.port_b, Boundary_fixed.ports[4]) 

@@ -303,6 +303,8 @@ present that are regulated by a central control system.
       height=0.5,
       crossArea=0.05,
       V0=0.0001,
+      nTopPorts=1,
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       stiffCharacteristicForEmptyPort=false) 
@@ -323,6 +325,8 @@ present that are regulated by a central control system.
       height=0.5,
       crossArea=0.05,
       V0=0.0001,
+      nTopPorts=1,
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       stiffCharacteristicForEmptyPort=false) 
@@ -334,6 +338,7 @@ present that are regulated by a central control system.
       crossArea=0.05,
       V0=0.0001,
       nTopPorts=2,
+      nPorts=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0),Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=
            0.011, portLevel=0)},
@@ -348,6 +353,7 @@ present that are regulated by a central control system.
       V0=0.0001,
       level_start=0.015,
       nTopPorts=1,
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       stiffCharacteristicForEmptyPort=false) 
@@ -357,6 +363,7 @@ present that are regulated by a central control system.
       redeclare package Medium = BatchMedium,
       V0=0.0001,
       nTopPorts=1,
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       level_start=0.009,
@@ -443,6 +450,7 @@ present that are regulated by a central control system.
       height=0.5,
       crossArea=0.05,
       level_start=0.02,
+      nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
           portLevel=0)},
       stiffCharacteristicForEmptyPort=false,
@@ -598,7 +606,7 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(B3.ports[1], V11.port_a) annotation (Line(
-        points={{-11,100},{-11,90},{-50,90}},
+        points={{-11,98},{-11,90},{-50,90}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V20.port_b, volume5.port_3) annotation (Line(
@@ -678,7 +686,7 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(B3.ports[2], pipeB1B1.port_a) annotation (Line(
-        points={{-11,100},{-8,100},{-8,20}},
+        points={{-11,102},{-8,102},{-8,20}},
         color={0,127,255},
         smooth=Smooth.None));
   end BatchPlant_StandardWater;
@@ -1241,7 +1249,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},

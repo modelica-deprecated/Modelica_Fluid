@@ -30,19 +30,19 @@ package TestCriticalCases
           origin={0,0},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Sources.Boundary_pT boundary1(
+    Sources.Boundary_pT boundary1(nPorts=1,
       use_p_in=true,
       use_T_in=true,
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{-68,-40},{-48,-20}}, rotation=0)));
-    Sources.Boundary_pT boundary2(
+    Sources.Boundary_pT boundary2(nPorts=1,
       use_p_in=false,
       use_T_in=false,
       p=101000,
       T=320,
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{66,-40},{46,-20}}, rotation=0)));
-    Sources.Boundary_pT boundary3(
+    Sources.Boundary_pT boundary3(nPorts=1,
       use_p_in=true,
       use_T_in=false,
       T=340,
@@ -124,7 +124,8 @@ package TestCriticalCases
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,
             extent={{-100,-100},{100,100}}), graphics),
       experiment(StopTime=3));
-    Modelica_Fluid.Sources.FixedBoundary source(redeclare package Medium = 
+    Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,redeclare package
+        Medium = 
           Modelica.Media.Water.StandardWater, p=200000) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
     Pipes.DynamicPipe pipe(
@@ -141,8 +142,8 @@ package TestCriticalCases
       Av=1e-3,
       dp_nominal=100000) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
-    Modelica_Fluid.Sources.FixedBoundary sink(redeclare package Medium = 
-          Modelica.Media.Water.StandardWater, p=100000) 
+    Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
+        = Modelica.Media.Water.StandardWater, p=100000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       height=-1,
@@ -174,7 +175,7 @@ package TestCriticalCases
   model DynamicPipeInitialization
     "Steady-state initialization of a dynamic pipe"
 
-    Modelica_Fluid.Sources.FixedBoundary source(
+    Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       use_T=false,
       p=10000000,
@@ -197,8 +198,8 @@ package TestCriticalCases
       dp_nominal=10000000,
       m_flow_nominal=10) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
-    Modelica_Fluid.Sources.FixedBoundary sink(redeclare package Medium = 
-          Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
+    Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
+        = Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       offset=1,
@@ -407,7 +408,7 @@ pipe wall/environment).
     replaceable package Medium = 
         Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=200000,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -513,7 +514,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   model BranchingPipes2
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -613,7 +614,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   model BranchingPipes3
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -644,8 +645,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       d_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
@@ -710,11 +711,11 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
           points={{1,80},{20,80},{20,54}}, color={0,0,127}));
     connect(valveOpening2.y, valveIncompressible1.opening) annotation (Line(
           points={{1,0},{18,0},{18,-32}}, color={0,0,127}));
-    connect(pipe1.port_b, splitter.port_3) annotation (Line(points={{-60,6},
-            {-55,6},{-55,6},{-50,6}},
+    connect(pipe1.port_b, splitter.port_3) annotation (Line(points={{-60,6},{
+            -55,6},{-55,6},{-50,6}},
                      color={0,127,255}));
-    connect(pipe2.port_a, splitter.port_2) annotation (Line(points={{-40,46},
-            {-43,46},{-43,12}},color={0,127,255}));
+    connect(pipe2.port_a, splitter.port_2) annotation (Line(points={{-40,46},{
+            -43,46},{-43,12}}, color={0,127,255}));
     connect(splitter.port_1, pipe3.port_a) annotation (Line(points={{-43,0},{
             -43,-40.3},{-40,-40.3},{-40,-40}}, color={0,127,255}));
   end BranchingPipes3;
@@ -722,7 +723,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   model BranchingPipes4
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -836,7 +837,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
   model SeriesPipes1
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=500000,
       T=300) annotation (Placement(transformation(extent={{-100,-6},{-88,6}},
@@ -858,15 +859,15 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       dp_nominal=400000)              annotation (Placement(transformation(
             extent={{52,-10},{72,10}}, rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
       Documentation(info="<html>
 Simulation starts with the valve open. At t=1, the valve is closed, and the simulation fails.
 </html>"));
-    Sources.Boundary_pT sink(
+    Sources.Boundary_pT sink(nPorts=1,
       redeclare package Medium = Medium,
       p=100000,
       T=300)                             annotation (Placement(transformation(
@@ -939,14 +940,14 @@ Same as SeriesPipes1, but with steady-state initial conditions. Start attributes
 pressure in order to get positive flow rates. Initialization succeeds, then the simulation
 fails for zero flow rate.
 </html>"),
-         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-              -100},{100,100}}), graphics));
+         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+              {100,100}}),       graphics));
   end SeriesPipes13;
 
   model BranchingPipes12
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1050,7 +1051,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1165,7 +1166,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1196,8 +1197,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
@@ -1283,7 +1284,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     // replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1314,8 +1315,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
@@ -1401,7 +1402,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     // replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1432,8 +1433,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
@@ -1517,7 +1518,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     // replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1550,15 +1551,15 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5, Tolerance=1e-007),
       experimentSetupOutput(equdistant=false),
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.Boundary_pT sink(
+    Sources.Boundary_pT sink(nPorts=1,
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (Placement(transformation(extent={{94,-18},{82,-6}},
@@ -1642,7 +1643,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1673,15 +1674,15 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-              {100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
               graphics),
       experiment(StopTime=5),
       experimentSetupOutput(equdistant=false),
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.Boundary_pT sink(
+    Sources.Boundary_pT sink(nPorts=1,
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (Placement(transformation(extent={{94,-18},{82,-6}},
@@ -1747,7 +1748,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     connect(valveOpening2.y, valve2.opening)               annotation (Line(
           points={{3,-2},{18,-2},{18,-32}}, color={0,0,127}));
     connect(pipe1.port_b, junctionIdeal.port_3) annotation (Line(points={{-58,6},
-            {-50,6}},                     color={0,127,255}));
+            {-54,6},{-54,6},{-50,6}},     color={0,127,255}));
     connect(pipe2.port_a, junctionIdeal.port_2) annotation (Line(points={{-34,46},
             {-40,46},{-40,16}},     color={0,127,255}));
     connect(junctionIdeal.port_1, pipe3.port_a) annotation (Line(points={{-40,-4},
@@ -1764,7 +1765,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     // replaceable package Medium = Modelica.Media.Air.SimpleAir;
     replaceable package Medium = Modelica.Media.Water.StandardWater;
 
-    Sources.Boundary_pT source(
+    Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
@@ -1799,7 +1800,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       Documentation(info="<html>
 Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 closes, and the simulation fails.
 </html>"));
-    Sources.Boundary_pT sink(
+    Sources.Boundary_pT sink(nPorts=1,
       redeclare package Medium = Medium,
       T=300,
       p=1.0e5) annotation (Placement(transformation(extent={{74,-20},{62,-8}},
@@ -1847,7 +1848,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       experiment(StopTime=4),
       experimentSetupOutput,
       uses(Modelica_Fluid(version="1.0 Streams Beta 3"), Modelica(version="3.0")));
-    Modelica_Fluid.Sources.FixedBoundary source(
+    Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       use_T=false,
       p=10000000,
@@ -1868,8 +1869,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       dp_nominal=10000000,
       m_flow_nominal=10) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
-    Modelica_Fluid.Sources.FixedBoundary sink(redeclare package Medium = 
-          Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
+    Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
+        = Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       offset=1,

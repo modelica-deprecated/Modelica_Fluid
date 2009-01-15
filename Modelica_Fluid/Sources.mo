@@ -785,7 +785,7 @@ with exception of boundary flow rate, do not have an effect.
       "Partial component source with one fluid connector"
       import Modelica.Constants;
 
-    parameter Integer nPorts(min=1)=1 "Number of ports";
+    parameter Integer nPorts=0 "Number of ports" annotation(Dialog(__Dymola_connectorSizing=true));
 
     replaceable package Medium = 
         Modelica.Media.Interfaces.PartialMedium
@@ -794,14 +794,13 @@ with exception of boundary flow rate, do not have an effect.
 
     Medium.BaseProperties medium "Medium in the source";
 
-    Interfaces.FluidPorts_b[nPorts] ports(
+    Interfaces.FluidPorts_b ports[nPorts](
                        redeclare each package Medium = Medium,
                        m_flow(each max=if flowDirection==Types.PortFlowDirection.Leaving then 0 else 
                                        +Constants.inf,
                               each min=if flowDirection==Types.PortFlowDirection.Entering then 0 else 
                                        -Constants.inf)) 
-      annotation (Placement(transformation(extent={{95,40},{115,-40}}),
-          iconTransformation(extent={{90,40},{110,-40}})));
+      annotation (Placement(transformation(extent={{90,40},{110,-40}})));
     protected
     parameter Types.PortFlowDirection flowDirection=
                      Types.PortFlowDirection.Bidirectional
@@ -815,11 +814,11 @@ If two or more connections are present, ideal mixing takes
 place with these connections, which is usually not the intention
 of the modeller. Increase nPorts to add an additional port.
 ");
-    end for;
 
-    ports.p = fill(medium.p, nPorts);
-    ports.h_outflow  = fill(medium.h, nPorts);
-    ports.Xi_outflow = fill(medium.Xi, nPorts);
+       ports[i].p          = medium.p;
+       ports[i].h_outflow  = medium.h;
+       ports[i].Xi_outflow = medium.Xi;
+    end for;
 
     annotation (defaultComponentName="boundary", Documentation(info="<html>
 <p>

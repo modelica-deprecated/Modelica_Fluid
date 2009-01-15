@@ -337,19 +337,21 @@ end SuddenExpansion;
 
     // Ports
     parameter Integer nPorts_b=0
-      "Number of outlet ports (mass is distributed evenly between the outlet ports";
+      "Number of outlet ports (mass is distributed evenly between the outlet ports"
+      annotation(Dialog(__Dymola_connectorSizing=true));
+
     Modelica_Fluid.Interfaces.FluidPort_a port_a(
       redeclare package Medium=Medium) 
       annotation (Placement(transformation(extent={{-50,-10},{-30,10}},
             rotation=0)));
-    Modelica_Fluid.Interfaces.FluidPorts_b[nPorts_b] ports_b(
+    Modelica_Fluid.Interfaces.FluidPorts_b ports_b[nPorts_b](
       redeclare each package Medium=Medium) 
       annotation (Placement(transformation(extent={{30,40},{50,-40}},
                                   rotation=0)));
 
-    Medium.MassFraction[nPorts_b,Medium.nXi] ports_b_Xi_inStream
+    Medium.MassFraction ports_b_Xi_inStream[nPorts_b,Medium.nXi]
       "inStream mass fractions at ports_b";
-    Medium.ExtraProperty[nPorts_b,Medium.nC] ports_b_C_inStream
+    Medium.ExtraProperty ports_b_C_inStream[nPorts_b,Medium.nC]
       "inStream extra properties at ports_b";
 
     annotation (Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-40,
@@ -398,20 +400,17 @@ of the modeller. Increase nPorts_b to add an additional port.
 
     // mass and momentum balance
     0 = port_a.m_flow + sum(ports_b.m_flow);
-
-    for i in 1:nPorts_b loop
-      ports_b[i].p = port_a.p;
-
-      // expose stream values from port_a to ports_b
-      ports_b[i].h_outflow = inStream(port_a.h_outflow);
-      ports_b[i].Xi_outflow = inStream(port_a.Xi_outflow);
-      ports_b[i].C_outflow = inStream(port_a.C_outflow);
-    end for;
+    ports_b.p = fill(port_a.p, nPorts_b);
 
     // mixing at port_a
     port_a.h_outflow = sum({positiveMax(ports_b[j].m_flow)*inStream(ports_b[j].h_outflow) for j in 1:nPorts_b})
                          / sum({positiveMax(ports_b[j].m_flow) for j in 1:nPorts_b});
     for j in 1:nPorts_b loop
+       // expose stream values from port_a to ports_b
+       ports_b[j].h_outflow  = inStream(port_a.h_outflow);
+       ports_b[j].Xi_outflow = inStream(port_a.Xi_outflow);
+       ports_b[j].C_outflow  = inStream(port_a.C_outflow);
+
        ports_b_Xi_inStream[j,:] = inStream(ports_b[j].Xi_outflow);
        ports_b_C_inStream[j,:] = inStream(ports_b[j].C_outflow);
     end for;
