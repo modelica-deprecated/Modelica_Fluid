@@ -1,7 +1,8 @@
-within ;  
-package Modelica_Fluid "Modelica_Fluid, 1.0 Release Candidate 1: One-dimensional thermo-fluid flow models using the Modelica.Media media description (requires package Modelica 3.0 and Dymola 7.1)"
+within ;
+package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow models using the Modelica.Media media description (requires package Modelica 3.0 and Dymola 7.1)"
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
+
 
 package UsersGuide "Users Guide"
 
@@ -905,7 +906,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0 Release Candidate 1, 2009-01-09</font></h3>
+<h3><font color=\"#008000\">Version 1.0, 2009-01-15</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -2148,8 +2149,9 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
+
 annotation (
-  version="1.0 Release Candidate 1",
+  version="1.0",
   versionBuild="$Rev$",
   versionDate="$Date::                            $",
   preferedView="info",
@@ -2174,7 +2176,7 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
  
 <p>
-This is version <b>1.0 Release Candidate 1</b> of the Modelica_Fluid library.
+This is version <b>1.0</b> of the Modelica_Fluid library.
 With respect to previous versions of the Modelica_Fluid library, the design
 of the connectors has been changed, using the recently developed concept
 with streams connectors (see an overview and a rational
@@ -2234,7 +2236,5 @@ or at
 http://www.Modelica.org/licenses/ModelicaLicense2</a>.
 </p>
  
-</html>"),
-    conversion(from(version="0.795", script=
-            "../ConvertFromModelica_Fluid_0.795.mos")));
+</html>"));
 end Modelica_Fluid;
