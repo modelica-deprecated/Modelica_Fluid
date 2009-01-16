@@ -21,14 +21,17 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       nPorts=2,
       X=Medium.X_default) 
       annotation (Placement(transformation(extent={{-60,-20},{-40,0}})));
-    Modelica_Fluid.Vessels.Volume volume(
+    Modelica_Fluid.Vessels.ClosedVolume volume(
       C_start={1.519E-3},
       V=100,
       redeclare package Medium = Medium,
       nPorts=2,
       X_start={0.015,0.085},
       massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-      portDiameters={0.0254,0.0254}) 
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+          diameter=0.15),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+           diameter=0.15)},
+      use_portsData=true) 
                 annotation (Placement(transformation(extent={{-20,0},{0,20}})));
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = Medium,
@@ -101,13 +104,17 @@ concentration of the fresh air.
       nPorts=2,
       useFlowRateInput=true) 
       annotation (Placement(transformation(extent={{-60,-42},{-40,-22}})));
-    Modelica_Fluid.Vessels.Volume volume(
+    Modelica_Fluid.Vessels.ClosedVolume volume(
       C_start={1.519E-3},
       V=100,
       redeclare package Medium = Medium,
       nPorts=3,
       massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-      portDiameters={0.0254,0.0254,0.0254}) 
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+          diameter=0.15),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+           diameter=0.15),
+          Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.15)},
+      use_portsData=false) 
                 annotation (Placement(transformation(extent={{-20,-22},{0,-2}})));
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = Medium,

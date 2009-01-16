@@ -29,11 +29,12 @@ model TestInitialization
     length=1,
     diameter=0.25) annotation (Placement(transformation(extent={{30,10},{50,30}},
           rotation=0)));
-  Modelica_Fluid.Vessels.Volume vol1(
+  Modelica_Fluid.Vessels.ClosedVolume vol1(
     redeclare package Medium = Medium,
     V=0.1,
     nPorts=2,
-    portDiameters={0.0254,0.0254}) 
+  portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
+      Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
     annotation (Placement(transformation(extent={{-10,20},{10,40}},rotation=0)));
   inner Modelica_Fluid.System system(redeclare package Medium = Medium) 
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));

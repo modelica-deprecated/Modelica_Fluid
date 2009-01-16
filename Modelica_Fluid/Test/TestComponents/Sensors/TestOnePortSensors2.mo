@@ -7,13 +7,13 @@ model TestOnePortSensors2
                       graphics),
                        experiment(StopTime=15, Algorithm="Euler"),
     experimentSetupOutput);
-  Modelica_Fluid.Vessels.Volume MixingVolume1(
+  Modelica_Fluid.Vessels.ClosedVolume MixingVolume1(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1e5,
     nPorts=2,
-    use_portDiameters=false) 
+    use_portsData=false) 
                  annotation (Placement(transformation(extent={{-34,30},{-14,50}},
           rotation=0)));
 
@@ -24,13 +24,13 @@ model TestOnePortSensors2
     useFlowRateInput=true) 
                    annotation (Placement(transformation(extent={{-68,30},{-48,
             50}}, rotation=0)));
-  Modelica_Fluid.Vessels.Volume MixingVolume2(
+  Modelica_Fluid.Vessels.ClosedVolume MixingVolume2(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1.5e5,
     nPorts=2,
-    use_portDiameters=false) 
+    use_portsData=false) 
                  annotation (Placement(transformation(extent={{32,30},{52,50}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_ph Sink2(nPorts=1,             redeclare
@@ -48,13 +48,13 @@ model TestOnePortSensors2
     duration=10) 
                annotation (Placement(transformation(extent={{-100,30},{-80,50}},
           rotation=0)));
-  Modelica_Fluid.Vessels.Volume MixingVolume3(
+  Modelica_Fluid.Vessels.ClosedVolume MixingVolume3(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1e5,
     nPorts=2,
-    use_portDiameters=false) 
+    use_portsData=false) 
                  annotation (Placement(transformation(extent={{-34,-30},{-14,
             -10}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_h FlowSource1(nPorts=1,
@@ -64,13 +64,13 @@ model TestOnePortSensors2
     useFlowRateInput=true) 
                    annotation (Placement(transformation(extent={{-68,-30},{-48,
             -10}}, rotation=0)));
-  Modelica_Fluid.Vessels.Volume MixingVolume4(
+  Modelica_Fluid.Vessels.ClosedVolume MixingVolume4(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
     h_start=1.5e5,
     nPorts=2,
-    use_portDiameters=false) 
+    use_portsData=false) 
                  annotation (Placement(transformation(extent={{32,-30},{52,-10}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_ph Sink1(nPorts=1,             redeclare

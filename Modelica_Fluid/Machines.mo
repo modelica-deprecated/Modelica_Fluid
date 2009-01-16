@@ -31,8 +31,10 @@ package Machines
     // energy balances
     Wb_flow = medium.p * pistonCrossArea * (-der(flange.s));
 
-    // definition of ports pressure
-    ports_p_static = medium.p;
+    // definition of port pressures
+    for i in 1:nPorts loop
+      ports_p_static[i] = medium.p;
+    end for;
 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}}),

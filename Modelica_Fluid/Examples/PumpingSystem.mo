@@ -39,17 +39,19 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{-68,-80},{-48,-60}}, rotation=
            0)));
 
-  Modelica_Fluid.Vessels.OpenTank reservoir(
+  Modelica_Fluid.Vessels.SimpleTank reservoir(
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
-    use_portDiameters=true,
+    use_portsData=true,
     crossArea=50,
     level_start=2.2,
     height=3,
     nPorts=2,
-    portDiameters={0.3,0.3}) 
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
+        0.3),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
+        0.01)}) 
     annotation (Placement(transformation(extent={{-20,-16},{0,4}}, rotation=0)));
 
   Modelica_Fluid.Valves.ValveLinear userValve(   redeclare package Medium = 
@@ -93,8 +95,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-            100,100}},
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+            {100,100}},
         grid={1,1}),
             graphics),
     Documentation(info="<html>
@@ -164,7 +166,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(reservoir.ports[2], reservoirPressure.port_a) annotation (Line(
-      points={{-8,-16},{-8,-16},{-7,-16},{-7,-22},{10,-22}},
+      points={{-8,-16},{-7,-16},{-7,-22},{10,-22}},
       color={0,127,255},
       smooth=Smooth.None,
       pattern=LinePattern.Dot));

@@ -4,7 +4,7 @@ model HeatingSystem "Simple model of a heating system"
       Modelica.Media.Water.StandardWater 
      constrainedby Modelica.Media.Interfaces.PartialMedium;
 
-  Modelica_Fluid.Vessels.OpenTank tank(
+  Modelica_Fluid.Vessels.SimpleTank tank(
     redeclare package Medium = Medium,
     crossArea=0.01,
     V0=0.01,
@@ -16,7 +16,10 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer (
           alpha0=10),
-    use_portDiameters=false) 
+    use_portsData=true,
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
+        0.01),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
+        0.01)}) 
               annotation (Placement(transformation(extent={{-80,30},{-60,50}},
           rotation=0)));
   Machines.ControlledPump pump(
@@ -156,7 +159,7 @@ tankLevel = tank.level;
                                             annotation (Line(points={{-30,-60},
           {-30,-70},{0,-70}}, color={0,127,255}));
   connect(tank.ports[2], pump.port_a) annotation (Line(
-      points={{-70,28},{-70,20},{-50,20}},
+      points={{-68,30},{-68,20},{-50,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(valveOpening.y, valve.opening) annotation (Line(
@@ -195,7 +198,7 @@ tankLevel = tank.level;
       color={0,127,255},
       smooth=Smooth.None));
   connect(radiator.port_b, tank.ports[1]) annotation (Line(
-      points={{0,-70},{-70,-70},{-70,32}},
+      points={{0,-70},{-72,-70},{-72,30}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(ambientTemperature1.port, tank.heatPort) annotation (Line(

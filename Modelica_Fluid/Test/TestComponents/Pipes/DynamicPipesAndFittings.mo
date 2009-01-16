@@ -420,4 +420,3 @@ equation
       thickness=0.5,
       smooth=Smooth.None));
 end DynamicPipesAndFittings;
-
