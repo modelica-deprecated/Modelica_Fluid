@@ -1,7 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Vessels;
 model TestVolume
   extends Modelica.Icons.Example;
-  Modelica_Fluid.Vessels.Volume Volume(
+  Modelica_Fluid.Vessels.ClosedVolume Volume(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     V=1,
     use_T_start=false,
@@ -9,7 +9,8 @@ model TestVolume
     nPorts=2,
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyState,
     massDynamics=Modelica_Fluid.Types.Dynamics.SteadyState,
-    portDiameters={0.0254,0.0254}) 
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
+      Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
          annotation (Placement(transformation(extent={{-40,14},{-20,34}},
           rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_h FlowSource(nPorts=1,
@@ -53,4 +54,3 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
 end TestVolume;
-

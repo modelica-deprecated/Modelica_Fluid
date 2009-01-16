@@ -297,7 +297,7 @@ present that are regulated by a central control system.
       checkValve=true) 
       annotation (Placement(transformation(extent={{120,-260},{140,-240}},
             rotation=0)));
-    Modelica_Fluid.Vessels.Tank B1(
+    Modelica_Fluid.Vessels.TankWithTopPorts B1(
       level_start=0.2,
       redeclare package Medium = BatchMedium,
       height=0.5,
@@ -305,8 +305,9 @@ present that are regulated by a central control system.
       V0=0.0001,
       nTopPorts=1,
       nPorts=1,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
-          portLevel=0)},
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                                 diameter=0.011,
+          height=0)},
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-110,180},
               {-70,220}}, rotation=0)));
@@ -319,7 +320,7 @@ present that are regulated by a central control system.
     Modelica.Blocks.Logical.TriggeredTrapezoid P2_on(amplitude=50, rising=0) 
       annotation (Placement(transformation(extent={{100,-230},{120,-210}},
             rotation=0)));
-    Modelica_Fluid.Vessels.Tank B2(
+    Modelica_Fluid.Vessels.TankWithTopPorts B2(
       level_start=0.2,
       redeclare package Medium = BatchMedium,
       height=0.5,
@@ -327,26 +328,28 @@ present that are regulated by a central control system.
       V0=0.0001,
       nTopPorts=1,
       nPorts=1,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
-          portLevel=0)},
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                                 diameter=0.011,
+          height=0)},
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{50,180},
               {90,220}},  rotation=0)));
-    Modelica_Fluid.Vessels.Tank B3(
+    Modelica_Fluid.Vessels.TankWithTopPorts B3(
       redeclare package Medium = BatchMedium,
       height=0.5,
       crossArea=0.05,
       V0=0.0001,
       nTopPorts=2,
       nPorts=2,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
-          portLevel=0),Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=
-           0.011, portLevel=0)},
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                                 diameter=0.011,
+          height=0),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
+           0.011, height=0)},
       level_start=0.02,
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-30,100},
               {10,140}}, rotation=0)));
-    Vessels.Tank B4(
+    Modelica_Fluid.Vessels.TankWithTopPorts B4(
       redeclare package Medium = BatchMedium,
       height=0.5,
       crossArea=0.05,
@@ -354,18 +357,20 @@ present that are regulated by a central control system.
       level_start=0.015,
       nTopPorts=1,
       nPorts=1,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
-          portLevel=0)},
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                                 diameter=0.011,
+          height=0)},
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-110,30},
               {-70,70}}, rotation=0)));
-    Vessels.Tank B7(
+    Modelica_Fluid.Vessels.TankWithTopPorts B7(
       redeclare package Medium = BatchMedium,
       V0=0.0001,
       nTopPorts=1,
       nPorts=1,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
-          portLevel=0)},
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                                 diameter=0.011,
+          height=0)},
       level_start=0.009,
       height=0.5,
       crossArea=0.05,
@@ -443,7 +448,7 @@ present that are regulated by a central control system.
           origin={160,10},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Vessels.Tank B6(
+    Modelica_Fluid.Vessels.TankWithTopPorts B6(
       redeclare package Medium = BatchMedium,
       V0=0.0001,
       nTopPorts=1,
@@ -451,8 +456,9 @@ present that are regulated by a central control system.
       crossArea=0.05,
       level_start=0.02,
       nPorts=1,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.011,
-          portLevel=0)},
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                                 diameter=0.011,
+          height=0)},
       stiffCharacteristicForEmptyPort=false,
       use_HeatTransfer=true,
       T_start=298,
@@ -515,24 +521,26 @@ present that are regulated by a central control system.
             {-150,-240}},     color={0,0,127}));
     connect(P2_on.y, P2.N_in) annotation (Line(points={{121,-220},{130,-220},{
             130,-240}},      color={0,0,127}));
-    connect(B4.ports[1], V12.port_b) annotation (Line(points={{-91,30},{-91,21},
-            {-90,21},{-90,12}},
+    connect(B4.ports[1], V12.port_b) annotation (Line(points={{-90,29},{-90,
+            21},{-90,21},{-90,12}},
           color={0,127,255}));
     connect(CoolingB7.port, B7.heatPort) annotation (Line(points={{-130,-120},{
             -110,-120}}, color={191,0,0}));
     connect(pipeB1B2.port_a, V4.port_b) annotation (Line(points={{0,240},{20,
             240}}, color={0,127,255}));
-    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-90,-19.6},
-            {-90,-8}}, color={0,0,255}));
-    connect(V15.port_b, B7.topPorts[1]) annotation (Line(points={{-90,-92},{-90,
-            -96},{-90,-100},{-89,-100}},
+    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-90,
+            -19.6},{-90,-8}},
+                       color={0,0,255}));
+    connect(V15.port_b, B7.topPorts[1]) annotation (Line(points={{-90,-92},{
+            -90,-96},{-90,-99},{-90,-99}},
                     color={0,127,255}));
     connect(pipePump1B1.port_a, V22.port_b) annotation (Line(points={{-180,0},{
             -180,-160}}, color={0,127,255}));
     connect(V25.port_b, pipePump2B2.port_a) annotation (Line(points={{160,-160},
             {160,0}}, color={0,127,255}));
-    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{59,-40},{59,
-            -28},{-29.6,-28}}, color={0,127,255}));
+    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{60,-39},{
+            60,-28},{-29.6,-28}},
+                               color={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{100,-60},{80,
             -60}}, color={191,0,0}));
     connect(HeatB5.port, B5.heatPort) annotation (Line(points={{-130,-40},{-110,
@@ -602,11 +610,11 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(V11.port_b, B4.topPorts[1]) annotation (Line(
-        points={{-70,90},{-89,90},{-89,70}},
+        points={{-70,90},{-90,90},{-90,71}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(B3.ports[1], V11.port_a) annotation (Line(
-        points={{-11,98},{-11,90},{-50,90}},
+        points={{-12,99},{-12,90},{-50,90}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V20.port_b, volume5.port_3) annotation (Line(
@@ -626,7 +634,7 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(V3.port_b, B1.topPorts[1]) annotation (Line(
-        points={{-130,220},{-120,220},{-120,230},{-89,230},{-89,220}},
+        points={{-130,220},{-120,220},{-120,230},{-90,230},{-90,221}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(volume8.port_3, V6.port_a) annotation (Line(
@@ -634,11 +642,11 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(V6.port_b, B2.topPorts[1]) annotation (Line(
-        points={{110,220},{100,220},{100,230},{71,230},{71,220}},
+        points={{110,220},{100,220},{100,230},{70,230},{70,221}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(B2.ports[1], V9.port_a) annotation (Line(
-        points={{69,180},{69,175},{70,175},{70,170}},
+        points={{70,179},{70,175},{70,175},{70,170}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V9.port_b, pipeB2B3.port_a) annotation (Line(
@@ -646,11 +654,11 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(pipeB2B3.port_b, B3.topPorts[2]) annotation (Line(
-        points={{30,144},{-8,144},{-8,142},{-9,142}},
+        points={{30,144},{-8,144},{-8,141},{-8,141}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(B1.ports[1], V8.port_a) annotation (Line(
-        points={{-91,180},{-91,175},{-90,175},{-90,170}},
+        points={{-90,179},{-90,175},{-90,175},{-90,170}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(V8.port_b, pipeB1B3.port_a) annotation (Line(
@@ -658,11 +666,11 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(B3.topPorts[1], pipeB1B3.port_b) annotation (Line(
-        points={{-9,138},{-12,138},{-12,144},{-50,144}},
+        points={{-12,141},{-12,141},{-12,144},{-50,144}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(B7.ports[1], pipeB7Pump.port_a) annotation (Line(
-        points={{-91,-140},{-91,-150},{-90,-150},{-90,-160}},
+        points={{-90,-141},{-90,-150},{-90,-150},{-90,-160}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(pipeB7Pump.port_b, V18.port_a) annotation (Line(
@@ -670,7 +678,7 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(B6.ports[1], pipeB6Pump.port_a) annotation (Line(
-        points={{61,-80},{61,-90},{60,-90},{60,-100}},
+        points={{60,-81},{60,-90},{60,-90},{60,-100}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(pipeB6Pump.port_b, V20.port_a) annotation (Line(
@@ -686,7 +694,7 @@ present that are regulated by a central control system.
         color={0,127,255},
         smooth=Smooth.None));
     connect(B3.ports[2], pipeB1B1.port_a) annotation (Line(
-        points={{-11,102},{-8,102},{-8,20}},
+        points={{-8,99},{-8,20},{-8,20}},
         color={0,127,255},
         smooth=Smooth.None));
   end BatchPlant_StandardWater;
@@ -1236,8 +1244,8 @@ handled properly.</p>
         assert(false, "Unsupported initialization option");
       end if;
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
-                200,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
+                {200,100}}), graphics={
             Rectangle(
               extent={{-200,100},{0,-90}},
               lineColor={255,255,255},
@@ -1249,7 +1257,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,
+                  0}),
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1275,9 +1284,10 @@ handled properly.</p>
               fillColor={0,0,255}),
             Polygon(
               points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,74},
-                  {130,60},{144,70},{152,60},{168,66},{180,54},{196,74},{190,76},
-                  {180,64},{170,70},{156,66},{148,76},{132,68},{120,80},{100,74},
-                  {88,88},{70,78},{50,92},{32,82},{28,100},{20,98},{20,98}},
+                  {130,60},{144,70},{152,60},{168,66},{180,54},{196,74},{190,
+                  76},{180,64},{170,70},{156,66},{148,76},{132,68},{120,80},{
+                  100,74},{88,88},{70,78},{50,92},{32,82},{28,100},{20,98},{
+                  20,98}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={170,255,255})}),
@@ -1357,8 +1367,8 @@ Full steady state initialization is not supported, because the corresponding int
               rotation=0)));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,
                 -200},{200,200}}),      graphics),
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},{
-                200,200}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},
+                {200,200}}), graphics={
             Rectangle(
               extent={{-200,200},{200,-200}},
               lineColor={0,0,255},

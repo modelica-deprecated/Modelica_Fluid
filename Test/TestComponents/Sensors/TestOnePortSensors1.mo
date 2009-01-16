@@ -12,7 +12,7 @@ model TestOnePortSensors1
                       graphics),
                        experiment(StopTime=25, Algorithm="Dassl"),
     experimentSetupOutput);
-  Modelica_Fluid.Vessels.Volume volume1(
+  Modelica_Fluid.Vessels.ClosedVolume volume1(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
@@ -21,7 +21,8 @@ model TestOnePortSensors1
     energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     p_start=101325,
-    portDiameters={0.0254,0.0254}) 
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
+               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
                  annotation (Placement(transformation(extent={{-30,30},{-10,50}},
           rotation=0)));
 
@@ -49,7 +50,7 @@ model TestOnePortSensors1
     duration=20,
     offset=-1) annotation (Placement(transformation(extent={{-100,30},{-80,50}},
           rotation=0)));
-  Modelica_Fluid.Vessels.Volume volume2(
+  Modelica_Fluid.Vessels.ClosedVolume volume2(
     V=1e-3,
     use_T_start=false,
     redeclare package Medium = Medium,
@@ -58,7 +59,8 @@ model TestOnePortSensors1
     energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     p_start=101325,
-    portDiameters={0.0254,0.0254}) 
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
+               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
                  annotation (Placement(transformation(extent={{-32,-30},{-12,
             -10}}, rotation=0)));
 

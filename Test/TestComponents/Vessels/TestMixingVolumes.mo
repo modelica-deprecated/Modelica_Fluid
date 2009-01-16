@@ -7,13 +7,13 @@ model TestMixingVolumes
             -100},{100,100}}),
                       graphics),
                        experiment(StopTime=10));
-  Modelica_Fluid.Vessels.Volume mixingVolume1(
+  Modelica_Fluid.Vessels.ClosedVolume mixingVolume1(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
     nPorts=3,
-    use_portDiameters=false) 
+    use_portsData=false) 
                annotation (Placement(transformation(extent={{-30,40},{-10,60}},
           rotation=0)));
 
@@ -23,13 +23,13 @@ model TestMixingVolumes
     redeclare package Medium = Medium) 
                    annotation (Placement(transformation(extent={{-98,24},{-78,
             44}}, rotation=0)));
-  Modelica_Fluid.Vessels.Volume mixingVolume2(
+  Modelica_Fluid.Vessels.ClosedVolume mixingVolume2(
     V=1e-3,
     use_T_start=false,
     h_start=1e5,
     redeclare package Medium = Medium,
     nPorts=3,
-    use_portDiameters=false) 
+    use_portsData=false) 
                annotation (Placement(transformation(extent={{10,40},{30,60}},
           rotation=0)));
   Modelica_Fluid.Sensors.Temperature Tmix_in(

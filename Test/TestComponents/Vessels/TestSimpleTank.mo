@@ -1,16 +1,17 @@
 within Modelica_Fluid.Test.TestComponents.Vessels;
-model TestOpenTank
+model TestSimpleTank
   extends Modelica.Icons.Example;
   import Modelica_Fluid;
-  Modelica_Fluid.Vessels.OpenTank upperTank(
+  Modelica_Fluid.Vessels.SimpleTank upperTank(
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     nPorts=2,
     height=20,
-    portDiameters={0.1,0.1},
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.1),
+      Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.1)},
     level_start=2,
     crossArea=0.2,
     V0=0.1,
-    use_portDiameters=true) 
+    use_portsData=true) 
     annotation (Placement(transformation(extent={{-40,20},{0,60}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate(nPorts=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -43,15 +44,15 @@ model TestOpenTank
         extent={{-10,-10},{10,10}},
         rotation=90)));
 
-  Modelica_Fluid.Vessels.OpenTank lowerTank(
+  Modelica_Fluid.Vessels.SimpleTank lowerTank(
     nPorts=1,
     height=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    portDiameters={0.1},
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.1)},
     level_start=2,
     crossArea=1,
     V0=0.1,
-    use_portDiameters=true) 
+    use_portsData=true) 
     annotation (Placement(transformation(extent={{40,-60},{80,-20}}, rotation=0)));
   Modelica.Blocks.Logical.Hysteresis hysteresis(
     uLow=1.1e5,
@@ -70,7 +71,7 @@ model TestOpenTank
 equation
   connect(massFlowRate.ports[1], upperTank.ports[1]) 
                                                  annotation (Line(
-      points={{-40,-30},{-20,-30},{-20,24}},
+      points={{-40,-30},{-24,-30},{-24,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe.port_a, lowerTank.ports[1]) annotation (Line(
@@ -102,7 +103,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(pipe.port_b, upperTank.ports[2]) annotation (Line(
-      points={{6.12323e-016,0},{-18,0},{-18,16},{-20,16}},
+      points={{6.12323e-016,0},{-18,0},{-18,20},{-16,20}},
       color={0,127,255},
       smooth=Smooth.None));
-end TestOpenTank;
+end TestSimpleTank;

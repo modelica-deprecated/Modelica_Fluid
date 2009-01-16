@@ -327,7 +327,7 @@ The steady-state initial values are observed by an assertion.
       redeclare final model FlowModel = FlowModel) 
       annotation (Placement(transformation(extent={{-60,-10},{-40,10}},
             rotation=0)));
-    Modelica_Fluid.Vessels.Volume volume(
+    Modelica_Fluid.Vessels.ClosedVolume volume(
       redeclare package Medium = Medium,
       redeclare model HeatTransfer = HeatTransfer,
       heatTransfer(surfaceAreas={perimeter*length}),
@@ -341,8 +341,9 @@ The steady-state initial values are observed by an assertion.
       C_start=C_start,
       V=V,
       nPorts=2,
-      portDiameters={0,0},
-      use_portDiameters=false,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0),
+                   Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0)},
+      use_portsData=false,
       use_HeatTransfer=use_HeatTransfer) 
       annotation (Placement(transformation(extent={{-10,10},{10,30}},  rotation=
              0)));

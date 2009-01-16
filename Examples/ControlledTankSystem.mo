@@ -112,13 +112,14 @@ This example is based on
           origin={20,50},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Vessels.Tank tank1(
+    Modelica_Fluid.Vessels.TankWithTopPorts tank1(
       level_start=0.05,
       redeclare package Medium = Medium,
       nTopPorts=1,
       nPorts=1,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.2,
-          portLevel=0)},
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                                 diameter=0.2,
+          height=0)},
       crossArea=6,
       height=4)             annotation (Placement(transformation(extent={{0,
               -10},{40,30}}, rotation=0)));
@@ -141,15 +142,16 @@ This example is based on
           origin={80,-70},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Vessels.Tank tank2(
+    Modelica_Fluid.Vessels.TankWithTopPorts tank2(
       level_start=0.05,
       redeclare package Medium = Medium,
       height=5,
       crossArea=6,
       nTopPorts=1,
       nPorts=1,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.TankPortData(diameter=0.2,
-          portLevel=0)})      annotation (Placement(transformation(extent={{60,
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                                 diameter=0.2,
+          height=0)})      annotation (Placement(transformation(extent={{60,
               -50},{100,-10}}, rotation=0)));
     Modelica_Fluid.Sources.Boundary_pT ambient1(redeclare package Medium = 
           Medium,nPorts=1,
