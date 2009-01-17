@@ -289,6 +289,8 @@ package Interfaces
       "= true if port_a exposes the state of a fluid volume";
     parameter Boolean port_b_exposesState = false
       "= true if port_b.p exposes the state of a fluid volume";
+    parameter Boolean showDesignFlowDirection = true
+      "= false to hide the arrow in the model icon";
 
     annotation (
       Diagram(coordinateSystem(
@@ -316,7 +318,8 @@ This will be visualized at the port icons, in order to improve the understanding
             lineColor={0,128,255},
             smooth=Smooth.None,
             fillColor={0,128,255},
-            fillPattern=FillPattern.Solid),
+            fillPattern=FillPattern.Solid,
+            visible=showDesignFlowDirection),
           Polygon(
             points={{20,-75},{50,-85},{20,-95},{20,-75}},
             lineColor={255,255,255},
@@ -327,7 +330,8 @@ This will be visualized at the port icons, in order to improve the understanding
           Line(
             points={{55,-85},{-60,-85}},
             color={0,128,255},
-            smooth=Smooth.None),
+            smooth=Smooth.None,
+            visible=showDesignFlowDirection),
           Text(
             extent={{-149,-114},{151,-154}},
             lineColor={0,0,255},
