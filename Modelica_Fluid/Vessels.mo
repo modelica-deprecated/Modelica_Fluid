@@ -654,10 +654,7 @@ end TankWithTopPorts;
         SI.EnergyFlowRate[nPorts] ports_E_flow
         "flow of kinetic and potential energy at device boundary";
 
-        Real[nPorts] r
-        "curve parameters for port flows vs. port pressure drops";
-        Real[nPorts] s
-        "curve parameters for port flows vs. stored fluid volume";
+        Real[nPorts] s "curve parameters for port flows vs. port pressures";
 
         // Treatment of use_portsData=false to neglect portsData and to not require its specification either in this case.
         // Remove portsData conditionally if use_portsData=false. Simplify their use in model equations by always
@@ -730,18 +727,15 @@ of the modeller. Increase nPorts to add an additional port.
             else
               ports[i].p = ports_p_static[i];
             end if;
-            r[i] = fluidLevel - portsData_height[i];
             s[i] = fluidLevel - portsData_height[i];
-          elseif s[i] > 0 or r[i] > 0 then
+          elseif s[i] > 0 then
             // ports[i] is above fluidLevel and has inflow
             ports[i].p = ports_p_static[i];
-            r[i] = ports[i].m_flow;
             s[i] = ports[i].m_flow;
           else
             // ports[i] is above fluidLevel, preventing outflow
             ports[i].m_flow = 0;
-            r[i] = (ports[i].p - ports_p_static[i])/Medium.p_default*(portsData_height[i] - fluidLevel);
-            s[i] = fluidLevel - portsData_height[i];
+            s[i] = (ports[i].p - ports_p_static[i])/Medium.p_default*(portsData_height[i] - fluidLevel);
           end if;
 
           ports[i].h_outflow  = medium.h;
