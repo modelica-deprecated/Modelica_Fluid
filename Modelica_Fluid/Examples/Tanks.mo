@@ -57,11 +57,11 @@ package Tanks "Library demonstrating the usage of the tank model"
           rotation=90)));
   equation
     connect(flowSource.ports[1], tank.topPorts[1])  annotation (Line(points={{-32,80},
-            {-19,80},{-19,68}},     color={0,127,255}));
+            {-20,80},{-20,69}},     color={0,127,255}));
     connect(ambient_fixed.ports[1], pipe.port_a) annotation (Line(points={{-34,-10},
             {-20,-10},{-20,0}}, color={0,127,255}));
     connect(pipe.port_b, tank.ports[1]) annotation (Line(points={{-20,20},{-20,
-            24},{-20,28},{-21,28}},
+            24},{-20,27},{-20,27}},
                   color={0,127,255}));
   end OneTank;
 
@@ -112,10 +112,10 @@ package Tanks "Library demonstrating the usage of the tank model"
       diameter=0.1)  annotation (Placement(transformation(extent={{-30,-30},{
               -10,-10}}, rotation=0)));
   equation
-    connect(tank1.ports[1], pipe.port_a) annotation (Line(points={{-61,0},{-61,
+    connect(tank1.ports[1], pipe.port_a) annotation (Line(points={{-60,-1},{-60,
             -20},{-30,-20}}, color={0,127,255}));
-    connect(pipe.port_b, tank2.ports[1]) annotation (Line(points={{-10,-20},{19,
-            -20},{19,0}},  color={0,127,255}));
+    connect(pipe.port_b, tank2.ports[1]) annotation (Line(points={{-10,-20},{20,
+            -20},{20,-1}}, color={0,127,255}));
   end TwoTanks;
 
   model TankWithEmptyingPipe1
@@ -609,7 +609,7 @@ package Tanks "Library demonstrating the usage of the tank model"
         smooth=Smooth.None));
   end ThreeOpenTanks;
 
-  model EmptyOpenTank "Test whether an empty tank is properly handeled"
+  model EmptyOpenTanks "Show the treatment of empty tanks"
     extends Modelica.Icons.Example;
     Modelica_Fluid.Vessels.SimpleTank tank1(
       redeclare package Medium = 
@@ -633,12 +633,6 @@ package Tanks "Library demonstrating the usage of the tank model"
           extent={{-10,-10},{10,10}},
           rotation=270)));
 
-    annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}),
-              graphics),
-      experiment(StopTime=50),
-      experimentSetupOutput);
     Vessels.SimpleTank tank2(
       crossArea=1,
       redeclare package Medium = 
@@ -659,9 +653,18 @@ package Tanks "Library demonstrating the usage of the tank model"
         color={0,127,255},
         smooth=Smooth.None));
     connect(pipe.port_b, tank2.ports[1]) annotation (Line(
-        points={{-20,-30},{-20,-60},{2,-60},{2,-78},{20,-78},{20,-80}},
+        points={{-20,-30},{-20,-60},{0,-60},{0,-80},{20,-80}},
         color={0,127,255},
         smooth=Smooth.None));
-  end EmptyOpenTank;
+
+    annotation (
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+              100,100}}),
+              graphics),
+      experiment(StopTime=50),
+      experimentSetupOutput,
+      Commands(file="../Scripts/Examples/EmptyOpenTanks/plot level and port.p.mos"
+          "plot level and port.p"));
+  end EmptyOpenTanks;
 
 end Tanks;
