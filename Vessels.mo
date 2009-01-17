@@ -64,7 +64,8 @@ model SimpleTank "Simple tank with inlet/outlet ports"
   parameter SI.Area crossArea "Area of tank";
 
   // Initialization
-  parameter SI.Height level_start "Start value of tank level" 
+  parameter SI.Height level_start(min=0) = 0.5*height
+      "Start value of tank level" 
     annotation(Dialog(tab="Initialization"));
 
   // Ambient
@@ -258,7 +259,8 @@ model TankWithTopPorts
 */
 
   //Initialization
-  parameter SI.Height level_start(min=0) "Start value of tank level" 
+  parameter SI.Height level_start(min=0) = 0.5*height
+      "Start value of tank level" 
     annotation(Dialog(tab="Initialization"));
 
   // Heat transfer through boundary
@@ -738,7 +740,7 @@ of the modeller. Increase nPorts to add an additional port.
           else
             // ports[i] is above fluidLevel, preventing outflow
             ports[i].m_flow = 0;
-            r[i] = 1e-5*(ports[i].p - ports_p_static[i])*(portsData_height[i] - fluidLevel);
+            r[i] = (ports[i].p - ports_p_static[i])/Medium.p_default*(portsData_height[i] - fluidLevel);
             s[i] = fluidLevel - portsData_height[i];
           end if;
 
