@@ -28,10 +28,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
       nPorts=2,
       X_start={0.015,0.085},
       massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-          diameter=0.15),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-           diameter=0.15)},
-      use_portsData=true) 
+      use_portsData=false) 
                 annotation (Placement(transformation(extent={{-20,0},{0,20}})));
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = Medium,
@@ -110,10 +107,6 @@ concentration of the fresh air.
       redeclare package Medium = Medium,
       nPorts=3,
       massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-          diameter=0.15),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-           diameter=0.15),
-          Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.15)},
       use_portsData=false) 
                 annotation (Placement(transformation(extent={{-20,-22},{0,-2}})));
     Modelica_Fluid.Pipes.StaticPipe pipe(

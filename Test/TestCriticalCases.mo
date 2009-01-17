@@ -341,8 +341,6 @@ The steady-state initial values are observed by an assertion.
       C_start=C_start,
       V=V,
       nPorts=2,
-        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0),
-                   Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0)},
       use_portsData=false,
       use_HeatTransfer=use_HeatTransfer) 
       annotation (Placement(transformation(extent={{-10,10},{10,30}},  rotation=
@@ -391,11 +389,11 @@ pipe wall/environment).
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics));
     connect(staticPipe1.port_b, volume.ports[1])   annotation (Line(
-        points={{-40,0},{0,0},{0,12}},
+        points={{-40,0},{-2,0},{-2,10}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(staticPipe2.port_a, volume.ports[2])   annotation (Line(
-        points={{40,0},{0,0},{0,8}},
+        points={{40,0},{2,0},{2,10}},
         color={0,127,255},
         smooth=Smooth.None));
     connect(heatPort, volume.heatPort) annotation (Line(

@@ -20,9 +20,8 @@ model TestOnePortSensors1
     nPorts=2,
     energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-    p_start=101325,
-    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
-               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
+    use_portsData=false,
+    p_start=101325) 
                  annotation (Placement(transformation(extent={{-30,30},{-10,50}},
           rotation=0)));
 
@@ -58,9 +57,8 @@ model TestOnePortSensors1
     nPorts=2,
     energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-    p_start=101325,
-    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
-               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
+    use_portsData=false,
+    p_start=101325) 
                  annotation (Placement(transformation(extent={{-32,-30},{-12,
             -10}}, rotation=0)));
 

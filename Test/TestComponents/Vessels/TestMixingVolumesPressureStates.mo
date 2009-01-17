@@ -15,8 +15,6 @@ model TestMixingVolumesPressureStates
     use_T_start=true,
     T_start=system.T_ambient,
     nPorts=2,
-    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0),
-      Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0)},
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
     use_portsData=false) 
@@ -36,8 +34,6 @@ model TestMixingVolumesPressureStates
     h_start=1e5,
     redeclare package Medium = Medium,
     nPorts=2,
-    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0),
-      Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0)},
     use_portsData=false) 
                  annotation (Placement(transformation(extent={{10,38},{30,58}},
           rotation=0)));
