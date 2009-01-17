@@ -7,7 +7,6 @@ model HeatingSystem "Simple model of a heating system"
   Modelica_Fluid.Vessels.SimpleTank tank(
     redeclare package Medium = Medium,
     crossArea=0.01,
-    V0=0.01,
     height=2,
     level_start=1,
     nPorts=2,

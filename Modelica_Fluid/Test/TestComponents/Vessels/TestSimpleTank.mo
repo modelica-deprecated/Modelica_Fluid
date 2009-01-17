@@ -9,9 +9,7 @@ model TestSimpleTank
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.1),
       Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.1)},
     level_start=2,
-    crossArea=0.2,
-    V0=0.1,
-    use_portsData=true) 
+    crossArea=0.2) 
     annotation (Placement(transformation(extent={{-40,20},{0,60}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate(nPorts=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -36,23 +34,23 @@ model TestSimpleTank
         Modelica.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{40,16},{60,36}}, rotation=0)));
   Modelica_Fluid.Pipes.StaticPipe pipe(
-    height_ab=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     diameter=0.02,
-    length=200) annotation (Placement(transformation(
-        origin={0,-10},
-        extent={{-10,-10},{10,10}},
+    length=200,
+    height_ab=-20) 
+                annotation (Placement(transformation(
+        origin={0,-20},
+        extent={{10,-10},{-10,10}},
         rotation=90)));
 
   Modelica_Fluid.Vessels.SimpleTank lowerTank(
     nPorts=1,
     height=20,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.1)},
     level_start=2,
     crossArea=1,
-    V0=0.1,
-    use_portsData=true) 
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.1,
+        height=6)}) 
     annotation (Placement(transformation(extent={{40,-60},{80,-20}}, rotation=0)));
   Modelica.Blocks.Logical.Hysteresis hysteresis(
     uLow=1.1e5,
@@ -72,14 +70,6 @@ equation
   connect(massFlowRate.ports[1], upperTank.ports[1]) 
                                                  annotation (Line(
       points={{-40,-30},{-24,-30},{-24,20}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(pipe.port_a, lowerTank.ports[1]) annotation (Line(
-      points={{-6.12323e-016,-20},{-6.12323e-016,-70},{60,-70},{60,-60}},
-      color={0,127,255},
-      smooth=Smooth.None));
-  connect(pipe.port_b, pressure.port) annotation (Line(
-      points={{6.12323e-016,0},{50,0},{50,16}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(pressure.p, hysteresis.u) annotation (Line(
@@ -102,8 +92,17 @@ equation
       points={{-79,-20},{-70,-20},{-70,-22},{-60,-22}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(pipe.port_b, upperTank.ports[2]) annotation (Line(
-      points={{6.12323e-016,0},{-18,0},{-18,20},{-16,20}},
+  connect(upperTank.ports[2], pipe.port_a) annotation (Line(
+      points={{-16,20},{-18,20},{-18,10},{6.12323e-016,10},{6.12323e-016,-10}},
+      color={0,127,255},
+      smooth=Smooth.None));
+
+  connect(pressure.port, pipe.port_a) annotation (Line(
+      points={{50,16},{50,10},{6.12323e-016,10},{6.12323e-016,-10}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(pipe.port_b, lowerTank.ports[1]) annotation (Line(
+      points={{-6.12323e-016,-30},{0,-30},{0,-48},{60,-48},{60,-60}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestSimpleTank;

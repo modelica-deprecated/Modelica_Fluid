@@ -2,11 +2,8 @@ within Modelica_Fluid.Test.TestComponents.Vessels;
 model TestInitialization
   extends Modelica.Icons.Example;
 
- package Medium = Modelica.Media.Air.SimpleAir;
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
-            -100},{100,100}}),
-                      graphics),
-                       experiment(StopTime=1));
+  package Medium = Modelica.Media.Air.SimpleAir;
+  //package Medium = Modelica.Media.Air.MoistAir;
 
   Modelica_Fluid.Sources.Boundary_pT sou1(nPorts=1,redeclare package Medium = 
         Medium,
@@ -33,8 +30,8 @@ model TestInitialization
     redeclare package Medium = Medium,
     V=0.1,
     nPorts=2,
-  portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
-      Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.25),
+        Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.25)}) 
     annotation (Placement(transformation(extent={{-10,20},{10,40}},rotation=0)));
   inner Modelica_Fluid.System system(redeclare package Medium = Medium) 
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
@@ -55,4 +52,9 @@ equation
       points={{50,20},{70,20}},
       color={0,127,255},
       smooth=Smooth.None));
+
+  annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+            -100},{100,100}}),
+                      graphics),
+                       experiment(StopTime=1));
 end TestInitialization;

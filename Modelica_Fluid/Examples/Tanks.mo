@@ -609,7 +609,7 @@ package Tanks "Library demonstrating the usage of the tank model"
         smooth=Smooth.None));
   end ThreeOpenTanks;
 
-  model TestEmptyOpenTank "Test whether an empty tank is properly handeled"
+  model EmptyOpenTank "Test whether an empty tank is properly handeled"
     extends Modelica.Icons.Example;
     Modelica_Fluid.Vessels.SimpleTank tank1(
       redeclare package Medium = 
@@ -617,47 +617,51 @@ package Tanks "Library demonstrating the usage of the tank model"
       nPorts=1,
       crossArea=1,
       level_start=1,
-      height=1.1,
-      V0=1e-3,
       portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
-          0.1)})              annotation (Placement(transformation(extent={{-20,
-              20},{20,60}}, rotation=0)));
+          0.1)},
+      height=1.1)             annotation (Placement(transformation(extent={{-40,20},
+              {0,60}},      rotation=0)));
 
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       length=1,
       diameter=0.1,
-      height_ab=1) annotation (Placement(transformation(
-          origin={0,-10},
-          extent={{10,-10},{-10,10}},
+      height_ab=-1) 
+                   annotation (Placement(transformation(
+          origin={-20,-20},
+          extent={{-10,-10},{10,10}},
           rotation=270)));
 
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}),
               graphics),
       experiment(StopTime=50),
       experimentSetupOutput);
-    Modelica_Fluid.Vessels.TankWithTopPorts tank2(
-      nTopPorts=1,
-      nPorts=0,
+    Vessels.SimpleTank tank2(
       crossArea=1,
-      level_start=0,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
+      nPorts=1,
       height=1.1,
-      V0=1e-3) 
-      annotation (Placement(transformation(extent={{-20,-80},{20,-40}},
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
+          0.1, height=0.5)},
+      level_start=1e-6) 
+      annotation (Placement(transformation(extent={{0,-80},{40,-40}},
             rotation=0)));
     inner Modelica_Fluid.System system 
                                      annotation (Placement(transformation(
-            extent={{56,58},{76,78}}, rotation=0)));
+            extent={{60,60},{80,80}}, rotation=0)));
   equation
-    connect(pipe.port_b, tank1.ports[1]) annotation (Line(points={{1.83697e-015,
-            0},{0,0},{0,20}}, color={0,127,255}));
-    connect(pipe.port_a, tank2.topPorts[1]) annotation (Line(points={{
-            -1.83697e-015,-20},{0,-20},{0,-39}}, color={0,127,255}));
-  end TestEmptyOpenTank;
+    connect(tank1.ports[1], pipe.port_a) annotation (Line(
+        points={{-20,20},{-20,5},{-20,-10},{-20,-10}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(pipe.port_b, tank2.ports[1]) annotation (Line(
+        points={{-20,-30},{-20,-60},{2,-60},{2,-78},{20,-78},{20,-80}},
+        color={0,127,255},
+        smooth=Smooth.None));
+  end EmptyOpenTank;
 
 end Tanks;
