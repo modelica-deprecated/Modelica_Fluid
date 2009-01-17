@@ -73,7 +73,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(pressure.p, hysteresis.u) annotation (Line(
-      points={{61,26},{80,26},{80,70},{-160,70},{-160,-20},{-142,-20}},
+      points={{61,26},{70,26},{70,70},{-150,70},{-150,-20},{-142,-20}},
       color={0,0,127},
       smooth=Smooth.None));
   connect(hysteresis.y, switch1.u2) annotation (Line(
@@ -102,7 +102,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(pipe.port_b, lowerTank.ports[1]) annotation (Line(
-      points={{-6.12323e-016,-30},{0,-30},{0,-48},{60,-48},{60,-60}},
+      points={{-6.12323e-016,-30},{0,-30},{0,-48},{40,-48},{40,-60},{60,-60}},
       color={0,127,255},
       smooth=Smooth.None));
 end TestSimpleTank;
