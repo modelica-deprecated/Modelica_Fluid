@@ -65,7 +65,7 @@ package HeatExchanger "Demo of a heat exchanger model"
       m_flow=0.2,
       T=360,
       redeclare package Medium = Medium,
-      useFlowRateInput=true,
+      use_m_flow_in=true,
       use_T_in=false,
       use_X_in=false) 
                   annotation (Placement(transformation(extent={{-66,24},{-46,44}},

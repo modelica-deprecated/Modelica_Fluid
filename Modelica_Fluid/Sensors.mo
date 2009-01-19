@@ -224,8 +224,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
           Line(points={{-40,20},{-12,20}}, color={0,0,0}),
           Line(points={{-40,60},{-12,60}}, color={0,0,0}),
           Line(points={{12,0},{60,0}}, color={0,0,127})}),
-      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+              100}}), graphics={
           Ellipse(
             extent={{-20,-88},{20,-50}},
             lineColor={0,0,0},
@@ -238,8 +238,8 @@ The sensor is ideal, i.e. it does not influence the fluid.
             fillColor={191,0,0},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},
-                {12,90},{12,50},{-12,50}},
+            points={{-12,50},{-12,90},{-10,96},{-6,98},{0,100},{6,98},{10,96},{
+                12,90},{12,50},{-12,50}},
             lineColor={0,0,0},
             lineThickness=0.5),
           Line(

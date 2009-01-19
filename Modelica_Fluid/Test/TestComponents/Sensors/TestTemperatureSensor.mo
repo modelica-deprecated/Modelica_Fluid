@@ -46,12 +46,12 @@ model TestTemperatureSensor "Test and compare case for the difference between us
             {80,0}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate1(nPorts=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    useFlowRateInput=true,
+    use_m_flow_in=true,
     T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
            {{-60,30},{-40,50}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate2(nPorts=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    useFlowRateInput=true,
+    use_m_flow_in=true,
     T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
            {{-60,-20},{-40,0}}, rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -85,7 +85,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
             {80,-60}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate3(nPorts=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
-    useFlowRateInput=true,
+    use_m_flow_in=true,
     T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
            {{-60,-90},{-40,-70}}, rotation=0)));
   Modelica_Fluid.Fittings.TeeJunctionIdeal junctionIdeal(

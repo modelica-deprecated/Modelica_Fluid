@@ -420,7 +420,7 @@ with exception of boundary pressure, do not have an effect.
   model MassFlowSource_T
     "Ideal flow source that produces a prescribed mass flow with prescribed temperature, mass fraction and trace substances"
     extends Sources.BaseClasses.PartialSource;
-    parameter Boolean useFlowRateInput = false
+    parameter Boolean use_m_flow_in = false
       "Get the mass flow rate from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean use_T_in= false
@@ -435,7 +435,7 @@ with exception of boundary pressure, do not have an effect.
     parameter Medium.MassFlowRate m_flow = 0
       "Fixed mass flow rate going out of the fluid port" 
       annotation (Evaluate = true,
-                  Dialog(enable = not useFlowRateInput));
+                  Dialog(enable = not use_m_flow_in));
     parameter Medium.Temperature T = Medium.T_default
       "Fixed value of temperature" 
       annotation (Evaluate = true,
@@ -449,7 +449,7 @@ with exception of boundary pressure, do not have an effect.
       "Boundary trace substances" 
       annotation (Evaluate=true,
                   Dialog(enable = (not use_C_in) and Medium.nC > 0));
-    Modelica.Blocks.Interfaces.RealInput m_flow_in if     useFlowRateInput
+    Modelica.Blocks.Interfaces.RealInput m_flow_in if     use_m_flow_in
       "Prescribed mass flow rate" 
       annotation (Placement(transformation(extent={{-120,60},{-80,100}},
             rotation=0), iconTransformation(extent={{-120,60},{-80,100}})));
@@ -517,7 +517,7 @@ with exception of boundary pressure, do not have an effect.
             fillColor={255,0,0},
             fillPattern=FillPattern.Solid),
           Text(
-            visible=useFlowRateInput,
+            visible=use_m_flow_in,
             extent={{-185,132},{-45,100}},
             lineColor={0,0,0},
             fillColor={255,255,255},
@@ -562,8 +562,8 @@ Models an ideal flow source, with prescribed values of flow rate, temperature, c
 <li> Prescribed temperature.</li>
 <li> Boundary composition (only for multi-substance or trace-substance flow).</li>
 </ul>
-<p>If <tt>useFlowRateInput</tt> is false (default option), the <tt>m_flow</tt> parameter
-is used as boundary pressure, and the <tt>m_flow_in</tt> input connector is disabled; if <tt>useFlowRateInput</tt> is true, then the <tt>m_flow</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
+<p>If <tt>use_m_flow_in</tt> is false (default option), the <tt>m_flow</tt> parameter
+is used as boundary pressure, and the <tt>m_flow_in</tt> input connector is disabled; if <tt>use_m_flow_in</tt> is true, then the <tt>m_flow</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
 <p>The same thing goes for the temperature and composition</p>
 <p>
 Note, that boundary temperature,
@@ -580,7 +580,7 @@ with exception of boundary flow rate, do not have an effect.
     connect(T_in, T_in_internal);
     connect(X_in, X_in_internal);
     connect(C_in, C_in_internal);
-    if not useFlowRateInput then
+    if not use_m_flow_in then
       m_flow_in_internal = m_flow;
     end if;
     if not use_T_in then
@@ -601,7 +601,7 @@ with exception of boundary flow rate, do not have an effect.
   model MassFlowSource_h
     "Ideal flow source that produces a prescribed mass flow with prescribed specific enthalpy, mass fraction and trace substances"
     extends Sources.BaseClasses.PartialSource;
-    parameter Boolean useFlowRateInput = false
+    parameter Boolean use_m_flow_in = false
       "Get the mass flow rate from the input connector" 
       annotation(Evaluate=true, HideResult=true, choices(__Dymola_checkBox=true));
     parameter Boolean use_h_in= false
@@ -616,7 +616,7 @@ with exception of boundary flow rate, do not have an effect.
     parameter Medium.MassFlowRate m_flow = 0
       "Fixed mass flow rate going out of the fluid port" 
       annotation (Evaluate = true,
-                  Dialog(enable = not useFlowRateInput));
+                  Dialog(enable = not use_m_flow_in));
     parameter Medium.SpecificEnthalpy h = Medium.h_default
       "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
@@ -630,7 +630,7 @@ with exception of boundary flow rate, do not have an effect.
       "Boundary trace substances" 
       annotation (Evaluate=true,
                   Dialog(enable = (not use_C_in) and Medium.nC > 0));
-    Modelica.Blocks.Interfaces.RealInput m_flow_in if     useFlowRateInput
+    Modelica.Blocks.Interfaces.RealInput m_flow_in if     use_m_flow_in
       "Prescribed mass flow rate" 
       annotation (Placement(transformation(extent={{-120,60},{-80,100}},
             rotation=0)));
@@ -694,7 +694,7 @@ with exception of boundary flow rate, do not have an effect.
             fillColor={255,0,0},
             fillPattern=FillPattern.Solid),
           Text(
-            visible=useFlowRateInput,
+            visible=use_m_flow_in,
             extent={{-185,132},{-45,100}},
             lineColor={0,0,0},
             fillColor={255,255,255},
@@ -743,8 +743,8 @@ Models an ideal flow source, with prescribed values of flow rate, temperature an
 <li> Prescribed specific enthalpy.</li>
 <li> Boundary composition (only for multi-substance or trace-substance flow).</li>
 </ul>
-<p>If <tt>useFlowRateInput</tt> is false (default option), the <tt>m_flow</tt> parameter
-is used as boundary pressure, and the <tt>m_flow_in</tt> input connector is disabled; if <tt>useFlowRateInput</tt> is true, then the <tt>m_flow</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
+<p>If <tt>use_m_flow_in</tt> is false (default option), the <tt>m_flow</tt> parameter
+is used as boundary pressure, and the <tt>m_flow_in</tt> input connector is disabled; if <tt>use_m_flow_in</tt> is true, then the <tt>m_flow</tt> parameter is ignored, and the value provided by the input connector is used instead.</p> 
 <p>The same thing goes for the temperature and composition</p>
 <p>
 Note, that boundary temperature,
@@ -761,7 +761,7 @@ with exception of boundary flow rate, do not have an effect.
     connect(h_in, h_in_internal);
     connect(X_in, X_in_internal);
     connect(C_in, C_in_internal);
-    if not useFlowRateInput then
+    if not use_m_flow_in then
       m_flow_in_internal = m_flow;
     end if;
     if not use_h_in then
