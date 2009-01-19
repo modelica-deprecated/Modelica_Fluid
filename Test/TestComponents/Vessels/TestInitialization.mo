@@ -55,6 +55,21 @@ equation
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}),
-                      graphics),
+                      graphics={
+        Text(
+          extent={{-100,-8},{100,-14}},
+          lineColor={0,0,255},
+          textString=
+              "Problem: Medium SimpleAir missing stateSelect.prefer on pressure p (see Ticket #63)"),
+        Text(
+          extent={{-100,-28},{100,-34}},
+          lineColor={0,0,255},
+          textString=
+              "This leads to the bad state m without start value and results in a division by zero"),
+        Text(
+          extent={{-100,-46},{100,-52}},
+          lineColor={0,0,255},
+          textString="Work-around: Use Medium MoistAir.")}),
                        experiment(StopTime=1));
+
 end TestInitialization;

@@ -99,7 +99,7 @@ concentration of the fresh air.
       use_C_in=true,
       redeclare package Medium = Medium,
       nPorts=2,
-      useFlowRateInput=true) 
+      use_m_flow_in=true) 
       annotation (Placement(transformation(extent={{-60,-42},{-40,-22}})));
     Modelica_Fluid.Vessels.ClosedVolume volume(
       C_start={1.519E-3},
@@ -124,7 +124,7 @@ concentration of the fresh air.
       m_flow=100/1.2/3600*5,
       redeclare package Medium = Medium,
       nPorts=1,
-      useFlowRateInput=true,
+      use_m_flow_in=true,
       use_C_in=false,
       C={100}) "CO2 emitted by room occupants." 
       annotation (Placement(transformation(extent={{-38,-98},{-18,-78}})));

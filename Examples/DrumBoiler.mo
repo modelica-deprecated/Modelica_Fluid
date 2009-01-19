@@ -120,7 +120,7 @@ Simulate for 7200 seconds.
     Modelica_Fluid.Sources.MassFlowSource_h pump(nPorts=1,
                                              h=5e5, redeclare package Medium = 
           Modelica.Media.Water.StandardWater,
-      useFlowRateInput=true) 
+      use_m_flow_in=true) 
       annotation (Placement(transformation(extent={{-80,-30},{-60,-10}},
             rotation=0)));
     Modelica.Blocks.Math.Feedback feedback 

@@ -46,34 +46,20 @@ model TestMultiPortTraceSubstances
     redeclare package Medium = Medium,
     nPorts=3,
     C_start={1E-4},
-    use_portsData=true,
-    zetas_out={0,0,0},
-    V=1,
-    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
-               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
-               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
-         annotation (Placement(transformation(extent={{12,20},{32,40}})));
+    use_portsData=false,
+    V=1) annotation (Placement(transformation(extent={{12,20},{32,40}})));
   Modelica_Fluid.Vessels.ClosedVolume volume2(
     redeclare package Medium = Medium,
     nPorts=3,
     C_start={1E-4},
-    use_portsData=true,
-    zetas_out={0,0,0},
-    V=1,
-    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
-               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
-               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
-         annotation (Placement(transformation(extent={{12,-20},{32,0}})));
+    use_portsData=false,
+    V=1) annotation (Placement(transformation(extent={{12,-20},{32,0}})));
   Modelica_Fluid.Vessels.ClosedVolume volume3(
     redeclare package Medium = Medium,
     V=1,
     nPorts=3,
     C_start={1E-4},
-    use_portsData=true,
-    zetas_out={0,0,0},
-    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
-               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254),
-               Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.0254)}) 
+    use_portsData=false) 
     annotation (Placement(transformation(extent={{12,-80},{32,-60}})));
   Modelica_Fluid.Sensors.TraceSubstances traceSubstance1(      redeclare
       package Medium = Medium) 

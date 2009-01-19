@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -906,7 +905,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0, 2009-01-15</font></h3>
+<h3><font color=\"#008000\">Version 1.0, 2009-01-19</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -962,6 +961,8 @@ Modelica_Fluid was refactored and finalized for the release:
      High-index DAEs need to be treated instead in connection sets.
      Alternatively a Fitting like SuddenExpansion can be introduced to account for different cross flow areas of connected flow models.</li>
  
+<li> New Vessels.BaseClasses.PartialLumpedVessel treating the ports, including hydraulic resistances, for ClosedVolume, SimpleTank and SweptVolume.</li>
+
 <li> System (former Ambient)<br>
      The use of the global System object has been extended towards common default values for
      modeling assumptions and initialization. In particular steady-state initialization and
@@ -1023,6 +1024,11 @@ with the exception:
 </p>
  
 <ul>
+<li> Test.TestComponents.Vessesl.TestInitialization<br>
+     The simulation failse with a division by zero. This is due to wrong state selection for the used Medium SimpleAir.</li>
+<li> Test.TestCriticalCases.BranchingPipes*<br>
+     These tests may or may not run due to the fixed modelStructure a_v_b used by Test.TestCriticalCases.LumpedPipe,
+     which does not suite for the models.</li>
 <li> Test.TestOverdeterminedInitialization.DynamicPipeInitialValues<br>
      The translation fails due to an initial value for pipe.medium[1].p, which is fixed by source.p.</li>
 </ul>
@@ -2148,7 +2154,6 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
 
 annotation (
   version="1.0",

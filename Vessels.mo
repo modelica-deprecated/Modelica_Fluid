@@ -53,6 +53,7 @@ model SimpleTank "Simple tank with inlet/outlet ports"
   extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
     final fluidVolume = V,
     final fluidLevel = level,
+    final fluidLevel_max = height,
     heatTransfer(surfaceAreas={crossArea+2*sqrt(crossArea*pi)*level}),
     final initialize_p = false,
     final p_start = p_ambient,
@@ -88,8 +89,6 @@ equation
   else
     Wb_flow = -p_ambient*der(V);
   end if;
-
-  assert(level <= height, "Tank is full (level = height = " + String(level) + ")");
 
   //Determine port properties
   for i in 1:nPorts loop
@@ -158,9 +157,9 @@ The following assumptions are made:
 </ul>
 <p>
 The port pressures represent the pressures just after the outlet (or just before the inlet) in the attached pipe. 
-The hydraulic resistances <tt>zetas_in</tt> and <tt>zetas_out</tt> determine the dissipative pressure drop between tank and port depending on 
-the direction of mass flow. The default values (zetas_in=1, zetas_out=0) assume no dissipation at the tank outlet (ideal smooth opening) and 
-total dissipation of kinetic energy at the tank inlet. Larger values are found for sharp edged openings and non-uniform velocity distributions 
+The hydraulic resistances <tt>portsData.zeta_in</tt> and <tt>portsData.zeta_out</tt> determine the dissipative pressure drop between tank and port depending on 
+the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume an ideal smooth outlet unifor distribution of inlet flow. 
+Different values are found for sharp edged openings and non-uniform velocity distributions 
 in the pipe. A large selection of possible cases are listed in <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
 </p>
 <p>
@@ -192,6 +191,7 @@ Limitation to bottom ports only, added inlet and outlet loss factors.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+equation
 
 end SimpleTank;
 
@@ -589,8 +589,10 @@ end TankWithTopPorts;
       origin={0,-100})));
 */
 
-        input SI.Height fluidLevel = Modelica.Constants.inf
+        input SI.Height fluidLevel = 0
         "level of fluid in the vessel for treating heights of ports";
+        input SI.Height fluidLevel_max = 1
+        "maximum level of fluid in the vessel";
         Medium.AbsolutePressure[nPorts] ports_p_static
         "static pressures at the ports, inside the vessel";
 
@@ -598,14 +600,8 @@ end TankWithTopPorts;
         parameter Boolean use_portsData=true
         "= false to neglect pressure loss and kinetic energy" 
           annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
-        parameter Modelica_Fluid.Vessels.BaseClasses.VesselPortsData portsData[nPorts] if use_portsData
-        "Data of inlet/outlet ports" 
-          annotation(Dialog(tab="General",group="Ports",enable= use_portsData));
-        parameter Real[nPorts] zetas_in(min=0, max=1)=fill(0.9, nPorts)
-        "Hydraulic resistance into volume, 1 for total dissipation of kinetic energy and uniform flow distribution in pipe"
-          annotation(Dialog(tab="General",group="Ports",enable= use_portsData));
-        parameter Real[nPorts] zetas_out(min=0, max=1)=fill(0.5, nPorts)
-        "Hydraulic resistance out of volume, 0 for ideal smooth outlet" 
+        parameter Modelica_Fluid.Vessels.BaseClasses.VesselPortsData[nPorts]
+        portsData if   use_portsData "Data of inlet/outlet ports" 
           annotation(Dialog(tab="General",group="Ports",enable= use_portsData));
 
         parameter SI.MassFlowRate m_flow_small(min=0) = 0.01
@@ -655,6 +651,8 @@ end TankWithTopPorts;
         "flow of kinetic and potential energy at device boundary";
 
         Real[nPorts] s "curve parameters for port flows vs. port pressures";
+        Real[nPorts] ports_penetration
+        "penetration of port with fluid, depending on fluid level and port diameter";
 
         // Treatment of use_portsData=false to neglect portsData and to not require its specification either in this case.
         // Remove portsData conditionally if use_portsData=false. Simplify their use in model equations by always
@@ -664,8 +662,13 @@ end TankWithTopPorts;
         Modelica.Blocks.Interfaces.RealInput[nPorts]
         portsData_diameter_internal =                                              portsData.diameter if use_portsData and nPorts > 0;
         Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_height_internal = portsData.height if use_portsData and nPorts > 0;
+        Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_zeta_in_internal = portsData.zeta_in if use_portsData and nPorts > 0;
+        Modelica.Blocks.Interfaces.RealInput[nPorts]
+        portsData_zeta_out_internal =                                              portsData.zeta_out if use_portsData and nPorts > 0;
         Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_diameter;
         Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_height;
+        Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_zeta_in;
+        Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_zeta_out;
 
         SI.Area[nPorts] portAreas = {Modelica.Constants.pi/4*portsData_diameter[i]^2 for i in 1:nPorts};
 
@@ -686,16 +689,21 @@ of the modeller. Increase nPorts to add an additional port.
 ");
         end for;
         // Check for correct solution
-        assert(fluidLevel > -1e-6, "Fluid level is below zero meaning that the solution failed.");
+        assert(fluidLevel <= fluidLevel_max, "Vessel is overflowing (fluidLevel > fluidLevel_max = " + String(fluidLevel) + ")");
+        assert(fluidLevel > -1e-6*fluidLevel_max, "Fluid level (= " + String(fluidLevel) + ") is below zero meaning that the solution failed.");
 
         // Boundary conditions
 
         // treatment of conditional portsData
         connect(portsData_diameter, portsData_diameter_internal);
         connect(portsData_height, portsData_height_internal);
+        connect(portsData_zeta_in, portsData_zeta_in_internal);
+        connect(portsData_zeta_out, portsData_zeta_out_internal);
         if not use_portsData then
           portsData_diameter = zeros(nPorts);
           portsData_height = zeros(nPorts);
+          portsData_zeta_in = 1*zeros(nPorts);
+          portsData_zeta_out = -1*ones(nPorts);
         end if;
 
         // actual definition of port variables
@@ -705,30 +713,33 @@ of the modeller. Increase nPorts to add an additional port.
             // Note: assume ports_p_static for portDensities to avoid algebraic loops for ports.p
             portDensities[i] = noEvent(Medium.density(Medium.setState_phX(ports_p_static[i], actualStream(ports[i].h_outflow), actualStream(ports[i].Xi_outflow))));
             portVelocities[i] = smooth(0, ports[i].m_flow/portAreas[i]/portDensities[i]);
+            // Note: the penetration should not go too close to zero as this would prevent a vessel from running empty
+            ports_penetration[i] = Utilities.regStep(fluidLevel - portsData_height[i] - 0.1*portsData_diameter[i], 1, 1e-3, 0.1*portsData_diameter[i]);
           else
             // an infinite port diameter is assumed
             portDensities[i] = medium.d;
             portVelocities[i] = 0;
+            ports_penetration[i] = 1;
           end if;
-        end for;
-        for i in 1:nPorts loop
+          // fluid flow through ports
           if fluidLevel >= portsData_height[i] then
             // regular operation: fluidLevel is above ports[i]
+            // Note: >= covers default values of zero as well
             if use_portsData then
               ports[i].p = ports_p_static[i] + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
-                                           (1 - zetas_in[i])/portDensities[i],
-                                           (1 + zetas_out[i])/medium.d));
+                                           (1 - portsData_zeta_in[i])/portDensities[i]*ports_penetration[i],
+                                           (1 + portsData_zeta_out[i])/medium.d/ports_penetration[i]));
               /*
-        // alternative formulation m_flow=f(dp); not allowing the ideal zetas_in[i]=1 though
+        // alternative formulation m_flow=f(dp); not allowing the ideal portsData_zeta_in[i]=1 though
         ports[i].m_flow = smooth(2, portAreas[i]*Utilities.regRoot2(ports[i].p - ports_p_static[i], dp_small,
-                                     2*portDensities[i]/(1 - zetas_in[i]),
-                                     2*medium.d/(1 + zetas_out[i])));
+                                     2*portDensities[i]/(1 - portsData_zeta_in[i]),
+                                     2*medium.d/(1 + portsData_zeta_out[i])));
         */
             else
               ports[i].p = ports_p_static[i];
             end if;
             s[i] = fluidLevel - portsData_height[i];
-          elseif s[i] > 0 then
+          elseif s[i] > 0 or portsData_height[i] >= fluidLevel_max then
             // ports[i] is above fluidLevel and has inflow
             ports[i].p = ports_p_static[i];
             s[i] = ports[i].m_flow;
@@ -775,19 +786,35 @@ Alternatively the impact of port geometries can be neglected with <tt>use_portsD
 design studies. Note that this means to assume an infinite port diameter at the bottom of the vessel. 
 Pressure drops and heights of the ports as well as kinetic and potential energy fluid enering or leaving the vessel are neglected then.
 <p>
-An extending model should use the predefined variables <b><tt>portsData_diameter[nPorts]</tt></b> and <b><tt>portsData_height[nPorts]</tt></b>,
-instead of accessing the <tt>portsData</tt> record, as an access to <tt>portsData</tt> may fail for <tt>use_portsData=false</tt> or <tt>nPorts=0</tt>.
 The following variables need to be defined by an extending model:
 <ul>
 <li><tt>input fluidVolume</tt>, the volume of the fluid in the vessel,</li>
-<li><tt>input fluidLevel</tt>, the level the fluid in the vessel, which is needed for the treatment of <tt>portsData_height[nPorts]</tt>, and</li>
+<li><tt>ports_p_static[nPorts]</tt>, the static pressures at the ports, inside the vessel, and</li>
 <li><tt>Wb_flow</tt>, work term of the energy balance, e.g. p*der(V) if the volume is not constant or stirrer power.</li>
 </ul>
+Optionally the fluid level may vary in the vessel, which effects the flow through the ports at configurable <tt>portsData_height[nPorts]</tt>. 
+This is why an extending model with varying fluid level needs to define:
+<ul>
+<li><tt>input fluidLevel</tt>, the level the fluid in the vessel, and</li>
+<li><tt>input fluidLevel_max</tt>, the maximum level that must not be exceeded. Ports at or above fluidLevel_max can only receive inflow.</li>
+</ul>
+<p>
+An extending model should not access the <tt>portsData</tt> record defined in the configuration dialog,
+as an access to <tt>portsData</tt> may fail for <tt>use_portsData=false</tt> or <tt>nPorts=0</tt>.
+Instead the predefined variables 
+<ul>
+<li><tt>portsData_diameter[nPorts]</tt></li>,
+<li><tt>portsData_height[nPorts]</tt></li>,
+<li><tt>portsData_zeta_in[nPorts]</tt></li>, and
+<li><tt>portsData_zeta_out[nPorts]</tt></li>
+</ul>
+sould be used, if needed by an extending model.
+</p>
 </html>",       revisions="<html>
 <ul>
 <li><i>Jan. 2009</i> by R&uuml;diger Franke: extended with
    <ul><li>portsData record and threat configurable port heights,</li>
-       <li>consideration of kinetic energy of fluid entering or leaving in energy balance</li>
+       <li>consideration of kinetic and potential energy of fluid entering or leaving in energy balance</li>
    </ul>
 </li>
 <li><i>Dec. 2008</i> by R&uuml;diger Franke: derived from OpenTank, in order to make general use of configurable port diameters</i>
@@ -856,12 +883,23 @@ Heat transfer correlations for pipe models
 
   end HeatTransfer;
 
-    record VesselPortsData "Data to describe inlet/outlet ports at vessels"
+    record VesselPortsData "Data to describe inlet/outlet ports at vessels:
+ 
+    diameter -- Inner (hydraulic) diameter of inlet/outlet port
+ 
+    height -- Height over the bottom of the vessel
+ 
+    zeta_in -- Hydraulic resistance into vessel, default 1 for uniform flow distribution in pipe
+ 
+    zeta_out -- Hydraulic resistance out of vessel, default 0 for ideal smooth outlet"
           extends Modelica.Icons.Record;
-
       parameter SI.Diameter diameter
         "Inner (hydraulic) diameter of inlet/outlet port";
       parameter SI.Height height = 0 "Height over the bottom of the vessel";
+      parameter Real zeta_in(min=0, max=1)=1
+        "Hydraulic resistance into vessel, 1 for uniform flow distribution in pipe";
+      parameter Real zeta_out(min=0, max=1)=0
+        "Hydraulic resistance out of vessel, 0 for ideal smooth outlet";
     end VesselPortsData;
   end BaseClasses;
   annotation (Documentation(info="<html>

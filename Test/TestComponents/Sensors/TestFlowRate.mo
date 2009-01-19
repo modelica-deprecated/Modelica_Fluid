@@ -9,7 +9,7 @@ model TestFlowRate
   Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent=
            {{-100,0},{-80,20}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate1(nPorts=1,
-    useFlowRateInput=true,
+    use_m_flow_in=true,
     T=SI.Conversions.from_degC(50),
     redeclare package Medium = Modelica.Media.Water.StandardWater) 
                                     annotation (Placement(transformation(extent=

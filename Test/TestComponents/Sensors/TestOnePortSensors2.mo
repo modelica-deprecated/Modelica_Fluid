@@ -21,7 +21,7 @@ model TestOnePortSensors2
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium,
-    useFlowRateInput=true) 
+    use_m_flow_in=true) 
                    annotation (Placement(transformation(extent={{-68,30},{-48,
             50}}, rotation=0)));
   Modelica_Fluid.Vessels.ClosedVolume MixingVolume2(
@@ -61,7 +61,7 @@ model TestOnePortSensors2
     m_flow=1,
     h=2e5,
     redeclare package Medium = Medium,
-    useFlowRateInput=true) 
+    use_m_flow_in=true) 
                    annotation (Placement(transformation(extent={{-68,-30},{-48,
             -10}}, rotation=0)));
   Modelica_Fluid.Vessels.ClosedVolume MixingVolume4(

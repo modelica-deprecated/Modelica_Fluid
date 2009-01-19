@@ -21,7 +21,7 @@ model TestDensity
                                     annotation (Placement(transformation(extent=
            {{-100,-20},{-80,0}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_h massFlowRate2(nPorts=1,
-    useFlowRateInput=true,
+    use_m_flow_in=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     h=3200e3)                       annotation (Placement(transformation(extent=
            {{-60,-20},{-40,0}}, rotation=0)));
@@ -44,7 +44,7 @@ model TestDensity
   Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent=
            {{-100,50},{-80,70}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_h massFlowRate1(nPorts=1,
-    useFlowRateInput=true,
+    use_m_flow_in=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     h=3200e3)                       annotation (Placement(transformation(extent=
            {{-60,50},{-40,70}}, rotation=0)));
