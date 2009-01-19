@@ -16,21 +16,20 @@ annotation (
     offset=0,
     duration=1) annotation (Placement(transformation(extent={{-100,-8},{-80,12}},
           rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT Source(nPorts=1, redeclare package Medium
-      = Modelica.Media.Water.StandardWater,
+  Modelica_Fluid.Sources.Boundary_pT Source(nPorts=1,
     T=system.T_ambient,
-    p=100000) 
+    p=100000,
+    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater)
   annotation (Placement(transformation(extent={{-100,-38},{-80,-18}},
                                                                     rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT Sink(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
     T=system.T_ambient,
     use_p_in=false,
-    p=100000) 
+    p=100000,
+    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater)
   annotation (Placement(transformation(extent={{62,-30},{42,-10}},
                                                                  rotation=0)));
   Modelica_Fluid.Machines.PrescribedPump pump(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
     m_flow_start=1,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
@@ -39,8 +38,8 @@ annotation (
     use_N_in=true,
     use_V=true,
     V=0.1/1000,
-    energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
-    massDynamics=Modelica_Fluid.Types.Dynamics.SteadyState,
+    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater, 
+
     p_a_start=100000,
     p_b_start=700000)     annotation (Placement(transformation(extent={{-46,-40},
             {-14,-10}},rotation=0)));
@@ -48,16 +47,16 @@ annotation (
                                    annotation (Placement(transformation(extent={{80,60},
             {100,80}},         rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V1(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
-    dp_nominal=800000) 
+    dp_nominal=800000,
+    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater)
     annotation (Placement(transformation(extent={{-28,6},{-50,26}})));
   Modelica_Fluid.Valves.ValveIncompressible V2(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
-    dp_nominal=800000) 
+    dp_nominal=800000,
+    redeclare package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater)
     annotation (Placement(transformation(extent={{0,-30},{22,-10}})));
   Modelica.Blocks.Sources.Ramp V1_Opening(
     duration=1,

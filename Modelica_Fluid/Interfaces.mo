@@ -604,12 +604,6 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       final parameter Types.Dynamics traceDynamics=massDynamics
       "Formulation of trace substance balance" 
         annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-      parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
-      "= true if d_nominal is used for mass storage, else computed from medium"
-        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-      parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
-      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
-         annotation(Dialog(tab="Assumptions", group="Dynamics", enable=use_d_nominal));
 
       // Initialization
       parameter Medium.AbsolutePressure p_start = system.p_start
@@ -663,13 +657,11 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       parameter Boolean initialize_p = not Medium.singleState
       "= true to set up initial equations for pressure";
     equation
+      assert(not (energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState) or Medium.singleState,
+             "Bad combination of dynamics options and Medium not conserving mass if fluidVolume is fixed.");
 
       // Total quantities
-      if use_d_nominal then
-        m = fluidVolume*d_nominal;
-      else
-        m = fluidVolume*medium.d;
-      end if;
+      m = fluidVolume*medium.d;
       mXi = m*medium.Xi;
       U = m*medium.u;
       mC = m*C;
@@ -868,14 +860,6 @@ partial model PartialDistributedVolume
       "Formulation of trace substance balances" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 
-  parameter Boolean use_d_nominal=energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState
-      "= true if d_nominal is used for mass storage, else computed from medium"
-    annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-
-  parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
-      "Nominal density (e.g. d_liquidWater = 995, d_air = 1.2)" 
-     annotation(Dialog(tab="Assumptions", group="Dynamics", enable=use_d_nominal));
-
   //Initialization
   parameter Medium.AbsolutePressure p_a_start=system.p_start
       "Start value of pressure at port a" 
@@ -941,13 +925,12 @@ partial model PartialDistributedVolume
       "= true to set up initial equations for pressure";
 
 equation
+  assert(not (energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState) or Medium.singleState,
+         "Bad combination of dynamics options and Medium not conserving mass if fluidVolumes are fixed.");
+
   // Total quantities
   for i in 1:n loop
-    if use_d_nominal then
-      ms[i] =fluidVolumes[i]*d_nominal;
-    else
-      ms[i] =fluidVolumes[i]*mediums[i].d;
-    end if;
+    ms[i] =fluidVolumes[i]*mediums[i].d;
     mXis[i, :] = ms[i]*mediums[i].Xi;
     mCs[i, :]  = ms[i]*Cs[i, :];
     Us[i] = ms[i]*mediums[i].u;

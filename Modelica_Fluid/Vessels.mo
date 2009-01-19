@@ -56,9 +56,7 @@ model SimpleTank "Simple tank with inlet/outlet ports"
     final fluidLevel_max = height,
     heatTransfer(surfaceAreas={crossArea+2*sqrt(crossArea*pi)*level}),
     final initialize_p = false,
-    final p_start = p_ambient,
-    final use_d_nominal = false,
-    final d_nominal = 0);
+    final p_start = p_ambient);
 
   // Tank geometry
   parameter SI.Height height "Height of tank";
@@ -191,7 +189,6 @@ Limitation to bottom ports only, added inlet and outlet loss factors.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-equation
 
 end SimpleTank;
 
@@ -210,9 +207,7 @@ model TankWithTopPorts
   extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
     final fluidVolume = V,
     final initialize_p = false,
-    final p_start = p_ambient,
-    final use_d_nominal = false,
-    final d_nominal = 0);
+    final p_start = p_ambient);
 
   //Tank geometry
   parameter SI.Height height "Maximum level of tank before it overflows";

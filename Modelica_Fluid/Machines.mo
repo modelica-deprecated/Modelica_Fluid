@@ -262,8 +262,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
           rotation=-90,
           origin={0,100})));
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
             visible=use_N_in,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
@@ -396,7 +396,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
     // Variables
     final parameter SI.Acceleration g=system.g;
-    Medium.Density d = if use_d_nominal then d_nominal else medium.d;
+    Medium.Density d = medium.d;
     SI.Pressure dp_pump = port_b.p - port_a.p "Pressure increase";
     SI.Height head = dp_pump/(d*g) "Pump head";
     SI.MassFlowRate m_flow = port_a.m_flow "Mass flow rate (total)";
@@ -488,8 +488,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
         color={127,0,0},
         smooth=Smooth.None));
     annotation (
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-                100,100}}), graphics={
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+                100}}), graphics={
             Polygon(
               points={{-48,-60},{-72,-100},{72,-100},{48,-60},{-48,-60}},
               lineColor={0,0,255},

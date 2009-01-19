@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -2154,6 +2155,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0",
