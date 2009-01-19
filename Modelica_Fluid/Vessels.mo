@@ -30,11 +30,20 @@ package Vessels "Devices for storing fluid"
             lineColor={0,0,0},
             textString="V=%V")}),
       Documentation(info="<html>
+<p>
 Ideally mixed volume of constant size with two fluid ports and one medium model. 
-The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model. 
+The flow properties are computed from the upstream quantities, pressures are equal in both nodes and the medium model if <code>use_portsData=false</code>. 
 Heat transfer through a thermal port is possible, it equals zero if the port remains unconnected. 
 A spherical shape is assumed for the heat transfer area, with V=4/3*pi*r^3, A=4*pi*r^2.
 Ideal heat transfer is assumed per default; the thermal port temperature is equal to the medium temperature.
+</p>
+<p>
+If <code>use_portsData=true</code>, the port pressures represent the pressures just after the outlet (or just before the inlet) in the attached pipe. 
+The hydraulic resistances <tt>portsData.zeta_in</tt> and <tt>portsData.zeta_out</tt> determine the dissipative pressure drop between volume and port depending on 
+the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume an ideal smooth outlet and dissipation for inlet flow. 
+Different values are found for sharp edged openings and non-uniform velocity distributions 
+in the pipe. Further information can be found in <a href=\"Modelica://Modelica_Fluid.Vessels.BaseClasses.VesselPortsData\">VesselPortsData</a> and <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
+</p>
 </html>"),
       Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}),
@@ -156,9 +165,9 @@ The following assumptions are made:
 <p>
 The port pressures represent the pressures just after the outlet (or just before the inlet) in the attached pipe. 
 The hydraulic resistances <tt>portsData.zeta_in</tt> and <tt>portsData.zeta_out</tt> determine the dissipative pressure drop between tank and port depending on 
-the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume an ideal smooth outlet unifor distribution of inlet flow. 
+the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume an ideal smooth outlet and dissipation for inlet flow. 
 Different values are found for sharp edged openings and non-uniform velocity distributions 
-in the pipe. A large selection of possible cases are listed in <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
+in the pipe. Further information can be found in <a href=\"Modelica://Modelica_Fluid.Vessels.BaseClasses.VesselPortsData\">VesselPortsData</a> and <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
 </p>
 <p>
 With the setting <tt>use_portsData=false</tt>, the port pressure represents the static head 
@@ -900,6 +909,111 @@ Heat transfer correlations for pipe models
         "Hydraulic resistance into vessel, 1 for uniform flow distribution in pipe";
       parameter Real zeta_out(min=0, max=10)=0
         "Hydraulic resistance out of vessel, 0 for ideal smooth outlet";
+      annotation (Documentation(info="<html>
+<h3><font color=\"#008000\" size=5>Vessel Port Data</font></h3>
+<p>
+This record describes the <b>ports</b> of a <b>vessel</b>. The variables in it are mostly self-explanatory (see list below); only the &zeta; loss factors <code>zeta_inlet</code> and <code>zeta_outlet</code> are discussed further. All data is quoted from Idelchik (1994).
+</p>
+ 
+<h4><font color=\"#008000\">Outlet Coefficients</font></h4>
+ 
+<p>
+If a <b>straight pipe with constant cross section is mounted flush with the wall</b>, its outlet pressure loss coefficient will be <code>zeta_out[i] = 0.5</code> (Idelchik, p. 160, Diagram 3-1, paragraph 2).
+</p>
+<p>
+If a <b>straight pipe with constant cross section is mounted into a vessel such that the entrance into it is at a distance</b> <code>b</code> from the wall (inside) the following table can be used. Herein, &delta; is the tube wall thickness (Idelchik, p. 160, Diagram 3-1, paragraph 1).
+</p> 
+ 
+<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">
+  <caption align=\"bottom\">Pressure loss coefficients for outlets, entrance at a distance from wall</caption>
+  <tr>
+    <td></td> <td>   </td><th colspan=\"5\" align=\"center\"> b / D_hyd  </th>
+  </tr>
+  <tr>
+    <td></td> <td>   </td><th> 0.000 </th><th> 0.005 </th><th> 0.020 </th><th> 0.100 </th><th> 0.500-&#8734; </th>
+  </tr>
+  <tr>
+     <th rowspan=\"5\" valign=\"middle\">&delta; / D_hyd</th> <th> 0.000 </th><td> 0.50 </td><td> 0.63  </td><td> 0.73  </td><td> 0.86  </td><td>      1.00     </td>
+  </tr>
+  <tr>
+              <th> 0.008 </th><td> 0.50 </td><td> 0.55  </td><td> 0.62  </td><td> 0.74  </td><td>      0.88     </td>
+  </tr>
+  <tr>
+              <th> 0.016 </th><td> 0.50 </td><td> 0.51  </td><td> 0.55  </td><td> 0.64  </td><td>      0.77     </td>
+  </tr>
+  <tr>
+              <th> 0.024 </th><td> 0.50 </td><td> 0.50  </td><td> 0.52  </td><td> 0.58  </td><td>      0.68     </td>
+  </tr>
+  <tr>
+              <th> 0.040 </th><td> 0.50 </td><td> 0.50  </td><td> 0.51  </td><td> 0.51  </td><td>      0.54     </td>
+  </tr>
+</table>
+ 
+<p>
+If a <b>straight pipe with a circular bellmouth inlet (collector) without baffle is mounted flush with the wall</b> then its pressure loss coefficient can be established from the following table. Herein, r is the radius of the bellmouth inlet surface (Idelchik, p. 164 f., Diagram 3-4, paragraph b)
+</p>
+
+<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">
+  <caption align=\"bottom\">Pressure loss coefficients for outlets, bellmouth flush with wall</caption>
+  <tr>
+    <td></td> <th colspan=\"6\" align=\"center\"> r / D_hyd  </th>
+  </tr>
+  <tr>
+    <td></td> <th> 0.01 </th><th> 0.03 </th><th> 0.05 </th><th> 0.08 </th><th> 0.16 </th><th>&ge;0.20</th>
+  </tr>
+  <tr>
+     <th>&zeta;</th> <td> 0.44 </td><td> 0.31 </td><td> 0.22  </td><td> 0.15  </td><td> 0.06  </td><td>      0.03     </td>
+  </tr>
+</table>
+
+<p>
+If a <b>straight pipe with a circular bellmouth inlet (collector) without baffle is mounted at a distance from a wall</b> then its pressure loss coefficient can be established from the following table. Herein, r is the radius of the bellmouth inlet surface (Idelchik, p. 164 f., Diagram 3-4, paragraph a)
+</p>
+
+<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">
+  <caption align=\"bottom\">Pressure loss coefficients for outlets, bellmouth at a distance of wall</caption>
+  <tr>
+    <td></td> <th colspan=\"6\" align=\"center\"> r / D_hyd  </th>
+  </tr>
+  <tr>
+    <td></td> <th> 0.01 </th><th> 0.03 </th><th> 0.05 </th><th> 0.08 </th><th> 0.16 </th><th>&ge;0.20</th>
+  </tr>
+  <tr>
+     <th>&zeta;</th> <td> 0.87 </td><td> 0.61 </td><td> 0.40  </td><td> 0.20  </td><td> 0.06  </td><td>      0.03     </td>
+  </tr>
+</table>
+
+
+ 
+<h4><font color=\"#008000\">Inlet Coefficients</font></h4>
+ 
+<p>
+If a <b>straight pipe with constant cross section is mounted flush with the wall</b>, its vessel inlet pressure loss coefficient will be according to the following table (Idelchik, p. 209 f., Diagram 4-2 with <code>m = 7</code>). According to the text, <code>m = 9</code> is appropriate for fully developed turbulent flow.
+</p>
+
+<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">
+  <caption align=\"bottom\">Pressure loss coefficients for inlets, circular tube flush with wall</caption>
+  <tr>
+    <td></td> <th colspan=\"6\" align=\"center\"> A_port / A_vessel  </th>
+  </tr>
+  <tr>
+    <td></td> <th> 0.0 </th><th> 0.1 </th><th> 0.2 </th><th> 0.4 </th><th> 0.6 </th><th>0.8</th>
+  </tr>
+  <tr>
+     <th>&zeta;</th> <td> 1.04 </td><td> 0.84 </td><td> 0.67  </td><td> 0.39  </td><td> 0.18  </td><td>      0.06     </td>
+  </tr>
+</table>
+
+
+ 
+<h4><font color=\"#008000\">References</font></h4>
+ 
+<dl><dt>Idelchik I.E. (1994):</dt>
+    <dd><a href=\"http://www.begellhouse.com/books/00c0f05b040d2ec0.html\"><b>Handbook
+        of Hydraulic Resistance</b></a>. 3rd edition, Begell House, ISBN
+        0-8493-9908-4</dd>
+</dl>
+</html>"));
     end VesselPortsData;
   end BaseClasses;
   annotation (Documentation(info="<html>
