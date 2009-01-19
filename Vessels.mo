@@ -721,13 +721,18 @@ of the modeller. Increase nPorts to add an additional port.
             // regular operation: fluidLevel is above ports[i]
             // Note: >= covers default values of zero as well
             if use_portsData then
+              /* Without regularization
+        ports[i].p = ports_p_static[i] + 0.5*ports[i].m_flow^2/portAreas[i]^2 
+                      * noEvent(if ports[i].m_flow>0 then (zeta_in[i] - 1)/portDensities[i] else -(1+zeta_out[i])/medium.d);
+        */
+
               ports[i].p = ports_p_static[i] + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
-                                           (1 - portsData_zeta_in[i])/portDensities[i]*ports_penetration[i],
+                                           (portsData_zeta_in[i] - 1)/portDensities[i]*ports_penetration[i],
                                            (1 + portsData_zeta_out[i])/medium.d/ports_penetration[i]));
               /*
         // alternative formulation m_flow=f(dp); not allowing the ideal portsData_zeta_in[i]=1 though
         ports[i].m_flow = smooth(2, portAreas[i]*Utilities.regRoot2(ports[i].p - ports_p_static[i], dp_small,
-                                     2*portDensities[i]/(1 - portsData_zeta_in[i]),
+                                     2*portDensities[i]/(portsData_zeta_in[i] - 1),
                                      2*medium.d/(1 + portsData_zeta_out[i])));
         */
             else
@@ -891,9 +896,9 @@ Heat transfer correlations for pipe models
       parameter SI.Diameter diameter
         "Inner (hydraulic) diameter of inlet/outlet port";
       parameter SI.Height height = 0 "Height over the bottom of the vessel";
-      parameter Real zeta_in(min=0, max=1)=1
+      parameter Real zeta_in(min=0, max=10)=1
         "Hydraulic resistance into vessel, 1 for uniform flow distribution in pipe";
-      parameter Real zeta_out(min=0, max=1)=0
+      parameter Real zeta_out(min=0, max=10)=0
         "Hydraulic resistance out of vessel, 0 for ideal smooth outlet";
     end VesselPortsData;
   end BaseClasses;

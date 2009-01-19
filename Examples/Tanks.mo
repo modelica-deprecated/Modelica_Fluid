@@ -547,9 +547,9 @@ package Tanks "Library demonstrating the usage of the tank model"
       level_start=8,
       nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-            diameter=0.1,
-            zeta_in=0,
-            zeta_out=1)}) 
+            diameter=0.1, 
+            zeta_in=1, 
+            zeta_out=0.5)}) 
                      annotation (Placement(transformation(extent={{-80,20},{-40,
               60}}, rotation=0)));
     Modelica_Fluid.Vessels.SimpleTank tank2(
@@ -560,9 +560,9 @@ package Tanks "Library demonstrating the usage of the tank model"
       level_start=3,
       nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-            diameter=0.1,
-            zeta_in=0,
-            zeta_out=1)}) 
+            diameter=0.1, 
+            zeta_in=1, 
+            zeta_out=0.5)}) 
                      annotation (Placement(transformation(extent={{-20,20},{20,
               60}}, rotation=0)));
 
@@ -577,9 +577,9 @@ package Tanks "Library demonstrating the usage of the tank model"
       level_start=3,
       nPorts=1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-            diameter=0.1,
-            zeta_in=0,
-            zeta_out=1)}) 
+            diameter=0.1, 
+            zeta_in=1, 
+            zeta_out=0.5)}) 
                      annotation (Placement(transformation(extent={{40,10},{80,50}},
                     rotation=0)));
     Modelica_Fluid.Fittings.GenericStaticHead pipe1(          redeclare package
