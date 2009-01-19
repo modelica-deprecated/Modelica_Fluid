@@ -732,16 +732,16 @@ of the modeller. Increase nPorts to add an additional port.
             if use_portsData then
               /* Without regularization
         ports[i].p = ports_p_static[i] + 0.5*ports[i].m_flow^2/portAreas[i]^2 
-                      * noEvent(if ports[i].m_flow>0 then (zeta_in[i] - 1)/portDensities[i] else -(1+zeta_out[i])/medium.d);
+                      * noEvent(if ports[i].m_flow>0 then (zeta_in[i])/portDensities[i] else -(1+zeta_out[i])/medium.d);
         */
 
               ports[i].p = ports_p_static[i] + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
-                                           (portsData_zeta_in[i] - 1)/portDensities[i]*ports_penetration[i],
+                                           (portsData_zeta_in[i])/portDensities[i]*ports_penetration[i],
                                            (1 + portsData_zeta_out[i])/medium.d/ports_penetration[i]));
               /*
         // alternative formulation m_flow=f(dp); not allowing the ideal portsData_zeta_in[i]=1 though
         ports[i].m_flow = smooth(2, portAreas[i]*Utilities.regRoot2(ports[i].p - ports_p_static[i], dp_small,
-                                     2*portDensities[i]/(portsData_zeta_in[i] - 1),
+                                     2*portDensities[i]/(portsData_zeta_in[i]),
                                      2*medium.d/(1 + portsData_zeta_out[i])));
         */
             else
@@ -817,7 +817,7 @@ Instead the predefined variables
 <li><tt>portsData_zeta_in[nPorts]</tt></li>, and
 <li><tt>portsData_zeta_out[nPorts]</tt></li>
 </ul>
-sould be used, if needed by an extending model.
+should be used, if needed by an extending model.
 </p>
 </html>",       revisions="<html>
 <ul>
@@ -893,22 +893,18 @@ Heat transfer correlations for pipe models
   end HeatTransfer;
 
     record VesselPortsData "Data to describe inlet/outlet ports at vessels:
- 
     diameter -- Inner (hydraulic) diameter of inlet/outlet port
- 
     height -- Height over the bottom of the vessel
- 
-    zeta_in -- Hydraulic resistance into vessel, default 1 for uniform flow distribution in pipe
- 
-    zeta_out -- Hydraulic resistance out of vessel, default 0 for ideal smooth outlet"
+    zeta_out -- Hydraulic resistance out of vessel, default 0.5 for mounted flush with the wall
+    zeta_in -- Hydraulic resistance into vessel, default 1.04 for small port diameter"
           extends Modelica.Icons.Record;
       parameter SI.Diameter diameter
         "Inner (hydraulic) diameter of inlet/outlet port";
       parameter SI.Height height = 0 "Height over the bottom of the vessel";
-      parameter Real zeta_in(min=0, max=10)=1
-        "Hydraulic resistance into vessel, 1 for uniform flow distribution in pipe";
-      parameter Real zeta_out(min=0, max=10)=0
-        "Hydraulic resistance out of vessel, 0 for ideal smooth outlet";
+      parameter Real zeta_out(min=0)=0.5
+        "Hydraulic resistance out of vessel, default 0.5 for mounted flush with the wall";
+      parameter Real zeta_in(min=0)=1.04
+        "Hydraulic resistance into vessel, default 1.04 for small port diameter";
       annotation (Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Vessel Port Data</font></h3>
 <p>
@@ -952,7 +948,7 @@ If a <b>straight pipe with constant cross section is mounted into a vessel such 
 <p>
 If a <b>straight pipe with a circular bellmouth inlet (collector) without baffle is mounted flush with the wall</b> then its pressure loss coefficient can be established from the following table. Herein, r is the radius of the bellmouth inlet surface (Idelchik, p. 164 f., Diagram 3-4, paragraph b)
 </p>
-
+ 
 <table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">
   <caption align=\"bottom\">Pressure loss coefficients for outlets, bellmouth flush with wall</caption>
   <tr>
@@ -965,11 +961,11 @@ If a <b>straight pipe with a circular bellmouth inlet (collector) without baffle
      <th>&zeta;</th> <td> 0.44 </td><td> 0.31 </td><td> 0.22  </td><td> 0.15  </td><td> 0.06  </td><td>      0.03     </td>
   </tr>
 </table>
-
+ 
 <p>
 If a <b>straight pipe with a circular bellmouth inlet (collector) without baffle is mounted at a distance from a wall</b> then its pressure loss coefficient can be established from the following table. Herein, r is the radius of the bellmouth inlet surface (Idelchik, p. 164 f., Diagram 3-4, paragraph a)
 </p>
-
+ 
 <table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">
   <caption align=\"bottom\">Pressure loss coefficients for outlets, bellmouth at a distance of wall</caption>
   <tr>
@@ -982,15 +978,15 @@ If a <b>straight pipe with a circular bellmouth inlet (collector) without baffle
      <th>&zeta;</th> <td> 0.87 </td><td> 0.61 </td><td> 0.40  </td><td> 0.20  </td><td> 0.06  </td><td>      0.03     </td>
   </tr>
 </table>
-
-
+ 
+ 
  
 <h4><font color=\"#008000\">Inlet Coefficients</font></h4>
  
 <p>
 If a <b>straight pipe with constant cross section is mounted flush with the wall</b>, its vessel inlet pressure loss coefficient will be according to the following table (Idelchik, p. 209 f., Diagram 4-2 with <code>m = 7</code>). According to the text, <code>m = 9</code> is appropriate for fully developed turbulent flow.
 </p>
-
+ 
 <table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">
   <caption align=\"bottom\">Pressure loss coefficients for inlets, circular tube flush with wall</caption>
   <tr>
@@ -1003,8 +999,8 @@ If a <b>straight pipe with constant cross section is mounted flush with the wall
      <th>&zeta;</th> <td> 1.04 </td><td> 0.84 </td><td> 0.67  </td><td> 0.39  </td><td> 0.18  </td><td>      0.06     </td>
   </tr>
 </table>
-
-
+ 
+ 
  
 <h4><font color=\"#008000\">References</font></h4>
  
