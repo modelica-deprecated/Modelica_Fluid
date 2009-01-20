@@ -16,7 +16,7 @@ package Vessels "Devices for storing fluid"
     equation
       Wb_flow = 0;
       for i in 1:nPorts loop
-        ports_p_static[i] = medium.p;
+        vessel_p_static[i] = medium.p;
       end for;
 
       annotation (defaultComponentName="volume",
@@ -99,7 +99,7 @@ equation
 
   //Determine port properties
   for i in 1:nPorts loop
-    ports_p_static[i] = max(0, level - portsData_height[i])*system.g*medium.d + p_ambient;
+    vessel_p_static[i] = max(0, level - portsData_height[i])*system.g*medium.d + p_ambient;
   end for;
 
 initial equation
@@ -597,8 +597,8 @@ end TankWithTopPorts;
         "level of fluid in the vessel for treating heights of ports";
         input SI.Height fluidLevel_max = 1
         "maximum level of fluid in the vessel";
-        Medium.AbsolutePressure[nPorts] ports_p_static
-        "static pressures at the ports, inside the vessel";
+        Medium.AbsolutePressure[nPorts] vessel_p_static
+        "static pressures inside the vessel at the height of the corresponding ports, zero flow velocity";
 
         // Port properties
         parameter Boolean use_portsData=true
@@ -714,8 +714,8 @@ of the modeller. Increase nPorts to add an additional port.
         for i in 1:nPorts loop
           if use_portsData then
             // dp = 0.5*zeta*d*v*|v|
-            // Note: assume ports_p_static for portDensities to avoid algebraic loops for ports.p
-            portDensities[i] = noEvent(Medium.density(Medium.setState_phX(ports_p_static[i], actualStream(ports[i].h_outflow), actualStream(ports[i].Xi_outflow))));
+            // Note: assume vessel_p_static for portDensities to avoid algebraic loops for ports.p
+            portDensities[i] = noEvent(Medium.density(Medium.setState_phX(vessel_p_static[i], actualStream(ports[i].h_outflow), actualStream(ports[i].Xi_outflow))));
             portVelocities[i] = smooth(0, ports[i].m_flow/portAreas[i]/portDensities[i]);
             // Note: the penetration should not go too close to zero as this would prevent a vessel from running empty
             ports_penetration[i] = Utilities.regStep(fluidLevel - portsData_height[i] - 0.1*portsData_diameter[i], 1, 1e-3, 0.1*portsData_diameter[i]);
@@ -731,31 +731,31 @@ of the modeller. Increase nPorts to add an additional port.
             // Note: >= covers default values of zero as well
             if use_portsData then
               /* Without regularization
-        ports[i].p = ports_p_static[i] + 0.5*ports[i].m_flow^2/portAreas[i]^2 
-                      * noEvent(if ports[i].m_flow>0 then (zeta_in[i])/portDensities[i] else -(1+zeta_out[i])/medium.d);
+        ports[i].p = vessel_p_static[i] + 0.5*ports[i].m_flow^2/portAreas[i]^2 
+                      * noEvent(if ports[i].m_flow>0 then (zeta_in[i] - 1)/portDensities[i] else -(1+zeta_out[i])/medium.d);
         */
 
-              ports[i].p = ports_p_static[i] + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
-                                           (portsData_zeta_in[i])/portDensities[i]*ports_penetration[i],
+              ports[i].p = vessel_p_static[i] + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
+                                           (portsData_zeta_in[i] - 1)/portDensities[i]*ports_penetration[i],
                                            (1 + portsData_zeta_out[i])/medium.d/ports_penetration[i]));
               /*
         // alternative formulation m_flow=f(dp); not allowing the ideal portsData_zeta_in[i]=1 though
-        ports[i].m_flow = smooth(2, portAreas[i]*Utilities.regRoot2(ports[i].p - ports_p_static[i], dp_small,
-                                     2*portDensities[i]/(portsData_zeta_in[i]),
+        ports[i].m_flow = smooth(2, portAreas[i]*Utilities.regRoot2(ports[i].p - vessel_p_static[i], dp_small,
+                                     2*portDensities[i]/(portsData_zeta_in[i] - 1),
                                      2*medium.d/(1 + portsData_zeta_out[i])));
         */
             else
-              ports[i].p = ports_p_static[i];
+              ports[i].p = vessel_p_static[i];
             end if;
             s[i] = fluidLevel - portsData_height[i];
           elseif s[i] > 0 or portsData_height[i] >= fluidLevel_max then
             // ports[i] is above fluidLevel and has inflow
-            ports[i].p = ports_p_static[i];
+            ports[i].p = vessel_p_static[i];
             s[i] = ports[i].m_flow;
           else
             // ports[i] is above fluidLevel, preventing outflow
             ports[i].m_flow = 0;
-            s[i] = (ports[i].p - ports_p_static[i])/Medium.p_default*(portsData_height[i] - fluidLevel);
+            s[i] = (ports[i].p - vessel_p_static[i])/Medium.p_default*(portsData_height[i] - fluidLevel);
           end if;
 
           ports[i].h_outflow  = medium.h;
@@ -798,7 +798,7 @@ Pressure drops and heights of the ports as well as kinetic and potential energy 
 The following variables need to be defined by an extending model:
 <ul>
 <li><tt>input fluidVolume</tt>, the volume of the fluid in the vessel,</li>
-<li><tt>ports_p_static[nPorts]</tt>, the static pressures at the ports, inside the vessel, and</li>
+<li><tt>vessel_p_static[nPorts]</tt>, the static pressures inside the vessel at the height of the corresponding ports, at zero flow velocity, and</li>
 <li><tt>Wb_flow</tt>, work term of the energy balance, e.g. p*der(V) if the volume is not constant or stirrer power.</li>
 </ul>
 Optionally the fluid level may vary in the vessel, which effects the flow through the ports at configurable <tt>portsData_height[nPorts]</tt>. 
@@ -905,7 +905,7 @@ Heat transfer correlations for pipe models
         "Hydraulic resistance out of vessel, default 0.5 for mounted flush with the wall";
       parameter Real zeta_in(min=0)=1.04
         "Hydraulic resistance into vessel, default 1.04 for small port diameter";
-      annotation (Documentation(info="<html>
+      annotation (preferredView="info", Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Vessel Port Data</font></h3>
 <p>
 This record describes the <b>ports</b> of a <b>vessel</b>. The variables in it are mostly self-explanatory (see list below); only the &zeta; loss factors <code>zeta_inlet</code> and <code>zeta_outlet</code> are discussed further. All data is quoted from Idelchik (1994).
@@ -984,19 +984,19 @@ If a <b>straight pipe with a circular bellmouth inlet (collector) without baffle
 <h4><font color=\"#008000\">Inlet Coefficients</font></h4>
  
 <p>
-If a <b>straight pipe with constant cross section is mounted flush with the wall</b>, its vessel inlet pressure loss coefficient will be according to the following table (Idelchik, p. 209 f., Diagram 4-2 with <code>m = 7</code>). According to the text, <code>m = 9</code> is appropriate for fully developed turbulent flow.
+If a <b>straight pipe with constant circular cross section is mounted flush with the wall</b>, its vessel inlet pressure loss coefficient will be according to the following table (Idelchik, p. 209 f., Diagram 4-2 with <code>A_port/A_vessel = 0</code> and Idelchik, p. 640, Diagram 11-1, graph a). According to the text, <code>m = 9</code> is appropriate for fully developed turbulent flow.
 </p>
  
 <table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">
   <caption align=\"bottom\">Pressure loss coefficients for inlets, circular tube flush with wall</caption>
   <tr>
-    <td></td> <th colspan=\"6\" align=\"center\"> A_port / A_vessel  </th>
+    <td></td> <th colspan=\"6\" align=\"center\"> m  </th>
   </tr>
   <tr>
-    <td></td> <th> 0.0 </th><th> 0.1 </th><th> 0.2 </th><th> 0.4 </th><th> 0.6 </th><th>0.8</th>
+    <td></td> <th> 1.0 </th><th> 2.0 </th><th> 3.0 </th><th> 4.0 </th><th> 7.0 </th><th>9.0</th>
   </tr>
   <tr>
-     <th>&zeta;</th> <td> 1.04 </td><td> 0.84 </td><td> 0.67  </td><td> 0.39  </td><td> 0.18  </td><td>      0.06     </td>
+     <th>&zeta;</th> <td> 2.70 </td><td> 1.50 </td><td> 1.25  </td><td> 1.15  </td><td> 1.06  </td><td>      1.04     </td>
   </tr>
 </table>
  
