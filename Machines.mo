@@ -33,7 +33,7 @@ package Machines
 
     // definition of port pressures
     for i in 1:nPorts loop
-      ports_p_static[i] = medium.p;
+      vessel_ps_static[i] = medium.p;
     end for;
 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,

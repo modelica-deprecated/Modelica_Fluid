@@ -16,7 +16,7 @@ package Vessels "Devices for storing fluid"
     equation
       Wb_flow = 0;
       for i in 1:nPorts loop
-        vessel_p_static[i] = medium.p;
+        vessel_ps_static[i] = medium.p;
       end for;
 
       annotation (defaultComponentName="volume",
@@ -99,7 +99,7 @@ equation
 
   //Determine port properties
   for i in 1:nPorts loop
-    vessel_p_static[i] = max(0, level - portsData_height[i])*system.g*medium.d + p_ambient;
+    vessel_ps_static[i] = max(0, level - portsData_height[i])*system.g*medium.d + p_ambient;
   end for;
 
 initial equation
@@ -597,7 +597,7 @@ end TankWithTopPorts;
         "level of fluid in the vessel for treating heights of ports";
         input SI.Height fluidLevel_max = 1
         "maximum level of fluid in the vessel";
-        Medium.AbsolutePressure[nPorts] vessel_p_static
+        Medium.AbsolutePressure[nPorts] vessel_ps_static
         "static pressures inside the vessel at the height of the corresponding ports, zero flow velocity";
 
         // Port properties
@@ -714,8 +714,8 @@ of the modeller. Increase nPorts to add an additional port.
         for i in 1:nPorts loop
           if use_portsData then
             // dp = 0.5*zeta*d*v*|v|
-            // Note: assume vessel_p_static for portDensities to avoid algebraic loops for ports.p
-            portDensities[i] = noEvent(Medium.density(Medium.setState_phX(vessel_p_static[i], actualStream(ports[i].h_outflow), actualStream(ports[i].Xi_outflow))));
+            // Note: assume vessel_ps_static for portDensities to avoid algebraic loops for ports.p
+            portDensities[i] = noEvent(Medium.density(Medium.setState_phX(vessel_ps_static[i], actualStream(ports[i].h_outflow), actualStream(ports[i].Xi_outflow))));
             portVelocities[i] = smooth(0, ports[i].m_flow/portAreas[i]/portDensities[i]);
             // Note: the penetration should not go too close to zero as this would prevent a vessel from running empty
             ports_penetration[i] = Utilities.regStep(fluidLevel - portsData_height[i] - 0.1*portsData_diameter[i], 1, 1e-3, 0.1*portsData_diameter[i]);
@@ -731,31 +731,31 @@ of the modeller. Increase nPorts to add an additional port.
             // Note: >= covers default values of zero as well
             if use_portsData then
               /* Without regularization
-        ports[i].p = vessel_p_static[i] + 0.5*ports[i].m_flow^2/portAreas[i]^2 
+        ports[i].p = vessel_ps_static[i] + 0.5*ports[i].m_flow^2/portAreas[i]^2 
                       * noEvent(if ports[i].m_flow>0 then (zeta_in[i] - 1)/portDensities[i] else -(1+zeta_out[i])/medium.d);
         */
 
-              ports[i].p = vessel_p_static[i] + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
+              ports[i].p = vessel_ps_static[i] + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
                                            (portsData_zeta_in[i] - 1)/portDensities[i]*ports_penetration[i],
                                            (1 + portsData_zeta_out[i])/medium.d/ports_penetration[i]));
               /*
         // alternative formulation m_flow=f(dp); not allowing the ideal portsData_zeta_in[i]=1 though
-        ports[i].m_flow = smooth(2, portAreas[i]*Utilities.regRoot2(ports[i].p - vessel_p_static[i], dp_small,
+        ports[i].m_flow = smooth(2, portAreas[i]*Utilities.regRoot2(ports[i].p - vessel_ps_static[i], dp_small,
                                      2*portDensities[i]/(portsData_zeta_in[i] - 1),
                                      2*medium.d/(1 + portsData_zeta_out[i])));
         */
             else
-              ports[i].p = vessel_p_static[i];
+              ports[i].p = vessel_ps_static[i];
             end if;
             s[i] = fluidLevel - portsData_height[i];
           elseif s[i] > 0 or portsData_height[i] >= fluidLevel_max then
             // ports[i] is above fluidLevel and has inflow
-            ports[i].p = vessel_p_static[i];
+            ports[i].p = vessel_ps_static[i];
             s[i] = ports[i].m_flow;
           else
             // ports[i] is above fluidLevel, preventing outflow
             ports[i].m_flow = 0;
-            s[i] = (ports[i].p - vessel_p_static[i])/Medium.p_default*(portsData_height[i] - fluidLevel);
+            s[i] = (ports[i].p - vessel_ps_static[i])/Medium.p_default*(portsData_height[i] - fluidLevel);
           end if;
 
           ports[i].h_outflow  = medium.h;
@@ -798,7 +798,7 @@ Pressure drops and heights of the ports as well as kinetic and potential energy 
 The following variables need to be defined by an extending model:
 <ul>
 <li><tt>input fluidVolume</tt>, the volume of the fluid in the vessel,</li>
-<li><tt>vessel_p_static[nPorts]</tt>, the static pressures inside the vessel at the height of the corresponding ports, at zero flow velocity, and</li>
+<li><tt>vessel_ps_static[nPorts]</tt>, the static pressures inside the vessel at the height of the corresponding ports, at zero flow velocity, and</li>
 <li><tt>Wb_flow</tt>, work term of the energy balance, e.g. p*der(V) if the volume is not constant or stirrer power.</li>
 </ul>
 Optionally the fluid level may vary in the vessel, which effects the flow through the ports at configurable <tt>portsData_height[nPorts]</tt>. 
