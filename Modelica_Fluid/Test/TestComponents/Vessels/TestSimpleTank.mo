@@ -47,7 +47,7 @@ model TestSimpleTank
     annotation (Placement(transformation(extent={{-40,30},{-20,50}}, rotation=
            0)));
   Modelica.Blocks.Sources.TimeTable timeTable(table=[0,0; 10,0; 10,40; 20,40;
-        20,10; 50,10; 50,0; 60,0; 60,20; 70,20; 80,55; 80,0; 100,0])
+        20,10; 50,10; 50,0; 60,0; 60,20; 70,20; 80,55; 80,0; 100,0]) 
     annotation (Placement(transformation(extent={{-80,40},{-60,60}})));
 equation
   connect(pipe.port_a, tank.ports[1]) annotation (Line(
@@ -68,9 +68,9 @@ equation
                       graphics),
     experiment(StopTime=100),
     experimentSetupOutput);
-
   connect(flowSource.m_flow_in, timeTable.y) annotation (Line(
       points={{-40,48},{-50,48},{-50,50},{-59,50}},
       color={0,0,127},
       smooth=Smooth.None));
+
 end TestSimpleTank;

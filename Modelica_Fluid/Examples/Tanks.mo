@@ -56,8 +56,8 @@ package Tanks "Library demonstrating the usage of the tank model"
           origin={20,-18},
           extent={{10,-10},{-10,10}},
           rotation=90)));
-    Modelica.Blocks.Sources.TimeTable timeTable(table=[0,0; 10,0; 10,40; 20,40; 
-          20,10; 50,10; 50,0; 60,0; 60,20; 70,20; 80,55; 80,0; 100,0])
+    Modelica.Blocks.Sources.TimeTable timeTable(table=[0,0; 10,0; 10,40; 20,40;
+          20,10; 50,10; 50,0; 60,0; 60,20; 70,20; 80,55; 80,0; 100,0]) 
       annotation (Placement(transformation(extent={{-60,60},{-40,80}})));
   equation
     connect(flowSource.ports[1], tank.topPorts[1])  annotation (Line(points={{8,52},{

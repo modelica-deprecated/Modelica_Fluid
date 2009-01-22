@@ -40,9 +40,7 @@ Ideal heat transfer is assumed per default; the thermal port temperature is equa
 <p>
 If <code>use_portsData=true</code>, the port pressures represent the pressures just after the outlet (or just before the inlet) in the attached pipe. 
 The hydraulic resistances <tt>portsData.zeta_in</tt> and <tt>portsData.zeta_out</tt> determine the dissipative pressure drop between volume and port depending on 
-the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume an ideal smooth outlet and dissipation for inlet flow. 
-Different values are found for sharp edged openings and non-uniform velocity distributions 
-in the pipe. Further information can be found in <a href=\"Modelica://Modelica_Fluid.Vessels.BaseClasses.VesselPortsData\">VesselPortsData</a> and <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
+the direction of mass flow. See <a href=\"Modelica://Modelica_Fluid.Vessels.BaseClasses.VesselPortsData\">VesselPortsData</a> and <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
 </p>
 </html>"),
       Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
@@ -169,9 +167,7 @@ The following assumptions are made:
 <p>
 The port pressures represent the pressures just after the outlet (or just before the inlet) in the attached pipe. 
 The hydraulic resistances <tt>portsData.zeta_in</tt> and <tt>portsData.zeta_out</tt> determine the dissipative pressure drop between tank and port depending on 
-the direction of mass flow. The default values (zeta_in=1, zeta_out=0) assume an ideal smooth outlet and dissipation for inlet flow. 
-Different values are found for sharp edged openings and non-uniform velocity distributions 
-in the pipe. Further information can be found in <a href=\"Modelica://Modelica_Fluid.Vessels.BaseClasses.VesselPortsData\">VesselPortsData</a> and <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
+the direction of mass flow. See <a href=\"Modelica://Modelica_Fluid.Vessels.BaseClasses.VesselPortsData\">VesselPortsData</a> and <i>[Idelchik, Handbook of Hydraulic Resistance, 2004]</i>. 
 </p>
 <p>
 With the setting <tt>use_portsData=false</tt>, the port pressure represents the static head 
@@ -712,8 +708,8 @@ of the modeller. Increase nPorts to add an additional port.
         if not use_portsData then
           portsData_diameter = zeros(nPorts);
           portsData_height = zeros(nPorts);
-          portsData_zeta_in = 1*zeros(nPorts);
-          portsData_zeta_out = -1*ones(nPorts);
+          portsData_zeta_in = zeros(nPorts);
+          portsData_zeta_out = zeros(nPorts);
         end if;
 
         // actual definition of port variables
@@ -738,17 +734,17 @@ of the modeller. Increase nPorts to add an additional port.
             if use_portsData then
               /* Without regularization
         ports[i].p = vessel_ps_static[i] + 0.5*ports[i].m_flow^2/portAreas[i]^2 
-                      * noEvent(if ports[i].m_flow>0 then (zeta_in[i] - 1)/portDensities[i] else -(1+zeta_out[i])/medium.d);
+                      * noEvent(if ports[i].m_flow>0 then zeta_in[i]/portDensities[i] else -zeta_out[i]/medium.d);
         */
 
               ports[i].p = vessel_ps_static[i] + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
-                                           (portsData_zeta_in[i] - 1)/portDensities[i]*ports_penetration[i],
-                                           (1 + portsData_zeta_out[i])/medium.d/ports_penetration[i]));
+                                           portsData_zeta_in[i]/portDensities[i]*ports_penetration[i],
+                                           portsData_zeta_out[i]/medium.d/ports_penetration[i]));
               /*
         // alternative formulation m_flow=f(dp); not allowing the ideal portsData_zeta_in[i]=1 though
         ports[i].m_flow = smooth(2, portAreas[i]*Utilities.regRoot2(ports[i].p - vessel_ps_static[i], dp_small,
-                                     2*portDensities[i]/(portsData_zeta_in[i] - 1),
-                                     2*medium.d/(1 + portsData_zeta_out[i])));
+                                     2*portDensities[i]/portsData_zeta_in[i],
+                                     2*medium.d/portsData_zeta_out[i]));
         */
             else
               ports[i].p = vessel_ps_static[i];
@@ -901,26 +897,32 @@ Heat transfer correlations for pipe models
     record VesselPortsData "Data to describe inlet/outlet ports at vessels:
     diameter -- Inner (hydraulic) diameter of inlet/outlet port
     height -- Height over the bottom of the vessel
-    zeta_out -- Hydraulic resistance out of vessel, default 0.5 for mounted flush with the wall
-    zeta_in -- Hydraulic resistance into vessel, default 1.04 for small port diameter"
+    zeta_out -- Hydraulic resistance out of vessel, default 1.5 for mounted flush with the wall
+    zeta_in -- Hydraulic resistance into vessel, default 0.04 for small port diameter"
           extends Modelica.Icons.Record;
       parameter SI.Diameter diameter
         "Inner (hydraulic) diameter of inlet/outlet port";
       parameter SI.Height height = 0 "Height over the bottom of the vessel";
-      parameter Real zeta_out(min=0)=0.5
-        "Hydraulic resistance out of vessel, default 0.5 for mounted flush with the wall";
-      parameter Real zeta_in(min=0)=1.04
-        "Hydraulic resistance into vessel, default 1.04 for small port diameter";
+      parameter Real zeta_out(min=0)=1.5
+        "Hydraulic resistance out of vessel, default 1.5 for mounted flush with the wall";
+      parameter Real zeta_in(min=0)=0.04
+        "Hydraulic resistance into vessel, default 0.04 for mounted flush with the wall";
       annotation (preferredView="info", Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Vessel Port Data</font></h3>
 <p>
-This record describes the <b>ports</b> of a <b>vessel</b>. The variables in it are mostly self-explanatory (see list below); only the &zeta; loss factors <code>zeta_inlet</code> and <code>zeta_outlet</code> are discussed further. All data is quoted from Idelchik (1994).
+This record describes the <b>ports</b> of a <b>vessel</b>. The variables in it are mostly self-explanatory (see list below); only the &zeta; 
+loss factors are discussed further. All data is quoted from Idelchik (1994).
+</p>
+<p>
+Additionally the dynamic pressure that builds up for a changing velocity of fluid flow at an inlet or outlet needs to be considered. 
+Assuming a large vessel with fluid standing still and a comparable small port diameter, it is reasonable to specify
+<code>zeta_out=&zeta;+1</code> and <code>zeta_in=&zeta;-1</code>.
 </p>
  
 <h4><font color=\"#008000\">Outlet Coefficients</font></h4>
  
 <p>
-If a <b>straight pipe with constant cross section is mounted flush with the wall</b>, its outlet pressure loss coefficient will be <code>zeta_out[i] = 0.5</code> (Idelchik, p. 160, Diagram 3-1, paragraph 2).
+If a <b>straight pipe with constant cross section is mounted flush with the wall</b>, its outlet pressure loss coefficient will be <code>&zeta; = 0.5</code> (Idelchik, p. 160, Diagram 3-1, paragraph 2).
 </p>
 <p>
 If a <b>straight pipe with constant cross section is mounted into a vessel such that the entrance into it is at a distance</b> <code>b</code> from the wall (inside) the following table can be used. Herein, &delta; is the tube wall thickness (Idelchik, p. 160, Diagram 3-1, paragraph 1).
@@ -1006,6 +1008,23 @@ If a <b>straight pipe with constant circular cross section is mounted flush with
   </tr>
 </table>
  
+<p>
+For larger port diameters, the inlet pressure loss coefficient will be according to the following table (Idelchik, p. 209 f., Diagram 4-2 with <code>m = 7</code>).
+Note that the assumption of fluid standing still in the vessel and leading to the definition <code>zeta_in=&zeta;-1</code> must be questioned in this case.
+</p>
+ 
+<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">
+  <caption align=\"bottom\">Pressure loss coefficients for inlets, circular tube flush with wall</caption>
+  <tr>
+    <td></td> <th colspan=\"6\" align=\"center\"> A_port / A_vessel  </th>
+  </tr>
+  <tr>
+    <td></td> <th> 0.0 </th><th> 0.1 </th><th> 0.2 </th><th> 0.4 </th><th> 0.6 </th><th>0.8</th>
+  </tr>
+  <tr>
+     <th>&zeta;</th> <td> 1.04 </td><td> 0.84 </td><td> 0.67  </td><td> 0.39  </td><td> 0.18  </td><td>      0.06     </td>
+  </tr>
+</table>
  
  
 <h4><font color=\"#008000\">References</font></h4>
