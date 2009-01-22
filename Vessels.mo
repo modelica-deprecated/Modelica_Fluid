@@ -54,9 +54,26 @@ model SimpleTank "Simple tank with inlet/outlet ports"
     import Modelica.Constants.pi;
 
   // Tank properties
-  SI.Height level(stateSelect=StateSelect.prefer, start=level_start)
+  SI.Height level(stateSelect=StateSelect.prefer, start=max(level_start, Modelica.Constants.eps))
       "Level height of tank";
   SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
+
+  // Tank geometry
+  parameter SI.Height height "Height of tank";
+  parameter SI.Area crossArea "Area of tank";
+
+  // Ambient
+  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
+      "Tank surface pressure" 
+    annotation(Dialog(tab = "Assumptions", group = "Ambient"));
+  parameter Medium.Temperature T_ambient=system.T_ambient
+      "Tank surface Temperature" 
+    annotation(Dialog(tab = "Assumptions", group = "Ambient"));
+
+  // Initialization
+  parameter SI.Height level_start(min=0) = 0.5*height
+      "Start value of tank level" 
+    annotation(Dialog(tab="Initialization"));
 
   // Mass and energy balance, ports
   extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
@@ -66,23 +83,6 @@ model SimpleTank "Simple tank with inlet/outlet ports"
     heatTransfer(surfaceAreas={crossArea+2*sqrt(crossArea*pi)*level}),
     final initialize_p = false,
     final p_start = p_ambient);
-
-  // Tank geometry
-  parameter SI.Height height "Height of tank";
-  parameter SI.Area crossArea "Area of tank";
-
-  // Initialization
-  parameter SI.Height level_start(min=0) = 0.5*height
-      "Start value of tank level" 
-    annotation(Dialog(tab="Initialization"));
-
-  // Ambient
-  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
-      "Tank surface pressure" 
-    annotation(Dialog(tab = "Advanced", group = "Ambient"));
-  parameter Medium.Temperature T_ambient=system.T_ambient
-      "Tank surface Temperature" 
-    annotation(Dialog(tab = "Advanced", group = "Ambient"));
 
 equation
   // Total quantities
@@ -129,24 +129,28 @@ initial equation
           Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
                 0}),
           Text(
-            extent={{-129,40},{130,26}},
+            extent={{-95,75},{95,55}},
             lineColor={0,0,0},
-            textString="%level_start m"),
+            textString="level ="),
           Text(
-            extent={{-95,30},{95,5}},
+            extent={{-95,40},{95,20}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
                 level, 
                 1, 
-                integer(precision)))),
+                3))),
+          Text(
+            extent={{-95,-40},{95,-20}},
+            lineColor={0,0,0},
+            textString="level_start ="),
+          Text(
+            extent={{-95,-75},{95,-55}},
+            lineColor={0,0,0},
+            textString="%level_start"),
           Line(
             points={{-100,100},{100,100}},
             color={0,0,0},
-            pattern=LinePattern.Dot),
-          Text(
-            extent={{-126,81},{133,67}},
-            lineColor={0,0,0},
-            textString="level_start =")}),
+            pattern=LinePattern.Dot)}),
       Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the ambient at the fixed pressure
@@ -212,16 +216,29 @@ model TankWithTopPorts
   SI.Height level(stateSelect=StateSelect.prefer, start=level_start)
       "Fluid level in the tank";
 
+  //Tank geometry
+  parameter SI.Height height "Maximum level of tank before it overflows";
+  parameter SI.Area crossArea "Area of tank";
+  parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
+
+  //Ambient
+  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
+      "Tank surface pressure" 
+    annotation(Dialog(tab = "Assumptions", group = "Ambient"));
+  parameter Medium.Temperature T_ambient=system.T_ambient
+      "Tank surface Temperature" 
+    annotation(Dialog(tab = "Assumptions", group = "Ambient"));
+
+  //Initialization
+  parameter SI.Height level_start(min=0) = 0.5*height
+      "Start value of tank level" 
+    annotation(Dialog(tab="Initialization"));
+
   //Mass and energy balance
   extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
     final fluidVolume = V,
     final initialize_p = false,
     final p_start = p_ambient);
-
-  //Tank geometry
-  parameter SI.Height height "Maximum level of tank before it overflows";
-  parameter SI.Area crossArea "Area of tank";
-  parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
 
   //Port definitions
   parameter Integer nTopPorts = 0 "Number of inlet ports above height (>= 1)" 
@@ -262,11 +279,6 @@ model TankWithTopPorts
         origin={0,-100})));
 */
 
-  //Initialization
-  parameter SI.Height level_start(min=0) = 0.5*height
-      "Start value of tank level" 
-    annotation(Dialog(tab="Initialization"));
-
   // Heat transfer through boundary
   parameter Boolean use_HeatTransfer = false
       "= true to use the HeatTransfer model" 
@@ -300,17 +312,9 @@ model TankWithTopPorts
   parameter Real zetaLarge(min=0) = 1e5
       "Large pressure loss factor if mass flows out of empty pipe port" 
     annotation(Dialog(tab="Advanced", group="Port properties", enable=stiffCharacteristicForEmptyPort));
-  parameter SI.MassFlowRate m_flow_small(min=0) = 0.01
+  parameter SI.MassFlowRate m_flow_small(min=0) = system.m_flow_small
       "Regularization range at zero mass flow rate" 
     annotation(Dialog(tab="Advanced", group="Port properties", enable=stiffCharacteristicForEmptyPort));
-
-  //Ambient
-  parameter Medium.AbsolutePressure p_ambient=system.p_ambient
-      "Tank surface pressure" 
-    annotation(Dialog(tab = "Advanced", group = "Ambient"));
-  parameter Medium.Temperature T_ambient=system.T_ambient
-      "Tank surface Temperature" 
-    annotation(Dialog(tab = "Advanced", group = "Ambient"));
 
   // Tank properties
   SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
@@ -595,7 +599,7 @@ end TankWithTopPorts;
 
         input SI.Height fluidLevel = 0
         "level of fluid in the vessel for treating heights of ports";
-        input SI.Height fluidLevel_max = 1
+        parameter SI.Height fluidLevel_max = 1
         "maximum level of fluid in the vessel";
         Medium.AbsolutePressure[nPorts] vessel_ps_static
         "static pressures inside the vessel at the height of the corresponding ports, zero flow velocity";
@@ -608,11 +612,11 @@ end TankWithTopPorts;
         portsData if   use_portsData "Data of inlet/outlet ports" 
           annotation(Dialog(tab="General",group="Ports",enable= use_portsData));
 
-        parameter SI.MassFlowRate m_flow_small(min=0) = 0.01
+        parameter SI.MassFlowRate m_flow_small(min=0) = system.m_flow_small
         "Regularization range at zero mass flow rate" 
           annotation(Dialog(tab="Advanced", group="Port properties", enable=stiffCharacteristicForEmptyPort));
       /*
-  parameter Medium.AbsolutePressure dp_small = 1 
+  parameter Medium.AbsolutePressure dp_small = system.dp_small 
     "Turbulent flow if |dp| >= dp_small (regularization of zero flow)" 
     annotation(Dialog(tab="Advanced",group="Ports"));
 */
@@ -654,7 +658,9 @@ end TankWithTopPorts;
         SI.EnergyFlowRate[nPorts] ports_E_flow
         "flow of kinetic and potential energy at device boundary";
 
-        Real[nPorts] s "curve parameters for port flows vs. port pressures";
+        // Note: should use fluidLevel_start - portsData.height
+        Real[nPorts] s(each start = fluidLevel_max)
+        "curve parameters for port flows vs. port pressures";
         Real[nPorts] ports_penetration
         "penetration of port with fluid, depending on fluid level and port diameter";
 

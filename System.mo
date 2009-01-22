@@ -35,15 +35,23 @@ model System
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 
   // Initialization
-  parameter Medium.AbsolutePressure p_start = Medium.p_default
-    "Default start value for pressures" 
-    annotation(Dialog(tab = "Initialization"));
   parameter Medium.MassFlowRate m_flow_start = 0
     "Default start value for mass flow rates" 
+    annotation(Dialog(tab = "Initialization"));
+  parameter Medium.AbsolutePressure p_start = Medium.p_default
+    "Default start value for pressures" 
     annotation(Dialog(tab = "Initialization"));
   parameter Medium.Temperature T_start = Medium.T_default
     "Default start value for temperatures" 
     annotation(Dialog(tab = "Initialization"));
+
+  // Advanced
+  parameter Medium.MassFlowRate m_flow_small(min=0) = 0.01
+    "Default small laminar mass flow rate for regularization of zero flow" 
+    annotation(Dialog(tab = "Advanced"));
+  parameter Medium.AbsolutePressure dp_small(min=0) = 1
+    "Default small pressure drop for regularization of laminar and zero flow" 
+    annotation(Dialog(tab="Advanced"));
 
   annotation (
     defaultComponentName="system",

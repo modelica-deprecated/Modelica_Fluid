@@ -15,7 +15,6 @@ model HeatingSystem "Simple model of a heating system"
     redeclare model HeatTransfer = 
         Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer (
           alpha0=10),
-    use_portsData=true,
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
         0.01),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
         0.01)}) 
@@ -65,7 +64,8 @@ model HeatingSystem "Simple model of a heating system"
     T_ref=343.15,
     alpha=-0.5) 
     annotation (Placement(transformation(extent={{16,30},{36,50}}, rotation=0)));
-  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial) 
+  inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
+      m_flow_small=1e-3) 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},   rotation=0)));
   Pipes.DynamicPipe heater(
