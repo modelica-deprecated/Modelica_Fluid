@@ -136,7 +136,7 @@ initial equation
             textString=DynamicSelect(" ", realString(
                 level, 
                 1, 
-                3))),
+                2))),
           Text(
             extent={{-95,-40},{95,-20}},
             lineColor={0,0,0},
@@ -240,19 +240,13 @@ model TankWithTopPorts
   parameter Integer nTopPorts = 0 "Number of inlet ports above height (>= 1)" 
                                                 annotation(Dialog(__Dymola_connectorSizing=true));
 
-  Modelica_Fluid.Interfaces.FluidPorts_a topPorts[nTopPorts](
+  BaseClasses.VesselFluidPorts_a topPorts[nTopPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0, each min=0))
       "Inlet ports over height at top of tank (fluid flows only from the port in to the tank)"
     annotation (Placement(transformation(
         extent={{-20,0},{20,10}},
         origin={0,100})));
-/*
-    annotation (Placement(transformation(
-        extent={{0,-20},{10,20}},
-        rotation=90,
-        origin={0,100})));
-*/
 
   parameter Integer nPorts = 0
       "Number of inlet/outlet ports (on bottom and on the side)" 
@@ -261,19 +255,13 @@ model TankWithTopPorts
                                                                       nPorts]
       "Data of inlet/outlet ports at side and bottom of tank";
 
-  Modelica_Fluid.Interfaces.FluidPorts_b ports[nPorts](
+  BaseClasses.VesselFluidPorts_b ports[nPorts](
     redeclare package Medium = Medium,
     m_flow(each start=0))
       "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
     annotation (Placement(transformation(
         extent={{-20,0},{20,-10}},
         origin={0,-100})));
-/*
-    annotation (Placement(transformation(
-        extent={{0,-20},{-10,20}},
-        rotation=90,
-        origin={0,-100})));
-*/
 
   // Heat transfer through boundary
   parameter Boolean use_HeatTransfer = false
@@ -583,15 +571,10 @@ end TankWithTopPorts;
         // Port definitions
         parameter Integer nPorts=0 "Number of ports" 
           annotation(Evaluate=true, Dialog(__Dymola_connectorSizing=true, tab="General",group="Ports"));
-        Interfaces.FluidPorts_b ports[nPorts](redeclare each package Medium = Medium)
-        "Fluid outlets" 
+        VesselFluidPorts_b ports[nPorts](redeclare each package Medium = Medium)
+        "Fluid inlets and outlets" 
           annotation (Placement(transformation(extent={{-40,-10},{40,10}},
             origin={0,-100})));
-      /*
-    annotation (Placement(transformation(extent={{-10,-40},{10,40}},
-      rotation=-90,
-      origin={0,-100})));
-*/
 
         input SI.Height fluidLevel = 0
         "level of fluid in the vessel for treating heights of ports";
@@ -1036,6 +1019,150 @@ Note that the assumption of fluid standing still in the vessel and leading to th
 </dl>
 </html>"));
     end VesselPortsData;
+
+    connector VesselFluidPorts_a
+      "Fluid connector with filled, large icon to be used for horizontally aligned vectors of FluidPorts (vector dimensions must be added after dragging)"
+      extends Interfaces.FluidPort;
+      annotation (defaultComponentName="ports_b",
+                  Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-50,-200},{50,200}},
+            grid={1,1},
+            initialScale=0.2), graphics={
+            Text(extent={{-75,130},{75,100}}, textString="%name"),
+            Rectangle(
+              extent={{-25,100},{25,-100}},
+              lineColor={0,0,0},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-22,100},{-10,-100}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-6,100},{6,-100}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{10,100},{22,-100}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid)}),
+           Icon(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-50,-200},{50,200}},
+            grid={1,1},
+            initialScale=0.2), graphics={
+            Rectangle(
+              extent={{-50,200},{50,-200}},
+              lineColor={0,127,255},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-44,200},{-20,-200}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-12,200},{12,-200}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{20,200},{44,-200}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid)}));
+    end VesselFluidPorts_a;
+
+    connector VesselFluidPorts_b
+      "Fluid connector with outlined, large icon to be used for horizontally aligned vectors of FluidPorts (vector dimensions must be added after dragging)"
+      extends Interfaces.FluidPort;
+      annotation (defaultComponentName="ports_b",
+                  Diagram(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-50,-200},{50,200}},
+            grid={1,1},
+            initialScale=0.2), graphics={
+            Text(extent={{-75,130},{75,100}}, textString="%name"),
+            Rectangle(
+              extent={{-25,100},{25,-100}},
+              lineColor={0,0,0},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-22,100},{-10,-100}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-20,-69},{-12,69}},
+              lineColor={0,127,255},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-6,100},{6,-100}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{10,100},{22,-100}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-4,-69},{4,69}},
+              lineColor={0,127,255},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{12,-69},{20,69}},
+              lineColor={0,127,255},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid)}),
+           Icon(coordinateSystem(
+            preserveAspectRatio=false,
+            extent={{-50,-200},{50,200}},
+            grid={1,1},
+            initialScale=0.2), graphics={
+            Rectangle(
+              extent={{-50,200},{50,-200}},
+              lineColor={0,127,255},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-44,200},{-20,-200}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-12,200},{12,-200}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{20,200},{44,-200}},
+              lineColor={0,0,0},
+              fillColor={0,127,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-39,-118.5},{-25,113}},
+              lineColor={0,127,255},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{-7,-118.5},{7,113}},
+              lineColor={0,127,255},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{25,-117.5},{39,114}},
+              lineColor={0,127,255},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid)}));
+    end VesselFluidPorts_b;
   end BaseClasses;
   annotation (Documentation(info="<html>
  
