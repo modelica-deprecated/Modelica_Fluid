@@ -12,7 +12,8 @@ model TestSimpleTank
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.1,
         height=0),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
         0.1, height=1)},
-    crossArea=1) 
+    crossArea=1,
+    level_start=0) 
     annotation (Placement(transformation(extent={{0,0},{40,40}},   rotation=0)));
 
   inner Modelica_Fluid.System system 
@@ -45,8 +46,9 @@ model TestSimpleTank
     use_m_flow_in=true) 
     annotation (Placement(transformation(extent={{-40,30},{-20,50}}, rotation=
            0)));
-  Modelica.Blocks.Sources.Step step(           startTime=50, height=20) 
-    annotation (Placement(transformation(extent={{-80,30},{-60,50}})));
+  Modelica.Blocks.Sources.TimeTable timeTable(table=[0,0; 10,0; 10,40; 20,40;
+        20,10; 50,10; 50,0; 60,0; 60,20; 70,20; 80,55; 80,0; 100,0])
+    annotation (Placement(transformation(extent={{-80,40},{-60,60}})));
 equation
   connect(pipe.port_a, tank.ports[1]) annotation (Line(
       points={{20,-20},{20,0},{16,0}},
@@ -60,10 +62,6 @@ equation
       points={{-20,-60},{20,-60},{20,-40}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(step.y, flowSource.m_flow_in) annotation (Line(
-      points={{-59,40},{-50,40},{-50,48},{-40,48}},
-      color={0,0,127},
-      smooth=Smooth.None));
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}),
@@ -71,4 +69,8 @@ equation
     experiment(StopTime=100),
     experimentSetupOutput);
 
+  connect(flowSource.m_flow_in, timeTable.y) annotation (Line(
+      points={{-40,48},{-50,48},{-50,50},{-59,50}},
+      color={0,0,127},
+      smooth=Smooth.None));
 end TestSimpleTank;

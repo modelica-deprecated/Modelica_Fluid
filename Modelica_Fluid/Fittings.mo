@@ -10,8 +10,7 @@ package Fittings
 model SimpleGenericOrifice
     "Simple generic orifice defined by pressure loss coefficient and diameter (only for flow from port_a to port_b)"
 
-  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
-    m_flow_small = 0.01*m_flow_nominal);
+  extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
 
   extends Modelica_Fluid.Interfaces.PartialLumpedFlow(
     final pathLength = 0,
@@ -30,7 +29,7 @@ model SimpleGenericOrifice
   parameter Boolean from_dp = true
       "= true, use m_flow = f(dp) else dp = f(m_flow)" 
     annotation (Evaluate=true, Dialog(tab="Advanced"));
-  parameter Medium.AbsolutePressure dp_small = 1e-3*dp_nominal
+  parameter Medium.AbsolutePressure dp_small = system.dp_small
       "Turbulent flow if |dp| >= dp_small" 
     annotation(Dialog(tab="Advanced", enable=from_dp));
 
@@ -1524,10 +1523,10 @@ Laminar region:
         parameter Boolean use_Re = false
           "= true, if turbulent region is defined by Re, otherwise by dp_small or m_flow_small"
           annotation(Evaluate=true, Dialog(tab="Advanced"));
-        parameter Medium.AbsolutePressure dp_small = 1
+        parameter Medium.AbsolutePressure dp_small = system.dp_small
           "Turbulent flow if |dp| >= dp_small" 
           annotation(Dialog(tab="Advanced", enable=not use_Re and from_dp));
-        parameter Medium.MassFlowRate m_flow_small = 0.01
+        parameter Medium.MassFlowRate m_flow_small = system.m_flow_small
           "Turbulent flow if |m_flow| >= m_flow_small" 
           annotation(Dialog(tab = "Advanced", enable=not from_dp));
 

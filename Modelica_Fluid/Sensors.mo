@@ -137,7 +137,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
           origin={0,110},
           extent={{10,-10},{-10,10}},
           rotation=270)));
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
+    parameter Medium.MassFlowRate m_flow_small(min=0) = system.m_flow_small
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
   annotation (defaultComponentName="density",
@@ -278,7 +278,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
           origin={0,110},
           extent={{10,-10},{-10,10}},
           rotation=270)));
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
+    parameter Medium.MassFlowRate m_flow_small(min=0) = system.m_flow_small
       "For bi-directional flow, temperature is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
 
@@ -393,7 +393,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
           extent={{10,-10},{-10,10}},
           rotation=270)));
 
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
+    parameter Medium.MassFlowRate m_flow_small(min=0) = system.m_flow_small
       "For bi-directional flow, specific enthalpy is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
 
@@ -469,7 +469,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
           origin={0,110},
           extent={{10,-10},{-10,10}},
           rotation=270)));
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
+    parameter Medium.MassFlowRate m_flow_small(min=0) = system.m_flow_small
       "For bi-directional flow, specific entropy is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
 
@@ -571,7 +571,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
           extent={{10,-10},{-10,10}},
           rotation=270)));
     parameter String substanceName = "CO2" "Name of trace substance";
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
+    parameter Medium.MassFlowRate m_flow_small(min=0) = system.m_flow_small
       "For bi-directional flow, trace substance is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
 
@@ -659,7 +659,7 @@ The sensor is ideal, i.e., it does not influence the fluid.
           origin={0,110},
           extent={{10,-10},{-10,10}},
           rotation=270)));
-    parameter Medium.MassFlowRate m_flow_small(min=0) = 1e-4
+    parameter Medium.MassFlowRate m_flow_small(min=0) = system.m_flow_small
       "For bi-directional flow, density is regularized in the region |m_flow| < m_flow_small (m_flow_small > 0 required)"
       annotation(Dialog(tab="Advanced"));
 

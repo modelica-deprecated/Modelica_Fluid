@@ -1297,16 +1297,16 @@ specified nominal values for given geometry parameters <tt>crossAreas</tt>, <tt>
 
             // Parameters
             parameter SI.AbsolutePressure dp_nominal
-          "Nominal pressure loss (to determine dp_small and for nominal models)";
+          "Nominal pressure loss (for nominal models)";
             parameter SI.MassFlowRate m_flow_nominal
-          "Mass flow rate for dp_nominal (to determine m_flow_small and for nominal models)";
+          "Mass flow rate for dp_nominal (for nominal models)";
             parameter Boolean from_dp = momentumDynamics >= Types.Dynamics.SteadyStateInitial
           " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
               annotation (Evaluate=true);
-            parameter SI.AbsolutePressure dp_small = 1e-3*dp_nominal
+            parameter SI.AbsolutePressure dp_small = system.dp_small
           "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
               annotation(Dialog(enable=from_dp and WallFriction.use_dp_small));
-            parameter SI.MassFlowRate m_flow_small = 1e-2*m_flow_nominal
+            parameter SI.MassFlowRate m_flow_small = system.m_flow_small
           "Within regularization if |m_flows| < m_flow_small (may be wider for large discontinuities in static head)"
               annotation(Dialog(enable=not from_dp and WallFriction.use_m_flow_small));
 
@@ -1535,8 +1535,8 @@ and can be related to <tt>m_flow_small</tt> and <tt>dp_small</tt>.
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.QuadraticTurbulent,
           use_mu_nominal=not show_Res,
           pathLengths_internal=pathLengths,
-          dp_nominal=1e3,
-          m_flow_nominal=1);
+          dp_nominal=1e3*dp_small,
+          m_flow_nominal=1e2*m_flow_small);
 
             annotation (Documentation(info="<html>
 <p>
@@ -1566,8 +1566,8 @@ Reynolds numbers, i.e., the values at the right ordinate where
           redeclare package WallFriction = 
               Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
           pathLengths_internal=pathLengths,
-          dp_nominal=1e3,
-          m_flow_nominal=1);
+          dp_nominal=1e3*dp_small,
+          m_flow_nominal=1e2*m_flow_small);
 
               annotation (Documentation(info="<html>
 <p>
@@ -3519,7 +3519,7 @@ b has the same sign of the change of density.</p>
         parameter Boolean from_dp=true
           " = true, use m_flow = f(dp), otherwise dp = f(m_flow)" 
           annotation (Evaluate=true, Dialog(tab="Advanced"));
-        parameter SI.AbsolutePressure dp_small = 1
+        parameter SI.AbsolutePressure dp_small = system.dp_small
           "Within regularization if |dp| < dp_small (may be wider for large discontinuities in static head)"
           annotation(Dialog(tab="Advanced", enable=from_dp and WallFriction.use_dp_small));
         SI.ReynoldsNumber Re = Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber_m_flow(

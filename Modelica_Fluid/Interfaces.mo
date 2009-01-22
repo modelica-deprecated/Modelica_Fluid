@@ -366,7 +366,7 @@ partial model PartialTwoPortTransport
   parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
       "Guess value of m_flow = port_a.m_flow" 
     annotation(Dialog(tab = "Advanced"));
-  parameter Medium.MassFlowRate m_flow_small = 0.01
+  parameter Medium.MassFlowRate m_flow_small = system.m_flow_small
       "Small mass flow rate for regularization of zero flow" 
     annotation(Dialog(tab = "Advanced"));
 
@@ -748,8 +748,8 @@ Further source terms must be defined by an extending class for fluid flow across
 <li><tt><b>mbC_flow</b></tt>, trace substance mass flow.</li> 
 </ul>
 </html>"),
-        Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-              {100,100}}),
+        Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+              -100},{100,100}}),
                 graphics));
     end PartialLumpedVolume;
 

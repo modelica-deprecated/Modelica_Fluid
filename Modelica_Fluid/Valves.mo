@@ -356,7 +356,7 @@ it is open.
       extends Modelica_Fluid.Interfaces.PartialTwoPortTransport(
         dp_start = dp_nominal,
         m_flow_start = m_flow_nominal,
-        m_flow_small = 0.01*m_flow_nominal);
+        m_flow_small = system.m_flow_small);
 
       parameter CvTypes CvData=CvTypes.OpPoint "Selection of flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient"));
@@ -391,7 +391,7 @@ it is open.
         "Inherent flow characteristic" 
         annotation(choicesAllMatching=true);
 
-      parameter SI.Pressure dp_small=1e-3*dp_nominal
+      parameter SI.Pressure dp_small=system.dp_small
         "Regularisation of zero flow"                 annotation(Dialog(tab="Advanced"));
 
       constant SI.Area Kv2Av = 27.7e-6 "Conversion factor";

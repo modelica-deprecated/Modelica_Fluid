@@ -906,7 +906,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     annotation (Documentation(info="<HTML>
 <h3><font color=\"#008000\" size=5>Release notes</font></h3>
  
-<h3><font color=\"#008000\">Version 1.0, 2009-01-19</font></h3>
+<h3><font color=\"#008000\">Version 1.0, 2009-01-22</font></h3>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -963,12 +963,13 @@ Modelica_Fluid was refactored and finalized for the release:
      Alternatively a Fitting like SuddenExpansion can be introduced to account for different cross flow areas of connected flow models.</li>
  
 <li> New Vessels.BaseClasses.PartialLumpedVessel treating the ports, including hydraulic resistances, for ClosedVolume, SimpleTank and SweptVolume.</li>
-
+ 
 <li> System (former Ambient)<br>
      The use of the global System object has been extended towards common default values for
-     modeling assumptions and initialization. In particular steady-state initialization and
-     complete steady-state simulation can now be specified system-wide. A new
-     Types.Init.Dynamics has been introduced, combining steady-state and initial conditions.
+     modeling assumptions, initialization, and advanced settings that are different for each application of the library
+     but should nevertheless provide default values for reasons of convenience. 
+     In particular steady-state initialization and complete steady-state simulation can now be specified system-wide.
+     A new Types.Init.Dynamics has been introduced, combining steady-state and initial conditions.
      The former Types.Init has become obsolete.
      <br>See <a href=\"Modelica:Modelica_Fluid.Examples.HeatingSystem\">Examples.HeatingSystem</a></li>.
  
