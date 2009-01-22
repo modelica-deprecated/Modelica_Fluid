@@ -897,16 +897,16 @@ Heat transfer correlations for pipe models
     record VesselPortsData "Data to describe inlet/outlet ports at vessels:
     diameter -- Inner (hydraulic) diameter of inlet/outlet port
     height -- Height over the bottom of the vessel
-    zeta_out -- Hydraulic resistance out of vessel, default 1.5 for mounted flush with the wall
-    zeta_in -- Hydraulic resistance into vessel, default 0.04 for small port diameter"
+    zeta_out -- Hydraulic resistance out of vessel, default 1.5 for small diameter mounted flush with the wall
+    zeta_in -- Hydraulic resistance into vessel, default 0.04 for small diameter mounted flush with the wall"
           extends Modelica.Icons.Record;
       parameter SI.Diameter diameter
         "Inner (hydraulic) diameter of inlet/outlet port";
       parameter SI.Height height = 0 "Height over the bottom of the vessel";
       parameter Real zeta_out(min=0)=1.5
-        "Hydraulic resistance out of vessel, default 1.5 for mounted flush with the wall";
+        "Hydraulic resistance out of vessel, default 1.5 for small diameter mounted flush with the wall";
       parameter Real zeta_in(min=0)=0.04
-        "Hydraulic resistance into vessel, default 0.04 for mounted flush with the wall";
+        "Hydraulic resistance into vessel, default 0.04 for small diameter mounted flush with the wall";
       annotation (preferredView="info", Documentation(info="<html>
 <h3><font color=\"#008000\" size=5>Vessel Port Data</font></h3>
 <p>
