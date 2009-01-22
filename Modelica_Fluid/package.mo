@@ -117,10 +117,12 @@ This library has the following main features:
      <br>&nbsp;</li>
 <li> All components work for <b>incompressible</b> and <b>compressible</b> media.
      This is implemented by a small change in the initialization of a
-     component, if the medium is incrompressible. Otherwise, the equations
+     component, if the medium is incompressible. Otherwise, the equations
      of the components are not influenced by this property.<br>&nbsp;</li>
 <li> All components allow fluid flow in both directions, i.e.,
-     <b>reversing flow</b> is supported.<br>&nbsp;</li>
+     <b>reversing flow</b> is supported. However, it is possible to declare that
+     the flow through a component only has the design direction, in order to
+     obtain faster simulation code.<br>&nbsp;</li>
 <li> Two or more components can be connected together. This means that
      the pressures of all connected ports are equal and the mass flow rates
      sum up to zero. Specific enthalpy, mass fractions and trace substances are
@@ -511,7 +513,7 @@ A plot of this characteristic is shown in the next figure:
 <p align=\"center\">
 <img src=\"../Images/UsersGuide/sqrt.png\">
 </p>
-<p>
+<p>                                                                                                                                                                            
 The difficulty with this function is that the derivative at x=0 is infinity.
 In reality, such a function does not exist. E.g., for pipe flow,
 the flow becomes laminar for small velocities and therefore around zero the
@@ -522,7 +524,7 @@ usually of not much practical interest, the above approximation is used.
 The direct implementation above does not work in Modelica, because
 an event is generated when x &lt; 0 changes sign. In order to detect
 this event, an event iteration takes place. During the event iteration,
-the active if-branche is not changed. For example, assume that x is positive
+the active if-branch is not changed. For example, assume that x is positive
 (= \"else\" branch) and shall become negative. During the event iteration
 x is slightly negative and the else branch, i.e., sqrt(x), is evaluated.
 Since this results in an imaginary number, an error occurs.
@@ -859,7 +861,7 @@ Europe:
  
 <pre>
   q = Kv sqrt(dp/(rho/rho0)) , with [q] = m3/h, [dp] = bar
-</p>
+</pre>
  
 <p>
 US:
@@ -867,7 +869,7 @@ US:
  
 <pre>
   q = Cv sqrt(dp/(rho/rho0)) , with [q] = USG/min, [dp] = psi
-</p>
+</pre>
  
 <p>
 In both cases rho0 is the density of cold water at 4 °C, 999 kg/m3. Note that these equations use relative, not absolute densities.
@@ -2113,7 +2115,7 @@ The development of this library has been a collaborative effort
 and many have contributed.
 </p>
 <ul>
-<li> The previous design of this library (from beginning of 2008) is based on the paper
+<li> The previous design of this library (until beginning of 2008) was based on the paper
      Elmqvist H., Tummescheit H., and Otter M.:
      <a href=\"http://www.modelica.org/events/Conference2003/papers/h40_Elmqvist_fluid.pdf\">
      Object-Oriented Modeling of Thermo-Fluid Systems</a>.
