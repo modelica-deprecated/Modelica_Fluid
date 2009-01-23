@@ -1223,10 +1223,10 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
         Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.diameter_a else data.diameter_b,data.zeta2);
       algorithm
         /*
-   dp = 0.5*zeta*d*v*|v|
-      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
-      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
-      = k/d * m_flow * |m_flow| 
+   dp = 0.5*zeta*rho*v*|v|
+      = 0.5*zeta*rho*1/(rho*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/rho * m_flow * |m_flow|
+      = k/rho * m_flow * |m_flow| 
    k  = 0.5*zeta/A^2
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
@@ -1330,15 +1330,15 @@ The used sufficient criteria for monotonicity follows from:
       /*
 Turbulent region:
    Re = m_flow*(4/pi)/(D_Re*mu)  
-   dp = 0.5*zeta*d*v*|v|
-      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
-      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
-      = k/d * m_flow * |m_flow| 
+   dp = 0.5*zeta*rho*v*|v|
+      = 0.5*zeta*rho*1/(rho*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/rho * m_flow * |m_flow|
+      = k/rho * m_flow * |m_flow| 
    k  = 0.5*zeta/A^2
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
    m_flow_turbulent = (pi/4)*D_Re*mu*Re_turbulent
-   dp_turbulent     =  k/d *(D_Re*mu*pi/4)^2 * Re_turbulent^2
+   dp_turbulent     =  k/rho *(D_Re*mu*pi/4)^2 * Re_turbulent^2
  
    The start of the turbulent region is computed with mean values
    of dynamic viscosity mu and density rho. Otherwise, one has
@@ -1349,13 +1349,13 @@ Laminar region:
    dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
       = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*mu)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
       = 0.5 * c0*(pi/4)*(D_Re*mu) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
-      = 2*c0/(pi*D_Re^3) * mu/d * m_flow
-      = k0 * mu/d * m_flow
+      = 2*c0/(pi*D_Re^3) * mu/rho * m_flow
+      = k0 * mu/rho * m_flow
    k0 = 2*c0/(pi*D_Re^3)
  
    In order that the derivative of dp=f(m_flow) is continuous 
    at m_flow=0, the mean values of mu and d are used in the
-   laminar region: mu/d = (mu_a + mu_b)/(rho_a + rho_b)
+   laminar region: mu/rho = (mu_a + mu_b)/(rho_a + rho_b)
    If data.zetaLaminarKnown = false then mu_a and mu_b are potentially zero
    (because dummy values) and therefore the division is only performed
    if zetaLaminarKnown = true.
@@ -1397,10 +1397,10 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
         Real k2 = lossConstant_D_zeta(if data.zeta2_at_a then data.diameter_a else data.diameter_b,data.zeta2);
       algorithm
         /*
-   dp = 0.5*zeta*d*v*|v|
-      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
-      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
-      = k/d * m_flow * |m_flow| 
+   dp = 0.5*zeta*rho*v*|v|
+      = 0.5*zeta*rho*1/(rho*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/rho * m_flow * |m_flow|
+      = k/rho * m_flow * |m_flow| 
    k  = 0.5*zeta/A^2
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
@@ -1471,15 +1471,15 @@ The used sufficient criteria for monotonicity follows from:
       /*
 Turbulent region:
    Re = m_flow*(4/pi)/(D_Re*mu)  
-   dp = 0.5*zeta*d*v*|v|
-      = 0.5*zeta*d*1/(d*A)^2 * m_flow * |m_flow|
-      = 0.5*zeta/A^2 *1/d * m_flow * |m_flow|
-      = k/d * m_flow * |m_flow| 
+   dp = 0.5*zeta*rho*v*|v|
+      = 0.5*zeta*rho*1/(rho*A)^2 * m_flow * |m_flow|
+      = 0.5*zeta/A^2 *1/rho * m_flow * |m_flow|
+      = k/rho * m_flow * |m_flow| 
    k  = 0.5*zeta/A^2
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
    m_flow_turbulent = (pi/4)*D_Re*mu*Re_turbulent
-   dp_turbulent     =  k/d *(D_Re*mu*pi/4)^2 * Re_turbulent^2
+   dp_turbulent     =  k/rho *(D_Re*mu*pi/4)^2 * Re_turbulent^2
  
    The start of the turbulent region is computed with mean values
    of dynamic viscosity mu and density rho. Otherwise, one has
@@ -1490,13 +1490,13 @@ Laminar region:
    dp = 0.5*zeta/(A^2*d) * m_flow * |m_flow|
       = 0.5 * c0/(|m_flow|*(4/pi)/(D_Re*mu)) / ((pi*(D_Re/2)^2)^2*d) * m_flow*|m_flow|
       = 0.5 * c0*(pi/4)*(D_Re*mu) * 16/(pi^2*D_Re^4*d) * m_flow*|m_flow|
-      = 2*c0/(pi*D_Re^3) * mu/d * m_flow
-      = k0 * mu/d * m_flow
+      = 2*c0/(pi*D_Re^3) * mu/rho * m_flow
+      = k0 * mu/rho * m_flow
    k0 = 2*c0/(pi*D_Re^3)
  
    In order that the derivative of dp=f(m_flow) is continuous 
    at m_flow=0, the mean values of mu and d are used in the
-   laminar region: mu/d = (mu_a + mu_b)/(rho_a + rho_b)
+   laminar region: mu/rho = (mu_a + mu_b)/(rho_a + rho_b)
    If data.zetaLaminarKnown = false then mu_a and mu_b are potentially zero
    (because dummy values) and therefore the division is only performed
    if zetaLaminarKnown = true.
