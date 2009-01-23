@@ -8,7 +8,7 @@ package Valves "Components for the regulation and control of fluid flow"
 
     initial equation
       if CvData == CvTypes.OpPoint then
-          m_flow_nominal = valveCharacteristic(opening_nominal)*Av*sqrt(d_nominal)*Utilities.regRoot(dp_nominal, dp_small)
+          m_flow_nominal = valveCharacteristic(opening_nominal)*Av*sqrt(rho_nominal)*Utilities.regRoot(dp_nominal, dp_small)
         "Determination of Av by the operating point";
       end if;
 
@@ -162,7 +162,7 @@ explained in detail in the
       x_nominal = dp_nominal/p_nominal;
       xs_nominal = smooth(0, if x_nominal > Fxt_nominal then Fxt_nominal else x_nominal);
       Y_nominal = 1 - abs(xs_nominal)/(3*Fxt_nominal);
-      m_flow_nominal = valveCharacteristic(opening_nominal)*Av*Y_nominal*sqrt(d_nominal)*Utilities.regRoot(p_nominal*xs_nominal, dp_small);
+      m_flow_nominal = valveCharacteristic(opening_nominal)*Av*Y_nominal*sqrt(rho_nominal)*Utilities.regRoot(p_nominal*xs_nominal, dp_small);
     else
       // Dummy values
       Fxt_nominal = 0;
@@ -362,7 +362,7 @@ it is open.
        annotation(Dialog(group = "Flow Coefficient"));
       parameter SI.Area Av(
         fixed=if CvData == CvTypes.Av then true else false,
-        start=m_flow_nominal/(sqrt(d_nominal*dp_nominal))*valveCharacteristic(
+        start=m_flow_nominal/(sqrt(rho_nominal*dp_nominal))*valveCharacteristic(
             opening_nominal)) = 0 "Av (metric) flow coefficient" 
        annotation(Dialog(group = "Flow Coefficient",
                          enable = (CvData==Modelica_Fluid.Types.CvTypes.Av)));
@@ -376,7 +376,7 @@ it is open.
       annotation(Dialog(group="Nominal operating point"));
       parameter Medium.MassFlowRate m_flow_nominal "Nominal mass flowrate" 
       annotation(Dialog(group="Nominal operating point"));
-      parameter Medium.Density d_nominal=Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+      parameter Medium.Density rho_nominal=Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal inlet density" 
       annotation(Dialog(group="Nominal operating point"));
       parameter Real opening_nominal=1 "Nominal opening" 
@@ -452,7 +452,7 @@ it is open.
 <ul><li><tt>CvData = Modelica_Fluid.Types.CvTypes.Av</tt>: the flow coefficient is given by the metric <tt>Av</tt> coefficient (m^2).
 <li><tt>CvData = Modelica_Fluid.Types.CvTypes.Kv</tt>: the flow coefficient is given by the metric <tt>Kv</tt> coefficient (m^3/h).
 <li><tt>CvData = Modelica_Fluid.Types.CvTypes.Cv</tt>: the flow coefficient is given by the US <tt>Cv</tt> coefficient (USG/min).
-<li><tt>CvData = Modelica_Fluid.Types.CvTypes.OpPoint</tt>: the flow is computed from the nominal operating point specified by <tt>p_nominal</tt>, <tt>dp_nominal</tt>, <tt>m_flow_nominal</tt>, <tt>d_nominal</tt>, <tt>opening_nominal</tt>.
+<li><tt>CvData = Modelica_Fluid.Types.CvTypes.OpPoint</tt>: the flow is computed from the nominal operating point specified by <tt>p_nominal</tt>, <tt>dp_nominal</tt>, <tt>m_flow_nominal</tt>, <tt>rho_nominal</tt>, <tt>opening_nominal</tt>.
 </ul>
 <p>The nominal pressure drop <tt>dp_nominal</tt> must always be specified; to avoid numerical singularities, the flow characteristic is modified for pressure drops less than <tt>b*dp_nominal</tt> (the default value is 1% of the nominal pressure drop). Increase this parameter if numerical problems occur in valves with very low pressure drops.
 <p>If <tt>checkValve</tt> is true, then the flow is stopped when the outlet pressure is higher than the inlet pressure; otherwise, reverse flow takes place. Use this option only when neede, as it increases the numerical complexity of the problem.

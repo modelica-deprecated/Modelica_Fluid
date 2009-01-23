@@ -338,10 +338,10 @@ k1=1, k2=3 is shown in the next figure:
            Basic equations:
               y_right = a1*(x/x1) + a2*(x/x1)^2 + a3*(x/x1)^3
               y_left  = b1*(x/x2) + b2*(x/x2)^2 + b3*(x/x2)^3
-              yd_right*x1 = a1 + 2*a2*(x/x1) + 3*a3*(x/x1)^2
-              yd_left *x2 = b1 + 2*b2*(x/x2) + 3*b3*(x/x2)^2
-              ydd_right*x1^2 = 2*a2 + 6*a3*(x/x1)
-              ydd_left *x2^2 = 2*b2 + 6*b3*(x/x2)
+              yrho_right*x1 = a1 + 2*a2*(x/x1) + 3*a3*(x/x1)^2
+              yrho_left *x2 = b1 + 2*b2*(x/x2) + 3*b3*(x/x2)^2
+              ydrho_right*x1^2 = 2*a2 + 6*a3*(x/x1)
+              ydrho_left *x2^2 = 2*b2 + 6*b3*(x/x2)
            _
            Conditions (6 equations for 6 unknowns):
                      y1 = a1 + a2 + a3

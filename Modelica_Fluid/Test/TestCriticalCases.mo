@@ -428,7 +428,7 @@ pipe wall/environment).
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
-      d_nominal=1000,
+      rho_nominal=1000,
       dp_nominal=200000) 
                   annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
@@ -436,7 +436,7 @@ pipe wall/environment).
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
-      d_nominal=1000,
+      rho_nominal=1000,
       dp_nominal=200000) 
                   annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
@@ -534,14 +534,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
+      rho_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
+      rho_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -634,14 +634,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
+      rho_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
+      rho_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -743,14 +743,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
+      rho_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
+      rho_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -853,7 +853,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
     Modelica_Fluid.Valves.ValveIncompressible valveIncompressible(
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
-      d_nominal=1000,
+      rho_nominal=1000,
       redeclare package Medium = Medium,
       dp_nominal=400000)              annotation (Placement(transformation(
             extent={{52,-10},{72,10}}, rotation=0)));
@@ -968,14 +968,14 @@ fails for zero flow rate.
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
+      rho_nominal=1000) annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveIncompressible valveIncompressible1(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
+      rho_nominal=1000) annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -1071,7 +1071,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
-      d_nominal=5,
+      rho_nominal=5,
       dp_nominal=400000) 
                   annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
@@ -1079,7 +1079,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
-      d_nominal=5,
+      rho_nominal=5,
       dp_nominal=400000) 
                   annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
@@ -1186,14 +1186,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
        dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
+      rho_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
+      rho_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -1304,14 +1304,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
+      rho_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
+      rho_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -1422,14 +1422,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
+      rho_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
+      rho_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -1538,7 +1538,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5,
+      rho_nominal=5,
       dp(start=10)) 
                   annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
@@ -1547,7 +1547,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
+      rho_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -1663,14 +1663,14 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
+      rho_nominal=5)    annotation (Placement(transformation(extent={{10,36},{30,56}},
             rotation=0)));
     Modelica_Fluid.Valves.ValveIncompressible valve2(
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       dp_nominal=4.0e5,
       m_flow_nominal=1,
-      d_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
+      rho_nominal=5)    annotation (Placement(transformation(extent={{8,-50},{28,-30}},
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
@@ -1785,7 +1785,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       redeclare package Medium = Medium,
       CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
       m_flow_nominal=1,
-      d_nominal=5,
+      rho_nominal=5,
       dp(start=400000),
       dp_nominal=400000) 
                   annotation (Placement(transformation(extent={{8,-50},{28,-30}},

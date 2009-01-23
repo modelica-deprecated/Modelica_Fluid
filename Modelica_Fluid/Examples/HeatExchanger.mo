@@ -17,12 +17,12 @@ package HeatExchanger "Demo of a heat exchanger model"
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow (
         redeclare package WallFriction = 
           Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
-              use_d_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
+              use_rho_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
       redeclare model FlowModel_2 = 
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow (
         redeclare package WallFriction = 
           Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
-              use_d_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
+              use_rho_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
       k_wall=100,
       energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
       massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
@@ -33,7 +33,7 @@ package HeatExchanger "Demo of a heat exchanger model"
       perimeter_2=0.075,
       area_h_1=0.075*2*20,
       area_h_2=0.075*2*20,
-      d_wall=900,
+      rho_wall=900,
       redeclare package Medium_1 = 
           Medium,
       redeclare package Medium_2 = 
@@ -143,12 +143,12 @@ package HeatExchanger "Demo of a heat exchanger model"
       parameter SI.Area area_h_1 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 1"));
       parameter SI.Area area_h_2 "Heat transfer area" annotation(Dialog(tab="General",group="Fluid 2"));
      //Wall
-      parameter SI.Density d_wall "Density of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
+      parameter SI.Density rho_wall "Density of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
       parameter SI.SpecificHeatCapacity c_wall
         "Specific heat capacity of wall material" annotation(Dialog(tab="General", group="Solid material properties"));
       final parameter SI.Area area_h=(area_h_1 + area_h_2)/2
         "Heat transfer area";
-      final parameter SI.Mass m_wall=d_wall*area_h*s_wall "Wall mass";
+      final parameter SI.Mass m_wall=rho_wall*area_h*s_wall "Wall mass";
       parameter SI.ThermalConductivity k_wall
         "Thermal conductivity of wall material" 
         annotation (Dialog(group="Solid material properties"));
@@ -245,7 +245,7 @@ package HeatExchanger "Demo of a heat exchanger model"
       SI.HeatFlowRate Q_flow_2 "Total heat flow rate of pipe 2";
 
       BaseClasses.WallConstProps wall(
-        d_wall=d_wall,
+        rho_wall=rho_wall,
         c_wall=c_wall,
         T_start=Twall_start,
         k_wall=k_wall,
@@ -416,12 +416,12 @@ The design flow direction with positive m_flow variables is counterflow.
       parameter SI.Length s "Wall thickness";
       parameter SI.Area area_h "Heat transfer area";
     //Material properties
-      parameter SI.Density d_wall "Density of wall material";
+      parameter SI.Density rho_wall "Density of wall material";
       parameter SI.SpecificHeatCapacity c_wall
         "Specific heat capacity of wall material";
       parameter SI.ThermalConductivity k_wall
         "Thermal conductivity of wall material";
-      parameter SI.Mass[n] m=fill(d_wall*area_h*s/n,n)
+      parameter SI.Mass[n] m=fill(rho_wall*area_h*s/n,n)
         "Distribution of wall mass";
     //Initialization
       outer Modelica_Fluid.System system;

@@ -7,7 +7,7 @@ model TestValveIncompressible "Test case with different valve characteristics"
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,30},{-80,50}}, rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V1(
-    d_nominal=1000,
+    rho_nominal=1000,
     dp_nominal=9e5,
     m_flow_nominal=1.5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -38,7 +38,7 @@ annotation (
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,-10},{-80,10}}, rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V2(
-    d_nominal=1000,
+    rho_nominal=1000,
     dp_nominal=9e5,
     m_flow_nominal=1.5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,
@@ -59,7 +59,7 @@ annotation (
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
             0)));
   Modelica_Fluid.Valves.ValveIncompressible V3(
-    d_nominal=1000,
+    rho_nominal=1000,
     dp_nominal=9e5,
     m_flow_nominal=1.5,
   redeclare package Medium = Modelica.Media.Water.StandardWater,

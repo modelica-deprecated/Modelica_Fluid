@@ -169,9 +169,9 @@ package Machines
       annotation (Dialog(enable = not control_m_flow));
 
     // exemplary characteristics
-    final parameter SI.VolumeFlowRate V_flow_op = m_flow_nominal/d_nominal
+    final parameter SI.VolumeFlowRate V_flow_op = m_flow_nominal/rho_nominal
       "operational volume flow rate according to nominal values";
-    final parameter SI.Height head_op = (p_b_nominal-p_a_nominal)/(d_nominal*g)
+    final parameter SI.Height head_op = (p_b_nominal-p_a_nominal)/(rho_nominal*g)
       "operational pump head according to nominal values";
 
     Modelica.Blocks.Interfaces.RealInput m_flow_set if use_m_flow_set
@@ -219,8 +219,8 @@ package Machines
             visible=use_m_flow_set,
             extent={{-20,108},{170,92}},
             textString="m_flow_set")}),
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+              {100,100}}),graphics),
       Documentation(info="<HTML>
 <p>
 This model describes a centrifugal pump (or a group of <tt>nParallel</tt> pumps) 
@@ -262,13 +262,13 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
           rotation=-90,
           origin={0,100})));
     annotation (defaultComponentName="pump",
-      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics={Text(
+      Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,
+              100}}), graphics={Text(
             visible=use_N_in,
             extent={{14,98},{178,82}},
             textString="N_in [rpm]")}),
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-              100,100}}), graphics),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+              {100,100}}),graphics),
       Documentation(info="<HTML>
 <p>This model describes a centrifugal pump (or a group of <tt>nParallel</tt> pumps) with prescribed speed, either fixed or provided by an external signal.
 <p>The model extends <tt>PartialPump</tt>
@@ -336,7 +336,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     parameter AngularVelocity_rpm N_nominal
         "Nominal rotational speed for flow characteristic" 
       annotation(Dialog(group="Characteristics"));
-    parameter Medium.Density d_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+    parameter Medium.Density rho_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
         "Nominal fluid density for characteristic" 
       annotation(Dialog(group="Characteristics"));
     parameter Boolean use_powerCharacteristic = false
@@ -396,14 +396,14 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
     // Variables
     final parameter SI.Acceleration g=system.g;
-    Medium.Density d = medium.d;
+    Medium.Density rho = medium.d;
     SI.Pressure dp_pump = port_b.p - port_a.p "Pressure increase";
-    SI.Height head = dp_pump/(d*g) "Pump head";
+    SI.Height head = dp_pump/(rho*g) "Pump head";
     SI.MassFlowRate m_flow = port_a.m_flow "Mass flow rate (total)";
     SI.MassFlowRate m_flow_single = m_flow/nParallel
         "Mass flow rate (single pump)";
-    SI.VolumeFlowRate V_flow = m_flow/d "Volume flow rate (total)";
-    SI.VolumeFlowRate V_flow_single(start = m_flow_start/d_nominal/nParallel) = V_flow/nParallel
+    SI.VolumeFlowRate V_flow = m_flow/rho "Volume flow rate (total)";
+    SI.VolumeFlowRate V_flow_single(start = m_flow_start/rho_nominal/nParallel) = V_flow/nParallel
         "Volume flow rate (single pump)";
     AngularVelocity_rpm N(start = N_nominal) "Shaft rotational speed";
     SI.Power W_single "Power Consumption (single pump)";
@@ -419,9 +419,9 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     Medium.ThermodynamicState state_a=
       Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)) if 
          show_NPSHa "state for medium inflowing through port_a";
-    Medium.Density d_in = Medium.density(state_a) if show_NPSHa
+    Medium.Density rho_in = Medium.density(state_a) if show_NPSHa
         "Liquid density at the inlet port_a";
-    SI.Length NPSHa=NPSPa/(d_in*system.g) if show_NPSHa
+    SI.Length NPSHa=NPSPa/(rho_in*system.g) if show_NPSHa
         "Net Positive Suction Head available";
     SI.Pressure NPSPa=assertPositiveDifference(port_a.p, Medium.saturationPressure(Medium.temperature(state_a)),
                                                "Cavitation occurs at the pump inlet") if show_NPSHa
@@ -442,7 +442,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     elseif s > 0 then
       // Flow characteristics when check valve is open
       head = (N/N_nominal)^2*flowCharacteristic(V_flow_single*(N_nominal/N));
-      V_flow_single = s*unitMassFlowRate/d;
+      V_flow_single = s*unitMassFlowRate/rho;
     else
       // Flow characteristics when check valve is closed
       head = (N/N_nominal)^2*flowCharacteristic(0) - s*unitHead;
@@ -451,7 +451,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
     // Power consumption
     if use_powerCharacteristic then
-      W_single = (N/N_nominal)^3*(d/d_nominal)*powerCharacteristic(V_flow_single*(N_nominal/N));
+      W_single = (N/N_nominal)^3*(rho/rho_nominal)*powerCharacteristic(V_flow_single*(N_nominal/N));
       eta = dp_pump*V_flow_single/W_single;
     else
       eta = efficiencyCharacteristic(V_flow_single*(N_nominal/N));
@@ -514,8 +514,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
               points={{100,0},{80,0}},
               color={0,128,255},
               smooth=Smooth.None)}),
-      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
-                100,100}}),
+      Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+                {100,100}}),
               graphics),
       Documentation(info="<HTML>
 <p>This is the base model for pumps.

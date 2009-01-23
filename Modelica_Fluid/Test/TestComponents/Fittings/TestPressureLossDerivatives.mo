@@ -10,8 +10,8 @@ model TestPressureLossDerivatives
     "Loss factors for both flow directions";
   parameter SI.Pressure dp_small = 0.1;
 
-  SI.Density d_a;
-  SI.Density d_b;
+  SI.Density rho_a;
+  SI.Density rho_b;
   SI.DynamicViscosity mu_a;
   SI.DynamicViscosity mu_b;
   SI.Pressure dp;
@@ -29,13 +29,13 @@ protected
 </html>"));
 equation
   dp = t2p*time - 1;
-  d_a = 0.1 + t2d*time;
-  d_b = 0.2 + 0.5*t2d*time;
-  mu_a = 0.1*d2mu*d_a;
-  mu_b = 0.4*d2mu*d_b;
+  rho_a = 0.1 + t2d*time;
+  rho_b = 0.2 + 0.5*t2d*time;
+  mu_a = 0.1*d2mu*rho_a;
+  mu_b = 0.4*d2mu*rho_b;
 
-  m_flow1 = QuadraticTurbulent.massFlowRate_dp(dp, d_a, d_b, data, dp_small);
-  m_flow2 = QuadraticTurbulent.massFlowRate_dp_and_Re(dp, d_a, d_b, mu_a, mu_b, data);
+  m_flow1 = QuadraticTurbulent.massFlowRate_dp(dp, rho_a, rho_b, data, dp_small);
+  m_flow2 = QuadraticTurbulent.massFlowRate_dp_anrho_Re(dp, rho_a, rho_b, mu_a, mu_b, data);
 
   der_m_flow1 = der(m_flow1);
   // der_m_flow2 = der(m_flow2);

@@ -691,15 +691,16 @@ polynomials. The monotonicity is guaranteed using results from:
           "Loss factors suited for Re >= Re_turbulent"                            annotation(Dialog);
       SI.Diameter D_Re "Diameter used to compute Re" annotation(Dialog);
       Boolean zeta1_at_a = true
-          "dp = zeta1*(if zeta1_at_a then d_a*v_a^2/2 else d_b*v_b^2/2)" 
+          "dp = zeta1*(if zeta1_at_a then rho_a*v_a^2/2 else rho_b*v_b^2/2)" 
                                                                         annotation(Dialog);
       Boolean zeta2_at_a = false
-          "dp = -zeta2*(if zeta2_at_a then d_a*v_a^2/2 else d_b*v_b^2/2)" 
+          "dp = -zeta2*(if zeta2_at_a then rho_a*v_a^2/2 else rho_b*v_b^2/2)" 
                                                                          annotation(Dialog);
       Boolean zetaLaminarKnown = false
           "= true, if zeta = c0/Re in laminar region"                              annotation(Dialog);
       Real c0 = 1
-          "zeta = c0/Re; dp = zeta*d_Re*v_Re^2/2, Re=v_Re*D_Re*d_Re/mu_Re)"         annotation(Dialog(enable=zetaLaminarKnown));
+          "zeta = c0/Re; dp = zeta*rho_Re*v_Re^2/2, Re=v_Re*D_Re*rho_Re/mu_Re)"
+                                                                                        annotation(Dialog(enable=zetaLaminarKnown));
 
       annotation (preferedView="info", Documentation(info="<html>
 <p>
@@ -1020,12 +1021,12 @@ port_a to port_b as:
 </p>
 <pre>
    A_a &lt; A_b (Idelchik 1994, diagram 4-1, p. 208):
-      zeta = dp/(d_a*v_a^2/2)
+      zeta = dp/(rho_a*v_a^2/2)
            = (1 - A_a/A_b)^2 for Re_a &ge; 3.3e3 (turbulent flow)
       zeta = 30/Re           for Re_a &lt; 10    (laminar flow)
 &nbsp;
    A_a &gt; A_b (Idelchik 1994, diagram 4-9, p. 216 and diagram 4-10, p. 217)
-      zeta = dp/(d_b*v_b^2/2)
+      zeta = dp/(rho_b*v_b^2/2)
            = 0.5*(1 - A_b/A_a)^0.75 for Re_b &ge; 1e4 (turbulent flow)
       zeta = 30/Re                  for Re_a &lt; 10  (laminar flow)
 </pre>
@@ -1198,8 +1199,8 @@ Loss factor for mass flow rate from port_b to port_a
         extends Modelica.Icons.Function;
 
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
-        input SI.Density d_a "Density at port_a";
-        input SI.Density d_b "Density at port_b";
+        input SI.Density rho_a "Density at port_a";
+        input SI.Density rho_b "Density at port_b";
         input LossFactorData data
           "Constant loss factors for both flow directions" annotation (
             choices(
@@ -1230,7 +1231,7 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
   */
-        m_flow :=Utilities.regRoot2(dp, dp_small, d_a/k1, d_b/k2);
+        m_flow :=Utilities.regRoot2(dp, dp_small, rho_a/k1, rho_b/k2);
       end massFlowRate_dp;
       annotation (Documentation(info="<html>
 <p>
@@ -1266,13 +1267,13 @@ where
  
 </html>"));
 
-      function massFlowRate_dp_and_Re
+      function massFlowRate_dp_anrho_Re
         "Return mass flow rate from constant loss factor data, pressure drop and Re (m_flow = f(dp))"
               extends Modelica.Icons.Function;
 
         input SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
-        input SI.Density d_a "Density at port_a";
-        input SI.Density d_b "Density at port_b";
+        input SI.Density rho_a "Density at port_a";
+        input SI.Density rho_b "Density at port_b";
         input SI.DynamicViscosity mu_a "Dynamic viscosity at port_a";
         input SI.DynamicViscosity mu_b "Dynamic viscosity at port_b";
         input LossFactorData data
@@ -1354,26 +1355,26 @@ Laminar region:
  
    In order that the derivative of dp=f(m_flow) is continuous 
    at m_flow=0, the mean values of mu and d are used in the
-   laminar region: mu/d = (mu_a + mu_b)/(d_a + d_b)
+   laminar region: mu/d = (mu_a + mu_b)/(rho_a + rho_b)
    If data.zetaLaminarKnown = false then mu_a and mu_b are potentially zero
    (because dummy values) and therefore the division is only performed
    if zetaLaminarKnown = true.
 */
-         dp_turbulent :=(k1 + k2)/(d_a + d_b)*
+         dp_turbulent :=(k1 + k2)/(rho_a + rho_b)*
                         ((mu_a + mu_b)*data.D_Re*pi/8)^2*data.Re_turbulent^2;
          yd0 :=if data.zetaLaminarKnown then 
-                  (d_a + d_b)/(k0*(mu_a + mu_b)) else 0;
-         m_flow := Utilities.regRoot2(dp, dp_turbulent, d_a/k1, d_b/k2,
+                  (rho_a + rho_b)/(k0*(mu_a + mu_b)) else 0;
+         m_flow := Utilities.regRoot2(dp, dp_turbulent, rho_a/k1, rho_b/k2,
                                                      data.zetaLaminarKnown, yd0);
-      end massFlowRate_dp_and_Re;
+      end massFlowRate_dp_anrho_Re;
 
       function pressureLoss_m_flow
         "Return pressure drop from constant loss factor and mass flow rate (dp = f(m_flow))"
               extends Modelica.Icons.Function;
 
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
-        input SI.Density d_a "Density at port_a";
-        input SI.Density d_b "Density at port_b";
+        input SI.Density rho_a "Density at port_a";
+        input SI.Density rho_b "Density at port_b";
         input LossFactorData data
           "Constant loss factors for both flow directions" annotation (
             choices(
@@ -1404,16 +1405,16 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
       = 0.5*zeta/(pi*(D/2)^2)^2
       = 8*zeta/(pi*D^2)^2
   */
-        dp :=Utilities.regSquare2(m_flow, m_flow_small, k1/d_a, k2/d_b);
+        dp :=Utilities.regSquare2(m_flow, m_flow_small, k1/rho_a, k2/rho_b);
       end pressureLoss_m_flow;
 
-      function pressureLoss_m_flow_and_Re
+      function pressureLoss_m_flow_anrho_Re
         "Return pressure drop from constant loss factor, mass flow rate and Re (dp = f(m_flow))"
               extends Modelica.Icons.Function;
 
         input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
-        input SI.Density d_a "Density at port_a";
-        input SI.Density d_b "Density at port_b";
+        input SI.Density rho_a "Density at port_a";
+        input SI.Density rho_b "Density at port_b";
         input SI.DynamicViscosity mu_a "Dynamic viscosity at port_a";
         input SI.DynamicViscosity mu_b "Dynamic viscosity at port_b";
         input LossFactorData data
@@ -1495,16 +1496,16 @@ Laminar region:
  
    In order that the derivative of dp=f(m_flow) is continuous 
    at m_flow=0, the mean values of mu and d are used in the
-   laminar region: mu/d = (mu_a + mu_b)/(d_a + d_b)
+   laminar region: mu/d = (mu_a + mu_b)/(rho_a + rho_b)
    If data.zetaLaminarKnown = false then mu_a and mu_b are potentially zero
    (because dummy values) and therefore the division is only performed
    if zetaLaminarKnown = true.
 */
         m_flow_turbulent :=(pi/8)*data.D_Re*(mu_a + mu_b)*data.Re_turbulent;
-        yd0 :=if data.zetaLaminarKnown then k0*(mu_a + mu_b)/(d_a + d_b) else 0;
-        dp :=Utilities.regSquare2(m_flow, m_flow_turbulent, k1/d_a, k2/d_b,
+        yd0 :=if data.zetaLaminarKnown then k0*(mu_a + mu_b)/(rho_a + rho_b) else 0;
+        dp :=Utilities.regSquare2(m_flow, m_flow_turbulent, k1/rho_a, k2/rho_b,
                                                  data.zetaLaminarKnown, yd0);
-      end pressureLoss_m_flow_and_Re;
+      end pressureLoss_m_flow_anrho_Re;
 
       partial model BaseModel
         "Generic pressure drop component with constant turbulent loss factor data and without an icon"
@@ -1551,7 +1552,7 @@ Laminar region:
         F_fg = A_mean*dp_fg;
         if from_dp then
            m_flow = if use_Re then 
-                       massFlowRate_dp_and_Re(
+                       massFlowRate_dp_anrho_Re(
                           dp_fg, Medium.density(state_a), Medium.density(state_b),
                           Medium.dynamicViscosity(state_a),
                           Medium.dynamicViscosity(state_b),
@@ -1559,7 +1560,7 @@ Laminar region:
                        massFlowRate_dp(dp_fg, Medium.density(state_a), Medium.density(state_b), data, dp_small);
         else
            dp_fg = if use_Re then 
-                   pressureLoss_m_flow_and_Re(
+                   pressureLoss_m_flow_anrho_Re(
                        m_flow, Medium.density(state_a), Medium.density(state_b),
                        Medium.dynamicViscosity(state_a),
                        Medium.dynamicViscosity(state_b),
