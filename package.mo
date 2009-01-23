@@ -307,13 +307,13 @@ with the following code fragment
     port_b_state_inflow = Medium.setState_phX(port_b.p, port_a.h_outflow, port_a.Xi_outflow);
  
     // Densities close to the parts when mass flows in to the respective port
-    port_a_d_inflow = Medium.density(port_a_state_inflow);
-    port_b_d_inflow = Medium.density(port_b_state_inflow);
+    port_a_rho_inflow = Medium.density(port_a_state_inflow);
+    port_b_rho_inflow = Medium.density(port_b_state_inflow);
  
     // Pressure drop correlation (k_ab, k_ba are the loss factors for the two flow
     // directions; e.g. for a circular device: k = 8*zeta/(pi*diameter)^2)^2)
     m_flow = Utilities.regRoot2(port_a.p - port_b.p, dp_small,
-                                port_a_d_inflow/k1, port_b_d_inflow/k2);
+                                port_a_rho_inflow/k1, port_b_rho_inflow/k2);
 </pre>
 <p>
 The medium states for inflowing media can be used to compute density and dynamic
@@ -1189,17 +1189,17 @@ library 3.0 (by automatic conversion). Further changes:
      p_default, T_default (some have been xx_default, some reference_xx,
      it seems best to always use the same approach)</li>
 <li> Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlow<br>
-     Added default value for parameter \"d_nominal\" =
+     Added default value for parameter \"rho_nominal\" =
      Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
      in order to avoid unnecessary warning messages.
-     Should be replaced by \"Medium.d_default\", once available.</li>
+     Should be replaced by \"Medium.rho_default\", once available.</li>
 <li> Modelica_Fluid.Pipes.DistributedPipe<br>
      Modelica_Fluid.Pipes.DistributedPipeSb<br>
      Modelica_Fluid.Pipes.DistributedPipeSa<br>
      Added default value for parameter \"mu_nominal\"
     (computed with default values of p,T,X from dynamicViscosity(..))</li>
 <li> Modelica_Fluid.Pipes.BaseClasses.PartialDistributedFlowLumpedPressure<br>
-     Replaced default value \"d_nominal=0.01\" by
+     Replaced default value \"rho_nominal=0.01\" by
      Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)</li>
 <li> Modelica_Fluid.Volumes.OpenTank<br>
      Modelica_Fluid.Volumes.Tank<br>

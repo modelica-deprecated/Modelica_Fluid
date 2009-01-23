@@ -12,7 +12,7 @@ model TestValveCompressible "Test case for incompressible fluid valve"
     CvData=Modelica_Fluid.Types.CvTypes.Av,
     Av=240e-6,
     dp_nominal=500000,
-    d_nominal=3,
+    rho_nominal=3,
     p_nominal=1000000) 
             annotation (Placement(transformation(extent={{-26,-22},{-6,-2}},
           rotation=0)));

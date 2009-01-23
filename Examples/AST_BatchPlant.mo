@@ -1306,8 +1306,8 @@ Full steady state initialization is not supported, because the corresponding int
 </HTML>"),
         Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-200,-100},
                 {200,100}}), graphics));
-
     equation
+
       connect(heatPort, heatTransfer.heatPorts[1]) annotation (Line(
           points={{-200,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
           color={191,0,0},

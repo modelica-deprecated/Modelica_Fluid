@@ -134,8 +134,8 @@ initial equation
             extent={{-95,40},{95,20}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 2))),
           Text(
             extent={{-95,-40},{95,-20}},
@@ -198,6 +198,7 @@ Limitation to bottom ports only, added inlet and outlet loss factors.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+equation
 
 end SimpleTank;
 
@@ -470,8 +471,8 @@ initial equation
             extent={{-94,19},{96,-1}},
             lineColor={0,0,0},
             textString=DynamicSelect(" ", realString(
-                level, 
-                1, 
+                level,
+                1,
                 3))),
           Line(
             points={{-100,100},{100,100}},

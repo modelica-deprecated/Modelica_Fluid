@@ -68,7 +68,7 @@ model IncompressibleFluidNetwork
     redeclare package Medium = Medium,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
-    d_nominal=1000,
+    rho_nominal=1000,
     dp_nominal=30000) 
                 annotation (Placement(transformation(extent={{-46,40},{-26,60}},
           rotation=0)));
@@ -76,7 +76,7 @@ model IncompressibleFluidNetwork
     redeclare package Medium = Medium,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
-    d_nominal=1000,
+    rho_nominal=1000,
     dp_nominal=30000) 
                 annotation (Placement(transformation(extent={{-46,-20},{-26,
             -40}}, rotation=0)));
@@ -93,7 +93,7 @@ model IncompressibleFluidNetwork
     redeclare package Medium = Medium,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
-    d_nominal=1000,
+    rho_nominal=1000,
     dp_nominal=30000) 
                 annotation (Placement(transformation(extent={{60,0},{80,20}},
           rotation=0)));
@@ -219,7 +219,7 @@ equation
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},

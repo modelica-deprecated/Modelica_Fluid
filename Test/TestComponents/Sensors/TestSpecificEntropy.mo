@@ -9,7 +9,7 @@ model TestSpecificEntropy
     experimentSetupOutput);
   inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_1(nPorts=1,
+  Modelica_Fluid.Sources.Boundary_ph boundary_prescriberho_1(nPorts=1,
     use_h_in=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=system.p_ambient) annotation (Placement(transformation(extent={{
@@ -17,7 +17,7 @@ model TestSpecificEntropy
   Modelica_Fluid.Sensors.SpecificEntropy specificEntropy(redeclare package
       Medium =         Modelica.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{-10,20},{10,40}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_ph boundary_prescribed_2(nPorts=1,
+  Modelica_Fluid.Sources.Boundary_ph boundary_prescriberho_2(nPorts=1,
     use_h_in=true,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     p=system.p_ambient) annotation (Placement(transformation(extent={{
@@ -30,20 +30,20 @@ model TestSpecificEntropy
                                     annotation (Placement(transformation(extent=
            {{-80,-10},{-60,10}}, rotation=0)));
 equation
-  connect(boundary_prescribed_1.ports[1], specificEntropy.port) 
+  connect(boundary_prescriberho_1.ports[1], specificEntropy.port) 
                                                             annotation (Line(
       points={{-20,20},{0,20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(sine1.y, boundary_prescribed_1.h_in) annotation (Line(
+  connect(sine1.y, boundary_prescriberho_1.h_in) annotation (Line(
       points={{-59,0},{-52,0},{-52,24},{-42,24}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(sine1.y, boundary_prescribed_2.h_in) annotation (Line(
+  connect(sine1.y, boundary_prescriberho_2.h_in) annotation (Line(
       points={{-59,0},{-52,0},{-52,-16},{-42,-16}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(boundary_prescribed_2.ports[1], specificEntropy1.port_a) 
+  connect(boundary_prescriberho_2.ports[1], specificEntropy1.port_a) 
                                                                annotation (Line(
       points={{-20,-20},{-10,-20}},
       color={0,127,255},

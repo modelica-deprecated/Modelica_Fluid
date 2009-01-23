@@ -12,7 +12,7 @@ model TestValveVaporizing "Test case for vaporizing fluid valve"
     CvData=Modelica_Fluid.Types.CvTypes.Av,
     Av=240e-6,
     dp_nominal=100000,
-    d_nominal=1000) 
+    rho_nominal=1000) 
             annotation (Placement(transformation(extent={{-26,-22},{-6,
             -2}},
           rotation=0)));

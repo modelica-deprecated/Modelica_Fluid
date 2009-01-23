@@ -162,18 +162,18 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </HTML>
 "));
   protected
-    Medium.Density d_a_inflow "Density of inflowing fluid at port_a";
-    Medium.Density d_b_inflow
-      "Density of inflowing fluid at port_b or d_a_inflow, if uni-directional flow";
+    Medium.Density rho_a_inflow "Density of inflowing fluid at port_a";
+    Medium.Density rho_b_inflow
+      "Density of inflowing fluid at port_b or rho_a_inflow, if uni-directional flow";
   equation
     if allowFlowReversal then
-       d_a_inflow = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
-       d_b_inflow = Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
-       d = Modelica_Fluid.Utilities.regStep(port_a.m_flow, d_a_inflow, d_b_inflow, m_flow_small);
+       rho_a_inflow = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       rho_b_inflow = Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
+       d = Modelica_Fluid.Utilities.regStep(port_a.m_flow, rho_a_inflow, rho_b_inflow, m_flow_small);
     else
        d = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
-       d_a_inflow = d;
-       d_b_inflow = d;
+       rho_a_inflow = d;
+       rho_b_inflow = d;
     end if;
   end DensityTwoPort;
 
@@ -683,19 +683,19 @@ The sensor is ideal, i.e. it does not influence the fluid.
 </HTML>
 "));
   protected
-    Medium.Density d_a_inflow "Density of inflowing fluid at port_a";
-    Medium.Density d_b_inflow
-      "Density of inflowing fluid at port_b or d_a_inflow, if uni-directional flow";
+    Medium.Density rho_a_inflow "Density of inflowing fluid at port_a";
+    Medium.Density rho_b_inflow
+      "Density of inflowing fluid at port_b or rho_a_inflow, if uni-directional flow";
     Medium.Density d "Density of the passing fluid";
   equation
     if allowFlowReversal then
-       d_a_inflow = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
-       d_b_inflow = Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
-       d = Modelica_Fluid.Utilities.regStep(port_a.m_flow, d_a_inflow, d_b_inflow, m_flow_small);
+       rho_a_inflow = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
+       rho_b_inflow = Medium.density(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow));
+       d = Modelica_Fluid.Utilities.regStep(port_a.m_flow, rho_a_inflow, rho_b_inflow, m_flow_small);
     else
        d = Medium.density(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow));
-       d_a_inflow = d;
-       d_b_inflow = d;
+       rho_a_inflow = d;
+       rho_b_inflow = d;
     end if;
     V_flow = port_a.m_flow/d;
   end VolumeFlowRate;
@@ -883,7 +883,7 @@ ideal, i.e., it does not influence the fluid.
     extends Modelica.Icons.TranslationalSensor;
     Medium.BaseProperties medium_a;
     Medium.BaseProperties medium_b;
-    Modelica.Blocks.Interfaces.RealOutput d_rel(redeclare type SignalType = 
+    Modelica.Blocks.Interfaces.RealOutput rho_rel(redeclare type SignalType = 
           SI.Density) "Relative density signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
     annotation (
       Icon(
@@ -893,7 +893,7 @@ ideal, i.e., it does not influence the fluid.
         Text(extent=[-140, 94; 144, 34], string="%name"),
         Text(
           extent=[92, -62; 34, -122],
-          string="d_rel",
+          string="rho_rel",
           style(color=0))),
       Diagram(
         Line(points=[-100, 0; -70, 0], style(color=69)),
@@ -901,7 +901,7 @@ ideal, i.e., it does not influence the fluid.
         Line(points=[0, -30; 0, -80], style(rgbcolor={0,0,127})),
         Text(
           extent=[64, -74; 32, -102],
-          string="d_rel",
+          string="rho_rel",
           style(color=0))),
       Documentation(info="<HTML>
 <p>
@@ -918,7 +918,7 @@ the two ports of this component and is provided as output signal.
     port_b.h   = medium_b.h;
     port_b.Xi = medium_b.Xi;
     
-    d_rel = medium_a.d - medium_b.d;
+    rho_rel = medium_a.d - medium_b.d;
   end RelDensity;
   
   model RelTemperature "Ideal relative temperature sensor" 
