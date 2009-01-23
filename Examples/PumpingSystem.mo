@@ -48,10 +48,10 @@ model PumpingSystem "Model of a pumping system for drinking water"
     crossArea=50,
     level_start=2.2,
     height=3,
-    nPorts=2,
-    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
-        0.3),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
-        0.01)}) 
+    nPorts=3,
+    portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.3),
+        Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.3),
+        Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.01)}) 
     annotation (Placement(transformation(extent={{-20,-16},{0,4}}, rotation=0)));
 
   Modelica_Fluid.Valves.ValveLinear userValve(   redeclare package Medium = 
@@ -95,8 +95,8 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{40,60},{60,80}}, rotation=0)));
 
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
-            {100,100}},
+    Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
+            100,100}},
         grid={1,1}),
             graphics),
     Documentation(info="<html>
@@ -157,17 +157,17 @@ equation
           -58,30},{-58,-60}},          color={0,0,127}));
   connect(pipe.port_a, pumps.port_b)         annotation (Line(points={{-30,-60},
           {-30,-70},{-48,-70}},                color={0,127,255}));
-  connect(pipe.port_b, userValve.port_a) annotation (Line(
-      points={{-30,-40},{-30,-30},{58,-30}},
-      color={0,127,255},
-      smooth=Smooth.None));
   connect(reservoir.ports[1], pipe.port_b) annotation (Line(
-      points={{-12,-16},{-12,-30},{-30,-30},{-30,-40}},
+      points={{-12.6667,-16},{-12.6667,-30},{-30,-30},{-30,-40}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(reservoir.ports[2], reservoirPressure.port_a) annotation (Line(
-      points={{-8,-16},{-7,-16},{-7,-22},{10,-22}},
+  connect(reservoir.ports[3], reservoirPressure.port_a) annotation (Line(
+      points={{-7.33333,-16},{-7,-16},{-7,-22},{10,-22}},
       color={0,127,255},
       smooth=Smooth.None,
       pattern=LinePattern.Dot));
+  connect(reservoir.ports[2], userValve.port_a) annotation (Line(
+      points={{-10,-16},{-10,-30},{58,-30}},
+      color={0,127,255},
+      smooth=Smooth.None));
 end PumpingSystem;
