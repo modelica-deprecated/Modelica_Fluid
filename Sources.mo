@@ -779,6 +779,42 @@ with exception of boundary flow rate, do not have an effect.
     ports.C_outflow = fill(C_in_internal, nPorts);
   end MassFlowSource_h;
 
+  model LoopBreaker
+    import Modelica_Fluid.Types.Dynamics;
+    outer Modelica_Fluid.System system "System wide properties";
+    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium;
+    Interfaces.FluidPort_a port(redeclare package Medium = Medium,
+                                m_flow(min = 0)) 
+    annotation (Placement(transformation(extent={{-10,-108},{10,-88}})));
+    parameter Types.Dynamics massDynamics=system.massDynamics
+      "Formulation of mass balance" 
+      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+    parameter Medium.AbsolutePressure p "Initial pressure set at the port";
+  equation
+    if massDynamics == Dynamics.SteadyState or 
+       (massDynamics == Dynamics.SteadyStateInitial and initial()) then
+         port.p = p;
+    else
+         port.m_flow = 0;
+    end if;
+    port.h_outflow = inStream(port.h_outflow);   // value is never used
+    port.Xi_outflow = inStream(port.Xi_outflow); // value is never used
+    port.C_outflow = inStream(port.C_outflow);   // value is never used
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+              -100},{100,100}}), graphics), Icon(coordinateSystem(
+            preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+          graphics={
+          Ellipse(extent={{-40,80},{40,0}}, lineColor={0,0,255}),
+          Line(
+            points={{0,0},{0,-94}},
+            color={0,0,255},
+            smooth=Smooth.None),
+          Text(
+            extent={{-24,66},{26,14}},
+            lineColor={0,0,255},
+            textString="P")}));
+  end LoopBreaker;
+
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;
   partial model PartialSource
