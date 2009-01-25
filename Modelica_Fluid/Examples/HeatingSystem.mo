@@ -65,7 +65,7 @@ model HeatingSystem "Simple model of a heating system"
     alpha=-0.5) 
     annotation (Placement(transformation(extent={{16,30},{36,50}}, rotation=0)));
   inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
-      m_flow_small=1e-3) 
+      m_flow_small=1e-4) 
                         annotation (Placement(transformation(extent={{-90,70},{
             -70,90}},   rotation=0)));
   Pipes.DynamicPipe heater(
@@ -209,7 +209,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},
