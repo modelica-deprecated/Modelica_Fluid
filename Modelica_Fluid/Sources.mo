@@ -118,7 +118,7 @@ to define fixed or prescribed ambient conditions.
                   Dialog(enable = (not use_X_in) and Medium.nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Boundary trace substances" 
+      "Fixed values of trace substances" 
       annotation (Evaluate=true,
                   Dialog(enable = (not use_C_in) and Medium.nC > 0));
     Modelica.Blocks.Interfaces.RealInput p_in if              use_p_in
@@ -284,7 +284,7 @@ with exception of boundary pressure, do not have an effect.
                   Dialog(enable = (not use_X_in) and Medium.nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Boundary trace substances" 
+      "Fixed values of trace substances" 
       annotation (Evaluate=true,
                   Dialog(enable = (not use_C_in) and Medium.nC > 0));
     Modelica.Blocks.Interfaces.RealInput p_in if              use_p_in
@@ -446,7 +446,7 @@ with exception of boundary pressure, do not have an effect.
                   Dialog(enable = (not use_X_in) and Medium.nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Boundary trace substances" 
+      "Fixed values of trace substances" 
       annotation (Evaluate=true,
                   Dialog(enable = (not use_C_in) and Medium.nC > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in if     use_m_flow_in
@@ -627,7 +627,7 @@ with exception of boundary flow rate, do not have an effect.
                   Dialog(enable = (not use_X_in) and Medium.nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Boundary trace substances" 
+      "Fixed values of trace substances" 
       annotation (Evaluate=true,
                   Dialog(enable = (not use_C_in) and Medium.nC > 0));
     Modelica.Blocks.Interfaces.RealInput m_flow_in if     use_m_flow_in
