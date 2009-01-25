@@ -158,12 +158,6 @@ model SharpEdgedOrifice
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}},
           grid={1,1}), graphics={
-          Text(
-            extent={{-150,90},{150,130}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name"),
           Rectangle(
             extent={{-100,60},{100,-60}},
             lineColor={0,0,0},
@@ -294,12 +288,6 @@ model SuddenExpansion
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}},
           grid={1,1}), graphics={
-          Text(
-            extent={{-150,90},{150,130}},
-            lineColor={0,0,255},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255},
-            textString="%name"),
           Rectangle(
             extent={{-100,60},{100,-60}},
             lineColor={0,0,0},
