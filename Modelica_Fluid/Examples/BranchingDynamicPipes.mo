@@ -7,7 +7,31 @@ replaceable package Medium=Modelica.Media.Air.MoistAir;
 //replaceable package Medium=Modelica.Media.Water.StandardWater;
 
     annotation (extent=[-90,-86; -70,-66], Diagram(coordinateSystem(
-          preserveAspectRatio=true,  extent={{-100,-100},{100,100}}), graphics));
+          preserveAspectRatio=true,  extent={{-100,-100},{100,100}}), graphics),
+    Documentation(info="<html>
+<p>
+This model demonstrates the use of distributed pipe models with dynamic energy, mass and momentum balances. 
+At time=2s the pressure of boundary4 jumps, which causes a pressure wave and flow reversal.
+</p>
+<p>
+Change system.momentumDynamics on the Assumptions tab of the system object from DynamicFreeInitial to SteadyState,
+in order to assume a steady-state momentum balance. This is the default for all models of the library.
+</p>
+<p>
+Change the Medium from MoistAir to StandardWater, in order to investigate a medium with significantly different density. 
+Note the static head caused by the elevation of the pipes.
+</p>
+
+<p>
+Note, pipe4.modelStructure = av_b, i.e., the pipe has no volume at port_b.
+It is not possible to have a volume at port_b, since otherwise the pressure of the volume is
+defined by the connected boundary source. This in turn means that the
+derivative of the pressure of the boundary source is needed, since the volume
+requires this derivative. It is, however, not possible to compute this
+derivative because the input pressure is changing disontinuously and its
+derivative would be a dirac impulse.
+</p>
+</html>"));
                                      annotation (points=[-22,42; -2,42; -2,32;
         7.8,32],
       style(color=69, rgbcolor={0,127,255}));
