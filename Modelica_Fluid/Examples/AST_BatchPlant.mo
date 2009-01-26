@@ -297,7 +297,7 @@ present that are regulated by a central control system.
       checkValve=true) 
       annotation (Placement(transformation(extent={{120,-260},{140,-240}},
             rotation=0)));
-    Modelica_Fluid.Vessels.TankWithTopPorts B1(
+    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts B1(
       level_start=0.2,
       redeclare package Medium = BatchMedium,
       height=0.5,
@@ -320,7 +320,7 @@ present that are regulated by a central control system.
     Modelica.Blocks.Logical.TriggeredTrapezoid P2_on(amplitude=50, rising=0) 
       annotation (Placement(transformation(extent={{100,-230},{120,-210}},
             rotation=0)));
-    Modelica_Fluid.Vessels.TankWithTopPorts B2(
+    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts B2(
       level_start=0.2,
       redeclare package Medium = BatchMedium,
       height=0.5,
@@ -334,7 +334,7 @@ present that are regulated by a central control system.
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{50,180},
               {90,220}},  rotation=0)));
-    Modelica_Fluid.Vessels.TankWithTopPorts B3(
+    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts B3(
       redeclare package Medium = BatchMedium,
       height=0.5,
       crossArea=0.05,
@@ -349,7 +349,7 @@ present that are regulated by a central control system.
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-30,100},
               {10,140}}, rotation=0)));
-    Modelica_Fluid.Vessels.TankWithTopPorts B4(
+    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts B4(
       redeclare package Medium = BatchMedium,
       height=0.5,
       crossArea=0.05,
@@ -363,7 +363,7 @@ present that are regulated by a central control system.
       stiffCharacteristicForEmptyPort=false) 
                          annotation (Placement(transformation(extent={{-110,30},
               {-70,70}}, rotation=0)));
-    Modelica_Fluid.Vessels.TankWithTopPorts B7(
+    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts B7(
       redeclare package Medium = BatchMedium,
       V0=0.0001,
       nTopPorts=1,
@@ -448,7 +448,7 @@ present that are regulated by a central control system.
           origin={160,10},
           extent={{-10,10},{10,-10}},
           rotation=90)));
-    Modelica_Fluid.Vessels.TankWithTopPorts B6(
+    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts B6(
       redeclare package Medium = BatchMedium,
       V0=0.0001,
       nTopPorts=1,
@@ -721,7 +721,8 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
+
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -734,7 +735,7 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
@@ -1244,8 +1245,8 @@ handled properly.</p>
         assert(false, "Unsupported initialization option");
       end if;
       annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},
-                {200,100}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
+                200,100}}), graphics={
             Rectangle(
               extent={{-200,100},{0,-90}},
               lineColor={255,255,255},
@@ -1257,8 +1258,8 @@ handled properly.</p>
               lineColor={0,127,255},
               fillColor={85,170,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,
-                  0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-198,74},{0,38}},
               lineColor={0,0,255},
@@ -1284,10 +1285,9 @@ handled properly.</p>
               fillColor={0,0,255}),
             Polygon(
               points={{20,98},{30,74},{52,84},{66,72},{86,78},{98,66},{118,74},
-                  {130,60},{144,70},{152,60},{168,66},{180,54},{196,74},{190,
-                  76},{180,64},{170,70},{156,66},{148,76},{132,68},{120,80},{
-                  100,74},{88,88},{70,78},{50,92},{32,82},{28,100},{20,98},{
-                  20,98}},
+                  {130,60},{144,70},{152,60},{168,66},{180,54},{196,74},{190,76},
+                  {180,64},{170,70},{156,66},{148,76},{132,68},{120,80},{100,74},
+                  {88,88},{70,78},{50,92},{32,82},{28,100},{20,98},{20,98}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={170,255,255})}),
@@ -1367,8 +1367,8 @@ Full steady state initialization is not supported, because the corresponding int
               rotation=0)));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-200,
                 -200},{200,200}}),      graphics),
-        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},
-                {200,200}}), graphics={
+        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-200},{
+                200,200}}), graphics={
             Rectangle(
               extent={{-200,200},{200,-200}},
               lineColor={0,0,255},
@@ -1816,6 +1816,901 @@ Integer type that can have the following values
 </table>
 </html>"));
 
+  model TankWithTopPorts
+      "Tank with inlet/outlet ports and with inlet ports at the top"
+
+      import Modelica.Constants;
+      import Modelica_Fluid.Fittings.BaseClasses.lossConstant_D_zeta;
+      import Modelica_Fluid.Utilities.regRoot2;
+      import Modelica_Fluid.Vessels.BaseClasses.VesselPortsData;
+
+    SI.Height level(stateSelect=StateSelect.prefer, start=level_start)
+        "Fluid level in the tank";
+
+    //Tank geometry
+    parameter SI.Height height "Maximum level of tank before it overflows";
+    parameter SI.Area crossArea "Area of tank";
+    parameter SI.Volume V0=0 "Volume of the liquid when level = 0";
+
+    //Ambient
+    parameter Medium.AbsolutePressure p_ambient=system.p_ambient
+        "Tank surface pressure" 
+      annotation(Dialog(tab = "Assumptions", group = "Ambient"));
+    parameter Medium.Temperature T_ambient=system.T_ambient
+        "Tank surface Temperature" 
+      annotation(Dialog(tab = "Assumptions", group = "Ambient"));
+
+    //Initialization
+    parameter SI.Height level_start(min=0) = 0.5*height
+        "Start value of tank level" 
+      annotation(Dialog(tab="Initialization"));
+
+    //Mass and energy balance
+    extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
+      final fluidVolume = V,
+      final initialize_p = false,
+      final p_start = p_ambient);
+
+    //Port definitions
+    parameter Integer nTopPorts = 0 "Number of inlet ports above height (>= 1)"
+                                                  annotation(Dialog(__Dymola_connectorSizing=true));
+
+    Vessels.BaseClasses.VesselFluidPorts_a topPorts[nTopPorts](redeclare
+          package Medium = Medium, m_flow(each start=0, each min=0))
+        "Inlet ports over height at top of tank (fluid flows only from the port in to the tank)"
+      annotation (Placement(transformation(
+          extent={{-20,0},{20,10}},
+          origin={0,100})));
+
+    parameter Integer nPorts = 0
+        "Number of inlet/outlet ports (on bottom and on the side)" 
+       annotation(Dialog(__Dymola_connectorSizing=true));
+    parameter Modelica_Fluid.Vessels.BaseClasses.VesselPortsData portsData[
+                                                                        nPorts]
+        "Data of inlet/outlet ports at side and bottom of tank";
+
+    Vessels.BaseClasses.VesselFluidPorts_b ports[nPorts](redeclare package
+          Medium = Medium, m_flow(each start=0))
+        "inlet/outlet ports at bottom or side of tank (fluid flows in to or out of port; a port might be above the fluid level)"
+      annotation (Placement(transformation(
+          extent={{-20,0},{20,-10}},
+          origin={0,-100})));
+
+    // Heat transfer through boundary
+    parameter Boolean use_HeatTransfer = false
+        "= true to use the HeatTransfer model" 
+        annotation (Dialog(tab="Assumptions", group="Heat transfer"));
+    replaceable model HeatTransfer = 
+        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer 
+      constrainedby
+        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.PartialVesselHeatTransfer
+        "Wall heat transfer" 
+        annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
+    HeatTransfer heatTransfer(
+      redeclare final package Medium = Medium,
+      final n=1,
+      final states = {medium.state},
+      surfaceAreas={crossArea+2*sqrt(crossArea*Modelica.Constants.pi)*level},
+      final use_k = use_HeatTransfer) 
+        annotation (Placement(transformation(
+          extent={{-10,-10},{30,30}},
+          rotation=90,
+          origin={-50,-10})));
+    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort if use_HeatTransfer 
+      annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+
+    // Advanced
+    parameter Real hysteresisFactor(min=0) = 0.1
+        "Hysteresis for empty pipe = diameter*hysteresisFactor" 
+      annotation(Dialog(tab="Advanced", group="Port properties"));
+    parameter Boolean stiffCharacteristicForEmptyPort = false
+        "=true, if steep pressure loss characteristic for empty pipe port" 
+      annotation(Dialog(tab="Advanced", group="Port properties"), Evaluate=true);
+    parameter Real zetaLarge(min=0) = 1e5
+        "Large pressure loss factor if mass flows out of empty pipe port" 
+      annotation(Dialog(tab="Advanced", group="Port properties", enable=stiffCharacteristicForEmptyPort));
+    parameter SI.MassFlowRate m_flow_small(min=0) = system.m_flow_small
+        "Regularization range at zero mass flow rate" 
+      annotation(Dialog(tab="Advanced", group="Port properties", enable=stiffCharacteristicForEmptyPort));
+
+    // Tank properties
+    SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
+    Medium.EnthalpyFlowRate H_flow_top[nTopPorts]
+        "Enthalpy flow rates from the top ports in to the tank";
+    Medium.EnthalpyFlowRate port_b_H_flow_bottom[nPorts]
+        "Enthalpy flow rates from the bottom ports in to the tank";
+    Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi]
+        "Substance mass flow rates from the top ports into the tank";
+    Medium.MassFlowRate port_b_mXi_flow_bottom[nPorts, Medium.nXi]
+        "Substance mass flow rates from the bottom ports into the tank";
+    Medium.MassFlowRate mC_flow_top[nTopPorts, Medium.nC]
+        "Trace substance mass flow rates from the top ports into the tank";
+    Medium.MassFlowRate port_b_mC_flow_bottom[nPorts, Medium.nC]
+        "Trace substance mass flow rates from the bottom ports into the tank";
+    protected
+      SI.Area bottomArea[nPorts];
+      SI.Diameter ports_emptyPipeHysteresis[nPorts];
+      SI.Length levelAbovePort[nPorts] "Height of fluid over bottom ports";
+      Boolean ports_m_flow_out[nPorts](each start = true, each fixed=true);
+      Boolean aboveLevel[nPorts] "= true, if level >= ports[i].height";
+      Real zetas_out[nPorts];
+      Modelica.Blocks.Interfaces.RealInput portsData_diameter[nPorts] = portsData.diameter if nPorts > 0;
+      Modelica.Blocks.Interfaces.RealInput portsData_diameter2[nPorts];
+      Modelica.Blocks.Interfaces.RealInput portsData_height[nPorts] = portsData.height if nPorts > 0;
+      Modelica.Blocks.Interfaces.RealInput portsData_height2[nPorts];
+  equation
+    assert(level <= height, "Tank starts to overflow (level = height = " + String(level) + ")");
+    assert(m>=0, "Mass in tank is zero");
+
+    // Compute constant data
+    connect(portsData_diameter, portsData_diameter2);
+    connect(portsData_height,portsData_height2);
+
+    for i in 1:nPorts loop
+        bottomArea[i]=Constants.pi*(portsData_diameter2[i]/2)^2;
+        ports_emptyPipeHysteresis[i] = portsData_diameter2[i]*hysteresisFactor;
+    end for;
+
+    // Only one connection allowed to a port to avoid unwanted ideal mixing
+  /*
+for i in 1:nTopPorts loop
+  assert(cardinality(topPorts[i]) <= 1,"
+topPorts[" + String(i) + "] of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+end for;
+ 
+for i in 1:nPorts loop
+  assert(cardinality(ports[i]) <= 1,"
+ports[" + String(i) + "] of volume can at most be connected to one component.
+If two or more connections are present, ideal mixing takes
+place with these connections which is usually not the intention
+of the modeller.
+");
+end for;
+*/
+
+    // Total quantities
+    medium.p = p_ambient;
+    V = crossArea*level + V0 "Volume of fluid";
+
+    // Mass balances
+    mb_flow = sum(topPorts.m_flow) + sum(ports.m_flow);
+    for i in 1:Medium.nXi loop
+      mbXi_flow[i] = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flow_bottom[:,i]);
+    end for;
+    for i in 1:Medium.nC loop
+      mbC_flow[i]  = sum(mC_flow_top[:,i])  + sum(port_b_mC_flow_bottom[:,i]);
+    end for;
+
+    // Energy balance
+    Hb_flow = sum(H_flow_top) + sum(port_b_H_flow_bottom);
+    Qb_flow = heatTransfer.Q_flows[1];
+    if Medium.singleState or energyDynamics == Types.Dynamics.SteadyState then
+      Wb_flow = 0
+          "Mechanical work is neglected, since also neglected in medium model (otherwise unphysical small temperature change, if tank level changes)";
+    else
+      Wb_flow = -p_ambient*der(V);
+    end if;
+
+    // Properties at top ports
+      for i in 1:nTopPorts loop
+         // It is assumed that fluid flows only from one of the top ports in to the tank and never vice versa
+         H_flow_top[i]     = topPorts[i].m_flow*actualStream(topPorts[i].h_outflow);
+         mXi_flow_top[i,:] = topPorts[i].m_flow*actualStream(topPorts[i].Xi_outflow);
+         mC_flow_top[i,:]  = topPorts[i].m_flow*actualStream(topPorts[i].C_outflow);
+         topPorts[i].p     = p_ambient;
+         topPorts[i].h_outflow = h_start;
+         topPorts[i].Xi_outflow = X_start[1:Medium.nXi];
+         topPorts[i].C_outflow  = C_start;
+  /*
+       assert(topPorts[i].m_flow > -1, "Mass flows out of tank via topPorts[" + String(i) + "]\n" +
+                                         "This indicates a wrong model");
+*/
+      end for;
+
+    // Properties at bottom ports
+      for i in 1:nPorts loop
+         port_b_H_flow_bottom[i]   = ports[i].m_flow*actualStream(ports[i].h_outflow);
+         port_b_mXi_flow_bottom[i,:] = ports[i].m_flow*actualStream(ports[i].Xi_outflow);
+         port_b_mC_flow_bottom[i,:]  = ports[i].m_flow*actualStream(ports[i].C_outflow);
+         aboveLevel[i] = level >= (portsData_height2[i] + ports_emptyPipeHysteresis[i])
+                         or pre(aboveLevel[i]) and level >= (portsData_height2[i] - ports_emptyPipeHysteresis[i]);
+         levelAbovePort[i] = if aboveLevel[i] then level - portsData_height2[i] else 0;
+         ports[i].h_outflow = medium.h;
+         ports[i].Xi_outflow = medium.Xi;
+         ports[i].C_outflow  = C;
+
+         if stiffCharacteristicForEmptyPort then
+            // If port is above fluid level, use large zeta if fluid flows out of port (= small mass flow rate)
+            zetas_out[i] = 1 + (if aboveLevel[i] then 0 else zetaLarge);
+            ports[i].p = p_ambient + levelAbovePort[i]*system.g*medium.d
+                                 + Modelica_Fluid.Utilities.regSquare2(ports[i].m_flow, m_flow_small,
+                                       lossConstant_D_zeta(portsData_diameter2[i], 0.01)/medium.d,
+                                       lossConstant_D_zeta(portsData_diameter2[i], zetas_out[i])/medium.d);
+            ports_m_flow_out[i] = false;
+
+         else
+            // Handling according to Remelhe/Poschlad
+            ports_m_flow_out[i] = (pre(ports_m_flow_out[i]) and not ports[i].p>p_ambient)
+                                       or ports[i].m_flow < -1e-6;
+           if aboveLevel[i] then
+               ports[i].p = p_ambient + levelAbovePort[i]*system.g*medium.d -
+                                 smooth(2,noEvent(if ports[i].m_flow < 0 then ports[i].m_flow^2/
+                                       (2*medium.d*bottomArea[i]^2) else 0));
+           else
+              if pre(ports_m_flow_out[i]) then
+                 ports[i].m_flow = 0;
+              else
+                 ports[i].p = p_ambient;
+              end if;
+           end if;
+            zetas_out[i] =0;
+         end if;
+       end for;
+
+  initial equation
+      for i in 1:nPorts loop
+         pre(aboveLevel[i]) = level_start >= portsData_height2[i];
+      end for;
+
+      if massDynamics == Types.Dynamics.FixedInitial then
+        level = level_start;
+      elseif massDynamics == Types.Dynamics.SteadyStateInitial then
+        der(level) = 0;
+      end if;
+
+      annotation (defaultComponentName="tank",
+        Icon(coordinateSystem(
+            preserveAspectRatio=true,
+            extent={{-100,-100},{100,100}},
+            grid={1,1},
+            initialScale=0.2), graphics={
+            Rectangle(
+              extent={{-100,-100},{100,100}},
+              lineColor={255,255,255},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Rectangle(
+              extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
+                   + 200*level/height)}}),
+              lineColor={0,127,255},
+              fillColor={85,170,255},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{-94,19},{96,-1}},
+              lineColor={0,0,0},
+              textString=DynamicSelect(" ", realString(
+                    level, 
+                    1, 
+                    3))),
+            Line(
+              points={{-100,100},{100,100}},
+              color={0,0,0},
+              pattern=LinePattern.Dot),
+            Text(
+              extent={{-94,90},{95,60}},
+              lineColor={0,0,255},
+              textString="%name"),
+            Text(
+              extent={{-95,-85},{95,-65}},
+              lineColor={0,0,0},
+              textString="%level_start"),
+            Text(
+              extent={{-95,-55},{95,-35}},
+              lineColor={0,0,0},
+              textString="level_start ="),
+            Text(
+              extent={{-95,50},{95,30}},
+              lineColor={0,0,0},
+              textString="level ="),
+            Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
+                  0,0})}),
+        Documentation(info="<HTML>
+<p> 
+Model of a tank that is open to the environment at the fixed pressure
+<tt>p_ambient</tt>. 
+The tank is filled with a single or multiple-substance liquid, 
+assumed to have uniform temperature and mass fractions.
+</p> 
+ 
+<p>
+At the top of the tank over the maximal fill level <b>height</b> 
+a vector of FluidPorts, called <b>topPorts</b>, is present.
+The assumption is made that fluid flows always in to the tank via these
+ports (and never back in to the connector).
+</p>
+ 
+<p>
+The vector of connectors <b>ports</b> are fluid ports at the bottom
+and side of the tank at a defineable height. Fluid can flow either out
+of or in to this port. The fluid level of the tank may be below
+one of these ports. This case is approximated by introducing a
+large pressure flow coefficient so that the mass flow rate
+through this port is very small in this case.
+</p>
+ 
+<p>
+If the tank starts to over flow (i.e., level > height), an
+assertion is triggered.
+</p>
+ 
+<p>
+When the diagram layer is open in the plot environment, the
+level of the tank is dynamically visualized. Note, the speed
+of the diagram animation in Dymola can be set via command
+<b>animationSpeed</b>(), e.g., animationSpeed(speed = 10)
+</p>
+</HTML>",   revisions="<html>
+<ul>
+<li><i>Dec. 12, 2008</i> by Ruediger Franke: replace energy and mass balances with
+   common definition in BaseClasses.PartialLumpedVolume</li>
+<li><i>Dec. 8, 2008</i> by Michael Wetter (LBNL):<br>
+Implemented trace substances and missing equation for outflow of multi substance media at top port.</li>
+<li><i>Jul. 29, 2006</i> by Martin Otter (DLR):<br> 
+   Improved handling of ports that are above the fluid level and
+   simpler implementation.</li>
+ 
+<li><i>Jan. 6, 2006</i> by Katja Poschlad, Manuel Remelhe (AST Uni Dortmund), 
+   Martin Otter (DLR):<br> 
+   Implementation based on former tank model but with several improvements
+   (top, bottom, side ports; correctly treating kinetic energy for outlet
+   and total dissipation for inlet; ports can be above the fluid level).</li>
+</ul>
+</html>"),
+        Diagram(coordinateSystem(
+            preserveAspectRatio=true,
+            extent={{-100,-100},{100,100}},
+            grid={1,1},
+            initialScale=0.2), graphics),
+        uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+  equation
+
+      connect(heatPort, heatTransfer.heatPorts[1]) annotation (Line(
+          points={{-100,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
+          color={191,0,0},
+          smooth=Smooth.None));
+  end TankWithTopPorts;
   end BaseClasses;
 
+  package Test "Test of used tank models"
+    model OneTank
+      "Tank with one time-varying top inlet mass flow rate and a bottom outlet into the ambient"
+      import Modelica.SIunits.Conversions.from_bar;
+      extends Modelica.Icons.Example;
+
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank(
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        crossArea=1,
+        height=1,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.1, height=0)},
+        V0=0.1,
+        nTopPorts=1,
+        nPorts=1,
+        level_start=0) 
+        annotation (Placement(transformation(extent={{0,0},{40,40}},   rotation=0)));
+
+      Sources.MassFlowSource_T flowSource(nPorts=1,
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        m_flow=20,
+        T=system.T_ambient,
+        use_m_flow_in=true) 
+        annotation (Placement(transformation(extent={{-12,42},{8,62}},   rotation=
+               0)));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+                -100},{100,100}}),
+                          graphics),
+        experiment(StopTime=100),
+        experimentSetupOutput,
+        Commands(file="../Scripts/Examples/OneTank/plot level and port.p.mos"
+            "plot level and port.p", file=
+              "../Scripts/Examples/OneTank/plot level, port.p and port.m_flow.mos"
+            "plot level, port.p and port.m_flow"));
+      inner Modelica_Fluid.System system 
+                            annotation (Placement(transformation(extent={{70,72},
+                {90,92}}, rotation=0)));
+      Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
+                                             redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        p=system.p_ambient,
+        T=system.T_ambient) 
+        annotation (Placement(transformation(extent={{-14,-50},{6,-30}}, rotation=
+               0)));
+      Modelica_Fluid.Pipes.StaticPipe pipe(
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        length=1,
+        diameter=0.1,
+        height_ab=-1) 
+                     annotation (Placement(transformation(
+            origin={20,-18},
+            extent={{10,-10},{-10,10}},
+            rotation=90)));
+      Modelica.Blocks.Sources.TimeTable timeTable(table=[0,0; 10,0; 10,40; 20,40;
+            20,10; 50,10; 50,0; 60,0; 60,20; 70,20; 80,55; 80,0; 100,0]) 
+        annotation (Placement(transformation(extent={{-60,60},{-40,80}})));
+    equation
+      connect(flowSource.ports[1], tank.topPorts[1])  annotation (Line(points={{8,52},{
+              20,52},{20,41}},        color={0,127,255}));
+      connect(tank.ports[1], pipe.port_a) annotation (Line(
+          points={{20,-1},{20,-8}},
+          color={0,127,255},
+          smooth=Smooth.None));
+      connect(pipe.port_b, ambient_fixed.ports[1]) annotation (Line(
+          points={{20,-28},{20,-40},{6,-40}},
+          color={0,127,255},
+          smooth=Smooth.None));
+      connect(timeTable.y, flowSource.m_flow_in) annotation (Line(
+          points={{-39,70},{-24,70},{-24,60},{-12,60}},
+          color={0,0,127},
+          smooth=Smooth.None));
+    end OneTank;
+
+    model TwoTanks
+      import Modelica.SIunits.Conversions.from_bar;
+      extends Modelica.Icons.Example;
+      parameter Boolean stiffCharacteristicForEmptyPort=true;
+
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
+                          graphics),
+        experiment(StopTime=70),
+        experimentSetupOutput,
+        Commands(file="../Scripts/Examples/TwoTanks/plot level and port.p.mos"
+            "plot level and port.p"));
+      inner Modelica_Fluid.System system 
+                            annotation (Placement(transformation(extent={{40,62},
+                {60,82}}, rotation=0)));
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1
+        (
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort,
+        crossArea=1,
+        height=4,
+        level_start=3,
+        T_start=Modelica.SIunits.Conversions.from_degC(50),
+        nPorts=1,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.1, height=0)}) 
+        annotation (Placement(transformation(extent={{-80,0},{-40,40}}, rotation=
+                0)));
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank2
+        (
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort,
+        crossArea=1,
+        height=4,
+        level_start=1,
+        T_start=Modelica.SIunits.Conversions.from_degC(100),
+        nPorts=1,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.1, height=0)}) 
+        annotation (Placement(transformation(extent={{0,0},{40,40}}, rotation=0)));
+      Modelica_Fluid.Pipes.StaticPipe pipe(
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        length=1,
+        diameter=0.1)  annotation (Placement(transformation(extent={{-30,-30},{
+                -10,-10}}, rotation=0)));
+    equation
+      connect(tank1.ports[1], pipe.port_a) annotation (Line(points={{-60,-1},{-60,
+              -20},{-30,-20}}, color={0,127,255}));
+      connect(pipe.port_b, tank2.ports[1]) annotation (Line(points={{-10,-20},{20,
+              -20},{20,-1}}, color={0,127,255}));
+    end TwoTanks;
+
+    model TankWithEmptyingPipe1
+      "Demonstrates a tank with one constant top inlet mass flow rate and a bottom outlet into the ambient"
+      import Modelica.SIunits.Conversions.from_bar;
+      extends Modelica.Icons.Example;
+
+      Sources.MassFlowSource_T flowSource(
+        nPorts=1,
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        m_flow=50,
+        T=system.T_ambient) 
+        annotation (Placement(transformation(extent={{-20,40},{0,60}}, rotation=0)));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
+                          graphics),
+        experiment(StopTime=35),
+        experimentSetupOutput,
+        Commands(file=
+              "../Scripts/Examples/TankWithEmptyingPipe1/plot level and port.p.mos"
+            "plot level and port.p", file=
+              "../Scripts/Examples/TankWithEmptyingPipe1/plot level, port.p and port.m_flow.mos"
+            "plot level, port.p and port.m_flow"));
+      inner Modelica_Fluid.System system 
+                            annotation (Placement(transformation(extent={{-100,60},
+                {-80,80}}, rotation=0)));
+      Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
+                                             redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        p=system.p_ambient,
+        T=system.T_ambient) 
+        annotation (Placement(transformation(extent={{-60,-100},{-40,-80}},
+              rotation=0)));
+      Modelica_Fluid.Valves.ValveDiscrete valveDiscrete(
+                                                redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        dp_nominal(displayUnit="Pa") = 1,
+        m_flow_nominal=100) 
+        annotation (Placement(transformation(
+            origin={-20,-50},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+      Modelica.Blocks.Sources.BooleanConstant open(k=false) 
+        annotation (Placement(transformation(extent={{-60,-60},{-40,-40}},
+              rotation=0)));
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1
+        (
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        crossArea=1,
+        V0=0.1,
+        height=2,
+        level_start=0.1,
+        nPorts=2,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.05, height=0),
+            Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                            diameter=0.1,
+            height=1)},
+        stiffCharacteristicForEmptyPort=true,
+        nTopPorts=1) 
+        annotation (Placement(transformation(extent={{-40,-20},{0,20}}, rotation=
+                0)));
+      Modelica_Fluid.Pipes.StaticPipe pipe(
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        length=1,
+        diameter=0.1,
+        height_ab=1) annotation (Placement(transformation(
+            origin={40,10},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+    equation
+      connect(ambient_fixed.ports[1], valveDiscrete.port_a) annotation (Line(points={
+              {-40,-90},{-20,-90},{-20,-60}}, color={0,127,255}));
+      connect(open.y, valveDiscrete.open) annotation (Line(points={{-39,-50},{-28,
+              -50}}, color={255,0,255}));
+      connect(flowSource.ports[1], pipe.port_b) annotation (Line(points={{0,50},{40,
+              50},{40,20}}, color={0,127,255}));
+      connect(valveDiscrete.port_b, tank1.ports[1]) annotation (Line(points={{-20,-40},
+              {-20,-30},{-20,-21},{-22,-21}},
+                               color={0,127,255}));
+      connect(pipe.port_a, tank1.ports[2]) annotation (Line(points={{40,0},{40,
+              -28},{-18,-28},{-18,-20},{-18,-20},{-18,-21}}, color={0,127,255}));
+    end TankWithEmptyingPipe1;
+
+    model TankWithEmptyingPipe2
+      "Demonstrates a tank with one constant top inlet mass flow rate and a bottom outlet into the ambient"
+      import Modelica.SIunits.Conversions.from_bar;
+      extends Modelica.Icons.Example;
+
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
+                          graphics),
+        experiment(StopTime=35),
+        experimentSetupOutput,
+        Commands(file=
+              "../Scripts/Examples/TankWithEmptyingPipe2/plot level and port.p.mos"
+            "plot level and port.p"));
+      inner Modelica_Fluid.System system 
+                            annotation (Placement(transformation(extent={{-100,60},
+                {-80,80}}, rotation=0)));
+      Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
+                                             redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        p=system.p_ambient,
+        T=system.T_ambient) 
+        annotation (Placement(transformation(extent={{-60,-100},{-40,-80}},
+              rotation=0)));
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1
+        (
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        crossArea=1,
+        V0=0.1,
+        height=2,
+        nPorts=2,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.05, height=0),
+            Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                            diameter=0.1,
+            height=1)},
+        level_start=2,
+        stiffCharacteristicForEmptyPort=true) 
+        annotation (Placement(transformation(extent={{-40,-20},{0,20}}, rotation=
+                0)));
+      Modelica_Fluid.Pipes.StaticPipe pipe1(
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        length=1,
+        diameter=0.1,
+        height_ab=1) annotation (Placement(transformation(
+            origin={-20,-60},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+
+      Modelica_Fluid.Pipes.StaticPipe pipe2(
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        length=1,
+        diameter=0.1,
+        height_ab=1) annotation (Placement(transformation(
+            origin={30,-60},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+      Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(nPorts=1,
+                                             redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        p=system.p_ambient,
+        T=system.T_ambient) 
+        annotation (Placement(transformation(extent={{0,-100},{20,-80}}, rotation=
+               0)));
+    equation
+      connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-22,-21},{
+              -22,-35},{-20,-35},{-20,-50}},
+                         color={0,127,255}));
+      connect(ambient_fixed.ports[1], pipe1.port_a) annotation (Line(points={{-40,-90},
+              {-20,-90},{-20,-70}}, color={0,127,255}));
+      connect(tank1.ports[2], pipe2.port_b) annotation (Line(points={{-18,-21},{
+              -18,-21},{-18,-40},{30,-40},{30,-50}}, color={0,127,255}));
+      connect(ambient_fixed1.ports[1], pipe2.port_a) annotation (Line(points={{20,-90},
+              {30,-90},{30,-70}}, color={0,127,255}));
+    end TankWithEmptyingPipe2;
+
+    model TanksWithEmptyingPipe1
+      "Demonstrates a tank with one constant top inlet mass flow rate and a bottom outlet into the ambient"
+      import Modelica.SIunits.Conversions.from_bar;
+      extends Modelica.Icons.Example;
+
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
+                          graphics),
+        experiment(StopTime=35),
+        experimentSetupOutput,
+        Commands(
+          file=
+              "../Scripts/Examples/TanksWithEmptyingPipe1/plot level, port.p and port.m_flow.mos"
+            "plot level, port.p and port.m_flow"));
+      inner Modelica_Fluid.System system 
+                            annotation (Placement(transformation(extent={{-100,60},
+                {-80,80}}, rotation=0)));
+      Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(nPorts=1,
+                                              redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        p=system.p_ambient,
+        T=system.T_ambient) 
+        annotation (Placement(transformation(extent={{-100,-80},{-80,-60}},
+              rotation=0)));
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1
+        (
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        crossArea=1,
+        V0=0.1,
+        height=2,
+        nPorts=2,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.05, height=0),
+            Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                            diameter=0.1,
+            height=1)},
+        level_start=2,
+        stiffCharacteristicForEmptyPort=true) 
+        annotation (Placement(transformation(extent={{-80,0},{-40,40}}, rotation=
+                0)));
+      Modelica_Fluid.Pipes.StaticPipe pipe1(
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        length=1,
+        diameter=0.1,
+        height_ab=1) annotation (Placement(transformation(
+            origin={-60,-40},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+
+      Modelica_Fluid.Pipes.StaticPipe pipe2(
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        length=1,
+        diameter=0.1,
+        height_ab=1) annotation (Placement(transformation(
+            origin={40,-40},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+      Modelica_Fluid.Sources.Boundary_pT ambient_fixed2(nPorts=1,
+                                             redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        p=system.p_ambient,
+        T=system.T_ambient) 
+        annotation (Placement(transformation(extent={{0,-80},{20,-60}}, rotation=
+                0)));
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank2
+        (
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        crossArea=1,
+        V0=0.1,
+        height=2,
+        nPorts=2,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.05, height=0),
+            Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                            diameter=0.1,
+            height=0.5)},
+        level_start=0.1,
+        stiffCharacteristicForEmptyPort=true) 
+        annotation (Placement(transformation(extent={{20,0},{60,40}}, rotation=0)));
+      Modelica_Fluid.Pipes.StaticPipe pipe3(
+        redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        length=1,
+        diameter=0.1,
+        height_ab=-0.5) 
+                     annotation (Placement(transformation(extent={{-20,10},{0,30}},
+              rotation=0)));
+    equation
+      connect(tank1.ports[1], pipe1.port_b) annotation (Line(points={{-62,-1},{
+              -62,-15},{-60,-15},{-60,-30}},
+                         color={0,127,255}));
+      connect(ambient_fixed1.ports[1], pipe1.port_a) 
+                                                annotation (Line(points={{-80,-70},
+              {-60,-70},{-60,-50}}, color={0,127,255}));
+      connect(ambient_fixed2.ports[1], pipe2.port_a) annotation (Line(points={{20,-70},
+              {40,-70},{40,-50}}, color={0,127,255}));
+      connect(tank2.ports[1], pipe2.port_b) 
+        annotation (Line(points={{38,-1},{38,-15},{40,-15},{40,-30}},
+                                                    color={0,127,255}));
+      connect(pipe3.port_a, tank1.ports[2]) annotation (Line(points={{-20,20},{
+              -30,20},{-30,-10},{-58,-10},{-58,0},{-58,0},{-58,-1}}, color={0,127,
+              255}));
+      connect(pipe3.port_b, tank2.ports[2]) annotation (Line(points={{0,20},{10,
+              20},{10,-8},{38,-8},{38,0},{42,0},{42,-1}}, color={0,127,255}));
+    end TanksWithEmptyingPipe1;
+
+    model TanksWithEmptyingPipe2
+      "Demonstrates a tank with one constant top inlet mass flow rate and a bottom outlet into the ambient"
+      parameter Boolean stiffCharacteristicForEmptyPort=true;
+      import Modelica.SIunits.Conversions.from_bar;
+      extends Modelica.Icons.Example;
+      replaceable package Medium = 
+         Modelica.Media.Water.ConstantPropertyLiquidWater                    constrainedby
+        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+          annotation (choicesAllMatching = true);
+
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
+                -100},{100,100}}),
+                          graphics),
+        experiment(StopTime=300),
+        experimentSetupOutput,
+        Commands(file=
+              "../Scripts/Examples/TanksWithEmptyingPipe2/plot level and port.m_flow.mos"
+            "plot level and port.m_flow"));
+      inner Modelica_Fluid.System system 
+                            annotation (Placement(transformation(extent={{-100,60},
+                {-80,80}}, rotation=0)));
+      Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
+                                             redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        p=system.p_ambient,
+        T=system.T_ambient) 
+        annotation (Placement(transformation(extent={{-16,-102},{-36,-82}},
+              rotation=0)));
+      Modelica_Fluid.Valves.ValveDiscrete valveDiscrete(
+                                                redeclare package Medium = 
+            Modelica.Media.Water.ConstantPropertyLiquidWater,
+        dp_nominal(displayUnit="Pa") = 1,
+        m_flow_nominal=100) 
+        annotation (Placement(transformation(
+            origin={-60,-78},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+      Modelica.Blocks.Sources.BooleanConstant open(k=false) 
+        annotation (Placement(transformation(extent={{-98,-88},{-78,-68}},
+              rotation=0)));
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank3
+        (
+        redeclare package Medium = Medium,
+        crossArea=1,
+        V0=0.1,
+        height=20,
+        nPorts=2,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.05, height=0),
+            Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                            diameter=0.05,
+            height=6.5)},
+        level_start=6,
+        nTopPorts=1,
+        stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort) 
+        annotation (Placement(transformation(extent={{-80,-50},{-40,-10}},
+              rotation=0)));
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1
+        (
+        redeclare package Medium = Medium,
+        crossArea=1,
+        V0=0.1,
+        height=10,
+        nPorts=1,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.1, height=0)},
+        level_start=9,
+        stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort) 
+        annotation (Placement(transformation(extent={{50,50},{90,90}}, rotation=0)));
+      Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank2
+        (
+        redeclare package Medium = Medium,
+        crossArea=1,
+        V0=0.1,
+        height=10,
+        nPorts=3,
+        portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.05, height=0),
+            Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+                                                            diameter=0.05,
+            height=2),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+            diameter=0.1, height=3)},
+        level_start=1,
+        stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort) 
+        annotation (Placement(transformation(extent={{-20,10},{20,50}}, rotation=
+                0)));
+      Modelica_Fluid.Fittings.GenericStaticHead pipe1(
+                                      redeclare package Medium = Medium,
+          height_ab=2) annotation (Placement(transformation(
+            origin={70,30},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+      Modelica_Fluid.Fittings.GenericStaticHead pipe2(
+                                      redeclare package Medium = Medium,
+          height_ab=2) annotation (Placement(transformation(
+            origin={0,-22},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+      Modelica_Fluid.Fittings.GenericStaticHead pipe3(
+                                      redeclare package Medium = Medium,
+          height_ab=2) annotation (Placement(transformation(
+            origin={-60,10},
+            extent={{-10,-10},{10,10}},
+            rotation=90)));
+    equation
+      connect(ambient_fixed.ports[1], valveDiscrete.port_a) annotation (Line(points={
+              {-36,-92},{-60,-92},{-60,-88}}, color={0,127,255}));
+      connect(open.y, valveDiscrete.open) annotation (Line(points={{-77,-78},{-68,
+              -78}}, color={255,0,255}));
+      connect(valveDiscrete.port_b,tank3. ports[1]) annotation (Line(points={{-60,-68},
+              {-60,-59},{-60,-51},{-62,-51}},
+                               color={0,127,255}));
+      connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{70,40},{70,
+              45},{70,49},{70,49}},
+                    color={0,127,255}));
+      connect(pipe2.port_a, tank3.ports[2]) annotation (Line(points={{
+              -6.12323e-016,-32},{-6.12323e-016,-48},{0,-60},{-58,-60},{-58,-51},
+              {-58,-51}}, color={0,127,255}));
+      connect(pipe3.port_a, tank3.topPorts[1]) 
+                                              annotation (Line(points={{-60,0},{
+              -60,-5},{-60,-9},{-60,-9}},
+                        color={0,127,255}));
+      connect(pipe3.port_b, tank2.ports[1]) annotation (Line(points={{-60,20},{
+              -60,26},{-30,26},{-30,0},{-2,0},{-2,9},{-2.66667,9}},
+                                                             color={0,127,255}));
+      connect(pipe1.port_a, tank2.ports[3]) annotation (Line(points={{70,20},{70,
+              0},{2,0},{2,9},{2.66667,9}},
+                                     color={0,127,255}));
+      connect(pipe2.port_b, tank2.ports[2]) annotation (Line(
+          points={{6.12323e-016,-12},{0,-12},{0,9},{2.22045e-016,9}},
+          color={0,127,255},
+          smooth=Smooth.None));
+    end TanksWithEmptyingPipe2;
+  end Test;
 end AST_BatchPlant;

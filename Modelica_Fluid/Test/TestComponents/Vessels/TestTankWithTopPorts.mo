@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.Vessels;
 model TestTankWithTopPorts
   extends Modelica.Icons.Example;
   import Modelica_Fluid;
-  Modelica_Fluid.Vessels.TankWithTopPorts tank(
+  Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank(
     nTopPorts=2,
     height=10,
     V0=1,

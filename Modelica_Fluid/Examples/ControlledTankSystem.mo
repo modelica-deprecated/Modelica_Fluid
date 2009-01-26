@@ -112,7 +112,7 @@ This example is based on
           origin={20,50},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Vessels.TankWithTopPorts tank1(
+    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1(
       level_start=0.05,
       redeclare package Medium = Medium,
       nTopPorts=1,
@@ -142,7 +142,7 @@ This example is based on
           origin={80,-70},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica_Fluid.Vessels.TankWithTopPorts tank2(
+    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank2(
       level_start=0.05,
       redeclare package Medium = Medium,
       height=5,
@@ -193,15 +193,15 @@ This example is based on
       annotation (Line(points={{20,70},{20,65},{20,60}},
                                                  color={0,127,255}));
     connect(valve1.port_a, tank1.topPorts[1]) 
-      annotation (Line(points={{20,40},{20,35},{20,30},{21,30}},
+      annotation (Line(points={{20,40},{20,35},{20,31},{20,31}},
                                                  color={0,127,255}));
-    connect(tank1.ports[1], valve2.port_b) annotation (Line(points={{19,-10},{
-            19,-15},{20,-15},{20,-20}},
+    connect(tank1.ports[1], valve2.port_b) annotation (Line(points={{20,-11},{
+            20,-15},{20,-15},{20,-20}},
                       color={0,127,255}));
     connect(valve2.port_a, tank2.topPorts[1]) annotation (Line(points={{20,-40},
-            {20,-50},{50,-50},{50,2},{81,2},{81,-10}},color={0,127,255}));
-    connect(tank2.ports[1], valve3.port_b) annotation (Line(points={{79,-50},{
-            79,-55},{80,-55},{80,-60}},
+            {20,-50},{50,-50},{50,2},{80,2},{80,-9}}, color={0,127,255}));
+    connect(tank2.ports[1], valve3.port_b) annotation (Line(points={{80,-51},{
+            80,-55},{80,-55},{80,-60}},
                       color={0,127,255}));
     connect(valve3.port_a, ambient1.ports[1]) annotation (Line(points={{80,-80},{80,
             -90},{30,-90}}, color={0,127,255}));
@@ -482,9 +482,9 @@ This example is based on
                 100}}),
           graphics={Rectangle(
               extent={{-100,-100},{100,100}},
-              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0} else 
-                        {192,192,192}),
-              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then 
+              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0}
+                   else {192,192,192}),
+              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then
                   FillPattern.Solid else FillPattern.Solid),
               lineColor={128,128,128},
               lineThickness=0.5), Text(
