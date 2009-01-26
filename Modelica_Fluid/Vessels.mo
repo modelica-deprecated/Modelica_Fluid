@@ -280,7 +280,7 @@ end OpenTank;
 
         // Note: should use fluidLevel_start - portsData.height
         Real[nPorts] s(each start = fluidLevel_max)
-        "curve parameters for port flows vs. port pressures";
+        "curve parameters for port flows vs. port pressures; for further details see, Modelica Tutorial: Ideal switching devices";
         Real[nPorts] ports_penetration
         "penetration of port with fluid, depending on fluid level and port diameter";
 
@@ -414,12 +414,18 @@ of the modeller. Increase nPorts to add an additional port.
         Documentation(info="<html>
 <p>
 This base class extends PartialLumpedVolume with a vector of fluid ports and a replaceable wall HeatTransfer model.
-It assumes a perfectly mixed volume without kinetic energy in the fluid, i.e. kinetic energy dissipates into the internal energy.
+<p>
+The following modeling assumption are made:
+<ul>
+<li><tt>homogenous medium, </tt>i.e. phase seperation is not taken into account.</li>
+<li><tt>no kinetic energy in the fluid, </tt>i.e. kinetic energy dissipates into the internal energy.</li>
+<li><tt>each port has check valve behavior,  </tt> in case of <tt> portsData_height[i] &ge; fluidlevel </tt> massflow at the port is set to 0.</li>
+</ul>
 </p>
 Each port has a (hydraulic) diameter and a height above the bottom of the vessel, which can be configured using the <b><tt>portsData</tt></b> record.
 Alternatively the impact of port geometries can be neglected with <tt>use_portsData=false</tt>. This might be useful for early
 design studies. Note that this means to assume an infinite port diameter at the bottom of the vessel. 
-Pressure drops and heights of the ports as well as kinetic and potential energy fluid enering or leaving the vessel are neglected then.
+Pressure drops and heights of the ports as well as kinetic and potential energy fluid entering or leaving the vessel are neglected then.
 <p>
 The following variables need to be defined by an extending model:
 <ul>
