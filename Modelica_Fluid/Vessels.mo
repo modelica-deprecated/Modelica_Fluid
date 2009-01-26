@@ -892,7 +892,7 @@ Heat transfer correlations for pipe models
       parameter Real zeta_in(min=0)=0.04
         "Hydraulic resistance into vessel, default 0.04 for small diameter mounted flush with the wall";
       annotation (preferredView="info", Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Vessel Port Data</font></h3>
+<h4><font color=\"#008000\" >Vessel Port Data</font></h4>
 <p>
 This record describes the <b>ports</b> of a <b>vessel</b>. The variables in it are mostly self-explanatory (see list below); only the &zeta; 
 loss factors are discussed further. All data is quoted from Idelchik (1994).

@@ -6,7 +6,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
-<h3><font color=\"#008000\" size=5>Users guide of package Modelica_Fluid</font></h3>
+<h4><font color=\"#008000\" >Users guide of package Modelica_Fluid</font></h4>
 <p>
 The library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
@@ -26,7 +26,7 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 class KnownLimitations "Known limitations"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Known limitations</font></h3>
+<h4><font color=\"#008000\" >Known limitations</font></h4>
  
 <p>
 The Modelica_Fluid library has quite ambitious goals, especially,
@@ -68,7 +68,7 @@ end KnownLimitations;
   class Overview "Overview"
 
     annotation (Documentation(info="<HTML>
-<h3><font color=\"#008000\" size=5>Overview</font></h3>
+<h4><font color=\"#008000\" >Overview</font></h4>
 <p>
 The Modelica_Fluid library provides basic interfaces and
 components to model 1-dim. thermo-fluid flow in networks of pipes.
@@ -148,7 +148,7 @@ This library has the following main features:
   class GettingStarted "Getting started"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Getting started</font></h3>
+<h4><font color=\"#008000\" >Getting started</font></h4>
 <p>
 Please explore the
 <a href=\"Modelica://Modelica_Fluid.Examples\">Examples</a>,
@@ -163,7 +163,7 @@ which provide simple models for a broad variety of applications.
   package ComponentDefinition "Component definition"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Component definition</font></h3>
+<h4><font color=\"#008000\" >Component definition</font></h4>
 <p>
 In this section it is described how the components
 of the Modelica_Fluid library are implemented.
@@ -189,7 +189,7 @@ This section is partly based on the following paper:
   class BalanceEquations "Balance equations"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Balance equations</font></h3>
+<h4><font color=\"#008000\" >Balance equations</font></h4>
 <p>
 For one-dimensional flow
 along the coordinate \"x\", the following partial differential
@@ -262,7 +262,7 @@ at the boundaries represented by the ports. Explicit fitting models need to be i
   class UpstreamDiscretization "Upstream discretization"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Upstream discretization</font></h3>
+<h4><font color=\"#008000\" >Upstream discretization</font></h4>
 <p>
 When implementing a Fluid component, the difficult arises that
 the value of intensive quantities (such as p, T, &rho;)
@@ -366,7 +366,7 @@ direction.
   class FluidConnectors "Fluid connectors"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Fluid connectors</font></h3>
+<h4><font color=\"#008000\" >Fluid connectors</font></h4>
 <p>
 In this section the design of the fluid connectors is
 explained. A major design goal was that components can be arbitrarily
@@ -489,7 +489,7 @@ components cannot be directly connected together.
   class RegularizingCharacteristics "Regularizing characteristics"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Regularizing characteristics</font></h3>
+<h4><font color=\"#008000\" >Regularizing characteristics</font></h4>
 <p>
 Pressure drop equations and other fluid characteristics are usually
 computed by <b>semi-empirical</b> equations. Unfortunately, the developers
@@ -565,7 +565,7 @@ and 0.0025% around x=1.
   class WallFriction "Wall friction"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Wall friction</font></h3>
+<h4><font color=\"#008000\" >Wall friction</font></h4>
  
 <p>
 One important special case for a pressure loss is the friction at the
@@ -833,7 +833,7 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
   class ValveCharacteristics "Valve characteristics"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Pump characteristics</font></h3>
+<h4><font color=\"#008000\" >Pump characteristics</font></h4>
  
 <p>
 The control valves in
@@ -905,9 +905,9 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
   class ReleaseNotes "Release notes"
 
     annotation (Documentation(info="<HTML>
-<h3><font color=\"#008000\" size=5>Release notes</font></h3>
+<h4><font color=\"#008000\" >Release notes</font></h4>
  
-<h3><font color=\"#008000\">Version 1.0, 2009-01-22</font></h3>
+<h4><font color=\"#008000\">Version 1.0, 2009-01-22</font></h4>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -1036,7 +1036,7 @@ with the exception:
      The translation fails due to an initial value for pipe.medium[1].p, which is fixed by source.p.</li>
 </ul>
  
-<h3><font color=\"#008000\">Version 1.0 Streams Beta 3, 2008-10-12</font></h3>
+<h4><font color=\"#008000\">Version 1.0 Streams Beta 3, 2008-10-12</font></h4>
  
 <p>
 Modelica_Fluid was further improved:
@@ -1155,7 +1155,7 @@ with the exceptions:
  
  
  
-<h3><font color=\"#008000\">Version 1.0 Streams Beta 2, 2008-10-08</font></h3>
+<h4><font color=\"#008000\">Version 1.0 Streams Beta 2, 2008-10-08</font></h4>
  
 <p>
 Modelica_Fluid was transformed to Modelica 3 and to Modelica Standard
@@ -1216,7 +1216,7 @@ library 3.0 (by automatic conversion). Further changes:
 </ul>
  
  
-<h3><font color=\"#008000\">Version 1.0 Streams Beta 1, 2008-05-02</font></h3>
+<h4><font color=\"#008000\">Version 1.0 Streams Beta 1, 2008-05-02</font></h4>
  
 <p>
 Changed connectors to stream connectors and adapted the following sublibraries:
@@ -1292,7 +1292,7 @@ Other changes:
  
  
  
-<h3><font color=\"#008000\">Version 1.0 Beta 4, 2008-04-26</font></h3>
+<h4><font color=\"#008000\">Version 1.0 Beta 4, 2008-04-26</font></h4>
  
 <p>
 Changes according to the Modelica Design Meetings since the
@@ -1302,7 +1302,7 @@ connector design using stream variables.
 </p>
  
  
-<h3><font color=\"#008000\">Version 1.0 Beta 3, 2007-06-05</font></h3>
+<h4><font color=\"#008000\">Version 1.0 Beta 3, 2007-06-05</font></h4>
  
 <p>
 Changes according to the Modelica Design Meetings since the
@@ -1314,7 +1314,7 @@ This version is slightly non-backward compatible to version 1.0 Beta 2.
 </p>
  
  
-<h3><font color=\"#008000\">Version 1.0 Beta 2, 2006-08-28</font></h3>
+<h4><font color=\"#008000\">Version 1.0 Beta 2, 2006-08-28</font></h4>
  
 <p>
 Package considerably restructured and some new components added.
@@ -1322,7 +1322,7 @@ New examples (ControlledTankSystem, AST_BatchPlant).
 </p>
  
  
-<h3><font color=\"#008000\">Version 0.96, 2006-01-08</font></h3>
+<h4><font color=\"#008000\">Version 0.96, 2006-01-08</font></h4>
  
 <ul>
 <li> New package Modelica_Fluid.PressureLosses.</li>
@@ -1333,17 +1333,17 @@ New examples (ControlledTankSystem, AST_BatchPlant).
 <li> Improved users guide.</li>
 </ul>
  
-<h3><font color=\"#008000\">Version 0.910, 2005-10-25</font></h3>
+<h4><font color=\"#008000\">Version 0.910, 2005-10-25</font></h4>
 <ul>
 <li> Changes as decided on 41th-45th Modelica Design Meetings
      (details, see minutes).
 </ul>
-<h3><font color=\"#008000\">Version 0.900, 2004-10-18</font></h3>
+<h4><font color=\"#008000\">Version 0.900, 2004-10-18</font></h4>
 <ul>
 <li> Changes as decided on 40th Modelica Design Meeting in Dresden
      (see also minutes)
 </ul>
-<h3><font color=\"#008000\">Version 0.794, 2004-05-31</font></h3>
+<h4><font color=\"#008000\">Version 0.794, 2004-05-31</font></h4>
 <ul>
 <li> Sensors.mo, Examples/DrumBoiler.mo: extend sensors with user choice
      for measurement unit.</li>
@@ -1356,7 +1356,7 @@ New examples (ControlledTankSystem, AST_BatchPlant).
 <li> Moved Interfaces from file Modelica_Fluid/package.mo to
      Modelica_Fluid/Interfaces.mo</li>
 </ul>
-<h3><font color=\"#008000\">Version 0.793, 2004-05-18</font></h3>
+<h4><font color=\"#008000\">Version 0.793, 2004-05-18</font></h4>
 <ul>
 <li> Removed \"semiLinear\" function since available as
      Modelica 2.1 built-in operator in Dymola.</li>
@@ -1366,7 +1366,7 @@ New examples (ControlledTankSystem, AST_BatchPlant).
       Interfaces.PartialTwoPortTransport,
       but this was removed and not updated in Orifice).</li>
 </ul>
-<h3><font color=\"#008000\">Version 0.792, 2003-11-07</font></h3>
+<h4><font color=\"#008000\">Version 0.792, 2003-11-07</font></h4>
 <p>
 This is the first consolidated version made up from
 several changes for Modelica'2003.
@@ -1374,7 +1374,7 @@ Modelica_Fluid is still quite far away
 from a library that could be included in the Modelica
 standard library.
 </p>
-<h3><font color=\"#008000\">Previous Releases</font></h3>
+<h4><font color=\"#008000\">Previous Releases</font></h4>
 <ul>
 <li><i>Oct., 2003</i><br>
        by Martin Otter: Adapted to latest design of the Modelica.Media
@@ -2064,7 +2064,7 @@ printing and shipping costs may be recovered.</P>
 class Contact "Contact"
 
     annotation (Documentation(info="<html>
-<h3><font color=\"#008000\" size=5>Contact</font></h3>
+<h4><font color=\"#008000\" >Contact</font></h4>
  
 <dl>
 <dt>The Modelica_Fluid library (this Modelica package)
