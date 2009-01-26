@@ -2,11 +2,6 @@ within Modelica_Fluid.Examples;
 package Tanks "Library demonstrating the usage of the tank model"
   extends Modelica.Icons.Library;
 
-
-
-
-
-
   model ThreeTanks "Demonstrating the usage of SimpleTank"
     import Modelica_Fluid;
     extends Modelica.Icons.Example;
@@ -18,7 +13,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
 
-    Modelica_Fluid.Vessels.SimpleTank tank1(
+    Modelica_Fluid.Vessels.OpenTank tank1(
       crossArea=1,
       redeclare package Medium = Medium,
       use_portsData=true,
@@ -28,7 +23,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
           0.1)})     annotation (Placement(transformation(extent={{-80,20},{-40,
               60}}, rotation=0)));
-    Modelica_Fluid.Vessels.SimpleTank tank2(
+    Modelica_Fluid.Vessels.OpenTank tank2(
       crossArea=1,
       redeclare package Medium = Medium,
       use_portsData=true,
@@ -42,7 +37,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     inner Modelica_Fluid.System system(energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial) 
                                      annotation (Placement(transformation(
             extent={{70,-90},{90,-70}}, rotation=0)));
-    Modelica_Fluid.Vessels.SimpleTank tank3(
+    Modelica_Fluid.Vessels.OpenTank tank3(
       crossArea=1,
       redeclare package Medium = Medium,
       use_portsData=true,
@@ -114,7 +109,7 @@ package Tanks "Library demonstrating the usage of the tank model"
   model TanksWithOverflow "Two tanks connected with pipes at different heights"
     extends Modelica.Icons.Example;
     import Modelica_Fluid;
-    Modelica_Fluid.Vessels.SimpleTank upperTank(
+    Modelica_Fluid.Vessels.OpenTank upperTank(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       height=20,
       level_start=2,
@@ -146,7 +141,7 @@ package Tanks "Library demonstrating the usage of the tank model"
           extent={{10,-10},{-10,10}},
           rotation=90)));
 
-    Modelica_Fluid.Vessels.SimpleTank lowerTank(
+    Modelica_Fluid.Vessels.OpenTank lowerTank(
       height=20,
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       level_start=2,
@@ -253,7 +248,7 @@ simulation accuracy could be increased in order to avoid errors.
 
   model EmptyTanks "Show the treatment of empty tanks"
     extends Modelica.Icons.Example;
-    Modelica_Fluid.Vessels.SimpleTank tank1(
+    Modelica_Fluid.Vessels.OpenTank tank1(
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,
       nPorts=1,
@@ -275,7 +270,7 @@ simulation accuracy could be increased in order to avoid errors.
           extent={{-10,-10},{10,10}},
           rotation=270)));
 
-    Modelica_Fluid.Vessels.SimpleTank tank2(
+    Modelica_Fluid.Vessels.OpenTank tank2(
       crossArea=1,
       redeclare package Medium = 
           Modelica.Media.Water.ConstantPropertyLiquidWater,

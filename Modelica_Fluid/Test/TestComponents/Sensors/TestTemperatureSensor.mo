@@ -10,24 +10,21 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     annotation (Placement(transformation(extent={{-20,-20},{0,0}}, rotation=0)));
   inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
-  Modelica_Fluid.Vessels.SimpleTank openTankCold2(
-                                                nPorts=1,
+  Modelica_Fluid.Vessels.OpenTank openTankCold2(nPorts=1,
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
     crossArea=2,
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.05)}) annotation (Placement(transformation(extent={{20,0},
             {40,20}}, rotation=0)));
-  Modelica_Fluid.Vessels.SimpleTank openTankCold1(
-                                                nPorts=1,
+  Modelica_Fluid.Vessels.OpenTank openTankCold1(nPorts=1,
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
     crossArea=2,
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.05)}) annotation (Placement(transformation(extent={{20,60},
             {40,80}}, rotation=0)));
-  Modelica_Fluid.Vessels.SimpleTank openTankHot1(
-                                               nPorts=1,
+  Modelica_Fluid.Vessels.OpenTank openTankHot1(nPorts=1,
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
@@ -35,8 +32,7 @@ model TestTemperatureSensor "Test and compare case for the difference between us
     T_start=SI.Conversions.from_degC(80),
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.05)}) annotation (Placement(transformation(extent={{60,40},
             {80,60}}, rotation=0)));
-  Modelica_Fluid.Vessels.SimpleTank openTankHot2(
-                                               nPorts=1,
+  Modelica_Fluid.Vessels.OpenTank openTankHot2(nPorts=1,
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
@@ -66,16 +62,14 @@ model TestTemperatureSensor "Test and compare case for the difference between us
   Modelica_Fluid.Sensors.Temperature TemperatureJunction(
       redeclare package Medium = Modelica.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{-20,-80},{0,-60}}, rotation=0)));
-  Modelica_Fluid.Vessels.SimpleTank openTankCold3(
-                                                nPorts=1,
+  Modelica_Fluid.Vessels.OpenTank openTankCold3(nPorts=1,
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,
     crossArea=2,
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.05)}) annotation (Placement(transformation(extent={{20,-60},
             {40,-40}}, rotation=0)));
-  Modelica_Fluid.Vessels.SimpleTank openTankHot3(
-                                               nPorts=1,
+  Modelica_Fluid.Vessels.OpenTank openTankHot3(nPorts=1,
     level_start=1,
     redeclare package Medium = Modelica.Media.Water.StandardWater,
     height=2,

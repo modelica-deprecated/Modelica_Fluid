@@ -4,7 +4,7 @@ model HeatingSystem "Simple model of a heating system"
       Modelica.Media.Water.StandardWater 
      constrainedby Modelica.Media.Interfaces.PartialMedium;
 
-  Modelica_Fluid.Vessels.SimpleTank tank(
+  Modelica_Fluid.Vessels.OpenTank tank(
     redeclare package Medium = Medium,
     crossArea=0.01,
     height=2,
@@ -209,7 +209,7 @@ tankLevel = tank.level;
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},

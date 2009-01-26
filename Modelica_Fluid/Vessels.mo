@@ -48,7 +48,7 @@ the direction of mass flow. See <a href=\"Modelica://Modelica_Fluid.Vessels.Base
               graphics));
     end ClosedVolume;
 
-model SimpleTank "Simple tank with inlet/outlet ports"
+model OpenTank "Simple tank with inlet/outlet ports"
     import Modelica.Constants.pi;
 
   // Tank properties
@@ -200,8 +200,7 @@ Limitation to bottom ports only, added inlet and outlet loss factors.</li>
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
 equation
 
-end SimpleTank;
-
+end OpenTank;
 
   package BaseClasses
     extends Modelica_Fluid.Icons.BaseClassLibrary;

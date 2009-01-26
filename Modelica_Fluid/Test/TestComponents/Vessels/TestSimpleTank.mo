@@ -4,7 +4,7 @@ model TestSimpleTank
   import Modelica.SIunits.Conversions.from_bar;
   extends Modelica.Icons.Example;
 
-  Modelica_Fluid.Vessels.SimpleTank tank(
+  Modelica_Fluid.Vessels.OpenTank tank(
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     height=1,
