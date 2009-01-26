@@ -9,8 +9,8 @@ package ControlledTankSystem
     Modelica_Fluid.Examples.ControlledTankSystem.Utilities.TankController
       tankController(
       waitTime=50,
-      minLevel=0.001,
-      maxLevel=0.9*tank1.height) 
+      maxLevel=0.9*tank1.height,
+      minLevel=0.01) 
       annotation (Placement(transformation(extent={{-60,-20},{-20,20}},
             rotation=0)));
     Modelica_Fluid.Examples.ControlledTankSystem.Utilities.RadioButton start(
@@ -30,7 +30,7 @@ package ControlledTankSystem
             rotation=0)));
     annotation (
       Diagram(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics),
       experiment(StopTime=900),
@@ -109,20 +109,25 @@ This example is based on
       m_flow_nominal=40,
       dp_nominal=100000) 
       annotation (Placement(transformation(
-          origin={20,50},
-          extent={{-10,-10},{10,10}},
-          rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1(
+          origin={-10,70},
+          extent={{10,-10},{-10,10}},
+          rotation=180)));
+    Vessels.SimpleTank tank1(
       level_start=0.05,
       redeclare package Medium = Medium,
-      nTopPorts=1,
-      nPorts=1,
-      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-                                                                 diameter=0.2,
-          height=0)},
       crossArea=6,
-      height=4)             annotation (Placement(transformation(extent={{0,
-              -10},{40,30}}, rotation=0)));
+      height=4,
+      nPorts=2,
+      portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+          diameter=0.2,
+          height=4,
+          zeta_out=1,
+          zeta_in=0),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+          diameter=0.2,
+          height=0,
+          zeta_out=1,
+          zeta_in=0)})      annotation (Placement(transformation(extent={{10,30},
+              {50,70}},      rotation=0)));
     Modelica.Blocks.Sources.RealExpression level1(y=tank1.level) 
       annotation (Placement(transformation(extent={{-90,-60},{-55,-40}},
             rotation=0)));
@@ -131,33 +136,38 @@ This example is based on
       dp_nominal(displayUnit="Pa") = 1,
       m_flow_nominal=100) 
       annotation (Placement(transformation(
-          origin={20,-30},
-          extent={{-10,-10},{10,10}},
+          origin={34,0},
+          extent={{10,-10},{-10,10}},
           rotation=90)));
     Modelica_Fluid.Valves.ValveDiscrete valve3(        redeclare package Medium
         = Medium,
       dp_nominal(displayUnit="Pa") = 1,
       m_flow_nominal=10) 
       annotation (Placement(transformation(
-          origin={80,-70},
-          extent={{-10,-10},{10,10}},
-          rotation=90)));
-    Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank2(
+          origin={35,-80},
+          extent={{10,-10},{-10,10}},
+          rotation=0)));
+    Vessels.SimpleTank tank2(
       level_start=0.05,
       redeclare package Medium = Medium,
       height=5,
       crossArea=6,
-      nTopPorts=1,
-      nPorts=1,
+      nPorts=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-                                                                 diameter=0.2,
-          height=0)})      annotation (Placement(transformation(extent={{60,
-              -50},{100,-10}}, rotation=0)));
+          diameter=0.2,
+          height=5,
+          zeta_out=1,
+          zeta_in=0),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
+          diameter=0.2,
+          height=0,
+          zeta_out=1,
+          zeta_in=0)})     annotation (Placement(transformation(extent={{50,-60},
+              {90,-20}},       rotation=0)));
     Modelica_Fluid.Sources.Boundary_pT ambient1(redeclare package Medium = 
           Medium,nPorts=1,
       p=system.p_ambient,
       T=system.T_ambient) 
-      annotation (Placement(transformation(extent={{10,-100},{30,-80}},
+      annotation (Placement(transformation(extent={{-10,-90},{10,-70}},
             rotation=0)));
     Modelica.Blocks.Sources.RealExpression level2(y=tank2.level) 
       annotation (Placement(transformation(extent={{-70,-80},{-33,-60}},
@@ -166,9 +176,9 @@ This example is based on
           Medium, p=2.5e6,nPorts=1,
       T=system.T_ambient) 
       annotation (Placement(transformation(
-          origin={20,80},
+          origin={-40,70},
           extent={{-10,-10},{10,10}},
-          rotation=270)));
+          rotation=0)));
     inner Modelica_Fluid.System system 
                           annotation (Placement(transformation(extent={{-90,70},
               {-70,90}}, rotation=0)));
@@ -179,33 +189,43 @@ This example is based on
             0}}, color={255,0,255}));
     connect(start.on, tankController.start) annotation (Line(points={{-79,30},{
             -70,30},{-70,12},{-62,12}}, color={255,0,255}));
-    connect(tankController.valve1, valve1.open) annotation (Line(points={{-19,
-            12},{-10,12},{-10,50},{12,50}}, color={255,0,255}));
+    connect(tankController.valve1, valve1.open) annotation (Line(points={{-19,12},
+            {-10,12},{-10,62}},             color={255,0,255}));
     connect(level1.y, tankController.level1) annotation (Line(points={{-53.25,
             -50},{-52,-50},{-52,-22}}, color={0,0,127}));
     connect(tankController.valve2, valve2.open) annotation (Line(points={{-19,0},
-            {-5,0},{-5,-30},{12,-30}}, color={255,0,255}));
-    connect(tankController.valve3, valve3.open) annotation (Line(points={{-19,
-            -12},{-10,-12},{-10,-70},{72,-70}}, color={255,0,255}));
+            {-5,0},{-5,4.89859e-016},{26,4.89859e-016}},
+                                       color={255,0,255}));
+    connect(tankController.valve3, valve3.open) annotation (Line(points={{-19,-12},
+            {-10,-12},{-10,-50},{35,-50},{35,-72}},
+                                                color={255,0,255}));
     connect(level2.y, tankController.level2) annotation (Line(points={{-31.15,
             -70},{-28,-70},{-28,-22}}, color={0,0,127}));
-    connect(source.ports[1], valve1.port_b) 
-      annotation (Line(points={{20,70},{20,65},{20,60}},
-                                                 color={0,127,255}));
-    connect(valve1.port_a, tank1.topPorts[1]) 
-      annotation (Line(points={{20,40},{20,35},{20,31},{20,31}},
-                                                 color={0,127,255}));
-    connect(tank1.ports[1], valve2.port_b) annotation (Line(points={{20,-11},{
-            20,-15},{20,-15},{20,-20}},
-                      color={0,127,255}));
-    connect(valve2.port_a, tank2.topPorts[1]) annotation (Line(points={{20,-40},
-            {20,-50},{50,-50},{50,2},{80,2},{80,-9}}, color={0,127,255}));
-    connect(tank2.ports[1], valve3.port_b) annotation (Line(points={{80,-51},{
-            80,-55},{80,-55},{80,-60}},
-                      color={0,127,255}));
-    connect(valve3.port_a, ambient1.ports[1]) annotation (Line(points={{80,-80},{80,
-            -90},{30,-90}}, color={0,127,255}));
 
+    connect(source.ports[1], valve1.port_a) annotation (Line(
+        points={{-30,70},{-20,70}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(valve3.port_b, ambient1.ports[1]) annotation (Line(
+        points={{25,-80},{10,-80}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(tank2.ports[2], valve3.port_a) annotation (Line(
+        points={{74,-60},{74,-80},{45,-80}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(valve2.port_b, tank2.ports[1]) annotation (Line(
+        points={{34,-10},{34,-20},{50,-20},{50,-60},{66,-60}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(valve1.port_b, tank1.ports[1]) annotation (Line(
+        points={{0,70},{10,70},{10,30},{26,30}},
+        color={0,127,255},
+        smooth=Smooth.None));
+    connect(tank1.ports[2], valve2.port_a) annotation (Line(
+        points={{34,30},{34,10}},
+        color={0,127,255},
+        smooth=Smooth.None));
   end ControlledTanks;
 
   package Utilities
@@ -391,8 +411,8 @@ This example is based on
               40},{70,70},{-80,70},{-80,40},{-73,40},{-73,40.5}}, color={0,0,0}));
       connect(T6.outPort, s1.inPort[2]) annotation (Line(points={{56.5,-50},{70,
               -50},{70,70},{-80,70},{-80,40},{-74,40},{-73,39.5}}, color={0,0,0}));
-      connect(T4.outPort, normal.resume[1])      annotation (Line(points={{10,
-              1.5},{10,10},{10.5,10},{10.5,18.6667},{10,18.6667}}, color={0,0,0}));
+      connect(T4.outPort, normal.resume[1])      annotation (Line(points={{10,1.5},
+              {10,10},{10.5,10},{10.5,18.6667},{10,18.6667}},      color={0,0,0}));
     end TankController;
 
     model NormalOperation
