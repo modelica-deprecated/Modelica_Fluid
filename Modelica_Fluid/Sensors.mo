@@ -346,7 +346,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
     end if;
   end TemperatureTwoPort;
 
-  model SpecificEnthalpy "Ideal one port specific enthalphy sensor"
+  model SpecificEnthalpy "Ideal one port specific enthalpy sensor"
     extends Sensors.BaseClasses.PartialAbsoluteSensor;
     extends Modelica.Icons.RotationalSensor;
     Modelica.Blocks.Interfaces.RealOutput h_out(final quantity="SpecificEnergy",

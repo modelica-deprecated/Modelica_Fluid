@@ -224,7 +224,7 @@ With the default value of delta=0.01, the difference between sqrt(x) and sqrtReg
     "Anti-symmetric approximation of square root with discontinuous factor so that the first derivative is finite and continuous"
 
     extends Modelica.Icons.Function;
-    input Real x "abszissa value";
+    input Real x "abscissa value";
     input Real x_small(min=0)=0.01
       "approximation of function for |x| <= x_small";
     input Real k1(min=0)=1 "y = if x>=0 then sqrt(k1*x) else -sqrt(k2*|x|)";
@@ -399,7 +399,7 @@ k1=1, k2=3 is shown in the next figure:
   function regSquare2
     "Anti-symmetric approximation of square with discontinuous factor so that the first derivative is non-zero and is continuous"
     extends Modelica.Icons.Function;
-    input Real x "abszissa value";
+    input Real x "abscissa value";
     input Real x_small(min=0)=0.01
       "approximation of function for |x| <= x_small";
     input Real k1(min=0)=1 "y = (if x>=0 then k1 else k2)*x*|x|";
@@ -532,7 +532,7 @@ k1=1, k2=3 is shown in the next figure:
   function regStep
     "Approximation of a general step, such that the characteristic is continuous and differentiable"
     extends Modelica.Icons.Function;
-    input Real x "Abszissa value";
+    input Real x "Abscissa value";
     input Real y1 "Ordinate value for x > 0";
     input Real y2 "Ordinate value for x < 0";
     input Real x_small(min=0) = 1e-5
@@ -586,13 +586,13 @@ k1=1, k2=3 is shown in the next figure:
 
   function regFun3 "Co-monotonic and C1 smooth regularization function"
 
-    input Real x "Abszissa value";
-    input Real x0 "Lower abszissa value";
-    input Real x1 "Upper abszissa value";
+    input Real x "Abscissa value";
+    input Real x0 "Lower abscissa value";
+    input Real x1 "Upper abscissa value";
     input Real y0 "Ordinate value at lower ordinate value";
     input Real y1 "Ordinate value at upper ordinate value";
-    input Real y0d "Derivative at lower abszissa value";
-    input Real y1d "Derivative at upper abszissa value";
+    input Real y0d "Derivative at lower abscissa value";
+    input Real y1d "Derivative at upper abscissa value";
 
     output Real y "Ordinate value";
     output Real c
@@ -781,9 +781,9 @@ The second graph shows the continous derivative of this regularization function:
   end regFun3;
 
   function cubicHermite "Evaluate a cubic Hermite spline"
-    input Real x "Abszissa value";
-    input Real x1 "Lower abszissa value";
-    input Real x2 "Upper abszissa value";
+    input Real x "Abscissa value";
+    input Real x1 "Lower abscissa value";
+    input Real x2 "Upper abscissa value";
     input Real y1 "Lower ordinate value";
     input Real y2 "Upper ordinate value";
     input Real y1d "Lower gradient";
@@ -798,7 +798,7 @@ The second graph shows the continous derivative of this regularization function:
 </html>"));
   protected
     Real h "Distance between x1 and x2";
-    Real t "Abszissa scaled with h, i.e. t=[0..1] within x=[x1..x2]";
+    Real t "abscissa scaled with h, i.e. t=[0..1] within x=[x1..x2]";
     Real h00 "Basis function 00 of cubic Hermite spline";
     Real h10 "Basis function 10 of cubic Hermite spline";
     Real h01 "Basis function 01 of cubic Hermite spline";
@@ -827,15 +827,15 @@ The second graph shows the continous derivative of this regularization function:
 
   function cubicHermite_withDerivative
     "Evaluate a cubic Hermite spline, return value and derivative"
-    input Real x "Abszissa value";
-    input Real x1 "Lower abszissa value";
-    input Real x2 "Upper abszissa value";
+    input Real x "Abscissa value";
+    input Real x1 "Lower abscissa value";
+    input Real x2 "Upper abscissa value";
     input Real y1 "Lower ordinate value";
     input Real y2 "Upper ordinate value";
     input Real y1d "Lower gradient";
     input Real y2d "Upper gradient";
     output Real y "Interpolated ordinate value";
-    output Real dy_dx "Derivative dy/dx at abszissa value x";
+    output Real dy_dx "Derivative dy/dx at abscissa value x";
     annotation(smoothOrder=3, Documentation(revisions="<html>
 <ul>
 <li><i>May 2008</i>
@@ -845,7 +845,7 @@ The second graph shows the continous derivative of this regularization function:
 </html>"));
   protected
     Real h "Distance between x1 and x2";
-    Real t "Abszissa scaled with h, i.e. t=[0..1] within x=[x1..x2]";
+    Real t "abscissa scaled with h, i.e. t=[0..1] within x=[x1..x2]";
     Real h00 "Basis function 00 of cubic Hermite spline";
     Real h10 "Basis function 10 of cubic Hermite spline";
     Real h01 "Basis function 01 of cubic Hermite spline";
