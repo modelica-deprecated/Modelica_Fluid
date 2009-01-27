@@ -35,9 +35,9 @@ package Valves "Components for the regulation and control of fluid flow"
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics),
     Documentation(info="<HTML>
-<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluids. <p>
-Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
-<p>This model can be used with any low compressibility fluids, such as liquids or gases at very low pressure drops.</p>
+<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluids. 
+<p>This model assumes that the fluid has a low compressibility, which is always the case for liquids.
+It can also be used with gases, provided that the pressure drop is lower than 0.2 times the absolute pressure at the inlet, so that the fluid density does not change much inside the valve.</p>
 <p>If <tt>checkValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
  
 <p>
@@ -108,10 +108,9 @@ explained in detail in the
               100,100}}),
               graphics),
       Documentation(info="<HTML>
-<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid at the inlet, and possibly two-phase fluid at the outlet, with resulting choked flow conditions. <p>
-Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).<p>
-The model operating range includes choked flow operation, which takes place for low outlet pressures due to flashing in the vena contracta; otherwise, non-choking conditions are assumed.
-<p>This model must be used with two-phase medium models, to describe the liquid and (possible) two-phase conditions.
+<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, incompressible fluid at the inlet, and possibly two-phase fluid at the outlet, including choked flow conditions. </p>
+<p>The model operating range includes choked flow operation, which takes place for low outlet pressures due to flashing in the vena contracta; otherwise, non-choking conditions are assumed.
+<p>This model requires a two-phase medium model, to describe the liquid and (possible) two-phase conditions.
 <p>The default liquid pressure recovery coefficient <tt>Fl</tt> is constant and given by the parameter <tt>Fl_nominal</tt>. The relative change (per unit) of the recovery coefficient can be specified as a given function of the valve opening by replacing the <tt>FlCharacteristic</tt> function.
 <p>If <tt>checkValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
  
@@ -201,9 +200,8 @@ explained in detail in the
               100,100}}),
             graphics),
     Documentation(info="<HTML>
-<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid, no phase change, including choked conditions. <p>
-Extends the <tt>BaseClasses.ControlValves.PartialValve</tt> model (see the corresponding documentation for common valve features).
-<p>This model can be used with gases at moderate to high pressure ratios.</p>
+<p>Valve model according to the IEC 534/ISA S.75 standards for valve sizing, compressible fluid, no phase change, also covering choked-flow conditions. </p>
+<p>This model can be used with gases and vapours, with arbitrary pressure ratio between inlet and outlet.</p>
  
 <p>The product Fk*xt is given by the parameter <tt>Fxt_full</tt>, and is assumed constant by default. The relative change (per unit) of the xt coefficient with the valve opening can be specified by replacing the <tt>xtCharacteristic</tt> function.
 <p>If <tt>checkValve</tt> is false, the valve supports reverse flow, with a symmetric flow characteric curve. Otherwise, reverse flow is stopped (check valve behaviour).</p>
@@ -278,8 +276,10 @@ explained in detail in the
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics),
     Documentation(info="<HTML>
-<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>opening</tt> signal, without computing any fluid property.
-<p>A medium model must be nevertheless be specified, so that the fluid ports can be connected to other components using the same medium model.
+<p>This very simple model provides a pressure drop which is proportional to the flowrate and to the <tt>opening</tt> input, without computing any fluid property. It can be used for testing purposes, when
+a simple model of a variable pressure loss is needed.</p>
+<p>A medium model must be nevertheless be specified, so that the fluid ports can be connected to other components using the same medium model.</p>
+<p>The model is adiabatic (no heat losses to the ambient) and neglects changes in kinetic energy from the inlet to the outlet. </p>
 </HTML>",
       revisions="<html>
 <ul>
@@ -334,10 +334,10 @@ explained in detail in the
           grid={2,2}), graphics),
     Documentation(info="<HTML>
 <p>
-This very simple model provides a pressure drop which is proportional to the flowrate if the Boolean open signal is <b>true</b>. Otherwise, the
-mass flow rate is zero. If opening_min > 0, a small leakage
-mass flow rate occurs when open = <b>false</b>.
+This very simple model provides a (small) pressure drop which is proportional to the flowrate if the Boolean open signal is <b>true</b>. Otherwise, the mass flow rate is zero. If opening_min > 0, a small leakage mass flow rate occurs when open = <b>false</b>.
 </p>
+<p>This model can be used for simplified modelling of on-off valves, when it is not important to accurately describe the pressure loss when the valve is open. Although the medium model is not used to determine the pressure loss, it must be nevertheless be specified, so that the fluid ports can be connected to other components using the same medium model.</p>
+<p>The model is adiabatic (no heat losses to the ambient) and neglects changes in kinetic energy from the inlet to the outlet. </p>
 <p>
 In a diagram animation, the valve is shown in \"green\", when
 it is open.
@@ -454,8 +454,10 @@ it is open.
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics),
         Documentation(info="<HTML>
-<p>This is the base model for the <tt>ValveIncompressible</tt>, <tt>ValveVaporizing</tt>, and <tt>ValveCompressible</tt> valve models. The model is based on the IEC 534 / ISA S.75 standards for valve sizing.
-<p>The model optionally supports reverse flow conditions (assuming symmetrical behaviour) or check valve operation, and has been suitably modified to avoid numerical singularities at zero pressure drop. 
+<p>This is the base model for the <tt>ValveIncompressible</tt>, <tt>ValveVaporizing</tt>, and <tt>ValveCompressible</tt> valve models. The model is based on the IEC 534 / ISA S.75 standards for valve sizing.</p>
+<p>The model optionally supports reverse flow conditions (assuming symmetrical behaviour) or check valve operation, and has been suitably regularized, compared to the equations in the standard, in order to avoid numerical singularities around zero pressure drop operating conditions. </p>
+<p>The model assumes adiabatic operation (no heat losses to the ambient); changes in kinetic energy
+from inlet to outlet are neglected in the energy balance. </p>
 <p><b>Modelling options</b></p>
 <p>The following options are available to specify the valve flow coefficient in fully open conditions:
 <ul><li><tt>CvData = Modelica_Fluid.Types.CvTypes.Av</tt>: the flow coefficient is given by the metric <tt>Av</tt> coefficient (m^2).
