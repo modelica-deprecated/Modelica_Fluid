@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -30,7 +31,7 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 <h4><font color=\"#008000\" >Overview</font></h4>
 <p>
 The Modelica_Fluid library provides basic interfaces and
-components to model 1-dim. thermo-fluid flow in networks of pipes.
+components to model 1-dimensional thermo-fluid flow in networks of pipes.
 It is not the intention that this library covers all
 application cases because the fluid flow area is too large and
 because for special applications it is possible to implement
@@ -88,16 +89,21 @@ This library has the following main features:
      mixed according to the mass flow rates.<br>&nbsp;</li>
 <li> The <b>momentum balance</b> and the <b>energy balance</b> are only fulfilled exactly if
      <b>two ports of equal diameter</b> are connected. In all other cases, the balances
-     are approximated, because kinetic and friction effect are neglected; if these
-     are important for the specific problem, and explicit fitting or junction should be used.
-     You can look at this example to see one case where the momentum balance essentially
-     depends on kinetic pressure, so it is necessary to use explicit fittings.
+     are approximated, because kinetic and friction effect are neglected. An explicit fitting
+     or junction should be used if these are important for the specific problem at hand.
+     In all circuits where friction dominates, or components such as pumps determine the flow rate,
+     kinetic pressure is typically irrelevant. You can consider the 
+     <a href=\"Modelica://Modelica_Fluid.Examples.CriticalCases.MomentumBalanceFittings\">
+     Modelica_Fluid.Examples.CriticalCases.MomentumBalanceFittings</a> model (and its documentation)
+     to see one case where the momentum balance essentially depends on kinetic pressure,
+     so it is necessary to use explicit fittings in order to obtain correct results. 
      <br>&nbsp;</li>
-<li> There is no restriction how components can be connected
+<li> Given the above-mentioned limitations, there is no restriction how components can be connected
      together. The resulting simulation performance however often strongly depends on the
      model structure and modeling assumptions made. In particular the direct connection of
      fluid volumes generally results in high-index DAEs for the pressures. The direct
-     connection of flow models generally results in algebraic equation systems.<br>&nbsp;</li> 
+     connection of flow models generally results in systems of implicit nonlinear algebraic
+     equations.<br>&nbsp;</li> 
 </ul>
 </HTML>
 "));
@@ -153,9 +159,11 @@ Please note that the design of the connectors has been changed with respect to t
 <h4><font color=\"#008000\" >Fluid connectors</font></h4>
 <p>
 In this section the design of the fluid connectors is
-explained. Fluid connectors represent the flanges the points in a device (e.g. the
+explained. </p>
+<p>Fluid connectors represent the points in a device (e.g. the
 flanges) through which a fluid can flow into or out of the component, carrying its
-thermal energy; these flanges are assumed to be fixed in space. 
+thermodynamic properties; these flanges are assumed to be fixed in space. </p>
+<p>
 A major design goal is that components can be arbitrarily
 connected and that the important balance equations are automatically
 fulfilled when 2 or more components are connected together at
@@ -995,9 +1003,12 @@ The Modelica_Fluid library is designed so that each model of a system must
 include an instance <tt>system</tt> of the <tt>System</tt> component at the top level, in the same way as the <tt>World</tt> model of the MultiBody Library. The System component contains the parameters that
 describe the environment surrounding the components (ambient pressure and
 temperature, gravity acceleration), and also provides default settings
-for many parameters which are used consistently by the models in the library. These parameters are then propagated to the individual components
-using the inner/outer variable mechanism. In case the system model is structured hieararchically, it is possible to either put a single System
-component at the top level, or possibly to put many of them at different levels, which will only influence the system compoenents from that level down. 
+for many parameters which are used consistently by the models in the library.
+These parameters are then propagated to the individual components
+using the inner/outer variable mechanism. In case the system model is structured
+hieararchically, it is possible to either put a single System
+component at the top level, or possibly to put many of them at different levels,
+which will only influence the system compoenents from that level down. 
 </p>
 <p>All the parameters defined in the System model are used as default values for the parameters of the individual components of the system model. Note that it is always possible to ovverride these defaults locally by changing the value of the parameters in the specific component instance.
 </p>
@@ -1053,15 +1064,47 @@ components</li>.
       annotation (Documentation(info="<html>
 <h4><font color=\"#008000\" >Customizing a system model</font></h4>
 <p>
+Once a system model has been built, it is possible to obtain different approximations by
+appropriately setting the defaults in the System component (and/or the settings of specific
+components. 
 </p>
+<p>
+The Assumptions | allowFlowReversal parameter determines whether reversing flow conditions
+(i.e. flow direction opposite to design direction) are modelled or not. By default,
+reversing flow conditions are considered by the models, but this causes a significant increase
+of complexity in the equations, due to the conditional equations depending on the flow direction.
+If you know in advance that the flow in a certain component (or in the whole system) will always
+be in the design direction, then setting this parameter to false will produce a much faster and
+possibly more robust simulation code.
+</p>
+<p>
+The flags in the Assumptions | Dynamics tab allow different degrees of approximation on
+the mass, energy, and momentum equations of the components.
+<ul>
+<li>DynamicFreeInitial: dynamic equations are considered (nonzero storage), no 
+initial equations are provided, and the start values are used as guess values.</li>
+<li>FixedInitial: dynamic equations are considered (nonzero storage) and initial
+equations are included, fixing the states to the start values provided by the
+component parameters.</li>
+<li>SteadyStateInitial: dynamic equations are considered (nonzero storage), initial
+equations are included, declaring that the state derivatives are zero (steady-state
+initialization) and the start values are used as guess values for the nonlinear solver. </li>
+<li>SteadyState: algebraic (or static) balance equations are considered (no storage)
+and the start values are used as guess values for the nonlinear solver.</li>
+</ul>
+It is then possible to neglect the storage of mass, momentum, and energy in the whole system
+(or just in parts of it) just by a few mouse clicks in a GUI, and also to change the type of
+initialization when considering dynamic models. Please note that some combinations of the
+options might be contradictory, and will therefore trigger compilation errors.
 
+</p>
 </html>"));
     end CustomizingModel;
     annotation (Documentation(info="<html>
 <h4><font color=\"#008000\" >Building system models</font></h4>
 <p>
-This section is a quick primer explaing how to build a system model using Modelica_Fluid.
-It covers some key issues as the System component, the definition of medium models in the
+This section is a quick primer explaining how to build a system model using Modelica_Fluid.
+It covers some key issues, such as the System component, the definition of medium models in the
 system, and the typical customizations available in the Modelica_Fluid models.
 </p> 
 </html>"));
@@ -2323,6 +2366,7 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
+
 annotation (
   version="1.0",
   versionBuild="$Rev$",
@@ -2334,11 +2378,11 @@ annotation (
       "Fittings", "Sources", "Sensors", "Interfaces", "Types", "Utilities", "Icons", "Test", "*"},
   Documentation(info="<html>
 <p>
-The <b>Modelica_Fluid</b> library is a <b>free</b> Modelica package provided under the
+Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
 The library contains components describing
-<b>1-dimensional thermo-fluid flow</b> in networks of vessels, pipes, fluid machines, valves and fittings. 
-A unique feature is that the component equations and the media models
+<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
+component equations and the media models
 as well as pressure loss and heat transfer correlations are decoupled from each other.
 All components are implemented such that they can be used for
 media from the Modelica.Media library. This means especially that an
