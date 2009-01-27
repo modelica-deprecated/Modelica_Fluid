@@ -238,7 +238,7 @@ In the simpler case of a one-to-one connections between port_a and port_b,
 inStream(port_a.h_outflow) just returns port_b.h_outflow. For multiple-way connections,
 mixing equations are generated, and special care is taken in order to avoid discontinuities
 around zero flow rates. For more details, see this 
-<a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rational.pdf\">presentation</a>
+<a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rationale.pdf\">presentation</a>
 which illustrates the stream concept rationale and the underlying technicalities. 
 </p>
  
