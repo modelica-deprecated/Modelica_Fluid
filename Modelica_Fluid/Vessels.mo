@@ -404,12 +404,12 @@ This base class extends PartialLumpedVolume with a vector of fluid ports and a r
 <p>
 The following modeling assumption are made:
 <ul>
-<li><tt>homogenous medium, </tt>i.e. phase seperation is not taken into account.</li>
-<li><tt>no kinetic energy in the fluid, </tt>i.e. kinetic energy dissipates into the internal energy.</li>
-<li><tt>each port has check valve behavior,  </tt> in case of <tt> portsData_height[i] &ge; fluidlevel </tt> massflow at the port is set to 0.</li>
+<li>homogenous medium, i.e. phase seperation is not taken into account.</li>
+<li>no kinetic energy in the fluid, i.e. kinetic energy dissipates into the internal energy.</li>
+<li>outflow of ambient media is prevented at each port assuming check valve behavior. If <tt> fluidlevel &lt; portsData_height[i] </tt>and &nbsp; <tt> ports[i].p &lt; vessel_ps_static[i]</tt> massflow at the port is set to 0.</li>
 </ul>
 </p>
-Each port has a (hydraulic) diameter and a height above the bottom of the vessel, which can be configured using the <b><tt>portsData</tt></b> record.
+Each port has a (hydraulic) diameter and a height above the bottom of the vessel, which can be configured using the &nbsp;<b><tt>portsData</tt></b> record.
 Alternatively the impact of port geometries can be neglected with <tt>use_portsData=false</tt>. This might be useful for early
 design studies. Note that this means to assume an infinite port diameter at the bottom of the vessel. 
 Pressure drops and heights of the ports as well as kinetic and potential energy fluid entering or leaving the vessel are neglected then.
