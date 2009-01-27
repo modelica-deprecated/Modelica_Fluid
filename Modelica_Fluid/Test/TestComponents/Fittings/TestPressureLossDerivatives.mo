@@ -35,7 +35,7 @@ equation
   mu_b = 0.4*d2mu*rho_b;
 
   m_flow1 = QuadraticTurbulent.massFlowRate_dp(dp, rho_a, rho_b, data, dp_small);
-  m_flow2 = QuadraticTurbulent.massFlowRate_dp_anrho_Re(dp, rho_a, rho_b, mu_a, mu_b, data);
+  m_flow2 = QuadraticTurbulent.massFlowRate_dp_and_Re(dp, rho_a, rho_b, mu_a, mu_b, data);
 
   der_m_flow1 = der(m_flow1);
   // der_m_flow2 = der(m_flow2);

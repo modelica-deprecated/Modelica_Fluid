@@ -1243,7 +1243,7 @@ where
  
 </html>"));
 
-      function massFlowRate_dp_anrho_Re
+      function massFlowRate_dp_and_Re
         "Return mass flow rate from constant loss factor data, pressure drop and Re (m_flow = f(dp))"
               extends Modelica.Icons.Function;
 
@@ -1342,7 +1342,7 @@ Laminar region:
                   (rho_a + rho_b)/(k0*(mu_a + mu_b)) else 0;
          m_flow := Utilities.regRoot2(dp, dp_turbulent, rho_a/k1, rho_b/k2,
                                                      data.zetaLaminarKnown, yd0);
-      end massFlowRate_dp_anrho_Re;
+      end massFlowRate_dp_and_Re;
 
       function pressureLoss_m_flow
         "Return pressure drop from constant loss factor and mass flow rate (dp = f(m_flow))"
@@ -1384,7 +1384,7 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
         dp :=Utilities.regSquare2(m_flow, m_flow_small, k1/rho_a, k2/rho_b);
       end pressureLoss_m_flow;
 
-      function pressureLoss_m_flow_anrho_Re
+      function pressureLoss_m_flow_and_Re
         "Return pressure drop from constant loss factor, mass flow rate and Re (dp = f(m_flow))"
               extends Modelica.Icons.Function;
 
@@ -1481,7 +1481,7 @@ Laminar region:
         yd0 :=if data.zetaLaminarKnown then k0*(mu_a + mu_b)/(rho_a + rho_b) else 0;
         dp :=Utilities.regSquare2(m_flow, m_flow_turbulent, k1/rho_a, k2/rho_b,
                                                  data.zetaLaminarKnown, yd0);
-      end pressureLoss_m_flow_anrho_Re;
+      end pressureLoss_m_flow_and_Re;
 
       partial model BaseModel
         "Generic pressure drop component with constant turbulent loss factor data and without an icon"
@@ -1528,7 +1528,7 @@ Laminar region:
         F_fg = A_mean*dp_fg;
         if from_dp then
            m_flow = if use_Re then 
-                       massFlowRate_dp_anrho_Re(
+                       massFlowRate_dp_and_Re(
                           dp_fg, Medium.density(state_a), Medium.density(state_b),
                           Medium.dynamicViscosity(state_a),
                           Medium.dynamicViscosity(state_b),
@@ -1536,7 +1536,7 @@ Laminar region:
                        massFlowRate_dp(dp_fg, Medium.density(state_a), Medium.density(state_b), data, dp_small);
         else
            dp_fg = if use_Re then 
-                   pressureLoss_m_flow_anrho_Re(
+                   pressureLoss_m_flow_and_Re(
                        m_flow, Medium.density(state_a), Medium.density(state_b),
                        Medium.dynamicViscosity(state_a),
                        Medium.dynamicViscosity(state_b),
