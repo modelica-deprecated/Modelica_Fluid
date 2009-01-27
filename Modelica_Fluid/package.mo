@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -2241,7 +2240,6 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
-
 annotation (
   version="1.0",
   versionBuild="$Rev$",
@@ -2253,11 +2251,11 @@ annotation (
       "Fittings", "Sources", "Sensors", "Interfaces", "Types", "Utilities", "Icons", "Test", "*"},
   Documentation(info="<html>
 <p>
-Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
+The <b>Modelica_Fluid</b> library is a <b>free</b> Modelica package provided under the
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
 The library contains components describing
-<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models
+<b>1-dimensional thermo-fluid flow</b> in networks of vessels, pipes, fluid machines, valves and fittings. 
+A unique feature is that the component equations and the media models
 as well as pressure loss and heat transfer correlations are decoupled from each other.
 All components are implemented such that they can be used for
 media from the Modelica.Media library. This means especially that an

@@ -119,13 +119,13 @@ This example is based on
       height=4,
       nPorts=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-            diameter=0.2, 
-            height=4, 
-            zeta_out=0, 
+            diameter=0.2,
+            height=4,
+            zeta_out=0,
             zeta_in=1),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-            diameter=0.2, 
-            height=0, 
-            zeta_out=0, 
+            diameter=0.2,
+            height=0,
+            zeta_out=0,
             zeta_in=1)})    annotation (Placement(transformation(extent={{10,30},
               {50,70}},      rotation=0)));
     Modelica.Blocks.Sources.RealExpression level1(y=tank1.level) 
@@ -154,13 +154,13 @@ This example is based on
       crossArea=6,
       nPorts=2,
       portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-            diameter=0.2, 
-            height=5, 
-            zeta_out=0, 
+            diameter=0.2,
+            height=5,
+            zeta_out=0,
             zeta_in=1),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
-            diameter=0.2, 
-            height=0, 
-            zeta_out=0, 
+            diameter=0.2,
+            height=0,
+            zeta_out=0,
             zeta_in=1)})   annotation (Placement(transformation(extent={{50,-60},
               {90,-20}},       rotation=0)));
     Modelica_Fluid.Sources.Boundary_pT ambient1(redeclare package Medium = 
@@ -502,9 +502,9 @@ This example is based on
                 100}}),
           graphics={Rectangle(
               extent={{-100,-100},{100,100}},
-              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0}
-                   else {192,192,192}),
-              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then
+              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0} else 
+                        {192,192,192}),
+              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then 
                   FillPattern.Solid else FillPattern.Solid),
               lineColor={128,128,128},
               lineThickness=0.5), Text(

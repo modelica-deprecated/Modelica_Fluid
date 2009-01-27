@@ -409,9 +409,11 @@ This base class extends PartialLumpedVolume with a vector of fluid ports and a r
 <p>
 The following modeling assumption are made:
 <ul>
-<li>homogenous medium, i.e. phase seperation is not taken into account.</li>
-<li>no kinetic energy in the fluid, i.e. kinetic energy dissipates into the internal energy.</li>
-<li>outflow of ambient media is prevented at each port assuming check valve behavior. If <tt> fluidlevel &lt; portsData_height[i] </tt>and &nbsp; <tt> ports[i].p &lt; vessel_ps_static[i]</tt> massflow at the port is set to 0.</li>
+<li>homogenous medium, i.e. phase seperation is not taken into account,</li>
+<li>no kinetic energy in the fluid, i.e. kinetic energy dissipates into the internal energy,</li>
+<li>pressure loss definitions at vessel ports assume incompressible fluid,</li>
+<li>outflow of ambient media is prevented at each port assuming check valve behavior. 
+    If <tt> fluidlevel &lt; portsData_height[i] </tt>and &nbsp; <tt> ports[i].p &lt; vessel_ps_static[i]</tt> massflow at the port is set to 0.</li>
 </ul>
 </p>
 Each port has a (hydraulic) diameter and a height above the bottom of the vessel, which can be configured using the &nbsp;<b><tt>portsData</tt></b> record.
@@ -425,13 +427,16 @@ The following variables need to be defined by an extending model:
 <li><tt>vessel_ps_static[nPorts]</tt>, the static pressures inside the vessel at the height of the corresponding ports, at zero flow velocity, and</li>
 <li><tt>Wb_flow</tt>, work term of the energy balance, e.g. p*der(V) if the volume is not constant or stirrer power.</li>
 </ul>
+An extending model should define:
+<ul>
+<li><tt>parameter vesselArea</tt> (default: Modelica.Constants.inf m2), the area of the vessel, to be related to cross flow areas of the ports for the consideration of dynamic pressure effects.</li>
+</ul>
 Optionally the fluid level may vary in the vessel, which effects the flow through the ports at configurable <tt>portsData_height[nPorts]</tt>. 
 This is why an extending model with varying fluid level needs to define:
 <ul>
-<li><tt>input fluidLevel</tt>, the level the fluid in the vessel, and</li>
-<li><tt>input fluidLevel_max</tt>, the maximum level that must not be exceeded. Ports at or above fluidLevel_max can only receive inflow.</li>
+<li><tt>input fluidLevel (default: 0m)</tt>, the level the fluid in the vessel, and</li>
+<li><tt>parameter fluidLevel_max (default: 1m)</tt>, the maximum level that must not be exceeded. Ports at or above fluidLevel_max can only receive inflow.</li>
 </ul>
-<p>
 An extending model should not access the <tt>portsData</tt> record defined in the configuration dialog,
 as an access to <tt>portsData</tt> may fail for <tt>use_portsData=false</tt> or <tt>nPorts=0</tt>.
 Instead the predefined variables 
@@ -441,7 +446,7 @@ Instead the predefined variables
 <li><tt>portsData_zeta_in[nPorts]</tt></li>, and
 <li><tt>portsData_zeta_out[nPorts]</tt></li>
 </ul>
-should be used, if needed by an extending model.
+should be used if these values are needed.
 </p>
 </html>",       revisions="<html>
 <ul>
