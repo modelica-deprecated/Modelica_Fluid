@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -2242,7 +2241,6 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
-
 annotation (
   version="1.0",
   versionBuild="$Rev$",
@@ -2286,19 +2284,20 @@ in the Users Guide before using this library.
 </p>
  
 <p>
-A typical example model of the Modelica_Fluid library
-is shown in the next figure (drum boiler):
+A simple example model demonstrating many features of the Modelica_Fluid library, including dynamic and steady-state simulation, 
+embedded idealized control, as well as the treatment of zero flow rates and closed flow cycles, 
+is shown in the next figure (heating system):
 </p>
 <p align=\"center\">
-<img src=\"../Images/UsersGuide/DrumBoiler.png\">
+<img src=\"../Images/UsersGuide/HeatingSystem.png\">
 </p>
 <p>
-An example of a tank system that is controlled by a control system
-and where some of the components have built-in diagram animation
+Some of the components have built-in diagram animation.
+An example of a tank system that is controlled by an explicitly modeled control system
 is shown in the next figure:
 </p>
 <p align=\"center\">
-<img src=\"../Images/Examples/ControlledTanks1.png\">
+<img src=\"../Images/UsersGuide/ControlledTanks.png\">
 </p>
 <p>
 The following parts are useful, when newly starting with this library:

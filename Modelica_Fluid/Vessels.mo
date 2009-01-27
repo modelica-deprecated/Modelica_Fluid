@@ -49,7 +49,7 @@ the direction of mass flow. See <a href=\"Modelica://Modelica_Fluid.Vessels.Base
     end ClosedVolume;
 
 model OpenTank "Simple tank with inlet/outlet ports"
-  import Modelica.Constants.pi;
+    import Modelica.Constants.pi;
 
   // Tank properties
   SI.Height level(stateSelect=StateSelect.prefer, start=max(level_start, Modelica.Constants.eps))

@@ -49,7 +49,7 @@ model HeatingSystem "Simple model of a heating system"
   Sensors.MassFlowRate sensor_m_flow(redeclare package Medium = Medium) 
     annotation (Placement(transformation(extent={{-20,10},{0,30}},   rotation=
            0)));
-  Modelica.Thermal.HeatTransfer.Sources.FixedTemperature T_ambient(T=system.T_ambient)
+  Modelica.Thermal.HeatTransfer.Sources.FixedTemperature T_ambient(T=system.T_ambient) 
     annotation (Placement(transformation(extent={{-14,-27},{0,-13}}, rotation=
            0)));
   Modelica.Thermal.HeatTransfer.Components.ThermalConductor wall(G=1.6e3/20) 

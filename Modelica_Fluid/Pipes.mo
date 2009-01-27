@@ -1461,7 +1461,7 @@ simulation and/or might give a more robust simulation.
           pathLengths_internal=pathLengths_nominal,
           useUpstreamScheme=false);
 
-            import Modelica.Constants.pi;
+        import Modelica.Constants.pi;
 
             // variables for nominal pressure loss
             SI.Length[n-1] pathLengths_nominal
