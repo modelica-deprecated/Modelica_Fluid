@@ -23,7 +23,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
         extent={{-9,-10},{11,10}},
         rotation=90)));
 
-  Modelica_Fluid.Machines.PrescribedPump pumps(
+  Machines.PrescribedPump pumps(
     checkValve=true,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
@@ -31,11 +31,12 @@ model PumpingSystem "Model of a pumping system for drinking water"
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
           V_flow_nominal={0,0.25,0.5}, head_nominal={100,60,0}),
-    use_V=true,
     V=50/1000,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_N_in=true,
-    nParallel=1) 
+    nParallel=1,
+    energyDynamics=Modelica_Fluid.Types.Dynamics.DynamicFreeInitial,
+    massDynamics=Modelica_Fluid.Types.Dynamics.DynamicFreeInitial) 
     annotation (Placement(transformation(extent={{-68,-80},{-48,-60}}, rotation=
            0)));
 
@@ -136,8 +137,8 @@ equation
   connect(userValve.port_b, sink.ports[1])     annotation (Line(points={{74,-30},
           {77,-30},{77,-28},{80,-28}},
                     color={0,127,255}));
-  connect(source.ports[1], pumps.port_a) annotation (Line(points={{-80,-70},{-68,
-          -70}},                             color={0,127,255}));
+  connect(source.ports[1], pumps.port_a) annotation (Line(points={{-80,-70},{
+          -74,-70},{-68,-70}},               color={0,127,255}));
   connect(valveOpening.y, userValve.opening) annotation (Line(points={{77,10},{
           98,10},{98,-12},{66,-12},{66,-23.6}}, color={0,0,127}));
   connect(RelativePressureSetPoint.y, controller.reference) 

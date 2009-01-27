@@ -36,7 +36,6 @@ annotation (
           V_flow_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     N_nominal=1500,
     checkValve=true,
-    use_V=true,
     V=0.1/1000,
     use_N_in=true,
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,

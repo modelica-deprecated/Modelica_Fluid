@@ -14,8 +14,7 @@ package Machines
     // Mass and energy balance, ports
     extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
       final fluidVolume = V,
-      final vesselArea = pistonCrossArea,
-      heatTransfer(surfaceAreas={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*flange.s}));
+      heatTransfer(surfaceAreas={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*(flange.s+clearance/pistonCrossArea)}));
 
     Modelica.Mechanics.Translational.Interfaces.Flange_b flange
       "translation flange for piston" annotation (Placement(transformation(
@@ -90,6 +89,7 @@ package Machines
   <li>piston stroke given by the flange position s</li>
   <li>clearance (volume at flang position = 0)</li>
 </ul> 
+<p>Losses are neglected. The shaft power is completely converted into mechanical work on the fluid. </p>
  
 <p> The flange position has to be equal or greater than zero. Otherwise the simulation stops. The force of the flange results from the pressure difference between medium and ambient pressure and the cross sectional piston area. For using the component, a top level instance of the ambient model with the inner attribute is needed.</p>
 <p> The pressure at both fluid ports equals the medium pressure in the volume. No suction nor discharge valve is included in the model.</p>
@@ -306,7 +306,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
       import Modelica.Constants;
 
     extends Modelica_Fluid.Interfaces.PartialTwoPort(
-      port_b_exposesState = use_V,
+      port_b_exposesState = energyDynamics<>Types.Dynamics.SteadyState or massDynamics<>Types.Dynamics.SteadyState,
       port_a(
         p(start=p_a_start),
         m_flow(start = m_flow_start,
@@ -359,17 +359,15 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
     // Assumptions
     parameter Boolean checkValve=false "= true to prevent reverse flow" 
       annotation(Dialog(tab="Assumptions"), Evaluate=true);
-    parameter Boolean use_V = false
-        "= true to consider the fluid volume and storage inside the pump" 
-      annotation(Dialog(tab="Assumptions"), Evaluate=true);
+
     parameter SI.Volume V = 0 "Volume inside the pump" 
-      annotation(Dialog(tab="Assumptions",enable=use_V or use_HeatTransfer));
+      annotation(Dialog(tab="Assumptions"),Evaluate=true);
 
     // Energy and mass balance
     extends Modelica_Fluid.Interfaces.PartialLumpedVolume(
-        final fluidVolume = if use_V then V else 0,
-        energyDynamics = if use_V then system.energyDynamics else Types.Dynamics.SteadyState,
-        massDynamics = if use_V then system.massDynamics else Types.Dynamics.SteadyState,
+        final fluidVolume = V,
+        energyDynamics = Types.Dynamics.SteadyState,
+        massDynamics = Types.Dynamics.SteadyState,
         final p_start = p_b_start);
 
     // Heat transfer through boundary, e.g. to add a housing
@@ -541,8 +539,8 @@ If zero flow rate conditions are always avoided, this dynamic effect can be negl
 <p><b>Dynamics options</b></p>
 <p>
 Steady-state mass and energy balances are assumed per default, neglecting the holdup of fluid in the pump. 
-The boolean parameter <tt>use_V</tt> can be set to true to consider the fluid volume with 
-regular mass and energy balances. This might be desirable if the pump is assembled together with valves before port_a and behind port_b. 
+Dynamic mass and energy balance can be used by setting the corresponding dynamic parameters.
+This might be desirable if the pump is assembled together with valves before port_a and behind port_b. 
 If both valves are closed, then the fluid is useful to define the thermodynamic state and in particular the absolute pressure in the pump. 
 Note that the <tt>flowCharacteristic</tt> only specifies a pressure difference.
 </p>

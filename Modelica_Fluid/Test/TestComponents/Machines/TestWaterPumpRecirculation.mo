@@ -38,12 +38,14 @@ annotation (
           V_flow_nominal={0,0.001,0.0015}, head_nominal={100,50,0}),
     N_nominal=1500,
     use_N_in=true,
-    use_V=true,
     V=0.1/1000,
     redeclare package Medium = 
         Modelica.Media.Water.ConstantPropertyLiquidWater,
     p_a_start=100000,
-    p_b_start=700000)     annotation (Placement(transformation(extent={{-46,-40},
+    p_b_start=700000,
+    energyDynamics=Modelica_Fluid.Types.Dynamics.DynamicFreeInitial,
+    massDynamics=Modelica_Fluid.Types.Dynamics.DynamicFreeInitial) 
+                          annotation (Placement(transformation(extent={{-46,-40},
             {-14,-10}},rotation=0)));
 
   inner Modelica_Fluid.System system 

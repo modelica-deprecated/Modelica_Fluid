@@ -274,10 +274,11 @@ present that are regulated by a central control system.
       use_N_in=true,
       show_NPSHa=true,
       V(displayUnit="ml") = 0.0001,
-      use_V=true,
+      checkValve=true,
       p_a_start=100000,
       p_b_start=100000,
-      checkValve=true) 
+      energyDynamics=Modelica_Fluid.Types.Dynamics.DynamicFreeInitial,
+      massDynamics=Modelica_Fluid.Types.Dynamics.DynamicFreeInitial) 
       annotation (Placement(transformation(extent={{-140,-260},{-160,-240}},
             rotation=0)));
     Machines.PrescribedPump P2(
@@ -291,10 +292,11 @@ present that are regulated by a central control system.
       use_N_in=true,
       show_NPSHa=true,
       V(displayUnit="ml") = 0.0001,
-      use_V=true,
+      checkValve=true,
       p_a_start=100000,
       p_b_start=100000,
-      checkValve=true) 
+      energyDynamics=Modelica_Fluid.Types.Dynamics.DynamicFreeInitial,
+      massDynamics=Modelica_Fluid.Types.Dynamics.DynamicFreeInitial) 
       annotation (Placement(transformation(extent={{120,-260},{140,-240}},
             rotation=0)));
     Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts B1(
@@ -1255,7 +1257,8 @@ handled properly.</p>
               lineColor={0,0,0},
               fillColor={85,170,255},
               fillPattern=FillPattern.VerticalCylinder),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-200,84},{0,48}},
               lineColor={0,0,255},
@@ -1283,8 +1286,8 @@ handled properly.</p>
               extent={{-195,-38},{-5,-58}},
               lineColor={0,0,0},
               textString=DynamicSelect("%level_start", realString(
-                      level,
-                      1,
+                      level, 
+                      1, 
                       2)))}),
         Documentation(info="<HTML>
 <p>
@@ -2088,8 +2091,8 @@ end for;
               extent={{-95,-39},{95,-59}},
               lineColor={0,0,0},
               textString=DynamicSelect("%level_start", realString(
-                    level,
-                    1,
+                    level, 
+                    1, 
                     2)))}),
         Documentation(info="<HTML>
 <p> 
