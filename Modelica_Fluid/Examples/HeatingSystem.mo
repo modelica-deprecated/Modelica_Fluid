@@ -15,8 +15,8 @@ model HeatingSystem "Simple model of a heating system"
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
         0.01),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
         0.01)},
-    redeclare model HeatTransfer =
-        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer (k=10))
+    redeclare model HeatTransfer = 
+        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer (k=10)) 
               annotation (Placement(transformation(extent={{-80,30},{-60,50}},
           rotation=0)));
   Machines.ControlledPump pump(
@@ -43,14 +43,13 @@ model HeatingSystem "Simple model of a heating system"
     dp_nominal=10000) 
     annotation (Placement(transformation(extent={{60,-80},{40,-60}},
                                                                    rotation=0)));
-  Modelica.Blocks.Interfaces.RealOutput flowRate 
+  Modelica.Blocks.Interfaces.RealOutput m_flow 
     annotation (Placement(transformation(extent={{-6,34},{6,46}},   rotation=
             0)));
-  Sensors.MassFlowRate massFlowRate(redeclare package Medium = Medium) 
+  Sensors.MassFlowRate sensor_m_flow(redeclare package Medium = Medium) 
     annotation (Placement(transformation(extent={{-20,10},{0,30}},   rotation=
            0)));
-  Modelica.Thermal.HeatTransfer.Sources.FixedTemperature ambientTemperature(
-                                                                    T=system.T_ambient) 
+  Modelica.Thermal.HeatTransfer.Sources.FixedTemperature T_ambient(T=system.T_ambient)
     annotation (Placement(transformation(extent={{-14,-27},{0,-13}}, rotation=
            0)));
   Modelica.Thermal.HeatTransfer.Components.ThermalConductor wall(G=1.6e3/20) 
@@ -115,7 +114,7 @@ model HeatingSystem "Simple model of a heating system"
   Modelica.Blocks.Interfaces.RealOutput tankLevel 
                                  annotation (Placement(transformation(extent={{-56,34},
             {-44,46}},          rotation=0)));
-  Modelica.Blocks.Sources.Step valveOpening(
+  Modelica.Blocks.Sources.Step handle(
     startTime=2000,
     height=0.9,
     offset=0.1)   annotation (Placement(transformation(extent={{26,-27},{40,-13}},
@@ -136,13 +135,13 @@ model HeatingSystem "Simple model of a heating system"
 
 equation
 tankLevel = tank.level;
-  connect(massFlowRate.m_flow, flowRate)        annotation (Line(points={{-10,31},
+  connect(sensor_m_flow.m_flow, m_flow)         annotation (Line(points={{-10,31},
           {-10,40},{0,40}},                     color={0,0,127}));
-  connect(massFlowRate.port_b, heater.port_a) 
+  connect(sensor_m_flow.port_b, heater.port_a) 
                                             annotation (Line(points={{0,20},{0,
           20},{30,20}},
                     color={0,127,255}));
-  connect(ambientTemperature.port, wall.port_a)              annotation (Line(
+  connect(T_ambient.port, wall.port_a)                       annotation (Line(
         points={{1.77636e-015,-20},{10,-20},{10,-40}},
                                             color={191,0,0}));
   connect(sensor_T_forward.T, T_forward)     annotation (Line(points={{67,40},{
@@ -156,11 +155,12 @@ tankLevel = tank.level;
       points={{-68,30},{-68,20},{-50,20}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(valveOpening.y, valve.opening) annotation (Line(
+  connect(handle.y, valve.opening)       annotation (Line(
       points={{40.7,-20},{50,-20},{50,-62}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(pump.port_b, massFlowRate.port_a) annotation (Line(
+  connect(pump.port_b, sensor_m_flow.port_a) 
+                                            annotation (Line(
       points={{-30,20},{-20,20}},
       color={0,127,255},
       smooth=Smooth.None));
