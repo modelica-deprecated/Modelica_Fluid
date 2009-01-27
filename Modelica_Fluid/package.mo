@@ -23,6 +23,7 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
 </HTML>"));
 
+
   class Overview "Overview"
 
     annotation (Documentation(info="<HTML>
@@ -84,18 +85,19 @@ This library has the following main features:
 <li> Two or more components can be connected together. This means that
      the pressures of all connected ports are equal and the mass flow rates
      sum up to zero. Specific enthalpy, mass fractions and trace substances are
-     mixed according to the mass flow rates.
-     The momentum balance and the energy balance are only fulfilled exactly if
-     two ports of equal diameter are connected. In all other cases, the balances
+     mixed according to the mass flow rates.<br>&nbsp;</li>
+<li> The <b>momentum balance</b> and the <b>energy balance</b> are only fulfilled exactly if
+     <b>two ports of equal diameter</b> are connected. In all other cases, the balances
      are approximated, because kinetic and friction effect are neglected; if these
      are important for the specific problem, and explicit fitting or junction should be used.
+     You can look at this example to see one case where the momentum balance essentially
+     depends on kinetic pressure, so it is necessary to use explicit fittings.
      <br>&nbsp;</li>
 <li> There is no restriction how components can be connected
      together. The resulting simulation performance however often strongly depends on the
      model structure and modeling assumptions made. In particular the direct connection of
      fluid volumes generally results in high-index DAEs for the pressures. The direct
-     connection of flow models generally results in algebraic equation systems.<br>&nbsp;</li>
- 
+     connection of flow models generally results in algebraic equation systems.<br>&nbsp;</li> 
 </ul>
 </HTML>
 "));
@@ -916,7 +918,6 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
 
     annotation (Documentation(info="<html>
 <h4><font color=\"#008000\" >Pump characteristics</font></h4>
- 
 <p>
 The control valves in
 <a href=\"Modelica://Modelica_Fluid.Valves\">Modelica_Fluid.Valves</a>
@@ -983,6 +984,88 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
   end ValveCharacteristics;
 
   end ComponentDefinition;
+
+  package BuldingSystemModels "Building system models"
+    package SystemComponent "System component"
+
+      annotation (Documentation(info="<html>
+<h4><font color=\"#008000\" >System component</font></h4>
+<p>
+The Modelica_Fluid library is designed so that each model of a system must
+include an instance <tt>system</tt> of the <tt>System</tt> component at the top level, in the same way as the <tt>World</tt> model of the MultiBody Library. The System component contains the parameters that
+describe the environment surrounding the components (ambient pressure and
+temperature, gravity acceleration), and also provides default settings
+for many parameters which are used consistently by the models in the library. These parameters are then propagated to the individual components
+using the inner/outer variable mechanism. In case the system model is structured hieararchically, it is possible to either put a single System
+component at the top level, or possibly to put many of them at different levels, which will only influence the system compoenents from that level down. 
+</p>
+<p>All the parameters defined in the System model are used as default values for the parameters of the individual components of the system model. Note that it is always possible to ovverride these defaults locally by changing the value of the parameters in the specific component instance.
+</p>
+<ul>
+<li>
+The <i>General</i> tab of the System model allows to set the default enviroment variables (pressure, temperature and gravity) and the default medium model
+used by all the components.</li>
+<li>
+The <i>Assumptions</i> tab allows to change the default modelling assumptions
+used by all the components (see the section <i>Customizing a system model later</i>)</li>
+<li>
+The <i>Initialization</i> tab allows to define default start values for mass flow rates, pressures and temperatures in the model; this can be useful to help nonlinear solver converge to the solution of any nonlinear system of equations that involves such variables, by providing meaningful guess values. </li>
+<li>
+The <i>Advanced</i> tab contains default values for parameters used in
+the advanced settings of some components.</i>
+</ul>
+<p>
+Remember to <b>always add a System component</b> at the top level of
+your system model, otherwise you will get errors when compiling the model. The tool will automatically name it <tt>system</tt>, so that it
+is recognised by all other components.
+</p>
+</html>"));
+    end SystemComponent;
+
+    package MediumDefinition "Definition of the medium models"
+
+      annotation (Documentation(info="<html>
+<h4><font color=\"#008000\" >Definition of the medium models</font></h4>
+<p>
+All the models in Modelica_Fluid compute fluid properties by using medium
+models defined by Modelica.Media packages. Custom fluid models can also be
+used, provided they extend the interfaces defined in
+Modelica.Media.Interfaces.
+</p>
+<p>
+All the components in Modelica_Fluid use a <i>replaceable</i> medium package, called <tt>Medium</tt>: the model is written for a generic fluid, and a specific fluid model can then be specified when building a system model by redeclaring the package. This can be done in different ways:
+<ul>
+<li>
+If the system only uses one medium, it is possible to specify it in the System component as the default medium, and then all the individual component will use this default.</li>
+<li>
+If several components use the same medium, it is possible to select
+all of them within a GUI, and set them simultaneously (as they are
+all named Medium).
+</li>
+<li>It is also possible to declare one or more (possibly replaceable) medium packages in the model, and then use them to set up the individual
+components</li>.
+</ul>
+</html>"));
+    end MediumDefinition;
+
+    package CustomizingModel "Customizing a system model"
+
+      annotation (Documentation(info="<html>
+<h4><font color=\"#008000\" >Customizing a system model</font></h4>
+<p>
+</p>
+
+</html>"));
+    end CustomizingModel;
+    annotation (Documentation(info="<html>
+<h4><font color=\"#008000\" >Building system models</font></h4>
+<p>
+This section is a quick primer explaing how to build a system model using Modelica_Fluid.
+It covers some key issues as the System component, the definition of medium models in the
+system, and the typical customizations available in the Modelica_Fluid models.
+</p> 
+</html>"));
+  end BuldingSystemModels;
 
   class ReleaseNotes "Release notes"
 
@@ -2283,20 +2366,19 @@ in the Users Guide before using this library.
 </p>
  
 <p>
-A simple example model demonstrating many features of the Modelica_Fluid library, including dynamic and steady-state simulation, 
-embedded idealized control, as well as the treatment of zero flow rates and closed flow cycles, 
-is shown in the next figure (heating system):
+A typical example model of the Modelica_Fluid library
+is shown in the next figure (drum boiler):
 </p>
 <p align=\"center\">
-<img src=\"../Images/UsersGuide/HeatingSystem.png\">
+<img src=\"../Images/UsersGuide/DrumBoiler.png\">
 </p>
 <p>
-Some of the components have built-in diagram animation.
-An example of a tank system that is controlled by an explicitly modeled control system
+An example of a tank system that is controlled by a control system
+and where some of the components have built-in diagram animation
 is shown in the next figure:
 </p>
 <p align=\"center\">
-<img src=\"../Images/UsersGuide/ControlledTanks.png\">
+<img src=\"../Images/Examples/ControlledTanks1.png\">
 </p>
 <p>
 The following parts are useful, when newly starting with this library:
