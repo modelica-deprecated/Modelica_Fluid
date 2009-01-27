@@ -39,7 +39,7 @@ package Pipes "Devices for conveying fluid"
             final g=system.g) "Flow model" 
        annotation (Placement(transformation(extent={{-38,-18},{38,18}},rotation=0)));
   equation
-    // Momentum and Mass balance
+    // Mass balance
     port_a.m_flow = flowModel.m_flows[1];
     0 = port_a.m_flow + port_b.m_flow;
     port_a.Xi_outflow = inStream(port_b.Xi_outflow);
@@ -57,20 +57,21 @@ package Pipes "Devices for conveying fluid"
 
     annotation (defaultComponentName="pipe",
   Documentation(info="<html>
-<p>Model of a straight pipe with steady-state mass, momentum and energy balances. The model does not store mass or energy. 
-Instead the momentum balance is formulated for the thermodynamic states obtained through the ports.
-With the stream connectors these states are defined by models with storage or by sources placed upstream and downstream of the static pipe
-and possible state transformations defined by other components in the flow path. 
-</p>
-<p>
-Note that this generally leads to nonlinear equation systems if multiple static pipes, or other flow models without storage, are directly connected.
-</p>
-<p>
-The intended use is for simple connections of vessels or other devices with storage, see e.g. 
+<p>Model of a straight pipe with constant cross section and with steady-state mass, momentum and energy balances, i.e. the model does not store mass or energy. 
+There exist two thermodynamic states, one at each fluid port. The momentum balance is formulated for the two states, taking into account 
+momentum flows, friction and gravity. The same result can be obtained by using <a href=\"Modelica:Modelica_Fluid.Pipes.DynamicPipe\">DynamicPipe</a> with 
+steady-state dynamic settings. The intended use is to provide simple connections of vessels or other devices with storage, as it is done in:
 <ul>
-<li><a href=\"Modelica:Modelica_Fluid.Examples.Tanks.TanksWithEmptyingPipe1\">Examples.Tanks.TanksWithEmptyingPipe1</a></li>, or
+<li><a href=\"Modelica:Modelica_Fluid.Examples.Tanks.TanksWithEmptyingPipe1\">Examples.Tanks.TanksWithEmptyingPipe1</a></li>
 <li><a href=\"Modelica:Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
 </ul>
+ 
+<h4>Numerical Issues</h4>
+With the stream connectors the thermodynamic states on the ports are generally defined by models with storage or by sources placed upstream and downstream of the static pipe.
+Other non storage components in the flow path may yield to state transformation. Note that this generally leads to nonlinear equation systems if multiple static pipes, 
+or other flow models without storage, are directly connected.
+<br><br><br><br>
+ 
 </p>
 </html>"),
   Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
@@ -459,10 +460,10 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
       SI.Velocity[nFM+1] vsFM "Mean velocities in flow segments";
       SI.Length[nFM+1] dimensionsFM "Hydraulic diameters of flow segments";
       SI.Height[nFM+1] roughnessesFM "Average heights of surface asperities";
+
     equation
       assert(nNodes > 1 or modelStructure <> ModelStructure.av_vb,
          "nNodes needs to be at least 2 for modelStructure av_vb, as flow model disappears otherwise!");
-
       // staggered grid discretization of geometry for flowModel, depending on modelStructure
       if useLumpedPressure then
         if modelStructure <> ModelStructure.a_v_b then
@@ -1396,19 +1397,12 @@ Basically, different variants of the equation
 </p>
  
 <pre>
-   dp = &lambda;(Re,<font face=\"Symbol\">D</font>)*(L/D)*&rho;*v*|v|/2
+   dp = &lambda;(Re,<font face=\"Symbol\">D</font>)*(L/D)*&rho;*v*|v|/2.
 </pre>
  
 <p>
-are used, where the friction loss factor &lambda; is shown
-in the next figure:
-</p>
- 
-<img src=\"../Images/Components/PipeFriction1.png\">
- 
-<p>
-By default, the correlations are computed with media data
-at the actual time instant.
+
+By default, the correlations are computed with media data at the actual time instant.
 In order to reduce non-linear equation systems, the parameters
 <b>use_mu_nominal</b> and <b>use_rho_nominal</b> provide the option
 to compute the correlations with constant media values
@@ -1548,14 +1542,6 @@ This relationship is only valid for large Reynolds numbers.
 The turbulent pressure loss correlation might be useful to optimize models that are only facing turbular flow.
 </p>
  
-<p>
-In the following figure the complete friction regime is shown.
-This component describes only the asymptotic behaviour for large
-Reynolds numbers, i.e., the values at the right ordinate where
-&lambda; is constant.
-</p>
- 
-<img src=\"../Images/Components/PipeFriction1.png\">
  
 </html>"));
           end TurbulentPipeFlow;
@@ -2066,12 +2052,10 @@ systems of equations can still further be reduced.
 </p>
  
 <p>
-In the following figure the complete friction regime is shown.
-This component describes only the \"light blue curve\" called
-<b>Hagen-Poiseuille</b>.
+In <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a> the complete friction regime is illustrated.
+This component describes only the <b>Hagen-Poiseuille</b> equation.
 </p>
- 
-<img src=\"../Images/Components/PipeFriction1.png\">
+<br>
  
 </html>"));
 
@@ -2249,13 +2233,12 @@ This relationship is only valid for large Reynolds numbers.
 </p>
  
 <p>
-In the following figure the complete friction regime is shown.
+In <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a> the complete friction regime is illustrated.
 This component describes only the asymptotic behaviour for large
 Reynolds numbers, i.e., the values at the right ordinate where
 &lambda; is constant.
 </p>
- 
-<img src=\"../Images/Components/PipeFriction1.png\">
+<br> 
  
 </html>"));
 
