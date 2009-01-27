@@ -113,7 +113,8 @@ The intended use is for simple connections of vessels or other devices with stor
       "Wall heat transfer" 
         annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
     Interfaces.HeatPorts_a[nNodes] heatPorts if use_HeatTransfer 
-      annotation (Placement(transformation(extent={{-10,45},{10,65}}), iconTransformation(extent={{-30,44},{32,60}})));
+      annotation (Placement(transformation(extent={{-10,45},{10,65}}), iconTransformation(extent={{-30,36},
+              {32,52}})));
 
     HeatTransfer heatTransfer(
       redeclare each final package Medium = Medium,
@@ -204,7 +205,7 @@ The intended use is for complex networks of pipes and other flow devices, like v
   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Rectangle(
-            extent={{-100,40},{100,-40}},
+            extent={{-100,44},{100,-44}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255}),
@@ -317,11 +318,11 @@ The intended use is for complex networks of pipes and other flow devices, like v
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
             grid={1,1}), graphics={Rectangle(
-              extent={{-100,46},{100,-47}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={192,192,192}), Rectangle(
               extent={{-100,40},{100,-40}},
+              fillPattern=FillPattern.Solid,
+              fillColor={95,95,95},
+              pattern=LinePattern.None), Rectangle(
+              extent={{-100,44},{100,-44}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={0,127,255})}),        Documentation(info="<html>

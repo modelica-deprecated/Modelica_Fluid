@@ -49,7 +49,7 @@ the direction of mass flow. See <a href=\"Modelica://Modelica_Fluid.Vessels.Base
     end ClosedVolume;
 
 model OpenTank "Simple tank with inlet/outlet ports"
-    import Modelica.Constants.pi;
+  import Modelica.Constants.pi;
 
   // Tank properties
   SI.Height level(stateSelect=StateSelect.prefer, start=max(level_start, Modelica.Constants.eps))
@@ -114,41 +114,29 @@ initial equation
           grid={1,1},
           initialScale=0.2), graphics={
           Rectangle(
-            extent={{-100,100},{100,0}},
+            extent={{-100,100},{100,-100}},
             lineColor={255,255,255},
             fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
+            fillPattern=FillPattern.VerticalCylinder),
           Rectangle(
             extent=DynamicSelect({{-100,-100},{100,10}}, {{-100,-100},{100,(-100
                  + 200*level/height)}}),
-            lineColor={0,127,255},
+            lineColor={0,0,0},
             fillColor={85,170,255},
-            fillPattern=FillPattern.Solid),
+            fillPattern=FillPattern.VerticalCylinder),
           Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,0,
                 0}),
           Text(
-            extent={{-95,75},{95,55}},
+            extent={{-95,60},{95,40}},
             lineColor={0,0,0},
             textString="level ="),
           Text(
-            extent={{-95,40},{95,20}},
+            extent={{-95,-24},{95,-44}},
             lineColor={0,0,0},
-            textString=DynamicSelect(" ", realString(
+            textString=DynamicSelect("%level_start", realString(
                 level, 
                 1, 
-                2))),
-          Text(
-            extent={{-95,-40},{95,-20}},
-            lineColor={0,0,0},
-            textString="level_start ="),
-          Text(
-            extent={{-95,-75},{95,-55}},
-            lineColor={0,0,0},
-            textString="%level_start"),
-          Line(
-            points={{-100,100},{100,100}},
-            color={0,0,0},
-            pattern=LinePattern.Dot)}),
+                2)))}),
       Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the ambient at the fixed pressure
@@ -198,7 +186,6 @@ Limitation to bottom ports only, added inlet and outlet loss factors.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-equation
 
 end OpenTank;
 

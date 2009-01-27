@@ -78,7 +78,8 @@ package Tanks "Library demonstrating the usage of the tank model"
           rotation=90)));
   equation
     connect(pipe1.port_a, pipe2.port_a) annotation (Line(points={{-60,-20},{-60,
-            -40},{-6.12323e-016,-40},{-6.12323e-016,-20}}, color={0,127,255}));
+            -40},{0,-40},{0,-30},{0,-20},{-6.12323e-016,-20}},
+                                                           color={0,127,255}));
     connect(pipe2.port_a, pipe3.port_a) annotation (Line(points={{-6.12323e-016,
             -20},{0,-20},{0,-40},{60,-40},{60,-30}}, color={0,127,255}));
     connect(pipe3.port_b, tank3.ports[1]) 

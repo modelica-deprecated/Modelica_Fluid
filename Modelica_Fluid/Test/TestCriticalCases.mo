@@ -311,7 +311,7 @@ The steady-state initial values are observed by an assertion.
         annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
     Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort if use_HeatTransfer 
       annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=
-              0)));
+              0), iconTransformation(extent={{-10,35},{10,55}})));
 
     Pipes.StaticPipe staticPipe1(
       redeclare package Medium = Medium,
@@ -367,7 +367,7 @@ The steady-state initial values are observed by an assertion.
       annotation (Line(points={{60,0},{80,0},{100,0}},
                                                 color={0,127,255}));
     annotation (defaultComponentName="pipe",Icon(coordinateSystem(
-          preserveAspectRatio=false,
+          preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={Ellipse(
             extent={{-10,10},{10,-10}},

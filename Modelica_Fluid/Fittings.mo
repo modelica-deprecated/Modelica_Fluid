@@ -159,24 +159,19 @@ model SharpEdgedOrifice
               100}},
           grid={1,1}), graphics={
           Rectangle(
-            extent={{-100,60},{100,-60}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-100,50},{100,-50}},
+            extent={{-100,44},{100,-44}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255}),
           Polygon(
-            points={{-25,50},{-25,7},{35,45},{35,50},{-25,50}},
+            points={{-25,44},{-25,7},{35,37},{35,44},{-25,44}},
             lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={255,255,255}),
+            fillPattern=FillPattern.Backward,
+            fillColor={175,175,175}),
           Polygon(
-            points={{-24.5,-5},{-24.5,-50},{35.5,-50},{35.5,-45},{-24.5,-5}},
+            points={{-25,-7},{-25,-44},{35,-44},{35,-36},{-25,-7}},
             lineColor={0,0,0},
-            fillColor={255,255,255},
+            fillColor={175,175,175},
             fillPattern=FillPattern.Backward)}),
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
               100,100}},
@@ -287,19 +282,12 @@ model SuddenExpansion
             textString="diameter_b")}),
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}},
-          grid={1,1}), graphics={
-          Rectangle(
-            extent={{-100,60},{100,-60}},
+          grid={1,1}), graphics={Rectangle(
+            extent={{-100,22},{0,-22}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{-100,20},{0,-20}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={0,127,255}),
-          Rectangle(
-            extent={{0,50},{100,-50}},
+            fillColor={0,127,255}), Rectangle(
+            extent={{0,60},{100,-60}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255})}),
@@ -1747,33 +1735,29 @@ The used sufficient criteria for monotonicity follows from:
                0)));
 
       annotation(Icon(coordinateSystem(
-            preserveAspectRatio=false,
+            preserveAspectRatio=true,
             extent={{-100,-100},{100,100}},
             grid={1,1}), graphics={
             Rectangle(
-              extent={{-100,41},{100,-47}},
+              extent={{-100,44},{100,-44}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={192,192,192}),
-            Rectangle(
-              extent={{-100,37},{100,-43}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={0,127,255}),
-            Rectangle(
-              extent={{-34,100},{34,37}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.VerticalCylinder,
-              fillColor={192,192,192}),
-            Rectangle(
-              extent={{-30,100},{30,35}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.VerticalCylinder,
               fillColor={0,127,255}),
             Text(
               extent={{-150,-89},{150,-129}},
               lineColor={0,0,255},
-              textString="%name")}),
+              textString="%name"),
+            Rectangle(
+              extent={{-44,100},{44,44}},
+              lineColor={0,0,0},
+              fillPattern=FillPattern.VerticalCylinder,
+              fillColor={0,127,255}),
+            Rectangle(
+              extent={{-22,82},{21,-4}},
+              fillPattern=FillPattern.Solid,
+              fillColor={0,128,255},
+              pattern=LinePattern.None,
+              lineColor={0,0,0})}),
         Diagram(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},

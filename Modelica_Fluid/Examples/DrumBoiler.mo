@@ -351,12 +351,12 @@ Simulate for 7200 seconds.
             extent={{-100,-100},{100,100}},
             grid={1,1}), graphics={
             Rectangle(
-              extent={{-100,60},{100,-61}},
+              extent={{-100,64},{100,-64}},
               lineColor={0,0,0},
-              fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={192,192,192}),
+              fillPattern=FillPattern.Backward,
+              fillColor={135,135,135}),
             Rectangle(
-              extent={{-100,34},{100,-36}},
+              extent={{-100,44},{100,-44}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={0,127,255}),
@@ -373,7 +373,7 @@ Simulate for 7200 seconds.
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
             Ellipse(
-              extent={{48,34},{78,5}},
+              extent={{43,31},{73,2}},
               lineColor={0,0,255},
               pattern=LinePattern.None,
               fillColor={255,255,255},
@@ -385,7 +385,7 @@ Simulate for 7200 seconds.
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
             Ellipse(
-              extent={{47,14},{77,-15}},
+              extent={{50,15},{80,-14}},
               lineColor={0,0,255},
               pattern=LinePattern.None,
               fillColor={255,255,255},
@@ -397,19 +397,19 @@ Simulate for 7200 seconds.
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
             Ellipse(
-              extent={{71,0},{101,-29}},
+              extent={{71,-11},{101,-40}},
               lineColor={0,0,255},
               pattern=LinePattern.None,
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
             Ellipse(
-              extent={{74,14},{104,-15}},
+              extent={{72,28},{102,-1}},
               lineColor={0,0,255},
               pattern=LinePattern.None,
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
             Ellipse(
-              extent={{71,29},{101,0}},
+              extent={{71,40},{101,11}},
               lineColor={0,0,255},
               pattern=LinePattern.None,
               fillColor={255,255,255},
@@ -420,8 +420,20 @@ Simulate for 7200 seconds.
               fillPattern=FillPattern.HorizontalCylinder,
               fillColor={0,127,255},
               textString="%name"),
-            Line(points={{0,-61},{0,-100}}, color={191,0,0}),
-            Line(points={{100,100},{100,60}}, color={0,0,127})}),
+            Line(points={{0,-64},{0,-100}}, color={191,0,0}),
+            Line(points={{100,100},{100,60}}, color={0,0,127}),
+            Ellipse(
+              extent={{58,-11},{88,-40}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Ellipse(
+              extent={{71,1},{101,-28}},
+              lineColor={0,0,255},
+              pattern=LinePattern.None,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid)}),
         Documentation(revisions="<html>
 <ul>
 <li><i>Dec 2008</i>

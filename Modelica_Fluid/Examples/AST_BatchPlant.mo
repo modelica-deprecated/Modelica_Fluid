@@ -528,9 +528,8 @@ present that are regulated by a central control system.
             -110,-120}}, color={191,0,0}));
     connect(pipeB1B2.port_a, V4.port_b) annotation (Line(points={{0,240},{20,
             240}}, color={0,127,255}));
-    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-90,
-            -19.6},{-90,-8}},
-                       color={0,0,255}));
+    connect(B5.TopFluidPort[1], V12.port_a) annotation (Line(points={{-90,-19.6},
+            {-90,-8}}, color={0,0,255}));
     connect(V15.port_b, B7.topPorts[1]) annotation (Line(points={{-90,-92},{
             -90,-96},{-90,-99},{-90,-99}},
                     color={0,127,255}));
@@ -538,9 +537,8 @@ present that are regulated by a central control system.
             -180,-160}}, color={0,127,255}));
     connect(V25.port_b, pipePump2B2.port_a) annotation (Line(points={{160,-160},
             {160,0}}, color={0,127,255}));
-    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{60,-39},{
-            60,-28},{-29.6,-28}},
-                               color={0,127,255}));
+    connect(B6.topPorts[1], B5.Condensed) annotation (Line(points={{60,-39},{60,
+            -28},{-29.6,-28}}, color={0,127,255}));
     connect(CoolingB6.port, B6.heatPort) annotation (Line(points={{100,-60},{80,
             -60}}, color={191,0,0}));
     connect(HeatB5.port, B5.heatPort) annotation (Line(points={{-130,-40},{-110,
@@ -721,7 +719,8 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
+
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -734,7 +733,7 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
@@ -1247,35 +1246,24 @@ handled properly.</p>
         Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,-100},{
                 200,100}}), graphics={
             Rectangle(
-              extent={{-200,100},{0,-90}},
+              extent={{-200,100},{0,-100}},
               lineColor={255,255,255},
               fillColor={255,255,255},
-              fillPattern=FillPattern.Solid),
+              fillPattern=FillPattern.VerticalCylinder),
             Rectangle(
               extent=DynamicSelect({{-200,-100},{0,0}}, {{-200,-100},{0,(-100
                    + 200*level/height)}}),
-              lineColor={0,127,255},
+              lineColor={0,0,0},
               fillColor={85,170,255},
-              fillPattern=FillPattern.Solid),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+              fillPattern=FillPattern.VerticalCylinder),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
-              extent={{-198,74},{0,38}},
+              extent={{-200,84},{0,48}},
               lineColor={0,0,255},
               fillColor={0,127,255},
               fillPattern=FillPattern.Solid,
               textString="%name"),
-            Text(
-              extent={{-184,-64},{-14,-86}},
-              lineColor={0,0,0},
-              textString="%level_start"),
-            Text(
-              extent={{-192,-34},{-12,-54}},
-              lineColor={0,0,0},
-              textString="level_start ="),
-            Line(
-              points={{-200,100},{0,100}},
-              color={0,0,0},
-              pattern=LinePattern.Dot),
             Polygon(
               points={{0,100},{200,70},{200,50},{200,50},{0,80},{0,100}},
               lineColor={0,0,0},
@@ -1288,7 +1276,18 @@ handled properly.</p>
                   {88,88},{70,78},{50,92},{32,82},{28,100},{20,98},{20,98}},
               lineColor={0,0,0},
               fillPattern=FillPattern.HorizontalCylinder,
-              fillColor={170,255,255})}),
+              fillColor={170,255,255}),
+            Text(
+              extent={{-193,30},{-3,10}},
+              lineColor={0,0,0},
+              textString="level ="),
+            Text(
+              extent={{-195,-38},{-5,-58}},
+              lineColor={0,0,0},
+              textString=DynamicSelect("%level_start", realString(
+                      level, 
+                      1, 
+                      2)))}),
         Documentation(info="<HTML>
 <p>
 <p>This tank has the same geometric variables as TankWith3InletOutletArrays plus the feature of a HeatPort and the possibility of evaporation. 
@@ -2070,42 +2069,30 @@ end for;
               extent={{-100,-100},{100,100}},
               lineColor={255,255,255},
               fillColor={255,255,255},
-              fillPattern=FillPattern.Solid),
+              fillPattern=FillPattern.VerticalCylinder),
             Rectangle(
               extent=DynamicSelect({{-100,-100},{100,0}}, {{-100,-100},{100,(-100
                    + 200*level/height)}}),
-              lineColor={0,127,255},
-              fillColor={85,170,255},
-              fillPattern=FillPattern.Solid),
-            Text(
-              extent={{-94,19},{96,-1}},
               lineColor={0,0,0},
-              textString=DynamicSelect(" ", realString(
-                    level,
-                    1,
-                    3))),
-            Line(
-              points={{-100,100},{100,100}},
-              color={0,0,0},
-              pattern=LinePattern.Dot),
+              fillColor={85,170,255},
+              fillPattern=FillPattern.VerticalCylinder),
             Text(
               extent={{-94,90},{95,60}},
               lineColor={0,0,255},
               textString="%name"),
             Text(
-              extent={{-95,-85},{95,-65}},
-              lineColor={0,0,0},
-              textString="%level_start"),
-            Text(
-              extent={{-95,-55},{95,-35}},
-              lineColor={0,0,0},
-              textString="level_start ="),
-            Text(
-              extent={{-95,50},{95,30}},
+              extent={{-95,41},{95,21}},
               lineColor={0,0,0},
               textString="level ="),
             Line(points={{-100,100},{-100,-100},{100,-100},{100,100}}, color={0,
-                  0,0})}),
+                  0,0}),
+            Text(
+              extent={{-95,-39},{95,-59}},
+              lineColor={0,0,0},
+              textString=DynamicSelect("%level_start", realString(
+                    level, 
+                    1, 
+                    2)))}),
         Documentation(info="<HTML>
 <p> 
 Model of a tank that is open to the environment at the fixed pressure
@@ -2164,8 +2151,8 @@ Implemented trace substances and missing equation for outflow of multi substance
             grid={1,1},
             initialScale=0.2), graphics),
         uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
-  equation
 
+  equation
       connect(heatPort, heatTransfer.heatPorts[1]) annotation (Line(
           points={{-100,0},{-87,0},{-87,8.88178e-016},{-74,8.88178e-016}},
           color={191,0,0},

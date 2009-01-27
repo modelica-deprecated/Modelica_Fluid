@@ -254,11 +254,6 @@ explained in detail in the
           preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
-          Polygon(
-            points={{-100,50},{-100,-50},{0,0},{-100,50}},
-            lineColor={0,0,0},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),
           Line(points={{0,50},{0,0}}, color={0,0,0}),
           Rectangle(
             extent={{-20,60},{20,50}},
@@ -266,9 +261,10 @@ explained in detail in the
             fillColor={0,0,0},
             fillPattern=FillPattern.Solid),
           Polygon(
-            points={{100,50},{0,0},{100,-50},{100,50}},
+            points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
+            fillColor=DynamicSelect({255,255,255}, opening*{0,255,0} + (1 -
+                opening)*{255,255,255}),
             lineColor={0,0,0},
-            fillColor={255,255,255},
             fillPattern=FillPattern.Solid)}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
@@ -321,7 +317,8 @@ explained in detail in the
             fillPattern=FillPattern.Solid),
           Polygon(
             points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
-            fillColor={255,255,255},
+            fillColor=DynamicSelect({255,255,255}, if open > 0.5 then {0,255,0}
+                 else {255,255,255}),
             lineColor={0,0,0},
             fillPattern=FillPattern.Solid)}),
     Diagram(coordinateSystem(
@@ -397,8 +394,8 @@ it is open.
       constant SI.Area Kv2Av = 27.7e-6 "Conversion factor";
       constant SI.Area Cv2Av = 24.0e-6 "Conversion factor";
 
-      Modelica.Blocks.Interfaces.RealInput opening(min=-1e-10, max=1)
-        "Stem position in the range 0-1" 
+      Modelica.Blocks.Interfaces.RealInput opening(min=0, max=1)
+        "Valve position in the range 0-1" 
                                        annotation (Placement(transformation(
             origin={0,90},
             extent={{-20,-20},{20,20}},
@@ -425,20 +422,17 @@ it is open.
             extent={{-100,-100},{100,100}},
             grid={2,2}), graphics={
             Line(points={{0,52},{0,0}}, color={0,0,0}),
-            Polygon(
-              points={{-100,50},{-100,-50},{0,0},{-100,50}},
-              lineColor={0,0,0},
-              fillColor={255,255,255},
-              fillPattern=FillPattern.Solid),
-            Polygon(
-              points={{100,50},{0,0},{100,-50},{100,50}},
-              lineColor={0,0,0},
-              fillPattern=FillPattern.Solid,
-              fillColor={255,255,255}),
             Rectangle(
               extent={{-20,60},{20,52}},
               lineColor={0,0,0},
               fillColor={0,0,0},
+              fillPattern=FillPattern.Solid),
+            Polygon(
+              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}}, 
+
+              fillColor=DynamicSelect({255,255,255}, opening*{0,255,0} + (1 -
+                  opening)*{255,255,255}),
+              lineColor={0,0,0},
               fillPattern=FillPattern.Solid)}),
         Diagram(coordinateSystem(
             preserveAspectRatio=false,

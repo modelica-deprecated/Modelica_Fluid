@@ -482,12 +482,7 @@ with exception of boundary pressure, do not have an effect.
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Rectangle(
-            extent={{20,60},{100,-60}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{38,40},{100,-40}},
+            extent={{35,45},{100,-45}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255}),
@@ -663,12 +658,7 @@ with exception of boundary flow rate, do not have an effect.
           extent={{-100,-100},{100,100}},
           grid={1,1}), graphics={
           Rectangle(
-            extent={{20,60},{100,-60}},
-            lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
-            fillColor={192,192,192}),
-          Rectangle(
-            extent={{38,40},{100,-40}},
+            extent={{36,45},{100,-45}},
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255}),

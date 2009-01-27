@@ -12,12 +12,11 @@ model HeatingSystem "Simple model of a heating system"
     nPorts=2,
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     use_HeatTransfer=true,
-    redeclare model HeatTransfer = 
-        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.ConstantHeatTransfer (
-          alpha0=10),
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
         0.01),Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=
-        0.01)}) 
+        0.01)},
+    redeclare model HeatTransfer =
+        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer (k=10))
               annotation (Placement(transformation(extent={{-80,30},{-60,50}},
           rotation=0)));
   Machines.ControlledPump pump(
@@ -135,10 +134,6 @@ model HeatingSystem "Simple model of a heating system"
                                                                    rotation=-90,
         origin={80,-20})));
 
-  Modelica.Thermal.HeatTransfer.Sources.FixedTemperature ambientTemperature1(
-                                                                    T=system.T_ambient) 
-    annotation (Placement(transformation(extent={{-95,35},{-85,45}}, rotation=
-           0)));
 equation
 tankLevel = tank.level;
   connect(massFlowRate.m_flow, flowRate)        annotation (Line(points={{-10,31},
@@ -176,11 +171,11 @@ tankLevel = tank.level;
 
   connect(burner.port, heater.heatPorts[1]) 
                                           annotation (Line(
-      points={{36,40},{40.1,40},{40.1,25.2}},
+      points={{36,40},{40.1,40},{40.1,24.4}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(wall.port_b, radiator.heatPorts[1])              annotation (Line(
-      points={{10,-56},{10,-64.8},{9.9,-64.8}},
+      points={{10,-56},{10,-65.6},{9.9,-65.6}},
       color={191,0,0},
       smooth=Smooth.None));
   connect(sensor_T_forward.port, heater.port_b) 
@@ -200,16 +195,12 @@ tankLevel = tank.level;
       points={{0,-70},{-72,-70},{-72,30}},
       color={0,127,255},
       smooth=Smooth.None));
-  connect(ambientTemperature1.port, tank.heatPort) annotation (Line(
-      points={{-85,40},{-80,40}},
-      color={191,0,0},
-      smooth=Smooth.None));
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}},
+            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
             lineColor={0,0,255}), Text(
           extent={{-60,60},{60,-60}},
           lineColor={0,0,255},

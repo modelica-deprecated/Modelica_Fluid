@@ -748,8 +748,8 @@ Further source terms must be defined by an extending class for fluid flow across
 <li><tt><b>mbC_flow</b></tt>, trace substance mass flow.</li> 
 </ul>
 </html>"),
-        Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
-              -100},{100,100}}),
+        Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
+              {100,100}}),
                 graphics));
     end PartialLumpedVolume;
 
