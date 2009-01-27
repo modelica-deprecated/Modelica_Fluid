@@ -63,16 +63,16 @@ annotation (
     wNominal(displayUnit="1/min") = 157.07963267949,
     Ra=10,
     IaNominal=10) 
-           annotation (Placement(transformation(extent={{-54,3},{-30,27}})));
+           annotation (Placement(transformation(extent={{-54,28},{-30,52}})));
   Modelica.Electrical.Analog.Sources.StepVoltage stepVoltage(
     startTime=1,
     offset=0.1,
     V=400) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=-90,
-        origin={-80,15})));
+        origin={-80,40})));
   Modelica.Electrical.Analog.Basic.Ground ground 
-    annotation (Placement(transformation(extent={{-90,-23},{-70,-1}})));
+    annotation (Placement(transformation(extent={{-90,2},{-70,24}})));
   Modelica.Thermal.HeatTransfer.Components.HeatCapacitor housing(C=460*1) 
     annotation (Placement(transformation(extent={{-1,-20},{19,-40}})));
 equation
@@ -89,24 +89,24 @@ equation
       points={{49,50},{40,50},{40,18}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(pump.shaft, motor.flange) annotation (Line(
-      points={{-10,14.5},{-10,15},{-30,15}},
-      color={0,0,0},
-      smooth=Smooth.None));
   connect(motor.pin_ap, stepVoltage.p) annotation (Line(
-      points={{-34.8,27},{-34,27},{-34,35},{-80,35},{-80,25}},
+      points={{-34.8,52},{-34,52},{-34,60},{-80,60},{-80,50}},
       color={0,0,255},
       smooth=Smooth.None));
   connect(stepVoltage.n, motor.pin_an) annotation (Line(
-      points={{-80,5},{-62,5},{-62,27},{-49.2,27}},
+      points={{-80,30},{-62,30},{-62,52},{-49.2,52}},
       color={0,0,255},
       smooth=Smooth.None));
   connect(stepVoltage.n, ground.p) annotation (Line(
-      points={{-80,5},{-80,-1}},
+      points={{-80,30},{-80,24}},
       color={0,0,255},
       smooth=Smooth.None));
   connect(pump.heatPort, housing.port) annotation (Line(
       points={{11,1},{20,1},{20,-20},{9,-20}},
       color={191,0,0},
+      smooth=Smooth.None));
+  connect(pump.shaft, motor.flange) annotation (Line(
+      points={{5,25},{5,40},{-30,40}},
+      color={0,0,0},
       smooth=Smooth.None));
 end TestWaterPumpDCMotorHeatTransfer;

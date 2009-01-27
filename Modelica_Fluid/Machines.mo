@@ -108,7 +108,7 @@ package Machines
     SI.Angle phi "Shaft angle";
     SI.AngularVelocity omega "Shaft angular velocity";
     Modelica.Mechanics.Rotational.Interfaces.Flange_a shaft 
-    annotation (Placement(transformation(extent={{-110,20},{-90,40}},
+    annotation (Placement(transformation(extent={{-10,90},{10,110}},
                                                                    rotation=0)));
   equation
     phi = shaft.phi;
@@ -118,9 +118,9 @@ package Machines
   annotation (
     Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
               100}}), graphics={Rectangle(
-            extent={{-95,37},{-71,23}},
+            extent={{-10,100},{10,78}},
             lineColor={0,0,0},
-            fillPattern=FillPattern.HorizontalCylinder,
+            fillPattern=FillPattern.VerticalCylinder,
             fillColor={95,95,95})}),
     Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
               100,100}}),
@@ -499,7 +499,7 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
               points={{-48,-60},{-72,-100},{72,-100},{48,-60},{-48,-60}},
               lineColor={0,0,255},
               pattern=LinePattern.None,
-              fillColor={0,100,199},
+              fillColor={0,0,0},
               fillPattern=FillPattern.VerticalCylinder),
             Ellipse(
               extent={{-80,80},{80,-80}},
