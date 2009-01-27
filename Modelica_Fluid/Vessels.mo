@@ -9,6 +9,7 @@ package Vessels "Devices for storing fluid"
       // Mass and energy balance, ports
       extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
         final fluidVolume = V,
+        vesselArea = pi*(3/4*V)^(2/3),
         heatTransfer(surfaceAreas={4*pi*(3/4*V/pi)^(2/3)}));
 
       parameter SI.Volume V "Volume";
@@ -78,6 +79,7 @@ model OpenTank "Simple tank with inlet/outlet ports"
     final fluidVolume = V,
     final fluidLevel = level,
     final fluidLevel_max = height,
+    final vesselArea = crossArea,
     heatTransfer(surfaceAreas={crossArea+2*sqrt(crossArea*pi)*level}),
     final initialize_p = false,
     final p_start = p_ambient);
@@ -186,6 +188,7 @@ Limitation to bottom ports only, added inlet and outlet loss factors.</li>
           grid={1,1},
           initialScale=0.2), graphics),
       uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+equation
 
 end OpenTank;
 
@@ -203,13 +206,6 @@ end OpenTank;
         "Fluid inlets and outlets" 
           annotation (Placement(transformation(extent={{-40,-10},{40,10}},
             origin={0,-100})));
-
-        input SI.Height fluidLevel = 0
-        "level of fluid in the vessel for treating heights of ports";
-        parameter SI.Height fluidLevel_max = 1
-        "maximum level of fluid in the vessel";
-        Medium.AbsolutePressure[nPorts] vessel_ps_static
-        "static pressures inside the vessel at the height of the corresponding ports, zero flow velocity";
 
         // Port properties
         parameter Boolean use_portsData=true
@@ -271,11 +267,22 @@ end OpenTank;
         Real[nPorts] ports_penetration
         "penetration of port with fluid, depending on fluid level and port diameter";
 
+        // treatment of pressure losses at ports
+        SI.Area[nPorts] portAreas = {Modelica.Constants.pi/4*portsData_diameter[i]^2 for i in 1:nPorts};
+        Medium.AbsolutePressure[nPorts] vessel_ps_static
+        "static pressures inside the vessel at the height of the corresponding ports, zero flow velocity";
+    protected
+        input SI.Height fluidLevel = 0
+        "level of fluid in the vessel for treating heights of ports";
+        parameter SI.Height fluidLevel_max = 1
+        "maximum level of fluid in the vessel";
+        parameter SI.Area vesselArea = Modelica.Constants.inf
+        "Area of the vessel used to relate to cross flow area of ports";
+
         // Treatment of use_portsData=false to neglect portsData and to not require its specification either in this case.
         // Remove portsData conditionally if use_portsData=false. Simplify their use in model equations by always
         // providing portsData_diameter and portsData_height, independend of the use_portsData setting.
         // Note: this moreover serves as work-around if a tool does not support a zero sized portsData record.
-    protected
         Modelica.Blocks.Interfaces.RealInput[nPorts]
         portsData_diameter_internal =                                              portsData.diameter if use_portsData and nPorts > 0;
         Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_height_internal = portsData.height if use_portsData and nPorts > 0;
@@ -286,8 +293,6 @@ end OpenTank;
         Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_height;
         Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_zeta_in;
         Modelica.Blocks.Interfaces.RealInput[nPorts] portsData_zeta_out;
-
-        SI.Area[nPorts] portAreas = {Modelica.Constants.pi/4*portsData_diameter[i]^2 for i in 1:nPorts};
 
       equation
         mb_flow = sum(ports.m_flow);
@@ -349,8 +354,8 @@ of the modeller. Increase nPorts to add an additional port.
         */
 
               ports[i].p = vessel_ps_static[i] + (0.5/portAreas[i]^2*Utilities.regSquare2(ports[i].m_flow, m_flow_small,
-                                           portsData_zeta_in[i]/portDensities[i]*ports_penetration[i],
-                                           portsData_zeta_out[i]/medium.d/ports_penetration[i]));
+                                           (portsData_zeta_in[i] - 1 + portAreas[i]^2/vesselArea^2)/portDensities[i]*ports_penetration[i],
+                                           (portsData_zeta_out[i] + 1 - portAreas[i]^2/vesselArea^2)/medium.d/ports_penetration[i]));
               /*
         // alternative formulation m_flow=f(dp); not allowing the ideal portsData_zeta_in[i]=1 though
         ports[i].m_flow = smooth(2, portAreas[i]*Utilities.regRoot2(ports[i].p - vessel_ps_static[i], dp_small,
@@ -514,26 +519,21 @@ Heat transfer correlations for pipe models
     record VesselPortsData "Data to describe inlet/outlet ports at vessels:
     diameter -- Inner (hydraulic) diameter of inlet/outlet port
     height -- Height over the bottom of the vessel
-    zeta_out -- Hydraulic resistance out of vessel, default 1.5 for small diameter mounted flush with the wall
-    zeta_in -- Hydraulic resistance into vessel, default 0.04 for small diameter mounted flush with the wall"
+    zeta_out -- Hydraulic resistance out of vessel, default 0.5 for small diameter mounted flush with the wall
+    zeta_in -- Hydraulic resistance into vessel, default 1.04 for small diameter mounted flush with the wall"
           extends Modelica.Icons.Record;
       parameter SI.Diameter diameter
         "Inner (hydraulic) diameter of inlet/outlet port";
       parameter SI.Height height = 0 "Height over the bottom of the vessel";
-      parameter Real zeta_out(min=0)=1.5
-        "Hydraulic resistance out of vessel, default 1.5 for small diameter mounted flush with the wall";
-      parameter Real zeta_in(min=0)=0.04
-        "Hydraulic resistance into vessel, default 0.04 for small diameter mounted flush with the wall";
+      parameter Real zeta_out(min=0)=0.5
+        "Hydraulic resistance out of vessel, default 0.5 for small diameter mounted flush with the wall";
+      parameter Real zeta_in(min=0)=1.04
+        "Hydraulic resistance into vessel, default 1.04 for small diameter mounted flush with the wall";
       annotation (preferredView="info", Documentation(info="<html>
 <h4><font color=\"#008000\" >Vessel Port Data</font></h4>
 <p>
 This record describes the <b>ports</b> of a <b>vessel</b>. The variables in it are mostly self-explanatory (see list below); only the &zeta; 
 loss factors are discussed further. All data is quoted from Idelchik (1994).
-</p>
-<p>
-Additionally the dynamic pressure that builds up for a changing velocity of fluid flow at an inlet or outlet needs to be considered. 
-Assuming a large vessel with fluid standing still and a comparable small port diameter, it is reasonable to specify
-<code>zeta_out=&zeta;+1</code> and <code>zeta_in=&zeta;-1</code>.
 </p>
  
 <h4><font color=\"#008000\">Outlet Coefficients</font></h4>
@@ -626,8 +626,7 @@ If a <b>straight pipe with constant circular cross section is mounted flush with
 </table>
  
 <p>
-For larger port diameters, the inlet pressure loss coefficient will be according to the following table (Idelchik, p. 209 f., Diagram 4-2 with <code>m = 7</code>).
-Note that the assumption of fluid standing still in the vessel and leading to the definition <code>zeta_in=&zeta;-1</code> must be questioned in this case.
+For larger port diameters, relative to the area of the vessel, the inlet pressure loss coefficient will be according to the following table (Idelchik, p. 209 f., Diagram 4-2 with <code>m = 7</code>).
 </p>
  
 <table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">

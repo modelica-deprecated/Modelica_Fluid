@@ -14,6 +14,7 @@ package Machines
     // Mass and energy balance, ports
     extends Modelica_Fluid.Vessels.BaseClasses.PartialLumpedVessel(
       final fluidVolume = V,
+      final vesselArea = pistonCrossArea,
       heatTransfer(surfaceAreas={pistonCrossArea+2*sqrt(pistonCrossArea*pi)*flange.s}));
 
     Modelica.Mechanics.Translational.Interfaces.Flange_b flange
