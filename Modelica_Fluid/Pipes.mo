@@ -1126,22 +1126,6 @@ This also allows for taking into account friction losses with respect to the act
           "= false to average upstream and downstream properties across flow segments"
                annotation(Dialog(group="Advanced"), Evaluate=true);
 
-            parameter Boolean use_rho_nominal = false
-          "= true, if rho_nominal is used, otherwise computed from medium" 
-               annotation(Dialog(group="Advanced"), Evaluate=true);
-            parameter SI.Density rho_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
-          "Nominal density (e.g. rho_liquidWater = 995, rho_air = 1.2)" 
-              annotation(Dialog(group="Advanced", enable=use_rho_nominal));
-
-            parameter Boolean use_mu_nominal = false
-          "= true, if mu_nominal is used, otherwise computed from medium" 
-               annotation(Dialog(group="Advanced"), Evaluate=true);
-            parameter SI.DynamicViscosity mu_nominal = Medium.dynamicViscosity(
-                                                           Medium.setState_pTX(
-                                                               Medium.p_default, Medium.T_default, Medium.X_default))
-          "Nominal dynamic viscosity (e.g. mu_liquidWater = 1e-3, mu_air = 1.8e-5)"
-              annotation(Dialog(group="Advanced", enable=use_mu_nominal));
-
             parameter Boolean use_Ib_flows = momentumDynamics <> Types.Dynamics.SteadyState
           "= true to consider differences in flow of momentum through boundaries"
                annotation(Dialog(group="Advanced"), Evaluate=true);
@@ -1171,6 +1155,22 @@ This also allows for taking into account friction losses with respect to the act
             Medium.MassFlowRate[n-1] m_flows_turbulent=
                 {nParallel*(Modelica.Constants.pi/4)*0.5*(dimensions[i] + dimensions[i+1])*mus_act[i]*Re_turbulent for i in 1:n-1} if 
                    show_Res "Start of turbulent flow";
+      protected
+            parameter Boolean use_rho_nominal = false
+          "= true, if rho_nominal is used, otherwise computed from medium" 
+               annotation(Dialog(group="Advanced"), Evaluate=true);
+            parameter SI.Density rho_nominal = Medium.density_pTX(Medium.p_default, Medium.T_default, Medium.X_default)
+          "Nominal density (e.g. rho_liquidWater = 995, rho_air = 1.2)" 
+              annotation(Dialog(group="Advanced", enable=use_rho_nominal));
+
+            parameter Boolean use_mu_nominal = false
+          "= true, if mu_nominal is used, otherwise computed from medium" 
+               annotation(Dialog(group="Advanced"), Evaluate=true);
+            parameter SI.DynamicViscosity mu_nominal = Medium.dynamicViscosity(
+                                                           Medium.setState_pTX(
+                                                               Medium.p_default, Medium.T_default, Medium.X_default))
+          "Nominal dynamic viscosity (e.g. mu_liquidWater = 1e-3, mu_air = 1.8e-5)"
+              annotation(Dialog(group="Advanced", enable=use_mu_nominal));
 
           equation
             if not allowFlowReversal then

@@ -4,8 +4,9 @@ package HeatExchanger "Demo of a heat exchanger model"
 
   extends Modelica.Icons.Example;
 
+  replaceable package Medium = Modelica.Media.Water.ConstantPropertyLiquidWater;
   //replaceable package Medium = Modelica.Media.Water.StandardWater;
-  package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
+  //package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
     Modelica_Fluid.Examples.HeatExchanger.BaseClasses.BasicHX HEX(
       c_wall=500,
       use_T_start=true,
@@ -13,16 +14,6 @@ package HeatExchanger "Demo of a heat exchanger model"
       length=2,
       m_flow_start_1=0.2,
       m_flow_start_2=0.2,
-      redeclare model FlowModel_1 = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow (
-        redeclare package WallFriction = 
-          Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
-              use_rho_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
-      redeclare model FlowModel_2 = 
-          Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow (
-        redeclare package WallFriction = 
-          Modelica_Fluid.Pipes.BaseClasses.WallFriction.Detailed,
-              use_rho_nominal=true,use_mu_nominal=true,mu_nominal=0.01),
       k_wall=100,
       energyDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
       massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
