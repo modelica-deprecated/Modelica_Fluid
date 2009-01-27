@@ -24,47 +24,6 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
 </HTML>"));
 
-class KnownLimitations "Known limitations"
-
-    annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Known limitations</font></h4>
- 
-<p>
-The Modelica_Fluid library has quite ambitious goals, especially,
-that every component can be connected in an arbitrary way,
-e.g., pipes can be flipped, without influencing the generated
-code, and that medium descriptions with different independent
-variables can be used (e.g., \"p,T\" or \"p,h\" as medium variables).
-This is a new approach in the fluid modeling area and as with
-every new approach, it takes some time that everything works
-as expected. We are aware of the following limitations of the current
-version:
-</p>
- 
-<ul>
-<li> The medium has to be defined in <b>every</b> component
-     separately. The user would like to define the medium
-     at one location and then, the definition should propagate
-     through the connections automatically. With our current
-     general approach, this is <b>not</b> possible to formulate it
-     in Modelica. There are discussions in the Modelica development
-     group to extend Modelica with new featurres (type propagation) so that this
-     becomes possible.<br>
-     In Dymola, there is some type of tool support, to make this
-     a bit better: Select all fluid components, right click with the
-     mouse and select \"parameters\". Then select the desired medium
-     and this medium will be used in all selected components.<br><br>
-    </li>
- 
-<li> When clicking on the <b>Medium</b> parameter, a very long list
-     of media is displayed. We would like to have better control for
-     the end user what is shown or at least display it hierarchically.
-     It is not yet clear how this should be improved, but we work on it.
-     </li>
- 
-</ul>
-</html>"));
-end KnownLimitations;
 
   class Overview "Overview"
 
@@ -128,11 +87,11 @@ This library has the following main features:
      the pressures of all connected ports are equal and the mass flow rates
      sum up to zero. Specific enthalpy, mass fractions and trace substances are
      mixed according to the mass flow rates.
-     The momentum balance is only fulfilled if the assumption of equal port pressures holds,
-     i.e. if two components are connected in a straight line with the same pipe diameter.
-     If more detailed models are needed for a connection, e.g., if a changing pipe diameter
-     shall be taken into account, an appropriate fitting has to be
-     explicitly introduced into the connection point.<br>&nbsp;</li>
+     The momentum balance and the energy balance are only fulfilled exactly if
+     two ports of equal diameter are connected. In all other cases, the balances
+     are approximated, because kinetic and friction effect are neglected; if these
+     are important for the specific problem, and explicit fitting or junction should be used.
+     <br>&nbsp;</li>
 <li> There is no restriction how components can be connected
      together. The resulting simulation performance however often strongly depends on the
      model structure and modeling assumptions made. In particular the direct connection of
@@ -194,7 +153,10 @@ Please note that the design of the connectors has been changed with respect to t
 <h4><font color=\"#008000\" >Fluid connectors</font></h4>
 <p>
 In this section the design of the fluid connectors is
-explained. A major design goal is that components can be arbitrarily
+explained. Fluid connectors represent the flanges the points in a device (e.g. the
+flanges) through which a fluid can flow into or out of the component, carrying its
+thermal energy; these flanges are assumed to be fixed in space. 
+A major design goal is that components can be arbitrarily
 connected and that the important balance equations are automatically
 fulfilled when 2 or more components are connected together at
 one point as shown in the next figure:
@@ -220,11 +182,11 @@ Modelica_Fluid.Interfaces.FluidPort reduces to
      <b>replaceable package</b> Medium = Modelica.Media.Interfaces.PartialMedium
               \"Medium model of the fluid\";
      <b>flow</b> Medium.MassFlowRate m_flow;
-              \"Mass flow rate from the connection point into the component\" 
+              \"Mass flow rate from the connection point into the component\"; 
      Medium.AbsolutePressure p 
               \"Thermodynamic pressure in the connection point\";
      <b>stream</b> Medium.SpecificEnthalpy h_outflow
-               \"Specific thermodynamic enthalpy close to the connection point if m_flow &lt; 0\"
+               \"Specific thermodynamic enthalpy close to the connection point if m_flow &lt; 0\";
   <b>end</b> FluidPort;
 </pre> 
 <p>
@@ -238,14 +200,18 @@ nominal attributes. Furthermore, Medium.MassFlowRate is defined as:
       Modelica.SIunits.MassFlowRate(quantity=\"MassFlowRate.\" + mediumName);
 </pre>
 <p>
-A Modelica translator will check that the quantity and unit attributes
+With the current library design, it is necessary to explictly select the medium
+model for each component in a circuit. This model is then propagated to the ports,
+and a Modelica translator will check that the quantity and unit attributes
 of connected interfaces are identical. Therefore, an error occurs,
 if connected FluidPorts do not have a medium with the same medium name.
+In the future, automatic propagation of fluid models through the ports will be
+introduced, but this still not possible with Modelica 3.0.
 </p>
  
 <p>
 The thermodynamic pressure is an <i>effort</i> variable, which means that the connection
-of two or more ports state that the port pressures are the same. 
+of two or more ports states that the port pressures are the same. 
 </p>
  
 <p>
@@ -255,7 +221,7 @@ more ports states that the sum of all flow rates is zero.
  
 <p>
 The last variable is a <i>stream</i> variable, i.e., a specific quantity carried by the
-flow variable (the mass flow rate in this case). The quantity on the connector always
+flow variable. The quantity on the connector always
 corresponds to the value close to the connection point, assuming that the fluid is
 flowing out of the connector, regardless of the actual direction of the flow. This helps
 avoiding singularities when the mass flow goes through zero. The stream properties for the
@@ -265,11 +231,15 @@ through the built-in operator actualStream(..).
 </p>
 <p>
 The actual equations corresponding to these operators are introduced and solved automatically
-by the tool. In principle, they correspond to a balance equation 
-sum(flow_variable*stream_variable) = 0 applied to the set of connected ports. In this case
-this corresponds to the energy balance sum(m_flow*h_outflow) = 0. Special care is taken
-in order to keep the result well defined even for zero mass flow rate. For more details, see this 
-<a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rational.pdf\">presentation</a>)
+by the tool. In principle, they correspond to the balance equation 
+sum(flow_variable) = 0 and sum(flow_variable*stream_variable_at_connection) = 0 applied to the set of connected ports. In this case the first equation is the mass balance sum(m_flow) = 0, and the second is the energy balance at the connection point sum(m_flow*h_connection) = 0. 
+</p>
+<p>
+In the simpler case of a one-to-one connections between port_a and port_b,
+inStream(port_a.h_outflow) just returns port_b.h_outflow. For multiple-way connections,
+mixing equations are generated, and special care is taken in order to avoid discontinuities
+around zero flow rates. For more details, see this 
+<a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rational.pdf\">presentation</a>
 which illustrates the stream concept rationale and the underlying technicalities. 
 </p>
  
@@ -354,7 +324,7 @@ suitable regularization around zero to avoid discontinuities.
 <p>
 Please note that these models are highly idealized in order to explain the stream connector
 concept. Device models in the library are much more complete, handling issues such as
-initialization, steady vs. dynamic modelling, replaceable models of pressure loss, etc.
+initialization, steady vs. dynamic modelling, heat transfer from the outside, etc.
 </p>
  
 <h4><font color=\"#008000\">Multiple-substance media</font></h4>
@@ -363,46 +333,47 @@ Modelica_Fluid can handle models where the fluid contains multiple substances, s
 composition can be characterized by mass fraction vectors. 
 </p>
 <pre>
-  <b>connector</b> FluidPort
-     <b>replaceable package</b> Medium = Modelica.Media.Interfaces.PartialMedium
-          \"Medium model of the fluid\";
-     <b>flow</b> Medium.MassFlowRate m_flow;
-          \"Mass flow rate from the connection point into the component\" 
-     Medium.AbsolutePressure p 
-          \"Thermodynamic pressure in the connection point\";
-     <b>stream</b> Medium.SpecificEnthalpy h_outflow
-           \"Specific thermodynamic enthalpy close to the connection point if m_flow &lt; 0\"
-     <b>stream</b> Medium.MassFraction Xi_outflow[Medium.nXi] 
-           \"Independent mixture mass fractions m_i/m close to the connection point if m_flow &lt; 0\";
-     <b>stream</b> Medium.ExtraProperty C_outflow[Medium.nC] 
-           \"Properties c_i/m close to the connection point if m_flow &lt; 0\";
+<b>connector</b> FluidPort
+   <b>replaceable package</b> Medium = Modelica.Media.Interfaces.PartialMedium
+      \"Medium model of the fluid\";
+   <b>flow</b> Medium.MassFlowRate m_flow;
+      \"Mass flow rate from the connection point into the component\" 
+   Medium.AbsolutePressure p 
+      \"Thermodynamic pressure in the connection point\";
+   <b>stream</b> Medium.SpecificEnthalpy h_outflow
+       \"Specific thermodynamic enthalpy close to the connection point if m_flow &lt; 0\";
+   <b>stream</b> Medium.MassFraction Xi_outflow[Medium.nXi] 
+       \"Independent mixture mass fractions m_i/m close to the connection point if m_flow &lt; 0\";
+   <b>stream</b> Medium.ExtraProperty C_outflow[Medium.nC] 
+       \"Properties c_i/m close to the connection point if m_flow &lt; 0\";
   <b>end</b> FluidPort;
 </pre>
 The mass fraction vectors Xi and C are also stream quantities, as they are carried by the mass
-flow rate. The corresponding equations are sum(m_flow*Xi) and sum(m_flow*C), which correspond to
-mass balances for the single substances. The vector Xi contains the mass fraction of the main
-components of the fluid, and is used together with p and h to determine the thermodynamic state
-of the fluid. The vector C contains the mass fraction of the trace components, which are accounted
-for in mass balances, but can be ignored when computing the fluid properties. 
+flow rate. The corresponding connection equations are sum(m_flow*Xi) and sum(m_flow*C), which correspond to mass balances for the single substances. The vector Xi contains the mass fractions
+of the main components of the fluid, and is used together with p and h to determine the
+thermodynamic state of the fluid. The vector C contains the mass fraction of the trace components,
+which are accounted for in mass balances, but is ignored when computing the fluid properties. This
+allows to easily declare and use medium models with trace components starting from existing medium
+models (e.g. adding CO<sub>2</sub> traces to Moist Air for air conditioning models).
 
 <h4><font color=\"#008000\">Approximations in balance equations at connection point</font></h4>
 <p>
-Summing up, when connecting two or more ports of the type FluidPort, the following
+Summing up, when two or more ports of the type FluidPort are connected, the following
 equations are generated by the tool:
 </p>
 <pre>
-sum(port_j.m_flow) = 0;              // Total Mass balance
-port_j = port_k;                     // Momentum balance
-sum(port_j.m_flow*h_connection) = 0; // Energy balance
-sum(port_j.m_flow*Xi) = 0;           // Single component mass balances
-sum(port_j.m_flow*C) = 0;            // Trace components mass balances
+sum(port_j.m_flow) = 0;               // Total Mass balance
+port_j = port_k;                      // Momentum balance
+sum(port_j.m_flow*h_connection) = 0;  // Energy balance
+sum(port_j.m_flow*Xi_connection) = 0; // Single component mass balances
+sum(port_j.m_flow*C_connection) = 0;  // Trace components mass balances
 </pre>
 <p>
 It is <b>very important</b> to bear in mind that
 <ul>
 <li> the mass balances are always exact; </li>
 <li> the momentum and energy balance are only exact when two port with the same
-diameter are connected. </li>
+diameter are connected, because there is no friction and no change in fluid velocity. </li>
 </ul>
 </p>
 <p>
@@ -411,7 +382,7 @@ In all other cases, i.e., different port diameters and/or multple port connectio
 <li> The momentum balance does not consider friction effects and changes of pressure due to changes
 in velocity. </li>
 <li> There might thus be errors in the momentum balance of the order of magnitude
-of the dynamic pressure &rho;v^2/2.</li>
+of the dynamic pressure &rho;v<sup>2</sup>/2.</li>
 <li> The energy balance does not consider the kinetic terms (gravity terms cancel out due
 to the infinitesimal size of the connection volume). There might thus be errors in the
 </li> momentum balance of the order of magnitude of the kinetic energy v^2/2. </li>
@@ -419,7 +390,7 @@ to the infinitesimal size of the connection volume). There might thus be errors 
 In many applications, where fluid speeds are low and thermal phenomena are mainly of interest,
 these approximations are commonly made and lead to acceptable results.
 In all other cases, explicit fitting and junction models should be used, that model explicitly
-all the kinetic phenomena.
+all the kinetic phenomena with the appropriate level of detail.
 </p></html>"));
   end FluidConnectors;
 
@@ -475,22 +446,21 @@ the \"energy balance 2\":
 <p>
 This formulation separates the internal energy of the fluid from the kinetic energy of fluid flow.
 The internal energy is treated by the energy balance 2, the kinetic energy is treated by the momentum balance equally well.
-The evaluation of medium properties, which are independent of the kinetic energy, and the formulation of many fluid models
-is simplified with the energy balance 2. 
-The overall conservation of energy is achieved by considering the mutual dependencies of energy and momentum balance.
+The evaluation of medium properties, which are independent of the kinetic energy, and the formulation of many fluid models is simplified with the energy balance 2, expecially for
+distributed parameter models. The overall conservation of energy is then achieved by
+considering the mutual dependencies of energy and momentum balance.
 </p>
 <p>
-<b>All components</b> of the Fluid library use the <b>energy balance 2</b> equation.
-Many components, like StaticPipe, Valves and Fittings assume an isenthalpic state transformation,
-neglecting the impact of changes of the kinetic energy on the energy balance though. 
-Some components, like DynamicPipe, provide for a rigorous implementation of mass, momentum and energy balance.
+Some components in the library, like DynamicPipe, provide a rigorous implementation of mass,
+momentum and energy balance, using the energy balance 2 equation. Other components, like Valves and
+Fittings, neglect the impact of changes of the kinetic energy and potential energy on the energy
+balance, because they are usually irrelevant compared to changes due to heat flows. The StaticPipe
+component neglects the effect of kinetic energy, but includes the potential energy in the balance,
+which might be substantial. 
 </p>
 <p>
-Fluid ports represent the internal energy by enthalpies and pressures. The kinetic energy is represented by mass flow rates, 
-besides cross flow areas and fluid densities that are a function of enthalpy and pressure again.
-Connections between fluid ports generally conserve mass and internal energy.
-Kinetic energy is only conserved if the cross flow areas and the fluid densities of all connected components are equal
-at the boundaries represented by the ports. Explicit fitting models need to be introduced otherwise.
+All modelling assumptions and simplifications are stated in the component documentation; please note that some of the assumptions might be stated in the base classes the
+component inherits from.
 </p>
 </html>
 "));
@@ -599,7 +569,6 @@ direction.
 </html>
 "));
   end UpstreamDiscretization;
-
 
   class RegularizingCharacteristics "Regularizing characteristics"
 
