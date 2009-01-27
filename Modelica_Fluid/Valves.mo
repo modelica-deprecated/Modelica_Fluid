@@ -262,10 +262,17 @@ explained in detail in the
             fillPattern=FillPattern.Solid),
           Polygon(
             points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
-            fillColor=DynamicSelect({255,255,255}, opening*{0,255,0} + (1 -
-                opening)*{255,255,255}),
-            lineColor={0,0,0},
-            fillPattern=FillPattern.Solid)}),
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Polygon(
+            points=DynamicSelect({{-100,0},{100,-0},{100,0},{0,0},{-100,-0},{-100,
+                0}}, {{-100,50*opening},{-100,50*opening},{100,-50*opening},{
+                100,50*opening},{0,0},{-100,-50*opening},{-100,50*opening}}),
+            fillColor={0,255,0},
+            lineColor={255,255,255},
+            fillPattern=FillPattern.Solid),
+          Polygon(points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,
+                50}}, lineColor={0,0,0})}),
     Diagram(coordinateSystem(
           preserveAspectRatio=false,
           extent={{-100,-100},{100,100}},
@@ -430,10 +437,18 @@ it is open.
             Polygon(
               points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}}, 
 
-              fillColor=DynamicSelect({255,255,255}, opening*{0,255,0} + (1 -
-                  opening)*{255,255,255}),
-              lineColor={0,0,0},
-              fillPattern=FillPattern.Solid)}),
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Polygon(
+              points=DynamicSelect({{-100,0},{100,-0},{100,0},{0,0},{-100,-0},{
+                  -100,0}}, {{-100,50*opening},{-100,50*opening},{100,-50*
+                  opening},{100,50*opening},{0,0},{-100,-50*opening},{-100,50*
+                  opening}}),
+              fillColor={0,255,0},
+              lineColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Polygon(points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,
+                  50}}, lineColor={0,0,0})}),
         Diagram(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-100,-100},{100,100}},
@@ -466,6 +481,7 @@ explained in detail in the
        Adapted from the ThermoPower library.</li>
 </ul>
 </html>"));
+
     end PartialValve;
 
   package ValveCharacteristics "Functions for valve characteristics"

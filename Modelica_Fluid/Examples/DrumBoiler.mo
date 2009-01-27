@@ -2,33 +2,6 @@ within Modelica_Fluid.Examples;
 package DrumBoiler
   "Drum boiler example, see Franke, Rode, Krueger: On-line Optimization of Drum Boiler Startup, 3rd International Modelica Conference, Linkoping, 2003"
 
-  model DrumBoilerSimulation "Simulate start-up of DrumBoiler"
-    extends Modelica.Icons.Example;
-    DrumBoiler drumBoiler            annotation (Placement(transformation(
-            extent={{-20,-40},{40,20}}, rotation=0)));
-    Modelica.Blocks.Sources.TimeTable q_F_Tab(table=[0, 0; 3600, 400; 7210,
-          400]) annotation (Placement(transformation(extent={{-80,0},{-60,20}},
-            rotation=0)));
-    Modelica.Blocks.Sources.TimeTable Y_Valve_Tab(table=[0, 1; 3600, 1; 7210,
-           1]) annotation (Placement(transformation(extent={{-80,-40},{-60,-20}},
-            rotation=0)));
-    annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
-              100,100}}),
-              graphics),
-      experiment(StopTime=7200),
-      Documentation(info="<HTML>
-<p>
-Apply a ramp to fuel input and hold outlet valve open.
-Simulate for 7200 seconds.
-</p>
-</HTML>"));
-  equation
-    connect(q_F_Tab.y, drumBoiler.q_F)       annotation (Line(points={{-59,10},
-            {-40,10},{-40,-31},{-21.35,-31}}, color={0,0,127}));
-    connect(Y_Valve_Tab.y, drumBoiler.Y_Valve)       annotation (Line(points={{-59,-30},
-            {-44,-30},{-44,-37},{-21.35,-37}},          color={0,0,127}));
-  end DrumBoilerSimulation;
 
   model DrumBoiler
     "Complete drum boiler model, including evaporator and supplementary components"
@@ -78,18 +51,14 @@ Simulate for 7200 seconds.
             lineColor={0,0,0},
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid,
-            textString="boiler")}));
+            textString="boiler")}),
+      experiment(StopTime=5400),
+      experimentSetupOutput);
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow furnace 
       annotation (Placement(transformation(
           origin={-36,-53},
           extent={{-10,-10},{10,10}},
           rotation=90)));
-    Modelica.Blocks.Interfaces.RealInput q_F "Thermal power to the evaporator" 
-      annotation (Placement(transformation(extent={{-109,-65},{-100,-75}},
-            rotation=0)));
-    Modelica.Blocks.Interfaces.RealInput Y_Valve 
-      annotation (Placement(transformation(extent={{-109,-95},{-100,-85}},
-            rotation=0)));
     Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1, p=from_bar(0.5),
       redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
       T=500) 
@@ -143,7 +112,7 @@ Simulate for 7200 seconds.
              0)));
   public
     Modelica.Blocks.Math.Gain MW2W(k=1e6) 
-      annotation (Placement(transformation(extent={{-95,-75.5},{-85,-64.5}},
+      annotation (Placement(transformation(extent={{-60,-75.5},{-50,-64.5}},
             rotation=0)));
     Modelica.Blocks.Math.Gain Pa2bar(k=1e-5) annotation (Placement(
           transformation(extent={{37,19},{47,29}}, rotation=0)));
@@ -164,6 +133,12 @@ Simulate for 7200 seconds.
 
     inner Modelica_Fluid.System system 
       annotation (Placement(transformation(extent={{-90,70},{-70,90}})));
+    Modelica.Blocks.Sources.TimeTable q_F_Tab(table=[0, 0; 3600, 400; 7210,
+          400]) annotation (Placement(transformation(extent={{-90,-80},{-70,-60}},
+            rotation=0)));
+    Modelica.Blocks.Sources.TimeTable Y_Valve_Tab(table=[0,0; 900,1; 7210,1]) 
+               annotation (Placement(transformation(extent={{20,-80},{40,-60}},
+            rotation=0)));
   equation
     connect(furnace.port, evaporator.heatPort) 
       annotation (Line(points={{-36,-43},{-36,-30}}, color={191,0,0}));
@@ -178,14 +153,12 @@ Simulate for 7200 seconds.
     connect(evaporator.V, V_l) 
       annotation (Line(points={{-26,-9},{-26,11},{-15,11},{-15,92},{104,92}},
           color={0,0,127}));
-    connect(MW2W.y,furnace.Q_flow)       annotation (Line(points={{-84.5,-70},{
+    connect(MW2W.y,furnace.Q_flow)       annotation (Line(points={{-49.5,-70},{
             -36,-70},{-36,-63}}, color={0,0,127}));
     connect(pressure.p, Pa2bar.u) 
       annotation (Line(points={{31,24},{36,24}}, color={0,0,127}));
     connect(Pa2bar.y, p_S) 
       annotation (Line(points={{47.5,24},{104,24}}, color={0,0,127}));
-    connect(q_F, MW2W.u) annotation (Line(points={{-104.5,-70},{-96,-70}},
-          color={0,0,127}));
     connect(K2degC.Celsius, T_S) annotation (Line(points={{48.5,60},{104,60}},
           color={0,0,127}));
     connect(controller.y, limiter.u) annotation (Line(points={{-65.7,30},{-69.6,
@@ -203,13 +176,19 @@ Simulate for 7200 seconds.
             40,-20},{50,-20}}, color={0,127,255}));
     connect(SteamValve.port_b, sink.ports[1]) annotation (Line(points={{70,-20},{75,
             -20},{80,-20}},          color={0,127,255}));
-    connect(SteamValve.opening, Y_Valve) annotation (Line(points={{60,-28},{60,
-            -90},{-104.5,-90}}, color={0,0,127}));
     connect(evaporator.port_b, massFlowRate.port_a) annotation (Line(points={{
             -26,-20},{20,-20}}, color={0,127,255}));
     connect(temperature.port, massFlowRate.port_a) annotation (Line(
         points={{-3,-11},{-3,-20},{20,-20}},
         color={0,127,255},
+        smooth=Smooth.None));
+    connect(q_F_Tab.y, MW2W.u) annotation (Line(
+        points={{-69,-70},{-61,-70}},
+        color={0,0,127},
+        smooth=Smooth.None));
+    connect(Y_Valve_Tab.y, SteamValve.opening) annotation (Line(
+        points={{41,-70},{60,-70},{60,-28}},
+        color={0,0,127},
         smooth=Smooth.None));
   end DrumBoiler;
 
