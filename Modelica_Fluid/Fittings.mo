@@ -236,8 +236,8 @@ end SharpEdgedOrifice;
 
 model SuddenExpansion
     "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"
-  extends BaseClasses.QuadraticTurbulent.BaseModel(final data=
-          BaseClasses.QuadraticTurbulent.LossFactorData.suddenExpansion(
+  extends BaseClasses.QuadraticTurbulent.BaseModelNonconstantCrossSectionArea(final data
+        = BaseClasses.QuadraticTurbulent.LossFactorData.suddenExpansion(
           diameter_a, diameter_b));
   parameter SI.Diameter diameter_a "Inner diameter of pipe at port_a";
   parameter SI.Diameter diameter_b "Inner diameter of pipe at port_b";
@@ -1704,6 +1704,245 @@ The used sufficient criteria for monotonicity follows from:
  
 </html>"));
     end TestWallFriction;
+
+      partial model BaseModelNonconstantCrossSectionArea
+        "Generic pressure drop component with constant turbulent loss factor data and without an icon, for non-constant cross section area"
+
+        extends Modelica_Fluid.Interfaces.PartialTwoPortTransport;
+        extends Modelica_Fluid.Interfaces.PartialLumpedFlow(
+          final pathLength = 0,
+          final momentumDynamics = Types.Dynamics.SteadyState);
+
+        parameter LossFactorData data "Loss factor data";
+
+        // Advanced
+        /// Other settings than the final values are not yet implemented ///
+        final parameter Boolean from_dp = false
+          "= true, use m_flow = f(dp) else dp = f(m_flow)" 
+          annotation (Evaluate=true, Dialog(tab="Advanced"));
+        final parameter Boolean use_Re = false
+          "= true, if turbulent region is defined by Re, otherwise by dp_small or m_flow_small"
+          annotation(Evaluate=true, Dialog(tab="Advanced"));
+        // End not yet implemented /////////////////////////////////////////
+        parameter Medium.AbsolutePressure dp_small = system.dp_small
+          "Turbulent flow if |dp| >= dp_small" 
+          annotation(Dialog(tab="Advanced", enable=not use_Re and from_dp));
+        parameter Medium.MassFlowRate m_flow_small = system.m_flow_small
+          "Turbulent flow if |m_flow| >= m_flow_small" 
+          annotation(Dialog(tab = "Advanced", enable=not from_dp));
+
+        // Diagnostics
+        parameter Boolean show_Re = false
+          "= true, if Reynolds number is included for plotting" 
+           annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnostics"));
+        SI.ReynoldsNumber Re = Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber_m_flow(
+              m_flow,
+              0.5*(Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b)),
+              data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
+
+        // Variables
+        Modelica.SIunits.Pressure dp_fg
+          "pressure loss due to friction and gravity";
+        Modelica.SIunits.Area A_mean = Modelica.Constants.pi/4*(data.diameter_a^2+data.diameter_b^2)/2
+          "mean cross flow area";
+
+        Medium.ThermodynamicState state_b_des
+          "Thermodynamic state at port b for flow a -> b";
+        Medium.ThermodynamicState state_a_nondes
+          "Thermodynamic state at port a for flow a <- b";
+
+      equation
+        Ib_flow = 0;
+        F_p = A_mean*(Medium.pressure(state_b) - Medium.pressure(state_a));
+        F_fg = A_mean*dp_fg;
+        if from_dp then
+           m_flow = if use_Re then 
+                       massFlowRate_dp_and_Re(
+                          dp_fg, Medium.density(state_a), Medium.density(state_b),
+                          Medium.dynamicViscosity(state_a),
+                          Medium.dynamicViscosity(state_b),
+                          data) else 
+                       massFlowRate_dp(dp_fg, Medium.density(state_a), Medium.density(state_b), data, dp_small);
+        else
+           dp_fg = if use_Re then 
+                   pressureLoss_m_flow_and_Re(
+                       m_flow, Medium.density(state_a), Medium.density(state_b),
+                       Medium.dynamicViscosity(state_a),
+                       Medium.dynamicViscosity(state_b),
+                       data) else 
+                   pressureLoss_m_flow_totalPressure(m_flow,
+                     Medium.density(state_a),
+                     Medium.density(state_b_des),
+                     Medium.density(state_b),
+                     Medium.density(state_a_nondes),
+                     data, m_flow_small);
+        end if;
+
+        // Isenthalpic state transformation (no storage and no loss of energy)
+        port_a.h_outflow = inStream(port_b.h_outflow);
+        port_b.h_outflow = inStream(port_a.h_outflow);
+
+        // medium states for downstream properties, may want to change this neglecting the only difference from state_a, state_b, which is in pressure
+        // This will remove the extra interation variables
+        state_b_des = Medium.setState_phX(port_b.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow));
+        state_a_nondes = Medium.setState_phX(port_a.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow));
+
+        annotation (
+          Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}}),
+                  graphics),
+          Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                  {100,100}}),
+               graphics),
+          Documentation(info="<html>
+<p>
+This model computes the pressure loss of a pipe
+segment (orifice, bending etc.) with a minimum amount of data
+provided via parameter <b>data</b>.
+If available, data should be provided for <b>both flow directions</b>,
+i.e., flow from port_a to port_b and from port_b to port_a, 
+as well as for the <b>laminar</b> and the <b>turbulent</b> region.
+It is also an option to provide the loss factor <b>only</b> for the
+<b>turbulent</b> region for a flow from port_a to port_b.
+</p>
+<p>
+The following equations are used:
+</p>
+<pre>   &Delta;p = 0.5*&zeta;*&rho;*v*|v|
+      = 0.5*&zeta;/A^2 * (1/&rho;) * m_flow*|m_flow|
+        Re = |v|*D*&rho;/&mu;
+</pre>
+<table border=1 cellspacing=0 cellpadding=2>
+<tr><td><b>flow type</b></td>
+    <td><b>&zeta;</b> = </td>
+    <td><b>flow region</b></td></tr>
+<tr><td>turbulent</td>
+    <td><b>zeta1</b> = const.</td>
+    <td>Re &ge;  Re_turbulent, v &ge; 0</td></tr>
+<tr><td></td>
+    <td><b>zeta2</b> = const.</td>
+    <td>Re &ge; Re_turbulent, v &lt; 0</td></tr>
+<tr><td>laminar</td>
+    <td><b>c0</b>/Re</td>
+    <td>both flow directions, Re small; c0 = const.</td></tr>
+</table>
+<p>
+where
+</p>
+<ul>
+<li> &Delta;p is the pressure drop: &Delta;p = port_a.p - port_b.p</li>
+<li> v is the mean velocity.</li>
+<li> &rho; is the density.</li>
+<li> &zeta; is the loss factor that depends on the geometry of
+     the pipe. In the turbulent flow regime, it is assumed that
+     &zeta; is constant and is given by \"zeta1\" and
+     \"zeta2\" depending on the flow direction.<br>
+     When the Reynolds number Re is below \"Re_turbulent\", the
+     flow is laminar for small flow velocities. For higher 
+     velocities there is a transition region from 
+     laminar to turbulent flow. The loss factor for
+     laminar flow at small velocities is defined by the often occuring
+     approximation c0/Re. If c0 is different for the two
+     flow directions, the mean value has to be used 
+     (c0 = (c0_ab + c0_ba)/2).<li>
+<li> The equation \"&Delta;p = 0.5*&zeta;*&rho;*v*|v|\" is either with
+     respect to port_a or to port_b, depending on the definition
+     of the particular loss factor &zeta; (in some references loss
+     factors are defined with respect to port_a, in other references
+     with respect to port_b).</li>
+ 
+<li> Re = |v|*D_Re*&rho;/&mu; = |m_flow|*D_Re/(A_Re*&mu;) 
+     is the Reynolds number at the smallest cross
+     section area. This is often at port_a or at port_b, but can
+     also be between the two ports. In the record, the diameter
+     D_Re of this smallest cross section area has to be provided, as
+     well, as Re_turbulent, the absolute value of the 
+     Reynolds number at which
+     the turbulent flow starts. If Re_turbulent is different for
+     the two flow directions, use the smaller value as Re_turbulent.</li>
+<li> D is the diameter of the pipe. If the pipe has not a 
+     circular cross section, D = 4*A/P, where A is the cross section
+     area and P is the wetted perimeter.</li>
+<li> A is the cross section area with A = &pi;(D/2)^2.
+<li> &mu; is the dynamic viscosity.</li>
+</ul>
+<p>
+The laminar and the transition region is usually of
+not much technical interest because the operating point is
+mostly in the turbulent regime. For simplification and for
+numercial reasons, this whole region is described by two
+polynomials of third order, one polynomial for m_flow &ge; 0 
+and one for m_flow &lt; 0. The polynomials start at 
+Re = |m_flow|*4/(&pi;*D_Re*&mu;), where D_Re is the
+smallest diameter between port_a and port_b.
+The common derivative
+of the two polynomials at Re = 0 is
+computed from the equation \"c0/Re\". Note, the pressure drop
+equation above in the laminar region is always defined
+with respect to the smallest diameter D_Re.
+</p>
+<p>
+If no data for c0 is available, the derivative at Re = 0 is computed in such
+a way, that the second derivatives of the two polynomials
+are identical at Re = 0. The polynomials are constructed, such that
+they smoothly touch the characteristic curves in the turbulent
+regions. The whole characteristic is therefore <b>continuous</b>
+and has a <b>finite</b>, <b>continuous first derivative everywhere</b>.
+In some cases, the constructed polynomials would \"vibrate\". This is 
+avoided by reducing the derivative at Re=0 in such a way that
+the polynomials are guaranteed to be monotonically increasing.
+The used sufficient criteria for monotonicity follows from:
+</p>
+ 
+<dl>
+<dt> Fritsch F.N. and Carlson R.E. (1980):</dt>
+<dd> <b>Monotone piecewise cubic interpolation</b>.
+     SIAM J. Numerc. Anal., Vol. 17, No. 2, April 1980, pp. 238-246</dd>
+</dl>
+</html>"));
+      end BaseModelNonconstantCrossSectionArea;
+
+      function pressureLoss_m_flow_totalPressure
+        "Return pressure drop from constant loss factor and mass flow rate (dp = f(m_flow))"
+              extends Modelica.Icons.Function;
+
+        input SI.MassFlowRate m_flow "Mass flow rate from port_a to port_b";
+        input SI.Density rho_a_des
+          "Density at port_a, mass flow in design direction a -> b";
+        input SI.Density rho_b_des
+          "Density at port_b, mass flow in design direction a -> b";
+        input SI.Density rho_b_nondes
+          "Density at port_b, mass flow against design direction a <- b";
+        input SI.Density rho_a_nondes
+          "Density at port_a, mass flow against design direction a <- b";
+        input LossFactorData data
+          "Constant loss factors for both flow directions" annotation (
+            choices(
+            choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.wallFriction(),
+            choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.suddenExpansion(),
+            choice=BaseClasses.PressureLosses.QuadraticTurbulent.LossFactorData.sharpEdgedOrifice()));
+        input SI.MassFlowRate m_flow_small = 0.01
+          "Turbulent flow if |m_flow| >= m_flow_small";
+        output SI.Pressure dp "Pressure drop (dp = port_a.p - port_b.p)";
+
+        annotation (smoothOrder=1, Documentation(info="<html>
+<p>
+Compute pressure drop from constant loss factor and mass flow rate (dp = f(m_flow)).
+For small mass flow rates(|m_flow| &lt; m_flow_small), the characteristic is approximated by 
+a polynomial in order to have a finite derivative at zero mass flow rate.
+</p>
+</html>"));
+      protected
+        SI.Area A_a = Modelica.Constants.pi * data.diameter_a^2/4
+          "Cross section area at port_a";
+        SI.Area A_b = Modelica.Constants.pi * data.diameter_b^2/4
+          "Cross section area at port_b";
+      algorithm
+          dp := 1/2 * m_flow^2 *( if m_flow > 0 then 
+            data.zeta1/(if data.zeta1_at_a then rho_a_des    * A_a^2 else    rho_b_des * A_b^2) - 1/(rho_a_des    * A_a^2) + 1/(rho_b_des    * A_b^2) else 
+            -data.zeta2/(if data.zeta2_at_a then rho_a_nondes * A_a^2 else rho_b_nondes * A_b^2) - 1/(rho_a_nondes * A_a^2) + 1/(rho_b_nondes * A_b^2));
+
+      end pressureLoss_m_flow_totalPressure;
     end QuadraticTurbulent;
 
     partial model PartialTeeJunction
