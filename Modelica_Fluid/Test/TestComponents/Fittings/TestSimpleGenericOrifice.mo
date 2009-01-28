@@ -53,7 +53,6 @@ model TestSimpleGenericOrifice
 
   Modelica_Fluid.Fittings.SuddenExpansion expansion3(
     redeclare package Medium = Medium,
-    use_Re=false,
     diameter_a=diameter_a,
     diameter_b=diameter_b) annotation (Placement(transformation(extent={{0,-20},{20,0}},
           rotation=0)));
@@ -64,10 +63,8 @@ model TestSimpleGenericOrifice
     annotation (Placement(transformation(extent={{60,-20},{40,0}}, rotation=0)));
   Modelica_Fluid.Fittings.SuddenExpansion expansion4(
     redeclare package Medium = Medium,
-    use_Re=false,
     diameter_a=diameter_a,
-    diameter_b=diameter_b,
-    from_dp=false) 
+    diameter_b=diameter_b) 
              annotation (Placement(transformation(extent={{0,-60},{20,-40}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT ambient_p4(nPorts=1,

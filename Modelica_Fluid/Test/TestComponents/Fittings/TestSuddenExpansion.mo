@@ -36,16 +36,14 @@ model TestSuddenExpansion
   Modelica_Fluid.Fittings.SuddenExpansion expansion1(
     redeclare package Medium = Medium,
     diameter_a=0.1,
-    diameter_b=0.2,
-    use_Re=false) 
+    diameter_b=0.2) 
              annotation (Placement(transformation(extent={{0,40},{20,60}},
           rotation=0)));
   Modelica_Fluid.Fittings.SuddenExpansion expansion2(
     redeclare package Medium = Medium,
     diameter_a=0.1,
-    diameter_b=0.2,
-    from_dp=false,
-    use_Re=false) annotation (Placement(transformation(extent={{0,10},{20,30}},
+    diameter_b=0.2) 
+                  annotation (Placement(transformation(extent={{0,10},{20,30}},
           rotation=0)));
 
   inner Modelica_Fluid.System system 
