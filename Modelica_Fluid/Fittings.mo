@@ -1739,6 +1739,20 @@ The used sufficient criteria for monotonicity follows from:
               m_flow,
               0.5*(Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b)),
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
+        parameter Boolean show_totalPressures = false
+          "= true, if total pressures are included for plotting" 
+           annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnostics"));
+        SI.AbsolutePressure p_total_a = port_a.p + 0.5 * m_flow^2 /((Modelica.Constants.pi/4 * data.diameter_a^2)^2 * noEvent(if port_a.m_flow > 0 then Medium.density(state_a) else Medium.density(state_b))) if 
+             show_totalPressures "Total pressure at port_a";
+        SI.AbsolutePressure p_total_b = port_b.p + 0.5 * m_flow^2 /((Modelica.Constants.pi/4 * data.diameter_b^2)^2 * noEvent(if port_b.m_flow > 0 then Medium.density(state_b) else Medium.density(state_a))) if 
+             show_totalPressures "Total pressure at port_a";
+        parameter Boolean show_portVelocities = false
+          "= true, if port velocities are included for plotting" 
+           annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnostics"));
+        SI.Velocity v_a = port_a.m_flow /(Modelica.Constants.pi/4 * data.diameter_a^2 * noEvent(if port_a.m_flow > 0 then Medium.density(state_a) else Medium.density(state_b))) if 
+             show_portVelocities "Fluid velocity into port_a";
+        SI.Velocity v_b = port_b.m_flow /(Modelica.Constants.pi/4 * data.diameter_b^2 * noEvent(if port_b.m_flow > 0 then Medium.density(state_b) else Medium.density(state_a))) if 
+             show_portVelocities "Fluid velocity into port_b";
 
         // Variables
         Modelica.SIunits.Pressure dp_fg
@@ -1941,7 +1955,6 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
           dp := 1/2 * m_flow^2 *( if m_flow > 0 then 
             data.zeta1/(if data.zeta1_at_a then rho_a_des    * A_a^2 else    rho_b_des * A_b^2) - 1/(rho_a_des    * A_a^2) + 1/(rho_b_des    * A_b^2) else 
             -data.zeta2/(if data.zeta2_at_a then rho_a_nondes * A_a^2 else rho_b_nondes * A_b^2) - 1/(rho_a_nondes * A_a^2) + 1/(rho_b_nondes * A_b^2));
-
       end pressureLoss_m_flow_totalPressure;
     end QuadraticTurbulent;
 
