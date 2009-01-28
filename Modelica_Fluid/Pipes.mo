@@ -1574,17 +1574,17 @@ solving a non-linear equation.
  
 <p>
 Additionally to wall friction, this component properly implements static
-head. With respect to the latter, two cases can be distuinguised. In the case
+head. With respect to the latter, two cases can be distinguished. In the case
 shown next, the change of elevation with the path from a to b has the opposite
 sign of the change of density.</p>
  
-<img src=\"../Images/Components/PipeFrictionStaticHearho_case-a.PNG\">
+<img src=\"../Images/Components/PipeFrictionStaticHead_case-a.PNG\">
  
 <p>
 In the case illustrated second, the change of elevation with the path from a to 
 b has the same sign of the change of density.</p>
  
-<img src=\"../Images/Components/PipeFrictionStaticHearho_case-b.PNG\">
+<img src=\"../Images/Components/PipeFrictionStaticHead_case-b.PNG\">
  
 </html>"),    Diagram(coordinateSystem(
                   preserveAspectRatio=false,
@@ -2944,17 +2944,17 @@ solving a non-linear equation.
  
 <p>
 Additionally to wall friction, this component properly implements static
-head. With respect to the latter, two cases can be distuinguised. In the case
+head. With respect to the latter, two cases can be distinguished. In the case
 shown next, the change of elevation with the path from a to b has the opposite
 sign of the change of density.</p>
  
-<img src=\"../Images/Components/PipeFrictionStaticHearho_case-a.PNG\">
+<img src=\"../Images/Components/PipeFrictionStaticHead_case-a.PNG\">
  
 <p>
 In the case illustrated second, the change of elevation with the path from a to 
 b has the same sign of the change of density.</p>
  
-<img src=\"../Images/Components/PipeFrictionStaticHearho_case-b.PNG\">
+<img src=\"../Images/Components/PipeFrictionStaticHead_case-b.PNG\">
  
  
 </html>"));
