@@ -2,9 +2,6 @@ within Modelica_Fluid;
 model System
   "System properties and default values (ambient, flow direction, initialization)"
 
-  replaceable package Medium = 
-    Modelica.Media.Interfaces.PartialMedium "Default Medium model" 
-      annotation (choicesAllMatching = true);
   parameter Medium.AbsolutePressure p_ambient=101325 "Default ambient pressure"
     annotation(Dialog(group="Environment"));
   parameter Medium.Temperature T_ambient=293.15 "Default ambient temperature" 
@@ -35,6 +32,10 @@ model System
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 
   // Initialization
+  replaceable package Medium = 
+    Modelica.Media.Interfaces.PartialMedium
+    "Medium model for default start values" 
+      annotation (Dialog(tab = "Initialization"), choicesAllMatching = true);
   parameter Medium.MassFlowRate m_flow_start = 0
     "Default start value for mass flow rates" 
     annotation(Dialog(tab = "Initialization"));
