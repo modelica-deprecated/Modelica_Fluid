@@ -993,7 +993,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
 
   end ComponentDefinition;
 
-  package BuldingSystemModels "Building system models"
+  package BuildingSystemModels "Building system models"
     package SystemComponent "System component"
 
       annotation (Documentation(info="<html>
@@ -1108,7 +1108,7 @@ It covers some key issues, such as the System component, the definition of mediu
 system, and the typical customizations available in the Modelica_Fluid models.
 </p> 
 </html>"));
-  end BuldingSystemModels;
+  end BuildingSystemModels;
 
   class ReleaseNotes "Release notes"
 
@@ -2396,33 +2396,31 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 This is version <b>1.0</b> of the Modelica_Fluid library.
 With respect to previous versions of the Modelica_Fluid library, the design
 of the connectors has been changed, using the recently developed concept
-with streams connectors (see an overview and a rational
-<a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rational.pdf\">here</a>).
+of streams connectors (see an overview and a rationale
+<a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rationale.pdf\">here</a>).
 This requires an extension to the Modelica specification which will
 be included in Modelica 3.1.
 This new concept is supported in Dymola 7.1 and therefore Dymola 7.1
 is required for this Modelica_Fluid version.
 The essential benefit of this new concept is that the equation systems become
 more well behaved and the models can be much more reliably simulated.
-Please, read the section
-<a href=\"Modelica:Modelica_Fluid.UsersGuide.KnownLimitations\">Known limitations</a>
-in the Users Guide before using this library.
 </p>
  
 <p>
-A typical example model of the Modelica_Fluid library
-is shown in the next figure (drum boiler):
+A simple example model demonstrating many features of the Modelica_Fluid library, including dynamic and steady-state simulation, 
+embedded idealized control, as well as the treatment of zero flow rates and closed flow cycles, 
+is shown in the next figure (heating system):
 </p>
 <p align=\"center\">
-<img src=\"../Images/UsersGuide/DrumBoiler.png\">
+<img src=\"../Images/UsersGuide/HeatingSystem.png\">
 </p>
 <p>
-An example of a tank system that is controlled by a control system
-and where some of the components have built-in diagram animation
+Some of the components have built-in diagram animation.
+An example of a tank system that is controlled by an explicitly modeled control system
 is shown in the next figure:
 </p>
 <p align=\"center\">
-<img src=\"../Images/Examples/ControlledTanks1.png\">
+<img src=\"../Images/UsersGuide/ControlledTanks.png\">
 </p>
 <p>
 The following parts are useful, when newly starting with this library:
