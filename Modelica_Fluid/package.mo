@@ -1,5 +1,5 @@
 within ;
-package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow models using the Modelica.Media media description (requires package Modelica 3.0 and Dymola 7.1)"
+package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow models using the Modelica.Media media description (package Modelica 3.0 and stream connector support in the Modelica tool is required)"
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
@@ -2369,8 +2369,12 @@ of streams connectors (see an overview and a rationale
 <a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rationale.pdf\">here</a>).
 This requires an extension to the Modelica specification which will
 be included in Modelica 3.1.
-This new concept is supported in Dymola 7.1 and therefore Dymola 7.1
-is required for this Modelica_Fluid version.
+As of the release date, the new streams concept is supported in Dymola 7.1. Therefore, 
+Dymola users need Dymola version 7.1 in order to use Modelica_Fluid
+(Dymola version 7.2 announced to be available in Feb. 2009 is
+recommended, since it supports additionally the new connectorSizing annotation that makes
+connections to vectors of connectors very convenient). Other Modelica tool vendors are currently
+incorporating the streams concept in their tools as well.
 The essential benefit of this new concept is that the equation systems become
 more well behaved and the models can be much more reliably simulated.
 </p>
