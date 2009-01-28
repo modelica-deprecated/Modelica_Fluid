@@ -199,8 +199,9 @@ The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any mod
 <p>
 The intended use is for complex networks of pipes and other flow devices, like valves. See e.g. 
 <ul>
-<li><a href=\"Modelica:Modelica_Fluid.Examples.BranchingDynamicPipes\">Examples.BranchingDynamicPipes</a></li>, or
-<li><a href=\"Modelica:Modelica_Fluid.Examples.IncompressibleFluidNetwork\">Examples.IncompressibleFluidNetwork</a>.
+<li><a href=\"Modelica:Modelica_Fluid.Examples.BranchingDynamicPipes\">Examples.BranchingDynamicPipes</a>, or </li>
+<li><a href=\"Modelica:Modelica_Fluid.Examples.IncompressibleFluidNetwork\">Examples.IncompressibleFluidNetwork</a>.</li>
+</ul>
 </p> 
 </html>"),
   Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{100,100}},
