@@ -1,69 +1,87 @@
 within Modelica_Fluid.Test.TestComponents.Fittings;
 model TestSuddenExpansion
+  "Test of sudden expansion models, with correct and wrong usage"
   extends Modelica.Icons.Example;
-  replaceable package Medium = 
-      Modelica.Media.Water.ConstantPropertyLiquidWater 
-    constrainedby Modelica.Media.Interfaces.PartialMedium
-    "Medium in all components"                        annotation (
-    choicesAllMatching =                                                                            true);
 
-  annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics),
-    experiment(StopTime=10, NumberOfIntervals=10000),
-    experimentSetupOutput,
+  annotation (
+    Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{100,
+            100}}), graphics),
     Documentation(info="<html>
+<p>
+This example shows the use of a sudden expansion / contraction model, which is connected to two boundary conditions prescribing static pressure. Notice that the prescribed static pressure on the right boundary is higher than on the left one. Still, the fluid flows from left to right. 
+</p>
+<p>
+The reason for this is that the boundary conditions model infinite reservoirs with an infinite diameter and thus zero flow velocity. The sudden expansion model does however have two ends with finite diameters, and, as explained in the <a href=\"Modelica://Modelica_Fluid.UsersGuide.Overview\">Overview</a> of the Users' Guide, the momentum balance is not fulfilled exactly for this type of connections. Using a simple <code>connect()</code>-statement, the difference of the kinetic terms is neglected, which is not reasonable in the present model: At the left boundary condition it is zero, and on the left side of the sudden expansion it has a non-zero value. It is not reasonable to neglect it in the shown model, because there is little friction and therefore these kinetic effects dominate. Consequently, only modelling these effects explicitly leads to the correct results.
+</p>
+<p>
+To do so, two additional sudden expansions / contractions are included in the model. The diameter is set to <code>inf</code> close to the boundaries and the proper values close to the original model. These additional components now introduce <i>exact</i> momentum balances and the results are as expected.
+</p>
 </html>"));
-  Modelica_Fluid.Sources.Boundary_pT ambient_a( redeclare package Medium = 
-        Medium,
-    p=system.p_ambient,
-    T=system.T_ambient,
-    use_p_in=true,
-    nPorts=2) 
-    annotation (Placement(transformation(extent={{-40,40},{-20,60}}, rotation=0)));
-  Modelica.Blocks.Sources.TimeTable p_table(table=[0,0.9999e5; 10,1.0001e5]) 
-    annotation (Placement(transformation(extent={{-80,40},{-60,60}}, rotation=0)));
-
-  Modelica_Fluid.Sources.Boundary_pT ambient_p1(nPorts=1,
-    redeclare package Medium = Medium,
-    p=1.0e5,
-    T=Modelica.SIunits.Conversions.from_degC(80)) 
-    annotation (Placement(transformation(extent={{60,40},{40,60}}, rotation=0)));
-  Modelica_Fluid.Sources.Boundary_pT ambient_p2(nPorts=1,
-    redeclare package Medium = Medium,
-    p=1.0e5,
-    T=Modelica.SIunits.Conversions.from_degC(80)) 
-    annotation (Placement(transformation(extent={{60,10},{40,30}}, rotation=0)));
-  Modelica_Fluid.Fittings.SuddenExpansion expansion1(
-    redeclare package Medium = Medium,
+  Modelica_Fluid.Sources.Boundary_pT leftBoundary1(
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    nPorts=1,
+    p=100000) 
+    annotation (Placement(transformation(extent={{-80,20},{-60,40}})));
+  Modelica_Fluid.Sources.Boundary_pT rightBoundary1(
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    nPorts=1,
+    p=110000) 
+    annotation (Placement(transformation(extent={{80,20},{60,40}})));
+  Modelica_Fluid.Fittings.SuddenExpansion suddenExpansion1(
     diameter_a=0.1,
-    diameter_b=0.2) 
-             annotation (Placement(transformation(extent={{0,40},{20,60}},
-          rotation=0)));
-  Modelica_Fluid.Fittings.SuddenExpansion expansion2(
-    redeclare package Medium = Medium,
+    diameter_b=0.2,
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase) 
+    annotation (Placement(transformation(extent={{-12,20},{8,40}})));
+  Modelica_Fluid.Sources.Boundary_pT leftBoundary2(
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    nPorts=1,
+    p=100000) 
+    annotation (Placement(transformation(extent={{-90,-40},{-70,-20}})));
+  Modelica_Fluid.Sources.Boundary_pT rightBoundary2(
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    nPorts=1,
+    p=110000) 
+    annotation (Placement(transformation(extent={{90,-40},{70,-20}})));
+  Modelica_Fluid.Fittings.SuddenExpansion suddenExpansion2(
     diameter_a=0.1,
-    diameter_b=0.2) 
-                  annotation (Placement(transformation(extent={{0,10},{20,30}},
-          rotation=0)));
-
-  inner Modelica_Fluid.System system 
-                                   annotation (Placement(transformation(extent=
-            {{66,-42},{86,-22}}, rotation=0)));
+    diameter_b=0.2,
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase) 
+    annotation (Placement(transformation(extent={{-10,-40},{10,-20}})));
+  Modelica_Fluid.Fittings.SuddenExpansion leftAdapter(
+    diameter_a=0.1,
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    diameter_b=Modelica.Constants.inf) 
+    annotation (Placement(transformation(extent={{-40,-40},{-60,-20}})));
+  Modelica_Fluid.Fittings.SuddenExpansion rightAdapter(
+    redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+    diameter_a=0.2,
+    diameter_b=Modelica.Constants.inf) 
+    annotation (Placement(transformation(extent={{40,-40},{60,-20}})));
+  inner System system
+    annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
 equation
-  connect(p_table.y, ambient_a.p_in) 
-                                    annotation (Line(points={{-59,50},{-52,50},
-          {-52,58},{-42,58}}, color={0,0,127}));
-  connect(ambient_a.ports[1], expansion1.port_a) 
-                                           annotation (Line(points={{-20,52},{
-          -10,52},{-10,50},{0,50}},
-                color={0,127,255}));
-  connect(expansion1.port_b, ambient_p1.ports[1]) 
-                                              annotation (Line(points={{20,50},
-          {40,50}}, color={0,127,255}));
-  connect(expansion2.port_b, ambient_p2.ports[1]) 
-                                              annotation (Line(points={{20,20},
-          {40,20}}, color={0,127,255}));
-  connect(expansion2.port_a, ambient_a.ports[2]) 
-                                           annotation (Line(points={{0,20},{-10,
-          20},{-10,48},{-20,48}}, color={0,127,255}));
+  connect(leftBoundary1.ports[1], suddenExpansion1.port_a) annotation (Line(
+      points={{-60,30},{-12,30}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(suddenExpansion1.port_b, rightBoundary1.ports[1]) annotation (Line(
+      points={{8,30},{60,30}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(leftAdapter.port_b, leftBoundary2.ports[1]) annotation (Line(
+      points={{-60,-30},{-70,-30}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(leftAdapter.port_a, suddenExpansion2.port_a) annotation (Line(
+      points={{-40,-30},{-10,-30}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(suddenExpansion2.port_b, rightAdapter.port_a) annotation (Line(
+      points={{10,-30},{40,-30}},
+      color={0,127,255},
+      smooth=Smooth.None));
+  connect(rightAdapter.port_b, rightBoundary2.ports[1]) annotation (Line(
+      points={{60,-30},{70,-30}},
+      color={0,127,255},
+      smooth=Smooth.None));
 end TestSuddenExpansion;

@@ -60,6 +60,8 @@ To do so, two additional sudden expansions / contractions are included in the mo
       diameter_a=0.2,
       diameter_b=Modelica.Constants.inf) 
       annotation (Placement(transformation(extent={{40,-40},{60,-20}})));
+    inner System system
+      annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
   equation
     connect(leftBoundary1.ports[1], suddenExpansion1.port_a) annotation (Line(
         points={{-60,30},{-12,30}},
