@@ -19,7 +19,13 @@ The reason for this is that the boundary conditions model infinite reservoirs wi
 <p>
 To do so, two additional sudden expansions / contractions are included in the model. The diameter is set to <code>inf</code> close to the boundaries and the proper values close to the original model. These additional components now introduce <i>exact</i> momentum balances and the results are as expected.
 </p>
-</html>"));
+<p>
+The total pressures offer an additional perspective on the model. After setting the parameter <code>show_totalPressures</code> on the Advanced tab of the <code>AbruptAdaptor</code>s to <code>true</code>, the total pressures are included in said models and may be plotted. This allows to confirm that the <b>total</b> pressure <i>always</i> reduces along the flow direction, even in the upper model.
+</p>
+</html>"),
+      Commands(file=
+            "Scripts/Examples/MomentumBalanceFittings/Plot the model results.mos"
+          "Plot the model results"));
     Modelica_Fluid.Sources.Boundary_pT leftBoundary1(
       redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
       nPorts=1,
