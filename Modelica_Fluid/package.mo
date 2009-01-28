@@ -1,5 +1,5 @@
 within ;
-package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow models using the Modelica.Media media description (package Modelica 3.0 and stream connector support in the Modelica tool is required)"
+package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow models using the Modelica.Media media description (requires package Modelica 3.0 or later, and stream connector support in the Modelica tool)"
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
