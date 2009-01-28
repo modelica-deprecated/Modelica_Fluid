@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -23,7 +22,6 @@ The goal is to include
 the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
 </HTML>"));
-
 
   class Overview "Overview"
 
@@ -291,7 +289,7 @@ equation
            port_b.m_flow*actualStream(port_b.h_outflow);
 end MixingVolume;
 </pre>
-
+ 
 <p>
 The second example is the model of a component describing a lumped pressure loss
 between two ports, with no energy storage and no heat transfer. An isenthalpic
@@ -320,7 +318,7 @@ equation
   port_a.m_flow = f(port_a.p, port_b.p, d_a, d_b);
 end PressureLoss;
 </pre>
-
+ 
 <p>
 If many such components are connected in series between two models with storage, the
 specific enthalpies are propagated in both directions and available to all pressure
@@ -363,7 +361,7 @@ thermodynamic state of the fluid. The vector C contains the mass fraction of the
 which are accounted for in mass balances, but is ignored when computing the fluid properties. This
 allows to easily declare and use medium models with trace components starting from existing medium
 models (e.g. adding CO<sub>2</sub> traces to Moist Air for air conditioning models).
-
+ 
 <h4><font color=\"#008000\">Approximations in balance equations at connection point</font></h4>
 <p>
 Summing up, when two or more ports of the type FluidPort are connected, the following
@@ -1096,7 +1094,7 @@ It is then possible to neglect the storage of mass, momentum, and energy in the 
 (or just in parts of it) just by a few mouse clicks in a GUI, and also to change the type of
 initialization when considering dynamic models. Please note that some combinations of the
 options might be contradictory, and will therefore trigger compilation errors.
-
+ 
 </p>
 </html>"));
     end CustomizingModel;
@@ -2365,7 +2363,6 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
-
 
 annotation (
   version="1.0",

@@ -1401,7 +1401,7 @@ Basically, different variants of the equation
 </pre>
  
 <p>
-
+ 
 By default, the correlations are computed with media data at the actual time instant.
 In order to reduce non-linear equation systems, the parameters
 <b>use_mu_nominal</b> and <b>use_rho_nominal</b> provide the option

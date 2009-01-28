@@ -1,5 +1,5 @@
 within Modelica_Fluid.Examples;
-package CriticalCases
+package Explanatory
   "A set of examples illustrating when special attention has to be paid"
 
   model MomentumBalanceFittings
@@ -30,10 +30,12 @@ To do so, two additional sudden expansions / contractions are included in the mo
       nPorts=1,
       p=110000) 
       annotation (Placement(transformation(extent={{80,20},{60,40}})));
-    Modelica_Fluid.Fittings.SuddenExpansion suddenExpansion1(
+    Modelica_Fluid.Fittings.AbruptAdaptor suddenExpansion1(
       diameter_a=0.1,
       diameter_b=0.2,
-      redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase) 
+      redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+      show_totalPressures=true,
+      show_portVelocities=true) 
       annotation (Placement(transformation(extent={{-12,20},{8,40}})));
     Modelica_Fluid.Sources.Boundary_pT leftBoundary2(
       redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
@@ -45,22 +47,24 @@ To do so, two additional sudden expansions / contractions are included in the mo
       nPorts=1,
       p=110000) 
       annotation (Placement(transformation(extent={{90,-40},{70,-20}})));
-    Modelica_Fluid.Fittings.SuddenExpansion suddenExpansion2(
+    Modelica_Fluid.Fittings.AbruptAdaptor suddenExpansion2(
       diameter_a=0.1,
       diameter_b=0.2,
-      redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase) 
+      redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
+      show_totalPressures=true,
+      show_portVelocities=true) 
       annotation (Placement(transformation(extent={{-10,-40},{10,-20}})));
-    Modelica_Fluid.Fittings.SuddenExpansion leftAdapter(
+    Modelica_Fluid.Fittings.AbruptAdaptor leftAdaptor(
       diameter_a=0.1,
       redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
       diameter_b=Modelica.Constants.inf) 
       annotation (Placement(transformation(extent={{-40,-40},{-60,-20}})));
-    Modelica_Fluid.Fittings.SuddenExpansion rightAdapter(
+    Modelica_Fluid.Fittings.AbruptAdaptor rightAdaptor(
       redeclare package Medium = Modelica.Media.Water.StandardWaterOnePhase,
       diameter_a=0.2,
       diameter_b=Modelica.Constants.inf) 
       annotation (Placement(transformation(extent={{40,-40},{60,-20}})));
-    inner System system
+    inner System system 
       annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
   equation
     connect(leftBoundary1.ports[1], suddenExpansion1.port_a) annotation (Line(
@@ -71,21 +75,21 @@ To do so, two additional sudden expansions / contractions are included in the mo
         points={{8,30},{60,30}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(leftAdapter.port_b, leftBoundary2.ports[1]) annotation (Line(
+    connect(leftAdaptor.port_b, leftBoundary2.ports[1]) annotation (Line(
         points={{-60,-30},{-70,-30}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(leftAdapter.port_a, suddenExpansion2.port_a) annotation (Line(
+    connect(leftAdaptor.port_a, suddenExpansion2.port_a) annotation (Line(
         points={{-40,-30},{-10,-30}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(suddenExpansion2.port_b, rightAdapter.port_a) annotation (Line(
+    connect(suddenExpansion2.port_b,rightAdaptor. port_a) annotation (Line(
         points={{10,-30},{40,-30}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(rightAdapter.port_b, rightBoundary2.ports[1]) annotation (Line(
+    connect(rightAdaptor.port_b, rightBoundary2.ports[1]) annotation (Line(
         points={{60,-30},{70,-30}},
         color={0,127,255},
         smooth=Smooth.None));
   end MomentumBalanceFittings;
-end CriticalCases;
+end Explanatory;

@@ -21,7 +21,7 @@ in order to assume a steady-state momentum balance. This is the default for all 
 Change the Medium from MoistAir to StandardWater, in order to investigate a medium with significantly different density. 
 Note the static head caused by the elevation of the pipes.
 </p>
-
+ 
 <p>
 Note, pipe4.modelStructure = av_b, i.e., the pipe has no volume at port_b.
 It is not possible to have a volume at port_b, since otherwise the pressure of the volume is

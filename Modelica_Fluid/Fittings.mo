@@ -234,8 +234,8 @@ model SharpEdgedOrifice
 
 end SharpEdgedOrifice;
 
-model SuddenExpansion
-    "Pressure drop in pipe due to suddenly expanding area (for both flow directions)"
+model AbruptAdaptor
+    "Pressure drop in pipe due to suddenly expanding or reducing area (for both flow directions)"
   extends BaseClasses.QuadraticTurbulent.BaseModelNonconstantCrossSectionArea(final data
         = BaseClasses.QuadraticTurbulent.LossFactorData.suddenExpansion(
           diameter_a, diameter_b));
@@ -283,18 +283,22 @@ model SuddenExpansion
     Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
               100}},
           grid={1,1}), graphics={Rectangle(
-            extent={{-100,22},{0,-22}},
+            extent=DynamicSelect({{-100,22},{0,-22}}, {{-100,max(0.1, min(1,
+                diameter_a/max(diameter_a, diameter_b)))*60},{0,-max(0.1, min(1, 
+                diameter_a/max(diameter_a, diameter_b)))*60}}),
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255}), Rectangle(
-            extent={{0,60},{100,-60}},
+            extent=DynamicSelect({{0,60},{100,-60}}, {{0,max(0.1, min(1,
+                diameter_b/max(diameter_a, diameter_b)))*60},{100,-max(0.1, min(
+                1, diameter_b/max(diameter_a, diameter_b)))*60}}),
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
             fillColor={0,127,255})}),
       Documentation(info="<html>
  
 </html>"));
-end SuddenExpansion;
+end AbruptAdaptor;
 
   model MultiPort
     "Multiply a port; useful if multiple connections shall be made to a port exposing a state"
