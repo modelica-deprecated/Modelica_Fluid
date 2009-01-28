@@ -136,8 +136,8 @@ initial equation
             extent={{-95,-24},{95,-44}},
             lineColor={0,0,0},
             textString=DynamicSelect("%level_start", realString(
-                level,
-                1,
+                level, 
+                1, 
                 2)))}),
       Documentation(info="<HTML>
 <p> 

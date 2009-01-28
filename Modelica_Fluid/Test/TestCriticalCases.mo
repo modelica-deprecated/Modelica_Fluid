@@ -252,155 +252,6 @@ The steady-state initial values are observed by an assertion.
 </html>"));
   end DynamicPipeInitialization;
 
-  model LumpedPipe "Example for a composite pipe model"
-
-    // extending PartialStraightPipe
-    extends Modelica_Fluid.Pipes.BaseClasses.PartialStraightPipe;
-
-    // Assumptions
-    parameter Types.Dynamics energyDynamics=system.energyDynamics
-      "Formulation of energy balance" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-    parameter Types.Dynamics massDynamics=system.massDynamics
-      "Formulation of mass balance" 
-      annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-
-    // Initialization
-    parameter Medium.AbsolutePressure p_a_start=system.p_start
-      "Start value of pressure at port a" 
-      annotation(Dialog(tab = "Initialization"));
-    parameter Medium.AbsolutePressure p_b_start=p_a_start
-      "Start value of pressure at port b" 
-      annotation(Dialog(tab = "Initialization"));
-
-    parameter Boolean use_T_start=true "Use T_start if true, otherwise h_start"
-       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-    parameter Medium.Temperature T_start=if use_T_start then system.T_start else 
-                Medium.temperature_phX(
-          (p_a_start + p_b_start)/2,
-          h_start,
-          X_start) "Start value of temperature" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = use_T_start));
-    parameter Medium.SpecificEnthalpy h_start=if use_T_start then 
-          Medium.specificEnthalpy_pTX(
-          (p_a_start + p_b_start)/2,
-          T_start,
-          X_start) else Medium.h_default "Start value of specific enthalpy" 
-      annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
-    parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
-      "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
-    parameter Medium.ExtraProperty C_start[Medium.nC](
-         quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
-      "Start value of trace substances" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nC > 0));
-
-    parameter Medium.MassFlowRate m_flow_start = system.m_flow_start
-      "Start value for mass flow rate" 
-       annotation(Evaluate=true, Dialog(tab = "Initialization"));
-
-    // Wall heat transfer
-    parameter Boolean use_HeatTransfer = false
-      "= true to use the HeatTransfer model" 
-        annotation (Dialog(tab="Assumptions", group="Heat transfer"));
-    replaceable model HeatTransfer = 
-        Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.IdealHeatTransfer 
-      constrainedby
-      Modelica_Fluid.Vessels.BaseClasses.HeatTransfer.PartialVesselHeatTransfer
-      "Wall heat transfer" 
-        annotation (Dialog(tab="Assumptions", group="Heat transfer",enable=use_HeatTransfer),choicesAllMatching=true);
-    Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a heatPort if use_HeatTransfer 
-      annotation (Placement(transformation(extent={{-10,44},{10,64}}, rotation=
-              0), iconTransformation(extent={{-10,35},{10,55}})));
-
-    Pipes.StaticPipe staticPipe1(
-      redeclare package Medium = Medium,
-      allowFlowReversal=allowFlowReversal,
-      nParallel=nParallel,
-      length=length/2,
-      roughness=roughness,
-      diameter=diameter,
-      perimeter=perimeter,
-      crossArea=crossArea,
-      height_ab=height_ab/2,
-      m_flow_start=m_flow_start,
-      redeclare final model FlowModel = FlowModel) 
-      annotation (Placement(transformation(extent={{-60,-10},{-40,10}},
-            rotation=0)));
-    Modelica_Fluid.Vessels.ClosedVolume volume(
-      redeclare package Medium = Medium,
-      redeclare model HeatTransfer = HeatTransfer,
-      heatTransfer(surfaceAreas={perimeter*length}),
-      energyDynamics=energyDynamics,
-      massDynamics=massDynamics,
-      p_start=(p_a_start+p_b_start)/2,
-      use_T_start=use_T_start,
-      T_start=T_start,
-      h_start=h_start,
-      X_start=X_start,
-      C_start=C_start,
-      V=V,
-      nPorts=2,
-      use_portsData=false,
-      use_HeatTransfer=use_HeatTransfer) 
-      annotation (Placement(transformation(extent={{-10,10},{10,30}},  rotation=
-             0)));
-    Pipes.StaticPipe staticPipe2(
-      redeclare package Medium = Medium,
-      allowFlowReversal=allowFlowReversal,
-      nParallel=nParallel,
-      length=length/2,
-      roughness=roughness,
-      diameter=diameter,
-      perimeter=perimeter,
-      crossArea=crossArea,
-      height_ab=height_ab/2,
-      m_flow_start=m_flow_start,
-      redeclare final model FlowModel = FlowModel)   annotation (Placement(transformation(extent={{40,-10},
-              {60,10}},          rotation=0)));
-
-  equation
-    connect(staticPipe1.port_a, port_a) 
-      annotation (Line(points={{-60,0},{-80,0},{-100,0}},
-                                                  color={0,127,255}));
-    connect(staticPipe2.port_b, port_b) 
-      annotation (Line(points={{60,0},{80,0},{100,0}},
-                                                color={0,127,255}));
-    annotation (defaultComponentName="pipe",Icon(coordinateSystem(
-          preserveAspectRatio=true,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics={Ellipse(
-            extent={{-10,10},{10,-10}},
-            lineColor={0,0,0},
-            fillColor={0,0,0},
-            fillPattern=FillPattern.Solid)}),Documentation(info="<html>
-<p>
-Simple pipe model consisting of one volume, 
-wall friction (with different friction correlations)
-and gravity effect. This model is mostly used to demonstrate how
-to build up more detailed models from the basic components.
-Note, if the \"heatPort\" is not connected, then the pipe
-is totally insulated (= no thermal flow from the fluid to the
-pipe wall/environment).
-</p>
-</html>"),
-      Diagram(coordinateSystem(
-          preserveAspectRatio=true,
-          extent={{-100,-100},{100,100}},
-          grid={1,1}), graphics));
-    connect(staticPipe1.port_b, volume.ports[1])   annotation (Line(
-        points={{-40,0},{-2,0},{-2,10}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(staticPipe2.port_a, volume.ports[2])   annotation (Line(
-        points={{40,0},{2,0},{2,10}},
-        color={0,127,255},
-        smooth=Smooth.None));
-    connect(heatPort, volume.heatPort) annotation (Line(
-        points={{0,54},{0,40},{-20,40},{-20,20},{-10,20}},
-        color={191,0,0},
-        smooth=Smooth.None));
-  end LumpedPipe;
 
   model BranchingPipes1
     //replaceable package Medium = Modelica.Media.Water.StandardWater;
@@ -412,7 +263,7 @@ pipe wall/environment).
       p=200000,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -455,7 +306,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=100000,
       T=300)   annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -467,7 +318,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       T_start=300)      annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -518,7 +369,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -558,7 +409,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=100000,
       T=300)   annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -569,7 +420,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=5.0e5)  annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -618,7 +469,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       p_b_start=5.0e5,
@@ -658,7 +509,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=100000,
       T=300)   annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       p_b_start=5.0e5,
@@ -669,7 +520,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       diameter=2.54e-2) annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       p_b_start=5.0e5,
@@ -727,7 +578,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -767,7 +618,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       p=100000,
       T=300)   annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -778,7 +629,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       p_b_start=500000) annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -841,7 +692,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
       p=500000,
       T=300) annotation (Placement(transformation(extent={{-100,-6},{-88,6}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       use_T_start=true,
       length=10,
       diameter=2.5e-2,
@@ -871,7 +722,7 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
       p=100000,
       T=300)                             annotation (Placement(transformation(
             extent={{94,-6},{82,6}}, rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       use_T_start=true,
       length=10,
       diameter=2.5e-2,
@@ -891,7 +742,7 @@ Simulation starts with the valve open. At t=1, the valve is closed, and the simu
       diameter=2.5e-2,
       redeclare package Medium = Medium) annotation (Placement(transformation(
             extent={{-46,-10},{-26,10}}, rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       use_T_start=true,
       length=10,
       diameter=2.5e-2,
@@ -951,7 +802,7 @@ fails for zero flow rate.
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -992,7 +843,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=100000,
       T=300)   annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -1004,7 +855,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
                         annotation (Placement(transformation(extent={{-40,36},{
               -20,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -1055,7 +906,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1098,7 +949,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=100000,
       T=300)   annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -1110,7 +961,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
                         annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -1170,7 +1021,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1210,7 +1061,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=100000,
       T=300)   annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1221,7 +1072,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.90e5) annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1288,7 +1139,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1328,7 +1179,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=100000,
       T=300)   annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1339,7 +1190,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1406,7 +1257,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1446,7 +1297,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=100000,
       T=300)   annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1457,7 +1308,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1522,7 +1373,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1563,7 +1414,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       T=300,
       p=1.0e5) annotation (Placement(transformation(extent={{94,-18},{82,-6}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1574,7 +1425,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1647,7 +1498,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1686,7 +1537,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       T=300,
       p=1.0e5) annotation (Placement(transformation(extent={{94,-18},{82,-6}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe2(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe2(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1697,7 +1548,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=4.90e5)      annotation (Placement(transformation(extent={{-34,36},{
               -14,56}}, rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       redeclare model FlowModel = 
@@ -1769,7 +1620,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=5.0e5,
       T=300) annotation (Placement(transformation(extent={{-100,0},{-88,12}},
             rotation=0)));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe1(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe1(
       redeclare package Medium = Medium,
       p_a_start=5.0e5,
       use_T_start=true,
@@ -1805,7 +1656,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=1.0e5) annotation (Placement(transformation(extent={{74,-20},{62,-8}},
             rotation=0)));
 
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe3(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe3(
       redeclare package Medium = Medium,
       use_T_start=true,
       length=10,
@@ -1853,7 +1704,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
-    Modelica_Fluid.Test.TestCriticalCases.LumpedPipe pipe(
+    Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe(
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       h_start=2e6,
       diameter=0.05,

@@ -721,7 +721,8 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
+
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -734,7 +735,7 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
@@ -1257,7 +1258,8 @@ handled properly.</p>
               lineColor={0,0,0},
               fillColor={85,170,255},
               fillPattern=FillPattern.VerticalCylinder),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
+
             Text(
               extent={{-200,84},{0,48}},
               lineColor={0,0,255},
@@ -1285,8 +1287,8 @@ handled properly.</p>
               extent={{-195,-38},{-5,-58}},
               lineColor={0,0,0},
               textString=DynamicSelect("%level_start", realString(
-                      level,
-                      1,
+                      level, 
+                      1, 
                       2)))}),
         Documentation(info="<HTML>
 <p>
@@ -2090,8 +2092,8 @@ end for;
               extent={{-95,-39},{95,-59}},
               lineColor={0,0,0},
               textString=DynamicSelect("%level_start", realString(
-                    level,
-                    1,
+                    level, 
+                    1, 
                     2)))}),
         Documentation(info="<HTML>
 <p> 
@@ -2650,21 +2652,24 @@ Implemented trace substances and missing equation for outflow of multi substance
         stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort) 
         annotation (Placement(transformation(extent={{-20,10},{20,50}}, rotation=
                 0)));
-      Modelica_Fluid.Fittings.GenericStaticHead pipe1(
-                                      redeclare package Medium = Medium,
-          height_ab=2) annotation (Placement(transformation(
+      Pipes.StaticPipe pipe1(         redeclare package Medium = Medium,
+          height_ab=2,
+        length=2,
+        diameter=0.1)  annotation (Placement(transformation(
             origin={70,30},
             extent={{-10,-10},{10,10}},
             rotation=90)));
-      Modelica_Fluid.Fittings.GenericStaticHead pipe2(
-                                      redeclare package Medium = Medium,
-          height_ab=2) annotation (Placement(transformation(
+      Pipes.StaticPipe pipe2(         redeclare package Medium = Medium,
+          height_ab=2,
+        length=2,
+        diameter=0.1)  annotation (Placement(transformation(
             origin={0,-22},
             extent={{-10,-10},{10,10}},
             rotation=90)));
-      Modelica_Fluid.Fittings.GenericStaticHead pipe3(
-                                      redeclare package Medium = Medium,
-          height_ab=2) annotation (Placement(transformation(
+      Pipes.StaticPipe pipe3(         redeclare package Medium = Medium,
+          height_ab=2,
+        length=2,
+        diameter=0.1)  annotation (Placement(transformation(
             origin={-60,10},
             extent={{-10,-10},{10,10}},
             rotation=90)));
@@ -2676,21 +2681,21 @@ Implemented trace substances and missing equation for outflow of multi substance
       connect(valveDiscrete.port_b,tank3. ports[1]) annotation (Line(points={{-60,-68},
               {-60,-59},{-60,-51},{-62,-51}},
                                color={0,127,255}));
-      connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{70,40},{70,
-              45},{70,49},{70,49}},
+      connect(pipe1.port_b, tank1.ports[1]) annotation (Line(points={{70,40},{
+              70,45},{70,49}},
                     color={0,127,255}));
       connect(pipe2.port_a, tank3.ports[2]) annotation (Line(points={{
-              -6.12323e-016,-32},{-6.12323e-016,-48},{0,-60},{-58,-60},{-58,-51},
-              {-58,-51}}, color={0,127,255}));
+              -6.12323e-016,-32},{-6.12323e-016,-48},{0,-60},{-58,-60},{-58,-51}},
+                          color={0,127,255}));
       connect(pipe3.port_a, tank3.topPorts[1]) 
-                                              annotation (Line(points={{-60,0},{
-              -60,-5},{-60,-9},{-60,-9}},
+                                              annotation (Line(points={{-60,0},
+              {-60,-5},{-60,-9}},
                         color={0,127,255}));
       connect(pipe3.port_b, tank2.ports[1]) annotation (Line(points={{-60,20},{
               -60,26},{-30,26},{-30,0},{-2,0},{-2,9},{-2.66667,9}},
                                                              color={0,127,255}));
-      connect(pipe1.port_a, tank2.ports[3]) annotation (Line(points={{70,20},{70,
-              0},{2,0},{2,9},{2.66667,9}},
+      connect(pipe1.port_a, tank2.ports[3]) annotation (Line(points={{70,20},{
+              70,0},{2,0},{2,9},{2.66667,9}},
                                      color={0,127,255}));
       connect(pipe2.port_b, tank2.ports[2]) annotation (Line(
           points={{6.12323e-016,-12},{0,-12},{0,9},{2.22045e-016,9}},
