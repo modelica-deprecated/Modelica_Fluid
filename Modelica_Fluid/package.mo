@@ -3,7 +3,6 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -992,7 +991,7 @@ These parameters are then propagated to the individual components
 using the inner/outer variable mechanism. In case the system model is structured
 hieararchically, it is possible to either put a single System
 component at the top level, or possibly to put many of them at different levels,
-which will only influence the system compoenents from that level down. 
+which will only influence the system components from that level down. 
 </p>
 <p>All the parameters defined in the System model are used as default values for the parameters of the individual components of the system model. Note that it is always possible to ovverride these defaults locally by changing the value of the parameters in the specific component instance.
 </p>
@@ -1099,7 +1098,7 @@ system, and the typical customizations available in the Modelica_Fluid models.
     annotation (Documentation(info="<HTML>
 <h4><font color=\"#008000\" >Release notes</font></h4>
  
-<h4><font color=\"#008000\">Version 1.0, 2009-01-22</font></h4>
+<h4><font color=\"#008000\">Version 1.0, 2009-01-28</font></h4>
  
 <p>
 Modelica_Fluid was refactored and finalized for the release:
@@ -1157,6 +1156,14 @@ Modelica_Fluid was refactored and finalized for the release:
  
 <li> New Vessels.BaseClasses.PartialLumpedVessel treating the ports, including hydraulic resistances, for ClosedVolume, SimpleTank and SweptVolume.</li>
  
+<li> Clarification of modeling assumptions<br>
+     The documentation has been extended to better explain the modeling assumptions made. In particular the section
+     <a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.FluidConnectors\">UsersGuide.ComponentDefinition.FluidConnectors</a>
+     now makes clear that the ports represent the thermodynamic enthalpy, as opposed to stagnation enthalpy,
+     and thermodynamic or static pressure, as opposed to total pressure. An new package Explanatory has been added to the
+     examples to show the difference beteen static pressure and total pressure and possible implications. See
+     <a href=\"Modelica:Modelica_Fluid.Examples.Explanatory.MomentumBalanceFittings\">Examples.Explanatory.MomentumBalanceFittings</a>.
+ 
 <li> System (former Ambient)<br>
      The use of the global System object has been extended towards common default values for
      modeling assumptions, initialization, and advanced settings that are different for each application of the library
@@ -1212,21 +1219,6 @@ Modelica_Fluid was refactored and finalized for the release:
  
 </ul>
  
-<p>
-\"Check\" for the library is successful. \"Check with Simulation\"
-(i.e., simulating all test models in the library) is successful
-with the exception:
-</p>
- 
-<ul>
-<li> Test.TestComponents.Vessesl.TestInitialization<br>
-     The simulation failse with a division by zero. This is due to wrong state selection for the used Medium SimpleAir.</li>
-<li> Test.TestCriticalCases.BranchingPipes*<br>
-     These tests may or may not run due to the fixed modelStructure a_v_b used by Test.TestCriticalCases.LumpedPipe,
-     which does not suite for the models.</li>
-<li> Test.TestOverdeterminedInitialization.DynamicPipeInitialValues<br>
-     The translation fails due to an initial value for pipe.medium[1].p, which is fixed by source.p.</li>
-</ul>
  
 <h4><font color=\"#008000\">Version 1.0 Streams Beta 3, 2008-10-12</font></h4>
  
@@ -2344,7 +2336,6 @@ and many have contributed.
 end Contact;
 end UsersGuide;
 
-
 annotation (
   version="1.0",
   versionBuild="$Rev$",
@@ -2356,11 +2347,11 @@ annotation (
       "Fittings", "Sources", "Sensors", "Interfaces", "Types", "Utilities", "Icons", "Test", "*"},
   Documentation(info="<html>
 <p>
-Library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
+The <b>Modelica_Fluid</b> library is a <b>free</b> Modelica package provided under the
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
 The library contains components describing
-<b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
-component equations and the media models
+<b>1-dimensional thermo-fluid flow</b> in networks of vessels, pipes, fluid machines, valves and fittings. 
+A unique feature is that the component equations and the media models
 as well as pressure loss and heat transfer correlations are decoupled from each other.
 All components are implemented such that they can be used for
 media from the Modelica.Media library. This means especially that an
