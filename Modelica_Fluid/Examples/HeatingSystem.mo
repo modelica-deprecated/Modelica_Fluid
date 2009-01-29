@@ -230,7 +230,7 @@ If steady-state values shall be obtained with the valve fully closed, then a the
 coupling between the pipe and its ambient should be defined as well.
 </p>
 <p>
-Moreover it is worth noting that the idialized direct connection between the heater and the pipe, resulting in equal port pressures,
+Moreover it is worth noting that the idealized direct connection between the heater and the pipe, resulting in equal port pressures,
 is treated as high-index DAE, as opposed to a nonlinear equation system for connected pressure loss correlations. A pressure loss correlation 
 could be additionally introduced to model the fitting between the heater and the pipe, e.g. to adapt different diameters.
 </p>
