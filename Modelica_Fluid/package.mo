@@ -10,7 +10,7 @@ package UsersGuide "Users Guide"
 <h4><font color=\"#008000\" >Users guide of package Modelica_Fluid</font></h4>
 <p>
 The library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
-<a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
+<a href=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
 The library contains components describing
 <b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
 component equations and the media models
@@ -92,7 +92,7 @@ This library has the following main features:
      or junction should be used if these are important for the specific problem at hand.
      In all circuits where friction dominates, or components such as pumps determine the flow rate,
      kinetic pressure is typically irrelevant. You can consider the 
-     <a href=\"Modelica://Modelica_Fluid.Examples.CriticalCases.MomentumBalanceFittings\">
+     <a href=\"modelica://Modelica_Fluid.Examples.CriticalCases.MomentumBalanceFittings\">
      Modelica_Fluid.Examples.CriticalCases.MomentumBalanceFittings</a> model (and its documentation)
      to see one case where the momentum balance essentially depends on kinetic pressure,
      so it is necessary to use explicit fittings in order to obtain correct results. 
@@ -116,7 +116,7 @@ This library has the following main features:
 <h4><font color=\"#008000\" >Getting started</font></h4>
 <p>
 Please explore the
-<a href=\"Modelica://Modelica_Fluid.Examples\">Examples</a>,
+<a href=\"modelica://Modelica_Fluid.Examples\">Examples</a>,
 which provide simple models for a broad variety of applications.
 </p>
 </html>
@@ -665,7 +665,7 @@ mass flow rate varies only slowly). In this section it is explained how this cas
 handeled in the Modelica_Fluid library for pipes with
 <b>nonuniform roughness</b>, including the smooth pipe
 as a special case (see
-<a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.WallFriction\">Pipes.BaseClasses.WallFriction</a>.
+<a href=\"modelica://Modelica_Fluid.Pipes.BaseClasses.WallFriction\">Pipes.BaseClasses.WallFriction</a>.
 The treatment is non-standard in order to get a
 numerically well-posed description.
 </p>
@@ -912,7 +912,7 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
 <h4><font color=\"#008000\" >Pump characteristics</font></h4>
 <p>
 The control valves in
-<a href=\"Modelica://Modelica_Fluid.Valves\">Modelica_Fluid.Valves</a>
+<a href=\"modelica://Modelica_Fluid.Valves\">Modelica_Fluid.Valves</a>
 have the parameters <b>Kv</b> and <b>Cv</b>. They are defined
 as unit-less variables, but in the description text a unit
 is given. The reason for this definition is the following:
@@ -1937,7 +1937,7 @@ the use is completely at <U>your own risk</U>;
 it can be redistributed and/or modified under the terms of the
 Modelica license 2, see the license conditions (including the
 disclaimer of warranty)
-<A HREF=\"modelica://Library.UsersGuide.ModelicaLicense2\">here</A></U>
+<A HREF=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">here</A></U>
 or at
 <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2\">
 http://www.modelica.org/licenses/ModelicaLicense2</A>.
@@ -2248,7 +2248,7 @@ class Contact "Contact"
 <dt>The Modelica_Fluid library (this Modelica package)
     is developed by many people from different organizations (see list below).
     It is licensed under the
-    <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>
+    <a href=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>
     by:<br>&nbsp;</dt>
 <dd>Modelica Association<br>
     (Ideella F&ouml;reningar 822003-8858 in Link&ouml;ping) <br>
@@ -2349,7 +2349,7 @@ annotation (
   Documentation(info="<html>
 <p>
 The <b>Modelica_Fluid</b> library is a <b>free</b> Modelica package provided under the
-<a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
+<a href=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
 The library contains components describing
 <b>1-dimensional thermo-fluid flow</b> in networks of vessels, pipes, fluid machines, valves and fittings. 
 A unique feature is that the component equations and the media models
@@ -2419,7 +2419,7 @@ the use is completely at <u>your own risk</u>;
 it can be redistributed and/or modified under the terms of the
 Modelica license 2, see the license conditions (including the
 disclaimer of warranty)
-<a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">here</a></u>
+<a href=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">here</a></u>
 or at
 <a href=\"http://www.Modelica.org/licenses/ModelicaLicense2\">
 http://www.Modelica.org/licenses/ModelicaLicense2</a>.</i>

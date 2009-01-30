@@ -528,7 +528,7 @@ loss correlations. All models in this library have the property
 that no mass and no energy is stored in the component. Therefore,
 none of the models has a state. The basic correlations are implemented
 with functions of sublibrary
-<a href=\"Modelica://Modelica_Fluid.PressureLosses.Utilities\">PressureLosses.Utilities</a>
+<a href=\"modelica://Modelica_Fluid.PressureLosses.Utilities\">PressureLosses.Utilities</a>
 These functions might also be directly called 
 (e.g. in another component implementation).
 </p>

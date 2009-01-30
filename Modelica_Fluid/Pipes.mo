@@ -1393,7 +1393,7 @@ and due to <b>gravity</b>.
 Correlations of different complexity and validity can be
 seleted via the replaceable package <b>WallFriction</b> (see parameter menu below).
 The details of the pipe wall friction model are described in the
-<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
+<a href=\"modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
 Basically, different variants of the equation
 </p>
  
@@ -1561,7 +1561,7 @@ The turbulent pressure loss correlation might be useful to optimize models that 
 <p>
 This component defines the complete regime of wall friction.
 The details are described in the
-<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
+<a href=\"modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
 The functional relationship of the friction loss factor &lambda; is
 displayed in the next figure. Function massFlowRate_dp() defines the \"red curve\"
 (\"Swamee and Jain\"), where as function pressureLoss_m_flow() defines the
@@ -1949,7 +1949,7 @@ pressure losses due to <b>wall friction</b> in a pipe.
 Every correlation is defined by a package that is derived
 by inheritance from the package WallFriction.PartialWallFriction.
 The details of the underlying pipe wall friction model are described in the
-<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
+<a href=\"modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
 Basically, different variants of the equation
 </p>
  
@@ -2053,7 +2053,7 @@ systems of equations can still further be reduced.
 </p>
  
 <p>
-In <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a> the complete friction regime is illustrated.
+In <a href=\"modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a> the complete friction regime is illustrated.
 This component describes only the <b>Hagen-Poiseuille</b> equation.
 </p>
 <br>
@@ -2234,7 +2234,7 @@ This relationship is only valid for large Reynolds numbers.
 </p>
  
 <p>
-In <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a> the complete friction regime is illustrated.
+In <a href=\"modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a> the complete friction regime is illustrated.
 This component describes only the asymptotic behaviour for large
 Reynolds numbers, i.e., the values at the right ordinate where
 &lambda; is constant.
@@ -2931,7 +2931,7 @@ Laminar region:
 <p>
 This component defines the complete regime of wall friction.
 The details are described in the
-<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
+<a href=\"modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
 The functional relationship of the friction loss factor &lambda; is
 displayed in the next figure. Function massFlowRate_dp() defines the \"red curve\"
 (\"Swamee and Jain\"), where as function pressureLoss_m_flow() defines the
@@ -3572,7 +3572,7 @@ It is assumed that no mass or energy is stored in the pipe.
 Correlations of different complexity and validity can be
 seleted via the replaceable package <b>WallFriction</b> (see parameter menu below).
 The details of the pipe wall friction model are described in the
-<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
+<a href=\"modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.WallFriction\">UsersGuide</a>.
 Basically, different variants of the equation
 </p>
  
