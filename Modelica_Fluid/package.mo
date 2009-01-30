@@ -3,6 +3,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
+
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
@@ -997,8 +998,11 @@ which will only influence the system components from that level down.
 </p>
 <ul>
 <li>
-The <i>General</i> tab of the System model allows to set the default enviroment variables (pressure, temperature and gravity) and the default medium model
-used by all the components.</li>
+The <i>General</i> tab of the System model allows to set the default enviroment variables (pressure, temperature and gravity) 
+used by all the components. Furthermore, a medium model is defined here,
+This medium model is only used to compute the default values of the System model
+(such as initial temperature).
+</li>
 <li>
 The <i>Assumptions</i> tab allows to change the default modelling assumptions
 used by all the components (see the section <i>Customizing a system model later</i>)</li>
@@ -1029,8 +1033,6 @@ Modelica.Media.Interfaces.
 <p>
 All the components in Modelica_Fluid use a <i>replaceable</i> medium package, called <tt>Medium</tt>: the model is written for a generic fluid, and a specific fluid model can then be specified when building a system model by redeclaring the package. This can be done in different ways:
 <ul>
-<li>
-If the system only uses one medium, it is possible to specify it in the System component as the default medium, and then all the individual component will use this default.</li>
 <li>
 If several components use the same medium, it is possible to select
 all of them within a GUI, and set them simultaneously (as they are
@@ -2335,6 +2337,7 @@ and many have contributed.
 </html>"));
 end Contact;
 end UsersGuide;
+
 
 annotation (
   version="1.0",
