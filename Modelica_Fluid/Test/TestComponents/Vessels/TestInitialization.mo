@@ -33,7 +33,7 @@ model TestInitialization
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.25),
         Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.25)}) 
     annotation (Placement(transformation(extent={{-10,20},{10,40}},rotation=0)));
-  inner Modelica_Fluid.System system(redeclare package Medium = Medium) 
+  inner Modelica_Fluid.System system 
     annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
 equation
   connect(sou1.ports[1], pipe1.port_a) annotation (Line(
@@ -54,18 +54,19 @@ equation
       smooth=Smooth.None));
 
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
-            -100},{100,100}}),
-                      graphics={
+            -100},{100,100}}), graphics={
         Text(
           extent={{-100,-8},{100,-14}},
           lineColor={0,0,255},
           textString=
-              "Problem: Medium SimpleAir missing stateSelect.prefer on pressure p (see Ticket #63)"),
+              "Problem: Medium SimpleAir missing stateSelect.prefer on pressure p (see Ticket #63)"), 
+
         Text(
           extent={{-100,-28},{100,-34}},
           lineColor={0,0,255},
           textString=
-              "This leads to the bad state m without start value and results in a division by zero"),
+              "This leads to the bad state m without start value and results in a division by zero"), 
+
         Text(
           extent={{-100,-46},{100,-52}},
           lineColor={0,0,255},
