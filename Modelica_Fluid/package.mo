@@ -999,9 +999,7 @@ which will only influence the system components from that level down.
 <ul>
 <li>
 The <i>General</i> tab of the System model allows to set the default enviroment variables (pressure, temperature and gravity) 
-used by all the components. Furthermore, a medium model is defined here,
-This medium model is only used to compute the default values of the System model
-(such as initial temperature).
+used by all the components.
 </li>
 <li>
 The <i>Assumptions</i> tab allows to change the default modelling assumptions

@@ -41,7 +41,7 @@ present that are regulated by a central control system.
 </html>"));
 
   model BatchPlant_StandardWater
-
+      extends Modelica.Icons.Example;
     replaceable package BatchMedium = Modelica.Media.Water.StandardWater constrainedby
       Modelica.Media.Interfaces.PartialTwoPhaseMedium "Component media";
 
@@ -112,7 +112,14 @@ present that are regulated by a central control system.
       experimentSetupOutput,
       Commands(file=
             "../Scripts/Examples/AST_BatchPlant_StandardWater/plot level.mos"
-          "plot level"));
+          "plot level"),
+      Documentation(info="<html>
+
+<p align=\"center\">
+<img src=\"../Images/Examples/BatchPlant_StandardWater.png\", border=1>
+</p>
+
+</html>"));
     Modelica_Fluid.Valves.ValveDiscrete V11(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
@@ -739,7 +746,8 @@ present that are regulated by a central control system.
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
-            Line(points={{-80,-20},{-60,-20},{-30,40},{8,40},{40,-20},{60,-20}}),
+            Line(points={{-80,-20},{-60,-20},{-30,40},{8,40},{40,-20},{60,-20}}), 
+
             Line(points={{-90,-70},{82,-70}}, color={0,0,0}),
             Line(points={{-80,68},{-80,-80}}, color={0,0,0}),
             Polygon(
@@ -752,7 +760,7 @@ present that are regulated by a central control system.
               lineColor={0,0,0},
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-68},{-60,-68},{-60,-42},{8,-42},{8,-68},{60,-68}},
+            Line(points={{-80,-68},{-60,-68},{-60,-42},{8,-42},{8,-68},{60,-68}}, 
                 color={255,0,255}),
             Line(
               points={{-60,40},{-60,-42}},

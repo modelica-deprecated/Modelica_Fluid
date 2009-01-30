@@ -4,7 +4,7 @@ package DrumBoiler
 
   model DrumBoiler
     "Complete drum boiler model, including evaporator and supplementary components"
-
+     extends Modelica.Icons.Example;
     import Modelica.SIunits.Conversions.*;
 
     Modelica_Fluid.Examples.DrumBoiler.BaseClasses.EquilibriumDrumBoiler
@@ -52,7 +52,12 @@ package DrumBoiler
             fillPattern=FillPattern.Solid,
             textString="boiler")}),
       experiment(StopTime=5400),
-      experimentSetupOutput);
+      experimentSetupOutput,
+      Documentation(info="<html>
+<p align=\"center\">
+<img src=\"../Images/Examples/DrumBoiler.png\", border=1>
+</p>
+</html>"));
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow furnace 
       annotation (Placement(transformation(
           origin={-36,-53},

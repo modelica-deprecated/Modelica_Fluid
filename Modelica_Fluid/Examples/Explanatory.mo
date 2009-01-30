@@ -4,7 +4,7 @@ package Explanatory
 
   model MomentumBalanceFittings
     "Illustrating a case in which kinetic terms play a major role in the momentum balance"
-
+     extends Modelica.Icons.Example;
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
               100,100}}),
@@ -22,6 +22,13 @@ To do so, two additional sudden expansions / contractions are included in the mo
 <p>
 The total pressures offer an additional perspective on the model. After setting the parameter <code>show_totalPressures</code> on the Advanced tab of the <code>AbruptAdaptor</code>s to <code>true</code>, the total pressures are included in said models and may be plotted. This allows to confirm that the <b>total</b> pressure <i>always</i> reduces along the flow direction, even in the upper model.
 </p>
+
+
+<p align=\"center\">
+<img src=\"../Images/Examples/MomentumBalanceFittings.png\", border=1>
+</p>
+
+
 </html>"),
       Commands(file=
             "Scripts/Examples/MomentumBalanceFittings/Plot the model results.mos"
@@ -71,7 +78,7 @@ The total pressures offer an additional perspective on the model. After setting 
       diameter_b=Modelica.Constants.inf) 
       annotation (Placement(transformation(extent={{40,-40},{60,-20}})));
     inner System system 
-      annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+      annotation (Placement(transformation(extent={{-92,56},{-72,76}})));
   equation
     connect(leftBoundary1.ports[1], suddenExpansion1.port_a) annotation (Line(
         points={{-60,30},{-12,30}},

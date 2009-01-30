@@ -6,14 +6,13 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
     package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
     Modelica.Blocks.Sources.Constant C(k=0.3*1.519E-3)
       "substance concentration, raising to 1000 PPM CO2" 
-      annotation (Placement(transformation(extent={{-100,-28},{-80,-8}})));
+      annotation (Placement(transformation(extent={{-94,-28},{-74,-8}})));
     Sources.FixedBoundary boundary4(nPorts=1,redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{80,-20},{60,0}})));
-    Sensors.TraceSubstances traceSubstanceVolume(redeclare package Medium = 
-                 Medium) 
+    Sensors.TraceSubstances traceVolume(redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{0,20},{20,40}})));
-    inner System system              annotation (Placement(transformation(extent={{60,60},
-              {80,80}},          rotation=0)));
+    inner System system              annotation (Placement(transformation(extent={{52,36},
+              {72,56}},          rotation=0)));
     Sources.MassFlowSource_T boundary1(
       use_C_in=true,
       m_flow=100/1.2/3600*5,
@@ -38,12 +37,11 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow (
            show_Res=true)) 
       annotation (Placement(transformation(extent={{20,-20},{40,0}})));
-    Sensors.TraceSubstances traceSubstanceSource(redeclare package Medium = 
-                 Medium) 
+    Sensors.TraceSubstances traceSource(redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{-40,20},{-20,40}})));
   equation
     connect(C.y, boundary1.C_in[1]) annotation (Line(
-        points={{-79,-18},{-60,-18}},
+        points={{-73,-18},{-60,-18}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(pipe.port_b, boundary4.ports[1])         annotation (Line(
@@ -54,7 +52,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
         points={{-8,0},{-6,0},{-6,-10},{20,-10}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(traceSubstanceVolume.port, pipe.port_a)         annotation (Line(
+    connect(traceVolume.port, pipe.port_a)                  annotation (Line(
         points={{10,20},{10,-10},{20,-10}},
         color={0,127,255},
         smooth=Smooth.None));
@@ -62,7 +60,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
         points={{-40,-8},{-12,-8},{-12,0}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(boundary1.ports[2], traceSubstanceSource.port) annotation (Line(
+    connect(boundary1.ports[2], traceSource.port)          annotation (Line(
         points={{-40,-12},{-30,-12},{-30,20}},
         color={0,127,255},
         smooth=Smooth.None));
@@ -71,11 +69,19 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
               100,100}}), graphics),
       experiment(StopTime=3600),
       Documentation(info="<html>
+
+<p>
 This example consists of a volume with a carbon dioxide concentration that corresponds to about 1000 PPM.
 There is a fresh air stream with a carbon dioxide concentration of about 300 PPM.
 The fresh air stream is such that the air exchange rate is about 5 air changes per hour.
 After 1 hour of ventilation, the volume's carbon dioxide concentration is close to the 
 concentration of the fresh air.
+</p>
+
+<p align=\"center\">
+<img src=\"../Images/Examples/RoomCO2.png\", border=1>
+</p>
+
 </html>"),
       Commands(file(ensureSimulated=true)=
           "Scripts/Examples/RoomCO2/plotConcentrations.mos"
@@ -90,8 +96,7 @@ concentration of the fresh air.
       annotation (Placement(transformation(extent={{-100,-50},{-80,-30}})));
     Sources.FixedBoundary boundary4(nPorts=1,redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{92,-40},{72,-20}})));
-    Sensors.TraceSubstances traceSubstanceVolume(redeclare package Medium = 
-                 Medium) 
+    Sensors.TraceSubstances traceVolume(redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{0,-2},{20,18}})));
     inner System system              annotation (Placement(transformation(extent={{70,70},
               {90,90}},          rotation=0)));
@@ -117,8 +122,7 @@ concentration of the fresh air.
           Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow (
            show_Res=true)) 
       annotation (Placement(transformation(extent={{32,-40},{52,-20}})));
-    Sensors.TraceSubstances traceSubstanceSource(redeclare package Medium = 
-                 Medium) 
+    Sensors.TraceSubstances traceSource(redeclare package Medium = Medium) 
       annotation (Placement(transformation(extent={{-40,-2},{-20,18}})));
     Sources.MassFlowSource_T peopleSource(
       m_flow=100/1.2/3600*5,
@@ -164,7 +168,7 @@ concentration of the fresh air.
         points={{-10,-22},{-10,-30},{32,-30}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(traceSubstanceVolume.port, pipe.port_a)         annotation (Line(
+    connect(traceVolume.port, pipe.port_a)                  annotation (Line(
         points={{10,-2},{10,-30},{32,-30}},
         color={0,127,255},
         smooth=Smooth.None));
@@ -172,7 +176,7 @@ concentration of the fresh air.
         points={{-40,-30},{-12.6667,-30},{-12.6667,-22}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(freshAir.ports[2], traceSubstanceSource.port)  annotation (Line(
+    connect(freshAir.ports[2], traceSource.port)           annotation (Line(
         points={{-40,-34},{-30,-34},{-30,-2}},
         color={0,127,255},
         smooth=Smooth.None));
@@ -183,6 +187,7 @@ concentration of the fresh air.
       Commands(file(ensureSimulated=true)="Scripts/Examples/RoomCO2WithControls/plotStatesWithControl.mos"
           "plot states and controls"),
       Documentation(info="<html>
+<p>
 This example illustrates a room volume with a CO2 source and a fresh air supply with feedback
 control.
 The CO2 emission rate is proportional to the room occupancy, which is defined by a schedule.
@@ -191,6 +196,7 @@ concentration does not exceed <tt>1000 PPM (=1.519E-3 kg/kg)</tt>.
 The fresh air has a CO2 concentration of <tt>300 PPM</tt> which corresponds to a typical
 CO2 concentration in the outside air. 
 </p>
+
 <p>
 The CO2 emission from the occupants is implemented as a mass flow source.
 Depending on the activity and size, a person emits about <tt>8.18E-6 kg/s</tt> CO2. In the model, 
@@ -198,12 +204,21 @@ this value is multiplied by the number of occupants.
 Since the mass flow rate associate with the CO2 source model contributes to the volume's energy balance,
 this mass flow rate should be kept small. Thus, in the source model, we set the
 CO2 concentration to <tt>C={100} kg/kg</tt>, and scaled the mass flow rate using
+</p>
+
 <pre>
   m_flow = 1/100 * nPeo * 8.18E-6 kg/(s*person)
 </pre>
+
+<p>
 where <tt>nPeo</tt> is the number of people in the room.
 This results in a mass flow rate that is about 5 orders of magnitudes smaller than the supply air flow rate,
 and hence its contribution to the volume's energy balance is negligible.
+</p>
+
+<p align=\"center\">
+<img src=\"../Images/Examples/RoomCO2WithControls.png\", border=1>
+</p>
 </html>"));
     connect(NumberOfPeople.y[1], gain.u) annotation (Line(
         points={{-79,-80},{-70,-80}},
@@ -217,8 +232,7 @@ and hence its contribution to the volume's energy balance is negligible.
         points={{-18,-88},{-8,-88},{-8,-22},{-7.33333,-22}},
         color={0,127,255},
         smooth=Smooth.None));
-    connect(traceSubstanceVolume.C, gainSensor.u) 
-                                             annotation (Line(
+    connect(traceVolume.C, gainSensor.u)     annotation (Line(
         points={{21,8},{38,8}},
         color={0,0,127},
         smooth=Smooth.None));

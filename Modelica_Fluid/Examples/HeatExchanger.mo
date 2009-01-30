@@ -71,12 +71,17 @@ package HeatExchanger "Demo of a heat exchanger model"
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
               -100},{100,100}}),
                         graphics),
-                         experiment(StopTime=100, Tolerance=1e-005));
+                         experiment(StopTime=100, Tolerance=1e-005),
+      Documentation(info="<html>
+<p align=\"center\">
+<img src=\"../Images/Examples/HeatExchanger.png\", border=1>
+</p>
+</html>"));
     Modelica.Blocks.Sources.Ramp Ramp1(
       startTime=50,
       duration=5,
       height=-1,
-      offset=0.5)   annotation (Placement(transformation(extent={{-100,24},{-80,
+      offset=0.5)   annotation (Placement(transformation(extent={{-98,24},{-78,
               44}}, rotation=0)));
     inner Modelica_Fluid.System system 
                                      annotation (Placement(transformation(extent=
@@ -86,8 +91,8 @@ package HeatExchanger "Demo of a heat exchanger model"
             {-46,0},{-40,0},{-40,15.4},{-29,15.4}}, color={0,127,255}));
     connect(HEX.port_b1, ambient1.ports[1])        annotation (Line(points={{37,
             15.4},{48.5,15.4},{48.5,34},{62,34}}, color={0,127,255}));
-    connect(Ramp1.y, massFlowRate2.m_flow_in) annotation (Line(points={{-79,34},{
-            -74,34},{-74,42},{-66,42}},   color={0,0,127}));
+    connect(Ramp1.y, massFlowRate2.m_flow_in) annotation (Line(points={{-77,34},
+            {-74,34},{-74,42},{-66,42}},  color={0,0,127}));
     connect(massFlowRate2.ports[1], HEX.port_b2) 
                                              annotation (Line(
         points={{-46,34},{-40,34},{-40,29.8},{-29,29.8}},
@@ -390,12 +395,12 @@ The design flow direction with positive m_flow variables is counterflow.
           color={0,127,255},
           thickness=0.5));
       connect(wall.heatPort_b, pipe_1.heatPorts) annotation (Line(
-          points={{-10,-8.5},{-10,-34.4},{-9.7,-34.4}},
+          points={{-10,-8.5},{-10,-36.8},{-9.7,-36.8}},
           color={191,0,0},
           smooth=Smooth.None));
       connect(pipe_2.heatPorts[nNodes:-1:1], wall.heatPort_a[1:nNodes]) 
         annotation (Line(
-          points={{-10.3,42.4},{-10.3,31.7},{-10,31.7},{-10,20.5}},
+          points={{-10.3,44.8},{-10.3,31.7},{-10,31.7},{-10,20.5}},
           color={127,0,0},
           smooth=Smooth.None));
     end BasicHX;

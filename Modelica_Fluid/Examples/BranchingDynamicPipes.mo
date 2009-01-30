@@ -1,7 +1,6 @@
 within Modelica_Fluid.Examples;
 model BranchingDynamicPipes
   "Multi-way connections of pipes with dynamic momentum balance, pressure wave and flow reversal"
-  import Modelica_Fluid;
 extends Modelica.Icons.Example;
 replaceable package Medium=Modelica.Media.Air.MoistAir;
 //replaceable package Medium=Modelica.Media.Water.StandardWater;
@@ -30,6 +29,10 @@ derivative of the pressure of the boundary source is needed, since the volume
 requires this derivative. It is, however, not possible to compute this
 derivative because the input pressure is changing disontinuously and its
 derivative would be a dirac impulse.
+</p>
+
+<p align=\"center\">
+<img src=\"../Images/Examples/BranchingDynamicPipes.png\", border=1>
 </p>
 </html>"));
                                      annotation (points=[-22,42; -2,42; -2,32;
@@ -149,7 +152,7 @@ equation
       thickness=0.5));
   connect(heat2.port,pipe2. heatPorts) 
                                       annotation (Line(
-      points={{-40,-10},{-25.2,-10},{-25.2,-9.9}},
+      points={{-40,-10},{-24.4,-10},{-24.4,-9.9}},
       color={191,0,0},
       thickness=0.5));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,

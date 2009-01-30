@@ -5,11 +5,13 @@ model System
   package Medium = Modelica.Media.Interfaces.PartialMedium
     "Medium model for default start values" 
       annotation (choicesAllMatching = true);
-  parameter Medium.AbsolutePressure p_ambient=101325 "Default ambient pressure"
+  parameter Modelica.SIunits.AbsolutePressure p_ambient=101325
+    "Default ambient pressure" 
     annotation(Dialog(group="Environment"));
-  parameter Medium.Temperature T_ambient=293.15 "Default ambient temperature" 
+  parameter Modelica.SIunits.Temperature T_ambient=293.15
+    "Default ambient temperature" 
     annotation(Dialog(group="Environment"));
-  parameter SI.Acceleration g=Modelica.Constants.g_n
+  parameter Modelica.SIunits.Acceleration g=Modelica.Constants.g_n
     "Constant gravity acceleration" 
     annotation(Dialog(group="Environment"));
 
@@ -17,39 +19,40 @@ model System
   parameter Boolean allowFlowReversal = true
     "= false to restrict to design flow direction (port_a -> port_b)" 
     annotation(Dialog(tab="Assumptions"), Evaluate=true);
-  parameter Types.Dynamics energyDynamics=
-    Types.Dynamics.DynamicFreeInitial "Default formulation of energy balances" 
+  parameter Modelica_Fluid.Types.Dynamics energyDynamics=
+    Modelica_Fluid.Types.Dynamics.DynamicFreeInitial
+    "Default formulation of energy balances" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-  parameter Types.Dynamics massDynamics=
+  parameter Modelica_Fluid.Types.Dynamics massDynamics=
     energyDynamics "Default formulation of mass balances" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-  final parameter Types.Dynamics substanceDynamics=
+  final parameter Modelica_Fluid.Types.Dynamics substanceDynamics=
     massDynamics "Default formulation of substance balances" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-  final parameter Types.Dynamics traceDynamics=
+  final parameter Modelica_Fluid.Types.Dynamics traceDynamics=
     massDynamics "Default formulation of trace substance balances" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
-  parameter Types.Dynamics momentumDynamics=
-    Types.Dynamics.SteadyState
+  parameter Modelica_Fluid.Types.Dynamics momentumDynamics=
+    Modelica_Fluid.Types.Dynamics.SteadyState
     "Default formulation of momentum balances, if options available" 
     annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
 
   // Initialization
-  parameter Medium.MassFlowRate m_flow_start = 0
+  parameter Modelica.SIunits.MassFlowRate m_flow_start = 0
     "Default start value for mass flow rates" 
     annotation(Dialog(tab = "Initialization"));
-  parameter Medium.AbsolutePressure p_start = p_ambient
+  parameter Modelica.SIunits.AbsolutePressure p_start = p_ambient
     "Default start value for pressures" 
     annotation(Dialog(tab = "Initialization"));
-  parameter Medium.Temperature T_start = T_ambient
+  parameter Modelica.SIunits.Temperature T_start = T_ambient
     "Default start value for temperatures" 
     annotation(Dialog(tab = "Initialization"));
 
   // Advanced
-  parameter Medium.MassFlowRate m_flow_small(min=0) = 0.01
+  parameter Modelica.SIunits.MassFlowRate m_flow_small(min=0) = 0.01
     "Default small laminar mass flow rate for regularization of zero flow" 
     annotation(Dialog(tab = "Advanced"));
-  parameter Medium.AbsolutePressure dp_small(min=0) = 1
+  parameter Modelica.SIunits.AbsolutePressure dp_small(min=0) = 1
     "Default small pressure drop for regularization of laminar and zero flow" 
     annotation(Dialog(tab="Advanced"));
 

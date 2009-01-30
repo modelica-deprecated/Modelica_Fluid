@@ -100,6 +100,10 @@ This example is based on
      Lund, Sweden, March 30, 2004<br>&nbsp;</dd>
 </dl>
  
+<p align=\"center\">
+<img src=\"../Images/Examples/ControlledTanks.png\", border=1>
+</p>
+
 </html>"),
       Commands(file=
             "../Scripts/Examples/ControlledTanks/plot level and ports.m_flow.mos"
@@ -425,7 +429,9 @@ This example is based on
       Modelica.Blocks.Interfaces.RealInput level1 
         annotation (Placement(transformation(extent={{-190,-140},{-150,-100}},
               rotation=0)));
-      annotation (Diagram(graphics),
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{
+                -150,-150},{150,150}}),
+                          graphics),
                            Documentation(info="<html>
  
 </html>"));
@@ -502,9 +508,9 @@ This example is based on
                 100}}),
           graphics={Rectangle(
               extent={{-100,-100},{100,100}},
-              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0} else 
-                        {192,192,192}),
-              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then 
+              fillColor=DynamicSelect({192,192,192}, if on > 0.5 then {0,255,0}
+                   else {192,192,192}),
+              fillPattern=DynamicSelect(FillPattern.Solid, if on > 0.5 then
                   FillPattern.Solid else FillPattern.Solid),
               lineColor={128,128,128},
               lineThickness=0.5), Text(
@@ -513,8 +519,8 @@ This example is based on
               textString="%name")},
                               interaction={OnMouseDownSetBoolean(
                               on, true)}),
-                              Diagram(coordinateSystem(preserveAspectRatio=
-                false, extent={{-100,-100},{100,100}}),
+                              Diagram(coordinateSystem(preserveAspectRatio=false,
+                       extent={{-100,-100},{100,100}}),
                                       graphics),
           Documentation(info="<html>
   
