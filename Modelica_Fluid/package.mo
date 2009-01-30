@@ -10,7 +10,7 @@ package UsersGuide "Users Guide"
 <h4><font color=\"#008000\" >Users guide of package Modelica_Fluid</font></h4>
 <p>
 The library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
-<a href=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
 The library contains components describing
 <b>1-dimensional thermo-fluid flow</b> in networks of pipes. A unique feature is that the
 component equations and the media models
@@ -92,8 +92,8 @@ This library has the following main features:
      or junction should be used if these are important for the specific problem at hand.
      In all circuits where friction dominates, or components such as pumps determine the flow rate,
      kinetic pressure is typically irrelevant. You can consider the 
-     <a href=\"modelica://Modelica_Fluid.Examples.CriticalCases.MomentumBalanceFittings\">
-     Modelica_Fluid.Examples.CriticalCases.MomentumBalanceFittings</a> model (and its documentation)
+     <a href=\"Modelica://Modelica_Fluid.Examples.Explanatory.MomentumBalanceFittings\">
+     Modelica_Fluid.Examples.Explanatory.MomentumBalanceFittings</a> model (and its documentation)
      to see one case where the momentum balance essentially depends on kinetic pressure,
      so it is necessary to use explicit fittings in order to obtain correct results. 
      <br>&nbsp;</li>
@@ -116,7 +116,7 @@ This library has the following main features:
 <h4><font color=\"#008000\" >Getting started</font></h4>
 <p>
 Please explore the
-<a href=\"modelica://Modelica_Fluid.Examples\">Examples</a>,
+<a href=\"Modelica://Modelica_Fluid.Examples\">Examples</a>,
 which provide simple models for a broad variety of applications.
 </p>
 </html>
@@ -665,7 +665,7 @@ mass flow rate varies only slowly). In this section it is explained how this cas
 handeled in the Modelica_Fluid library for pipes with
 <b>nonuniform roughness</b>, including the smooth pipe
 as a special case (see
-<a href=\"modelica://Modelica_Fluid.Pipes.BaseClasses.WallFriction\">Pipes.BaseClasses.WallFriction</a>.
+<a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.WallFriction\">Pipes.BaseClasses.WallFriction</a>.
 The treatment is non-standard in order to get a
 numerically well-posed description.
 </p>
@@ -912,7 +912,7 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
 <h4><font color=\"#008000\" >Pump characteristics</font></h4>
 <p>
 The control valves in
-<a href=\"modelica://Modelica_Fluid.Valves\">Modelica_Fluid.Valves</a>
+<a href=\"Modelica://Modelica_Fluid.Valves\">Modelica_Fluid.Valves</a>
 have the parameters <b>Kv</b> and <b>Cv</b>. They are defined
 as unit-less variables, but in the description text a unit
 is given. The reason for this definition is the following:
@@ -1117,32 +1117,32 @@ Modelica_Fluid was refactored and finalized for the release:
  
 <li> Complete implementation of one-dimenstional fluid flow<br>
      The balance equations as documented in
-     <a href=\"modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>
+     <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>
      are now completely implemented. The implementations with generic boundary flow and source terms find in:
      <ul>
-     <li><a href=\"modelica://Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a>,
-         <a href=\"modelica://Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>:
+     <li><a href=\"Modelica://Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a>,
+         <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>:
          Energy, Mass and Substance balances</li>
-     <li><a href=\"modelica://Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>,
-         <a href=\"modelica://Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>:
+     <li><a href=\"Modelica://Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>,
+         <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>:
          Momentum balance</li>
      </ul>
      Specific models combine the balances and define the boundary flow and source terms as appropriate.
      For instance
      <ul>
-     <li><a href=\"modelica://Modelica_Fluid.Vessels.Tank\">Vessels.Tank</a> extends from
-         <a href=\"modelica://Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>,</li>
-     <li><a href=\"modelica://Modelica_Fluid.Fittings.SimpleGenericOrifice\">Fittings.SimpleGenericOrifice</a> extends from
-         <a href=\"modelica://Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>, besides
-         <a href=\"modelica://Modelica_Fluid.Interfaces.PartialTwoPortTransport\">Interfaces.PartialTwoPortTransport</a>,</li>
-     <li><a href=\"modelica://Modelica_Fluid.Pipes.DynamicPipe\">Pipes.DynamicPipe</a> is based on
-         <a href=\"modelica://Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a> and
-         <a href=\"modelica://Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>,
-         besides <a href=\"modelica://Modelica_Fluid.Interfaces.PartialTwoPort\">Interfaces.PartialTwoPort</a>.</li>
+     <li><a href=\"Modelica://Modelica_Fluid.Vessels.Tank\">Vessels.Tank</a> extends from
+         <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>,</li>
+     <li><a href=\"Modelica://Modelica_Fluid.Fittings.SimpleGenericOrifice\">Fittings.SimpleGenericOrifice</a> extends from
+         <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>, besides
+         <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialTwoPortTransport\">Interfaces.PartialTwoPortTransport</a>,</li>
+     <li><a href=\"Modelica://Modelica_Fluid.Pipes.DynamicPipe\">Pipes.DynamicPipe</a> is based on
+         <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a> and
+         <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialDistributedFlow\">Interfaces.PartialDistributedFlow</a>,
+         besides <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialTwoPort\">Interfaces.PartialTwoPort</a>.</li>
      </ul>
      All non-trivial mass and energy balances of Vessels, Machines and Fittings have been replaced with PartialLumpedVolume.
      The mass and energy balances of Pipes are based on PartialDistributedVolume.<br>
-     See <a href=\"modelica://Modelica_Fluid.Examples.BranchingDynamicPipes\">Examples.BranchingDynamicPipes</a>
+     See <a href=\"Modelica://Modelica_Fluid.Examples.BranchingDynamicPipes\">Examples.BranchingDynamicPipes</a>
      for an example utilizing the complete balance equations.
  
 <li> New approach for the connection of distributed flow models<br>
@@ -1158,11 +1158,11 @@ Modelica_Fluid was refactored and finalized for the release:
  
 <li> Clarification of modeling assumptions<br>
      The documentation has been extended to better explain the modeling assumptions made. In particular the section
-     <a href=\"modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.FluidConnectors\">UsersGuide.ComponentDefinition.FluidConnectors</a>
+     <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.FluidConnectors\">UsersGuide.ComponentDefinition.FluidConnectors</a>
      now makes clear that the ports represent the thermodynamic enthalpy, as opposed to stagnation enthalpy,
      and thermodynamic or static pressure, as opposed to total pressure. An new package Explanatory has been added to the
      examples to show the difference beteen static pressure and total pressure and possible implications. See
-     <a href=\"modelica://Modelica_Fluid.Examples.Explanatory.MomentumBalanceFittings\">Examples.Explanatory.MomentumBalanceFittings</a>.
+     <a href=\"Modelica://Modelica_Fluid.Examples.Explanatory.MomentumBalanceFittings\">Examples.Explanatory.MomentumBalanceFittings</a>.
  
 <li> System (former Ambient)<br>
      The use of the global System object has been extended towards common default values for
@@ -1171,12 +1171,12 @@ Modelica_Fluid was refactored and finalized for the release:
      In particular steady-state initialization and complete steady-state simulation can now be specified system-wide.
      A new Types.Init.Dynamics has been introduced, combining steady-state and initial conditions.
      The former Types.Init has become obsolete.
-     <br>See <a href=\"modelica://Modelica_Fluid.Examples.HeatingSystem\">Examples.HeatingSystem</a></li>.
+     <br>See <a href=\"Modelica://Modelica_Fluid.Examples.HeatingSystem\">Examples.HeatingSystem</a></li>.
  
 <li> Extension of pumps for better consideration of zero flow and heat transfer with environment<br>
      The simplified mass and energy balances have been replaced with a rigorous formulation.
      Moreover an optional heat transfer model can be configured for heat exchanged with the environment or the housing.<br>
-     See <a href=\"modelica://Modelica_Fluid.Machines.BaseClasses.PartialPump\">Machines.BaseClasses.PartialPump</a></li>
+     See <a href=\"Modelica://Modelica_Fluid.Machines.BaseClasses.PartialPump\">Machines.BaseClasses.PartialPump</a></li>
  
 <li> Refinement of valves for flow reversal<br>
      All valves now use upstream discretization for reverting flow conditions.</li>
@@ -1184,7 +1184,7 @@ Modelica_Fluid was refactored and finalized for the release:
 <li> Finalization of trace substrances<br>
      Modelica_Fluid now provides a sound implementation for trace substances,
      which can easily be added to existing Media models, in order to study their evolution in a fluid system.</li>
-     <br>See <a href=\"modelica://Modelica_Fluid.Examples.TraceSubstances.RoomCO2WithControls\">Examples.TraceSubstances.RoomCO2WithControls</a></li>.
+     <br>See <a href=\"Modelica://Modelica_Fluid.Examples.TraceSubstances.RoomCO2WithControls\">Examples.TraceSubstances.RoomCO2WithControls</a></li>.
  
 <li> Vectorized ports for volumes<br>
      The ports of models that typically have large volumes, like Vessels and Sources,
@@ -1192,7 +1192,7 @@ Modelica_Fluid was refactored and finalized for the release:
      of such volume models resulted in unintended mixing equations for stream variables
      in connection sets outside the volumes. The mixing takes place inside the volumes
      when using multiple ports. Moreover a
-     <a href=\"modelica://Modelica_Fluid.Fittings.MultiPort\">Fittings.MultiPort</a>
+     <a href=\"Modelica://Modelica_Fluid.Fittings.MultiPort\">Fittings.MultiPort</a>
      has been introduced. It can be attached to components like pipes,
      which don't have vectorized ports on their own.</li>
  
@@ -1203,14 +1203,14 @@ Modelica_Fluid was refactored and finalized for the release:
      are of secondary interest. As these models use the same interfaces, base classes and naming conventions,
      they can easily be replaced with more detailed models
      as more information shall be taken into account later on.<br>
-     See <a href=\"modelica://Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
+     See <a href=\"Modelica://Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
  
 <li> Replaceable HeatTransfer models<br>
      The Vessels and the Machines now have replaceable HeatTransfer models,
      besides the Pipes. All HeatTransfer models are optional.
      The heat transfer models are parameterized with the Medium and the ThermodynamicState
      of involved flow segments.<br>
-     See <a href=\"modelica://Modelica_Fluid.Interfaces.PartialHeatTransfer\">Interfaces.PartialHeatTransfer</a>.
+     See <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialHeatTransfer\">Interfaces.PartialHeatTransfer</a>.
  
 <li> All examples are working now (using Dymola 7.1).<br>
      The number of examples has been extended with the former critical test cases
@@ -1937,7 +1937,7 @@ the use is completely at <U>your own risk</U>;
 it can be redistributed and/or modified under the terms of the
 Modelica license 2, see the license conditions (including the
 disclaimer of warranty)
-<A HREF=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">here</A></U>
+<A HREF=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">here</A></U>
 or at
 <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2\">
 http://www.modelica.org/licenses/ModelicaLicense2</A>.
@@ -2248,7 +2248,7 @@ class Contact "Contact"
 <dt>The Modelica_Fluid library (this Modelica package)
     is developed by many people from different organizations (see list below).
     It is licensed under the
-    <a href=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>
+    <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>
     by:<br>&nbsp;</dt>
 <dd>Modelica Association<br>
     (Ideella F&ouml;reningar 822003-8858 in Link&ouml;ping) <br>
@@ -2349,7 +2349,7 @@ annotation (
   Documentation(info="<html>
 <p>
 The <b>Modelica_Fluid</b> library is a <b>free</b> Modelica package provided under the
-<a href=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
 The library contains components describing
 <b>1-dimensional thermo-fluid flow</b> in networks of vessels, pipes, fluid machines, valves and fittings. 
 A unique feature is that the component equations and the media models
@@ -2400,10 +2400,10 @@ is shown in the next figure:
 The following parts are useful, when newly starting with this library:
 </p>
 <ul>
-<li> <a href=\"modelica://Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
-<li> <a href=\"modelica://Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
+<li> <a href=\"Modelica://Modelica_Fluid.UsersGuide\">Modelica_Fluid.UsersGuide</a>.</li>
+<li> <a href=\"Modelica://Modelica_Fluid.UsersGuide.ReleaseNotes\">Modelica_Fluid.UsersGuide.ReleaseNotes</a>
      summarizes the changes of the library releases.</li>
-<li> <a href=\"modelica://Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
+<li> <a href=\"Modelica://Modelica_Fluid.Examples\">Modelica_Fluid.Examples</a>
      contains examples that demonstrate the usage of this library.</li>
 </ul>
  
@@ -2419,7 +2419,7 @@ the use is completely at <u>your own risk</u>;
 it can be redistributed and/or modified under the terms of the
 Modelica license 2, see the license conditions (including the
 disclaimer of warranty)
-<a href=\"modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">here</a></u>
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">here</a></u>
 or at
 <a href=\"http://www.Modelica.org/licenses/ModelicaLicense2\">
 http://www.Modelica.org/licenses/ModelicaLicense2</a>.</i>
