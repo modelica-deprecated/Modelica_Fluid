@@ -32,7 +32,7 @@ derivative would be a dirac impulse.
 </p>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/BranchingDynamicPipes.png\", border=1>
+<img src=\"../Images/Examples/BranchingDynamicPipes.png\">
 </p>
 </html>"));
                                      annotation (points=[-22,42; -2,42; -2,32;

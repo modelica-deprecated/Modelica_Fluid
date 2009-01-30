@@ -116,7 +116,7 @@ present that are regulated by a central control system.
       Documentation(info="<html>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/BatchPlant_StandardWater.png\", border=1>
+<img src=\"../Images/Examples/BatchPlant_StandardWater.png\">
 </p>
 
 </html>"));

@@ -111,7 +111,7 @@ If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
 </p>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/PumpingSystem.png\", border=1>
+<img src=\"../Images/Examples/PumpingSystem.png\">
 </p>
 
 </html>", revisions="<html>

@@ -25,7 +25,7 @@ The total pressures offer an additional perspective on the model. After setting 
 
 
 <p align=\"center\">
-<img src=\"../Images/Examples/MomentumBalanceFittings.png\", border=1>
+<img src=\"../Images/Examples/MomentumBalanceFittings.png\">
 </p>
 
 
