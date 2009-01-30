@@ -7,7 +7,7 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
-<h4><font color=\"#008000\" >Users guide of package Modelica_Fluid</font></h4>
+
 <p>
 The library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
@@ -27,7 +27,6 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
   class Overview "Overview"
 
     annotation (Documentation(info="<HTML>
-<h4><font color=\"#008000\" >Overview</font></h4>
 <p>
 The Modelica_Fluid library provides basic interfaces and
 components to model 1-dimensional thermo-fluid flow in networks of pipes.
@@ -113,7 +112,7 @@ This library has the following main features:
   class GettingStarted "Getting started"
 
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Getting started</font></h4>
+
 <p>
 Please explore the
 <a href=\"Modelica://Modelica_Fluid.Examples\">Examples</a>,
@@ -128,7 +127,7 @@ which provide simple models for a broad variety of applications.
   package ComponentDefinition "Component definition"
 
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Component definition</font></h4>
+
 <p>
 In this section it is described how the components
 of the Modelica_Fluid library are implemented.
@@ -155,7 +154,6 @@ Please note that the design of the connectors has been changed with respect to t
   class FluidConnectors "Fluid connectors"
 
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Fluid connectors</font></h4>
 <p>
 In this section the design of the fluid connectors is
 explained. </p>
@@ -404,7 +402,7 @@ all the kinetic phenomena with the appropriate level of detail.
   class BalanceEquations "Balance equations"
 
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Balance equations</font></h4>
+
 <p>
 For one-dimensional flow
 along the coordinate \"x\", the following partial differential
@@ -476,7 +474,7 @@ component inherits from.
   class UpstreamDiscretization "Upstream discretization"
 
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Upstream discretization</font></h4>
+
 <p>
 When implementing a Fluid component, the difficult arises that
 the value of intensive quantities (such as p, T, &rho;)
@@ -580,7 +578,7 @@ direction.
   class RegularizingCharacteristics "Regularizing characteristics"
 
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Regularizing characteristics</font></h4>
+
 <p>
 Pressure drop equations and other fluid characteristics are usually
 computed by <b>semi-empirical</b> equations. Unfortunately, the developers
@@ -591,6 +589,7 @@ be slightly modified or adapted in order that obvious
 simulation problems are avoided. Below, examples are given to
 demonstrate what problems occur and how to regularize the characteristics:
 </p>
+
 <h4><font color=\"#008000\">Square root function</font></h4>
 <p>
 In several empirical formulae, expressions of the following form
@@ -656,7 +655,7 @@ and 0.0025% around x=1.
   class WallFriction "Wall friction"
 
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Wall friction</font></h4>
+
  
 <p>
 One important special case for a pressure loss is the friction at the
@@ -909,7 +908,6 @@ It is valid for incompressible and compressible flow up to a Mach number of 0.6.
   class ValveCharacteristics "Valve characteristics"
 
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Pump characteristics</font></h4>
 <p>
 The control valves in
 <a href=\"Modelica://Modelica_Fluid.Valves\">Modelica_Fluid.Valves</a>
@@ -978,10 +976,10 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
   end ComponentDefinition;
 
   package BuildingSystemModels "Building system models"
-    package SystemComponent "System component"
+    class SystemComponent "System component"
 
       annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >System component</font></h4>
+
 <p>
 The Modelica_Fluid library is designed so that each model of a system must
 include an instance <tt>system</tt> of the <tt>System</tt> component at the top level, in the same way as the <tt>World</tt> model of the MultiBody Library. The System component contains the parameters that
@@ -1018,10 +1016,10 @@ is recognised by all other components.
 </html>"));
     end SystemComponent;
 
-    package MediumDefinition "Definition of the medium models"
+    class MediumDefinition "Definition of the medium models"
 
       annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Definition of the medium models</font></h4>
+
 <p>
 All the models in Modelica_Fluid compute fluid properties by using medium
 models defined by Modelica.Media packages. Custom fluid models can also be
@@ -1042,10 +1040,10 @@ components</li>.
 </html>"));
     end MediumDefinition;
 
-    package CustomizingModel "Customizing a system model"
+    class CustomizingModel "Customizing a system model"
 
       annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Customizing a system model</font></h4>
+
 <p>
 Once a system model has been built, it is possible to obtain different approximations by
 appropriately setting the defaults in the System component (and/or the settings of specific
@@ -1084,7 +1082,7 @@ options might be contradictory, and will therefore trigger compilation errors.
 </html>"));
     end CustomizingModel;
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Building system models</font></h4>
+
 <p>
 This section is a quick primer explaining how to build a system model using Modelica_Fluid.
 It covers some key issues, such as the System component, the definition of medium models in the
@@ -1096,7 +1094,6 @@ system, and the typical customizations available in the Modelica_Fluid models.
   class ReleaseNotes "Release notes"
 
     annotation (Documentation(info="<HTML>
-<h4><font color=\"#008000\" >Release notes</font></h4>
  
 <h4><font color=\"#008000\">Version 1.0, 2009-01-28</font></h4>
  
@@ -2242,7 +2239,6 @@ printing and shipping costs may be recovered.</P>
 class Contact "Contact"
 
     annotation (Documentation(info="<html>
-<h4><font color=\"#008000\" >Contact</font></h4>
  
 <dl>
 <dt>The Modelica_Fluid library (this Modelica package)
