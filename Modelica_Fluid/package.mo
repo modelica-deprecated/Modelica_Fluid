@@ -2320,13 +2320,16 @@ and many have contributed.
      Sven Erik Mattsson, Chuck Newman, Hans Olsson,
      Martin Otter, Katrin Pr&ouml;l&szlig;,
      Christoph Richter, Michael Sielemann, Mike Tiller, Hubertus Tummescheit,
-     Allan Watson, Michael Wetter.<br><br></li>
+     Allan Watson, Michael Wetter.</li>
+</ul>
  
-<li> Partial financial support by ABB and by DLR for the further development
+<p>
+  Partial financial support of ABB and DLR by BMBF (BMBF Förderkennzeichen: 01IS07022F) for the further development
      of this library within the <a href=\"http://www.itea2.org\">ITEA</a> project
      <a href=\"http://www.itea2.org/public/project_leaflets/EUROSYSLIB_profile_oct-07.pdf\">EUROSYSLIB</a>
-     is highly appreciated (BMBF F&ouml;derkennzeichen: 01IS07022F).</li>
-</ul>
+     is highly appreciated.</p>
+
+
 </html>"));
 end Contact;
 end UsersGuide;
