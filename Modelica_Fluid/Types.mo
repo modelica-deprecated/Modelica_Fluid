@@ -8,12 +8,10 @@ package Types "Common types for fluid models"
 
   type HydraulicConductance =Real (
       final quantity="HydraulicConductance",
-      final unit="kg/(s.Pa)");
+      final unit="kg/(s.Pa)") "Real type for hydraulic conductance";
   type HydraulicResistance =Real (
       final quantity="HydraulicResistance",
-      final unit="Pa.s/kg");
-
-
+      final unit="Pa.s/kg") "Real type for hydraulic resistance";
 
   type Dynamics = enumeration(
       DynamicFreeInitial
@@ -192,7 +190,7 @@ make the simulation of your model faster.
       a_v_b "a_v_b: port_a - flow model - volume - flow model - port_b",
       av_b "av_b: port_a - volume - flow model - port_b",
       a_vb "a_vb: port_a - flow model - volume - port_b")
-    "Enumeration with choices for model structure in distributed pipe model"
+    "Enumeration with choices for model structure in distributed pipe model" 
     annotation (Documentation(info="<html>
 
 <p>

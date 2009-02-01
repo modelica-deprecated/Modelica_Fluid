@@ -1750,8 +1750,8 @@ The correlation takes into account the spatial position along the pipe flow, whi
     end LocalPipeFlowHeatTransfer;
   end HeatTransfer;
 
-    package CharacteristicNumbers
-      function ReynoldsNumber
+    package CharacteristicNumbers "Functions to compute characteristic numbers"
+      function ReynoldsNumber "Return Reynolds number from v, rho, mu, D"
         input SI.Velocity v "Mean velocity of fluid flow";
         input SI.Density rho "Fluid density";
         input SI.DynamicViscosity mu "Dynamic (absolute) viscosity";
@@ -1788,6 +1788,7 @@ The following table gives examples for the characteristic dimension D and the ve
       end ReynoldsNumber;
 
       function ReynoldsNumber_m_flow
+        "Return Reynolds number from m_flow, mu, D, A"
         input SI.MassFlowRate m_flow "Mass flow rate";
         input SI.DynamicViscosity mu "Dynamic viscosity";
         input SI.Length D
@@ -1809,7 +1810,7 @@ See also <a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.CharacteristicNum
 </html>"));
       end ReynoldsNumber_m_flow;
 
-      function NusseltNumber
+      function NusseltNumber "Return Nusselt number"
         input SI.CoefficientOfHeatTransfer alpha "Coefficient of heat transfer";
         input SI.Length D "Characteristic dimension";
         input SI.ThermalConductivity lambda "Thermal conductivity";
