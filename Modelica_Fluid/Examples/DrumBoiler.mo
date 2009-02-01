@@ -55,7 +55,7 @@ package DrumBoiler
       experimentSetupOutput,
       Documentation(info="<html>
 <p align=\"center\">
-<img src=\"../Images/Examples/DrumBoiler.png\">
+<img src=\"../Images/Examples/DrumBoiler.png\" border=\"1\">
 </p>
 </html>"));
     Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow furnace 

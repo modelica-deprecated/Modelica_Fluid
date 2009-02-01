@@ -14,7 +14,7 @@ below.
 </p>
  
 <p align=\"center\">
-<img src=\"../Images/Examples/AST_BatchPlant1.jpg\">
+<img src=\"../Images/Examples/AST_BatchPlant1.jpg\" border=\"1\">
 </p>
  
 <p>
@@ -22,7 +22,7 @@ The flow sheet diagram is shown in the next figure.
 </p>
  
 <p align=\"center\">
-<img src=\"../Images/Examples/AST_BatchPlant2.png\">
+<img src=\"../Images/Examples/AST_BatchPlant2.png\" border=\"1\">
 </p>
  
 <p>
@@ -116,7 +116,7 @@ present that are regulated by a central control system.
       Documentation(info="<html>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/BatchPlant_StandardWater.png\">
+<img src=\"../Images/Examples/BatchPlant_StandardWater.png\" border=\"1\">
 </p>
 
 </html>"));
@@ -728,8 +728,7 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
-
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -742,12 +741,11 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
-            Line(points={{-80,-20},{-60,-20},{-30,40},{8,40},{40,-20},{60,-20}}), 
-
+            Line(points={{-80,-20},{-60,-20},{-30,40},{8,40},{40,-20},{60,-20}}),
             Line(points={{-90,-70},{82,-70}}, color={0,0,0}),
             Line(points={{-80,68},{-80,-80}}, color={0,0,0}),
             Polygon(
@@ -760,7 +758,7 @@ present that are regulated by a central control system.
               lineColor={0,0,0},
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-68},{-60,-68},{-60,-42},{8,-42},{8,-68},{60,-68}}, 
+            Line(points={{-80,-68},{-60,-68},{-60,-42},{8,-42},{8,-68},{60,-68}},
                 color={255,0,255}),
             Line(
               points={{-60,40},{-60,-42}},

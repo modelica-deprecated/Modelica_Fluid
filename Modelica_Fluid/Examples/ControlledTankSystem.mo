@@ -101,7 +101,7 @@ This example is based on
 </dl>
  
 <p align=\"center\">
-<img src=\"../Images/Examples/ControlledTanks.png\">
+<img src=\"../Images/Examples/ControlledTanks.png\" border=\"1\">
 </p>
 
 </html>"),

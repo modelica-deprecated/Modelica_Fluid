@@ -238,7 +238,7 @@ could be additionally introduced to model the fitting between the heater and the
 </p>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/HeatingSystem.png\">
+<img src=\"../Images/Examples/HeatingSystem.png\" border=\"1\">
 </p>
 
 </html>

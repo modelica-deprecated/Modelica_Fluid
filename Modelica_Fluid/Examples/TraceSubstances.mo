@@ -79,7 +79,7 @@ concentration of the fresh air.
 </p>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/RoomCO2.png\">
+<img src=\"../Images/Examples/RoomCO2.png\" border=\"1\">
 </p>
 
 </html>"),
@@ -217,7 +217,7 @@ and hence its contribution to the volume's energy balance is negligible.
 </p>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/RoomCO2WithControls.png\">
+<img src=\"../Images/Examples/RoomCO2WithControls.png\" border=\"1\">
 </p>
 </html>"));
     connect(NumberOfPeople.y[1], gain.u) annotation (Line(

@@ -133,7 +133,7 @@ to investigate a real controller or with a Pump with rotational shaft to investi
 </p>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/InverseParametrization.png\">
+<img src=\"../Images/Examples/InverseParametrization.png\" border=\"1\">
 </p>
 
 </html>"));

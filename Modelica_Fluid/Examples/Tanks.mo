@@ -104,7 +104,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       Documentation(info="<html>
   
 <p align=\"center\">
-<img src=\"../Images/Examples/ThreeTanks.png\">
+<img src=\"../Images/Examples/ThreeTanks.png\" border=\"1\">
 </p>
 
 </html>"));
@@ -250,7 +250,7 @@ simulation accuracy could be increased in order to avoid errors.
 </p>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/TanksWithOverflow.png\">
+<img src=\"../Images/Examples/TanksWithOverflow.png\" border=\"1\">
 </p>
 
 </html>"));
@@ -315,7 +315,7 @@ simulation accuracy could be increased in order to avoid errors.
       Documentation(info="<html>
 
 <p align=\"center\">
-<img src=\"../Images/Examples/EmptyTanks.png\">
+<img src=\"../Images/Examples/EmptyTanks.png\" border=\"1\">
 </p>
 </html>"));
   end EmptyTanks;

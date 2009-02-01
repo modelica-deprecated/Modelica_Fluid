@@ -74,7 +74,7 @@ package HeatExchanger "Demo of a heat exchanger model"
                          experiment(StopTime=100, Tolerance=1e-005),
       Documentation(info="<html>
 <p align=\"center\">
-<img src=\"../Images/Examples/HeatExchanger.png\">
+<img src=\"../Images/Examples/HeatExchanger.png\" border=\"1\">
 </p>
 </html>"));
     Modelica.Blocks.Sources.Ramp Ramp1(
