@@ -2359,41 +2359,35 @@ substance medium with one or more phases might be used.
 The goal is to include
 the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
+
+<p>
+Two simple example models demonstrating several features of the library are
+shown in the next figure. The left part shows a heating system with a closed
+flow cycle. By just changing one configuration parameter in the system object
+the equations are changed between steady-state and dynamic simulation with fixed or steady-state
+initial conditions. The right figure shows an example of a controlled tank system
+including built-in diagram animation.
+</p>
+
+<table border=1 cellspacing=0 cellpadding=0>
+<tr><td> 
+    <img src=\"../Images/UsersGuide/HeatingSystem.png\"> </td>
+    <td> <img src=\"../Images/UsersGuide/ControlledTanks.png\"> </td></tr>
+</table>
  
 <p>
-This is version <b>1.0</b> of the Modelica_Fluid library.
-With respect to previous versions of the Modelica_Fluid library, the design
+With respect to previous versions, the design
 of the connectors has been changed, using the recently developed concept
-of streams connectors (see an overview and a rationale
+of streams connectors that results in much more reliable simulations
+(see an overview and a rationale
 <a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rationale.pdf\">here</a>).
-This requires an extension to the Modelica specification which will
-be included in Modelica 3.1.
-As of the release date, the new streams concept is supported in Dymola 7.1. Therefore, 
-Dymola users need Dymola version 7.1 in order to use Modelica_Fluid
-(Dymola version 7.2 announced to be available in Feb. 2009 is
-recommended, since it supports additionally the new connectorSizing annotation that makes
-connections to vectors of connectors very convenient). Other Modelica tool vendors are currently
-incorporating the streams concept in their tools as well.
-The essential benefit of this new concept is that the equation systems become
-more well behaved and the models can be much more reliably simulated.
+This extension will be included in Modelica 3.1.
+As of Jan. 2009, the streams concept is supported in Dymola 7.1.
+Dymola 7.2 (announced for Feb. 2009) is recommended since connections
+to vectors of connectors are much more convenient due to a new annotation.
+Other tool vendors will support the streams concept as well.
 </p>
  
-<p>
-A simple example model demonstrating many features of the Modelica_Fluid library, including dynamic and steady-state simulation, 
-embedded idealized control, as well as the treatment of zero flow rates and closed flow cycles, 
-is shown in the next figure (heating system):
-</p>
-<p align=\"center\">
-<img src=\"../Images/UsersGuide/HeatingSystem.png\">
-</p>
-<p>
-Some of the components have built-in diagram animation.
-An example of a tank system that is controlled by an explicitly modeled control system
-is shown in the next figure:
-</p>
-<p align=\"center\">
-<img src=\"../Images/UsersGuide/ControlledTanks.png\">
-</p>
 <p>
 The following parts are useful, when newly starting with this library:
 </p>

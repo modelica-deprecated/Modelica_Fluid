@@ -59,14 +59,12 @@ equation
           extent={{-100,-8},{100,-14}},
           lineColor={0,0,255},
           textString=
-              "Problem: Medium SimpleAir missing stateSelect.prefer on pressure p (see Ticket #63)"), 
-
+              "Problem: Medium SimpleAir missing stateSelect.prefer on pressure p (see Ticket #63)"),
         Text(
           extent={{-100,-28},{100,-34}},
           lineColor={0,0,255},
           textString=
-              "This leads to the bad state m without start value and results in a division by zero"), 
-
+              "This leads to the bad state m without start value and results in a division by zero"),
         Text(
           extent={{-100,-46},{100,-52}},
           lineColor={0,0,255},

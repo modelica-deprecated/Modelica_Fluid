@@ -1264,8 +1264,7 @@ handled properly.</p>
               lineColor={0,0,0},
               fillColor={85,170,255},
               fillPattern=FillPattern.VerticalCylinder),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-200,84},{0,48}},
               lineColor={0,0,255},
@@ -1293,8 +1292,8 @@ handled properly.</p>
               extent={{-195,-38},{-5,-58}},
               lineColor={0,0,0},
               textString=DynamicSelect("%level_start", realString(
-                      level, 
-                      1, 
+                      level,
+                      1,
                       2)))}),
         Documentation(info="<HTML>
 <p>
@@ -2098,8 +2097,8 @@ end for;
               extent={{-95,-39},{95,-59}},
               lineColor={0,0,0},
               textString=DynamicSelect("%level_start", realString(
-                    level, 
-                    1, 
+                    level,
+                    1,
                     2)))}),
         Documentation(info="<HTML>
 <p> 

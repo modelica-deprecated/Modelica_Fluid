@@ -252,7 +252,6 @@ The steady-state initial values are observed by an assertion.
 </html>"));
   end DynamicPipeInitialization;
 
-
   model BranchingPipes1
     //replaceable package Medium = Modelica.Media.Water.StandardWater;
     replaceable package Medium = 
