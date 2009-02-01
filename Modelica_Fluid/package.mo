@@ -1126,7 +1126,7 @@ Modelica_Fluid was refactored and finalized for the release:
      Specific models combine the balances and define the boundary flow and source terms as appropriate.
      For instance
      <ul>
-     <li><a href=\"Modelica://Modelica_Fluid.Vessels.Tank\">Vessels.Tank</a> extends from
+     <li><a href=\"Modelica://Modelica_Fluid.Vessels.OpenTank\">Vessels.OpenTank</a> extends from
          <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialLumpedVolume\">Interfaces.PartialLumpedVolume</a>,</li>
      <li><a href=\"Modelica://Modelica_Fluid.Fittings.SimpleGenericOrifice\">Fittings.SimpleGenericOrifice</a> extends from
          <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialLumpedFlow\">Interfaces.PartialLumpedFlow</a>, besides
@@ -1963,7 +1963,7 @@ the use is completely at <U>your own risk</U>;
 it can be redistributed and/or modified under the terms of the
 Modelica license 2, see the license conditions (including the
 disclaimer of warranty)
-<A HREF=\"modelica://Modelica.UsersGuide.ModelicaLicense2\">here</A></U>
+<A HREF=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">here</A></U>
 or at
 <A HREF=\"http://www.modelica.org/licenses/ModelicaLicense2\">
 http://www.modelica.org/licenses/ModelicaLicense2</A>.</I>
@@ -2227,7 +2227,7 @@ alternative 2d).</P>
 version of a Modelica document (under Modelica License 2), e.g., the
 Modelica Language Specification?</B></P>
 <P>No,
-if you are not the copyright-hold" + "er, since article 2c) does not allow
+if you are not the c" + "opyright-holder, since article 2c) does not allow
 a selling fee for a (in this case physical) copy. However, mere
 printing and shipping costs may be recovered.</P>
 </html>

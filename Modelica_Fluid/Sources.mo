@@ -770,6 +770,7 @@ with exception of boundary flow rate, do not have an effect.
   end MassFlowSource_h;
 
   package BaseClasses
+    "Base classes used in the Sources package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
   partial model PartialSource
       "Partial component source with one fluid connector"

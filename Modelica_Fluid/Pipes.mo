@@ -62,7 +62,7 @@ There exist two thermodynamic states, one at each fluid port. The momentum balan
 momentum flows, friction and gravity. The same result can be obtained by using <a href=\"Modelica://Modelica_Fluid.Pipes.DynamicPipe\">DynamicPipe</a> with 
 steady-state dynamic settings. The intended use is to provide simple connections of vessels or other devices with storage, as it is done in:
 <ul>
-<li><a href=\"Modelica://Modelica_Fluid.Examples.Tanks.TanksWithEmptyingPipe1\">Examples.Tanks.TanksWithEmptyingPipe1</a></li>
+<li><a href=\"Modelica://Modelica_Fluid.Examples.Tanks.EmptyTanks\">Examples.Tanks.EmptyTanks</a></li>
 <li><a href=\"Modelica://Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
 </ul>
  
@@ -273,6 +273,7 @@ The intended use is for complex networks of pipes and other flow devices, like v
   end DynamicPipe;
 
   package BaseClasses
+    "Base classes used in the Pipes package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
     partial model PartialStraightPipe "Base class for straight pipe models"
@@ -1490,8 +1491,8 @@ specified <tt>dp_nominal</tt> and <tt>m_flow_nominal</tt>.
 It takes into account the fluid density of each flow segment and 
 obtaines appropriate <tt>pathLengths_nominal</tt> values   
 for an inverse parameterization of the 
-<a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.FlowModel.TurbulentFlow\">
-          TurbulentFlow</a>
+<a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow\">
+          TurbulentPipeFlow</a>
 model. Per default the upstream and downstream densities are averaged with the setting <tt>useUpstreamScheme = false</tt>,
 in order to avoid discontinuous <tt>pathLengths_nominal</tt> values in the case of flow reversal.
 </p>

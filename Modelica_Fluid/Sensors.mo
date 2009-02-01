@@ -1044,6 +1044,7 @@ the two ports of this component and is provided as output signal.
 */
 
   package BaseClasses
+    "Base classes used in the Sensors package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
     partial model PartialAbsoluteSensor

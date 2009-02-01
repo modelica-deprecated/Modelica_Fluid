@@ -520,7 +520,6 @@ of the modeller.
           grid={1,1}), graphics));
   end TeeJunctionVolume;
 
-
   annotation (Documentation(info="<html>
 <p>
 This sublibrary contains models and functions providing pressure 
@@ -568,6 +567,7 @@ polynomials. The monotonicity is guaranteed using results from:
 </html>"));
 
   package BaseClasses
+    "Base classes used in the Fittings package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
     function lossConstant_D_zeta "Return the loss constant 8*zeta/(pi^2*D^4)"

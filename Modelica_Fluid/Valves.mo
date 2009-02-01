@@ -353,6 +353,7 @@ it is open.
   end ValveDiscrete;
 
   package BaseClasses
+    "Base classes used in the Valves package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
     partial model PartialValve "Base model for valves"
 
@@ -435,7 +436,8 @@ it is open.
               fillColor={0,0,0},
               fillPattern=FillPattern.Solid),
             Polygon(
-              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}},
+              points={{-100,50},{100,-50},{100,50},{0,0},{-100,-50},{-100,50}}, 
+
               fillColor={255,255,255},
               fillPattern=FillPattern.Solid),
             Polygon(
