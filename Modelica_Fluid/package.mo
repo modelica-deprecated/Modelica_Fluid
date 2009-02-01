@@ -451,9 +451,8 @@ the \"energy balance 2\":
 <p>
 This formulation separates the internal energy of the fluid from the kinetic energy of fluid flow.
 The internal energy is treated by the energy balance 2, the kinetic energy is treated by the momentum balance equally well.
-The evaluation of medium properties, which are independent of the kinetic energy, and the formulation of many fluid models is simplified with the energy balance 2, expecially for
-distributed parameter models. The overall conservation of energy is then achieved by
-considering the mutual dependencies of energy and momentum balance.
+The evaluation of medium properties, which are independent of the kinetic energy, and the formulation of many fluid models is simplified with the energy balance 2.
+The overall conservation of energy is achieved by considering the mutual dependencies of energy and momentum balance.
 </p>
 <p>
 Some components in the library, like DynamicPipe, provide a rigorous implementation of mass,
