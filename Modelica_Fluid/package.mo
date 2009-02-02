@@ -2371,15 +2371,16 @@ a simple heating system with a closed flow cycle. By just changing one configura
  
 <p>
 With respect to previous versions, the design
-of the connectors has been changed, using the recently developed concept
-of streams connectors that results in much more reliable simulations
+of the connectors has been changed in a non-backward compatible way,
+using the recently developed concept
+of stream connectors that results in much more reliable simulations
 (see an overview and a rationale
 <a href=\"..\\help\\Documentation\\Stream-Connectors-Overview-Rationale.pdf\">here</a>).
 This extension will be included in Modelica 3.1.
-As of Jan. 2009, the streams concept is supported in Dymola 7.1.
-Dymola 7.2 (announced for Feb. 2009) is recommended since connections
-to vectors of connectors are much more convenient due to a new annotation.
-Other tool vendors will support the streams concept as well.
+As of Jan. 2009, the stream concept is supported in Dymola 7.1.
+It is recommended to use Dymola 7.2 (announced for Feb. 2009), or a later Dymola version, since this version supports a new annotation to connect very
+conveniently to vectors of connectors.
+Other tool vendors will support the stream concept as well.
 </p>
  
 <p>
