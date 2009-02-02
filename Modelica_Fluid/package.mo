@@ -2361,19 +2361,13 @@ the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
 
 <p>
-Two simple example models demonstrating several features of the library are
-shown in the next figure. The left part shows a heating system with a closed
-flow cycle. By just changing one configuration parameter in the system object
-the equations are changed between steady-state and dynamic simulation with fixed or steady-state
-initial conditions. The right figure shows an example of a controlled tank system
-including built-in diagram animation.
+In the next figure, several features of the library are demonstrated with
+a simple heating system with a closed flow cycle. By just changing one configuration parameter in the system object the equations are changed between steady-state and dynamic simulation with fixed or steady-state initial conditions.
 </p>
 
-<table border=1 cellspacing=0 cellpadding=0>
-<tr><td> 
-    <img src=\"../Images/UsersGuide/HeatingSystem.png\"> </td>
-    <td> <img src=\"../Images/UsersGuide/ControlledTanks.png\"> </td></tr>
-</table>
+<blockquote>
+    <img src=\"../Images/UsersGuide/HeatingSystem.png\" border=1>
+</blockquote>
  
 <p>
 With respect to previous versions, the design
