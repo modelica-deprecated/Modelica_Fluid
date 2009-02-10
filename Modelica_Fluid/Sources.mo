@@ -503,7 +503,7 @@ with exception of boundary pressure, do not have an effect.
             fillPattern=FillPattern.Solid,
             textString="m"),
           Text(
-            extent={{-150,110},{150,150}},
+            extent={{-150,130},{150,170}},
             textString="%name",
             lineColor={0,0,255}),
           Ellipse(
@@ -770,6 +770,7 @@ with exception of boundary flow rate, do not have an effect.
   end MassFlowSource_h;
 
   package BaseClasses
+    "Base classes used in the Sources package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
   partial model PartialSource
       "Partial component source with one fluid connector"

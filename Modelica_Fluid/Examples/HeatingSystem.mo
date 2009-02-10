@@ -1,5 +1,6 @@
 within Modelica_Fluid.Examples;
 model HeatingSystem "Simple model of a heating system"
+  extends Modelica.Icons.Example;
    replaceable package Medium = 
       Modelica.Media.Water.StandardWater 
      constrainedby Modelica.Media.Interfaces.PartialMedium;
@@ -43,9 +44,11 @@ model HeatingSystem "Simple model of a heating system"
     dp_nominal=10000) 
     annotation (Placement(transformation(extent={{60,-80},{40,-60}},
                                                                    rotation=0)));
+protected
   Modelica.Blocks.Interfaces.RealOutput m_flow 
     annotation (Placement(transformation(extent={{-6,34},{6,46}},   rotation=
             0)));
+public
   Sensors.MassFlowRate sensor_m_flow(redeclare package Medium = Medium) 
     annotation (Placement(transformation(extent={{-20,10},{0,30}},   rotation=
            0)));
@@ -97,12 +100,14 @@ model HeatingSystem "Simple model of a heating system"
     annotation (Placement(transformation(extent={{20,-80},{0,-60}}, rotation=
             0)));
 
+protected
   Modelica.Blocks.Interfaces.RealOutput T_forward 
     annotation (Placement(transformation(extent={{74,34},{86,46}},   rotation=
            0)));
   Modelica.Blocks.Interfaces.RealOutput T_return 
     annotation (Placement(transformation(extent={{-46,-56},{-58,-44}},
           rotation=0)));
+public
   Modelica_Fluid.Sensors.Temperature sensor_T_forward(redeclare package Medium
       = Medium) 
     annotation (Placement(transformation(extent={{50,30},{70,50}},   rotation=
@@ -111,9 +116,11 @@ model HeatingSystem "Simple model of a heating system"
       = Medium) 
     annotation (Placement(transformation(extent={{-20,-60},{-40,-40}},
           rotation=0)));
+protected
   Modelica.Blocks.Interfaces.RealOutput tankLevel 
                                  annotation (Placement(transformation(extent={{-56,34},
             {-44,46}},          rotation=0)));
+public
   Modelica.Blocks.Sources.Step handle(
     startTime=2000,
     height=0.9,
@@ -168,7 +175,6 @@ tankLevel = tank.level;
       points={{-37,-50},{-52,-50}},
       color={0,0,127},
       smooth=Smooth.None));
-
   connect(burner.port, heater.heatPorts[1]) 
                                           annotation (Line(
       points={{36,40},{40.1,40},{40.1,24.4}},
@@ -195,16 +201,12 @@ tankLevel = tank.level;
       points={{0,-70},{-72,-70},{-72,30}},
       color={0,127,255},
       smooth=Smooth.None));
-
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
-            lineColor={0,0,255}), Text(
-          extent={{-60,60},{60,-60}},
-          lineColor={0,0,255},
-          textString="H")}), Documentation(info="<html>
+            -100},{100,100}}), graphics),
+                             Documentation(info="<html>
 <p>
 Simple heating system with a closed flow cycle. It is set up for steady-state initial values.
 After 2000s of simulation time the valve fully opens. A simple idealized control is embedded 
@@ -230,12 +232,18 @@ If steady-state values shall be obtained with the valve fully closed, then a the
 coupling between the pipe and its ambient should be defined as well.
 </p>
 <p>
-Moreover it is worth noting that the idialized direct connection between the heater and the pipe, resulting in equal port pressures,
+Moreover it is worth noting that the idealized direct connection between the heater and the pipe, resulting in equal port pressures,
 is treated as high-index DAE, as opposed to a nonlinear equation system for connected pressure loss correlations. A pressure loss correlation 
 could be additionally introduced to model the fitting between the heater and the pipe, e.g. to adapt different diameters.
 </p>
+
+<p align=\"center\">
+<img src=\"../Images/Examples/HeatingSystem.png\" border=\"1\">
+</p>
+
 </html>
 "), experiment(StopTime=6000),
     Commands(file(ensureSimulated=true)=
         "Scripts/Examples/HeatingSystem/plotResults.mos" "plotResults"));
+
 end HeatingSystem;

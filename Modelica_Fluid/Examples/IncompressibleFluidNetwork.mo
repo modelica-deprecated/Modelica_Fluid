@@ -1,6 +1,7 @@
 within Modelica_Fluid.Examples;
 model IncompressibleFluidNetwork
   "Multi-way connections of pipes and incompressible medium model"
+  extends Modelica.Icons.Example;
   replaceable package Medium = 
       Modelica.Media.Incompressible.Examples.Essotherm650 
     constrainedby Modelica.Media.Interfaces.PartialMedium;
@@ -219,11 +220,7 @@ equation
             -100},{100,100}}),
                       graphics),
                        Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-            -100},{100,100}}), graphics={Rectangle(extent={{-100,100},{100,-100}}, 
-            lineColor={0,0,255}), Text(
-          extent={{-60,60},{60,-60}},
-          lineColor={0,0,255},
-          textString="N")}),
+            -100},{100,100}}), graphics),
          Documentation(info="<html>
 This example demonstrates two aspects: the efficient treatment of multi-way connections 
 and the usage of an incompressible medium model.
@@ -231,7 +228,7 @@ and the usage of an incompressible medium model.
 Normally one would expect bad equation systems in multi-way connections 
 and possibly introduce mixing volumes to work around this. 
 Here the problem is treated with the the modelStructure=av_vb in the
-<a href=\"Modelica:Modelica_Fluid.Pipes.DynamicPipe\">DynamicPipe</a> model. 
+<a href=\"Modelica://Modelica_Fluid.Pipes.DynamicPipe\">DynamicPipe</a> model. 
 Each pipe exposes the states of the outer fluid segments to the respective fluid ports. 
 Consequently the pressures of all connected pipe segments get lumped together into one mass balance 
 spanning the whole connection set. With the stream concept in the fluid ports, the energy and substance 
@@ -241,6 +238,11 @@ balances remain independent in the connected pipe segments.
 The model does not contain pressure dynamics as an incompressible medium is used (Essotherm650). 
 Pressure dynamics becomes present with a compressible medium model (e.g. StandardWater).
 </p>
+
+<p align=\"center\">
+<img src=\"../Images/Examples/IncompressibleFluidNetwork.png\" border=\"1\">
+</p>
+
 </html>"),
     experiment(StopTime=5),
     experimentSetupOutput(equdistant=false),

@@ -59,11 +59,11 @@ package Pipes "Devices for conveying fluid"
   Documentation(info="<html>
 <p>Model of a straight pipe with constant cross section and with steady-state mass, momentum and energy balances, i.e. the model does not store mass or energy. 
 There exist two thermodynamic states, one at each fluid port. The momentum balance is formulated for the two states, taking into account 
-momentum flows, friction and gravity. The same result can be obtained by using <a href=\"Modelica:Modelica_Fluid.Pipes.DynamicPipe\">DynamicPipe</a> with 
+momentum flows, friction and gravity. The same result can be obtained by using <a href=\"Modelica://Modelica_Fluid.Pipes.DynamicPipe\">DynamicPipe</a> with 
 steady-state dynamic settings. The intended use is to provide simple connections of vessels or other devices with storage, as it is done in:
 <ul>
-<li><a href=\"Modelica:Modelica_Fluid.Examples.Tanks.TanksWithEmptyingPipe1\">Examples.Tanks.TanksWithEmptyingPipe1</a></li>
-<li><a href=\"Modelica:Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
+<li><a href=\"Modelica://Modelica_Fluid.Examples.Tanks.EmptyTanks\">Examples.Tanks.EmptyTanks</a></li>
+<li><a href=\"Modelica://Modelica_Fluid.Examples.InverseParameterization\">Examples.InverseParameterization</a></li>.
 </ul>
  
 <h4>Numerical Issues</h4>
@@ -166,7 +166,7 @@ or other flow models without storage, are directly connected.
   Documentation(info="<html>
 <p>Model of a straight pipe with distributed mass, energy and momentum balances. 
 It provides the complete balance equations for one-dimensional fluid flow as formulated in
-<a href=\"Modelica:Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>.
+<a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.BalanceEquations\">UsersGuide.ComponentDefinition.BalanceEquations</a>.
 </p>
 <p>
 The partial differential equations are treated with the finite volume method and a staggered grid scheme for momentum balances.
@@ -187,20 +187,20 @@ of nonlinear equation systems, is obtained with the setting <tt>nNodes=1, modelS
 Depending on the configured model structure, the first and the last pipe segment, 
 or the flow path length of the first and the last momentum balance, are of half size. 
 See the documentation of the base class 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">Pipes.BaseClasses.PartialTwoPortFlow</a>,
+<a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.PartialTwoPortFlow\">Pipes.BaseClasses.PartialTwoPortFlow</a>,
 also covering asymmetric configurations.
 </p>
 <p>
 The <b><tt>HeatTransfer</tt></b> component specifies the source term <tt>Qb_flows</tt> of the energy balance. 
 The default component uses a constant coefficient for the heat transfer between the bulk flow and the segment boundaries exposed through the <tt>heatPorts</tt>. 
 The <tt>HeatTransfer</tt> model is replaceable and can be exchanged with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.HeatTransfer.PartialFlowHeatTransfer</a>.
+<a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.HeatTransfer.PartialFlowHeatTransfer\">BaseClasses.HeatTransfer.PartialFlowHeatTransfer</a>.
 </p>
 <p>
 The intended use is for complex networks of pipes and other flow devices, like valves. See e.g. 
 <ul>
-<li><a href=\"Modelica:Modelica_Fluid.Examples.BranchingDynamicPipes\">Examples.BranchingDynamicPipes</a>, or </li>
-<li><a href=\"Modelica:Modelica_Fluid.Examples.IncompressibleFluidNetwork\">Examples.IncompressibleFluidNetwork</a>.</li>
+<li><a href=\"Modelica://Modelica_Fluid.Examples.BranchingDynamicPipes\">Examples.BranchingDynamicPipes</a>, or </li>
+<li><a href=\"Modelica://Modelica_Fluid.Examples.IncompressibleFluidNetwork\">Examples.IncompressibleFluidNetwork</a>.</li>
 </ul>
 </p> 
 </html>"),
@@ -273,6 +273,7 @@ The intended use is for complex networks of pipes and other flow devices, like v
   end DynamicPipe;
 
   package BaseClasses
+    "Base classes used in the Pipes package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
     partial model PartialStraightPipe "Base class for straight pipe models"
@@ -663,7 +664,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
 The default value is nNodes=2.
 </p>
 <p><b>Mass and Energy balances</b></p>
-The mass and energy balances are inherited from <a href=\"Modelica:Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a>. 
+The mass and energy balances are inherited from <a href=\"Modelica://Modelica_Fluid.Interfaces.PartialDistributedVolume\">Interfaces.PartialDistributedVolume</a>. 
 One total mass and one energy balance is formed across each segment according to the finite volume approach. 
 Substance mass balances are added if the medium contains more than one component.
 <p>
@@ -677,8 +678,8 @@ Moreover it needs to define two vectors of source terms for the distributed ener
  
 <p><b>Momentum balance</b></p>
 The momentum balance is determined by the <b><tt>FlowModel</tt></b> component, which can be replaced with any model extended from 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.FlowModels.PartialStaggeredFlowModel\">BaseClasses.FlowModels.PartialStaggeredFlowModel</a>.
-The default setting is <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow\">DetailedPipeFlow</a>. 
+<a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.FlowModels.PartialStaggeredFlowModel\">BaseClasses.FlowModels.PartialStaggeredFlowModel</a>.
+The default setting is <a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.FlowModels.DetailedPipeFlow\">DetailedPipeFlow</a>. 
 This considers
 <ul>
 <li>pressure drop due to friction and other dissipative losses, and</li>
@@ -1214,7 +1215,7 @@ The geometry is specified with the <tt>pathLengths[n-1]</tt> between the device 
 with the <tt>crossAreas[n]</tt> and the <tt>roughnesses[n]</tt> of the device segments. 
 Moreover the fluid flow is characterized for different types of devices by the characteristic <tt>dimensions[n]</tt> 
 and the average velocities <tt>vs[n]</tt> of fluid flow in the device segments. 
-See <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber\">Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber</a>
+See <a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber\">Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber</a>
 for examplary definitions.
 </p>
 <p> 
@@ -1490,8 +1491,8 @@ specified <tt>dp_nominal</tt> and <tt>m_flow_nominal</tt>.
 It takes into account the fluid density of each flow segment and 
 obtaines appropriate <tt>pathLengths_nominal</tt> values   
 for an inverse parameterization of the 
-<a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.FlowModel.TurbulentFlow\">
-          TurbulentFlow</a>
+<a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.FlowModels.TurbulentPipeFlow\">
+          TurbulentPipeFlow</a>
 model. Per default the upstream and downstream densities are averaged with the setting <tt>useUpstreamScheme = false</tt>,
 in order to avoid discontinuous <tt>pathLengths_nominal</tt> values in the case of flow reversal.
 </p>
@@ -1642,7 +1643,7 @@ The geometry is specified in the interface with the <tt>surfaceAreas[n]</tt>, th
 and the lengths[n] along the flow path. 
 Moreover the fluid flow is characterized for different types of devices by the characteristic <tt>dimensions[n+1]</tt> 
 and the average velocities <tt>vs[n+1]</tt> of fluid flow. 
-See <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber\">Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber</a>
+See <a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber\">Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber</a>
 for examplary definitions.
 </p>
 </html>"),Icon(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},
@@ -1749,8 +1750,8 @@ The correlation takes into account the spatial position along the pipe flow, whi
     end LocalPipeFlowHeatTransfer;
   end HeatTransfer;
 
-    package CharacteristicNumbers
-      function ReynoldsNumber
+    package CharacteristicNumbers "Functions to compute characteristic numbers"
+      function ReynoldsNumber "Return Reynolds number from v, rho, mu, D"
         input SI.Velocity v "Mean velocity of fluid flow";
         input SI.Density rho "Fluid density";
         input SI.DynamicViscosity mu "Dynamic (absolute) viscosity";
@@ -1787,6 +1788,7 @@ The following table gives examples for the characteristic dimension D and the ve
       end ReynoldsNumber;
 
       function ReynoldsNumber_m_flow
+        "Return Reynolds number from m_flow, mu, D, A"
         input SI.MassFlowRate m_flow "Mass flow rate";
         input SI.DynamicViscosity mu "Dynamic viscosity";
         input SI.Length D
@@ -1803,12 +1805,12 @@ The following table gives examples for the characteristic dimension D and the ve
 with
   m_flow = v*&rho;*A
 </pre>
-See also <a href=\"Modelica:Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber\">
+See also <a href=\"Modelica://Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber\">
           Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber</a>.
 </html>"));
       end ReynoldsNumber_m_flow;
 
-      function NusseltNumber
+      function NusseltNumber "Return Nusselt number"
         input SI.CoefficientOfHeatTransfer alpha "Coefficient of heat transfer";
         input SI.Length D "Characteristic dimension";
         input SI.ThermalConductivity lambda "Thermal conductivity";

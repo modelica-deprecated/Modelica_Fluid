@@ -193,6 +193,7 @@ equation
 end OpenTank;
 
   package BaseClasses
+    "Base classes used in the Vessels package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
       partial model PartialLumpedVessel

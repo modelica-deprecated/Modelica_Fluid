@@ -353,6 +353,7 @@ it is open.
   end ValveDiscrete;
 
   package BaseClasses
+    "Base classes used in the Valves package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
     partial model PartialValve "Base model for valves"
 

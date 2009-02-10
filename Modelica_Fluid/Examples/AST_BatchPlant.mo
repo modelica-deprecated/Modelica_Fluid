@@ -14,7 +14,7 @@ below.
 </p>
  
 <p align=\"center\">
-<img src=\"../Images/Examples/AST_BatchPlant1.jpg\">
+<img src=\"../Images/Examples/AST_BatchPlant1.jpg\" border=\"1\">
 </p>
  
 <p>
@@ -22,7 +22,7 @@ The flow sheet diagram is shown in the next figure.
 </p>
  
 <p align=\"center\">
-<img src=\"../Images/Examples/AST_BatchPlant2.png\">
+<img src=\"../Images/Examples/AST_BatchPlant2.png\" border=\"1\">
 </p>
  
 <p>
@@ -41,7 +41,7 @@ present that are regulated by a central control system.
 </html>"));
 
   model BatchPlant_StandardWater
-
+      extends Modelica.Icons.Example;
     replaceable package BatchMedium = Modelica.Media.Water.StandardWater constrainedby
       Modelica.Media.Interfaces.PartialTwoPhaseMedium "Component media";
 
@@ -112,7 +112,14 @@ present that are regulated by a central control system.
       experimentSetupOutput,
       Commands(file=
             "../Scripts/Examples/AST_BatchPlant_StandardWater/plot level.mos"
-          "plot level"));
+          "plot level"),
+      Documentation(info="<html>
+
+<p align=\"center\">
+<img src=\"../Images/Examples/BatchPlant_StandardWater.png\" border=\"1\">
+</p>
+
+</html>"));
     Modelica_Fluid.Valves.ValveDiscrete V11(
       redeclare package Medium = BatchMedium,
       m_flow_nominal = 1,
@@ -721,8 +728,7 @@ present that are regulated by a central control system.
 
       annotation (
         Icon(graphics={
-            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}), 
-
+            Line(points={{-60,-70},{-60,-70},{-30,40},{8,40},{40,-70},{40,-70}}),
             Line(points={{-90,-70},{82,-70}}, color={192,192,192}),
             Line(points={{-80,68},{-80,-80}}, color={192,192,192}),
             Polygon(
@@ -735,7 +741,7 @@ present that are regulated by a central control system.
               lineColor={192,192,192},
               fillColor={192,192,192},
               fillPattern=FillPattern.Solid),
-            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}}, 
+            Line(points={{-80,-70},{-60,-70},{-60,24},{8,24},{8,-70},{60,-70}},
                 color={255,0,255})}),
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}), graphics={
@@ -1258,8 +1264,7 @@ handled properly.</p>
               lineColor={0,0,0},
               fillColor={85,170,255},
               fillPattern=FillPattern.VerticalCylinder),
-            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}), 
-
+            Line(points={{-200,100},{-200,-100},{0,-100},{0,100}}, color={0,0,0}),
             Text(
               extent={{-200,84},{0,48}},
               lineColor={0,0,255},
@@ -1287,8 +1292,8 @@ handled properly.</p>
               extent={{-195,-38},{-5,-58}},
               lineColor={0,0,0},
               textString=DynamicSelect("%level_start", realString(
-                      level, 
-                      1, 
+                      level,
+                      1,
                       2)))}),
         Documentation(info="<HTML>
 <p>
@@ -2092,8 +2097,8 @@ end for;
               extent={{-95,-39},{95,-59}},
               lineColor={0,0,0},
               textString=DynamicSelect("%level_start", realString(
-                    level, 
-                    1, 
+                    level,
+                    1,
                     2)))}),
         Documentation(info="<HTML>
 <p> 

@@ -298,7 +298,8 @@ Then the model can be replaced with a Pump with rotational shaft or with a Presc
 
   end PrescribedPump;
 
-  package BaseClasses "Base classes for Turbomachinery components"
+  package BaseClasses
+    "Base classes used in the Machines package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
   partial model PartialPump "Base model for centrifugal pumps"

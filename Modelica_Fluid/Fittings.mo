@@ -284,7 +284,7 @@ model AbruptAdaptor
               100}},
           grid={1,1}), graphics={Rectangle(
             extent=DynamicSelect({{-100,22},{0,-22}}, {{-100,max(0.1, min(1,
-                diameter_a/max(diameter_a, diameter_b)))*60},{0,-max(0.1, min(1, 
+                diameter_a/max(diameter_a, diameter_b)))*60},{0,-max(0.1, min(1,
                 diameter_a/max(diameter_a, diameter_b)))*60}}),
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
@@ -520,7 +520,6 @@ of the modeller.
           grid={1,1}), graphics));
   end TeeJunctionVolume;
 
-
   annotation (Documentation(info="<html>
 <p>
 This sublibrary contains models and functions providing pressure 
@@ -568,6 +567,7 @@ polynomials. The monotonicity is guaranteed using results from:
 </html>"));
 
   package BaseClasses
+    "Base classes used in the Fittings package (only of interest to build new component models)"
     extends Modelica_Fluid.Icons.BaseClassLibrary;
 
     function lossConstant_D_zeta "Return the loss constant 8*zeta/(pi^2*D^4)"

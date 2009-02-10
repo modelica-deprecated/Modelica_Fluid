@@ -1,7 +1,6 @@
 within Modelica_Fluid.Examples;
 model InverseParameterization
   "Demonstrates the parameterization of a pump and a pipe for given nominal values"
-  import Modelica_Fluid;
   extends Modelica.Icons.Example;
   replaceable package Medium = Modelica.Media.Water.StandardWater;
       //Modelica.Media.Water.ConstantPropertyLiquidWater;
@@ -36,8 +35,8 @@ model InverseParameterization
           rotation=0)));
 
   inner Modelica_Fluid.System system 
-                        annotation (Placement(transformation(extent={{-90,70},{
-            -70,90}},  rotation=0)));
+                        annotation (Placement(transformation(extent={{-90,50},{
+            -70,70}},  rotation=0)));
   Modelica_Fluid.Pipes.StaticPipe pipe1(
     redeclare package Medium = Medium,
     diameter=2.54e-2,
@@ -101,7 +100,6 @@ equation
       points={{-29,50},{-25,50},{-25,28.2}},
       color={0,0,127},
       smooth=Smooth.None));
-
   annotation (
     Commands(file(ensureSimulated=true)="Scripts/Examples/InverseParameterization/plotResults.mos"
         "plotResults"),
@@ -133,11 +131,17 @@ Once the geometries have been designed, the NominalTurbulentPipeFlow correlation
 TurbulentPipeFlow or DetailedPipeFlow correlations. Similarily the ControlledPump can be replaced with a PrescribedPump 
 to investigate a real controller or with a Pump with rotational shaft to investigate inertia effects. 
 </p>
+
+<p align=\"center\">
+<img src=\"../Images/Examples/InverseParametrization.png\" border=\"1\">
+</p>
+
 </html>"));
   connect(pipe2.port_b, sink2.ports[1]) annotation (Line(
       points={{40,-60},{64,-60}},
       color={0,127,255},
       smooth=Smooth.None));
+
   connect(pump.port_b, pipe2.port_a) annotation (Line(
       points={{-20,20},{0,20},{0,-60},{20,-60}},
       color={0,127,255},
