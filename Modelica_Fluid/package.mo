@@ -1,5 +1,7 @@
 within ;
+import "E:/Temp/ModelicaNew.mo";
 package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow models using the Modelica.Media media description (requires package Modelica 3.0 or later, and stream connector support in the Modelica tool)"
+
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
@@ -2341,7 +2343,7 @@ annotation (
   versionDate="$Date::                            $",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(Modelica(version="3.0")),
+  uses(Modelica(version="3.0.1")),
   classOrder={"UsersGuide","Examples","System","Vessels","Pipes","Machines","Valves",
       "Fittings", "Sources", "Sensors", "Interfaces", "Types", "Utilities", "Icons", "Test", "*"},
   Documentation(info="<html>
