@@ -26,7 +26,7 @@ package Machines
     // volume size
     V = clearance + flange.s * pistonCrossArea;
 
-    flange.f = (medium.p - system.p_ambient) * pistonCrossArea;
+    0 = flange.f + (medium.p - system.p_ambient) * pistonCrossArea;
 
     // energy balances
     Wb_flow = medium.p * pistonCrossArea * (-der(flange.s));
