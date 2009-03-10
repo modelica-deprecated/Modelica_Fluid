@@ -15,18 +15,18 @@ annotation (
     freqHz=1/7) annotation (Placement(transformation(extent={{-70,60},{-50,80}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT source(nPorts=1, redeclare package Medium
-      = Modelica.Media.Water.StandardWater,
+      = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{-90,20},{-70,40}},  rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT sink(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     use_p_in=true,
     p=200000) 
   annotation (Placement(transformation(extent={{50,20},{30,40}}, rotation=0)));
   Modelica_Fluid.Machines.ControlledPump pump(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     use_m_flow_set=true,
     m_flow_nominal=1,
     p_a_nominal=100000,
@@ -36,7 +36,7 @@ annotation (
                                    annotation (Placement(transformation(extent={{70,-90},
             {90,-70}},         rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible valve(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
     dp_nominal=200000) 
@@ -54,19 +54,19 @@ annotation (
                 annotation (Placement(transformation(extent={{-70,-40},{-50,-20}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT source1(nPorts=1,redeclare package Medium
-      = Modelica.Media.Water.StandardWater,
+      = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{-90,-80},{-70,-60}},rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT sink1(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     use_p_in=true,
     p=200000) 
   annotation (Placement(transformation(extent={{50,-80},{30,-60}},
                                                                  rotation=0)));
   Modelica_Fluid.Machines.ControlledPump pump1(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     control_m_flow=false,
     use_m_flow_set=false,
     use_p_set=true,
@@ -76,7 +76,7 @@ annotation (
                         annotation (Placement(transformation(extent={{-50,-80},
             {-30,-60}},rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible valve1(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
     dp_nominal=200000) 

@@ -1,16 +1,16 @@
 within Modelica_Fluid.Test.TestComponents.Valves;
 model TestValveIncompressible "Test case with different valve characteristics"
   extends Modelica.Icons.Example;
-  package Medium = Modelica.Media.Water.StandardWater;
+  package Medium = ModelicaNew.Media.Water.StandardWater;
   Modelica_Fluid.Sources.Boundary_pT SourceP1(nPorts=1, p=10e5,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,30},{-80,50}}, rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V1(
     rho_nominal=1000,
     dp_nominal=9e5,
     m_flow_nominal=1.5,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10)  annotation (Placement(transformation(extent={{-50,30},{-30,50}},
           rotation=0)));
@@ -22,7 +22,7 @@ annotation (
   experiment(StopTime=4, Tolerance=1e-006),
   Documentation(info=""));
   Modelica_Fluid.Sources.Boundary_pT SinkP1(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{22,30},{2,50}}, rotation=0)));
@@ -34,14 +34,14 @@ annotation (
               annotation (Placement(transformation(extent={{-92,74},{-72,94}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SourceP2(nPorts=1, p=10e5,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,-10},{-80,10}}, rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V2(
     rho_nominal=1000,
     dp_nominal=9e5,
     m_flow_nominal=1.5,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
     redeclare function valveCharacteristic = 
@@ -49,12 +49,12 @@ annotation (
             annotation (Placement(transformation(extent={{-50,-10},{-30,10}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SinkP2(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{22,-10},{2,10}}, rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SourceP3(nPorts=1, p=10e5,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
             0)));
@@ -62,7 +62,7 @@ annotation (
     rho_nominal=1000,
     dp_nominal=9e5,
     m_flow_nominal=1.5,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
     redeclare function valveCharacteristic = 
@@ -71,7 +71,7 @@ annotation (
             annotation (Placement(transformation(extent={{-50,-50},{-30,-30}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SinkP3(nPorts=1, p=1e5,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{22,-50},{2,-30}}, rotation=0)));
 

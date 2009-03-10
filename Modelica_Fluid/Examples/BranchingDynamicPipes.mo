@@ -2,8 +2,8 @@ within Modelica_Fluid.Examples;
 model BranchingDynamicPipes
   "Multi-way connections of pipes with dynamic momentum balance, pressure wave and flow reversal"
 extends Modelica.Icons.Example;
-replaceable package Medium=Modelica.Media.Air.MoistAir;
-//replaceable package Medium=Modelica.Media.Water.StandardWater;
+replaceable package Medium=ModelicaNew.Media.Air.MoistAir;
+//replaceable package Medium=ModelicaNew.Media.Water.StandardWater;
 
     annotation (extent=[-90,-86; -70,-66], Diagram(coordinateSystem(
           preserveAspectRatio=true,  extent={{-100,-100},{100,100}}), graphics),

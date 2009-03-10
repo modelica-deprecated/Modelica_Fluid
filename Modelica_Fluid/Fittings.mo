@@ -312,7 +312,7 @@ end AbruptAdaptor;
 
     import Modelica.Constants;
 
-    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium annotation(choicesAllMatching);
+    replaceable package Medium=ModelicaNew.Media.Interfaces.GenericMedium annotation(choicesAllMatching);
 
     // Ports
     parameter Integer nPorts_b=0
@@ -1896,7 +1896,7 @@ a polynomial in order to have a finite derivative at zero mass flow rate.
       import Modelica_Fluid.Types;
       import Modelica_Fluid.Types.PortFlowDirection;
 
-      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
+      replaceable package Medium=ModelicaNew.Media.Interfaces.GenericMedium
         "Medium in the component" 
         annotation (choicesAllMatching=true);
 

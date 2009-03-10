@@ -3,7 +3,7 @@ model TestMixingVolumesPressureStates
   "Test case where in one of the mixing volumes a pressure state appears"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  package Medium = Modelica.Media.Water.StandardWater;
+  package Medium = ModelicaNew.Media.Water.StandardWater;
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
             -100},{100,100}}),
                       graphics),

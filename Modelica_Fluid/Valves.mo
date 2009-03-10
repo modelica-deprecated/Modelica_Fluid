@@ -61,8 +61,8 @@ explained in detail in the
     import Modelica_Fluid.Types.CvTypes;
     extends BaseClasses.PartialValve(
       redeclare replaceable package Medium = 
-          Modelica.Media.Water.WaterIF97_ph                                    constrainedby
-        Modelica.Media.Interfaces.PartialTwoPhaseMedium);
+          ModelicaNew.Media.Water.WaterIF97_ph                                    constrainedby
+        ModelicaNew.Media.Interfaces.PartialTwoPhaseMedium);
     parameter Real Fl_nominal=0.9 "Liquid pressure recovery factor";
     replaceable function FlCharacteristic = 
         Modelica_Fluid.Valves.BaseClasses.ValveCharacteristics.one 

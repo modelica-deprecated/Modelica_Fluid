@@ -6,7 +6,7 @@ model TestSimpleTank
 
   Modelica_Fluid.Vessels.OpenTank tank(
     redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     height=1,
     nPorts=2,
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.1,
@@ -21,7 +21,7 @@ model TestSimpleTank
             {90,90}}, rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT ambient_fixed(
                                          redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     p=system.p_ambient,
     T=system.T_ambient,
     nPorts=1) 
@@ -30,7 +30,7 @@ model TestSimpleTank
            0)));
   Modelica_Fluid.Pipes.StaticPipe pipe(
     redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     length=1,
     height_ab=-1,
     diameter=0.1) 
@@ -40,7 +40,7 @@ model TestSimpleTank
         rotation=90)));
   Modelica_Fluid.Sources.MassFlowSource_T flowSource(nPorts=1,
     redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     m_flow=20,
     T=system.T_ambient,
     use_m_flow_in=true) 

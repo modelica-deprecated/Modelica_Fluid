@@ -6,11 +6,11 @@ package Tanks "Library demonstrating the usage of the tank model"
     import Modelica_Fluid;
     extends Modelica.Icons.Example;
      // replaceable package Medium = Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater extends
-    // replaceable package Medium = Modelica.Media.Water.StandardWaterOnePhase extends
-    // replaceable package Medium = Modelica.Media.Incompressible.Examples.Glycol47 extends
+    // replaceable package Medium = ModelicaNew.Media.Water.StandardWaterOnePhase extends
+    // replaceable package Medium = ModelicaNew.Media.Incompressible.Examples.Glycol47 extends
      replaceable package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater                           constrainedby
-      Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater                           constrainedby
+      ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
 
     Modelica_Fluid.Vessels.OpenTank tank1(
@@ -115,7 +115,7 @@ package Tanks "Library demonstrating the usage of the tank model"
     extends Modelica.Icons.Example;
     import Modelica_Fluid;
     Modelica_Fluid.Vessels.OpenTank upperTank(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       height=20,
       level_start=2,
       crossArea=0.2,
@@ -126,7 +126,7 @@ package Tanks "Library demonstrating the usage of the tank model"
            10)}) 
       annotation (Placement(transformation(extent={{-40,20},{0,60}}, rotation=0)));
     Modelica_Fluid.Sources.MassFlowSource_T massFlowRate(nPorts=1,
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       m_flow=0.2,
       use_m_flow_in=true) 
       annotation (Placement(transformation(extent={{-60,-40},{-40,-20}}, rotation=
@@ -135,10 +135,10 @@ package Tanks "Library demonstrating the usage of the tank model"
                                         annotation (Placement(transformation(
             extent={{-150,-112},{-130,-92}},  rotation=0)));
     Modelica_Fluid.Sensors.Pressure pressure(redeclare package Medium = 
-          Modelica.Media.Water.StandardWater) annotation (Placement(
+          ModelicaNew.Media.Water.StandardWater) annotation (Placement(
           transformation(extent={{40,16},{60,36}}, rotation=0)));
     Modelica_Fluid.Pipes.StaticPipe pipe(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       diameter=0.02,
       height_ab=-20,
       length=200) annotation (Placement(transformation(
@@ -148,7 +148,7 @@ package Tanks "Library demonstrating the usage of the tank model"
 
     Modelica_Fluid.Vessels.OpenTank lowerTank(
       height=20,
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       level_start=2,
       crossArea=1,
       nPorts=2,
@@ -171,7 +171,7 @@ package Tanks "Library demonstrating the usage of the tank model"
       annotation (Placement(transformation(extent={{-140,-60},{-120,-40}},
             rotation=0)));
     Modelica_Fluid.Pipes.StaticPipe overflow(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       diameter=0.02,
       length=200,
       height_ab=-20) 
@@ -260,7 +260,7 @@ simulation accuracy could be increased in order to avoid errors.
     extends Modelica.Icons.Example;
     Modelica_Fluid.Vessels.OpenTank tank1(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
       nPorts=1,
       crossArea=1,
       level_start=1,
@@ -271,7 +271,7 @@ simulation accuracy could be increased in order to avoid errors.
 
     Modelica_Fluid.Pipes.StaticPipe pipe(
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
       length=1,
       diameter=0.1,
       height_ab=-1) 
@@ -283,7 +283,7 @@ simulation accuracy could be increased in order to avoid errors.
     Modelica_Fluid.Vessels.OpenTank tank2(
       crossArea=1,
       redeclare package Medium = 
-          Modelica.Media.Water.ConstantPropertyLiquidWater,
+          ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
       nPorts=1,
       height=1.1,
       portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=

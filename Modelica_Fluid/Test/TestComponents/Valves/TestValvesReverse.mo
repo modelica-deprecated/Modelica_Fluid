@@ -2,18 +2,18 @@ within Modelica_Fluid.Test.TestComponents.Valves;
 model TestValvesReverse "Test case for valves with reverse and zero flow"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  package Medium = Modelica.Media.Water.StandardWater;
+  package Medium = ModelicaNew.Media.Water.StandardWater;
   Modelica_Fluid.Sources.Boundary_pT SourceP1(
     T=system.T_ambient,
     redeclare package Medium = 
-        Modelica.Media.Water.StandardWaterOnePhase,
+        ModelicaNew.Media.Water.StandardWaterOnePhase,
     nPorts=2,
     p=1000000) 
   annotation (Placement(transformation(extent={{-100,26},{-80,46}}, rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SourceP2(
     T=system.T_ambient,
     redeclare package Medium = 
-        Modelica.Media.Water.StandardWaterOnePhase,
+        ModelicaNew.Media.Water.StandardWaterOnePhase,
     nPorts=2,
     p=800000) 
   annotation (Placement(transformation(extent={{-100,-50},{-80,-30}}, rotation=
@@ -21,7 +21,7 @@ model TestValvesReverse "Test case for valves with reverse and zero flow"
   Modelica_Fluid.Sources.Boundary_pT SinkP1(nPorts=1,
     T=system.T_ambient,
     redeclare package Medium = 
-        Modelica.Media.Water.StandardWaterOnePhase,
+        ModelicaNew.Media.Water.StandardWaterOnePhase,
     p=100000) 
   annotation (Placement(transformation(extent={{82,-4},{62,16}}, rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V1(
@@ -69,13 +69,13 @@ annotation (
   Modelica_Fluid.Sources.Boundary_pT SinkP2(nPorts=1,
     T=system.T_ambient,
     redeclare package Medium = 
-        Modelica.Media.Water.StandardWaterOnePhase,
+        ModelicaNew.Media.Water.StandardWaterOnePhase,
     p=100000) 
   annotation (Placement(transformation(extent={{4,58},{-16,78}}, rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SinkP3(nPorts=1,
     T=system.T_ambient,
     redeclare package Medium = 
-        Modelica.Media.Water.StandardWaterOnePhase,
+        ModelicaNew.Media.Water.StandardWaterOnePhase,
     p=100000) 
   annotation (Placement(transformation(extent={{26,-78},{6,-58}}, rotation=0)));
   Modelica.Blocks.Sources.Ramp CloseLoad(

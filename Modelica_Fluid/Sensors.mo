@@ -703,7 +703,7 @@ The sensor is ideal, i.e. it does not influence the fluid.
   model RelativePressure "Ideal relative pressure sensor"
     extends Modelica.Icons.TranslationalSensor;
     replaceable package Medium = 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
+      ModelicaNew.Media.Interfaces.GenericMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
 
     Modelica_Fluid.Interfaces.FluidPort_a port_a(m_flow(min=0),
@@ -775,7 +775,7 @@ through the sensor is allowed.
   model RelativeTemperature "Ideal relative temperature sensor"
     extends Modelica.Icons.TranslationalSensor;
     replaceable package Medium = 
-      Modelica.Media.Interfaces.PartialMedium "Medium in the sensor"  annotation (
+      ModelicaNew.Media.Interfaces.GenericMedium "Medium in the sensor"  annotation (
         choicesAllMatching = true);
     Modelica_Fluid.Interfaces.FluidPort_a port_a(m_flow(min=0),
                                   redeclare package Medium = Medium) 
@@ -1050,7 +1050,7 @@ the two ports of this component and is provided as output signal.
     partial model PartialAbsoluteSensor
       "Partial component to model a sensor that measures a potential variable"
 
-      replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
+      replaceable package Medium=ModelicaNew.Media.Interfaces.GenericMedium
         "Medium in the sensor" 
         annotation(choicesAllMatching=true);
 

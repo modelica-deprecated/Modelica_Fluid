@@ -2,10 +2,10 @@ within Modelica_Fluid.Test.TestComponents.Fittings;
 model TestWallFriction
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  // Modelica.Media.Water.WaterIF97_ph
+  // ModelicaNew.Media.Water.WaterIF97_ph
   replaceable package Medium = 
-      Modelica.Media.Water.ConstantPropertyLiquidWater 
-    constrainedby Modelica.Media.Interfaces.PartialMedium
+      ModelicaNew.Media.Water.ConstantPropertyLiquidWater 
+    constrainedby ModelicaNew.Media.Interfaces.GenericMedium
     "Medium in all components"                        annotation (
     choicesAllMatching =                                                                            true);
   parameter Modelica.SIunits.Length roughness = 0.025e-3;

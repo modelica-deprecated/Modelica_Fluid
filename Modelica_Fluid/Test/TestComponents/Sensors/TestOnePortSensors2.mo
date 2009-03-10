@@ -1,7 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Sensors;
 model TestOnePortSensors2
   import Modelica_Fluid;
-  package Medium = Modelica.Media.Water.StandardWater;
+  package Medium = ModelicaNew.Media.Water.StandardWater;
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}),
                       graphics),

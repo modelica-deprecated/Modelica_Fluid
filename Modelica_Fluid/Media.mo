@@ -137,7 +137,7 @@ permitting advanced equation balance checking by Modelica tools.
 Please note that this doesn't mean that the additional equations 
 should be connection equations, nor that exactly those variables
 should be supplied, in order to complete the model.
-For further information, see the Modelica.Media User's guide, and 
+For further information, see the ModelicaNew.Media User's guide, and 
 Section 4.7 (Balanced Models) of the Modelica 3.0 specification. </p>
 </html>"));
   end BaseProperties;

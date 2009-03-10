@@ -2,8 +2,8 @@ within Modelica_Fluid.Test.TestComponents.Vessels;
 model TestInitialization
   extends Modelica.Icons.Example;
 
-  package Medium = Modelica.Media.Air.SimpleAir;
-  //package Medium = Modelica.Media.Air.MoistAir;
+  package Medium = ModelicaNew.Media.Air.SimpleAir;
+  //package Medium = ModelicaNew.Media.Air.MoistAir;
 
   Modelica_Fluid.Sources.Boundary_pT sou1(nPorts=1,redeclare package Medium = 
         Medium,

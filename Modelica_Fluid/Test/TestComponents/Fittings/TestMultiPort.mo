@@ -5,7 +5,7 @@ model TestMultiPort
 
   Modelica_Fluid.Fittings.MultiPort multiPort(
                                        nPorts_b=2, redeclare package Medium = 
-        Modelica.Media.Air.MoistAir)        annotation (Placement(
+        ModelicaNew.Media.Air.MoistAir)        annotation (Placement(
         transformation(extent={{-28,-30},{-20,-10}},
                                                    rotation=0)));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,
@@ -14,7 +14,7 @@ model TestMultiPort
   Modelica_Fluid.Sources.Boundary_pT source2(nPorts=1,
     T=278.15,
     p=5e5,
-    redeclare package Medium = Modelica.Media.Air.MoistAir) 
+    redeclare package Medium = ModelicaNew.Media.Air.MoistAir) 
     annotation (Placement(transformation(
         origin={80,-20},
         extent={{-10,-10},{10,10}},
@@ -22,7 +22,7 @@ model TestMultiPort
   Modelica_Fluid.Sources.Boundary_pT source3(nPorts=1,
     T=283.15,
     p=2e5,
-    redeclare package Medium = Modelica.Media.Air.MoistAir) 
+    redeclare package Medium = ModelicaNew.Media.Air.MoistAir) 
     annotation (Placement(transformation(
         origin={10,70},
         extent={{-10,-10},{10,10}},
@@ -33,7 +33,7 @@ model TestMultiPort
   Modelica_Fluid.Sources.Boundary_pT source1(nPorts=1,
     T=system.T_ambient,
     use_p_in=true,
-    redeclare package Medium = Modelica.Media.Air.MoistAir,
+    redeclare package Medium = ModelicaNew.Media.Air.MoistAir,
     p=500000) 
     annotation (Placement(transformation(extent={{-60,-30},{-40,-10}}, rotation=
            0)));
@@ -46,13 +46,13 @@ model TestMultiPort
   Modelica_Fluid.Pipes.StaticPipe pipe1(
     length=1,
     diameter=0.1,
-    redeclare package Medium = Modelica.Media.Air.MoistAir) 
+    redeclare package Medium = ModelicaNew.Media.Air.MoistAir) 
                                        annotation (Placement(transformation(
           extent={{40,-30},{60,-10}}, rotation=0)));
   Modelica_Fluid.Pipes.StaticPipe pipe2(
     length=1,
     diameter=0.1,
-    redeclare package Medium = Modelica.Media.Air.MoistAir) 
+    redeclare package Medium = ModelicaNew.Media.Air.MoistAir) 
     annotation (Placement(transformation(
         origin={10,24},
         extent={{-10,-10},{10,10}},

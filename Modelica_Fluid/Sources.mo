@@ -779,7 +779,7 @@ with exception of boundary flow rate, do not have an effect.
     parameter Integer nPorts=0 "Number of ports" annotation(Dialog(__Dymola_connectorSizing=true));
 
     replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium
+        ModelicaNew.Media.Interfaces.GenericMedium
         "Medium model within the source" 
        annotation (choicesAllMatching=true);
 

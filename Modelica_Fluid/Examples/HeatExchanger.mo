@@ -5,9 +5,9 @@ package HeatExchanger "Demo of a heat exchanger model"
   extends Modelica.Icons.Example;
 
   replaceable package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater;
-  //replaceable package Medium = Modelica.Media.Water.StandardWater;
-  //package Medium = Modelica.Media.Incompressible.Examples.Essotherm650;
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater;
+  //replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
+  //package Medium = ModelicaNew.Media.Incompressible.Examples.Essotherm650;
     Modelica_Fluid.Examples.HeatExchanger.BaseClasses.BasicHX HEX(
       c_wall=500,
       use_T_start=true,
@@ -112,11 +112,11 @@ package HeatExchanger "Demo of a heat exchanger model"
       outer Modelica_Fluid.System system "System properties";
       //General
       parameter Integer nNodes(min=1) = 2 "Spatial segmentation";
-      replaceable package Medium_1 = Modelica.Media.Water.StandardWater constrainedby
-        Modelica.Media.Interfaces.PartialMedium "Fluid 1" 
+      replaceable package Medium_1 = ModelicaNew.Media.Water.StandardWater constrainedby
+        ModelicaNew.Media.Interfaces.GenericMedium "Fluid 1" 
                                                         annotation(choicesAllMatching, Dialog(tab="General",group="Fluid 1"));
-      replaceable package Medium_2 = Modelica.Media.Water.StandardWater constrainedby
-        Modelica.Media.Interfaces.PartialMedium "Fluid 2" 
+      replaceable package Medium_2 = ModelicaNew.Media.Water.StandardWater constrainedby
+        ModelicaNew.Media.Interfaces.GenericMedium "Fluid 2" 
                                                         annotation(choicesAllMatching,Dialog(tab="General", group="Fluid 2"));
       parameter SI.Area crossArea_1 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 1"));
       parameter SI.Area crossArea_2 "Cross sectional area" annotation(Dialog(tab="General",group="Fluid 2"));

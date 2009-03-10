@@ -3,9 +3,9 @@ model TestSharpEdgedOrifice
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
   // Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater
-  // Modelica.Media.Water.WaterIF97_ph
-  replaceable package Medium = Modelica.Media.IdealGases.SingleGases.O2 
-    constrainedby Modelica.Media.Interfaces.PartialMedium
+  // ModelicaNew.Media.Water.WaterIF97_ph
+  replaceable package Medium = ModelicaNew.Media.IdealGases.SingleGases.O2 
+    constrainedby ModelicaNew.Media.Interfaces.GenericMedium
     "Medium in all components"                        annotation (
     choicesAllMatching =                                                                            true);
 

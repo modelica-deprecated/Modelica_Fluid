@@ -11,18 +11,18 @@ annotation (
   Documentation(info=""));
 
   Modelica_Fluid.Sources.Boundary_pT Source(nPorts=1, redeclare package Medium
-      = Modelica.Media.Water.StandardWater,
+      = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{-50,-60},{-30,-40}},rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT Sink(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     use_p_in=false,
     p=100000) 
   annotation (Placement(transformation(extent={{80,0},{60,20}},  rotation=0)));
   Modelica_Fluid.Machines.Pump pump(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     m_flow_start=1,
     N_nominal=1500,
     use_HeatTransfer=true,
@@ -43,7 +43,7 @@ annotation (
   annotation (Placement(transformation(extent={{70,40},{50,60}},   rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible Valve(
                                              redeclare package Medium = 
-        Modelica.Media.Water.StandardWater,
+        ModelicaNew.Media.Water.StandardWater,
     m_flow_nominal=1,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     dp_nominal=1000000) 

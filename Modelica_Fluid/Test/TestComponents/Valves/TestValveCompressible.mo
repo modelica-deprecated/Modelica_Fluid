@@ -2,12 +2,12 @@ within Modelica_Fluid.Test.TestComponents.Valves;
 model TestValveCompressible "Test case for incompressible fluid valve"
   extends Modelica.Icons.Example;
   Modelica_Fluid.Sources.Boundary_pT SourceP1(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     p=1000000,
     T(displayUnit="degC") = 673.15) 
   annotation (Placement(transformation(extent={{-76,-22},{-56,-2}}, rotation=0)));
   Modelica_Fluid.Valves.ValveCompressible V1(
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     m_flow_nominal=1,
     CvData=Modelica_Fluid.Types.CvTypes.Av,
     Av=240e-6,
@@ -17,7 +17,7 @@ model TestValveCompressible "Test case for incompressible fluid valve"
             annotation (Placement(transformation(extent={{-26,-22},{-6,-2}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SinkP1(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     use_p_in=true,
     p=100000,
     T=673.15) 

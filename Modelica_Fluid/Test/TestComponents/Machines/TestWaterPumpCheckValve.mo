@@ -17,19 +17,19 @@ annotation (
                 annotation (Placement(transformation(extent={{-80,0},{-60,20}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT Source(nPorts=1, redeclare package Medium
-      = Modelica.Media.Water.StandardWater,
+      = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{-80,-40},{-60,-20}},rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT Sink(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     use_p_in=false,
     p=500000) 
   annotation (Placement(transformation(extent={{60,-40},{40,-20}},
                                                                  rotation=0)));
   Modelica_Fluid.Machines.PrescribedPump pump(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     m_flow_start=1,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
@@ -47,7 +47,7 @@ annotation (
                                    annotation (Placement(transformation(extent={{80,60},
             {100,80}},         rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible valve(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     m_flow_nominal=1,
     dp_nominal=800000) 

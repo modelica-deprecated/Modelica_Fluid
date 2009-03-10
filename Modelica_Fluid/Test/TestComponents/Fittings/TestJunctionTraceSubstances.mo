@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.Fittings;
 model TestJunctionTraceSubstances
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
+  package Medium=ModelicaNew.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
   Modelica_Fluid.Fittings.TeeJunctionIdeal junction(
                                                   redeclare package Medium = 
         Medium)                             annotation (Placement(

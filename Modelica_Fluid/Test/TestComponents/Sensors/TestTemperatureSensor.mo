@@ -3,30 +3,30 @@ model TestTemperatureSensor "Test and compare case for the difference between us
    and without explicit junction model and two port sensor for fluid temperature meassuring"
   import Modelica_Fluid;
   Modelica_Fluid.Sensors.Temperature Temperature(redeclare package Medium = 
-                       Modelica.Media.Water.StandardWater) 
+                       ModelicaNew.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{-20,40},{0,60}}, rotation=0)));
   Modelica_Fluid.Sensors.TemperatureTwoPort temperatureTwoPort(redeclare
-      package Medium = Modelica.Media.Water.StandardWater) 
+      package Medium = ModelicaNew.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{-20,-20},{0,0}}, rotation=0)));
   inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));
   Modelica_Fluid.Vessels.OpenTank openTankCold2(nPorts=1,
     level_start=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     height=2,
     crossArea=2,
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.05)}) annotation (Placement(transformation(extent={{20,0},
             {40,20}}, rotation=0)));
   Modelica_Fluid.Vessels.OpenTank openTankCold1(nPorts=1,
     level_start=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     height=2,
     crossArea=2,
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.05)}) annotation (Placement(transformation(extent={{20,60},
             {40,80}}, rotation=0)));
   Modelica_Fluid.Vessels.OpenTank openTankHot1(nPorts=1,
     level_start=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     height=2,
     crossArea=2,
     T_start=SI.Conversions.from_degC(80),
@@ -34,19 +34,19 @@ model TestTemperatureSensor "Test and compare case for the difference between us
             {80,60}}, rotation=0)));
   Modelica_Fluid.Vessels.OpenTank openTankHot2(nPorts=1,
     level_start=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     height=2,
     crossArea=2,
     T_start=SI.Conversions.from_degC(80),
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.05)}) annotation (Placement(transformation(extent={{60,-20},
             {80,0}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate1(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     use_m_flow_in=true,
     T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
            {{-60,30},{-40,50}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate2(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     use_m_flow_in=true,
     T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
            {{-60,-20},{-40,0}}, rotation=0)));
@@ -60,31 +60,31 @@ model TestTemperatureSensor "Test and compare case for the difference between us
   Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent=
            {{-100,10},{-80,30}}, rotation=0)));
   Modelica_Fluid.Sensors.Temperature TemperatureJunction(
-      redeclare package Medium = Modelica.Media.Water.StandardWater) 
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{-20,-80},{0,-60}}, rotation=0)));
   Modelica_Fluid.Vessels.OpenTank openTankCold3(nPorts=1,
     level_start=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     height=2,
     crossArea=2,
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.05)}) annotation (Placement(transformation(extent={{20,-60},
             {40,-40}}, rotation=0)));
   Modelica_Fluid.Vessels.OpenTank openTankHot3(nPorts=1,
     level_start=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     height=2,
     crossArea=2,
     T_start=SI.Conversions.from_degC(80),
     portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(diameter=0.05)}) annotation (Placement(transformation(extent={{60,-80},
             {80,-60}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate3(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     use_m_flow_in=true,
     T=SI.Conversions.from_degC(50)) annotation (Placement(transformation(extent=
            {{-60,-90},{-40,-70}}, rotation=0)));
   Modelica_Fluid.Fittings.TeeJunctionIdeal junctionIdeal(
                                                        redeclare package Medium
-      = Modelica.Media.Water.StandardWater) 
+      = ModelicaNew.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{20,-90},{40,-70}}, rotation=0)));
 equation
   connect(massFlowRate2.ports[1], temperatureTwoPort.port_a) 

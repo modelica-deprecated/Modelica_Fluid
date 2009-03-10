@@ -2,8 +2,8 @@ within Modelica_Fluid.Examples;
 model HeatingSystem "Simple model of a heating system"
   extends Modelica.Icons.Example;
    replaceable package Medium = 
-      Modelica.Media.Water.StandardWater 
-     constrainedby Modelica.Media.Interfaces.PartialMedium;
+      ModelicaNew.Media.Water.StandardWater 
+     constrainedby ModelicaNew.Media.Interfaces.GenericMedium;
 
   Modelica_Fluid.Vessels.OpenTank tank(
     redeclare package Medium = Medium,

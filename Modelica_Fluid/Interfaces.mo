@@ -44,7 +44,7 @@ package Interfaces
   connector FluidPort
     "Interface for quasi one-dimensional fluid flow in a piping network (incompressible or compressible, one or more phases, one or more substances)"
 
-    replaceable package Medium = Modelica.Media.Interfaces.PartialMedium
+    replaceable package Medium = ModelicaNew.Media.Interfaces.GenericMedium
       "Medium model" annotation (choicesAllMatching=true);
 
     flow Medium.MassFlowRate m_flow
@@ -264,7 +264,7 @@ package Interfaces
     outer Modelica_Fluid.System system "System wide properties";
 
     replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component" 
         annotation (choicesAllMatching = true);
 
     parameter Boolean allowFlowReversal = system.allowFlowReversal
@@ -519,7 +519,7 @@ end PartialTwoPortTransport;
   partial model PartialHeatTransfer "Common interface for heat transfer models"
 
     // Parameters
-    replaceable package Medium=Modelica.Media.Interfaces.PartialMedium
+    replaceable package Medium=ModelicaNew.Media.Interfaces.GenericMedium
       "Medium in the component" 
       annotation(Dialog(tab="Internal Interface",enable=false));
 
@@ -585,7 +585,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
 
       outer Modelica_Fluid.System system "System properties";
       replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component" 
           annotation (choicesAllMatching = true);
 
       // Inputs provided to the volume model
@@ -759,7 +759,7 @@ Further source terms must be defined by an extending class for fluid flow across
         outer Modelica_Fluid.System system "System properties";
 
         replaceable package Medium = 
-          Modelica.Media.Interfaces.PartialMedium "Medium in the component";
+          ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component";
 
         parameter Boolean allowFlowReversal = system.allowFlowReversal
       "= true to allow flow reversal, false restricts to design direction (m_flow >= 0)"
@@ -836,7 +836,7 @@ partial model PartialDistributedVolume
   outer Modelica_Fluid.System system "System properties";
 
   replaceable package Medium = 
-    Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+    ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component" 
       annotation (choicesAllMatching = true);
 
   // Discretization
@@ -1048,7 +1048,7 @@ end PartialDistributedVolume;
         outer Modelica_Fluid.System system "System properties";
 
         replaceable package Medium = 
-          Modelica.Media.Interfaces.PartialMedium "Medium in the component";
+          ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component";
 
         parameter Boolean allowFlowReversal = system.allowFlowReversal
       "= true to allow flow reversal, false restricts to design direction (m_flows >= zeros(m))"

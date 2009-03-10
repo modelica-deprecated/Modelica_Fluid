@@ -3,9 +3,9 @@ package TestCriticalCases
   "Collection of test cases which might be critical for the solvers"
   model IdealMixing1 "Test properties of ideal mixing"
     // package Medium =  Modelica_Fluid.Media.Water.ConstantPropertyLiquidWater;
-    // Modelica.Media.IdealGases.MixtureGases.FlueGasSixComponents,package Medium = Modelica.Media.Air.DryAirNasa;
+    // ModelicaNew.Media.IdealGases.MixtureGases.FlueGasSixComponents,package Medium = ModelicaNew.Media.Air.DryAirNasa;
     package Medium = 
-        Modelica.Media.IdealGases.MixtureGases.FlueGasSixComponents;
+        ModelicaNew.Media.IdealGases.MixtureGases.FlueGasSixComponents;
 
     Pipes.StaticPipe pipeFriction1(
       length=1,
@@ -126,10 +126,10 @@ package TestCriticalCases
       experiment(StopTime=3));
     Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,redeclare package
         Medium = 
-          Modelica.Media.Water.StandardWater, p=200000) 
+          ModelicaNew.Media.Water.StandardWater, p=200000) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
     Pipes.DynamicPipe pipe(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       length=1,
       diameter=0.32,
       use_T_start=false,
@@ -137,13 +137,13 @@ package TestCriticalCases
       p_b_start=200000) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
     Modelica_Fluid.Valves.ValveIncompressible valve(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       m_flow_nominal=10,
       Av=1e-3,
       dp_nominal=100000) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
     Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
-        = Modelica.Media.Water.StandardWater, p=100000) 
+        = ModelicaNew.Media.Water.StandardWater, p=100000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       height=-1,
@@ -176,13 +176,13 @@ package TestCriticalCases
     "Steady-state initialization of a dynamic pipe"
 
     Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       use_T=false,
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
     Modelica_Fluid.Pipes.DynamicPipe pipe(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       nNodes=5,
       h_start=2e6,
       diameter=0.05,
@@ -193,13 +193,13 @@ package TestCriticalCases
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
     Modelica_Fluid.Valves.ValveCompressible valve(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       Av=1e-3,
       dp_nominal=10000000,
       m_flow_nominal=10) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
     Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
-        = Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
+        = ModelicaNew.Media.Water.StandardWaterOnePhase, p=9500000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       offset=1,
@@ -253,9 +253,9 @@ The steady-state initial values are observed by an assertion.
   end DynamicPipeInitialization;
 
   model BranchingPipes1
-    //replaceable package Medium = Modelica.Media.Water.StandardWater;
+    //replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
     replaceable package Medium = 
-        Modelica.Media.Water.StandardWater;
+        ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -361,7 +361,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes1;
 
   model BranchingPipes2
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -461,7 +461,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes2;
 
   model BranchingPipes3
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -570,7 +570,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes3;
 
   model BranchingPipes4
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -684,7 +684,7 @@ Uses dynamic splitter. Simulation starts with both valves open. At t=1, valve 1 
   end BranchingPipes4;
 
   model SeriesPipes1
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -794,7 +794,7 @@ fails for zero flow rate.
   end SeriesPipes13;
 
   model BranchingPipes12
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -897,8 +897,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes12;
 
   model BranchingPipes13
-    // replaceable package Medium = Modelica.Media.Air.SimpleAir;
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    // replaceable package Medium = ModelicaNew.Media.Air.SimpleAir;
+    replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -1012,8 +1012,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes13;
 
   model BranchingPipes14
-    // replaceable package Medium = Modelica.Media.Air.SimpleAir;
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    // replaceable package Medium = ModelicaNew.Media.Air.SimpleAir;
+    replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -1129,9 +1129,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes14;
 
   model BranchingPipes15
-    replaceable package Medium = Modelica.Media.Air.DryAirNasa;
-    // replaceable package Medium = Modelica.Media.Air.SimpleAir;
-    // replaceable package Medium = Modelica.Media.Water.StandardWater;
+    replaceable package Medium = ModelicaNew.Media.Air.DryAirNasa;
+    // replaceable package Medium = ModelicaNew.Media.Air.SimpleAir;
+    // replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -1247,9 +1247,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes15;
 
   model BranchingPipes16
-    replaceable package Medium = Modelica.Media.Air.DryAirNasa;
-    // replaceable package Medium = Modelica.Media.Air.SimpleAir;
-    // replaceable package Medium = Modelica.Media.Water.StandardWater;
+    replaceable package Medium = ModelicaNew.Media.Air.DryAirNasa;
+    // replaceable package Medium = ModelicaNew.Media.Air.SimpleAir;
+    // replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -1363,9 +1363,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes16;
 
   model BranchingPipes17
-    replaceable package Medium = Modelica.Media.Air.DryAirNasa;
-    // replaceable package Medium = Modelica.Media.Air.SimpleAir;
-    // replaceable package Medium = Modelica.Media.Water.StandardWater;
+    replaceable package Medium = ModelicaNew.Media.Air.DryAirNasa;
+    // replaceable package Medium = ModelicaNew.Media.Air.SimpleAir;
+    // replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -1488,9 +1488,9 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes17;
 
   model BranchingPipes18
-    // replaceable package Medium = Modelica.Media.Air.DryAirNasa;
-    // replaceable package Medium = Modelica.Media.Air.SimpleAir;
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    // replaceable package Medium = ModelicaNew.Media.Air.DryAirNasa;
+    // replaceable package Medium = ModelicaNew.Media.Air.SimpleAir;
+    replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -1611,8 +1611,8 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
   end BranchingPipes18;
 
   model BranchingPipes131
-    // replaceable package Medium = Modelica.Media.Air.SimpleAir;
-    replaceable package Medium = Modelica.Media.Water.StandardWater;
+    // replaceable package Medium = ModelicaNew.Media.Air.SimpleAir;
+    replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
 
     Sources.Boundary_pT source(nPorts=1,
       redeclare package Medium = Medium,
@@ -1698,13 +1698,13 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       experimentSetupOutput,
       uses(Modelica_Fluid(version="1.0 Streams Beta 3"), Modelica(version="3.0")));
     Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       use_T=false,
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
     Modelica_Fluid.Test.BaseClasses.LumpedPipe pipe(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       h_start=2e6,
       diameter=0.05,
       length=200,
@@ -1713,13 +1713,13 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
       p_b_start=9900000) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
     Modelica_Fluid.Valves.ValveCompressible valve(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       Av=1e-3,
       dp_nominal=10000000,
       m_flow_nominal=10) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
     Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
-        = Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
+        = ModelicaNew.Media.Water.StandardWaterOnePhase, p=9500000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       offset=1,

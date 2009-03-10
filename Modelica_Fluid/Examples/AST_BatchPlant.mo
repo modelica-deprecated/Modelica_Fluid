@@ -42,12 +42,12 @@ present that are regulated by a central control system.
 
   model BatchPlant_StandardWater
       extends Modelica.Icons.Example;
-    replaceable package BatchMedium = Modelica.Media.Water.StandardWater constrainedby
-      Modelica.Media.Interfaces.PartialTwoPhaseMedium "Component media";
+    replaceable package BatchMedium = ModelicaNew.Media.Water.StandardWater constrainedby
+      ModelicaNew.Media.Interfaces.PartialTwoPhaseMedium "Component media";
 
   /*
-  replaceable package BatchMedium =Modelica.Media.Electrolytes.WaterNaCl extends 
-    Modelica.Media.Interfaces.PartialTwoPhaseMedium "Component media";
+  replaceable package BatchMedium =ModelicaNew.Media.Electrolytes.WaterNaCl extends 
+    ModelicaNew.Media.Interfaces.PartialTwoPhaseMedium "Component media";
 */
 
     parameter Modelica.SIunits.Length pipeDiameter = 0.01;
@@ -968,8 +968,8 @@ handled properly.</p>
       "Tank with Heating and Evaporation"
       import Modelica.SIunits.Conversions.*;
       import Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.Init;
-      replaceable package Medium = Modelica.Media.Water.WaterIF97_ph 
-        constrainedby Modelica.Media.Interfaces.PartialTwoPhaseMedium
+      replaceable package Medium = ModelicaNew.Media.Water.WaterIF97_ph 
+        constrainedby ModelicaNew.Media.Interfaces.PartialTwoPhaseMedium
         "Medium in the component" 
         annotation (choicesAllMatching=true);
     // parameter for Tank
@@ -1320,7 +1320,7 @@ Full steady state initialization is not supported, because the corresponding int
 
     model InnerTank
         replaceable package Medium = 
-        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+        ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component" 
         annotation (choicesAllMatching=true);
 
         Modelica_Fluid.Interfaces.FluidPort_a port(redeclare package Medium = 
@@ -2175,7 +2175,7 @@ Implemented trace substances and missing equation for outflow of multi substance
 
       Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank(
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         crossArea=1,
         height=1,
         portsData={Modelica_Fluid.Vessels.BaseClasses.VesselPortsData(
@@ -2188,7 +2188,7 @@ Implemented trace substances and missing equation for outflow of multi substance
 
       Sources.MassFlowSource_T flowSource(nPorts=1,
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         m_flow=20,
         T=system.T_ambient,
         use_m_flow_in=true) 
@@ -2208,14 +2208,14 @@ Implemented trace substances and missing equation for outflow of multi substance
                 {90,92}}, rotation=0)));
       Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
                                              redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         p=system.p_ambient,
         T=system.T_ambient) 
         annotation (Placement(transformation(extent={{-14,-50},{6,-30}}, rotation=
                0)));
       Modelica_Fluid.Pipes.StaticPipe pipe(
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         length=1,
         diameter=0.1,
         height_ab=-1) 
@@ -2261,7 +2261,7 @@ Implemented trace substances and missing equation for outflow of multi substance
       Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1
         (
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort,
         crossArea=1,
         height=4,
@@ -2275,7 +2275,7 @@ Implemented trace substances and missing equation for outflow of multi substance
       Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank2
         (
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         stiffCharacteristicForEmptyPort = stiffCharacteristicForEmptyPort,
         crossArea=1,
         height=4,
@@ -2287,7 +2287,7 @@ Implemented trace substances and missing equation for outflow of multi substance
         annotation (Placement(transformation(extent={{0,0},{40,40}}, rotation=0)));
       Modelica_Fluid.Pipes.StaticPipe pipe(
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         length=1,
         diameter=0.1)  annotation (Placement(transformation(extent={{-30,-30},{
                 -10,-10}}, rotation=0)));
@@ -2306,7 +2306,7 @@ Implemented trace substances and missing equation for outflow of multi substance
       Sources.MassFlowSource_T flowSource(
         nPorts=1,
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         m_flow=50,
         T=system.T_ambient) 
         annotation (Placement(transformation(extent={{-20,40},{0,60}}, rotation=0)));
@@ -2325,14 +2325,14 @@ Implemented trace substances and missing equation for outflow of multi substance
                 {-80,80}}, rotation=0)));
       Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
                                              redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         p=system.p_ambient,
         T=system.T_ambient) 
         annotation (Placement(transformation(extent={{-60,-100},{-40,-80}},
               rotation=0)));
       Modelica_Fluid.Valves.ValveDiscrete valveDiscrete(
                                                 redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         dp_nominal(displayUnit="Pa") = 1,
         m_flow_nominal=100) 
         annotation (Placement(transformation(
@@ -2345,7 +2345,7 @@ Implemented trace substances and missing equation for outflow of multi substance
       Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1
         (
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         crossArea=1,
         V0=0.1,
         height=2,
@@ -2362,7 +2362,7 @@ Implemented trace substances and missing equation for outflow of multi substance
                 0)));
       Modelica_Fluid.Pipes.StaticPipe pipe(
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         length=1,
         diameter=0.1,
         height_ab=1) annotation (Placement(transformation(
@@ -2401,7 +2401,7 @@ Implemented trace substances and missing equation for outflow of multi substance
                 {-80,80}}, rotation=0)));
       Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
                                              redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         p=system.p_ambient,
         T=system.T_ambient) 
         annotation (Placement(transformation(extent={{-60,-100},{-40,-80}},
@@ -2409,7 +2409,7 @@ Implemented trace substances and missing equation for outflow of multi substance
       Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1
         (
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         crossArea=1,
         V0=0.1,
         height=2,
@@ -2425,7 +2425,7 @@ Implemented trace substances and missing equation for outflow of multi substance
                 0)));
       Modelica_Fluid.Pipes.StaticPipe pipe1(
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         length=1,
         diameter=0.1,
         height_ab=1) annotation (Placement(transformation(
@@ -2435,7 +2435,7 @@ Implemented trace substances and missing equation for outflow of multi substance
 
       Modelica_Fluid.Pipes.StaticPipe pipe2(
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         length=1,
         diameter=0.1,
         height_ab=1) annotation (Placement(transformation(
@@ -2444,7 +2444,7 @@ Implemented trace substances and missing equation for outflow of multi substance
             rotation=90)));
       Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(nPorts=1,
                                              redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         p=system.p_ambient,
         T=system.T_ambient) 
         annotation (Placement(transformation(extent={{0,-100},{20,-80}}, rotation=
@@ -2480,7 +2480,7 @@ Implemented trace substances and missing equation for outflow of multi substance
                 {-80,80}}, rotation=0)));
       Modelica_Fluid.Sources.Boundary_pT ambient_fixed1(nPorts=1,
                                               redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         p=system.p_ambient,
         T=system.T_ambient) 
         annotation (Placement(transformation(extent={{-100,-80},{-80,-60}},
@@ -2488,7 +2488,7 @@ Implemented trace substances and missing equation for outflow of multi substance
       Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank1
         (
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         crossArea=1,
         V0=0.1,
         height=2,
@@ -2504,7 +2504,7 @@ Implemented trace substances and missing equation for outflow of multi substance
                 0)));
       Modelica_Fluid.Pipes.StaticPipe pipe1(
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         length=1,
         diameter=0.1,
         height_ab=1) annotation (Placement(transformation(
@@ -2514,7 +2514,7 @@ Implemented trace substances and missing equation for outflow of multi substance
 
       Modelica_Fluid.Pipes.StaticPipe pipe2(
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         length=1,
         diameter=0.1,
         height_ab=1) annotation (Placement(transformation(
@@ -2523,7 +2523,7 @@ Implemented trace substances and missing equation for outflow of multi substance
             rotation=90)));
       Modelica_Fluid.Sources.Boundary_pT ambient_fixed2(nPorts=1,
                                              redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         p=system.p_ambient,
         T=system.T_ambient) 
         annotation (Placement(transformation(extent={{0,-80},{20,-60}}, rotation=
@@ -2531,7 +2531,7 @@ Implemented trace substances and missing equation for outflow of multi substance
       Modelica_Fluid.Examples.AST_BatchPlant.BaseClasses.TankWithTopPorts tank2
         (
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         crossArea=1,
         V0=0.1,
         height=2,
@@ -2546,7 +2546,7 @@ Implemented trace substances and missing equation for outflow of multi substance
         annotation (Placement(transformation(extent={{20,0},{60,40}}, rotation=0)));
       Modelica_Fluid.Pipes.StaticPipe pipe3(
         redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         length=1,
         diameter=0.1,
         height_ab=-0.5) 
@@ -2577,8 +2577,8 @@ Implemented trace substances and missing equation for outflow of multi substance
       import Modelica.SIunits.Conversions.from_bar;
       extends Modelica.Icons.Example;
       replaceable package Medium = 
-         Modelica.Media.Water.ConstantPropertyLiquidWater                    constrainedby
-        Modelica.Media.Interfaces.PartialMedium "Medium in the component" 
+         ModelicaNew.Media.Water.ConstantPropertyLiquidWater                    constrainedby
+        ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component" 
           annotation (choicesAllMatching = true);
 
       annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
@@ -2594,14 +2594,14 @@ Implemented trace substances and missing equation for outflow of multi substance
                 {-80,80}}, rotation=0)));
       Modelica_Fluid.Sources.Boundary_pT ambient_fixed(nPorts=1,
                                              redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         p=system.p_ambient,
         T=system.T_ambient) 
         annotation (Placement(transformation(extent={{-16,-102},{-36,-82}},
               rotation=0)));
       Modelica_Fluid.Valves.ValveDiscrete valveDiscrete(
                                                 redeclare package Medium = 
-            Modelica.Media.Water.ConstantPropertyLiquidWater,
+            ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
         dp_nominal(displayUnit="Pa") = 1,
         m_flow_nominal=100) 
         annotation (Placement(transformation(

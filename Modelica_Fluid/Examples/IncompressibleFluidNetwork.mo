@@ -3,8 +3,8 @@ model IncompressibleFluidNetwork
   "Multi-way connections of pipes and incompressible medium model"
   extends Modelica.Icons.Example;
   replaceable package Medium = 
-      Modelica.Media.Incompressible.Examples.Essotherm650 
-    constrainedby Modelica.Media.Interfaces.PartialMedium;
+      ModelicaNew.Media.Incompressible.Examples.Essotherm650 
+    constrainedby ModelicaNew.Media.Interfaces.GenericMedium;
 
   model Pipe = Modelica_Fluid.Pipes.DynamicPipe;
   //model Pipe = Modelica_Fluid.Pipes.DynamicPipe(nNodes=1,modelStructure=Types.ModelStructure.a_v_b);

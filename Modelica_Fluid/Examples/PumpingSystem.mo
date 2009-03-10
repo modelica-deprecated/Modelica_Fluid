@@ -4,7 +4,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
   Modelica_Fluid.Sources.FixedBoundary source(
     nPorts = 1,
     redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     use_T=true,
     T=Modelica.SIunits.Conversions.from_degC(20),
     p=system.p_ambient) 
@@ -13,7 +13,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
 
   Modelica_Fluid.Pipes.StaticPipe pipe(
     redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     allowFlowReversal=true,
     length=100,
     height_ab=50,
@@ -26,7 +26,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
   Machines.PrescribedPump pumps(
     checkValve=true,
     redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     N_nominal=1200,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
@@ -43,7 +43,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
   Modelica_Fluid.Vessels.OpenTank reservoir(
     massDynamics=Modelica_Fluid.Types.Dynamics.FixedInitial,
     redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     T_start=Modelica.SIunits.Conversions.from_degC(20),
     use_portsData=true,
     crossArea=50,
@@ -56,14 +56,14 @@ model PumpingSystem "Model of a pumping system for drinking water"
     annotation (Placement(transformation(extent={{-20,-16},{0,4}}, rotation=0)));
 
   Modelica_Fluid.Valves.ValveLinear userValve(   redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     allowFlowReversal=false,
     dp_nominal=200000,
     m_flow_nominal=400) 
     annotation (Placement(transformation(extent={{58,-38},{74,-22}}, rotation=0)));
   Modelica_Fluid.Sources.FixedBoundary sink(
                                        redeclare package Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater,
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater,
     p=system.p_ambient,
     T=system.T_ambient,
     nPorts=2) 
@@ -87,7 +87,7 @@ model PumpingSystem "Model of a pumping system for drinking water"
   Modelica_Fluid.Sensors.RelativePressure reservoirPressure(
                                                         redeclare package
       Medium = 
-        Modelica.Media.Water.ConstantPropertyLiquidWater) 
+        ModelicaNew.Media.Water.ConstantPropertyLiquidWater) 
     annotation (Placement(transformation(extent={{10,-12},{30,-32}}, rotation=0)));
   Modelica.Blocks.Continuous.FirstOrder PT1(
     T=2,

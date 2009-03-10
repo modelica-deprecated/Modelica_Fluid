@@ -1,7 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Sources;
 model TestSources "Test model for models in source package"
   import Modelica_Fluid;
-  package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
+  package Medium=ModelicaNew.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
   Modelica_Fluid.Sources.Boundary_pT boundary(redeclare package Medium = 
                Medium,
     nPorts=1,

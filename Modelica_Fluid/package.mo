@@ -1,6 +1,6 @@
 within ;
 import "E:/Temp/ModelicaNew.mo";
-package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow models using the Modelica.Media media description (requires package Modelica 3.0 or later, and stream connector support in the Modelica tool)"
+package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow models using the ModelicaNew.Media media description (requires package Modelica 3.0 or later, and stream connector support in the Modelica tool)"
 
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
@@ -18,7 +18,7 @@ The library contains components describing
 component equations and the media models
 as well as pressure loss and heat transfer correlations are decoupled from each other.
 All components are implemented such that they can be used for
-media from the Modelica.Media library. This means especially that an
+media from the ModelicaNew.Media library. This means especially that an
 incompressible or compressible medium, a single or a multiple
 substance medium with one or more phases might be used.
 The goal is to include
@@ -51,7 +51,7 @@ This library has the following main features:
 <li> The connectors Modelica_Fluid.Interfaces.FluidPort_a/_b are designed
      for one-dimensional flow of a <b>single substance</b>
      or of a <b>mixture of substances</b> with optional <b>multiple phases</b>.
-     All media models from Modelica.Media can be utilized when
+     All media models from ModelicaNew.Media can be utilized when
      connecting components. For one substance media, the additional arrays for
      multiple
      substance media have zero dimension and are therefore removed
@@ -59,12 +59,12 @@ This library has the following main features:
      therefore does not introduce an overhead for special cases.<br>&nbsp;</li>
 <li> All the components of the Modelica_Fluid library are designed
      that they can be utilized for all media models from
-     Modelica.Media if this is posssible. For example, all media can
+     ModelicaNew.Media if this is posssible. For example, all media can
      be utilized for the Modelica_Fluid.Sensors/Sources components.
      For some components only special media are possible, since additional
      functionality is required. For example,
      Modelica_Fluid.Components.Evaporator requires a two phase medium
-     (extending from Modelica.Media.Interfaces.PartialTwoPhaseMedium).
+     (extending from ModelicaNew.Media.Interfaces.PartialTwoPhaseMedium).
      <br>&nbsp;</li>
 <li> In order to simplify the initialization in the components,
      there is the restriction that only media models are supported
@@ -186,7 +186,7 @@ Modelica_Fluid.Interfaces.FluidPort reduces to
 </p>
 <pre>
   <b>connector</b> FluidPort
-     <b>replaceable package</b> Medium = Modelica.Media.Interfaces.PartialMedium
+     <b>replaceable package</b> Medium = ModelicaNew.Media.Interfaces.GenericMedium
               \"Medium model of the fluid\";
      <b>flow</b> Medium.MassFlowRate m_flow;
               \"Mass flow rate from the connection point into the component\"; 
@@ -267,7 +267,7 @@ terms in the energy balance are neglected for simplicity.
  
 <pre>
 model MixingVolume \"Volume that mixes two flows\"
-  replaceable package Medium = Modelica.Media.Interfaces.PartialPureSubstance;
+  replaceable package Medium = ModelicaNew.Media.Interfaces.PartialPureSubstance;
   FluidPort port_a, port_b;
   parameter Modelica.SIunits.Volume V \"Volume of device\";
   Modelica.SIunits.Mass             m \"Mass in device\";
@@ -299,7 +299,7 @@ inlet and outlet are neglected)
 </p>
 <pre>
 model PressureLoss \"Pressure loss component\"
-  replaceable package Medium=Modelica.Media.Interfaces.PartialPureSubstance;
+  replaceable package Medium=ModelicaNew.Media.Interfaces.PartialPureSubstance;
   FluidPort port_a, port_b:
   Medium.ThermodynamicState port_a_state_inflow \"State at port_a if inflowing\";
   Medium.ThermodynamicState port_b_state_inflow \"State at port_b if inflowing\";
@@ -341,7 +341,7 @@ composition can be characterized by mass fraction vectors.
 </p>
 <pre>
 <b>connector</b> FluidPort
-   <b>replaceable package</b> Medium = Modelica.Media.Interfaces.PartialMedium
+   <b>replaceable package</b> Medium = ModelicaNew.Media.Interfaces.GenericMedium
       \"Medium model of the fluid\";
    <b>flow</b> Medium.MassFlowRate m_flow;
       \"Mass flow rate from the connection point into the component\" 
@@ -493,7 +493,7 @@ with the following code fragment
 (from Interfaces.PartialTwoPortTransport):
 </p>
 <pre>    <b>replaceable package</b> Medium =
-                   Modelica.Media.Interfaces.PartialMedium
+                   ModelicaNew.Media.Interfaces.GenericMedium
                    <b>annotation</b>(choicesAllMatching = <b>true</b>);
  
     Interfaces.FluidPort_a port_a(<b>redeclare package</b> Medium = Medium);
@@ -1023,9 +1023,9 @@ is recognised by all other components.
 
 <p>
 All the models in Modelica_Fluid compute fluid properties by using medium
-models defined by Modelica.Media packages. Custom fluid models can also be
+models defined by ModelicaNew.Media packages. Custom fluid models can also be
 used, provided they extend the interfaces defined in
-Modelica.Media.Interfaces.
+ModelicaNew.Media.Interfaces.
 </p>
 <p>
 All the components in Modelica_Fluid use a <i>replaceable</i> medium package, called <tt>Medium</tt>: the model is written for a generic fluid, and a specific fluid model can then be specified when building a system model by redeclaring the package. This can be done in different ways:
@@ -1352,7 +1352,7 @@ library 3.0 (by automatic conversion). Further changes:
 <li> Introduced m_flow*actualStream(h_outflow) instead of
      streamFlow() or semiLinear(m_flow, inStream(h_outflow), medium.h)</li>
 <li> Removed Modelica_Fluid.Media and all references to it (since now available
-     in Modelica.Media of MSL3.0).</li>
+     in ModelicaNew.Media of MSL3.0).</li>
 <li> Fixed PartialLumpedVolume for media with multiple substances</li>
 <li> New function \"Utilities.RegFun3\" for regularization with static head</li>
 <li> Fix density in static head models with the new RegFun3 functions
@@ -1426,7 +1426,7 @@ Other changes:
 <li> Deleted Modelica_Fluid.WorkInProgress since it seems to be too much work
      to convert it to stream connectors</li>
 <li> Added Modelica_Fluid.Media (contains ConstantLiquidWater
-     medium because functions are missing in Modelica.Media),<lI>
+     medium because functions are missing in ModelicaNew.Media),<lI>
 <li> Added two additional test cases with LumpedPipes
     (to identify problems with hierarchically connected stream connectors).</li>
 <li> Deleted TestPortVolumes since PortVolumes can no longer be implemented with
@@ -1532,7 +1532,7 @@ New examples (ControlledTankSystem, AST_BatchPlant).
 <li> Components.mo, Types.mo: moved components and types to
      package Examples.</li>
 <li> Moved Examples from <b>file</b> Modelica_Fluid/package.mo to
-     Modelica.Media/Examples <b>subdirectory</b> and created separate
+     ModelicaNew.Media/Examples <b>subdirectory</b> and created separate
      file per sub-package. This shall simplify the maintenance of
      examples by different authors</li>
 <li> Moved Interfaces from file Modelica_Fluid/package.mo to
@@ -1559,16 +1559,16 @@ standard library.
 <h4><font color=\"#008000\">Previous Releases</font></h4>
 <ul>
 <li><i>Oct., 2003</i><br>
-       by Martin Otter: Adapted to latest design of the Modelica.Media
+       by Martin Otter: Adapted to latest design of the ModelicaNew.Media
        library.<br>
        by Ruediger Franke: Included sensor components and
        Modelica_Fluid.Examples.DrumBoiler example.</li>
 <li><i>Sept., 2003</i><br>
        by Martin Otter: Changes according to the decisions of the
        Modelica design meeting in Dearborn, Sept. 2-4, 2003.
-       Fluid library splitt in to two packages: Modelica.Media
+       Fluid library splitt in to two packages: ModelicaNew.Media
        that contains the media models and Modelica_Fluid that
-       contains fluid flow components. Modelica.Media is
+       contains fluid flow components. ModelicaNew.Media is
        independent of Modelica_Fluid and my be used also from
        other packages that may have a different design as
        Modelica_Fluid.
@@ -2355,7 +2355,7 @@ The library contains components describing
 A unique feature is that the component equations and the media models
 as well as pressure loss and heat transfer correlations are decoupled from each other.
 All components are implemented such that they can be used for
-media from the Modelica.Media library. This means especially that an
+media from the ModelicaNew.Media library. This means especially that an
 incompressible or compressible medium, a single or a multiple
 substance medium with one or more phases might be used.
 The goal is to include

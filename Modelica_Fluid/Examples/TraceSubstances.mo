@@ -3,7 +3,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
   extends Modelica.Icons.Library;
   model RoomCO2 "Demonstrates a room volume with CO2 accumulation"
     extends Modelica.Icons.Example;
-    package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
+    package Medium=ModelicaNew.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
     Modelica.Blocks.Sources.Constant C(k=0.3*1.519E-3)
       "substance concentration, raising to 1000 PPM CO2" 
       annotation (Placement(transformation(extent={{-94,-28},{-74,-8}})));
@@ -90,7 +90,7 @@ concentration of the fresh air.
 
   model RoomCO2WithControls "Demonstrates a room volume with CO2 controls"
     extends Modelica.Icons.Example;
-    package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
+    package Medium=ModelicaNew.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
     Modelica.Blocks.Sources.Constant CAtm(k=0.3*1.519E-3)
       "Atmospheric trace substance concentration, corresponding to 300 PPM CO2"
       annotation (Placement(transformation(extent={{-100,-50},{-80,-30}})));

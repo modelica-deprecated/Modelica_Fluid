@@ -5,13 +5,13 @@ package TestOverdeterminedInitial
     "Steady-state initialization of a dynamic pipe using lumped pressure states"
 
     Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       use_T=false,
       p=10000000,
       h=2e6) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
     Pipes.DynamicPipe pipe(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       h_start=2e6,
       diameter=0.05,
       length=200,
@@ -23,13 +23,13 @@ package TestOverdeterminedInitial
       modelStructure=Modelica_Fluid.Types.ModelStructure.a_vb) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
     Modelica_Fluid.Valves.ValveCompressible valve(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       Av=1e-3,
       dp_nominal=10000000,
       m_flow_nominal=10) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
     Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
-        = Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
+        = ModelicaNew.Media.Water.StandardWaterOnePhase, p=9500000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       offset=1,
@@ -91,13 +91,13 @@ The initial equations are consistent however and a tool shall reduce them approp
     "Initialization of a dynamic pipe with fixed initial values and without adaptation of modelStructure to boundaries"
 
     Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       use_T=false,
       h=2e6,
       p=10000000) 
       annotation (Placement(transformation(extent={{-80,-10},{-60,10}})));
     Pipes.DynamicPipe pipe(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       h_start=2e6,
       diameter=0.05,
       length=200,
@@ -108,13 +108,13 @@ The initial equations are consistent however and a tool shall reduce them approp
       p_b_start=9900000) 
       annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
     Modelica_Fluid.Valves.ValveCompressible valve(
-      redeclare package Medium = Modelica.Media.Water.StandardWater,
+      redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
       Av=1e-3,
       dp_nominal=10000000,
       m_flow_nominal=10) 
       annotation (Placement(transformation(extent={{0,-10},{20,10}})));
     Modelica_Fluid.Sources.FixedBoundary sink(nPorts=1,redeclare package Medium
-        = Modelica.Media.Water.StandardWaterOnePhase, p=9500000) 
+        = ModelicaNew.Media.Water.StandardWaterOnePhase, p=9500000) 
                 annotation (Placement(transformation(extent={{60,-10},{40,10}})));
     Modelica.Blocks.Sources.Ramp ramp(
       offset=1,

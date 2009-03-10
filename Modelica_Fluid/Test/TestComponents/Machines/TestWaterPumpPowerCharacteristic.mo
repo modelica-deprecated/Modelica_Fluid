@@ -4,17 +4,17 @@ model TestWaterPumpPowerCharacteristic
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
   Modelica_Fluid.Sources.Boundary_pT Source(nPorts=1, redeclare package Medium
-      = Modelica.Media.Water.StandardWater, p=1e5,
+      = ModelicaNew.Media.Water.StandardWater, p=1e5,
     T=system.T_ambient) 
   annotation (Placement(transformation(extent={{-100,20},{-80,40}}, rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT Sink(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     p=5e5,
     T=system.T_ambient,
     use_p_in=true) 
   annotation (Placement(transformation(extent={{34,26},{14,46}}, rotation=0)));
   Modelica_Fluid.Machines.PrescribedPump pump(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     m_flow_start=1,
     redeclare function flowCharacteristic = 
         Modelica_Fluid.Machines.BaseClasses.PumpCharacteristics.quadraticFlow (
@@ -34,7 +34,7 @@ model TestWaterPumpPowerCharacteristic
   annotation (Placement(transformation(extent={{-60,60},{-40,80}}, rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible Valve(
                                              redeclare package Medium = 
-        Modelica.Media.Water.StandardWater,
+        ModelicaNew.Media.Water.StandardWater,
     m_flow_nominal=1,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     dp_nominal=20000) 

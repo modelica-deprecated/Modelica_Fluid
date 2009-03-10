@@ -2,22 +2,22 @@ within Modelica_Fluid.Test.TestComponents.Sensors;
 model TestPressure
   import Modelica_Fluid;
   Modelica_Fluid.Sensors.Pressure pressure1(redeclare package Medium = 
-        Modelica.Media.Water.StandardWater) annotation (Placement(
+        ModelicaNew.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{-20,0},{0,20}}, rotation=0)));
   Modelica_Fluid.Fittings.SimpleGenericOrifice simpleGenericOrifice(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     zeta=2,
     diameter=0.1) annotation (Placement(transformation(extent={{20,-10},{40,10}},
           rotation=0)));
   Modelica_Fluid.Sensors.RelativePressure relativePressure(redeclare package
-      Medium = Modelica.Media.Water.StandardWater) 
+      Medium = ModelicaNew.Media.Water.StandardWater) 
     annotation (Placement(transformation(extent={{20,34},{40,54}}, rotation=0)));
   Modelica.Blocks.Sources.Sine sine annotation (Placement(transformation(extent=
            {{-100,0},{-80,20}}, rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_T massFlowRate1(nPorts=1,
     use_m_flow_in=true,
     T=SI.Conversions.from_degC(50),
-    redeclare package Medium = Modelica.Media.Water.StandardWater) 
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater) 
                                     annotation (Placement(transformation(extent=
            {{-60,0},{-40,20}}, rotation=0)));
   annotation (
@@ -27,12 +27,12 @@ model TestPressure
     experiment(Tolerance=1e-006),
     experimentSetupOutput);
   Modelica_Fluid.Sources.Boundary_ph boundary_fixed(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     p=system.p_ambient,
     h=3000e3) annotation (Placement(transformation(extent={{100,-10},{80,10}},
           rotation=0)));
   Modelica_Fluid.Sensors.Pressure pressure2(redeclare package Medium = 
-        Modelica.Media.Water.StandardWater) annotation (Placement(
+        ModelicaNew.Media.Water.StandardWater) annotation (Placement(
         transformation(extent={{50,0},{70,20}}, rotation=0)));
   inner Modelica_Fluid.System system  annotation (Placement(transformation(
           extent={{-100,-100},{-80,-80}}, rotation=0)));

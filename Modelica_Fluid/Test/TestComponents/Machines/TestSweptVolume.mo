@@ -7,7 +7,7 @@ model TestSweptVolume
                         graphics), experiment(StopTime=5));
   Modelica_Fluid.Machines.SweptVolume sweptVolume(
     nPorts=1,
-    redeclare package Medium = Modelica.Media.Air.DryAirNasa,
+    redeclare package Medium = ModelicaNew.Media.Air.DryAirNasa,
     clearance(displayUnit="l") = 1e-005,
     use_portsData=false,
     pistonCrossArea(displayUnit="cm2") = 0.001) annotation (Placement(
@@ -20,7 +20,7 @@ model TestSweptVolume
     annotation (Placement(transformation(extent={{-10,0},{-30,20}})));
   Modelica_Fluid.Sources.Boundary_pT boundary(
     nPorts=1,
-    redeclare package Medium = Modelica.Media.Air.DryAirNasa,
+    redeclare package Medium = ModelicaNew.Media.Air.DryAirNasa,
     use_p_in=true,
     p=200000) 
     annotation (Placement(transformation(extent={{60,0},{40,20}})));

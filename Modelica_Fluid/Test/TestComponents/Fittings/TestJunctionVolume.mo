@@ -4,7 +4,7 @@ model TestJunctionVolume
 
   Modelica_Fluid.Fittings.TeeJunctionVolume junction(           redeclare
       package Medium = 
-        Modelica.Media.Air.DryAirNasa, V=20e-6,
+        ModelicaNew.Media.Air.DryAirNasa, V=20e-6,
     energyDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
     massDynamics=Modelica_Fluid.Types.Dynamics.SteadyStateInitial,
     p_start=100000)                         annotation (Placement(
@@ -16,7 +16,7 @@ model TestJunctionVolume
   Modelica_Fluid.Sources.Boundary_pT source2(nPorts=1,
     T=278.15,
     p=5e5,
-    redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+    redeclare package Medium = ModelicaNew.Media.Air.DryAirNasa) 
     annotation (Placement(transformation(
         origin={90,-20},
         extent={{-10,-10},{10,10}},
@@ -24,7 +24,7 @@ model TestJunctionVolume
   Modelica_Fluid.Sources.Boundary_pT source3(nPorts=1,
     T=283.15,
     p=2e5,
-    redeclare package Medium = Modelica.Media.Air.DryAirNasa) 
+    redeclare package Medium = ModelicaNew.Media.Air.DryAirNasa) 
     annotation (Placement(transformation(
         origin={30,70},
         extent={{-10,-10},{10,10}},
@@ -33,7 +33,7 @@ model TestJunctionVolume
     annotation (Placement(transformation(extent={{-100,80},{-80,100}}, rotation=
            0)));
   Modelica_Fluid.Sources.Boundary_pT source1(nPorts=1,          p=5e5,
-      redeclare package Medium = Modelica.Media.Air.DryAirNasa,
+      redeclare package Medium = ModelicaNew.Media.Air.DryAirNasa,
     T=system.T_ambient,
     use_p_in=true) 
     annotation (Placement(transformation(extent={{-40,-30},{-20,-10}}, rotation=
@@ -44,17 +44,17 @@ model TestJunctionVolume
     offset=7e5) annotation (Placement(transformation(extent={{-90,-24},{-70,-4}},
           rotation=0)));
   Modelica_Fluid.Pipes.StaticPipe pipe(      redeclare package Medium = 
-        Modelica.Media.Air.DryAirNasa,
+        ModelicaNew.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1)                      annotation (Placement(transformation(
           extent={{-12,-30},{8,-10}}, rotation=0)));
   Modelica_Fluid.Pipes.StaticPipe pipe1(      redeclare package Medium = 
-        Modelica.Media.Air.DryAirNasa,
+        ModelicaNew.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1)                      annotation (Placement(transformation(
           extent={{50,-30},{70,-10}}, rotation=0)));
   Modelica_Fluid.Pipes.StaticPipe pipe2(      redeclare package Medium = 
-        Modelica.Media.Air.DryAirNasa,
+        ModelicaNew.Media.Air.DryAirNasa,
     length=1,
     diameter=0.1) 
     annotation (Placement(transformation(

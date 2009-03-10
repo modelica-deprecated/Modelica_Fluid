@@ -3,7 +3,7 @@ model TestMultiPortTraceSubstances
   "Test model for multiport and volumes with trace substances."
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
-  package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
+  package Medium=ModelicaNew.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
   annotation (Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,
             -100},{100,100}}), graphics));
   Modelica_Fluid.Sources.Boundary_pT source2(

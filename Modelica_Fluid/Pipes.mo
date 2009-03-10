@@ -1067,7 +1067,7 @@ This also allows for taking into account friction losses with respect to the act
             // (not exposed to GUI; needs to be hard coded when using this model
             //
             replaceable package Medium = 
-              Modelica.Media.Interfaces.PartialMedium "Medium in the component"
+              ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component"
                 annotation(Dialog(tab="Internal Interface",enable=false));
 
             parameter Integer n=2 "Number of discrete flow volumes" 

@@ -1,7 +1,7 @@
 within Modelica_Fluid.Test.TestComponents.Sensors;
 model TestTraceSubstances
   import Modelica_Fluid;
-  replaceable package Medium=Modelica.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
+  replaceable package Medium=ModelicaNew.Media.Air.MoistAir(extraPropertiesNames={"CO2"});
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=true,  extent={{-100,-100},{
             100,100}}),

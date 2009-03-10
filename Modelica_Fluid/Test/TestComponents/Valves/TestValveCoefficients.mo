@@ -3,13 +3,13 @@ model TestValveCoefficients
   "Test case to compare different choices of flow coefficient"
   extends Modelica.Icons.Example;
   Modelica_Fluid.Sources.Boundary_pT SourceP1(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=200000) 
   annotation (Placement(transformation(extent={{-94,18},{-74,38}},  rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V1(
     rho_nominal=1000,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     m_flow_nominal=1,
     CvData=Modelica_Fluid.Types.CvTypes.Av,
     Av=240e-6,
@@ -17,7 +17,7 @@ model TestValveCoefficients
             annotation (Placement(transformation(extent={{-44,18},{-24,38}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SinkP1(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{28,18},{8,38}}, rotation=0)));
@@ -28,13 +28,13 @@ model TestValveCoefficients
                                    annotation (Placement(transformation(extent={{64,60},
             {84,80}},          rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SourceP2(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=200000) 
   annotation (Placement(transformation(extent={{-94,-18},{-74,2}},  rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V2(
     rho_nominal=1000,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Kv,
     m_flow_nominal=1,
     Kv=9,
@@ -42,18 +42,18 @@ model TestValveCoefficients
             annotation (Placement(transformation(extent={{-44,-18},{-24,2}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SinkP2(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{28,-18},{8,2}}, rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SourceP3(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=200000) 
   annotation (Placement(transformation(extent={{-94,-56},{-74,-36}},rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V3(
     rho_nominal=1000,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     CvData=Modelica_Fluid.Types.CvTypes.Cv,
     Cv=10,
     m_flow_nominal=1,
@@ -61,19 +61,19 @@ model TestValveCoefficients
             annotation (Placement(transformation(extent={{-44,-56},{-24,-36}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SinkP3(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{28,-56},{8,-36}},
                                                                 rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SourceP4(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=200000) 
   annotation (Placement(transformation(extent={{-94,-88},{-74,-68}},rotation=0)));
   Modelica_Fluid.Valves.ValveIncompressible V4(
     rho_nominal=1000,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     Cv=10,
     CvData=Modelica_Fluid.Types.CvTypes.OpPoint,
     dp_nominal=100000,
@@ -81,7 +81,7 @@ model TestValveCoefficients
             annotation (Placement(transformation(extent={{-44,-88},{-24,-68}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SinkP4(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     T=system.T_ambient,
     p=100000) 
   annotation (Placement(transformation(extent={{28,-88},{8,-68}},

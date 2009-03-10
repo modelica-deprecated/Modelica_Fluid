@@ -3,19 +3,19 @@ model TestValveLinear "Test case for linear valve"
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
   Modelica_Fluid.Sources.Boundary_pT SourceP1(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     p=200000,
     T(displayUnit="degC") = 298.15) 
   annotation (Placement(transformation(extent={{-76,-22},{-56,-2}}, rotation=0)));
   Modelica_Fluid.Valves.ValveLinear V1(
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     dp_nominal=100000,
     m_flow_nominal=2) 
             annotation (Placement(transformation(extent={{-26,-22},{-6,
             -2}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT SinkP1(nPorts=1,
-  redeclare package Medium = Modelica.Media.Water.StandardWater,
+  redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     use_p_in=true,
     p=100000,
     T=293.15) 

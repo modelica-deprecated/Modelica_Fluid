@@ -2,7 +2,7 @@ within Modelica_Fluid.Test.TestComponents.Vessels;
 model TestVolume
   extends Modelica.Icons.Example;
   Modelica_Fluid.Vessels.ClosedVolume Volume(
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     V=1,
     use_T_start=false,
     h_start=3e6,
@@ -14,16 +14,16 @@ model TestVolume
          annotation (Placement(transformation(extent={{-40,14},{-20,34}},
           rotation=0)));
   Modelica_Fluid.Sources.MassFlowSource_h FlowSource(nPorts=1,
-    redeclare package Medium = Modelica.Media.Water.StandardWater,
+    redeclare package Medium = ModelicaNew.Media.Water.StandardWater,
     m_flow=1,
     h=3e6) annotation (Placement(transformation(extent={{-82,0},{-62,20}},
           rotation=0)));
   Modelica_Fluid.Sources.Boundary_pT Sink(nPorts=1, redeclare package Medium = 
-        Modelica.Media.Water.StandardWater, p=101325,
+        ModelicaNew.Media.Water.StandardWater, p=101325,
     T=system.T_ambient) 
     annotation (Placement(transformation(extent={{60,0},{40,20}}, rotation=0)));
   Modelica_Fluid.Valves.ValveLinear Valve(   redeclare package Medium = 
-        Modelica.Media.Water.StandardWater,
+        ModelicaNew.Media.Water.StandardWater,
     dp_nominal=10000,
     m_flow_nominal=0.1)                                    annotation (Placement(
         transformation(extent={{2,0},{22,20}}, rotation=0)));

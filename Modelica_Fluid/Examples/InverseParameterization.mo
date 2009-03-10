@@ -2,8 +2,8 @@ within Modelica_Fluid.Examples;
 model InverseParameterization
   "Demonstrates the parameterization of a pump and a pipe for given nominal values"
   extends Modelica.Icons.Example;
-  replaceable package Medium = Modelica.Media.Water.StandardWater;
-      //Modelica.Media.Water.ConstantPropertyLiquidWater;
+  replaceable package Medium = ModelicaNew.Media.Water.StandardWater;
+      //ModelicaNew.Media.Water.ConstantPropertyLiquidWater;
 
   Modelica_Fluid.Sources.Boundary_pT source(
     redeclare package Medium = Medium,

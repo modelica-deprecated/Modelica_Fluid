@@ -2,7 +2,7 @@ within Modelica_Fluid;
 model System
   "System properties and default values (ambient, flow direction, initialization)"
 
-  package Medium = Modelica.Media.Interfaces.PartialMedium
+  package Medium = ModelicaNew.Media.Interfaces.GenericMedium
     "Medium model for default start values" 
       annotation (choicesAllMatching = true);
   parameter Modelica.SIunits.AbsolutePressure p_ambient=101325

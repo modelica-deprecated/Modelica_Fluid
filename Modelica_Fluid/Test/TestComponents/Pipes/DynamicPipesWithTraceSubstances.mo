@@ -2,8 +2,8 @@ within Modelica_Fluid.Test.TestComponents.Pipes;
 model DynamicPipesWithTraceSubstances
   import Modelica_Fluid;
 extends Modelica.Icons.Example;
-//replaceable package Medium=Modelica.Media.Water.StandardWater;
- replaceable package Medium=Modelica.Media.Air.DryAirNasa(extraPropertiesNames={"CO2", "VOC"});
+//replaceable package Medium=ModelicaNew.Media.Water.StandardWater;
+ replaceable package Medium=ModelicaNew.Media.Air.DryAirNasa(extraPropertiesNames={"CO2", "VOC"});
 
  Modelica_Fluid.Pipes.DynamicPipe pipe2(
     redeclare package Medium = Medium,
