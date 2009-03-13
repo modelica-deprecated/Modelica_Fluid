@@ -225,8 +225,8 @@ end OpenTank;
     annotation(Dialog(tab="Advanced",group="Ports"));
 */
         Medium.EnthalpyFlowRate ports_H_flow[nPorts];
-        Medium.MassFlowRate ports_mXi_flow[nPorts,Medium.nXi];
-        Medium.MassFlowRate[Medium.nXi] sum_ports_mXi_flow
+        Medium.MassFlowRate ports_mXi_flow[nPorts,nXi];
+        Medium.MassFlowRate[nXi] sum_ports_mXi_flow
         "Substance mass flows through ports";
         Medium.ExtraPropertyFlowRate ports_mC_flow[nPorts,Medium.nC];
         Medium.ExtraPropertyFlowRate[Medium.nC] sum_ports_mC_flow
@@ -391,7 +391,7 @@ of the modeller. Increase nPorts to add an additional port.
           "Trace substance mass flow";
         end for;
 
-        for i in 1:Medium.nXi loop
+        for i in 1:nXi loop
           sum_ports_mXi_flow[i] = sum(ports_mXi_flow[:,i]);
         end for;
 

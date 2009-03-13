@@ -996,23 +996,23 @@ handled properly.</p>
         "Start value of temperature" 
         annotation(Dialog(tab = "Initialization", enable = use_T_start));
       parameter Medium.SpecificEnthalpy h_start=if use_T_start then Medium.specificEnthalpy_pTX(
-          p_ambient, T_start, X_start[1:Medium.nXi]) else 1e4
+          p_ambient, T_start, X_start[1:nXi]) else 1e4
         "Start value of specific enthalpy" 
         annotation(Dialog(tab = "Initialization", enable = not use_T_start));
       parameter Medium.MassFraction X_start[Medium.nX]=Medium.reference_X
         "Start value of mass fractions m_i/m" 
-        annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+        annotation (Dialog(tab="Initialization", enable=nXi > 0));
       parameter Medium.AbsolutePressure p_ambient=101325
         "Tank surface pressure";
       parameter Medium.Temperature T_ambient=293.15 "Tank surface Temperature";
       parameter Integer n_TopPorts=1 "number of Top connectors";
       parameter Integer n_SidePorts=1 "number of side connectors";
       parameter Integer n_BottomPorts=1 "number of bootom connectors";
-      Medium.BaseProperties medium(
+      Media.BaseProperties medium(redeclare package Medium = Medium,
         preferredMediumStates=true,
         p(start=p_ambient),
         T(start=T_start),
-        Xi(start=X_start[1:Medium.nXi]));
+        Xi(start=X_start[1:nXi]));
       Modelica.SIunits.Height level(
         stateSelect=StateSelect.prefer,
         min=0,
@@ -1020,7 +1020,7 @@ handled properly.</p>
       SI.Volume V(stateSelect=StateSelect.never) "Actual tank volume";
       SI.Energy U "Internal energy of tank volume";
       Real m(quantity=Medium.mediumName, unit="kg") "Mass of tank volume";
-      Real mXi[Medium.nXi](quantity=Medium.substanceNames, each unit="kg")
+      Real mXi[nXi](quantity=Medium.substanceNames, each unit="kg")
         "Component masses of the independent substances";
     // additional variables
       Real H_flow_BottomPorts[n_BottomPorts];
@@ -1034,9 +1034,9 @@ handled properly.</p>
       Real m_flow_SidePorts_pos[n_SidePorts];
       Real m_flow_TopPorts_pos[n_TopPorts];
       Real m_flow_pos;
-      Medium.MassFlowRate mXi_flow_topPorts[n_TopPorts,Medium.nXi];
-      Medium.MassFlowRate mXi_flowBottomPorts[n_BottomPorts,Medium.nXi];
-      Medium.MassFlowRate mXi_flow_sidePorts[n_SidePorts,Medium.nXi];
+      Medium.MassFlowRate mXi_flow_topPorts[n_TopPorts,nXi];
+      Medium.MassFlowRate mXi_flowBottomPorts[n_BottomPorts,nXi];
+      Medium.MassFlowRate mXi_flow_sidePorts[n_SidePorts,nXi];
 
     // Connectors and InnerTanks
       Modelica_Fluid.Interfaces.FluidPort_b BottomFluidPort[n_BottomPorts](
@@ -1214,7 +1214,7 @@ handled properly.</p>
       m_flow_pos = sum(m_flow_TopPorts_pos) + sum(m_flow_SidePorts_pos) + sum(
         m_flow_BottomPorts_pos);
 
-      for i in 1:Medium.nXi loop
+      for i in 1:nXi loop
            der(mXi[i]) = sum(mXi_flowBottomPorts[:,i]) +
                          sum(mXi_flow_sidePorts[:,i]) +
                          sum(mXi_flow_topPorts[:,i]);
@@ -1238,7 +1238,7 @@ handled properly.</p>
         else
           medium.h = h_start;
         end if;
-        medium.Xi = X_start[1:Medium.nXi];
+        medium.Xi = X_start[1:nXi];
       elseif initType == Init.SteadyStateHydraulic then
         der(level) = 0;
         if use_T_start then
@@ -1246,7 +1246,7 @@ handled properly.</p>
         else
           medium.h = h_start;
         end if;
-        medium.Xi = X_start[1:Medium.nXi];
+        medium.Xi = X_start[1:nXi];
       else
         assert(false, "Unsupported initialization option");
       end if;
@@ -1335,12 +1335,12 @@ Full steady state initialization is not supported, because the corresponding int
         input Real d;
         input Real p_ambient;
         input Real h;
-        input Medium.MassFraction Xi[Medium.nXi]
+        input Medium.MassFraction Xi[nXi]
         "Actual mass fractions of fluid in tank"                    annotation(Dialog);
         input Real pipeArea;
         output Real H_flow;
         output Real m_flow;
-       output Medium.MassFlowRate mXi_flow[Medium.nXi]
+       output Medium.MassFlowRate mXi_flow[nXi]
         "= port.mXi_flow (used to transform vector of connectors in vector of Real numbers)";
 
     equation
@@ -1923,9 +1923,9 @@ Integer type that can have the following values
         "Enthalpy flow rates from the top ports in to the tank";
     Medium.EnthalpyFlowRate port_b_H_flow_bottom[nPorts]
         "Enthalpy flow rates from the bottom ports in to the tank";
-    Medium.MassFlowRate mXi_flow_top[nTopPorts, Medium.nXi]
+    Medium.MassFlowRate mXi_flow_top[nTopPorts, nXi]
         "Substance mass flow rates from the top ports into the tank";
-    Medium.MassFlowRate port_b_mXi_flow_bottom[nPorts, Medium.nXi]
+    Medium.MassFlowRate port_b_mXi_flow_bottom[nPorts, nXi]
         "Substance mass flow rates from the bottom ports into the tank";
     Medium.MassFlowRate mC_flow_top[nTopPorts, Medium.nC]
         "Trace substance mass flow rates from the top ports into the tank";
@@ -1982,7 +1982,7 @@ end for;
 
     // Mass balances
     mb_flow = sum(topPorts.m_flow) + sum(ports.m_flow);
-    for i in 1:Medium.nXi loop
+    for i in 1:nXi loop
       mbXi_flow[i] = sum(mXi_flow_top[:,i]) + sum(port_b_mXi_flow_bottom[:,i]);
     end for;
     for i in 1:Medium.nC loop
@@ -2007,7 +2007,7 @@ end for;
          mC_flow_top[i,:]  = topPorts[i].m_flow*actualStream(topPorts[i].C_outflow);
          topPorts[i].p     = p_ambient;
          topPorts[i].h_outflow = h_start;
-         topPorts[i].Xi_outflow = X_start[1:Medium.nXi];
+         topPorts[i].Xi_outflow = X_start[1:nXi];
          topPorts[i].C_outflow  = C_start;
   /*
        assert(topPorts[i].m_flow > -1, "Mass flows out of tank via topPorts[" + String(i) + "]\n" +

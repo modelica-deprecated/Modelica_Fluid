@@ -272,7 +272,8 @@ model MixingVolume \"Volume that mixes two flows\"
   parameter Modelica.SIunits.Volume V \"Volume of device\";
   Modelica.SIunits.Mass             m \"Mass in device\";
   Modelica.SIunits.Energy           U \"Inner energy in device\";
-  Medium.BaseProperties medium(preferredMediumStates=true) \"Medium in the device\";
+  Media.BaseProperties medium(redeclare package Medium = Medium,
+                              preferredMediumStates=true) \"Medium in the device\";
 equation
   // Definition of port variables
   port_a.p         = medium.p;
@@ -349,7 +350,7 @@ composition can be characterized by mass fraction vectors.
       \"Thermodynamic pressure in the connection point\";
    <b>stream</b> Medium.SpecificEnthalpy h_outflow
        \"Specific thermodynamic enthalpy close to the connection point if m_flow &lt; 0\";
-   <b>stream</b> Medium.MassFraction Xi_outflow[Medium.nXi] 
+   <b>stream</b> Medium.MassFraction Xi_outflow[nXi] 
        \"Independent mixture mass fractions m_i/m close to the connection point if m_flow &lt; 0\";
    <b>stream</b> Medium.ExtraProperty C_outflow[Medium.nC] 
        \"Properties c_i/m close to the connection point if m_flow &lt; 0\";

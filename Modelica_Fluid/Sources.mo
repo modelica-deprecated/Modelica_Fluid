@@ -26,7 +26,7 @@ package Sources "Define fixed or prescribed boundary conditions"
     parameter Medium.MassFraction X[Medium.nX](
          quantity=Medium.substanceNames)=Medium.X_default
       "Boundary mass fractions m_i/m" 
-      annotation (Dialog(group = "Only for multi-substance flow", enable=Medium.nXi > 0));
+      annotation (Dialog(group = "Only for multi-substance flow", enable=nXi > 0));
 
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
@@ -78,7 +78,7 @@ with exception of boundary pressure, do not have an effect.
       medium.h = h;
     end if;
 
-    medium.Xi = X[1:Medium.nXi];
+    medium.Xi = X[1:nXi];
 
     ports.C_outflow = fill(C, nPorts);
   end FixedBoundary;
@@ -115,7 +115,7 @@ to define fixed or prescribed ambient conditions.
     parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not use_X_in) and Medium.nXi > 0));
+                  Dialog(enable = (not use_X_in) and nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Fixed values of trace substances" 
@@ -251,7 +251,7 @@ with exception of boundary pressure, do not have an effect.
     end if;
     medium.p = p_in_internal;
     medium.T = T_in_internal;
-    medium.Xi = X_in_internal[1:Medium.nXi];
+    medium.Xi = X_in_internal[1:nXi];
     ports.C_outflow = fill(C_in_internal, nPorts);
   end Boundary_pT;
 
@@ -281,7 +281,7 @@ with exception of boundary pressure, do not have an effect.
     parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not use_X_in) and Medium.nXi > 0));
+                  Dialog(enable = (not use_X_in) and nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Fixed values of trace substances" 
@@ -413,7 +413,7 @@ with exception of boundary pressure, do not have an effect.
     end if;
     medium.p = p_in_internal;
     medium.h = h_in_internal;
-    medium.Xi = X_in_internal[1:Medium.nXi];
+    medium.Xi = X_in_internal[1:nXi];
     ports.C_outflow = fill(C_in_internal, nPorts);
   end Boundary_ph;
 
@@ -443,7 +443,7 @@ with exception of boundary pressure, do not have an effect.
     parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not use_X_in) and Medium.nXi > 0));
+                  Dialog(enable = (not use_X_in) and nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Fixed values of trace substances" 
@@ -589,7 +589,7 @@ with exception of boundary flow rate, do not have an effect.
     end if;
     sum(ports.m_flow) = -m_flow_in_internal;
     medium.T = T_in_internal;
-    medium.Xi = X_in_internal[1:Medium.nXi];
+    medium.Xi = X_in_internal[1:nXi];
     ports.C_outflow = fill(C_in_internal, nPorts);
   end MassFlowSource_T;
 
@@ -619,7 +619,7 @@ with exception of boundary flow rate, do not have an effect.
     parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not use_X_in) and Medium.nXi > 0));
+                  Dialog(enable = (not use_X_in) and nXi > 0));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Fixed values of trace substances" 
@@ -765,7 +765,7 @@ with exception of boundary flow rate, do not have an effect.
     end if;
     sum(ports.m_flow) = -m_flow_in_internal;
     medium.h = h_in_internal;
-    medium.Xi = X_in_internal[1:Medium.nXi];
+    medium.Xi = X_in_internal[1:nXi];
     ports.C_outflow = fill(C_in_internal, nPorts);
   end MassFlowSource_h;
 
@@ -783,7 +783,7 @@ with exception of boundary flow rate, do not have an effect.
         "Medium model within the source" 
        annotation (choicesAllMatching=true);
 
-    Medium.BaseProperties medium "Medium in the source";
+    Media.BaseProperties medium(redeclare package Medium = Medium) "Medium in the source";
 
     Interfaces.FluidPorts_b ports[nPorts](
                        redeclare each package Medium = Medium,

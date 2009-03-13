@@ -1,18 +1,18 @@
 within Modelica_Fluid;
 package Media
-  replaceable partial model BaseProperties
+  replaceable model BaseProperties
     "Computes the basic thermodynamic properties corresponding to a thermodynamic state"
     import IV = ModelicaNew.Media.Interfaces.Types.IndependentVariables;
     replaceable package Medium = ModelicaNew.Media.Interfaces.GenericMedium;
     constant Integer nXi = Medium.nS - 1 "Number of independent mass fractions";
     InputAbsolutePressure p "Absolute pressure of medium";
     InputSpecificEnthalpy h "Specific enthalpy of medium";
+    Medium.MassFraction X[Medium.nS](start=Medium.reference_X)
+      "Full mass fractions vector (= (component mass)/total mass  m_i/m)";
     InputMassFraction Xi[nXi](start=Medium.reference_X[1:nXi])
-      "Independent mass fractions";
+      "Independent mass fractions vector (= (component mass)/total mass  m_i/m)";
     Medium.Density d "Density of medium";
     Medium.Temperature T "Temperature of medium";
-    Medium.MassFraction[Medium.nS] X(start=Medium.reference_X)
-      "Mass fractions (= (component mass)/total mass  m_i/m)";
     Medium.SpecificInternalEnergy u "Specific internal energy of medium";
     // SpecificHeatCapacity R "Gas constant (of mixture if applicable)";
     // MolarMass MM "Molar mass (of mixture or single fluid)";

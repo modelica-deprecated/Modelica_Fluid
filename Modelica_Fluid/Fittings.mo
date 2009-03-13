@@ -328,7 +328,7 @@ end AbruptAdaptor;
       annotation (Placement(transformation(extent={{30,40},{50,-40}},
                                   rotation=0)));
 
-    Medium.MassFraction ports_b_Xi_inStream[nPorts_b,Medium.nXi]
+    Medium.MassFraction ports_b_Xi_inStream[nPorts_b,nXi]
       "inStream mass fractions at ports_b";
     Medium.ExtraProperty ports_b_C_inStream[nPorts_b,Medium.nC]
       "inStream extra properties at ports_b";
@@ -393,7 +393,7 @@ of the modeller. Increase nPorts_b to add an additional port.
        ports_b_Xi_inStream[j,:] = inStream(ports_b[j].Xi_outflow);
        ports_b_C_inStream[j,:] = inStream(ports_b[j].C_outflow);
     end for;
-    for i in 1:Medium.nXi loop
+    for i in 1:nXi loop
       port_a.Xi_outflow[i] = (positiveMax(ports_b.m_flow)*ports_b_Xi_inStream[:,i])
                            / sum(positiveMax(ports_b.m_flow));
     end for;

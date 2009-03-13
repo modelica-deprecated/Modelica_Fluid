@@ -444,7 +444,7 @@ Base class for one dimensional flow models. It specializes a PartialTwoPort with
          each min=if allowFlowReversal then -Modelica.Constants.inf else 0,
          each start=m_flow_start)
         "Mass flow rates of fluid across segment boundaries";
-      Medium.MassFlowRate[n+1, Medium.nXi] mXi_flows
+      Medium.MassFlowRate[n+1, nXi] mXi_flows
         "Independent mass flow rates across segment boundaries";
       Medium.MassFlowRate[n+1, Medium.nC] mC_flows
         "Trace substance mass flow rates across segment boundaries";

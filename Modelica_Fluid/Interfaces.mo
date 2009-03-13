@@ -52,8 +52,8 @@ package Interfaces
     Medium.AbsolutePressure p "Thermodynamic pressure in the connection point";
     stream Medium.SpecificEnthalpy h_outflow
       "Specific thermodynamic enthalpy close to the connection point if m_flow < 0";
-    stream Medium.MassFraction Xi_outflow[Medium.nXi]
-      "Independent mixture mass fractions m_i/m close to the connection point if m_flow < 0";
+    stream Medium.MassFraction X_outflow[nX]
+      "Mixture mass fractions m_i/m close to the connection point if m_flow < 0";
     stream Medium.ExtraProperty C_outflow[Medium.nC]
       "Properties c_i/m close to the connection point if m_flow < 0";
   end FluidPort;
@@ -622,21 +622,21 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         annotation(Dialog(tab = "Initialization", enable = not use_T_start));
       parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default
       "Start value of mass fractions m_i/m" 
-        annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+        annotation (Dialog(tab="Initialization", enable=nXi > 0));
       parameter Medium.ExtraProperty C_start[Medium.nC](
            quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Start value of trace substances" 
         annotation (Dialog(tab="Initialization", enable=Medium.nC > 0));
 
-      Medium.BaseProperties medium(
+      Media.BaseProperties medium(redeclare package Medium = Medium,
         preferredMediumStates=true,
         p(start=p_start),
         h(start=h_start),
         T(start=T_start),
-        Xi(start=X_start[1:Medium.nXi]));
+        Xi(start=X_start[1:medium.nXi]));
       SI.Energy U "Internal energy of fluid";
       SI.Mass m "Mass of fluid";
-      SI.Mass[Medium.nXi] mXi "Masses of independent components in the fluid";
+      SI.Mass[medium.nXi] mXi "Masses of independent components in the fluid";
       SI.Mass[Medium.nC] mC "Masses of trace substances in the fluid";
       // C need to be added here because unlike for Xi, which has medium.Xi,
       // there is no variable medium.C
@@ -644,7 +644,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
 
       // variables that need to be defined by an extending class
       SI.MassFlowRate mb_flow "Mass flows across boundaries";
-      SI.MassFlowRate[Medium.nXi] mbXi_flow
+      SI.MassFlowRate[medium.nXi] mbXi_flow
       "Substance mass flows across boundaries";
       Medium.ExtraPropertyFlowRate[Medium.nC] mbC_flow
       "Trace substance mass flows across boundaries";
@@ -680,7 +680,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       end if;
 
       if substanceDynamics == Dynamics.SteadyState then
-        zeros(Medium.nXi) = mbXi_flow;
+        zeros(medium.nXi) = mbXi_flow;
       else
         der(mXi) = mbXi_flow;
       end if;
@@ -718,9 +718,9 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       end if;
 
       if substanceDynamics == Dynamics.FixedInitial then
-        medium.Xi = X_start[1:Medium.nXi];
+        medium.Xi = X_start[1:medium.nXi];
       elseif substanceDynamics == Dynamics.SteadyStateInitial then
-        der(medium.Xi) = zeros(Medium.nXi);
+        der(medium.Xi) = zeros(medium.nXi);
       end if;
 
       if traceDynamics == Dynamics.FixedInitial then
@@ -888,7 +888,7 @@ partial model PartialDistributedVolume
     annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
   parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
       "Start value of mass fractions m_i/m" 
-    annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+    annotation (Dialog(tab="Initialization", enable=nXi > 0));
   parameter Medium.ExtraProperty C_start[Medium.nC](
        quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Start value of trace substances" 
@@ -897,22 +897,23 @@ partial model PartialDistributedVolume
   // Total quantities
   SI.Energy[n] Us "Internal energy of fluid";
   SI.Mass[n] ms "Fluid mass";
-  SI.Mass[n,Medium.nXi] mXis "Substance mass";
+  SI.Mass[n,nXi] mXis "Substance mass";
   SI.Mass[n,Medium.nC] mCs "Trace substance mass";
   // C need to be added here because unlike for Xi, which has medium[:].Xi,
   // there is no variable medium[:].C
   Medium.ExtraProperty Cs[n, Medium.nC] "Trace substance mixture content";
 
   Medium.BaseProperties[n] mediums(
+    redeclare each package Medium = Medium,
     each preferredMediumStates=true,
-    p(start=ps_start),
+    each p(start=ps_start),
     each h(start=h_start),
     each T(start=T_start),
-    each Xi(start=X_start[1:Medium.nXi]));
+    each Xi(start=X_start[1:nXi]));
 
   //Source terms, have to be defined by an extending model (to zero if not used)
   Medium.MassFlowRate[n] mb_flows "Mass flow rate, source or sink";
-  Medium.MassFlowRate[n,Medium.nXi] mbXi_flows
+  Medium.MassFlowRate[n,nXi] mbXi_flows
       "Independent mass flow rates, source or sink";
   Medium.ExtraPropertyFlowRate[n,Medium.nC] mbC_flows
       "Trace substance mass flow rates, source or sink";
@@ -957,7 +958,7 @@ equation
   end if;
   if substanceDynamics == Dynamics.SteadyState then
     for i in 1:n loop
-      zeros(Medium.nXi) = mbXi_flows[i, :];
+      zeros(nXi) = mbXi_flows[i, :];
     end for;
   else
     for i in 1:n loop
@@ -1001,10 +1002,10 @@ initial equation
   end if;
 
   if substanceDynamics == Dynamics.FixedInitial then
-    mediums.Xi = fill(X_start[1:Medium.nXi], n);
+    mediums.Xi = fill(X_start[1:nXi], n);
   elseif substanceDynamics == Dynamics.SteadyStateInitial then
     for i in 1:n loop
-      der(mediums[i].Xi) = zeros(Medium.nXi);
+      der(mediums[i].Xi) = zeros(nXi);
     end for;
   end if;
 

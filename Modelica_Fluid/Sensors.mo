@@ -763,8 +763,8 @@ through the sensor is allowed.
     // No contribution of specific quantities
     port_a.h_outflow = 0;
     port_b.h_outflow = 0;
-    port_a.Xi_outflow = zeros(Medium.nXi);
-    port_b.Xi_outflow = zeros(Medium.nXi);
+    port_a.Xi_outflow = zeros(nXi);
+    port_b.Xi_outflow = zeros(nXi);
     port_a.C_outflow  = zeros(Medium.nC);
     port_b.C_outflow  = zeros(Medium.nC);
 
@@ -834,8 +834,8 @@ through the sensor is allowed.
     // No contribution of specific quantities
     port_a.h_outflow = 0;
     port_b.h_outflow = 0;
-    port_a.Xi_outflow = zeros(Medium.nXi);
-    port_b.Xi_outflow = zeros(Medium.nXi);
+    port_a.Xi_outflow = zeros(nXi);
+    port_b.Xi_outflow = zeros(nXi);
     port_a.C_outflow  = zeros(Medium.nC);
     port_b.C_outflow  = zeros(Medium.nC);
 
@@ -848,11 +848,11 @@ through the sensor is allowed.
   model SpecificInternalEnergy "Ideal specific internal energy sensor" 
     extends BaseClasses.Sensors.PartialSensor;
     extends Modelica.Icons.RotationalSensor;
-    Medium.BaseProperties medium;
+    Media.BaseProperties medium(redeclare package Medium = Medium);
     Modelica.Blocks.Interfaces.RealOutput u(unit = "J/kg") 
       "Specific internal energy in port medium" annotation (extent=[100,-10; 120,10]);
     
-  annotation (
+  annotation (                     
     Diagram(
         Line(points=[70,0; 100,0], style(rgbcolor={0,0,127})),
         Line(points=[0,-70; 0,-100], style(color=69))),
@@ -881,8 +881,8 @@ ideal, i.e., it does not influence the fluid.
   model RelDensity "Ideal relative density sensor" 
     extends Interfaces.PartialRelativeSensor;
     extends Modelica.Icons.TranslationalSensor;
-    Medium.BaseProperties medium_a;
-    Medium.BaseProperties medium_b;
+    Media.BaseProperties medium_a(redeclare package Medium = Medium);
+    Media.BaseProperties medium_b(redeclare package Medium = Medium);
     Modelica.Blocks.Interfaces.RealOutput rho_rel(redeclare type SignalType = 
           SI.Density) "Relative density signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
     annotation (
@@ -924,8 +924,8 @@ the two ports of this component and is provided as output signal.
   model RelTemperature "Ideal relative temperature sensor" 
     extends Interfaces.PartialRelativeSensor;
     extends Modelica.Icons.TranslationalSensor;
-    Medium.BaseProperties medium_a;
-    Medium.BaseProperties medium_b;
+    Media.BaseProperties medium_a(redeclare package Medium = Medium);
+    Media.BaseProperties medium_b(redeclare package Medium = Medium);
     Modelica.Blocks.Interfaces.RealOutput T_rel(redeclare type SignalType = 
           SI.Temperature) "Relative temperature signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
     annotation (
@@ -1002,8 +1002,8 @@ the two ports of this component and is provided as output signal.
     "Ideal relative specific internal energy sensor" 
     extends Interfaces.PartialRelativeSensor;
     extends Modelica.Icons.TranslationalSensor;
-    Medium.BaseProperties medium_a;
-    Medium.BaseProperties medium_b;
+    Media.BaseProperties medium_a(redeclare package Medium = Medium);
+    Media.BaseProperties medium_b(redeclare package Medium = Medium);
     Modelica.Blocks.Interfaces.RealOutput u_rel(redeclare type SignalType = 
           SI.SpecificEnergy) "Relative specific internal energy signal" annotation (extent=[-10, -80; 10, -100], rotation=90);
     annotation (
@@ -1078,7 +1078,7 @@ as signal.
     equation
       port.m_flow = 0;
       port.h_outflow = 0;
-      port.Xi_outflow = zeros(Medium.nXi);
+      port.Xi_outflow = zeros(nXi);
       port.C_outflow = zeros(Medium.nC);
     end PartialAbsoluteSensor;
 

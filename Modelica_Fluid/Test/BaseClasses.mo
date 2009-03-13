@@ -111,7 +111,7 @@ The regularization can be changed for the PressureLoss model.
       annotation(Evaluate=true, Dialog(tab = "Initialization", enable = not use_T_start));
     parameter Medium.MassFraction X_start[Medium.nX]=Medium.X_default
       "Start value of mass fractions m_i/m" 
-      annotation (Dialog(tab="Initialization", enable=Medium.nXi > 0));
+      annotation (Dialog(tab="Initialization", enable=nXi > 0));
     parameter Medium.ExtraProperty C_start[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Start value of trace substances" 
