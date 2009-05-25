@@ -1,18 +1,30 @@
 within Modelica_Fluid;
 package Media
-  replaceable model BaseProperties
+  import IV = ModelicaNew.Media.Interfaces.Types.IndependentVariables;
+
+  model BaseProperties
     "Computes the basic thermodynamic properties corresponding to a thermodynamic state"
-    import IV = ModelicaNew.Media.Interfaces.Types.IndependentVariables;
-    replaceable package Medium = ModelicaNew.Media.Interfaces.GenericMedium;
-    constant Integer nXi = Medium.nS - 1 "Number of independent mass fractions";
-    InputAbsolutePressure p "Absolute pressure of medium";
-    InputSpecificEnthalpy h "Specific enthalpy of medium";
-    Medium.MassFraction X[Medium.nS](start=Medium.reference_X)
+
+    replaceable package Medium = ModelicaNew.Media.Interfaces.GenericMedium 
+            annotation (choicesAllMatching = true);
+    //constant Integer nXi = Medium.nS - 1 "Number of independent mass fractions";
+
+    InputAbsolutePressure p(stateSelect=if (preferredMediumStates and 
+        (Medium.ThermoStates == IV.pTX or Medium.ThermoStates == IV.phX or Medium.ThermoStates == IV.pTY or Medium.ThermoStates == IV.phY)) then 
+           StateSelect.always else StateSelect.default)
+      "Absolute pressure of medium";
+    InputSpecificEnthalpy h(stateSelect=if (preferredMediumStates and 
+        (Medium.ThermoStates == IV.phX or Medium.ThermoStates == IV.phY)) then 
+           StateSelect.prefer else StateSelect.default)
+      "Specific enthalpy of medium";
+    // This X can be zero sized (if nS=0) to allow simple model equations X_outflow = medium.X; nonzero sized version is X_internal
+    InputMassFraction X[Medium.nS](start=Medium.reference_X)
       "Full mass fractions vector (= (component mass)/total mass  m_i/m)";
-    InputMassFraction Xi[nXi](start=Medium.reference_X[1:nXi])
-      "Independent mass fractions vector (= (component mass)/total mass  m_i/m)";
-    Medium.Density d "Density of medium";
-    Medium.Temperature T "Temperature of medium";
+    Medium.Density d(stateSelect=if (preferredMediumStates and Medium.ThermoStates == IV.dTX) then 
+           StateSelect.prefer else StateSelect.default) "Density of medium";
+    Medium.Temperature T(stateSelect=if (preferredMediumStates and 
+        (Medium.ThermoStates == IV.pTX or Medium.ThermoStates == IV.pTY)) then 
+           StateSelect.always else StateSelect.default) "Temperature of medium";
     Medium.SpecificInternalEnergy u "Specific internal energy of medium";
     // SpecificHeatCapacity R "Gas constant (of mixture if applicable)";
     // MolarMass MM "Molar mass (of mixture or single fluid)";
@@ -39,12 +51,14 @@ package Media
     connector InputMassFraction = input SI.MassFraction
       "Mass fraction as input signal connector";
 
+    // This X cannot be zero sized (even if nS=0), in constrast to X
+
   equation
     // Calculation of thermodynamic state based on ThermoState
     if Medium.ThermoStates == IV.pTX then
       state = Medium.setState_pTX(p,T,X);
       h = Medium.specificEnthalpy(state);
-    elseif Medium.ThermoStates == IV.pTY then
+    elseif Medium.ThermoStates == IV.phX then
       state = Medium.setState_phX(p,h,X);
       T = Medium.temperature(state);
     else
@@ -53,11 +67,11 @@ package Media
 
     // Calculation of properties
     d = Medium.density(state);
-    u = Medium.specificEnthalpy(state)-p/d;
+    u = Medium.specificEnthalpy(state) - p/d;
     // MM = Medium.molarMass(state);
     // R= Medium.R;
     // Total quantities
-    X = cat(1,Xi,{1-sum(Xi)});
+    //X = cat(1,Xi,{1-sum(Xi)});
 
   /*
   if standardOrderComponents then
@@ -141,4 +155,5 @@ For further information, see the ModelicaNew.Media User's guide, and
 Section 4.7 (Balanced Models) of the Modelica 3.0 specification. </p>
 </html>"));
   end BaseProperties;
+
 end Media;

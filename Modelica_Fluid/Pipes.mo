@@ -21,8 +21,8 @@ package Pipes "Devices for conveying fluid"
     FlowModel flowModel(
             redeclare final package Medium = Medium,
             final n=2,
-            states={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow)),
-                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow))},
+            states={Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.X_outflow)),
+                   Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.X_outflow))},
             vs={port_a.m_flow/Medium.density(flowModel.states[1])/flowModel.crossAreas[1],
                 -port_b.m_flow/Medium.density(flowModel.states[2])/flowModel.crossAreas[2]},
             final momentumDynamics=Types.Dynamics.SteadyState,
@@ -42,8 +42,8 @@ package Pipes "Devices for conveying fluid"
     // Mass balance
     port_a.m_flow = flowModel.m_flows[1];
     0 = port_a.m_flow + port_b.m_flow;
-    port_a.Xi_outflow = inStream(port_b.Xi_outflow);
-    port_b.Xi_outflow = inStream(port_a.Xi_outflow);
+    port_a.X_outflow = inStream(port_b.X_outflow);
+    port_b.X_outflow = inStream(port_a.X_outflow);
     port_a.C_outflow = inStream(port_b.C_outflow);
     port_b.C_outflow = inStream(port_a.C_outflow);
 
@@ -1067,7 +1067,8 @@ This also allows for taking into account friction losses with respect to the act
             // (not exposed to GUI; needs to be hard coded when using this model
             //
             replaceable package Medium = 
-              ModelicaNew.Media.Interfaces.GenericMedium "Medium in the component"
+              ModelicaNew.Media.Interfaces.GenericMedium
+          "Medium in the component" 
                 annotation(Dialog(tab="Internal Interface",enable=false));
 
             parameter Integer n=2 "Number of discrete flow volumes" 

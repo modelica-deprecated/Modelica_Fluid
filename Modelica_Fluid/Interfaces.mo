@@ -52,7 +52,7 @@ package Interfaces
     Medium.AbsolutePressure p "Thermodynamic pressure in the connection point";
     stream Medium.SpecificEnthalpy h_outflow
       "Specific thermodynamic enthalpy close to the connection point if m_flow < 0";
-    stream Medium.MassFraction X_outflow[nX]
+    stream Medium.MassFraction X_outflow[Medium.nS]
       "Mixture mass fractions m_i/m close to the connection point if m_flow < 0";
     stream Medium.ExtraProperty C_outflow[Medium.nC]
       "Properties c_i/m close to the connection point if m_flow < 0";
@@ -397,20 +397,20 @@ partial model PartialTwoPortTransport
   Medium.Temperature port_a_T=
       Modelica_Fluid.Utilities.regStep(port_a.m_flow,
                   Medium.temperature(state_a),
-                  Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.Xi_outflow)),
+                  Medium.temperature(Medium.setState_phX(port_a.p, port_a.h_outflow, port_a.X_outflow)),
                   m_flow_small) if show_T
       "Temperature close to port_a, if show_T = true";
   Medium.Temperature port_b_T=
       Modelica_Fluid.Utilities.regStep(port_b.m_flow,
                   Medium.temperature(state_b),
-                  Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)),
+                  Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.X_outflow)),
                   m_flow_small) if show_T
       "Temperature close to port_b, if show_T = true";
 
 equation
   // medium states
-  state_a = Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow));
-  state_b = Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.Xi_outflow));
+  state_a = Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.X_outflow));
+  state_b = Medium.setState_phX(port_b.p, inStream(port_b.h_outflow), inStream(port_b.X_outflow));
 
   // Pressure drop in design flow direction
   dp = port_a.p - port_b.p;
@@ -423,8 +423,8 @@ equation
   port_a.m_flow + port_b.m_flow = 0;
 
   // Transport of substances
-  port_a.Xi_outflow = inStream(port_b.Xi_outflow);
-  port_b.Xi_outflow = inStream(port_a.Xi_outflow);
+  port_a.X_outflow = inStream(port_b.X_outflow);
+  port_b.X_outflow = inStream(port_a.X_outflow);
 
   port_a.C_outflow = inStream(port_b.C_outflow);
   port_b.C_outflow = inStream(port_a.C_outflow);
@@ -604,6 +604,10 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       final parameter Types.Dynamics traceDynamics=massDynamics
       "Formulation of trace substance balance" 
         annotation(Evaluate=true, Dialog(tab = "Assumptions", group="Dynamics"));
+      // States for substances
+      parameter Boolean useIndependentMassFractionsAsStates =  true
+      " = true, when using a non-redundant set of states for medium substances"
+        annotation(Evaluate=true, Dialog(tab = "Assumptions", group="States for medium substances"));
 
       // Initialization
       parameter Medium.AbsolutePressure p_start = system.p_start
@@ -620,7 +624,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         if use_T_start then Medium.specificEnthalpy_pTX(p_start, T_start, X_start) else Medium.h_default
       "Start value of specific enthalpy" 
         annotation(Dialog(tab = "Initialization", enable = not use_T_start));
-      parameter Medium.MassFraction X_start[Medium.nX] = Medium.X_default
+      parameter Medium.MassFraction X_start[Medium.nS] = Medium.X_default
       "Start value of mass fractions m_i/m" 
         annotation (Dialog(tab="Initialization", enable=nXi > 0));
       parameter Medium.ExtraProperty C_start[Medium.nC](
@@ -633,10 +637,10 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         p(start=p_start),
         h(start=h_start),
         T(start=T_start),
-        Xi(start=X_start[1:medium.nXi]));
+        X(start=X_start));
       SI.Energy U "Internal energy of fluid";
       SI.Mass m "Mass of fluid";
-      SI.Mass[medium.nXi] mXi "Masses of independent components in the fluid";
+      SI.Mass[Medium.nS] mX "Masses of substances in the fluid";
       SI.Mass[Medium.nC] mC "Masses of trace substances in the fluid";
       // C need to be added here because unlike for Xi, which has medium.Xi,
       // there is no variable medium.C
@@ -644,7 +648,7 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
 
       // variables that need to be defined by an extending class
       SI.MassFlowRate mb_flow "Mass flows across boundaries";
-      SI.MassFlowRate[medium.nXi] mbXi_flow
+      SI.MassFlowRate[Medium.nS] mbX_flow
       "Substance mass flows across boundaries";
       Medium.ExtraPropertyFlowRate[Medium.nC] mbC_flow
       "Trace substance mass flows across boundaries";
@@ -653,18 +657,22 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
       SI.HeatFlowRate Qb_flow
       "Heat flow across boundaries or energy source/sink";
       SI.Power Wb_flow "Work flow across boundaries or source term";
+
   protected
-      parameter Boolean initialize_p = not Medium.singleState
+      parameter Boolean Medium_singleState = Medium.Compressibility<>ModelicaNew.Media.Interfaces.Types.Compressibility.FullyCompressible annotation(Evaluate=true);
+
+      parameter Boolean initialize_p = not Medium_singleState
       "= true to set up initial equations for pressure";
     equation
-      assert(not (energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState) or Medium.singleState,
+      assert(not (energyDynamics<>Dynamics.SteadyState and massDynamics==Dynamics.SteadyState) or Medium_singleState,
              "Bad combination of dynamics options and Medium not conserving mass if fluidVolume is fixed.");
 
       // Total quantities
       m = fluidVolume*medium.d;
-      mXi = m*medium.Xi;
+      mX = m*medium.X;
       U = m*medium.u;
       mC = m*C;
+      sum(medium.X)=1;
 
       // Energy and mass balances
       if energyDynamics == Dynamics.SteadyState then
@@ -679,10 +687,14 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         der(m) = mb_flow;
       end if;
 
-      if substanceDynamics == Dynamics.SteadyState then
-        zeros(medium.nXi) = mbXi_flow;
+      if useIndependentMassFractionsAsStates then
+        if substanceDynamics == Dynamics.SteadyState then
+          zeros(Medium.nS-1) = mbX_flow[1:(Medium.nS-1)];
+        else
+          der(mX[1:(Medium.nS-1)]) = mbX_flow[1:(Medium.nS-1)];
+        end if;
       else
-        der(mXi) = mbXi_flow;
+        assert(false, "This option is not yet implemented.");
       end if;
 
       if traceDynamics == Dynamics.SteadyState then
@@ -717,10 +729,14 @@ the boundary temperatures <tt>heatPorts[n].T</tt>, and the heat flow rates <tt>Q
         end if;
       end if;
 
-      if substanceDynamics == Dynamics.FixedInitial then
-        medium.Xi = X_start[1:medium.nXi];
-      elseif substanceDynamics == Dynamics.SteadyStateInitial then
-        der(medium.Xi) = zeros(medium.nXi);
+      if useIndependentMassFractionsAsStates then
+        if substanceDynamics == Dynamics.FixedInitial then
+          medium.X[1:(Medium.nS-1)] = X_start[1:Medium.nS-1];
+        elseif substanceDynamics == Dynamics.SteadyStateInitial then
+          der(medium.X[1:(Medium.nS-1)]) = zeros(Medium.nS-1);
+        end if;
+      else
+        assert(false, "This option is not yet implemented.");
       end if;
 
       if traceDynamics == Dynamics.FixedInitial then

@@ -3,7 +3,7 @@ model StaticPipe
   import Modelica_Fluid;
   extends Modelica.Icons.Example;
   replaceable package Medium = 
-      ModelicaNew.Media.Water.ConstantPropertyLiquidWater;
+      ModelicaNew.Media.FluidTypes.Compressible.LinearColdWater;
   //ModelicaNew.Media.Water.StandardWater;
 
   Modelica_Fluid.Pipes.StaticPipe pipe1(

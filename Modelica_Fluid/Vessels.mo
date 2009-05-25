@@ -136,8 +136,8 @@ initial equation
             extent={{-95,-24},{95,-44}},
             lineColor={0,0,0},
             textString=DynamicSelect("%level_start", realString(
-                level,
-                1,
+                level, 
+                1, 
                 2)))}),
       Documentation(info="<HTML>
 <p> 
@@ -225,9 +225,9 @@ end OpenTank;
     annotation(Dialog(tab="Advanced",group="Ports"));
 */
         Medium.EnthalpyFlowRate ports_H_flow[nPorts];
-        Medium.MassFlowRate ports_mXi_flow[nPorts,nXi];
-        Medium.MassFlowRate[nXi] sum_ports_mXi_flow
-        "Substance mass flows through ports";
+        Medium.MassFlowRate ports_mX_flow[nPorts,if Medium.nS==1 then 0 else Medium.nS];
+        Medium.MassFlowRate[if Medium.nS==1 then 0 else Medium.nS]
+        sum_ports_mX_flow "Substance mass flows through ports";
         Medium.ExtraPropertyFlowRate ports_mC_flow[nPorts,Medium.nC];
         Medium.ExtraPropertyFlowRate[Medium.nC] sum_ports_mC_flow
         "Trace substance mass flows through ports";
@@ -297,7 +297,7 @@ end OpenTank;
 
       equation
         mb_flow = sum(ports.m_flow);
-        mbXi_flow = sum_ports_mXi_flow;
+        mbXi_flow = if Medium.nS==1 then zeros(0) else sum_ports_mX_flow[1:(Medium.nS-1)];
         mbC_flow  = sum_ports_mC_flow;
         Hb_flow = sum(ports_H_flow) + sum(ports_E_flow);
         Qb_flow = heatTransfer.Q_flows[1];
@@ -334,7 +334,7 @@ of the modeller. Increase nPorts to add an additional port.
           if use_portsData then
             // dp = 0.5*zeta*d*v*|v|
             // Note: assume vessel_ps_static for portDensities to avoid algebraic loops for ports.p
-            portDensities[i] = noEvent(Medium.density(Medium.setState_phX(vessel_ps_static[i], actualStream(ports[i].h_outflow), actualStream(ports[i].Xi_outflow))));
+            portDensities[i] = noEvent(Medium.density(Medium.setState_phX(vessel_ps_static[i], actualStream(ports[i].h_outflow), actualStream(ports[i].X_outflow))));
             portVelocities[i] = smooth(0, ports[i].m_flow/portAreas[i]/portDensities[i]);
             // Note: the penetration should not go too close to zero as this would prevent a vessel from running empty
             ports_penetration[i] = Utilities.regStep(fluidLevel - portsData_height[i] - 0.1*portsData_diameter[i], 1, 1e-3, 0.1*portsData_diameter[i]);
@@ -378,22 +378,24 @@ of the modeller. Increase nPorts to add an additional port.
           end if;
 
           ports[i].h_outflow  = medium.h;
-          ports[i].Xi_outflow = medium.Xi;
+          ports[i].X_outflow = medium.X;
           ports[i].C_outflow  = C;
 
           ports_H_flow[i] = ports[i].m_flow * actualStream(ports[i].h_outflow)
           "Enthalpy flow";
           ports_E_flow[i] = ports[i].m_flow*(0.5*portVelocities[i]*portVelocities[i] + system.g*portsData_height[i])
           "Flow of kinetic and potential energy";
-          ports_mXi_flow[i,:] = ports[i].m_flow * actualStream(ports[i].Xi_outflow)
+          ports_mX_flow[i,:] = ports[i].m_flow * actualStream(ports[i].X_outflow)
           "Component mass flow";
           ports_mC_flow[i,:]  = ports[i].m_flow * actualStream(ports[i].C_outflow)
           "Trace substance mass flow";
         end for;
 
-        for i in 1:nXi loop
-          sum_ports_mXi_flow[i] = sum(ports_mXi_flow[:,i]);
-        end for;
+        if Medium.nS<>1 then
+          for i in 1:Medium.nS loop
+            sum_ports_mX_flow[i] = sum(ports_mX_flow[:,i]);
+          end for;
+        end if;
 
         for i in 1:Medium.nC loop
           sum_ports_mC_flow[i]  = sum(ports_mC_flow[:,i]);

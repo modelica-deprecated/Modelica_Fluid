@@ -284,7 +284,7 @@ model AbruptAdaptor
               100}},
           grid={1,1}), graphics={Rectangle(
             extent=DynamicSelect({{-100,22},{0,-22}}, {{-100,max(0.1, min(1,
-                diameter_a/max(diameter_a, diameter_b)))*60},{0,-max(0.1, min(1,
+                diameter_a/max(diameter_a, diameter_b)))*60},{0,-max(0.1, min(1, 
                 diameter_a/max(diameter_a, diameter_b)))*60}}),
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
@@ -471,9 +471,9 @@ of the modeller.
     port_2.h_outflow = medium.h;
     port_3.h_outflow = medium.h;
 
-    port_1.Xi_outflow = medium.Xi;
-    port_2.Xi_outflow = medium.Xi;
-    port_3.Xi_outflow = medium.Xi;
+    port_1.X_outflow = medium.X;
+    port_2.X_outflow = medium.X;
+    port_3.X_outflow = medium.X;
 
     port_1.C_outflow = C;
     port_2.C_outflow = C;
@@ -481,9 +481,9 @@ of the modeller.
 
     // Mass balances
     mb_flow = port_1.m_flow + port_2.m_flow + port_3.m_flow "Mass balance";
-    mbXi_flow = port_1.m_flow*actualStream(port_1.Xi_outflow)
-                + port_2.m_flow*actualStream(port_2.Xi_outflow)
-                + port_3.m_flow*actualStream(port_3.Xi_outflow)
+    mbX_flow = port_1.m_flow*actualStream(port_1.X_outflow)
+                + port_2.m_flow*actualStream(port_2.X_outflow)
+                + port_3.m_flow*actualStream(port_3.X_outflow)
       "Component mass balances";
 
     mbC_flow  = port_1.m_flow*actualStream(port_1.C_outflow)

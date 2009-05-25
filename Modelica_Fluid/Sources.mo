@@ -23,10 +23,10 @@ package Sources "Define fixed or prescribed boundary conditions"
       "Boundary specific enthalpy" 
       annotation (Dialog(group="Boundary temperature or Boundary specific enthalpy",
                   enable = not use_T));
-    parameter Medium.MassFraction X[Medium.nX](
+    parameter Medium.MassFraction X[Medium.nS](
          quantity=Medium.substanceNames)=Medium.X_default
       "Boundary mass fractions m_i/m" 
-      annotation (Dialog(group = "Only for multi-substance flow", enable=nXi > 0));
+      annotation (Dialog(group = "Only for multi-substance flow", enable=Medium.nS > 1));
 
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
@@ -65,9 +65,9 @@ with exception of boundary pressure, do not have an effect.
 
   equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-                                          Medium.singleState, use_p, X,
+                                          Medium.Compressibility<>ModelicaNew.Media.Interfaces.Types.Compressibility.FullyCompressible, use_p, X,
                                           "FixedBoundary");
-    if use_p or Medium.singleState then
+    if use_p or Medium.Compressibility<>ModelicaNew.Media.Interfaces.Types.Compressibility.FullyCompressible then
       medium.p = p;
     else
       medium.d = d;
@@ -78,7 +78,7 @@ with exception of boundary pressure, do not have an effect.
       medium.h = h;
     end if;
 
-    medium.Xi = X[1:nXi];
+    medium.X = X;
 
     ports.C_outflow = fill(C, nPorts);
   end FixedBoundary;
@@ -112,10 +112,10 @@ to define fixed or prescribed ambient conditions.
       "Fixed value of temperature" 
       annotation (Evaluate = true,
                   Dialog(enable = not use_T_in));
-    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
+    parameter Medium.MassFraction X[Medium.nS] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not use_X_in) and nXi > 0));
+                  Dialog(enable = (not use_X_in) and Medium.nS > 1));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Fixed values of trace substances" 
@@ -129,7 +129,7 @@ to define fixed or prescribed ambient conditions.
       "Prescribed boundary temperature" 
       annotation (Placement(transformation(extent={{-140,20},{-100,60}},
             rotation=0)));
-    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
+    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nS] if 
                                                           use_X_in
       "Prescribed boundary composition" 
       annotation (Placement(transformation(extent={{-140,-60},{-100,-20}},
@@ -144,7 +144,7 @@ to define fixed or prescribed ambient conditions.
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput T_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nS]
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput C_in_internal[Medium.nC]
       "Needed to connect to conditional connector";
@@ -232,7 +232,7 @@ with exception of boundary pressure, do not have an effect.
           grid={2,2}), graphics));
   equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-      Medium.singleState, true, X_in_internal, "Boundary_pT");
+      Medium.Compressibility<>ModelicaNew.Media.Interfaces.Types.Compressibility.FullyCompressible, true, X_in_internal, "Boundary_pT");
     connect(p_in, p_in_internal);
     connect(T_in, T_in_internal);
     connect(X_in, X_in_internal);
@@ -251,7 +251,7 @@ with exception of boundary pressure, do not have an effect.
     end if;
     medium.p = p_in_internal;
     medium.T = T_in_internal;
-    medium.Xi = X_in_internal[1:nXi];
+    medium.X = X_in_internal;
     ports.C_outflow = fill(C_in_internal, nPorts);
   end Boundary_pT;
 
@@ -278,10 +278,10 @@ with exception of boundary pressure, do not have an effect.
       "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
                   Dialog(enable = not use_h_in));
-    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
+    parameter Medium.MassFraction X[Medium.nS] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not use_X_in) and nXi > 0));
+                  Dialog(enable = (not use_X_in) and Medium.nS > 1));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Fixed values of trace substances" 
@@ -295,7 +295,7 @@ with exception of boundary pressure, do not have an effect.
       "Prescribed boundary specific enthalpy" 
       annotation (Placement(transformation(extent={{-140,20},{-100,60}},
             rotation=0)));
-    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
+    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nS] if 
                                                           use_X_in
       "Prescribed boundary composition" 
       annotation (Placement(transformation(extent={{-140,-60},{-100,-20}},
@@ -388,13 +388,13 @@ with exception of boundary pressure, do not have an effect.
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput h_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nS]
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput C_in_internal[Medium.nC]
       "Needed to connect to conditional connector";
   equation
     Modelica_Fluid.Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-      Medium.singleState, true, X_in_internal, "Boundary_ph");
+      Medium.Compressibility<>ModelicaNew.Media.Interfaces.Types.Compressibility.FullyCompressible, true, X_in_internal, "Boundary_ph");
     connect(p_in, p_in_internal);
     connect(h_in, h_in_internal);
     connect(X_in, X_in_internal);
@@ -413,7 +413,7 @@ with exception of boundary pressure, do not have an effect.
     end if;
     medium.p = p_in_internal;
     medium.h = h_in_internal;
-    medium.Xi = X_in_internal[1:nXi];
+    medium.X = X_in_internal;
     ports.C_outflow = fill(C_in_internal, nPorts);
   end Boundary_ph;
 
@@ -440,10 +440,10 @@ with exception of boundary pressure, do not have an effect.
       "Fixed value of temperature" 
       annotation (Evaluate = true,
                   Dialog(enable = not use_T_in));
-    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
+    parameter Medium.MassFraction X[Medium.nS] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not use_X_in) and nXi > 0));
+                  Dialog(enable = (not use_X_in) and Medium.nS > 1));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Fixed values of trace substances" 
@@ -457,7 +457,7 @@ with exception of boundary pressure, do not have an effect.
       "Prescribed fluid temperature" 
       annotation (Placement(transformation(extent={{-140,20},{-100,60}},
             rotation=0), iconTransformation(extent={{-140,20},{-100,60}})));
-    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
+    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nS] if 
                                                           use_X_in
       "Prescribed fluid composition" 
       annotation (Placement(transformation(extent={{-140,-60},{-100,-20}},
@@ -472,7 +472,7 @@ with exception of boundary pressure, do not have an effect.
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput T_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nS]
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput C_in_internal[Medium.nC]
       "Needed to connect to conditional connector";
@@ -570,7 +570,7 @@ with exception of boundary flow rate, do not have an effect.
 </html>"));
   equation
     Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-      Medium.singleState, true, X_in_internal, "MassFlowSource_T");
+      Medium.Compressibility<>ModelicaNew.Media.Interfaces.Types.Compressibility.FullyCompressible, true, X_in_internal, "MassFlowSource_T");
     connect(m_flow_in, m_flow_in_internal);
     connect(T_in, T_in_internal);
     connect(X_in, X_in_internal);
@@ -589,7 +589,7 @@ with exception of boundary flow rate, do not have an effect.
     end if;
     sum(ports.m_flow) = -m_flow_in_internal;
     medium.T = T_in_internal;
-    medium.Xi = X_in_internal[1:nXi];
+    medium.X = X_in_internal;
     ports.C_outflow = fill(C_in_internal, nPorts);
   end MassFlowSource_T;
 
@@ -616,10 +616,10 @@ with exception of boundary flow rate, do not have an effect.
       "Fixed value of specific enthalpy" 
       annotation (Evaluate = true,
                   Dialog(enable = not use_h_in));
-    parameter Medium.MassFraction X[Medium.nX] = Medium.X_default
+    parameter Medium.MassFraction X[Medium.nS] = Medium.X_default
       "Fixed value of composition" 
       annotation (Evaluate = true,
-                  Dialog(enable = (not use_X_in) and nXi > 0));
+                  Dialog(enable = (not use_X_in) and Medium.nS > 1));
     parameter Medium.ExtraProperty C[Medium.nC](
          quantity=Medium.extraPropertiesNames)=fill(0, Medium.nC)
       "Fixed values of trace substances" 
@@ -633,7 +633,7 @@ with exception of boundary flow rate, do not have an effect.
       "Prescribed fluid specific enthalpy" 
       annotation (Placement(transformation(extent={{-140,20},{-100,60}},
             rotation=0), iconTransformation(extent={{-140,20},{-100,60}})));
-    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nX] if 
+    Modelica.Blocks.Interfaces.RealInput X_in[Medium.nS] if 
                                                           use_X_in
       "Prescribed fluid composition" 
       annotation (Placement(transformation(extent={{-140,-60},{-100,-20}},
@@ -648,7 +648,7 @@ with exception of boundary flow rate, do not have an effect.
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput h_in_internal
       "Needed to connect to conditional connector";
-    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nX]
+    Modelica.Blocks.Interfaces.RealInput X_in_internal[Medium.nS]
       "Needed to connect to conditional connector";
     Modelica.Blocks.Interfaces.RealInput C_in_internal[Medium.nC]
       "Needed to connect to conditional connector";
@@ -746,7 +746,7 @@ with exception of boundary flow rate, do not have an effect.
 </html>"));
   equation
     Utilities.checkBoundary(Medium.mediumName, Medium.substanceNames,
-      Medium.singleState, true, X_in_internal, "MassFlowSource_h");
+      Medium.Compressibility<>ModelicaNew.Media.Interfaces.Types.Compressibility.FullyCompressible, true, X_in_internal, "MassFlowSource_h");
     connect(m_flow_in, m_flow_in_internal);
     connect(h_in, h_in_internal);
     connect(X_in, X_in_internal);
@@ -765,7 +765,7 @@ with exception of boundary flow rate, do not have an effect.
     end if;
     sum(ports.m_flow) = -m_flow_in_internal;
     medium.h = h_in_internal;
-    medium.Xi = X_in_internal[1:nXi];
+    medium.X = X_in_internal;
     ports.C_outflow = fill(C_in_internal, nPorts);
   end MassFlowSource_h;
 
@@ -783,7 +783,8 @@ with exception of boundary flow rate, do not have an effect.
         "Medium model within the source" 
        annotation (choicesAllMatching=true);
 
-    Media.BaseProperties medium(redeclare package Medium = Medium) "Medium in the source";
+    Media.BaseProperties medium(redeclare package Medium = Medium)
+        "Medium in the source";
 
     Interfaces.FluidPorts_b ports[nPorts](
                        redeclare each package Medium = Medium,
@@ -806,9 +807,9 @@ place with these connections, which is usually not the intention
 of the modeller. Increase nPorts to add an additional port.
 ");
 
-       ports[i].p          = medium.p;
-       ports[i].h_outflow  = medium.h;
-       ports[i].Xi_outflow = medium.Xi;
+       ports[i].p         = medium.p;
+       ports[i].h_outflow = medium.h;
+       ports[i].X_outflow = medium.X;
     end for;
 
     annotation (defaultComponentName="boundary", Documentation(info="<html>
