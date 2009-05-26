@@ -379,8 +379,6 @@ partial model PartialTwoPortTransport
     annotation(Dialog(tab="Advanced",group="Diagnostics"));
 
   // Variables
-  Medium.ThermodynamicState state_a "state for medium inflowing through port_a";
-  Medium.ThermodynamicState state_b "state for medium inflowing through port_b";
   Medium.MassFlowRate m_flow(
      min=if allowFlowReversal then -Modelica.Constants.inf else 0,
      start = m_flow_start) "Mass flow rate in design flow direction";
@@ -406,7 +404,9 @@ partial model PartialTwoPortTransport
                   Medium.temperature(Medium.setState_phX(port_b.p, port_b.h_outflow, port_b.Xi_outflow)),
                   m_flow_small) if show_T
       "Temperature close to port_b, if show_T = true";
-
+  protected
+  Medium.ThermodynamicState state_a "state for medium inflowing through port_a";
+  Medium.ThermodynamicState state_b "state for medium inflowing through port_b";
 equation
   // medium states
   state_a = Medium.setState_phX(port_a.p, inStream(port_a.h_outflow), inStream(port_a.Xi_outflow));
