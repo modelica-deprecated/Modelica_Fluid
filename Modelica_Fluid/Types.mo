@@ -38,106 +38,106 @@ Enumeration to define the formulation of balance equations
  
 <tr><td>SteadyState</td><td>Steady state balance, Initial guess value</td></tr>
 </table>
-
+ 
 <p>
 The enumeration \"Dynamics\" is used for the mass, energy and momentum balance equations
 respectively. The exact meaning for the three balance equations is stated in the following
 tables:
 </p>
-
+ 
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><td colspan=\"3\"><b>Mass balance</b> </td>
 <tr><td><b>Dynamics.</b></td>
     <td><b>Balance equation</b></td>
     <td><b>Initial condition</b></td></tr>
-
+ 
 <tr><td> DynamicFreeInitial</td>
     <td> no restrictions </td>
     <td> no initial conditions </td></tr>
-
+ 
 <tr><td> FixedInitial</td>
     <td> no restrictions </td>
     <td> <b>if</b> Medium.singleState <b>then</b> <br>
          &nbsp;&nbsp;no initial condition<br>
          <b>else</b> p=p_start </td></tr>
-
+ 
 <tr><td> SteadyStateInitial</td>
     <td> no restrictions </td>
     <td> <b>if</b> Medium.singleState <b>then</b> <br>
          &nbsp;&nbsp;no initial condition<br>
          <b>else</b> <b>der</b>(p)=0 </td></tr>
-
+ 
 <tr><td> SteadyState</td>
     <td> <b>der</b>(m)=0  </td></tr>
     <td> no initial conditions </td></tr>
 </table>
-
+ 
 &nbsp;<br>
-
-
+ 
+ 
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><td colspan=\"3\"><b>Energy balance</b> </td>
 <tr><td><b>Dynamics.</b></td>
     <td><b>Balance equation</b></td>
     <td><b>Initial condition</b></td></tr>
-
+ 
 <tr><td> DynamicFreeInitial</td>
     <td> no restrictions </td>
     <td> no initial conditions </td></tr>
-
+ 
 <tr><td> FixedInitial</td>
     <td> no restrictions </td>
     <td> T=T_start or h=h_start </td></tr>
-
+ 
 <tr><td> SteadyStateInitial</td>
     <td> no restrictions </td>
     <td> <b>der</b>(T)=0 or <b>der</b>(h)=0 </td></tr>
-
+ 
 <tr><td> SteadyState</td>
     <td> <b>der</b>(U)=0  </td></tr>
     <td> no initial conditions </td></tr>
 </table>
-
+ 
 &nbsp;<br>
-
-
-
+ 
+ 
+ 
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><td colspan=\"3\"><b>Momentum balance</b> </td>
 <tr><td><b>Dynamics.</b></td>
     <td><b>Balance equation</b></td>
     <td><b>Initial condition</b></td></tr>
-
+ 
 <tr><td> DynamicFreeInitial</td>
     <td> no restrictions </td>
     <td> no initial conditions </td></tr>
-
+ 
 <tr><td> FixedInitial</td>
     <td> no restrictions </td>
     <td> m_flow = m_flow_start </td></tr>
-
+ 
 <tr><td> SteadyStateInitial</td>
     <td> no restrictions </td>
     <td> <b>der</b>(m_flow)=0 </td></tr>
-
+ 
 <tr><td> SteadyState</td>
     <td> <b>der</b>(m_flow)=0 </td></tr>
     <td> no initial conditions </td></tr>
 </table>
-
-
+ 
+ 
 <p>
 In the tables above, the equations are given for one-substance fluids. For multiple-substance
 fluids and for trace substances, equivalent equations hold.
 </p>
-
+ 
 <p>
 Medium.singleState is a medium property and defines whether the medium is only
 described by one state (+ the mass fractions in case of a multi-substance fluid). In such
 a case one initial condition less must be provided. For example, incompressible
 media have Medium.singleState = <b>true</b>.
 </p>
-
+ 
 </html>"));
 
   type CvTypes = enumeration(
@@ -147,7 +147,7 @@ media have Medium.singleState = <b>true</b>.
       OpPoint "Av defined by operating point")
     "Enumeration to define the choice of valve flow coefficient" annotation (
       Documentation(info="<html>
-
+ 
 <p>
 Enumeration to define the choice of valve flow coefficient
 (to be selected via choices menu):
@@ -156,7 +156,7 @@ Enumeration to define the choice of valve flow coefficient
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>CvTypes.</b></th>
     <th><b>Meaning</b></th></tr>
-
+ 
 <tr><td>Av</td>
     <td>Av (metric) flow coefficient</td></tr>
  
@@ -168,15 +168,15 @@ Enumeration to define the choice of valve flow coefficient
  
 <tr><td>OpPoint</td>
     <td>Av defined by operating point</td></tr>
-
+ 
 </table>
-
+ 
 <p>
 The details of the coefficients are explained in the 
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ComponentDefinition.ValveCharacteristics\">
    Users Guide </a>.
 </p>
-
+ 
 </html>"));
 
   type PortFlowDirection = enumeration(
@@ -185,7 +185,7 @@ The details of the coefficients are explained in the
       Bidirectional "No restrictions on fluid flow (flow reversal possible)")
     "Enumeration to define whether flow reversal is allowed" annotation (
       Documentation(info="<html>
-
+ 
 <p>
 Enumeration to define the assumptions on the model for the 
 direction of fluid flow at a port (to be selected via choices menu):
@@ -194,7 +194,7 @@ direction of fluid flow at a port (to be selected via choices menu):
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>PortFlowDirection.</b></th>
     <th><b>Meaning</b></th></tr>
-
+ 
 <tr><td>Entering</td>
     <td>Fluid flow is only entering the port from the outside</td></tr>
  
@@ -204,13 +204,13 @@ direction of fluid flow at a port (to be selected via choices menu):
 <tr><td>Bidirectional</td>
     <td>No restrictions on fluid flow (flow reversal possible)</td></tr>
 </table>
-
+ 
 <p>
 The default is \"PortFlowDirection.Bidirectional\". If you are completely sure that
 the flow is only in one direction, then the other settings may
 make the simulation of your model faster.
 </p>
-
+ 
 </html>"));
 
   type ModelStructure = enumeration(
@@ -220,7 +220,7 @@ make the simulation of your model faster.
       a_vb "a_vb: port_a - flow model - volume - port_b")
     "Enumeration with choices for model structure in distributed pipe model" 
     annotation (Documentation(info="<html>
-
+ 
 <p>
 Enumeration to define the discretization structure of
 distributed pipe models according to the staggered grid scheme:
@@ -229,7 +229,7 @@ distributed pipe models according to the staggered grid scheme:
 <table border=1 cellspacing=0 cellpadding=2>
 <tr><th><b>ModelStructure.</b></th>
     <th><b>Meaning</b></th></tr>
-
+ 
 <tr><td>av_vb</td>
     <td>port_a - volume - flow model - volume - port_b</td></tr>
  
@@ -238,11 +238,11 @@ distributed pipe models according to the staggered grid scheme:
  
 <tr><td>av_b</td>
     <td>port_a - volume - flow model - port_b</td></tr>
-
+ 
 <tr><td>a_vb</td>
     <td>port_a - flow model - volume - port_b</td></tr>
 </table>
-
+ 
 <p>
 The default is \"ModelStructure.av_vb\", i.e., the distributed pipe
 has \"volumes\" at its both ends. The advantage is that connections
@@ -250,7 +250,7 @@ of the pipe to flow models (like fittings) lead to the desirable structure
 of alternating volume and flow models, which means that no non-linear
 algebraic equations occur. 
 </p>
-
+ 
 <p>
 Direct connections of distributed pipes with 
 this option means that two volumes are directly connected together. Due to the
@@ -263,13 +263,13 @@ of states is reduced and index reduction takes place (which means that medium
 equations depending on pressure are differentiated and the number of required
 initial conditions is reduced by one).
 </p>
-
+ 
 <p>
 The default option \"av_vb\" cannot be used, if the dynamic pipe is connected to a model with non-differentiable pressure, like a Sources.Boundary_pT with prescribed jumping pressure. The modelStructure can be configured as appropriate in such situations, in order to place a momentum balance between a pressure state of the pipe and a non-differentiable boundary condition
 (e.g. if the jumping pressure component is connected to port_a, use model structure
 ModelStructure.a_vb).
 </p>
-
-
+ 
+ 
 </html>"));
 end Types;

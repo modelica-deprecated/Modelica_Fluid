@@ -236,11 +236,11 @@ Moreover it is worth noting that the idealized direct connection between the hea
 is treated as high-index DAE, as opposed to a nonlinear equation system for connected pressure loss correlations. A pressure loss correlation 
 could be additionally introduced to model the fitting between the heater and the pipe, e.g. to adapt different diameters.
 </p>
-
+ 
 <p align=\"center\">
 <img src=\"../Images/Examples/HeatingSystem.png\" border=\"1\">
 </p>
-
+ 
 </html>
 "), experiment(StopTime=6000),
     Commands(file(ensureSimulated=true)=

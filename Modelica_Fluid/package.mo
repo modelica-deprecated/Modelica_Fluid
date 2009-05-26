@@ -3,11 +3,10 @@ package Modelica_Fluid "Modelica_Fluid, 1.0: One-dimensional thermo-fluid flow m
   extends Modelica.Icons.Library;
   import SI = Modelica.SIunits;
 
-
 package UsersGuide "Users Guide"
 
   annotation (DocumentationClass=true, Documentation(info="<HTML>
-
+ 
 <p>
 The library <b>Modelica_Fluid</b> is a <b>free</b> Modelica package provided under the
 <a href=\"Modelica://Modelica_Fluid.UsersGuide.ModelicaLicense2\">Modelica License 2</a>.
@@ -112,7 +111,7 @@ This library has the following main features:
   class GettingStarted "Getting started"
 
     annotation (Documentation(info="<html>
-
+ 
 <p>
 Please explore the
 <a href=\"Modelica://Modelica_Fluid.Examples\">Examples</a>,
@@ -127,7 +126,7 @@ which provide simple models for a broad variety of applications.
   package ComponentDefinition "Component definition"
 
     annotation (Documentation(info="<html>
-
+ 
 <p>
 In this section it is described how the components
 of the Modelica_Fluid library are implemented.
@@ -149,7 +148,7 @@ This section is partly based on the following paper:
 </dl>
 Please note that the design of the connectors has been changed with respect to the design presented in that paper.
 </html>
-"),   uses(Modelica(version="3.0")));
+"));
 
   class FluidConnectors "Fluid connectors"
 
@@ -402,7 +401,7 @@ all the kinetic phenomena with the appropriate level of detail.
   class BalanceEquations "Balance equations"
 
     annotation (Documentation(info="<html>
-
+ 
 <p>
 For one-dimensional flow
 along the coordinate \"x\", the following partial differential
@@ -473,7 +472,7 @@ component inherits from.
   class UpstreamDiscretization "Upstream discretization"
 
     annotation (Documentation(info="<html>
-
+ 
 <p>
 When implementing a Fluid component, the difficult arises that
 the value of intensive quantities (such as p, T, &rho;)
@@ -577,7 +576,7 @@ direction.
   class RegularizingCharacteristics "Regularizing characteristics"
 
     annotation (Documentation(info="<html>
-
+ 
 <p>
 Pressure drop equations and other fluid characteristics are usually
 computed by <b>semi-empirical</b> equations. Unfortunately, the developers
@@ -588,7 +587,7 @@ be slightly modified or adapted in order that obvious
 simulation problems are avoided. Below, examples are given to
 demonstrate what problems occur and how to regularize the characteristics:
 </p>
-
+ 
 <h4><font color=\"#008000\">Square root function</font></h4>
 <p>
 In several empirical formulae, expressions of the following form
@@ -654,7 +653,7 @@ and 0.0025% around x=1.
   class WallFriction "Wall friction"
 
     annotation (Documentation(info="<html>
-
+ 
  
 <p>
 One important special case for a pressure loss is the friction at the
@@ -978,7 +977,7 @@ The pragmatic approach used in Modelica_Fluid.ControlValves is to accept the fac
     class SystemComponent "System component"
 
       annotation (Documentation(info="<html>
-
+ 
 <p>
 The Modelica_Fluid library is designed so that each model of a system must
 include an instance <tt>system</tt> of the <tt>System</tt> component at the top level, in the same way as the <tt>World</tt> model of the MultiBody Library. The System component contains the parameters that
@@ -1018,7 +1017,7 @@ is recognised by all other components.
     class MediumDefinition "Definition of the medium models"
 
       annotation (Documentation(info="<html>
-
+ 
 <p>
 All the models in Modelica_Fluid compute fluid properties by using medium
 models defined by Modelica.Media packages. Custom fluid models can also be
@@ -1042,7 +1041,7 @@ components</li>.
     class CustomizingModel "Customizing a system model"
 
       annotation (Documentation(info="<html>
-
+ 
 <p>
 Once a system model has been built, it is possible to obtain different approximations by
 appropriately setting the defaults in the System component (and/or the settings of specific
@@ -1081,7 +1080,7 @@ options might be contradictory, and will therefore trigger compilation errors.
 </html>"));
     end CustomizingModel;
     annotation (Documentation(info="<html>
-
+ 
 <p>
 This section is a quick primer explaining how to build a system model using Modelica_Fluid.
 It covers some key issues, such as the System component, the definition of medium models in the
@@ -2328,12 +2327,11 @@ and many have contributed.
      of this library within the <a href=\"http://www.itea2.org\">ITEA</a> project
      <a href=\"http://www.itea2.org/public/project_leaflets/EUROSYSLIB_profile_oct-07.pdf\">EUROSYSLIB</a>
      is highly appreciated.</p>
-
-
+ 
+ 
 </html>"));
 end Contact;
 end UsersGuide;
-
 
 annotation (
   version="1.0",
@@ -2341,7 +2339,7 @@ annotation (
   versionDate="$Date::                            $",
   preferedView="info",
   Settings(NewStateSelection=true),
-  uses(Modelica(version="3.0")),
+  uses(Modelica(version="3.0.1")),
   classOrder={"UsersGuide","Examples","System","Vessels","Pipes","Machines","Valves",
       "Fittings", "Sources", "Sensors", "Interfaces", "Types", "Utilities", "Icons", "Test", "*"},
   Documentation(info="<html>
@@ -2359,12 +2357,12 @@ substance medium with one or more phases might be used.
 The goal is to include
 the Modelica_Fluid library in the Modelica standard library as Modelica.Fluid.
 </p>
-
+ 
 <p>
 In the next figure, several features of the library are demonstrated with
 a simple heating system with a closed flow cycle. By just changing one configuration parameter in the system object the equations are changed between steady-state and dynamic simulation with fixed or steady-state initial conditions.
 </p>
-
+ 
 <blockquote>
     <img src=\"../Images/UsersGuide/HeatingSystem.png\" border=1>
 </blockquote>

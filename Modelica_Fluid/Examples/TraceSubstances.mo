@@ -69,7 +69,7 @@ package TraceSubstances "Library demonstrating the usage of trace substances"
               100,100}}), graphics),
       experiment(StopTime=3600),
       Documentation(info="<html>
-
+ 
 <p>
 This example consists of a volume with a carbon dioxide concentration that corresponds to about 1000 PPM.
 There is a fresh air stream with a carbon dioxide concentration of about 300 PPM.
@@ -77,11 +77,11 @@ The fresh air stream is such that the air exchange rate is about 5 air changes p
 After 1 hour of ventilation, the volume's carbon dioxide concentration is close to the 
 concentration of the fresh air.
 </p>
-
+ 
 <p align=\"center\">
 <img src=\"../Images/Examples/RoomCO2.png\" border=\"1\">
 </p>
-
+ 
 </html>"),
       Commands(file(ensureSimulated=true)=
           "Scripts/Examples/RoomCO2/plotConcentrations.mos"
@@ -196,7 +196,7 @@ concentration does not exceed <tt>1000 PPM (=1.519E-3 kg/kg)</tt>.
 The fresh air has a CO2 concentration of <tt>300 PPM</tt> which corresponds to a typical
 CO2 concentration in the outside air. 
 </p>
-
+ 
 <p>
 The CO2 emission from the occupants is implemented as a mass flow source.
 Depending on the activity and size, a person emits about <tt>8.18E-6 kg/s</tt> CO2. In the model, 
@@ -205,17 +205,17 @@ Since the mass flow rate associate with the CO2 source model contributes to the 
 this mass flow rate should be kept small. Thus, in the source model, we set the
 CO2 concentration to <tt>C={100} kg/kg</tt>, and scaled the mass flow rate using
 </p>
-
+ 
 <pre>
   m_flow = 1/100 * nPeo * 8.18E-6 kg/(s*person)
 </pre>
-
+ 
 <p>
 where <tt>nPeo</tt> is the number of people in the room.
 This results in a mass flow rate that is about 5 orders of magnitudes smaller than the supply air flow rate,
 and hence its contribution to the volume's energy balance is negligible.
 </p>
-
+ 
 <p align=\"center\">
 <img src=\"../Images/Examples/RoomCO2WithControls.png\" border=\"1\">
 </p>

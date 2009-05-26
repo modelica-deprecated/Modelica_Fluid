@@ -136,8 +136,8 @@ initial equation
             extent={{-95,-24},{95,-44}},
             lineColor={0,0,0},
             textString=DynamicSelect("%level_start", realString(
-                level, 
-                1, 
+                level,
+                1,
                 2)))}),
       Documentation(info="<HTML>
 <p> 
@@ -186,8 +186,7 @@ Limitation to bottom ports only, added inlet and outlet loss factors.</li>
           preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},
           grid={1,1},
-          initialScale=0.2), graphics),
-      uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+          initialScale=0.2), graphics));
 equation
 
 end OpenTank;

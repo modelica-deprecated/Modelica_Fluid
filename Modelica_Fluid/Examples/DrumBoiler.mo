@@ -19,7 +19,6 @@ package DrumBoiler
       p_start=100000)     annotation (Placement(transformation(extent={{-46,-30},
               {-26,-10}}, rotation=0)));
     annotation (
-      uses(Modelica_Fluid(version="0.72")),
       Diagram(coordinateSystem(
           preserveAspectRatio=true,
           extent={{-100,-100},{100,100}},

@@ -131,11 +131,11 @@ Once the geometries have been designed, the NominalTurbulentPipeFlow correlation
 TurbulentPipeFlow or DetailedPipeFlow correlations. Similarily the ControlledPump can be replaced with a PrescribedPump 
 to investigate a real controller or with a Pump with rotational shaft to investigate inertia effects. 
 </p>
-
+ 
 <p align=\"center\">
 <img src=\"../Images/Examples/InverseParametrization.png\" border=\"1\">
 </p>
-
+ 
 </html>"));
   connect(pipe2.port_b, sink2.ports[1]) annotation (Line(
       points={{40,-60},{64,-60}},

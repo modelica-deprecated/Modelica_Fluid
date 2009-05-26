@@ -109,11 +109,11 @@ Simulate for 2000 s. When the valve is opened at time t=200, the pump starts tur
 <p>
 If using Dymola, turn off \"Equidistant time grid\" to avoid numerical errors.
 </p>
-
+ 
 <p align=\"center\">
 <img src=\"../Images/Examples/PumpingSystem.png\" border=\"1\">
 </p>
-
+ 
 </html>", revisions="<html>
 <ul>
 <li><i>Jan 2009</i>

@@ -106,7 +106,7 @@ package Tanks "Library demonstrating the usage of the tank model"
 <p align=\"center\">
 <img src=\"../Images/Examples/ThreeTanks.png\" border=\"1\">
 </p>
-
+ 
 </html>"));
 
   end ThreeTanks;
@@ -248,11 +248,11 @@ Note that the number of solver intervals has been increased, accounting for the 
 Otherwise the simulation may fail due to too large steps subject to events. Alternatively the 
 simulation accuracy could be increased in order to avoid errors. 
 </p>
-
+ 
 <p align=\"center\">
 <img src=\"../Images/Examples/TanksWithOverflow.png\" border=\"1\">
 </p>
-
+ 
 </html>"));
   end TanksWithOverflow;
 
@@ -313,7 +313,7 @@ simulation accuracy could be increased in order to avoid errors.
       Commands(file="../Scripts/Examples/EmptyTanks/plot level and port.p.mos"
           "plot level and port.p"),
       Documentation(info="<html>
-
+ 
 <p align=\"center\">
 <img src=\"../Images/Examples/EmptyTanks.png\" border=\"1\">
 </p>

@@ -1695,8 +1695,7 @@ Simulation starts with both valves open. At t=1, valve 1 closes; at t=2 valve 2 
     annotation (Diagram(coordinateSystem(preserveAspectRatio=true,
             extent={{-100,-100},{100,100}}), graphics),
       experiment(StopTime=4),
-      experimentSetupOutput,
-      uses(Modelica_Fluid(version="1.0 Streams Beta 3"), Modelica(version="3.0")));
+      experimentSetupOutput);
     Modelica_Fluid.Sources.FixedBoundary source(nPorts=1,
       redeclare package Medium = Modelica.Media.Water.StandardWater,
       use_T=false,

@@ -114,11 +114,11 @@ present that are regulated by a central control system.
             "../Scripts/Examples/AST_BatchPlant_StandardWater/plot level.mos"
           "plot level"),
       Documentation(info="<html>
-
+ 
 <p align=\"center\">
 <img src=\"../Images/Examples/BatchPlant_StandardWater.png\" border=\"1\">
 </p>
-
+ 
 </html>"));
     Modelica_Fluid.Valves.ValveDiscrete V11(
       redeclare package Medium = BatchMedium,
@@ -2156,8 +2156,7 @@ Implemented trace substances and missing equation for outflow of multi substance
             preserveAspectRatio=true,
             extent={{-100,-100},{100,100}},
             grid={1,1},
-            initialScale=0.2), graphics),
-        uses(Modelica(version="2.2.1"), Modelica_Fluid(version="0.952")));
+            initialScale=0.2), graphics));
 
   equation
       connect(heatPort, heatTransfer.heatPorts[1]) annotation (Line(
