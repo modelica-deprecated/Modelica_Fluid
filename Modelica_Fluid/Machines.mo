@@ -644,7 +644,7 @@ provided a two-phase medium model is used.
       input SI.Height head_nominal[:] "Pump head for N operating points" annotation(Dialog);
       protected
       Integer N = size(V_flow_nominal,1) "Number of nominal operating points";
-      Real V_flow_nominal_pow[N,N] = {{V_flow_nominal[j]^(i-1) for j in 1:N} for i in 1:N}
+      Real V_flow_nominal_pow[N,N] = {{V_flow_nominal[i]^(j-1) for j in 1:N} for i in 1:N}
           "Rows: different operating points; columns: increasing powers";
       /* Linear system to determine the coefficients (example N=3):
   head_nominal[1] = c[1] + V_flow_nominal[1]*c[2] + V_flow_nominal[1]^2*c[3];
