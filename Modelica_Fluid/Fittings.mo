@@ -284,7 +284,7 @@ model AbruptAdaptor
               100}},
           grid={1,1}), graphics={Rectangle(
             extent=DynamicSelect({{-100,22},{0,-22}}, {{-100,max(0.1, min(1,
-                diameter_a/max(diameter_a, diameter_b)))*60},{0,-max(0.1, min(1,
+                diameter_a/max(diameter_a, diameter_b)))*60},{0,-max(0.1, min(1, 
                 diameter_a/max(diameter_a, diameter_b)))*60}}),
             lineColor={0,0,0},
             fillPattern=FillPattern.HorizontalCylinder,
@@ -1446,7 +1446,7 @@ Laminar region:
            annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnostics"));
         SI.ReynoldsNumber Re = Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber_m_flow(
               m_flow,
-              0.5*(Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b)),
+              noEvent(if m_flow>0 then Medium.dynamicViscosity(state_a) else Medium.dynamicViscosity(state_b)),
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
 
         // Variables
@@ -1670,7 +1670,7 @@ The used sufficient criteria for monotonicity follows from:
            annotation (Evaluate=true, Dialog(tab="Advanced", group="Diagnostics"));
         SI.ReynoldsNumber Re = Modelica_Fluid.Pipes.BaseClasses.CharacteristicNumbers.ReynoldsNumber_m_flow(
               m_flow,
-              0.5*(Medium.dynamicViscosity(state_a) + Medium.dynamicViscosity(state_b)),
+              noEvent(if m_flow>0 then Medium.dynamicViscosity(state_a) else Medium.dynamicViscosity(state_b)),
               data.D_Re) if show_Re "Reynolds number at diameter data.D_Re";
         parameter Boolean show_totalPressures = false
           "= true, if total pressures are included for plotting" 
